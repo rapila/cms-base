@@ -29,23 +29,48 @@ class Autoloader {
       return;
     }
     
+    $sIncludeFilePath = self::findIncludePath($sClassName);
+  
+    if($sIncludeFilePath === null) {
+      if(error_reporting() === 0) {
+        return eval("class $sClassName {function __construct() {throw new ClassNotFoundException('Could not find file for loading of class $sClassName', '$sClassName);}}");
+      }
+      throw new ClassNotFoundException("Could not find file for loading of class $sClassName", $sClassName);  
+    }
+    
+    self::$CLASS_MAPPING[$sClassName] = $sIncludeFilePath;
+    self::$MAPPING_HAS_BEEN_MODIFIED = true;
+    require_once($sIncludeFilePath);
+  }
+  
+  public static function saveIncludeCache() {
+    if(self::$MAPPING_HAS_BEEN_MODIFIED) {
+      self::$INCLUDE_CACHE->setContents(self::$CLASS_MAPPING);
+    }
+  }
+  
+  private static function findIncludePath($sClassName) {
     $sFileName = "$sClassName.php";
-    $sIncludeFilePath = null;
+    
     //Standard Classes
     $sPath = ResourceFinder::findResource(array(DIRNAME_CLASSES, $sFileName));
     if($sPath) {
-      $sIncludeFilePath = $sPath;
+      return $sPath;
+    }
+  
+    //Generated Model classes
+    $sPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName). ResourceFinder::SEARCH_MAIN_ONLY);
+    if($sPath) {
+      return $sPath;
     }
   
     //Model classes
-    if($sIncludeFilePath === null) {
-      $sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName), ResourceFinder::SEARCH_BASE_ONLY);
-      if($sPath) {
-        $sIncludeFilePath = $sPath;
-      }
+    $sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName));
+    if($sPath) {
+      return $sPath;
     }
   
-    if($sIncludeFilePath === null && Module::isValidModuleClassNameOfAnyType($sClassName)) {
+    if(Module::isValidModuleClassNameOfAnyType($sClassName)) {
       foreach(Module::listModuleTypes() as $sModuleType) {
         $sModuleBaseClass = Module::getClassNameByTypeAndName($sModuleType);
         if(!class_exists($sModuleBaseClass)) {
@@ -55,36 +80,13 @@ class Autoloader {
         if(call_user_func(array($sModuleBaseClass, 'isValidModuleClassName'), $sClassName)) {
           $sPath = ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, call_user_func(array($sModuleBaseClass, 'getNameByClassName'), $sClassName), $sFileName));
           if($sPath) {
-            $sIncludeFilePath = $sPath;
-            continue;
+            return $sPath;
           }
         }
       }
     }
-  
-    //Model classes from modules
-    if($sIncludeFilePath === null) {
-      $sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_MODEL, $sFileName));
-      if(count($sPath) > 0) {
-        $sIncludeFilePath = array_shift($sPath = array_values($sPath));
-      }
-    }
-  
-    if($sIncludeFilePath !== null) {
-      self::$CLASS_MAPPING[$sClassName] = $sIncludeFilePath;
-      self::$MAPPING_HAS_BEEN_MODIFIED = true;
-      require_once($sIncludeFilePath);
-      return;
-    } else if(error_reporting() === 0) {
-      return eval("class $sClassName {function __construct() {throw new ClassNotFoundException('Could not find file $sFileName for loading of class $sClassName', '$sClassName);}}");
-    }
-    throw new ClassNotFoundException("Could not find file $sFileName for loading of class $sClassName", $sClassName);  
-  }
-  
-  public static function saveIncludeCache() {
-    if(self::$MAPPING_HAS_BEEN_MODIFIED) {
-      self::$INCLUDE_CACHE->setContents(self::$CLASS_MAPPING);
-    }
+    
+    return null;
   }
 }
 
