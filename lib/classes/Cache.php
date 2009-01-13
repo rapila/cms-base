@@ -7,9 +7,9 @@ class Cache {
   public function __construct($sKey, $mPath=null) {
     $this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG;
     
-    $mPath = ResourceFinder::parsePathArguments(DIRNAME_CACHES, $mPath);
-    $sPath = ResourceFinder::findResource($mPath);
-    
+    $mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
+    $sPath = ResourceFinder::findResource($mPath, ResourceFinder::SEARCH_MAIN_ONLY);
+   
     $sFileName = md5($sKey);
     $this->sFilePath = $sPath.'/'.$sFileName.'.cache';
   }
@@ -142,7 +142,7 @@ class Cache {
   
   //Removes all cache files but not their parent directories. This is used by the mini_cms_clear_cache_and_set_permissions.sh script
   public static function clearAllCaches() {
-    $aCachesDirs = ResourceFinder::findAllResources(DIRNAME_CACHES);
+    $aCachesDirs = ResourceFinder::findAllResources(DIRNAME_CACHES, ResourceFinder::SEARCH_MAIN_ONLY);
     foreach($aCachesDirs as $sCachesDir) {
       if($rCachesDir = opendir($sCachesDir)) {
         while(false !== ($sFileName = readdir($rCachesDir))) {

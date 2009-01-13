@@ -112,7 +112,7 @@ class CheckBackendModule extends BackendModule {
 	}
 	
 	private function doCheckStaticStrings() {
-    $aLanguageFiles = array_merge(ResourceFinder::findResourceByExpressions(array(DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_INT_FIRST), ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, Module::ANY_NAME_OR_TYPE_PATTERN, Module::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_INT_FIRST));
+    $aLanguageFiles = array_merge(ResourceFinder::findResourceByExpressions(array(DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_SITE_FIRST), ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_SITE_FIRST));
     
     $aSortedLanugageFiles = array();
     foreach($aLanguageFiles as $sRelativePath => $sAbsolutePath) {
@@ -131,7 +131,7 @@ class CheckBackendModule extends BackendModule {
       $aAllStrings = array();
       $aAllLanguageFileContents = array();
       foreach($aLanguageIds as $sLanguageId) {
-        $aLanguageFilePaths = ResourceFinder::findAllResources("$sPathPrefix$sLanguageId.ini", ResourceFinder::SEARCH_INT_FIRST);
+        $aLanguageFilePaths = ResourceFinder::findAllResources("$sPathPrefix$sLanguageId.ini", ResourceFinder::SEARCH_SITE_FIRST);
         $aAllLanguageFileContents[$sLanguageId] = parse_ini_file($aLanguageFilePaths[0]);
         if(isset($aLanguageFilePaths[1])) {
           $aAllLanguageFileContents[$sLanguageId] = array_merge($aAllLanguageFileContents[$sLanguageId], parse_ini_file($aLanguageFilePaths[1]));

@@ -24,7 +24,7 @@ class StringPeer extends BaseStringPeer {
   public static function getStaticStrings($sLanguageId) {
     if(!isset(self::$STATIC_STRINGS[$sLanguageId])) {
       $oCache = new Cache($sLanguageId, DIRNAME_LANG);
-      $aLanguageFiles = ResourceFinder::findAllResources(array(DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_INT_FIRST);
+      $aLanguageFiles = ResourceFinder::findAllResources(array(DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_SITE_FIRST);
       if($oCache->cacheFileExists() && !$oCache->isOutdated($aLanguageFiles)) {
         self::$STATIC_STRINGS[$sLanguageId] = $oCache->getContentsAsVariable();
       } else {
@@ -36,7 +36,7 @@ class StringPeer extends BaseStringPeer {
         }
         
         //Get strings for modules
-        foreach(ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, Module::ANY_NAME_OR_TYPE_PATTERN, Module::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_INT_FIRST) as $sLanguageFile) {
+        foreach(ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_SITE_FIRST) as $sLanguageFile) {
           self::$STATIC_STRINGS[$sLanguageId] = array_merge(self::$STATIC_STRINGS[$sLanguageId], parse_ini_file($sLanguageFile));
         }
         

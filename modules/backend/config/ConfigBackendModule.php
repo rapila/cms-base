@@ -24,8 +24,8 @@ class ConfigBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate();
     
     $aResult = array();
-    $aConfigFilesInt = ResourceFinder::findResourceByExpressions(array(DIRNAME_CONFIG, "/[\w_-].yml/"), ResourceFinder::SEARCH_INT_ONLY);
-    $aConfigFilesExt = ResourceFinder::findResourceByExpressions(array(DIRNAME_CONFIG, "/[\w_-].yml/"), ResourceFinder::SEARCH_EXT_ONLY);
+    $aConfigFilesInt = ResourceFinder::findResourceByExpressions(array(DIRNAME_CONFIG, "/[\w_-].yml/"), ResourceFinder::SEARCH_BASE_ONLY);
+    $aConfigFilesExt = ResourceFinder::findResourceByExpressions(array(DIRNAME_CONFIG, "/[\w_-].yml/"), ResourceFinder::SEARCH_SITE_ONLY);
     
     foreach($aConfigFilesInt as $sFileName => $sFilePath) {
       $oTemplate->replaceIdentifierMultiple("text", '<div><a class="edit" href="'.$this->link($sFileName, array("int" => true)).'">'.$sFileName.' </a> (INT)</div>', null, Template::NO_HTML_ESCAPE);  
@@ -43,7 +43,7 @@ class ConfigBackendModule extends BackendModule {
       return;
     }
     
-    $sConfigFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, $this->sFileName), @$_REQUEST['int'] ? ResourceFinder::SEARCH_INT_ONLY : ResourceFinder::SEARCH_EXT_ONLY);
+    $sConfigFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, $this->sFileName), @$_REQUEST['int'] ? ResourceFinder::SEARCH_BASE_ONLY : ResourceFinder::SEARCH_SITE_ONLY);
     $aCmsConfig = Spyc::YAMLLoad($sConfigFile);
     if(!is_array($aCmsConfig)) {
       throw new Exception('something wrong with YAMLload of Configfile '.$this->sFileName);

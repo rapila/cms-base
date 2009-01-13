@@ -66,7 +66,7 @@ class UsersBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("language_id", $this->oUser->getLanguageId());
 
     // get language ini files to provide available user_language choice
-    $aLanguageFiles = Util::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_INT_ONLY));
+    $aLanguageFiles = Util::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_BASE_ONLY));
     $aLanguages = array();
     foreach($aLanguageFiles as $sKey => $sValue) {
       if(Util::endsWith($sKey, '.ini')) {

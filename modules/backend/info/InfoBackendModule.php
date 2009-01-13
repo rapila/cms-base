@@ -16,7 +16,8 @@ class InfoBackendModule extends BackendModule {
       $oModuleTemplate = $this->constructTemplate("info_module");
       $oModuleTemplate->replaceIdentifier("name", $sModuleName);
       $oModuleTemplate->replaceIdentifier("path", $sModulePath);
-      $oModuleTemplate->replaceIdentifier("module_info", ResourceFinder::isInt($sModulePath) ? 'int' : 'ext');
+      // TODO: Implement isInt using plugin awareness
+      // $oModuleTemplate->replaceIdentifier("module_info", ResourceFinder::isInt($sModulePath) ? 'int' : 'ext');
       $oTemplate->replaceIdentifierMultiple("modules", $oModuleTemplate);
     }
     return $oTemplate;

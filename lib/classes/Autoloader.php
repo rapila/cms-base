@@ -1,7 +1,7 @@
 <?php
 
-require_once(MAIN_DIR."/".DIRNAME_INCLUDES."/".DIRNAME_CLASSES."/ResourceFinder.php");
-require_once(MAIN_DIR."/".DIRNAME_INCLUDES."/".DIRNAME_CLASSES."/Cache.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
 
 /**
 * @package helpers
@@ -39,7 +39,7 @@ class Autoloader {
   
     //Model classes
     if($sIncludeFilePath === null) {
-      $sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName), ResourceFinder::SEARCH_INT_ONLY);
+      $sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName), ResourceFinder::SEARCH_BASE_ONLY);
       if($sPath) {
         $sIncludeFilePath = $sPath;
       }
@@ -64,7 +64,7 @@ class Autoloader {
   
     //Model classes from modules
     if($sIncludeFilePath === null) {
-      $sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, Module::ANY_NAME_OR_TYPE_PATTERN, Module::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_MODEL, $sFileName));
+      $sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_MODEL, $sFileName));
       if(count($sPath) > 0) {
         $sIncludeFilePath = array_shift($sPath = array_values($sPath));
       }

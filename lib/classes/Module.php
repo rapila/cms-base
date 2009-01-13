@@ -22,7 +22,6 @@
  * @see FileModule
  */
 abstract class Module {
-  const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
   const INFO_FILE = "info.yml";
   
   protected static $MODULE_TYPE;
@@ -104,7 +103,7 @@ abstract class Module {
     
       //Folders
       $aModuleMetadata['folders'] = array();
-      $aFolders = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, $sType, $sName, self::ANY_NAME_OR_TYPE_PATTERN));
+      $aFolders = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, $sType, $sName, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
       foreach($aFolders as $sRelativeFolderPath => $sAbsoluteFolderPath) {
         $sFolderName = explode("/", $sRelativeFolderPath);
         $aModuleMetadata['folders'][] = $sFolderName[count($sFolderName)-1];
@@ -134,14 +133,14 @@ abstract class Module {
   
   public static function listModulesByType($sType, $bListEnabledOnly = true) {
     if($sType === null) {
-      $sType = self::ANY_NAME_OR_TYPE_PATTERN;
+      $sType = ResourceFinder::ANY_NAME_OR_TYPE_PATTERN;
     }
     
     if(isset(self::$MODULE_LIST[$sType]) && !$bListEnabledOnly) {
       return self::$MODULE_LIST[$sType];
     }
     
-    $aPaths = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, $sType, self::ANY_NAME_OR_TYPE_PATTERN));
+    $aPaths = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, $sType, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
     
     $aResult = array();
     foreach($aPaths as $sPath => $aAbsolutePath) {
@@ -165,7 +164,7 @@ abstract class Module {
   
   public static function listModuleTypes() {
     if(self::$MODULE_TYPE_LIST === null) {
-      $aPaths = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, self::ANY_NAME_OR_TYPE_PATTERN));
+      $aPaths = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
       self::$MODULE_TYPE_LIST = array();
       foreach($aPaths as $sPath => $aAbsolutePath) {
         $aPathParts = explode("/", $sPath);

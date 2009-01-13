@@ -1,21 +1,27 @@
 <?php
 
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Util.php");
+
 class ResourceFinder {
-  const SEARCH_INT_ONLY = 1;
-  const SEARCH_EXT_ONLY = 2;
-  const SEARCH_INT_FIRST = 3;
-  const SEARCH_EXT_FIRST = 4;
+  const SEARCH_MAIN_ONLY = 0;
+  const SEARCH_BASE_ONLY = 1;
+  const SEARCH_SITE_ONLY = 2;
+  const SEARCH_PLUGINS_ONLY = 5;
+  const SEARCH_BASE_FIRST = 3;
+  const SEARCH_SITE_FIRST = 4;
+  const SEARCH_PLUGINS_FIRST = 6;
   
-  private static function getDefaultFlag($bFindAll=false) {
-    if($bFindAll) {
-      return self::SEARCH_INT_FIRST;
-    }
-    return self::SEARCH_EXT_FIRST;
+  const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
+  
+  private static $PLUGINS = null;
+  
+  private static function getDefaultFlag() {
+    return self::SEARCH_BASE_FIRST;
   }
   
-  private static function processArguments(&$mRelativePath, &$iFlag, $bFindAll=false) {
+  private static function processArguments(&$mRelativePath, &$iFlag) {
     if($iFlag === null) {
-      $iFlag = self::getDefaultFlag($bFindAll);
+      $iFlag = self::getDefaultFlag();
     }
     
     if(is_array($mRelativePath) && array_key_exists('flag', $mRelativePath)) {
@@ -28,16 +34,25 @@ class ResourceFinder {
     } else if(!is_array($mRelativePath)) {
       throw new Exception("Exception in ResourceFinder: given path is neither array nor string");
     }
+    
+    if($mRelativePath[0] === DIRNAME_CLASSES || $mRelativePath[0] === DIRNAME_VENDOR || $mRelativePath[0] === DIRNAME_MODEL) {
+      array_unshift($mRelativePath, DIRNAME_LIB);
+    }
   }
   
   public static function findResource($mRelativePath, $iFlag = null, $bByExpressions = false, $bFindAll = false) {
     if($bByExpressions) {
       $bFindAll = true;
     }
-    self::processArguments($mRelativePath, $iFlag, $bFindAll);
+    self::processArguments($mRelativePath, $iFlag);
     $mResult = array();
-    foreach(self::buildFindMethodList($iFlag) as $sMethod) {
-      $sPath = call_user_func(array('ResourceFinder', $sMethod), $mRelativePath, $bByExpressions);
+    foreach(self::buildSearchPathList($iFlag, $bFindAll) as $sSearchPath) {
+      $sPath = null;
+      if($bByExpressions) {
+        $sPath = self::findInPathByExpressions($mRelativePath, $sSearchPath);
+      } else {
+        $sPath = self::findInPath($mRelativePath, $sSearchPath);
+      }
       if($sPath) {
         if($bFindAll) {
           if(!$bByExpressions) {
@@ -65,51 +80,34 @@ class ResourceFinder {
     return self::findResource($aExpressions, $iFlag, true);
   }
   
-  public static function buildFindMethodList($iFlag, $bByExpressions = false) {
-    $bIntFirst = $iFlag === self::SEARCH_INT_ONLY || $iFlag === self::SEARCH_INT_FIRST;
-    
-    if($iFlag === self::SEARCH_INT_ONLY || $iFlag === self::SEARCH_EXT_ONLY) {
-      return array($bIntFirst ? 'findInInt' : 'findInExt');
+  public static function buildSearchPathList($iFlag, $bFindAll = false) {
+    switch($iFlag) {
+      case self::SEARCH_MAIN_ONLY: return array(MAIN_DIR);
+      case self::SEARCH_BASE_ONLY: return array(BASE_DIR);
+      case self::SEARCH_SITE_ONLY: return array(SITE_DIR);
+      case self::SEARCH_PLUGINS_ONLY: return self::getPluginPaths();
+    }
+    $aResult = self::getPluginPaths();
+    switch($iFlag) {
+      case self::SEARCH_BASE_FIRST:
+        array_unshift($aResult, BASE_DIR);
+        array_push($aResult, SITE_DIR);
+      break;
+      case self::SEARCH_SITE_FIRST:
+        array_unshift($aResult, SITE_DIR);
+        array_push($aResult, BASE_DIR);
+      break;
+      case self::SEARCH_PLUGINS_FIRST:
+        array_push($aResult, SITE_DIR);
+        array_push($aResult, BASE_DIR);
+      break;
     }
     
-    return array($bIntFirst ? 'findInInt' : 'findInExt',
-                 $bIntFirst ? 'findInExt' : 'findInInt');
-  }
-  
-  public static function isInt($mRelativePath, $iFlag = null) {
-    self::processArguments($mRelativePath, $iFlag);
-    if($iFlag === self::SEARCH_EXT_ONLY) {
-      return false;
+    if($bFindAll) {
+      return array_reverse($aResult);
     }
-    if($iFlag === self::SEARCH_EXT_FIRST && self::findInExt($mRelativePath) !== null) {
-      return false;
-    }
-    return self::findInInt($mRelativePath) !== null;
-  }
-  
-  public static function listResourcesInAllDirs($mRelativePath) {
-    $iFlag = null;
-    self::processArguments($mRelativePath, $iFlag);
     
-    return Util::getFolderContents(self::findInInt($mRelativePath)) + Util::getFolderContents(self::findInExt($mRelativePath));
-  }
-  
-  private static function findInInt($aPath, $bByExpressions = false) {
-    if(!isset($aPath[0]))
-      debug_print_backtrace();
-    if($aPath[0] === DIRNAME_LANG || $aPath[0] === DIRNAME_TEMPLATES || $aPath[0] === DIRNAME_WEB) {
-      array_unshift($aPath, DIRNAME_RESOURCES);
-    } else if($aPath[0] === DIRNAME_CLASSES || $aPath[0] === DIRNAME_VENDOR || $aPath[0] === DIRNAME_MODEL) {
-      array_unshift($aPath, DIRNAME_INCLUDES);
-    }
-    return $bByExpressions ? self::findInPathByExpressions($aPath, MAIN_DIR) : self::findInPath($aPath, MAIN_DIR);
-  }
-  
-  private static function findInExt($aPath, $bByExpressions = false) {
-    if($aPath[0] === DIRNAME_RESOURCES) {
-      array_shift($aPath);
-    }
-    return $bByExpressions ? self::findInPathByExpressions($aPath, SITE_DIR) : self::findInPath($aPath, SITE_DIR);
+    return $aResult;
   }
   
   private static function findInPath($aPath, $sPath) {
@@ -160,6 +158,13 @@ class ResourceFinder {
       }
     }
     return $aResult;
+  }
+  
+  private static function getPluginPaths() {
+    if(self::$PLUGINS === null) {
+      self::$PLUGINS = array_values(ResourceFinder::findResourceByExpressions(array(DIRNAME_PLUGINS, self::ANY_NAME_OR_TYPE_PATTERN), self::SEARCH_MAIN_ONLY));
+    }
+    return self::$PLUGINS;
   }
   
   //Helper function for classes that are given a filename, base path and path name
