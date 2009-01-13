@@ -1,0 +1,13 @@
+# default configuration for automatic insert into table
+model_name: Language
+  
+inserts:  
+  de:
+    is_active:  1
+ 
+insert_pattern:
+# key is optional
+  key:  id 
+# fieldnames in order of config  
+  - is_active
+

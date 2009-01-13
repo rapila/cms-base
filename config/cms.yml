@@ -1,0 +1,86 @@
+general:
+  multilingual:   true
+  #general caching of files like configuration yaml files and language ini files
+  caching:        true
+  template_caching: true
+  db_config:
+    datasources:
+      mini_cms:
+        adapter:  'mysqli'
+        connection:
+          phptype:    'mysqli'
+          hostspec:   'localhost'
+          database:   'database'
+          username:   &un 'username'
+          user:       *un
+          password:   'password'
+          dsn:        'mysql:dbname=database;host=localhost'
+      default:      'mini_cms'
+  # @see http://www.php.net/manual/en/timezones.php
+  timezone: "Europe/Zurich"
+  environment: 'developer'
+
+routing:
+  routes:
+    content:      'FrontendManager'
+    cms_manager:  'BackendManager'
+    get_file:     'FileManager'
+    get_ajax:     'FileManager'
+    cms_login:    'LoginManager'
+    goto:         'GotoManager'
+  default: 'content'
+
+# give the page name as value here (be sure not to have allocated the name to more than one page)
+error_pages:
+  not_found: "error_404"
+  # server_error is ignored for the time being
+  server_error: "internal_server_error"
+
+special_pages:
+  search_result: "search_result"
+
+domain_holder:
+  name:   'Mini-CMS'
+  email:  'info@mini-cms.ch'
+
+backend:
+  title: 'Mini-CMS Admin'
+  main_template: be_main
+  
+  # custom css file in site/web/css for site specific changes
+  custom_backend_css: null 
+  inherit_children_enable: true
+  delete_pagetree_enable: true
+  page_properties_allow: false
+  
+  # document edit and delete can be restricted to owner only (if is not admin), defaults to false
+  document_delete_allow_from_creator_only: false
+  
+  # default config for tinymce
+  text_module:
+    plugins: [advimage, advlink, xhtmlxtras]
+    advanced_buttons_1: "image,separator,bold,cite,link,unlink,bullist,separator,undo,redo,separator,removeformat,formatselect,styleselect,code,sup,sub"
+    advanced_buttons_2: ""
+    css_files: main
+    blockformats: [p, h1, h2]
+    classes: [external_link, internal_link, image_link]
+    force_br_newlines: true
+  #possible values: images, internal_links, external_links, documents
+  link_array_disabled: []
+  
+frontend:
+  title: 'Mini-CMS | Frontend Title'
+  main_template: general
+  inherit_contents: false
+#possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
+  doctype: strict
+  protect_email_addresses: false
+
+encoding:
+  db: utf-8
+  browser: utf-8
+  #possible values: full, xml_only. xml_only is much faster and results in smaller file sizes, however, full encoding may help if you have encoding issues with certain browsers
+  entities: xml_only
+
+session_default:
+  language: de

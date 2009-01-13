@@ -1,0 +1,9 @@
+<li id="page-tree-item-{{id}}" class="navigation_level_{{level}} {{status}}">
+  <span class="button {{new_page}}"><a class="{{status}} level_{{level}}{{is_inactive}}" href="{{link_prefix}}{{id}}" title="{{writeParameterizedString=edit_page;title=\{\{title\}\};position=last}}">
+  {{truncate=\{\{title\}\};length=30;position=last;}}</a></span> {{language_warning}}
+  {{identifierContext=start;name=children}}
+  <ul class="main_sub_navigation">
+    {{children}}
+  </ul>
+  {{identifierContext=end;name=children}}
+</li>

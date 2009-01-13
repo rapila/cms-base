@@ -1,0 +1,5 @@
+Install Package notes:
+
+export empty install sql, 
+- structure, but no data
+- unclick: AUTO_INCREMENT-Wert hinzufügen

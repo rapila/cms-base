@@ -1,0 +1,7 @@
+<div id="search_container">
+  <form action="{{writeLink=to_self;position=last}}"><fieldset>
+    <input type="text" name="search" id="search_field" value="{{search_value}}" size="20" accesskey="f" />
+    {{if=ne;1=\{\{writeRequestValue=search\;position=last\}\}}}<a href="{{clear_link}}" accesskey="x" class="clear_link">╳</a>{{endIf}}
+    <input type="image" src="{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/search.gif" class="search" title="{{writeString=search_title}}" />
+  </fieldset></form>
+</div>

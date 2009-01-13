@@ -1,0 +1,44 @@
+# default configuration for automatic insert into table
+model_name: DocumentType
+  
+inserts:  
+  pdf:
+    mimetype:       "application/pdf"
+    is_office_doc:  1
+  doc:
+    mimetype:       "application/msword"
+    is_office_doc:  1
+  xls:
+    mimetype:       "application/vnd.ms-excel"
+    is_office_doc:  1
+  ppt:
+    mimetype:       "application/vnd.ms-powerpoint"
+    is_office_doc:  1
+  txt:
+    mimetype:       "text/plain"
+    is_office_doc:  1
+  rtf:
+    mimetype:       "application/rtf"
+    is_office_doc:  1
+  gif:
+    mimetype:       "image/gif"
+  jpg:
+    mimetype:       "image/jpeg"
+  jpeg:
+    mimetype:       "image/jpeg"
+  png:
+    mimetype:       "image/png"
+  svg:
+    mimetype:       "image/svg+xml"
+  ico:
+    mimetype:       "image/vnd.microsoft.icon"
+  swf:
+    mimetype:       "application/x-shockwave-flash"
+  
+insert_pattern:
+# key is optional
+  key:  extension
+# fieldnames in order of config  
+  - mimetype
+  - is_office_doc
+

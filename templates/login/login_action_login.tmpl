@@ -1,0 +1,14 @@
+<label for="user_name">{{writeString=user_name}}</label>
+<input type="text" name="user_name" id="user_name" value="{{user_name}}" /><br />
+<label for="password">{{writeString=password}}</label>
+<input type="password" name="password" id="password" value="{{password}}" autocomplete="off" /><br />
+{{writeFlashValue=login_welcome}}{{if;1=\{\{writeFlashValue=login_welcome\}\}}}<br />{{endIf}}
+{{writeFlashValue=login_welcome2}}
+{{writeFlashValue=login_check_params}}
+{{writeFlashValue=login.empty_fields}}
+{{writeFlashValue=login.recovery_link_sent}}
+{{writeFlashValue=login.recovery.invalid}}
+{{writeFlashValue=login_user_inactive}}
+{{writeFlashValue=backend_login_denied}}
+<label for="login">Login</label><button type="submit" class="login" id="login" title="{{writeString=login_confirm}}"></button><br />
+<label for="login">&nbsp;</label><a href="{{action_password_forgotten}}" title="">Password forgotten</a>

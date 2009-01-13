@@ -1,0 +1,16 @@
+mini-cms version 1.0
+
+requirements to install mini-cms
+- PHP5.1+
+- MySQL 4.1+
+
+procedure: 
+1. make database with dbuser and password and 
+- set them in the cms config file: site/config/cms.yml section [general/db_config/datasources/connection/]
+- import data/sql/cms_install.sql
+    
+2. what about modrewrite/httpd/hosts/.htaccess
+
+3. check data/install/table_name.insert.yml files (modify if necessary)
+
+4. open site in browser and follow procedures

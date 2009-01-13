@@ -1,0 +1,28 @@
+<head>
+  	<title>{{title}}</title>
+  	<link rel="stylesheet" rev="stylesheet" href="{{writeConstantValue=INT_CSS_DIR_FE}}/admin.css" />
+  	  </head>
+  <body onload="document.getElementById('user_name').select()">
+  <div id="admin_navigation">
+    <div id="cms_admin">
+      <a id="mini_cms_admin_logo" href="{{writeConstantValue=MAIN_DIR_FE}}" class="label_area">&nbsp;</a>
+      <div class="link_container">
+        <div id="domain_name">{{domain_name}}</div>
+      </div>    
+    </div>
+  </div>
+  <div id="bottom_wrapper">
+    <div id="detail">
+      <fieldset><legend>{{login_title}}</legend>
+        <form action="{{action}}" method="post">
+          {{includeTemplate=login_action_\{\{login_action\}\};position=last}}
+        </form>
+      </fieldset>
+      <div class="browser_error_message">{{contextIdentifier=start;name=browser_message}}
+        {{browser_message}}{{contextIdentifier=end;name=browser_message}}
+{{contextIdentifier=start;name=firefox_download_linktext}}<br /><a href="http://www.mozilla.com/en-US/firefox/all.html">{{firefox_download_linktext}}</a>{{contextIdentifier=end;name=firefox_download_linktext}}
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+Changelog (important changes before updating sites)
+
+20080109.1914 r1169 Pages now have a page type
+
+20080109.1914 r1115 PageStrings have a new keywords field
+
+20071028.1002 r1050 PasswordHash handling requires change of table 'users' field 'password', NEW varchar(144)
+
+20071010.1346 SVN r1006: issue #0000027:
+All dynamic modules that take parameters (via path) should now return the possible parameter keys in an array returned by the static funtion acceptedRequestParams()
+
+20071003.1346 SVN r989, issue #0000061:
+Added DynamicFrontendModule which returns true on isDynamic, all dyamic modules should inherit from this
+
+20070926.1557 table "rights":
+changed fieldname "may_edit_page_section" to "may_edit_page_contents"
+
+20070820.0000 table "document_categories":
+field "max_width" added
+
+2007??? table "page_strings":
+altered to require "long_title" to be NOT NULL and "title" can be NULL (the opposite of before)

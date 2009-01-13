@@ -1,0 +1,65 @@
+    {{includeTemplate=be_custom_css}}
+    {{includeTemplate=be_custom_js}}
+  </head>
+  <body>
+  <div id="admin_navigation">
+    <div id="cms_admin">
+      <a id="mini_cms_admin_logo" class="label_area">&nbsp;</a>
+      <div class="link_container">
+        <div id="domain_name">{{domain_name}}</div>
+        <div id='preview'><a href="{{web_link}}" title="{{writeParameterizedString=preview_title}}" class="vorschau">&nbsp;</a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>{{writeString=direct_links}}</label>
+      <div class="link_container links" style="padding-top:1px;">{{admin_links}}</div>
+    </div>
+    <div>
+      <label>{{writeString=site_links}}</label>
+      <form id="site_link_chooser" method="get" action="{{page_url}}">
+        <select class="{{site_select_class}}" name="select_link" id="site_link" onchange="$('site_link_chooser').submit();">
+          {{available_site_links}}
+        </select>
+      </form>  
+    </div>{{identifierContext=start;name=available_admin_links}} 
+    <div>
+      <label>{{writeString=admin_links}}</label>
+      <form id="admin_link_chooser" method="get" action="{{page_url}}">
+        <select class="{{admin_select_class}}" name="select_link" id="admin_select_link" onchange="$('admin_link_chooser').submit();">
+          {{available_admin_links}}
+        </select>
+      </form>  
+    </div>{{identifierContext=end;name=available_admin_links}}    
+    <div>
+      <label>{{writeString=content_language}}</label>
+      {{identifierContext=start;name=available_language_options}}
+      <form id="language_chooser" method="{{method}}" action="{{page_url}}">
+        <select class="active_select" name="content_language" id="content_language" onchange="$('language_chooser').submit();">
+          {{available_language_options}}
+        </select>
+        {{request_values}}
+      </form>
+      {{identifierContext=end;name=available_language_options}}
+      {{identifierContext=start;name=static_language}}
+      <div title="{{writeString=locked_for_action}}">{{static_language}}</div>
+      {{identifierContext=end;name=static_language}}
+    </div>
+    <div id="user">
+      <label id="logout">{{writeString=user}}</label>
+      <div class="link_container links"><a class="links" href="{{link_to_user}}" title="{{writeParameterizedString=edit_user_profile;user_name=\{\{user_name\}\}}}">{{user_name}}</a><a  id="logout_link" href="{{logout_link}}">&nbsp;</a></div>
+    </div>
+  </div>
+  <div id="bottom_wrapper">
+    <div id="chooser">
+{{identifierContext=start;name=new_entry_action}}<form id="new_entry_form" action="{{new_entry_action}}" method="get">{{custom_select}}<button type="submit" class="new create" name="action" value="create" title="{{writeString=create_new_entry}}">{{writeString=new_entry}}</button></form>{{identifierContext=end;name=new_entry_action}}
+      <h1 class="module_title">{{module_name}}</h1>
+          {{chooser}}
+          {{search_panel}}
+    </div>
+    <div id="detail">{{detail}}
+    </div>
+    {{tag_panel}}
+  </div>
+  </body>
+</html>

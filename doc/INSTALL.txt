@@ -1,0 +1,34 @@
+INSTALL
+
+mkdir > name of project
+cd project dir
+
+checkout site_prototyp
+http://svn.mini-cms.ch/sites/trunk/site_prototype/ site
+
+checkout mini-cms shell scripts
+http://svn.mini-cms.ch/mini-cms/scripts into a separate dir
+
+run from project dir:
+script mini_cms_update_cms_into_site.sh && mini_cms_clear_cache_and_set_permissions.sh
+
+whenever you want to update to the latest version do this again.
+do not change anything outside your site folder
+
+projectname/site/config/cms.yml
+change to your requirements:
+- connection
+- multilingual
+- cache
+- domain_holder
+- session_defaults
+
+in cms.yml you can overwrite any parameter that is configured in root/config/cms.yml
+
+Ready for running mini-cms the first time?
+request url
+
+if you are the first user, you can just enter your username and password to your liking.
+The dialog will ask you to confirm the entries and you are logged in and then you can fillin your user data in the backend
+
+if there is no page entry yet, the system asks you to enter a first "root" page from where you will be able to build the page tree

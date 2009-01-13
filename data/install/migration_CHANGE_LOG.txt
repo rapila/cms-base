@@ -1,0 +1,21 @@
+IMPORTANT NOTES: 
+
+SQL
+check migration.sql for table changes per version
+
+Site upgrade to new basecms as externals change
+
+
+
+
+
+
+
+
+
+
+
+
+Upgrading older versions from Mini-CMS
+The select_links handling has been modified. They are called site_links now.
+Please change your site/config/backend.yml to work the same way like the root config/backend.yml

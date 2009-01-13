@@ -1,0 +1,13 @@
+<h1>{{id}}</h1>
+<fieldset><legend>{{writeString=language}} "{{id}}" [id:{{id}}]</legend>
+<form action="{{action}}" method="post">
+  <label for="id">Id</label>
+  <input type="text" id="id" name="id" value="{{id}}" /><br /> {{writeFlashValue=language_id_required}}{{writeFlashValue=language_id_exists}}
+  <label for="sort">Sortierung</label>
+  <input type="text" id="sort" name="sort" value="{{sort}}" size="2" /><br />
+  <label for="is_active">{{writeString=is_active}}</label>
+  <input type="checkbox" name="is_active" id="is_active" value="1" {{is_active}}/><br />
+  <label></label><button type="submit"></button>
+</form>
+{{delete_button}}
+</fieldset>
