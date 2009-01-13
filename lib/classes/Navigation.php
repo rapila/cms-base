@@ -14,6 +14,7 @@ class Navigation {
             "is_active" => false,
             "is_hidden" => false,
             "is_disabled" => false,
+            "is_inaccessible" => false,
             "is_sibling_of_current" => false,
             "is_sibling_of_active" => false,
             "is_child_of_current" => false,
@@ -110,6 +111,9 @@ class Navigation {
       }
       if($oPage->getIsHidden()) {
         $oBooleanParser->is_hidden = true;
+      }
+      if($oPage->getIsProtected() && (!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->mayViewPage($oPage))) {
+        $oBooleanParser->is_inaccessible = true;
       }
       if($oPage->isSiblingOfCurrent()) {
         $oBooleanParser->is_sibling_of_current = true;
