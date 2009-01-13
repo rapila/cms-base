@@ -1,0 +1,6 @@
+enabled: true
+author: "Raphael Schweikert <rs@mini-cms.ch>"
+name: "MySQL Dump Exporter"
+description: "Makes saving large database dumps easy. Requires the mysqldump tool to be installed and PHP be able to use it…"
+website: "http://www.mini-cms.ch/"
+version: 1.0

@@ -1,0 +1,12 @@
+<label for="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.type}}</label>
+<div class="grouped_items">
+  <select id="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}" name="field_types_{{form_id}}[]" class="switcher_field">
+    {{available_types}}
+  </select>
+  <label for="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.field_name}}</label>
+  <input class="autowidth" type="text" id="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}"  value="{{field_name}}" name="field_names_{{form_id}}[]" size="10" />
+  <label for="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.label}}</label> <input class="autoheight" type="text" id="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{field_label}}" name="field_labels_{{form_id}}[]" />
+  <label for="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.default_value}}</label> <input class="autoheight" type="text" id="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{default_value}}" name="default_values_{{form_id}}[]" />
+  <label for="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.class_name}}</label> <input class="autoheight" type="text" id="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{class_name}}" name="class_names_{{form_id}}[]" />
+  <button type="delete" class="delete" title="{{writeString=delete}}"></button>
+</div>

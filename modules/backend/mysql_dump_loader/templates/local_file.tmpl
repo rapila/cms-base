@@ -1,0 +1,12 @@
+<h1>SQL Upload</h1>
+<fieldset>
+  <form action="{{writeLink=to_self}}" method="post">
+  <label for="choose_file">
+  {{writeString=choose_file}}
+  </label>
+  <select id="choose_file" name="choose_file">
+  	{{sql_file_select}}
+  </select>
+  <button type="submit" class="go" title="{{writeString=go}}"></button>
+  </form>
+</fieldset>

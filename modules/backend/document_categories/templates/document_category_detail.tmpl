@@ -1,0 +1,14 @@
+<h1>'{{name_title}}'</h1>
+<fieldset><legend>{{writeString=document_category}}{{name}} [id:{{id}}]</legend>
+<form action="{{action}}"  method="post">
+  <input type="hidden" name="id" value="{{id}}" />
+  <label for="name">{{writeString=name}}</label>
+  <input type="text" name="name" value="{{name}}" /><br />
+  <label for="max_width">{{writeString=max_width}}</label>
+  <input class="autowidth" type="text" name="max_width" value="{{max_width}}" /><br />
+  <label for="is_inactive">{{writeString=is_inactive}}</label>
+  <input type="checkbox" name="is_inactive" id="is_inactive" value="1" {{is_inactive}} /><br />
+  <label for="save">&nbsp;</label><button id="save" type="submit" title="{{writeString=save}}"></button>
+</form>
+{{delete_button}}
+</fieldset>

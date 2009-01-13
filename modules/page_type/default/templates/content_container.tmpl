@@ -1,0 +1,12 @@
+<fieldset id="fieldset_{{container_name}}" class="show"><legend title="{{writeString=container}}: {{container_name}}" style="cursor:help;"><a class="help" href="#" title="{{writeString=helptext.\{\{container_name\}\};position=last}}">{{writeString=helptext.label_\{\{container_name\}\};position=last}}</a>&nbsp;&nbsp;[{{container_name}}]</legend>
+  <div class="object_list">
+    {{objects}}
+  </div>
+  {{arrow_up}}
+  <form style="clear: left;" action="{{new_link}}" method="get">
+      <select name="module_name">
+        {{module_name_options}}
+      </select>
+      <button type="submit" class="new" title="{{writeString=create_new_content}}"></button>
+  </form><br />
+</fieldset>

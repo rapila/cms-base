@@ -1,0 +1,17 @@
+Event.observe(window, "dom:loaded", function() {
+  var document_order_add = $('document_order_add');
+  if(!document_order_add) {
+    return;
+  }
+  var prototyper = new FormPrototyper($('clone_area'), $('document_order'), Insertion.Bottom);
+  prototyper.bind_to(document_order_add, 'click');
+  
+  $$("#document_order button[type=delete]").each(function(delete_button) {
+    Event.observe(delete_button, "click", function(event) {
+      var up = delete_button.up();
+      var label = up.previous();
+      label.remove();up.remove();
+      Event.stop(event);
+    })
+  });
+});

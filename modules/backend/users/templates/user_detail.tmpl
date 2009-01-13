@@ -1,0 +1,34 @@
+<h1>'{{full_name}}'</h1>{{identifierContext=start;name=change_password}}<div class="error_display">{{change_password}}</div>{{identifierContext=end;name=change_password}}
+<fieldset><legend>[{{user_name}}: id:{{id}}]</legend>
+<form action="{{action}}" method="post">  
+  <input type="hidden" name="id" id="id" value="{{id}}" />
+  <label for="first_name">{{writeString=first_name}}</label>
+  <input type="text" name="first_name" id="first_name" value="{{first_name}}" /><br />
+	{{writeFlashValue=first_name}}
+  <label for="last_name">{{writeString=last_name}}</label>
+  <input type="text" name="last_name" id="last_name" value="{{last_name}}" /><br />
+	{{writeFlashValue=last_name}}
+  <label for="user_name">{{writeString=user_name}}</label>
+  <input type="text" name="user_name" id="user_name" value="{{user_name}}" /><br />
+	{{writeFlashValue=user_name}}
+  <label for="email">{{writeString=email}}</label>
+  <input type="text" name="email" id="email" value="{{email}}" /><br />
+	{{writeFlashValue=email}}
+  <label for="language_id">{{writeString=user_language}}</label>
+  <select id="language_id" name="language_id">{{user_language_options}}</select><br />
+  {{user_booleans}}
+	{{writeFlashValue=self_is_admin}}
+	{{writeFlashValue=self_is_inactive}}
+  <label for="be_password">{{writeString=password}}</label>
+  <input type="password" autocomplete="off" name="be_password" id="be_password" value=""  /><br />
+  <label for="be_password_confirm">{{writeString=password_confirm}}</label>
+  <input type="password" autocomplete="off" name="be_password_confirm" id="be_password_confirm" value="" /><br />
+	{{writeFlashValue=password_confirm}}
+	{{writeFlashValue=password_length}}
+	{{writeFlashValue=password_new}}<br />
+	{{identifierContext=start;name=has_groups}}<input type="text" name="has_groups" value="" style="display: none;" />{{has_groups}}<label for="group_ids">{{writeString=user.group}}</label>{{identifierContext=start;name=group_options}}<select name="group_ids[]" id="group_ids" multiple="multiple" style="height:auto;">{{group_options}}</select><br/>{{identifierContext=end;name=group_options}}{{identifierContext=start;name=no_groups_message}}<div>{{no_groups_message}}</div>{{identifierContext=end;name=no_groups_message}}{{identifierContext=end;name=has_groups}}
+	<label for="submit">{{writeString=save}}</label>
+  <button type="submit" title="{{writeString=save}}" name="submit" id="submit"></button>
+</form>
+{{delete_button}}
+</fieldset>

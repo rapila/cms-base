@@ -1,0 +1,13 @@
+<fieldset><legend>{{writeString=config_prefix}}{{title}}</legend>
+<form action="{{action}}" method="post">
+  <label for="text">{{writeString=config_text}}</label>
+  <textarea rows="30" style="width: 800px;" name="text" id="text">{{config_text}}</textarea>
+  <br />
+  <label for="save">{{writeString=save}}</label>
+  <button type="submit" title="{{writeString=save}}" name="save" id="save"></button>
+</form>
+</fieldset>
+
+<pre>
+{{config}}
+</pre>

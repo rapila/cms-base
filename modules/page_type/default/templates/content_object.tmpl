@@ -1,0 +1,7 @@
+<div class="object">
+<button class="edit" style="width:16px" onclick="location.href='{{edit_link}}';" title="{{writeString=edit}}"></button>
+<form class="inline" onsubmit="return confirm('{{writeString=delete_confirm}}');" action="{{action}}" method="post">
+  <input type="hidden" name="action" value="delete" />
+  <button type="submit" title="{{writeParameterizedString=delete_entry}}" class="delete" style="width:16px"></button> {{writeString=object_type}} <em>{{type}}</em> {{if=ne;1=\{\{content_info\}\};2=}}({{content_info}}){{endIf}}
+</form>
+</div>

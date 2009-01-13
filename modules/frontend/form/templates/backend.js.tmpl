@@ -1,0 +1,38 @@
+Event.observe(window, "dom:loaded", function() {
+	var document_order_add = $('form_field_add');
+	if(!document_order_add) {
+	  return;
+	}
+	
+	
+	var prototyper = new FormPrototyper($('clone_area'), $('form_fields'), Insertion.Bottom);
+	prototyper.bind_to(document_order_add, 'click');
+
+	$$("#form_fields button[type=delete]").each(function(delete_button) {
+	  Event.observe(delete_button, "click", function(event) {
+	    var up = delete_button.up();
+	    var label = up.previous();
+	    label.remove();up.remove();
+	    Event.stop(event);
+	  })
+	});
+});
+
+function conditional_change_handler(event) {
+	$$(".conditional_field-for-"+this.id).invoke('hide');
+	$$(".conditional_field-for-"+this.id+"."+$F(this)).invoke('show');
+}
+
+function add_conditional_to_switcher_field(switcher_field) {
+    var change_handler_bound = conditional_change_handler.bindAsEventListener(switcher_field);
+    Event.observe(switcher_field, 'change', change_handler_bound);
+    change_handler_bound();
+}
+
+
+Event.observe(window, "dom:loaded", function() {
+	var switcher_fields = $$('.switcher_field');
+    switcher_fields.each(function(switcher_field) {
+        add_conditional_to_switcher_field(switcher_field);
+    });
+});

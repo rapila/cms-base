@@ -1,0 +1,16 @@
+<fieldset id="resource_toggle">
+  <form style="display:inline;min-width:200px" name="change_category" id="change_category" action="{{change_category_action}}" method="get">
+  {{identifierContext=start;name=document_kind_options}}
+    <select name="document_kind" id="document_kind" onchange="$('change_category').submit();">{{document_kind_options}}</select>
+  {{identifierContext=end;name=document_kind_options}}
+  {{identifierContext=start;name=document_categories_options}}
+    <select name="document_category_id" onchange="$('change_category').submit();">{{document_categories_options}}</select>
+  {{identifierContext=end;name=document_categories_options}}
+  </form>
+</fieldset>
+<div id="list_header">
+  <a href="{{link_name}}" class="{{link_name_class}}">{{writeString=name}}</a><a href="{{link_date}}" class="{{link_date_class}}">{{writeString=date}}</a>
+</div>
+<div id="chooser_list_short">
+  {{identifierContext=start;name=no_document_message}}<div>{{no_document_message}}</div>{{identifierContext=end;name=no_document_message}}{{result}}
+</div>

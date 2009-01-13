@@ -1,0 +1,12 @@
+<h2>'{{name}}'</h2>
+<fieldset><legend>{{writeString=tag}} {{name}} [id:{{id}}]</legend>
+<form action="{{action}}" method="post">
+  <input type="hidden" name="id" value="{{id}}" />
+  <label for="name">{{writeString=name}}</label>
+  <input type="text" name="name" value="{{name}}" readonly="readonly" /><br />
+  <label></label><button type="submit" title="{{writeString=save}}"></button>
+</form>
+</fieldset>
+<fieldset><legend>{{writeString=tag_instances}}</legend>
+{{tag_instances}}
+</fieldset>

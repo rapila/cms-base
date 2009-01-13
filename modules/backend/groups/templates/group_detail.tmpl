@@ -1,0 +1,12 @@
+<h2>'{{name}}'</h2>
+<fieldset><legend>{{writeString=user.group}} "{{name}}" [id:{{id}}]</legend>
+<form action="{{action}}" method="post">
+  <label for="name">{{writeString=name}}</label>
+  <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
+  {{group_rights_part}}
+  <br />
+  <label></label><button type="submit" title="{{writeString=save}}"></button>
+</form>
+{{delete_button}}
+</fieldset>
+<div id="clone_area">{{group_right}}</div>

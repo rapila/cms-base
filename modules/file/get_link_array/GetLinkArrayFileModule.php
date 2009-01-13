@@ -1,0 +1,69 @@
+<?php
+/**
+ * @package modules.file
+ */
+
+include_once('propel/util/Criteria.php');
+include_once('Template.php');
+
+class GetLinkArrayFileModule extends FileModule {
+  private $aDisabledSections;
+    
+  public function __construct($aRequestPath) {
+    parent::__construct($aRequestPath);
+    $this->aDisabledSections = Settings::getSetting('backend', 'link_array_disabled', array());
+    $this->aDisabledSections = is_array($this->aDisabledSections) ? $this->aDisabledSections : array();
+  }
+    
+  public function renderFile() {
+    header("Content-Type: text/javascript;charset=".Settings::getSetting("encoding", "browser", "utf-8"));
+    $aArrayText = array();
+    
+    if(!in_array('external_links', $this->aDisabledSections)) {
+      $aLinks = LinkPeer::getLinksSorted();
+      if(count($aLinks) > 0) {
+        $aArrayText[] = '["--------'.StringPeer::getString('links_external').'-----------",""]';
+      }
+      foreach($aLinks as $oLink) {
+  	    $sLinkUrl = Util::link(array('external_link_proxy', $oLink->getId()));
+        $aArrayText[] = '["'.$oLink->getName().'", "'.$sLinkUrl.'"]';
+      }
+    }
+    
+    if(!in_array('documents', $this->aDisabledSections)) {
+      $aDocuments = DocumentPeer::getDocumentsByKindOfNotImage();
+      if(count($aDocuments) > 0) {
+        $aArrayText[] = '["--------'.StringPeer::getString('documents').'-----------",""]';
+      }
+      foreach($aDocuments as $oDocument) {
+  	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
+        $aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
+      }
+    }
+
+    $aParents = PagePeer::getRootPage()->getTree();
+    if(!in_array('internal_links', $this->aDisabledSections) && count($aParents) > 0) {
+      $aArrayText[] = '["--------'.StringPeer::getString('links_internal').'-----------",""]';
+      foreach($aParents as $oParent) {
+  	    $sLinkUrl = Util::link(array('internal_link_proxy', $oParent->getId()));
+        $aArrayText[] = '["'.$oParent->getNameMceIndented().'", "'.$sLinkUrl.'"]';
+      }
+    }
+    
+    if(!in_array('images', $this->aDisabledSections)) {
+      $aDocuments = DocumentPeer::getDocumentsByKindOfImage();
+      if(count($aDocuments) > 0) {
+        $aArrayText[] = '["--------'.StringPeer::getString('images').'-----------",""]';
+      }
+      foreach($aDocuments as $oDocument) {
+  	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
+        $aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
+      }
+    }
+    
+    $oTemplate = $this->constructTemplate("array");
+    $oTemplate->replaceIdentifier("array_content", implode(",\n\t", $aArrayText), null, Template::NO_HTML_ESCAPE);
+    print $oTemplate->render();
+  }
+}
+?>

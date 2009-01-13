@@ -1,0 +1,10 @@
+<fieldset id="resource_toggle">
+  <form style="display:inline;min-width:200px" name="change_category" id="change_category" action="{{change_category_action}}" method="get">
+  {{identifierContext=start;name=user_options}}
+    <select name="user_kind" id="user_kind" onchange="$('change_category').submit();">{{user_options}}</select>
+  {{identifierContext=end;name=user_options}}
+  </form>
+</fieldset>
+<div id="chooser_list_medium">
+{{tree}}
+</div>
