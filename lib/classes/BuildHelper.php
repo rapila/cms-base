@@ -56,7 +56,7 @@ EOT;
         self::moveModelInto($sSchemaFile);
       }
     } else {
-      foreach(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, '/.+\.php/')) as $sFilePath) {
+      foreach(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, '/.+\.php/'), ResourceFinder::SEARCH_MAIN_ONLY) as $sFilePath) {
         unlink($sFilePath);
       }
     }
@@ -92,6 +92,7 @@ EOT;
       $sBasePeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', "Base${sClassName}Peer.php"), ResourceFinder::SEARCH_MAIN_ONLY);
       $sBuilderClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'map', "${sClassName}MapBuilder.php"), ResourceFinder::SEARCH_MAIN_ONLY);
       
+      //Over-writable by the user
       if(!file_exists("$sNewModelDir/$sClassName.php")) {
         rename($sClassPath, "$sNewModelDir/$sClassName.php");
       } else {
@@ -104,6 +105,7 @@ EOT;
         unlink($sPeerClassPath);
       }
       
+      //Not over-writable by the user (allow to re-generate)
       if(file_exists("$sNewModelBaseDir/Base$sClassName.php")) {
         unlink("$sNewModelBaseDir/Base$sClassName.php");
       }
