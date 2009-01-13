@@ -1,329 +1,323 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- {{comment}} -->
-<database name="mini_cms" defaultIdMethod="native">
-  <table name="pages" phpName="Page">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="parent_id" type="integer" required="false" />
-    <foreign-key foreignTable="pages" onDelete="restrict">
-      <reference local="parent_id" foreign="id" />
-    </foreign-key>
-    <unique>
-      <unique-column name="parent_id" />
-      <unique-column name="name" />
-    </unique>
-    <column name="sort" type="integer" />
-    <column name="name" type="varchar" size="50" />
-    <column name="page_type" type="varchar" size="15" />
-    <column name="template_name" type="varchar" size="50" />
-    <column name="is_inactive" type="boolean" size="1" default="1" />
-    <column name="is_folder" type="boolean" size="1" default="0" />
-    <column name="is_hidden" type="boolean" size="1" default="0" />
-    <column name="is_protected" type="boolean" size="1" default="0" />
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_at" type="timestamp" />
-  </table>
+<table name="pages" phpName="Page">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="parent_id" type="integer" required="false" />
+  <foreign-key foreignTable="pages" onDelete="restrict">
+    <reference local="parent_id" foreign="id" />
+  </foreign-key>
+  <unique>
+    <unique-column name="parent_id" />
+    <unique-column name="name" />
+  </unique>
+  <column name="sort" type="integer" />
+  <column name="name" type="varchar" size="50" />
+  <column name="page_type" type="varchar" size="15" />
+  <column name="template_name" type="varchar" size="50" />
+  <column name="is_inactive" type="boolean" size="1" default="1" />
+  <column name="is_folder" type="boolean" size="1" default="0" />
+  <column name="is_hidden" type="boolean" size="1" default="0" />
+  <column name="is_protected" type="boolean" size="1" default="0" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>
 
-  <table name="page_properties" phpName="PageProperty">
-    <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true"/>
-    <column name="page_id" type="integer" required="true"/>
-    <foreign-key foreignTable="pages" onDelete="cascade">
-      <reference local="page_id" foreign="id"/>
-    </foreign-key>
-    <column name="name" type="varchar" size="50" required="true"/>
-    <column name="value" type="varchar" size="255" required="true"/>
-    <unique>
-      <unique-column name="name" />
-      <unique-column name="page_id" />
-    </unique>
-  </table>
-  
-  <table name="page_strings" phpName="PageString">
-    <column name="page_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="pages" onDelete="cascade">
-      <reference local="page_id" foreign="id" />
-    </foreign-key>
-    <column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="title" type="varchar" size="50" default="" />
-    <column name="long_title" type="varchar" size="255" required="true" />
-    <column name="keywords" type="varchar" size="255" required="false" />
-  </table>
-  
-  <table name="objects" phpName="ContentObject">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="page_id" type="integer" required="true" />
-    <foreign-key foreignTable="pages" onDelete="cascade">
-      <reference local="page_id" foreign="id" />
-    </foreign-key>
-    <column name="container_name" type="varchar" size="50" />
-    <column name="object_type" type="varchar" size="50" />
-    <column name="condition_serialized" type="blob" required="false" />
-    <column name="sort" type="tinyint" size="2" />
-  </table>
-  
-  <table name="language_objects" phpName="LanguageObject">
-    <column name="object_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="objects" onDelete="cascade">
-      <reference local="object_id" foreign="id" />
-    </foreign-key>
-    <column name="language_id" type="varchar" size="3" required="false" primaryKey="true" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="data" type="blob" />
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_at" type="timestamp" />
-  </table>
-  
-  <table name="language_object_history" phpName="LanguageObjectHistory">
-    <column name="object_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="objects" onDelete="cascade">
-      <reference local="object_id" foreign="id" />
-    </foreign-key>
-    <column name="language_id" type="varchar" size="3" required="false" primaryKey="true" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="data" type="blob" />
-    <column name="revision" type="integer" required="true" primaryKey="true" />
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-  </table>
-  
-  <table name="languages" phpName="Language">
-    <column name="id" type="varchar" size="3" required="true" primaryKey="true" />
-    <column name="is_active" type="boolean" size="1" />
-    <column name="sort" type="tinyint" size="2" />
-  </table>
-  
-  <table name="strings" phpName="String">
-    <column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="string_key" type="varchar" size="80" required="true" primaryKey="true" />
-    <column name="text" type="longvarchar" />
-  </table>
- 
-  <table name="users" phpName="User">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="username" type="varchar" size="40" required="true"/>
-    <unique>
-      <unique-column name="username" />
-    </unique>
-    <column name="password" type="varchar" size="144" />
-    <column name="first_name" type="varchar" size="40" />
-    <column name="last_name" type="varchar" size="60" />
-    <column name="email" type="varchar" size="80" />    
-    <column name="language_id" type="varchar" size="3" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="is_admin" type="boolean" size="1" default="0" />
-    <column name="is_backend_login_enabled" type="boolean" size="1" default="1" />
-    <column name="is_inactive" type="boolean" size="1" default="0" />
-    <column name="password_recover_hint" type="varchar" size="10" />
-    <column name="created_by" type="integer" required="false" /> <!-- Not required for first user -->
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_by" type="integer" required="false" /> <!-- Not required for first user -->
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_at" type="timestamp" />
-  </table>
-  
-  <table name="groups" phpName="Group">
-    <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" />
-    <column name="name" type="varchar" size="80" />
-    <unique>
-      <unique-column name="name" />
-    </unique>
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_at" type="timestamp" />
-  </table>
-  
-  <table name="users_groups" phpName="UserGroup">
-    <column name="user_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="users" onDelete="cascade">
-      <reference local="user_id" foreign="id" />
-    </foreign-key>
-    <column name="group_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="groups" onDelete="cascade">
-      <reference local="group_id" foreign="id" />
-    </foreign-key>
-  </table>
-  
-  <table name="rights" phpName="Right">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="group_id" type="integer" required="true" />
-    <foreign-key foreignTable="groups" onDelete="cascade">
-      <reference local="group_id" foreign="id" />
-    </foreign-key>
-    <column name="page_id" type="integer" required="true" />
-    <foreign-key foreignTable="pages" onDelete="cascade">
-      <reference local="page_id" foreign="id" />
-    </foreign-key>
-    <unique>
-      <unique-column name="group_id" />
-      <unique-column name="page_id" />
-      <unique-column name="is_inherited" />
-    </unique>
-    <column name="is_inherited" type="boolean" size="1" default="1" />
-    <column name="may_edit_page_details" type="boolean" size="1" default="0" />
-    <column name="may_edit_page_contents" type="boolean" size="1" default="0" />
-    <column name="may_delete" type="boolean" size="1" default="0" />
-    <column name="may_create_children" type="boolean" size="1" default="0" />
-    <column name="may_view_page" type="boolean" size="1" default="0" />
-  </table>  
-  
-  <table name="documents" phpName="Document">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="name" type="varchar" size="100" />
-    <column name="description" type="varchar" size="255" />
-    <column name="language_id" type="varchar" size="3" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="owner_id" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="owner_id" foreign="id" />
-    </foreign-key>
-    <column name="document_type_id" type="integer" required="true" />
-    <foreign-key foreignTable="document_types">
-      <reference local="document_type_id" foreign="id" />
-    </foreign-key>
-    <column name="document_category_id" type="integer" required="false" />
-    <foreign-key foreignTable="document_categories">
-      <reference local="document_category_id" foreign="id" />
-    </foreign-key>
-    <column name="is_private" type="boolean" size="1" default="0" />
-    <column name="is_inactive" type="boolean" size="1" default="0" />
-    <column name="is_protected" type="boolean" size="1" default="0" />
-    <column name="data" type="blob" lazyLoad="true" />
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_at" type="timestamp" />
-  </table>  
-  
-  <table name="document_types" phpName="DocumentType">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="extension" type="varchar" size="6" required="true" />
-    <column name="mimetype" type="varchar" size="80" required="true" />
-    <column name="is_office_doc" type="boolean" size="1" default="0" />
-  </table>
-  
-  <table name="document_categories" phpName="DocumentCategory">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="name" type="varchar" size="80" required="true" />
-    <column name="sort" type="integer" />
-    <column name="max_width" type="integer" />
-    <column name="is_inactive" type="boolean" size="1" default="0" />
-  </table>
-  
-  <table name="tags" phpName="Tag">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="name" type="varchar" size="80" required="true" />
-    <unique>
-      <unique-column name="name" />
-    </unique>
-  </table>
-  
-  <table name="tag_instances" phpName="TagInstance">
-    <column name="tag_id" type="integer" required="true" primaryKey="true" />
-    <foreign-key foreignTable="tags" onDelete="cascade">
-      <reference local="tag_id" foreign="id" />
-    </foreign-key>
-    <column name="tagged_item_id" type="integer" required="true" primaryKey="true" />
-    <column name="model_name" type="varchar" size="80" required="true" primaryKey="true" />
-    <column name="created_by" type="integer" required="false" default="null" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-  </table>
-  
-  <table name="links" phpName="Link">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="name" type="varchar" size="100" />
-    <column name="url" type="varchar" size="255" />
-    <column name="description" type="varchar" size="255" />
-    <column name="language_id" type="varchar" size="3" />
-    <foreign-key foreignTable="languages">
-      <reference local="language_id" foreign="id" />
-    </foreign-key>
-    <column name="owner_id" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="owner_id" foreign="id" />
-    </foreign-key>
-    <column name="document_category_id" type="integer" required="true" />
-    <foreign-key foreignTable="document_categories">
-      <reference local="document_category_id" foreign="id" />
-    </foreign-key>
-    <column name="is_private" type="boolean" size="1" default="0" />
-    <column name="is_inactive" type="boolean" size="1" default="0" />
-    <column name="created_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="created_by" foreign="id" />
-    </foreign-key>
-    <column name="created_at" type="timestamp" />
-    <column name="updated_by" type="integer" required="true" />
-    <foreign-key foreignTable="users">
-      <reference local="updated_by" foreign="id" />
-    </foreign-key>
-    <column name="updated_at" type="timestamp" />
-  </table>
-  
-  <table name="indirect_references" phpName="Reference">
-    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="from_id" type="varchar" size="20" required="true" />
-    <column name="from_model_name" type="varchar" size="80" required="true" />
-    <column name="to_id" type="varchar" size="20" required="true" />
-    <column name="to_model_name" type="varchar" size="80" required="true" />
-    <unique>
-      <unique-column name="from_id" />
-      <unique-column name="from_model_name" />
-      <unique-column name="to_id" />
-      <unique-column name="to_model_name" />
-    </unique>
-  </table>
-  
-	{{extensions}}
-</database>
+<table name="page_properties" phpName="PageProperty">
+  <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true"/>
+  <column name="page_id" type="integer" required="true"/>
+  <foreign-key foreignTable="pages" onDelete="cascade">
+    <reference local="page_id" foreign="id"/>
+  </foreign-key>
+  <column name="name" type="varchar" size="50" required="true"/>
+  <column name="value" type="varchar" size="255" required="true"/>
+  <unique>
+    <unique-column name="name" />
+    <unique-column name="page_id" />
+  </unique>
+</table>
+
+<table name="page_strings" phpName="PageString">
+  <column name="page_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="pages" onDelete="cascade">
+    <reference local="page_id" foreign="id" />
+  </foreign-key>
+  <column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="title" type="varchar" size="50" default="" />
+  <column name="long_title" type="varchar" size="255" required="true" />
+  <column name="keywords" type="varchar" size="255" required="false" />
+</table>
+
+<table name="objects" phpName="ContentObject">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="page_id" type="integer" required="true" />
+  <foreign-key foreignTable="pages" onDelete="cascade">
+    <reference local="page_id" foreign="id" />
+  </foreign-key>
+  <column name="container_name" type="varchar" size="50" />
+  <column name="object_type" type="varchar" size="50" />
+  <column name="condition_serialized" type="blob" required="false" />
+  <column name="sort" type="tinyint" size="2" />
+</table>
+
+<table name="language_objects" phpName="LanguageObject">
+  <column name="object_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="objects" onDelete="cascade">
+    <reference local="object_id" foreign="id" />
+  </foreign-key>
+  <column name="language_id" type="varchar" size="3" required="false" primaryKey="true" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="data" type="blob" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>
+
+<table name="language_object_history" phpName="LanguageObjectHistory">
+  <column name="object_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="objects" onDelete="cascade">
+    <reference local="object_id" foreign="id" />
+  </foreign-key>
+  <column name="language_id" type="varchar" size="3" required="false" primaryKey="true" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="data" type="blob" />
+  <column name="revision" type="integer" required="true" primaryKey="true" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+</table>
+
+<table name="languages" phpName="Language">
+  <column name="id" type="varchar" size="3" required="true" primaryKey="true" />
+  <column name="is_active" type="boolean" size="1" />
+  <column name="sort" type="tinyint" size="2" />
+</table>
+
+<table name="strings" phpName="String">
+  <column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="string_key" type="varchar" size="80" required="true" primaryKey="true" />
+  <column name="text" type="longvarchar" />
+</table>
+
+<table name="users" phpName="User">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="username" type="varchar" size="40" required="true"/>
+  <unique>
+    <unique-column name="username" />
+  </unique>
+  <column name="password" type="varchar" size="144" />
+  <column name="first_name" type="varchar" size="40" />
+  <column name="last_name" type="varchar" size="60" />
+  <column name="email" type="varchar" size="80" />    
+  <column name="language_id" type="varchar" size="3" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="is_admin" type="boolean" size="1" default="0" />
+  <column name="is_backend_login_enabled" type="boolean" size="1" default="1" />
+  <column name="is_inactive" type="boolean" size="1" default="0" />
+  <column name="password_recover_hint" type="varchar" size="10" />
+  <column name="created_by" type="integer" required="false" /> <!-- Not required for first user -->
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="false" /> <!-- Not required for first user -->
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>
+
+<table name="groups" phpName="Group">
+  <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" />
+  <column name="name" type="varchar" size="80" />
+  <unique>
+    <unique-column name="name" />
+  </unique>
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>
+
+<table name="users_groups" phpName="UserGroup">
+  <column name="user_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="users" onDelete="cascade">
+    <reference local="user_id" foreign="id" />
+  </foreign-key>
+  <column name="group_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="groups" onDelete="cascade">
+    <reference local="group_id" foreign="id" />
+  </foreign-key>
+</table>
+
+<table name="rights" phpName="Right">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="group_id" type="integer" required="true" />
+  <foreign-key foreignTable="groups" onDelete="cascade">
+    <reference local="group_id" foreign="id" />
+  </foreign-key>
+  <column name="page_id" type="integer" required="true" />
+  <foreign-key foreignTable="pages" onDelete="cascade">
+    <reference local="page_id" foreign="id" />
+  </foreign-key>
+  <unique>
+    <unique-column name="group_id" />
+    <unique-column name="page_id" />
+    <unique-column name="is_inherited" />
+  </unique>
+  <column name="is_inherited" type="boolean" size="1" default="1" />
+  <column name="may_edit_page_details" type="boolean" size="1" default="0" />
+  <column name="may_edit_page_contents" type="boolean" size="1" default="0" />
+  <column name="may_delete" type="boolean" size="1" default="0" />
+  <column name="may_create_children" type="boolean" size="1" default="0" />
+  <column name="may_view_page" type="boolean" size="1" default="0" />
+</table>  
+
+<table name="documents" phpName="Document">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="100" />
+  <column name="description" type="varchar" size="255" />
+  <column name="language_id" type="varchar" size="3" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="owner_id" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="owner_id" foreign="id" />
+  </foreign-key>
+  <column name="document_type_id" type="integer" required="true" />
+  <foreign-key foreignTable="document_types">
+    <reference local="document_type_id" foreign="id" />
+  </foreign-key>
+  <column name="document_category_id" type="integer" required="false" />
+  <foreign-key foreignTable="document_categories">
+    <reference local="document_category_id" foreign="id" />
+  </foreign-key>
+  <column name="is_private" type="boolean" size="1" default="0" />
+  <column name="is_inactive" type="boolean" size="1" default="0" />
+  <column name="is_protected" type="boolean" size="1" default="0" />
+  <column name="data" type="blob" lazyLoad="true" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>  
+
+<table name="document_types" phpName="DocumentType">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="extension" type="varchar" size="6" required="true" />
+  <column name="mimetype" type="varchar" size="80" required="true" />
+  <column name="is_office_doc" type="boolean" size="1" default="0" />
+</table>
+
+<table name="document_categories" phpName="DocumentCategory">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="80" required="true" />
+  <column name="sort" type="integer" />
+  <column name="max_width" type="integer" />
+  <column name="is_inactive" type="boolean" size="1" default="0" />
+</table>
+
+<table name="tags" phpName="Tag">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="80" required="true" />
+  <unique>
+    <unique-column name="name" />
+  </unique>
+</table>
+
+<table name="tag_instances" phpName="TagInstance">
+  <column name="tag_id" type="integer" required="true" primaryKey="true" />
+  <foreign-key foreignTable="tags" onDelete="cascade">
+    <reference local="tag_id" foreign="id" />
+  </foreign-key>
+  <column name="tagged_item_id" type="integer" required="true" primaryKey="true" />
+  <column name="model_name" type="varchar" size="80" required="true" primaryKey="true" />
+  <column name="created_by" type="integer" required="false" default="null" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+</table>
+
+<table name="links" phpName="Link">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="100" />
+  <column name="url" type="varchar" size="255" />
+  <column name="description" type="varchar" size="255" />
+  <column name="language_id" type="varchar" size="3" />
+  <foreign-key foreignTable="languages">
+    <reference local="language_id" foreign="id" />
+  </foreign-key>
+  <column name="owner_id" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="owner_id" foreign="id" />
+  </foreign-key>
+  <column name="document_category_id" type="integer" required="true" />
+  <foreign-key foreignTable="document_categories">
+    <reference local="document_category_id" foreign="id" />
+  </foreign-key>
+  <column name="is_private" type="boolean" size="1" default="0" />
+  <column name="is_inactive" type="boolean" size="1" default="0" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_at" type="timestamp" />
+</table>
+
+<table name="indirect_references" phpName="Reference">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="from_id" type="varchar" size="20" required="true" />
+  <column name="from_model_name" type="varchar" size="80" required="true" />
+  <column name="to_id" type="varchar" size="20" required="true" />
+  <column name="to_model_name" type="varchar" size="80" required="true" />
+  <unique>
+    <unique-column name="from_id" />
+    <unique-column name="from_model_name" />
+    <unique-column name="to_id" />
+    <unique-column name="to_model_name" />
+  </unique>
+</table>
