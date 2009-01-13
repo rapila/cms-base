@@ -1,0 +1,287 @@
+<?php
+/**
+ * classname:   RichtextUtil
+ */
+class RichtextUtil {
+  
+  private static $RICHTEXT_INDEX = 0;
+  
+  private $sAreaName;
+  private $aSettings;
+  
+  private $mTrackReferences = null;
+  
+  public function __construct($sAreaName=null, $aSettings=null) {
+    if($sAreaName === null) {
+      $sAreaName = "richtext_area_";
+    }
+    $this->sAreaName = $sAreaName.self::$RICHTEXT_INDEX;
+    self::$RICHTEXT_INDEX++;
+    
+    if($aSettings === null) {
+      $aSettings = Settings::getSetting('backend', 'text_module', array());
+    }
+    $this->aSettings = $aSettings;
+  }
+  
+  public static function parseInputFromMceForStorage($sInput) {
+    $oRichtextUtil = new RichtextUtil();
+    $_POST[$oRichtextUtil->sAreaName] = $sInput;
+    return $oRichtextUtil->parseInputFromMce();
+  }
+  
+  public function parseInputFromMce() {
+    $oTagParser = new TagParser("<text>".$_POST[$this->sAreaName]."</text>");
+    $oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
+    return $oTagParser->getTag()->__toString();
+  }
+  
+  public static function parseStorageForOutput($sStorage, $bIsBackend) {
+    $tmpl = new Template($sStorage, "db", true);
+    self::replaceIdentifierWithCallback($tmpl, 'internal_link', 'internalLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($tmpl, 'external_link', 'externalLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($tmpl, 'file_link', 'fileLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($tmpl, 'image', 'imageCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($tmpl, 'mailto_link', 'mailtoLinkCallback', $bIsBackend);
+    return $tmpl;
+  }
+  
+  public static function parseStorageForFrontendOutput($sStorage) {
+    return self::parseStorageForOutput($sStorage, false);
+  }
+  
+  public static function parseStorageForBackendOutput($sStorage) {
+    return self::parseStorageForOutput($sStorage, true);
+  }
+  
+  private static function replaceIdentifierWithCallback($oTemplate, $sIdentifierName, $sCallbackName, $bIsBackend) {
+    if($bIsBackend) {
+      $sCallbackName .= 'Be';
+    }
+    $oTemplate->replaceIdentifierCallback($sIdentifierName, 'RichtextUtil', $sCallbackName, Template::NO_HTML_ESCAPE|Template::LEAVE_IDENTIFIERS);
+  }
+  
+  private static function writeTagForIdentifier($sTagName, $aParameters, $oIdentifier) {
+    $oWriter = new TagWriter($sTagName, array(), $oIdentifier->getParameter("link_text"));
+    foreach($aParameters as $sName => $sValue) {
+      $oWriter->setParameter($sName, $sValue);
+    }
+    return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
+  }
+  
+  private static function writeTagForIdentifierWithWriter($oIdentifier, $oWriter) {
+    foreach($oIdentifier->getParameters() as $sName => $sValue) {
+      if($sName === 'class') {
+        $oWriter->addToParameter($sName, $sValue);
+      } else if ($sName !== "link_text" && $sName !== "href") {
+        $oWriter->setParameter($sName, $sValue);
+      }
+    }
+    return $oWriter->parse(true);
+  }
+  
+  public static function imageCallback($oIdentifier) {
+    $iDocumentId = $oIdentifier->getValue();
+    $oDocument = DocumentPeer::retrieveByPk($iDocumentId);
+    if($oDocument !== null && $oDocument->isImage()) {
+      $oWriter = new TagWriter('img', $oIdentifier->getParameters());
+      $aParameters = array();
+      if($oIdentifier->hasParameter('max_width')) {
+        $aParameters['max_width'] = $oIdentifier->getParameter('max_width');
+        $oWriter->setParameter('max_width', null);
+      }
+      $oWriter->setParameter('src', Util::link(array('display_document', $oDocument->getId()), 'FileManager', $aParameters));
+      $oWriter->setParameter('alt', $oDocument->getDescription());
+      $oWriter->setParameter('title', $oDocument->getDescription());
+      return $oWriter->parse();
+    }
+  }
+  
+  public static function imageCallbackBe($oIdentifier) {
+    $iDocumentId = $oIdentifier->getValue();
+    $oDocument = DocumentPeer::retrieveByPk($iDocumentId);
+    if($oDocument !== null && $oDocument->isImage()) {
+      $oWriter = new TagWriter('img', $oIdentifier->getParameters());
+      $oWriter->setParameter('src', Util::link(array('display_document', $oDocument->getId()), 'FileManager'));
+      $oWriter->setParameter('alt', $oDocument->getDescription());
+      $oWriter->setParameter('title', $oDocument->getDescription());
+      if($oIdentifier->hasParameter('max_width')) {
+        $oWriter->setParameter('width', $oIdentifier->getParameter('max_width'));
+      }
+      return $oWriter->parse();
+    }
+  }
+  
+  public static function internalLinkCallback($oIdentifier) {
+    $oPage = PagePeer::retrieveByPk($oIdentifier->getValue());
+    if($oPage) {
+      $sLink = Util::link($oPage->getFullPathArray(), "FrontendManager");
+      return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier);
+    }
+  }
+  
+  public static function internalLinkCallbackBe($oIdentifier) {
+    $oPage = PagePeer::retrieveByPk($oIdentifier->getValue());
+    if($oPage) {
+      $sLink = Util::link(array('internal_link_proxy', $oPage->getId()), 'FileManager');
+      return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier);
+    }
+  }
+  
+  public static function mailtoLinkCallback($oIdentifier) {
+    $sLinkUrl = $oIdentifier->getValue();
+    $sText = $oIdentifier->getParameter("link_text");
+    $oWriter = Util::getEmailLinkWriter($sLinkUrl, $sText);
+    return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
+  }
+  
+  public static function mailtoLinkCallbackBe($oIdentifier) {
+    return self::writeTagForIdentifier("a", array('href' => "mailto:".$oIdentifier->getValue()), $oIdentifier);
+  }
+  
+  public static function externalLinkCallback($oIdentifier) {
+    $oLink = LinkPeer::retrieveByPk($oIdentifier->getValue());
+    return self::writeTagForIdentifier("a", array('href' => $oLink->getUrl(), 'title' => $oLink->getDescription(), 'rel' => 'external', 'class' => 'external_link'), $oIdentifier);
+  }
+  
+  public static function externalLinkCallbackBe($oIdentifier) {
+    $oPage = LinkPeer::retrieveByPk($oIdentifier->getValue());
+    return self::writeTagForIdentifier("a", array('href' => Util::link(array('external_link_proxy', $oPage->getId()), 'FileManager')), $oIdentifier);
+  }
+  
+  public static function fileLinkCallback($oIdentifier) {
+    $oDocument = DocumentPeer::retrieveByPk($oIdentifier->getValue());
+   if($oDocument !== null) {
+     return self::writeTagForIdentifier("a", array('href' => Util::link(array('display_document', $oDocument->getId()), 'FileManager'), 'title' => $oDocument->getDescription() ? $oDocument->getDescription() : $oDocument->getName(), 'rel' => 'document', 'class' => 'document_link '.$oDocument->getExtension()), $oIdentifier);
+    } else {
+     return self::writeTagForIdentifier("span", array(), $oIdentifier);
+    }
+  }
+  
+  public static function fileLinkCallbackBe($oIdentifier) {
+    $oDocument = DocumentPeer::retrieveByPk($oIdentifier->getValue());
+    if($oDocument !== null) {
+      return self::writeTagForIdentifier("a", array('href' => Util::link(array('display_document', $oDocument->getId()), 'FileManager')), $oIdentifier);
+    } else {
+      return self::writeTagForIdentifier("a", array('style' => "color: red;"), $oIdentifier);
+    }
+  }
+  
+  public function getJavascript() {
+    // for integration of new gzip function implement separate "tmpl_gzip.tmpl" read tinymce/readme.html
+    $tmpl = new Template('mce');
+    $tmpl->replaceIdentifier('textarea_id', $this->sAreaName);
+    $aCssFiles = $this->getMceConfigArray('css_files');
+    if($aCssFiles !== null) {
+      $aResult = array();
+      foreach($aCssFiles as $sCssFileName) {
+        $aResult[] = EXT_CSS_DIR_FE."/$sCssFileName.css";
+      }
+      $tmpl->replaceIdentifier('css_files', implode(",", $aResult));
+    }
+    
+    $aBlockformats = $this->getMceConfigArray('blockformats');
+    if($aBlockformats !== null) {
+      $tmpl->replaceIdentifier('blockformats', implode(",", $aBlockformats));
+    }
+    
+    $aClasses = $this->getMceConfigArray('classes');
+    if($aClasses !== null) {
+      $aResult = array();
+      foreach($aClasses as $sClassName) {
+        $aResult[] = StringPeer::getString($sClassName.'.class', null, $sClassName)."=".$sClassName;
+      }
+      $tmpl->replaceIdentifier('classes', implode(";", $aResult));
+    }
+    if($this->getMceConfigArray('force_br_newlines')) {
+      $tmpl->replaceIdentifier('force_br_newlines', 'true');
+    }
+    $tmpl->replaceIdentifier('area_width', $this->getMceConfigArray('area_width') ? $this->getMceConfigArray('area_width') : "95%");
+    $tmpl->replaceIdentifier('area_height', $this->getMceConfigArray('area_height') ? $this->getMceConfigArray('area_height') : 400);    
+    $tmpl->replaceIdentifier('language', Session::language());  
+    // plugins with defaults
+    $aPlugins = $this->getMceConfigArray('plugins') !== null ? $this->getMceConfigArray('plugins') : array('advimage', 'advlink');
+    $tmpl->replaceIdentifier('plugins', implode(",", $aPlugins));
+    // buttons row 1 with defaults
+    $aButtons1 = $this->getMceConfigArray('advanced_buttons_1') !== null ? $this->getMceConfigArray('advanced_buttons_1') : array('"bold,link,unlink,undo,redo,');
+    $tmpl->replaceIdentifier('advanced_buttons_1', implode(",", $aButtons1));
+    $aButtons2 = $this->getMceConfigArray('advanced_buttons_2');
+    if($aButtons2 !== null) {
+      $tmpl->replaceIdentifier('advanced_buttons_2', implode(",", $aButtons2));
+    }    
+    return $tmpl;
+  }
+
+  public function getAreaName()
+  {
+      return $this->sAreaName;
+  }
+  
+  public function setTrackReferences($mTrackReferences) {
+      $this->mTrackReferences = $mTrackReferences;
+  }
+
+  public function getTrackReferences() {
+      return $this->mTrackReferences;
+  }
+  
+  private function addTrackReference($iToId, $sToClass) {
+    if($this->mTrackReferences === null) {
+      return;
+    }
+    ReferencePeer::addReference($this->mTrackReferences, array($iToId, $sToClass));
+  }
+  
+  public function textTagParseCallback($oHtmlTag, $sParsedChildren) {
+    if($oHtmlTag->getName() === 'text') {
+      return $sParsedChildren;
+    }
+    if($oHtmlTag->getName() === 'img') {
+      if(preg_match("%display_document/(\\d+)%", $oHtmlTag->getParameter('src'), $aMatches)) {
+        $aParameters = $oHtmlTag->getParameters();
+        if($oHtmlTag->hasParameter('width')) {
+          $aParameters['max_width'] = $oHtmlTag->getParameter('width');
+          unset($aParameters['width']);
+          unset($aParameters['height']);
+        }
+        $this->addTrackReference($aMatches[1], "Document");
+        return TemplateIdentifier::constructIdentifier('image', $aMatches[1], $aParameters);
+      }
+    }
+    if($oHtmlTag->getName() === 'a') {
+      $bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
+      if($bHasMatched) {
+        $sFileMethod = $aMatches[1];
+        $iId = $aMatches[2];
+        $sIdentifier = 'file_link';
+        $sModel = 'Document';
+        if($sFileMethod === 'external_link_proxy') {
+          $sIdentifier = 'external_link';
+          $sModel = 'Link';
+        } else if($sFileMethod === 'internal_link_proxy') {
+          $sIdentifier = 'internal_link';
+          $sModel = 'Page';
+        }
+        $this->addTrackReference($iId, $sModel);
+        return TemplateIdentifier::constructIdentifier($sIdentifier, $iId, array_merge($oHtmlTag->getParameters(), array('link_text' => $sParsedChildren)));
+      } else if(strpos($oHtmlTag->getParameter('href'), "mailto:") === 0) {
+        return TemplateIdentifier::constructIdentifier("mailto_link", substr($oHtmlTag->getParameter('href'), strlen("mailto:")), array("link_text" => $sParsedChildren));
+      }
+    }
+    $oTagWriter = new TagWriter($oHtmlTag->getName(), $oHtmlTag->getParameters(), $sParsedChildren);
+    $oTagTemplate = $oTagWriter->parse(true);
+    $oTagTemplate->bKillIdentifiersBeforeRender = false;
+    return $oTagTemplate->render();
+  }
+  
+  private function getMceConfigArray($sConfigName) {
+    if(isset($this->aSettings[$sConfigName])) {
+      if(!is_array($this->aSettings[$sConfigName])) {
+        $this->aSettings[$sConfigName] = array($this->aSettings[$sConfigName]);
+      }
+      return count($this->aSettings[$sConfigName]) === 0 ? null : $this->aSettings[$sConfigName];
+    }
+    return null;
+  }
+  
+}// end class RichtextUtil
