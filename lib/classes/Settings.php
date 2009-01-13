@@ -12,7 +12,7 @@ class Settings {
    */
   private function __construct($sFileName) {
     require_once("spyc/Spyc.php");
-    $aConfigPaths = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, $sFileName), ResourceFinder::SEARCH_SITE_FIRST);
+    $aConfigPaths = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, $sFileName), ResourceFinder::SEARCH_BASE_FIRST);
     $this->aSettings = array();
     foreach($aConfigPaths as $sConfigPath) {
       foreach(Spyc::YAMLLoad($sConfigPath) as $sSection => $aSection) {

@@ -59,7 +59,7 @@ class Autoloader {
     }
   
     //Generated Model classes
-    $sPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName). ResourceFinder::SEARCH_MAIN_ONLY);
+    $sPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
     if($sPath) {
       return $sPath;
     }

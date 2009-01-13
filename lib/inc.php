@@ -6,6 +6,7 @@ define('DIRNAME_CLASSES',        'classes');
 define('DIRNAME_BACKEND',        'backend');
 define('DIRNAME_VENDOR',         'vendor');
 define('DIRNAME_MODEL',          'model');
+define('DIRNAME_TEST',           'test');
 define('DIRNAME_LIB',            'lib');
 define('DIRNAME_CONFIG',         'config');
 define('DIRNAME_IMAGES',         'images');
@@ -26,26 +27,16 @@ define('SITE_DIR',               MAIN_DIR.'/'.DIRNAME_SITE);
 define('BASE_DIR',               MAIN_DIR.'/'.DIRNAME_BASE);
 define('PLUGINS_DIR',            MAIN_DIR.'/'.DIRNAME_PLUGINS);
 
-
 // autoload of classes
-
-//Import the crucial class
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Autoloader.php");
 Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
 // include path for all classes
-$sVendorDir = ResourceFinder::findResource(DIRNAME_VENDOR, ResourceFinder::SEARCH_BASE_ONLY);
-$sClassesDir = ResourceFinder::findResource(DIRNAME_CLASSES, ResourceFinder::SEARCH_BASE_ONLY);
-$sExternalClassesDir = ResourceFinder::findResource(DIRNAME_CLASSES, ResourceFinder::SEARCH_SITE_ONLY);
-if($sExternalClassesDir !== null) {
-  $sClassesDir = $sExternalClassesDir.PATH_SEPARATOR.$sClassesDir;
-}
-$sIncludesDir = ResourceFinder::findResource(DIRNAME_LIB, ResourceFinder::SEARCH_BASE_ONLY);
+$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
+$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
 
-set_include_path($sVendorDir.PATH_SEPARATOR.$sIncludesDir.PATH_SEPARATOR.$sClassesDir.PATH_SEPARATOR.implode(PATH_SEPARATOR, ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN))).PATH_SEPARATOR.get_include_path());
-
-require_once("propel/Propel.php");
+set_include_path(implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
 
 mb_internal_encoding(Settings::getSetting('encoding', 'browser', 'utf-8'));
 mb_regex_encoding(mb_internal_encoding());
@@ -54,6 +45,7 @@ if(function_exists("date_default_timezone_set")) {
   date_default_timezone_set(Settings::getSetting('general', 'timezone', 'Europe/Zurich'));
 }
 
+require_once("propel/Propel.php");
 Propel::setConfiguration(array('propel' => Settings::getSetting('general', 'db_config', null)));
 Propel::initialize();
 

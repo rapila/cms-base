@@ -41,6 +41,7 @@ class ResourceFinder {
   }
   
   public static function findResource($mRelativePath, $iFlag = null, $bByExpressions = false, $bFindAll = false) {
+    $bWaitForAll = $bByExpressions && $bFindAll;
     if($bByExpressions) {
       $bFindAll = true;
     }
@@ -50,6 +51,9 @@ class ResourceFinder {
       $sPath = null;
       if($bByExpressions) {
         $sPath = self::findInPathByExpressions($mRelativePath, $sSearchPath);
+        if($bWaitForAll) {
+          $sPath = array_values($sPath);
+        }
       } else {
         $sPath = self::findInPath($mRelativePath, $sSearchPath);
       }
@@ -76,8 +80,12 @@ class ResourceFinder {
     return self::findResource($mRelativePath, $iFlag, $bByExpressions, true);
   }
   
-  public static function findResourceByExpressions($aExpressions, $iFlag = null) {
-    return self::findResource($aExpressions, $iFlag, true);
+  public static function findResourceByExpressions($aExpressions, $iFlag = null, $bFindAll = false) {
+    return self::findResource($aExpressions, $iFlag, true, $bFindAll);
+  }
+  
+  public static function findAllResourcesByExpressions($aExpressions, $iFlag = null) {
+    return self::findResourceByExpressions($aExpressions, $iFlag, true);
   }
   
   public static function buildSearchPathList($iFlag, $bFindAll = false) {
@@ -101,10 +109,6 @@ class ResourceFinder {
         array_push($aResult, SITE_DIR);
         array_push($aResult, BASE_DIR);
       break;
-    }
-    
-    if($bFindAll) {
-      return array_reverse($aResult);
     }
     
     return $aResult;
