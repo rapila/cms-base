@@ -62,8 +62,9 @@ if(Util::startsWith($sAdapter, 'mysql')) {
 // frontend dir constants
 define('MAIN_DIR_FE',        isset($_SERVER['SHELL']) ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
 
+define('BASE_DIR_FE',        MAIN_DIR_FE.DIRNAME_BASE);
 define('SITE_DIR_FE',        MAIN_DIR_FE.DIRNAME_SITE);
-define('INT_WEB_DIR_FE',     MAIN_DIR_FE."/".DIRNAME_WEB);
+define('INT_WEB_DIR_FE',     BASE_DIR_FE."/".DIRNAME_WEB);
 define('EXT_WEB_DIR_FE',     SITE_DIR_FE."/".DIRNAME_WEB);
 define('INT_CSS_DIR_FE',     INT_WEB_DIR_FE.'/css');
 define('EXT_CSS_DIR_FE',     EXT_WEB_DIR_FE.'/css');
