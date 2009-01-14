@@ -36,7 +36,7 @@ spl_autoload_register(array('Autoloader', 'autoload'));
 $aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
 $aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
 
-set_include_path(implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
+set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
 
 mb_internal_encoding(Settings::getSetting('encoding', 'browser', 'utf-8'));
 mb_regex_encoding(mb_internal_encoding());
