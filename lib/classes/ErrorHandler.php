@@ -32,7 +32,11 @@ class ErrorHandler {
   }
   
   private static function shouldContinue($iErrorNumber) {
-    return $iErrorNumber !== E_ERROR;
+    if(self::shouldPrintErrors()) {
+      return $iErrorNumber !== E_ERROR;
+    } else {
+      return false;
+    }
   }
   
   private static function handle($aError, $bIsFatal = true) {
