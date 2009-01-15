@@ -174,7 +174,8 @@ class UsersBackendModule extends BackendModule {
         foreach($this->oUser->getUserGroups() as $oUserGroup) {
           $oUserGroup->delete();
         }
-        foreach(@$_POST['group_ids'] as $iGroupId) {
+        $aRequestedGroups = isset($_POST['group_ids']) ? $_POST['group_ids'] : array();
+        foreach($aRequestedGroups as $iGroupId) {
           $oUserGroup = new UserGroup();
           $oUserGroup->setGroupId($iGroupId);
           $this->oUser->addUserGroup($oUserGroup);
