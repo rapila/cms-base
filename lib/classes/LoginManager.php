@@ -54,7 +54,7 @@ class LoginManager extends Manager {
     $this->oTemplate->replaceIdentifier('login_action', $this->sAction);
     $this->oTemplate->doIncludes();
     $this->oTemplate->replaceIdentifier('action', Util::link());
-    $this->oTemplate->replaceIdentifier('login_title', 'Password Reset');
+    $this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'login.password_reset' : 'login'));
     if($this->sAction === 'login') {
       $this->renderLogin();
     }
