@@ -175,6 +175,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         }
         $sContainerName = $oContainer->getValue();
         $oContainerTemplate = $this->constructTemplate("content_container");
+        $oContainerTemplate->replaceIdentifier("inherit_info", $oContainer->getParameter('inherit') ? StringPeer::getString('container.inherit_message') : null);
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
       
         $oContainerTemplate->replaceIdentifier("new_link", $this->backendLink(array($this->oPage->getId(), "edit", $sContainerName)));
@@ -195,6 +196,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         
         $aObjects = $this->oPage->getObjectsForContainer($sContainerName);
+        $bHasNoObjects = count($aObjects) === 0;
         foreach($aObjects as $iCount => $oObject) {
           $oObjectTemplate = $this->constructTemplate("content_object");
           if($iCount === 0) {
@@ -218,6 +220,9 @@ class DefaultPageTypeModule extends PageTypeModule {
           }
           $oContainerTemplate->replaceIdentifierMultiple("objects", $oObjectTemplate);
           $iCount++;
+        }
+        if($bHasNoObjects) {
+          $oContainerTemplate->replaceIdentifierMultiple("objects", StringPeer::getString('objects.no_entries_message'));
         }
         $oTemplate->replaceIdentifierMultiple("containers", $oContainerTemplate);
       }

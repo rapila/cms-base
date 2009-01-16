@@ -276,7 +276,7 @@ label.active, label.inactive, span.inactive, span.active  {
   padding-left:0px;
 }
 
-label.inactive, span.inactive {
+label.inactive, span.inactive, span.attention {
   color:red;
 }
 
