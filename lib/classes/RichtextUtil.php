@@ -37,13 +37,13 @@ class RichtextUtil {
   }
   
   public static function parseStorageForOutput($sStorage, $bIsBackend) {
-    $tmpl = new Template($sStorage, "db", true);
-    self::replaceIdentifierWithCallback($tmpl, 'internal_link', 'internalLinkCallback', $bIsBackend);
-    self::replaceIdentifierWithCallback($tmpl, 'external_link', 'externalLinkCallback', $bIsBackend);
-    self::replaceIdentifierWithCallback($tmpl, 'file_link', 'fileLinkCallback', $bIsBackend);
-    self::replaceIdentifierWithCallback($tmpl, 'image', 'imageCallback', $bIsBackend);
-    self::replaceIdentifierWithCallback($tmpl, 'mailto_link', 'mailtoLinkCallback', $bIsBackend);
-    return $tmpl;
+    $oTemplate = new Template($sStorage, "db", true);
+    self::replaceIdentifierWithCallback($oTemplate, 'internal_link', 'internalLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($oTemplate, 'external_link', 'externalLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($oTemplate, 'file_link', 'fileLinkCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($oTemplate, 'image', 'imageCallback', $bIsBackend);
+    self::replaceIdentifierWithCallback($oTemplate, 'mailto_link', 'mailtoLinkCallback', $bIsBackend);
+    return $oTemplate;
   }
   
   public static function parseStorageForFrontendOutput($sStorage) {
@@ -167,22 +167,24 @@ class RichtextUtil {
     }
   }
   
-  public function getJavascript() {
-    // for integration of new gzip function implement separate "tmpl_gzip.tmpl" read tinymce/readme.html
-    $tmpl = new Template('mce');
-    $tmpl->replaceIdentifier('textarea_id', $this->sAreaName);
+  public function getJavascript($oTemplate = null) {
+    // for integration of new gzip function implement separate "mce_gzip.tmpl" read tinymce/readme.html
+    if($oTemplate === null) {
+      $oTemplate = new Template('mce');
+    }
+    $oTemplate->replaceIdentifier('textarea_id', $this->sAreaName);
     $aCssFiles = $this->getMceConfigArray('css_files');
     if($aCssFiles !== null) {
       $aResult = array();
       foreach($aCssFiles as $sCssFileName) {
         $aResult[] = EXT_CSS_DIR_FE."/$sCssFileName.css";
       }
-      $tmpl->replaceIdentifier('css_files', implode(",", $aResult));
+      $oTemplate->replaceIdentifier('css_files', implode(",", $aResult));
     }
     
     $aBlockformats = $this->getMceConfigArray('blockformats');
     if($aBlockformats !== null) {
-      $tmpl->replaceIdentifier('blockformats', implode(",", $aBlockformats));
+      $oTemplate->replaceIdentifier('blockformats', implode(",", $aBlockformats));
     }
     
     $aClasses = $this->getMceConfigArray('classes');
@@ -191,25 +193,25 @@ class RichtextUtil {
       foreach($aClasses as $sClassName) {
         $aResult[] = StringPeer::getString($sClassName.'.class', null, $sClassName)."=".$sClassName;
       }
-      $tmpl->replaceIdentifier('classes', implode(";", $aResult));
+      $oTemplate->replaceIdentifier('classes', implode(";", $aResult));
     }
     if($this->getMceConfigArray('force_br_newlines')) {
-      $tmpl->replaceIdentifier('force_br_newlines', 'true');
+      $oTemplate->replaceIdentifier('force_br_newlines', 'true');
     }
-    $tmpl->replaceIdentifier('area_width', $this->getMceConfigArray('area_width') ? $this->getMceConfigArray('area_width') : "95%");
-    $tmpl->replaceIdentifier('area_height', $this->getMceConfigArray('area_height') ? $this->getMceConfigArray('area_height') : 400);    
-    $tmpl->replaceIdentifier('language', Session::language());  
+    $oTemplate->replaceIdentifier('area_width', $this->getMceConfigArray('area_width') ? $this->getMceConfigArray('area_width') : "95%");
+    $oTemplate->replaceIdentifier('area_height', $this->getMceConfigArray('area_height') ? $this->getMceConfigArray('area_height') : 400);    
+    $oTemplate->replaceIdentifier('language', Session::language());  
     // plugins with defaults
     $aPlugins = $this->getMceConfigArray('plugins') !== null ? $this->getMceConfigArray('plugins') : array('advimage', 'advlink');
-    $tmpl->replaceIdentifier('plugins', implode(",", $aPlugins));
+    $oTemplate->replaceIdentifier('plugins', implode(",", $aPlugins));
     // buttons row 1 with defaults
     $aButtons1 = $this->getMceConfigArray('advanced_buttons_1') !== null ? $this->getMceConfigArray('advanced_buttons_1') : array('"bold,link,unlink,undo,redo,');
-    $tmpl->replaceIdentifier('advanced_buttons_1', implode(",", $aButtons1));
+    $oTemplate->replaceIdentifier('advanced_buttons_1', implode(",", $aButtons1));
     $aButtons2 = $this->getMceConfigArray('advanced_buttons_2');
     if($aButtons2 !== null) {
-      $tmpl->replaceIdentifier('advanced_buttons_2', implode(",", $aButtons2));
+      $oTemplate->replaceIdentifier('advanced_buttons_2', implode(",", $aButtons2));
     }    
-    return $tmpl;
+    return $oTemplate;
   }
 
   public function getAreaName()

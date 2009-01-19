@@ -4,7 +4,7 @@
  */
 
 include_once('propel/util/Criteria.php');
-include_once('Template.php');
+include_once('classes/Template.php');
 
 class GetLinkArrayFileModule extends FileModule {
   private $aDisabledSections;

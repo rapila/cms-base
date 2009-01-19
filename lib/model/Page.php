@@ -107,6 +107,14 @@ class Page extends BasePage {
     return PagePropertyPeer::doSelectOne($oCriteria);
   }
   
+  public function getPagePropertyValue($sPropertyName, $sDefaultValue = null) {
+    $oProperty = $this->getPagePropertyByName($sPropertyName);
+    if($oProperty) {
+      return $oProperty->getValue();
+    }
+    return $sDefaultValue;
+  }
+  
   public function addTempPageProperty($sName, $sValue) {
     $this->getPageProperties();
     $oTempProperty = new PageProperty();
@@ -312,7 +320,11 @@ class Page extends BasePage {
   }
   
   public function isLoginPage() {
-    return $this->getPageType() === 'login';
+    return $this->isOfType('login');
+  }
+  
+  public function isOfType($sType) {
+    return $this->getPageType() === $sType;
   }
 
   public function getLevel() {
@@ -442,18 +454,22 @@ class Page extends BasePage {
   }
   
   public function getLoginPage() {
-    if($this->isLoginPage()) {
+    return $this->getPageOfType('login');
+  }
+  
+  public function getPageOfType($sPageType) {
+    if($this->isOfType($sPageType)) {
       return $this;
     }
     foreach($this->getChildren() as $oChild) {
-      if($oChild->isLoginPage()) {
+      if($oChild->isOfType($sPageType)) {
         return $oChild;
       }
     }
     if($this->isRoot()) {
-      return $this->isLoginPage() ? $this : null;
+      return $this->isOfType($sPageType) ? $this : null;
     }
-    return $this->getParent()->getLoginPage();
+    return $this->getParent()->getPageOfType($sPageType);
   }
 
   public function getTopNavigationName($bNameNotTitle = true) {

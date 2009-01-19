@@ -124,7 +124,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         $aAllowedParams = array_merge($aAllowedParams, call_user_func(array($sModuleName, "acceptedRequestParams")));
       }
     }
-  }  
+  }
   
   //Backend stuff
   private $oCurrentContentObject = null;
