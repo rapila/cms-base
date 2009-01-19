@@ -194,7 +194,7 @@ class Image {
   
   public static function imageWithText($sText, $sFontFilePath, $iFontSize, $iRed, $iGreen, $iBlue, $iOpacity, $iBackgoundRed = 255, $iBackgoundGreen = 255, $iBackgoundBlue = 255) {
     list($iWidth, $iHeight) = self::textSize($sFontFilePath, $sText, $iFontSize);
-    $oImage = self::emptyImage($iWidth+2, $iHeight+2);
+    $oImage = self::emptyImage($iWidth+4, $iHeight+4);
     $oImage->fill($iBackgoundRed, $iBackgoundGreen, $iBackgoundBlue);
     $oImage->addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue);
     return $oImage;

@@ -214,7 +214,7 @@ abstract class Module {
   }
   
   public function getDisplayName() {
-    return self::getDisplayNameByTypeAndName(self::$MODULE_TYPE, $this->getModuleName(get_class($this)));
+    return self::getDisplayNameByTypeAndName($this->getType(), $this->getModuleName(get_class($this)));
   }
   
   /**

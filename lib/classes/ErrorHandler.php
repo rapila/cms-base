@@ -55,7 +55,10 @@ class ErrorHandler {
       }
     }
     if(self::shouldMailErrors()) {
-      $sAddress = Settings::getSetting('developer', 'email', null);
+      $sAddress = Settings::getSetting('developer', 'email', false);
+      if(!$sAddress) {
+        $sAddress = Settings::getSetting('domain_holder', 'email', false);
+      }
       if($sAddress) {
         mb_send_mail($sAddress, "Error in Mini-CMS on ".Util::linkToSelf(), print_r($aError, true));
       }
