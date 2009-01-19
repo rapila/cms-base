@@ -135,7 +135,6 @@ EOT;
       rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql', BASE_DIR.'/'.DIRNAME_DATA.'/sql/schema.sql');
     } else {
       unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map');
-      unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql');
     }
   }
 }
