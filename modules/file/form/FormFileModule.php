@@ -1,6 +1,6 @@
 <?php
 
-require_once('FormFrontendModule.php');
+require_once(BASE_DIR.'/'.DIRNAME_MODULES.'/frontend/form/FormFrontendModule.php');
 
 class FormFileModule extends FileModule {
 
