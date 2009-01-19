@@ -131,8 +131,8 @@ EOT;
     unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema-transformed.xml');
     unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/build.properties');
     if($bIsDevVersion) {
-      rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map', BASE_DIR.'/'.DIRNAME_DATA.'/sqldb.map');
-      rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql', BASE_DIR.'/'.DIRNAME_DATA.'/schema.sql');
+      rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map', BASE_DIR.'/'.DIRNAME_DATA.'/sql/sqldb.map');
+      rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql', BASE_DIR.'/'.DIRNAME_DATA.'/sql/schema.sql');
     } else {
       unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map');
       unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql');

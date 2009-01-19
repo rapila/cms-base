@@ -1,4 +1,2 @@
 # Sqlfile -> Database map
 schema.sql=mini_cms
-test.schema.sql=malibran
-text.schema.sql=malibran
