@@ -122,7 +122,7 @@ class EMail {
     $sRecipients = implode(', ', $aRecipients);
     
     if($this->oContent instanceof Template) {
-      $this->oContent = MIMELeaf::leafWithTemplate($this->oContent, $this->sMimeType, 'quoted-printable', null, null, $this->sCharset);
+      $this->oContent = MIMELeaf::leafWithTemplate($this->oContent, $this->sMimeType, '8bit', null, null, $this->sCharset);
     }
     
     foreach($this->aCarbonCopyRecipients as $sAddress => $sName) {
