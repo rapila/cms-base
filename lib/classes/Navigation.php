@@ -281,8 +281,9 @@ class Navigation {
     $oLanguageTemplate = new Template($aSettings['template'], array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
     $sLinkSeparator = Settings::getSetting("meta_navigation", 'meta_link_separator', ' | ');
     $oLanguageActiveTemplate = $oLanguageTemplate;
+    $bShowActiveLanguage = isset($aSettings['show_active_language']) && $aSettings['show_active_language'];
     
-    if(isset($aSettings['template_active'])) {
+    if(isset($aSettings['template_active']) && $bShowActiveLanguage) {
       $oLanguageActiveTemplate = new Template($aSettings['template_active'], array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
     }
     
@@ -299,6 +300,7 @@ class Navigation {
     foreach($aLanguages as $i => $oLanguage) {
       $oCurrrentTemplate = null;
       if($oLanguage->getId() === Session::language()) {
+        if(!$bShowActiveLanguage) continue;
         $oCurrrentTemplate = clone $oLanguageActiveTemplate;
       } else {
         $oCurrrentTemplate = clone $oLanguageTemplate;
