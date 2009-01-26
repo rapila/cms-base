@@ -82,6 +82,7 @@ class UsersBackendModule extends BackendModule {
       $oUserBooleanTemplate = $this->constructTemplate('user_booleans');
       $oUserBooleanTemplate->replaceIdentifier("is_inactive", $this->oUser->getIsInactive() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
       $oUserBooleanTemplate->replaceIdentifier("is_admin", $this->oUser->getIsAdmin() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+      $oUserBooleanTemplate->replaceIdentifier("is_backend_login_enabled", $this->oUser->getIsBackendLoginEnabled() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
       $oTemplate->replaceIdentifier('user_booleans', $oUserBooleanTemplate);
     }
     
@@ -118,6 +119,7 @@ class UsersBackendModule extends BackendModule {
     }    
     $this->oUser = new User();
     $this->oUser->setCreatedBy(Session::getSession()->getUserId());
+    $this->oUser->setIsBackendLoginEnabled(true);
   }
   
   public function delete() {
@@ -133,7 +135,11 @@ class UsersBackendModule extends BackendModule {
     $oFlash->checkForValue('first_name');
     $oFlash->checkForValue('last_name');
     $oFlash->checkForEmail('email');
-    
+    if($this->oUser === null || $this->oUser->isNew()) {
+      if(UserPeer::getUserByUserName($_REQUEST['user_name'])) {
+        $oFlash->addMessage('user_name_exists');
+      }
+    }
     if(($_POST['be_password']) !== '') { 
       if($_POST['be_password'] !== $_POST['be_password_confirm']) {
         $oFlash->addMessage('password_confirm');
@@ -156,6 +162,7 @@ class UsersBackendModule extends BackendModule {
     $this->oUser->setLastName($_POST['last_name']);
     $this->oUser->setEmail($_POST['email']);
     $this->oUser->setLanguageId($_POST['language_id']); 
+    $this->oUser->setIsBackendLoginEnabled($_POST['is_backend_login_enabled']); 
     
     //Password
     if($_POST['be_password'] !== '') {
