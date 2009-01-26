@@ -25,6 +25,7 @@ class UsersBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate();
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     // users that are not administrators can only see their own entry
+    $aUsers = array();
     $iUserId = !Session::getSession()->getUser()->getIsAdmin() ? Session::getSession()->getUserId() : null;
     if(Session::getSession()->getUser()->getIsAdmin()) {
       if($this->iUserKind === UserPeer::BACKEND_USER) {
@@ -41,6 +42,8 @@ class UsersBackendModule extends BackendModule {
       if($aUserOptions = UserPeer::getUserOptions()) {
         $oTemplate->replaceIdentifier("user_options", Util::optionsFromArray($aUserOptions, $this->iUserKind, null, array()));
       }
+    } elseif($this->oUser && Util::equals($this->oUser, Session::getSession()->getUser())) {
+      $aUsers = array($this->oUser);
     }
     $this->parseTree($oTemplate, $aUsers, $this->oUser);
     return $oTemplate;
