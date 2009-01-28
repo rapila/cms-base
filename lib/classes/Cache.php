@@ -142,7 +142,7 @@ class Cache {
   
   //Removes all cache files but not their parent directories. This is used by the mini_cms_clear_cache_and_set_permissions.sh script
   public static function clearAllCaches() {
-    $aCachesDirs = ResourceFinder::findAllResources(DIRNAME_CACHES, ResourceFinder::SEARCH_MAIN_ONLY);
+    $aCachesDirs = ResourceFinder::findAllResources(array(DIRNAME_GENERATED, DIRNAME_CACHES), ResourceFinder::SEARCH_MAIN_ONLY);
     foreach($aCachesDirs as $sCachesDir) {
       if($rCachesDir = opendir($sCachesDir)) {
         while(false !== ($sFileName = readdir($rCachesDir))) {
