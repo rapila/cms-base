@@ -44,7 +44,7 @@ class MIMEMultipart extends MIMEPart {
     }
     $oMimeTree = new MIMEMultipart('alternative');
     $oMimeTree->addPart(new MIMELeaf($sContent, 'text/html', '8bit', $sCharset));
-    $oMimeTree->addPart(MIMELeaf::leafWithText($oMarkdownify->parseString($sAlternative), 'quoted-printable', $sCharset));
+    $oMimeTree->addPart(MIMELeaf::leafWithText($oMarkdownify->parseString($sAlternative), '8bit', $sCharset));
     
     return $oMimeTree;
   }
