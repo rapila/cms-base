@@ -187,7 +187,7 @@ EOT;
   
   public function testFunctionConditionalsFileExists() {
     $sText = <<<EOT
-{{if=file_exists;1=/config;2=true}}test{{endIf}}
+{{if=file_exists;1=/base/config;2=true}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
     $this->assertEquals("test", $oTemplate->render());
@@ -195,7 +195,7 @@ EOT;
   
   public function testFunctionConditionalsFileExistsFalse() {
     $sText = <<<EOT
-{{if=file_exists;1=/config;2=false}}test{{endIf}}
+{{if=file_exists;1=/base/config;2=false}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
     $this->assertEquals("", $oTemplate->render());
