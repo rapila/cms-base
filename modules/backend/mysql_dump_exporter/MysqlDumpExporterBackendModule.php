@@ -67,10 +67,13 @@ class MysqlDumpExporterBackendModule extends BackendModule {
     $sOutput = null;
     $iCode = null;
     putenv('LANG=en_US.'.Settings::getSetting('encoding', 'browser', 'utf-8'));
-    $sCommand = escapeshellcmd($sMysqlDumpUtil).' -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
+    $sCommand = escapeshellcmd($sMysqlDumpUtil).' -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --opt --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
     exec($sCommand, $aOutput, $iCode);
     $sOutput = str_replace("\x7", '', implode('', $aOutput));
-    return TagWriter::quickTag('pre', array(), "Output of $sCommand:\n$sOutput".($iCode === 0 ? '' : '; I am '.exec('whoami')));
+    if($iCode !== 0) {
+      return TagWriter::quickTag('pre', array(), "Error while dumping. Output of $sMysqlDumpUtil:\n$sOutput".($iCode === 0 ? '' : '; I am '.exec('whoami')));
+    }
+    return TagWriter::quickTag('span', array(), "Command $sMysqlDumpUtil ran successfully. Output: $sOutput");
 	}
 
 	private function getDbConfig() {
