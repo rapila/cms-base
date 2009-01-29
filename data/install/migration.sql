@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `language_object_history` (
 #svn r1624
 ALTER TABLE `rights` CHANGE `user_id` `group_id` INT( 11 ) NOT NULL ;
 
+DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
