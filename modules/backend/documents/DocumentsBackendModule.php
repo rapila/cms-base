@@ -18,14 +18,13 @@ class DocumentsBackendModule extends BackendModule {
   const WITHOUT_CATEGORY = '';
 
   public function __construct() {
+    
     // document_kind = text, application, image etc
     if(isset($_REQUEST['document_kind'])) {
       $this->sDocumentKind = $_REQUEST['document_kind'] !== '' ? $_REQUEST['document_kind'] : null;
       Session::getSession()->setAttribute('document_kind', $this->sDocumentKind);
     } else {
-      $sDefaultDocumentKind = DocumentTypePeer::documentKindExists($this->sDocumentKind) ? $this->sDocumentKind : null;
       $this->sDocumentKind = Session::getSession()->getAttribute('document_kind') !== null ? Session::getSession()->getAttribute('document_kind') : 'application';
-    // var_dump(Session::getSession()->getAttribute('document_kind')); exit;
     }
 
     // selected_document_category_id can be specific int, all, without category
@@ -35,6 +34,7 @@ class DocumentsBackendModule extends BackendModule {
     } else {
       $this->sDocumentCategory = Session::getSession()->getAttribute('selected_document_category_id') !== null ? Session::getSession()->getAttribute('selected_document_category_id') : 'application';
     }
+    
     // order
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
@@ -76,7 +76,6 @@ class DocumentsBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("document_categories_options", $aDocumentCategoryOptions);
     
     // document_kind_options are only displayed if there are any documents
-
     $aDocumentKindOptions = null;
     if ($bHasAnyDocuments) {
       $aDocumentKindOptions =  Util::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(self::ALL_CATEGORIES => StringPeer::getString('document.all_types')));
@@ -228,6 +227,7 @@ class DocumentsBackendModule extends BackendModule {
         }
       }
       $this->oDocument->save();
+      
       // in case document kind is not "all" the document kind always has to be checked/updated in order to display the doc
       if($this->sDocumentKind !== DocumentsBackendModule::ALL_CATEGORIES) {
         $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind(); 
