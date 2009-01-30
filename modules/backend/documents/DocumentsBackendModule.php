@@ -13,6 +13,7 @@ class DocumentsBackendModule extends BackendModule {
   private $sDocumentCategory;
   private $sSortField;
   private $sSortOrder;
+  private $aReferences = array();
   
   const ALL_CATEGORIES = 'all';
   const WITHOUT_CATEGORY = '';
@@ -47,6 +48,7 @@ class DocumentsBackendModule extends BackendModule {
         if($this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
           $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind();
         }
+        $this->aReferences = ReferencePeer::getReferences($this->oDocument);
       }
     }
     // if there are no document types, then load default entries from 'document_types.insert.yml'
@@ -154,11 +156,10 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("document_link", $sDocLink, null, Template::NO_HTML_ESCAPE);
 
         // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
-        $aReferences = ReferencePeer::getReferences($this->oDocument);
         $bHasReferences = false;
-        if(count($aReferences) > 0) {
+        if(count($this->aReferences) > 0) {
           $bHasReferences = true;
-          foreach($aReferences as $oReference) {
+          foreach($this->aReferences as $oReference) {
             $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
             $oTemplate->replaceIdentifierMultiple('references', 'Used in Page: '.$oLanguageObject->getContentObject()->getPage()->getName().",  in Container: ".$oLanguageObject->getContentObject()->getContainerName()."<br />", null, Template::NO_HTML_ESCAPE);
           }
@@ -267,7 +268,7 @@ class DocumentsBackendModule extends BackendModule {
   }
 
   public function delete() {
-    if($this->oDocument !== null && !$this->mayNotDelete()) {
+    if($this->oDocument !== null && !$this->mayNotDelete() && count($this->aReferences) === 0) {
       $this->oDocument->delete();
     }
     Util::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategory));
