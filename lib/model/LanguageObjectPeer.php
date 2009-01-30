@@ -20,4 +20,10 @@
  */	
 class LanguageObjectPeer extends BaseLanguageObjectPeer {
 
+  public static function getReferencedLanguageObject($sObjectId, $sLanguageId) {
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::OBJECT_ID, (int) $sObjectId);
+    $oCriteria->add(self::LANGUAGE_ID, $sLanguageId);
+    return self::doSelectOne($oCriteria);
+  }
 } // LanguageObjectPeer

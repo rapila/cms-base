@@ -15,5 +15,16 @@ require_once 'model/om/BaseReference.php';
  * @package    model
  */
 class Reference extends BaseReference {
-
+  public function getFromIdObjectId() {
+    $aFromIdExploded = $this->getFromIdExploded();
+    return (int) $aFromIdExploded[0];
+  }
+  public function getFromIdLanguageId() {
+    $aFromIdExploded = $this->getFromIdExploded();
+    return $aFromIdExploded[1];
+  }
+  
+  private function getFromIdExploded() {
+    return explode('_', $this->getFromId());
+  }
 } // Reference

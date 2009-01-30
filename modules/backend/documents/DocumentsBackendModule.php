@@ -43,6 +43,11 @@ class DocumentsBackendModule extends BackendModule {
     if(Manager::hasNextPathItem()) {
       $iId = Manager::peekNextPathItem();
       $this->oDocument = DocumentPeer::retrieveByPk($iId);
+      if($this->oDocument) {
+        if($this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
+          $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind();
+        }
+      }
     }
     // if there are no document types, then load default entries from 'document_types.insert.yml'
     if(!DocumentTypePeer::hasDocTypesPreset()) {
@@ -148,14 +153,24 @@ class DocumentsBackendModule extends BackendModule {
         $sDocLink = $this->oDocument->getName() != '' ? '<a href="'.Util::link(array('display_document', $this->oDocument->getId()), 'FileManager').'" title="anschauen" target="_blank">view</a>' : '';
         $oTemplate->replaceIdentifier("document_link", $sDocLink, null, Template::NO_HTML_ESCAPE);
 
+        // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
+        $aReferences = ReferencePeer::getReferences($this->oDocument);
+        $bHasReferences = false;
+        if(count($aReferences) > 0) {
+          $bHasReferences = true;
+          foreach($aReferences as $oReference) {
+            $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
+            $oTemplate->replaceIdentifierMultiple('references', 'Used in Page: '.$oLanguageObject->getContentObject()->getPage()->getName().",  in Container: ".$oLanguageObject->getContentObject()->getContainerName()."<br />", null, Template::NO_HTML_ESCAPE);
+          }
+        }
         //delete button
         $sDeleteButtenTemplate = "delete_button";
         $sDeleteItemMessage = "delete_item";
         $sDeleteAlertMessage = StringPeer::getString("delete_confirm");
-        if($this->mayNotDelete()) {
+        if($this->mayNotDelete() || $bHasReferences) {
           $sDeleteButtenTemplate = "delete_button_inactive";
           $sDeleteItemMessage = "delete_item_inactive";
-          $sDeleteAlertMessage = StringPeer::getString('no_permission_for_action');
+          $sDeleteAlertMessage = StringPeer::getString($this->mayNotDelete() ? 'no_permission_for_action' : 'document.has_references');
         }
         $oDeleteTemplate = $this->constructTemplate($sDeleteButtenTemplate);
         $oDeleteTemplate->replaceIdentifier("action", $sActionLink);
@@ -164,10 +179,11 @@ class DocumentsBackendModule extends BackendModule {
 
         $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
       }
+      
       return $oTemplate;
     }
   }
-
+  
   public function validateForm($oFlash) {
     try {
       $this->oDocumentType = DocumentTypePeer::getDocumentTypeForUpload('document_upload');

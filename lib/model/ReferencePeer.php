@@ -47,11 +47,16 @@ class ReferencePeer extends BaseReferencePeer {
   
   public static function countReferences($mToObject) {
     $oCriteria = self::prepareCriteria(null, $mToObject);
-    return self::doCount($oCriteria) !== 0;
+    return self::doCount($oCriteria);
   }
   
   public static function hasReference($mToObject) {
     return self::countReferences($mToObject) !== 0;
+  }
+  
+  public static function getReferences($mToObject) {
+    $oCriteria = self::prepareCriteria(null, $mToObject);
+    return self::doSelect($oCriteria);
   }
   
   public static function removeReferences($mFromObject) {
