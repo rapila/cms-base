@@ -1,11 +1,11 @@
 <h1>'{{extension}}'</h1>
-<fieldset><legend>{{writeString=document_type}} "{{extension}}" [id:{{id}}]</legend>
+<fieldset><legend>{{writeString=document.type}} "{{extension}}" [id:{{id}}]</legend>
 <form action="{{action}}" method="post">
-  <label for="extension">{{writeString=document_extension}}</label>
+  <label for="extension">{{writeString=document.extension}}</label>
   <input type="text" id="extension" name="extension" value="{{extension}}" /><br />
-  <label for="mimetype">{{writeString=document_mimetype}}</label>
+  <label for="mimetype">{{writeString=document.mimetype}}</label>
   <input type="text" id="mimetype" name="mimetype" value="{{mimetype}}" /><br />
-  <label for="is_office_doc">{{writeString=document_is_of_office_use}}</label>
+  <label for="is_office_doc">{{writeString=document.is_of_office_use}}</label>
   <input type="checkbox" name="is_office_doc" id="is_office_doc" value="1" {{is_office_doc}}/><br />
   <label></label><button type="submit"></button>
 </form>

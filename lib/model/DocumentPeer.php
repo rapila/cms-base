@@ -25,7 +25,7 @@ class DocumentPeer extends BaseDocumentPeer {
     if($sDocumentName !== null) {
       $oCriteria->add(self::NAME, "%$sDocumentName%", Criteria::LIKE);
     }
-    if($iDocumentCategory !== null) {
+    if($iDocumentCategory !== DocumentsBackendModule::ALL_CATEGORIES) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, is_int($iDocumentCategory) ? $iDocumentCategory : 0);
     }
     if($sDocumentKind !== null) {

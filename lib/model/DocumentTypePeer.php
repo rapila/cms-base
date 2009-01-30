@@ -6,16 +6,7 @@
   // include object class
   include_once 'model/DocumentType.php';
 
-
 /**
- * Skeleton subclass for performing query and update operations on the 'document_types' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
  * @package model
  */	
 class DocumentTypePeer extends BaseDocumentTypePeer {
@@ -49,7 +40,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     $oC->add(self::EXTENSION, $sExtension);
     $oDocument = self::doSelectOne($oC);
     return $oDocument;
-  } // getDocumentTypeByExtension()
+  }
   
   public static function getDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind='image', $bLike=true) {
     $oC = new Criteria();
@@ -60,7 +51,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
       $aResult[$aDocumentType->getId()]=$aDocumentType->getMimetype();
     }
     return $aResult;
-  } // getMimetypesByDocumentType()
+  }
   
   public static function getDocumentTypeForUpload($sFilesName) {
     if(!isset($_FILES[$sFilesName])) {
@@ -115,12 +106,12 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     
     //Try setting application/octet-stream
     return self::getDocumentTypeByMimetype('application/octet-stream');
-  }
+  } // getDocumentTypeForUpload()
   
   public static function hasDocTypesPreset($iMinEntries = 0) {
     $iCount = self::doCount(new Criteria());
     return $iCount > $iMinEntries;
-  } // hasDocTypesPreset()
+  }
   
   public static function insertRow($aArrayOfValues) {
     $oDocumentType = new DocumentType();
@@ -130,7 +121,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
       $oDocumentType->$sMethodName($mValue);
     }
     $oDocumentType->save();
-  } // insertRow()
+  }
   
   public static function getDocumentTypesList($bIsOfficeDocType = null) {
     $aResult = array();
@@ -138,7 +129,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
       $aResult[] = array('extension' => $oDocumentType->getExtension(), 'mimetype' => $oDocumentType->getMimetype(), 'office_use' => ($oDocumentType->getIsOfficeDoc() ? 'x' : ''));
     }
     return $aResult;
-  } // getDocumentTypesList()
+  }
   
   public static function getDocumentTypesByCategory($bIsOfficeDocType = null) {
     $oCriteria = new Criteria();
@@ -148,6 +139,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     $oCriteria->addAscendingOrderByColumn(self::IS_OFFICE_DOC);
     $oCriteria->addAscendingOrderByColumn(self::EXTENSION);
     return self::doSelect($oCriteria);
-  } // getDocumentTypesByCategory()
+  }
   
 } // DocumentTypePeer
