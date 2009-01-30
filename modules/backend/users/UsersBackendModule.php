@@ -165,7 +165,9 @@ class UsersBackendModule extends BackendModule {
     $this->oUser->setLastName($_POST['last_name']);
     $this->oUser->setEmail($_POST['email']);
     $this->oUser->setLanguageId($_POST['language_id']); 
-    $this->oUser->setIsBackendLoginEnabled($_POST['is_backend_login_enabled']); 
+    if(!$this->oUser->isSessionUser()) { 
+      $this->oUser->setIsBackendLoginEnabled(isset($_POST['is_backend_login_enabled'])); 
+    }
     
     //Password
     if($_POST['be_password'] !== '') {
