@@ -182,10 +182,10 @@ class PagesBackendModule extends BackendModule {
           if (Settings::getSetting('backend','delete_pagetree_enable', false)) {
             $aDeleteOptions[self::ON_DELETE_CHILDREN_INHERIT] = "vererben!";
             $aDeleteOptions[self::ON_DELETE_CHILDREN_DELETE]  = "ganzer Ast löschen!";
+            if($this->oPage->hasChildren()) { 
+              $oDeleteTemplate->replaceIdentifier("options_delete_what", Util::optionsFromArray($aDeleteOptions, self::ON_DELETE_CHILDREN_INHERIT,null, array()), null, Template::NO_HTML_ESCAPE);          
+            }
           }
-        }
-        if($this->oPage->hasChildren()) { 
-          $oDeleteTemplate->replaceIdentifier("options_delete_what", Util::optionsFromArray($aDeleteOptions, self::ON_DELETE_CHILDREN_INHERIT,null, array()), null, Template::NO_HTML_ESCAPE);          
         }
         $oDeleteTemplate->replacePstring('delete_item', array('name' => $this->oPage->getPageTitle()));
         $oDeleteTemplate->replacePstring('delete_item_inactive', array('name' => $this->oPage->getPageTitle()));

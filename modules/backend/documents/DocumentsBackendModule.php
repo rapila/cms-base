@@ -161,9 +161,14 @@ class DocumentsBackendModule extends BackendModule {
           $bHasReferences = true;
           foreach($this->aReferences as $oReference) {
             $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
-            $oTemplate->replaceIdentifierMultiple('references', 'Used in Page: '.$oLanguageObject->getContentObject()->getPage()->getName().",  in Container: ".$oLanguageObject->getContentObject()->getContainerName()."<br />", null, Template::NO_HTML_ESCAPE);
+          $oRefTemplate = $this->constructTemplate('references', true);
+          $oRefTemplate->replaceIdentifier('page_name', $oLanguageObject->getContentObject()->getPage()->getName());
+          $oRefTemplate->replaceIdentifier('container_name', $oLanguageObject->getContentObject()->getContainerName());
+          $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oLanguageObject->getContentObject()->getPage()->getId(), 'edit', $oLanguageObject->getId()))), 'edit'));
+          $oTemplate->replaceIdentifierMultiple('references', $oRefTemplate);
           }
         }
+        
         //delete button
         $sDeleteButtenTemplate = "delete_button";
         $sDeleteItemMessage = "delete_item";
@@ -173,7 +178,7 @@ class DocumentsBackendModule extends BackendModule {
           $sDeleteItemMessage = "delete_item_inactive";
           $sDeleteAlertMessage = StringPeer::getString($this->mayNotDelete() ? 'no_permission_for_action' : 'document.has_references');
         }
-        $oDeleteTemplate = $this->constructTemplate($sDeleteButtenTemplate);
+        $oDeleteTemplate = $this->constructTemplate($sDeleteButtenTemplate, true);
         $oDeleteTemplate->replaceIdentifier("action", $sActionLink);
         $oDeleteTemplate->replaceIdentifier("message_js", $sDeleteAlertMessage);
         $oDeleteTemplate->replacePstring($sDeleteItemMessage, array('name' => $this->oDocument->getName()));

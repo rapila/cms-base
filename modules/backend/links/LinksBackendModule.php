@@ -7,10 +7,14 @@ class LinksBackendModule extends BackendModule {
   private $oLink = null;
   private $sSortField;
   private $sSortOrder;
+  private $aReferences;
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
       $this->oLink=LinkPeer::retrieveByPk(Manager::usePath()); 
+      if($this->oLink) {
+        $this->aReferences = ReferencePeer::getReferences($this->oLink);
+      }
     }
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
@@ -42,6 +46,19 @@ class LinksBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate("link_detail");
     
     if(!$this->oLink->isNew()) {
+      // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
+      $bHasReferences = false;
+      if(count($this->aReferences) > 0) {
+        $bHasReferences = true;
+        foreach($this->aReferences as $oReference) {
+          $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
+          $oRefTemplate = $this->constructTemplate('references', true);
+          $oRefTemplate->replaceIdentifier('page_name', $oLanguageObject->getContentObject()->getPage()->getName());
+          $oRefTemplate->replaceIdentifier('container_name', $oLanguageObject->getContentObject()->getContainerName());
+          $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oLanguageObject->getContentObject()->getPage()->getId(), 'edit', $oLanguageObject->getId()))), 'edit'));
+          $oTemplate->replaceIdentifierMultiple('references', $oRefTemplate);
+        }
+      }
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oLink->getName()));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
@@ -69,9 +86,11 @@ class LinksBackendModule extends BackendModule {
   }
   
   public function delete() {
-    $this->oLink->delete();
-    $this->oLink=null;
-    Util::redirect($this->link());
+    if(count($this->aReferences) === 0) {
+      $this->oLink->delete();
+      $this->oLink=null;
+      Util::redirect($this->link());
+    }
   }  
   
   protected function validateForm($oFlash) {
