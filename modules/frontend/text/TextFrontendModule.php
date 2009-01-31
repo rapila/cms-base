@@ -5,11 +5,14 @@
 class TextFrontendModule extends FrontendModule {
   
   private static $TEXT_ENCODING = "utf-8";
+  private $aReferences; // existing references, to be removed if not set anymore
   
   private $oRichtextUtil;
   
   public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
+    
     parent::__construct($oLanguageObject, $aRequestPath, $iId);
+    // $this->aReferences = ReferencePeer::getReferences($oLanguageObject);
     $this->oRichtextUtil = new RichtextUtil("text_module_editor_$iId");
   }
   

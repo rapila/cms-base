@@ -220,6 +220,7 @@ class RichtextUtil {
   }
   
   public function setTrackReferences($mTrackReferences) {
+    var_dump($mTrackReferences); exit;
     $this->mTrackReferences = $mTrackReferences;
   }
 
