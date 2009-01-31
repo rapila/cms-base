@@ -220,11 +220,11 @@ class RichtextUtil {
   }
   
   public function setTrackReferences($mTrackReferences) {
-      $this->mTrackReferences = $mTrackReferences;
+    $this->mTrackReferences = $mTrackReferences;
   }
 
   public function getTrackReferences() {
-      return $this->mTrackReferences;
+    return $this->mTrackReferences;
   }
   
   private function addTrackReference($iToId, $sToClass) {

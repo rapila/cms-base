@@ -170,19 +170,17 @@ class DocumentsBackendModule extends BackendModule {
         }
         
         //delete button
-        $sDeleteButtenTemplate = "delete_button";
-        $sDeleteItemMessage = "delete_item";
         $sDeleteAlertMessage = StringPeer::getString("delete_confirm");
         if($this->mayNotDelete() || $bHasReferences) {
-          $sDeleteButtenTemplate = "delete_button_inactive";
+          $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
           $sDeleteItemMessage = "delete_item_inactive";
-          $sDeleteAlertMessage = StringPeer::getString($this->mayNotDelete() ? 'no_permission_for_action' : 'document.has_references');
+        } else {
+          $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
+          $sDeleteItemMessage = "delete_item";
         }
-        $oDeleteTemplate = $this->constructTemplate($sDeleteButtenTemplate, true);
         $oDeleteTemplate->replaceIdentifier("action", $sActionLink);
-        $oDeleteTemplate->replaceIdentifier("message_js", $sDeleteAlertMessage);
+        $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString($this->mayNotDelete() ? 'no_permission_for_action' : 'document.has_references'));
         $oDeleteTemplate->replacePstring($sDeleteItemMessage, array('name' => $this->oDocument->getName()));
-
         $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
       }
       
