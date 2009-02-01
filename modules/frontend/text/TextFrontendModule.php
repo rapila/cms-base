@@ -5,7 +5,9 @@
 class TextFrontendModule extends FrontendModule {
   
   private static $TEXT_ENCODING = "utf-8";
-  private $aReferences; // existing references, to be removed if not set anymore
+  
+  // existing references, to be removed if not set anymore
+  private $aReferences; 
   
   private $oRichtextUtil;
   
