@@ -12,7 +12,7 @@ class TextFrontendModule extends FrontendModule {
   public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
     
     parent::__construct($oLanguageObject, $aRequestPath, $iId);
-    // $this->aReferences = ReferencePeer::getReferences($oLanguageObject);
+    $this->aReferences = ReferencePeer::getReferencesFromObject($oLanguageObject);
     $this->oRichtextUtil = new RichtextUtil("text_module_editor_$iId");
   }
   
@@ -32,6 +32,10 @@ class TextFrontendModule extends FrontendModule {
   }
   
   public function save(Blob $oData) {
+    // delete all references before saving the tracked ones
+    foreach($this->aReferences as $oReference) {
+      $oReference->delete();
+    }
     $this->oRichtextUtil->setTrackReferences($this->oLanguageObject);
     $oData->setContents($this->oRichtextUtil->parseInputFromMce());
   }

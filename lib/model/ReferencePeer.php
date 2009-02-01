@@ -59,6 +59,11 @@ class ReferencePeer extends BaseReferencePeer {
     return self::doSelect($oCriteria);
   }
   
+  public static function getReferencesFromObject($mFromObject) {
+    $oCriteria = self::prepareCriteria($mFromObject);
+    return self::doSelect($oCriteria);
+  }
+  
   public static function removeReferences($mFromObject) {
     $oCriteria = self::prepareCriteria($mFromObject);
     return self::doDelete($oCriteria);

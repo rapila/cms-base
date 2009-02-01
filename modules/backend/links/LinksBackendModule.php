@@ -64,6 +64,7 @@ class LinksBackendModule extends BackendModule {
         $sDeleteItemMessage = "delete_item_inactive";
         $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString('document.has_references'));
       } else {
+        $oDeleteTemplate = $this->constructTemplate("delete_button", true);
         $sDeleteButtenTemplate = "delete_button";
       }
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oLink->getName()));
