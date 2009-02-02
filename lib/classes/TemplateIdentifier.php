@@ -9,7 +9,7 @@ class TemplateIdentifier {
 
   public static $PARAMETER_EMPTY_VALUE = null;
 
-  function __construct($sName, $sValue, $sParameters, $oTemplate)
+  function __construct($sName, $sValue, $sParameters, $oTemplate=null)
   {
     $this->aParameters = array();
     $this->oTemplate = $oTemplate;

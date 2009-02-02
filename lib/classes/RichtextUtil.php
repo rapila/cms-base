@@ -145,6 +145,10 @@ class RichtextUtil {
   
   public static function externalLinkCallback($oIdentifier) {
     $oLink = LinkPeer::retrieveByPk($oIdentifier->getValue());
+    //Mailto-Link handling
+    if(Util::startsWith($oLink->getUrl(), 'mailto:')) {
+      return self::mailtoLinkCallback(new TemplateIdentifier('mailto_link', substr($oLink->getUrl(), strlen('mailto:')), array('link_text' => $oIdentifier->getParameter("link_text"))));
+    }
     return self::writeTagForIdentifier("a", array('href' => $oLink->getUrl(), 'title' => $oLink->getDescription(), 'rel' => 'external', 'class' => 'external_link'), $oIdentifier);
   }
   
@@ -254,6 +258,7 @@ class RichtextUtil {
       }
     }
     if($oHtmlTag->getName() === 'a') {
+      if($sParsedChildren === '') return '';
       $bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
       if($bHasMatched) {
         $sFileMethod = $aMatches[1];
