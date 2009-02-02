@@ -25,7 +25,7 @@ class DocumentsBackendModule extends BackendModule {
       $this->sDocumentKind = $_REQUEST['document_kind'] !== '' ? $_REQUEST['document_kind'] : null;
       Session::getSession()->setAttribute('document_kind', $this->sDocumentKind);
     } else {
-      $this->sDocumentKind = Session::getSession()->getAttribute('document_kind') !== null ? Session::getSession()->getAttribute('document_kind') : 'application';
+      $this->sDocumentKind = Session::getSession()->getAttribute('document_kind');
     }
 
     // selected_document_category_id can be specific int, all, without category
@@ -45,7 +45,7 @@ class DocumentsBackendModule extends BackendModule {
       $iId = Manager::peekNextPathItem();
       $this->oDocument = DocumentPeer::retrieveByPk($iId);
       if($this->oDocument) {
-        if($this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
+        if($this->sDocumentKind !== self::ALL_CATEGORIES && $this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
           $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind();
         }
         $this->aReferences = ReferencePeer::getReferences($this->oDocument);
