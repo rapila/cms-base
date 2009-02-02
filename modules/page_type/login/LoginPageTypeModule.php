@@ -3,8 +3,6 @@
   * @package modules.page_type
   */
 class LoginPageTypeModule extends DefaultPageTypeModule {
-  
-  const GROUP_REQUIERED = 'Mitglied'; // should be configured in cms.yml ?
   private $sAction;
   
   public function __construct(Page $oPage) {

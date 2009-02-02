@@ -396,6 +396,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     }
     $this->oCurrentContentObject->save();
     $oLanguageObject->save();
+    ReferencePeer::saveUnsavedReferences();
     if($oLanguageObjectHistory !== null) {
       $oLanguageObjectHistory->setObjectId($oLanguageObject->getObjectId());
       $oLanguageObjectHistory->setLanguageId($oLanguageObject->getLanguageId());

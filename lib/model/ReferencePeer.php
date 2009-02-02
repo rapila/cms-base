@@ -19,11 +19,17 @@
  * @package    model
  */
 class ReferencePeer extends BaseReferencePeer {
+  private static $aUnsavedReferences = array();
+  
   /**
   * adds a reference track from an object to another if that reference does not already exist
   * expects objects or arrays in the form array(id, 'ModelName')
   */
   public static function addReference($mFromObject, $mToObject) {
+    if($mFromObject instanceof BaseObject && $mFromObject->isNew()) {
+      self::$aUnsavedReferences[] = array($mFromObject, $mToObject);
+      return;
+    }
     
     self::prepareObjectArgument($mFromObject);
     self::prepareObjectArgument($mToObject);
@@ -72,6 +78,15 @@ class ReferencePeer extends BaseReferencePeer {
   public static function removeReference($mFromObject, $mToObject) {
     $oCriteria = self::prepareCriteria($mFromObject, $mToObject);
     return self::doDelete($oCriteria);
+  }
+  
+  public static function saveUnsavedReferences() {
+    $aUnsavedReferences = self::$aUnsavedReferences;
+    self::$aUnsavedReferences = array();
+    foreach($aUnsavedReferences as $aUnsavedReference) {
+      self::addReference($aUnsavedReference[0], $aUnsavedReference[1]);
+    }
+    return count(self::$aUnsavedReferences);
   }
   
   private static function prepareObjectArgument(&$mObject) {
