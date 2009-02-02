@@ -158,7 +158,7 @@ class DocumentsBackendModule extends BackendModule {
         // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
         $bHasReferences = count($this->aReferences) > 0;
         if($bHasReferences) {
-          $oTemplate->replaceIdentifier('references', $this->getReferenceMessage($this->aReferences));
+          $oTemplate->replaceIdentifier('references', $this->getReferenceMessages($this->aReferences));
         }
         
         //delete button
