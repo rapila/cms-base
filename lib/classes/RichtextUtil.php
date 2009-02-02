@@ -218,8 +218,7 @@ class RichtextUtil {
     return $oTemplate;
   }
 
-  public function getAreaName()
-  {
+  public function getAreaName() {
       return $this->sAreaName;
   }
   

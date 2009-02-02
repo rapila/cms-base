@@ -181,11 +181,20 @@ class CheckBackendModule extends BackendModule {
 	
 	private function doCheckContent() {
     $aLanguageObjects = LanguageObjectPeer::doSelect(new Criteria());
+    $oRichtextUtil = new RichtextUtil();
     foreach($aLanguageObjects as $oLanguageObject) {
       $this->log("Checking language object ".$oLanguageObject->getObjectId()." in ".$oLanguageObject->getLanguage()->getName());
       if($oLanguageObject->getContentObject() === null) {
         $this->log("Error: language object ".$oLanguageObject->getObjectId()." in ".$oLanguageObject->getLanguage()->getName()." is orphaned, removing", self::LOG_LEVEL_NOTICE);
         $oLanguageObject->delete();
+      }
+      if($oLanguageObject->getContentObject()->getObjectType() === 'text') {
+        $this->log("Re-creating all references in text language object", self::LOG_LEVEL_NOTICE);
+        $_POST[$oRichtextUtil->getAreaName()] = RichtextUtil::parseStorageForBackendOutput($oLanguageObject->getData()->getContents());
+        $oRichtextUtil->setTrackReferences($oLanguageObject);
+        $oLanguageObject->getData()->setContents($oRichtextUtil->parseInputFromMce());
+        $oLanguageObject->setData($oLanguageObject->getData());
+        $oLanguageObject->save(); 
       }
     }
 	}
