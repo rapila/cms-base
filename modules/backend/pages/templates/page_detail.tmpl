@@ -35,6 +35,8 @@
     </fieldset>
     {{writeFlashValue=page_create_forbidden}}
     {{writeFlashValue=page_detail_forbidden}}
+    {{writeFlashValue=page_delete_has_children}}
+    {{writeFlashValue=page_delete_has_references}}
     {{page_properties}}    
     <fieldset>
       {{identifierContext=start;name=may_edit_page}}
@@ -51,3 +53,4 @@
 <div id="clone_area">
   {{includeTemplate=page_detail_property;omitIdentifiers}}
 </div>
+{{includeTemplate=backend/references;fromBase}}

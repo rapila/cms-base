@@ -2,6 +2,10 @@
 require_once 'model/om/BasePage.php';
  
 class Page extends BasePage {  
+  
+  const DELETE_NOT_ALLOWED_CODE = 11;
+  const REFERENCE_EXISTS_CODE = 44;
+  
   private $bIsActive = null;
   private $bIsRoot = null;
   
@@ -496,9 +500,13 @@ class Page extends BasePage {
 
   public function delete($con = null) {
     if($this->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
-      throw new Exception('Pages with children are not allowed to be deleted');
+      throw new Exception('Pages with children are not allowed to be deleted', self::DELETE_NOT_ALLOWED_CODE);
     } else {
+      if(ReferencePeer::hasReference($this)) {
+        throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", self::REFERENCE_EXISTS_CODE);
+      }
       TagPeer::deleteTagsForObject($this);
+      ReferencePeer::removeReferences($this);
       return parent::delete($con);
     }
   }

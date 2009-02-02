@@ -42,6 +42,27 @@ abstract class BackendModule extends Module {
     return Util::link($this->getModuleName()."/".$sPath, null, $aParameters);
   }
   
+  protected function getReferenceMessages($aReferences) {
+    $oTemplate = new Template(TemplateIdentifier::constructIdentifier('references'), null, true);
+    foreach($aReferences as $oReference) {
+      $oRefTemplate = null;
+      if($oReference->getFromModelName() === 'LanguageObject') {
+        $oReferencedFromObject = $oReference->getFrom();
+        $oContentObject = $oReferencedFromObject->getContentObject();
+        $oRefTemplate = $this->constructTemplate('reference_language_object', true);
+        $oRefTemplate->replaceIdentifier('page_name', $oContentObject->getPage()->getName());
+        $oRefTemplate->replaceIdentifier('container_name', $oContentObject->getContainerName());
+        $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'BackendManager')), 'edit'));
+      } else {
+        $oRefTemplate = $this->constructTemplate('reference_other', true);
+        $oRefTemplate->replaceIdentifier('object_class', $oReference->getFromModelName());
+        $oRefTemplate->replaceIdentifier('object_id', $oReference->getFromId());
+      }
+      $oTemplate->replaceIdentifierMultiple('references', $oRefTemplate);
+    }
+    return $oTemplate;
+  }
+  
   protected function parseTree($oTemplate, $aItems, $oCurrentObject = null, $aParameters = array()) {
     foreach($aItems as $oItem) {
       $oItemTemplate = $this->constructTemplate("tree_item", true);

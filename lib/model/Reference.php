@@ -15,16 +15,15 @@ require_once 'model/om/BaseReference.php';
  * @package    model
  */
 class Reference extends BaseReference {
-  public function getFromIdObjectId() {
-    $aFromIdExploded = $this->getFromIdExploded();
-    return (int) $aFromIdExploded[0];
-  }
-  public function getFromIdLanguageId() {
-    $aFromIdExploded = $this->getFromIdExploded();
-    return $aFromIdExploded[1];
+  
+  public function getFrom() {
+    $sClassName = "{$this->getFromModelName()}Peer";
+    return call_user_func(array($sClassName, 'retrieveByPk'), $this->getFromId());
   }
   
-  private function getFromIdExploded() {
-    return explode('_', $this->getFromId());
+  public function getTo() {
+    $sClassName = "{$this->getToModelName()}Peer";
+    return call_user_func(array($sClassName, 'retrieveByPk'), $this->getToId());
   }
+  
 } // Reference

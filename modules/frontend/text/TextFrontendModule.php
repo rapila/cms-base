@@ -6,16 +6,13 @@ class TextFrontendModule extends FrontendModule {
   
   private static $TEXT_ENCODING = "utf-8";
   
-  // existing references, to be removed if not set anymore
-  private $aReferences; 
-  
   private $oRichtextUtil;
   
   public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
     
     parent::__construct($oLanguageObject, $aRequestPath, $iId);
-    $this->aReferences = ReferencePeer::getReferencesFromObject($oLanguageObject);
     $this->oRichtextUtil = new RichtextUtil("text_module_editor_$iId");
+    $this->oRichtextUtil->setTrackReferences($this->oLanguageObject);
   }
   
   public function renderFrontend() {
@@ -34,11 +31,6 @@ class TextFrontendModule extends FrontendModule {
   }
   
   public function save(Blob $oData) {
-    // delete all references before saving the tracked ones
-    foreach($this->aReferences as $oReference) {
-      $oReference->delete();
-    }
-    $this->oRichtextUtil->setTrackReferences($this->oLanguageObject);
     $oData->setContents($this->oRichtextUtil->parseInputFromMce());
   }
   

@@ -19,11 +19,16 @@
  * @package model
  */	
 class LanguageObjectPeer extends BaseLanguageObjectPeer {
-
-  public static function getReferencedLanguageObject($sObjectId, $sLanguageId) {
-    $oCriteria = new Criteria();
-    $oCriteria->add(self::OBJECT_ID, (int) $sObjectId);
-    $oCriteria->add(self::LANGUAGE_ID, $sLanguageId);
-    return self::doSelectOne($oCriteria);
+  /**
+  * Corresponds to the overriding of {@link LanguageObject->getId()}
+  * Provides a unified way of working with stored references (in the references or tags tables)
+  */
+  public static function retrieveByPk($object_id, $language_id = null, $con = null) {
+    if($language_id === null && strpos($object_id, '_') !== false) {
+      $object_id = explode('_', $object_id);
+      $language_id = $object_id[1];
+      $object_id = $object_id[0];
+    }
+    return parent::retrieveByPk((int)$object_id, $language_id, $con);
   }
 } // LanguageObjectPeer

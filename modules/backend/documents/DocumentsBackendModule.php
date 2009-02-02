@@ -156,17 +156,9 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("document_link", $sDocLink, null, Template::NO_HTML_ESCAPE);
 
         // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
-        $bHasReferences = false;
-        if(count($this->aReferences) > 0) {
-          $bHasReferences = true;
-          foreach($this->aReferences as $oReference) {
-            $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
-          $oRefTemplate = $this->constructTemplate('references', true);
-          $oRefTemplate->replaceIdentifier('page_name', $oLanguageObject->getContentObject()->getPage()->getName());
-          $oRefTemplate->replaceIdentifier('container_name', $oLanguageObject->getContentObject()->getContainerName());
-          $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oLanguageObject->getContentObject()->getPage()->getId(), 'edit', $oLanguageObject->getId()))), 'edit'));
-          $oTemplate->replaceIdentifierMultiple('references', $oRefTemplate);
-          }
+        $bHasReferences = count($this->aReferences) > 0;
+        if($bHasReferences) {
+          $oTemplate->replaceIdentifier('references', $this->getReferenceMessage($this->aReferences));
         }
         
         //delete button

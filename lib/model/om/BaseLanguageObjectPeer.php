@@ -1748,8 +1748,7 @@ abstract class BaseLanguageObjectPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param int $object_id
-	   @param string $language_id
-	   
+	 * @param string $language_id
 	 * @param      Connection $con
 	 * @return     LanguageObject
 	 */

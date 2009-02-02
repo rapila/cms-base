@@ -255,7 +255,8 @@ class PagesBackendModule extends BackendModule {
       }
       $oTemplate->replaceIdentifier("page_properties", $oPropertyTemplate);
     }
-          
+    
+    //Page strings
     $aLanguages=LanguagePeer::getLanguages(false, true);
     if($aLanguages != null) {
       foreach($aLanguages as $oLanguage) {
@@ -270,11 +271,14 @@ class PagesBackendModule extends BackendModule {
         $oTitleTemplate->replaceIdentifier("language", StringPeer::getString('language.'.$oLanguage->getId()));
         $oTitleTemplate->replaceIdentifier("display_class", BackendManager::getContentEditLanguage() == $oLanguage->getId() ? ' open' : '');
         $oTitleTemplate->replaceIdentifier("display_style", BackendManager::getContentEditLanguage() == $oLanguage->getId() ? 'block' : 'none');
-        
+      
         $oTemplate->replaceIdentifierMultiple("titles", $oTitleTemplate);
       }
     }
-   return $oTemplate;
+    
+    //References
+    $oTemplate->replaceIdentifier('references', $this->getReferenceMessages(ReferencePeer::getReferences($this->oPage)));
+    return $oTemplate;
   }
   
   private function setParentPagesPerLevel($oPage, $iLevel=0, $bExcludeCurrent=true) {
@@ -344,7 +348,13 @@ class PagesBackendModule extends BackendModule {
       }
       
     } catch (Exception $e) {
-      $oFlash->addMessage('page_has_children');
+      if($e->getCode() == Page::DELETE_NOT_ALLOWED_CODE) {
+        $oFlash->addMessage('page_delete_has_children');
+      } else if ($e->getCode() == Page::REFERENCE_EXISTS_CODE) {
+        $oFlash->addMessage('page_delete_has_references');
+      } else {
+        throw $e;
+      }
     }
     $oFlash->finishReporting();
     if(Flash::noErrors()) {
@@ -539,8 +549,6 @@ class PagesBackendModule extends BackendModule {
       // set user rights for page
       $oUser = Session::getSession()->getUser();
       $aMissingRights = $oUser->getMissingRights($this->oPage, true);
-      
-      // Util::dumpAll($aMissingRights);
       
       if(!$oUser->getIsAdmin() && count($aMissingRights)>0) {
         $oGroup = GroupPeer::getGroupByName($this->oPage->getName().'_manager');

@@ -15,8 +15,21 @@ require_once 'model/om/BaseLanguageObject.php';
  * @package model
  */	
 class LanguageObject extends BaseLanguageObject {
+  /**
+  * Corresponds to the overriding of {@link LanguageObjectPeer::retrieveByPk()}
+  * Provides a unified way of working with stored references (in the references or tags tables)
+  */
   public function getId() {
     return $this->getObjectId().'_'.$this->getLanguageId();
+  }
+  
+  public function delete($con = null) {
+    if(ReferencePeer::hasReference($this)) {
+      throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
+    }
+    TagPeer::deleteTagsForObject($this);
+    ReferencePeer::removeReferences($this);
+    return parent::delete($con);
   }
   
   public function save($oConnection = null) {

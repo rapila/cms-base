@@ -129,9 +129,7 @@ class BackendManager extends Manager {
        * @todo: implement better solution for this
        */
       $aUrlParameters = array($sModuleName);
-      if($sModuleName === "pages" && Manager::getCurrentPage()) {
-        array_push($aUrlParameters, Manager::getCurrentPage()->getId());
-      } else if($sModuleName === "content" && Manager::getCurrentPage()) {
+      if(($sModuleName === "pages" || $sModuleName === "content") && Manager::getCurrentPage()) {
         array_push($aUrlParameters, Manager::getCurrentPage()->getId());
       }
       $sUrl = Util::link($aUrlParameters);

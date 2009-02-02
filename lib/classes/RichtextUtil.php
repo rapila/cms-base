@@ -31,6 +31,10 @@ class RichtextUtil {
   }
   
   public function parseInputFromMce() {
+    if($this->mTrackReferences !== null) {
+      // delete all references before saving the tracked ones
+      ReferencePeer::removeReferences($this->mTrackReferences);
+    }
     $oTagParser = new TagParser("<text>".$_POST[$this->sAreaName]."</text>");
     $oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
     return $oTagParser->getTag()->__toString();

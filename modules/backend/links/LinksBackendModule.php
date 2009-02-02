@@ -7,14 +7,10 @@ class LinksBackendModule extends BackendModule {
   private $oLink = null;
   private $sSortField;
   private $sSortOrder;
-  private $aReferences;
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
       $this->oLink=LinkPeer::retrieveByPk(Manager::usePath()); 
-      if($this->oLink) {
-        $this->aReferences = ReferencePeer::getReferences($this->oLink);
-      }
     }
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
@@ -47,19 +43,10 @@ class LinksBackendModule extends BackendModule {
     
     if(!$this->oLink->isNew()) {
       // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
-      $bHasReferences = false;
-      if(count($this->aReferences) > 0) {
-        $bHasReferences = true;
-        foreach($this->aReferences as $oReference) {
-          $oLanguageObject = LanguageObjectPeer::getReferencedLanguageObject($oReference->getFromIdObjectId(), $oReference->getFromIdLanguageId());
-          $oRefTemplate = $this->constructTemplate('references', true);
-          $oRefTemplate->replaceIdentifier('page_name', $oLanguageObject->getContentObject()->getPage()->getName());
-          $oRefTemplate->replaceIdentifier('container_name', $oLanguageObject->getContentObject()->getContainerName());
-          $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oLanguageObject->getContentObject()->getPage()->getId(), 'edit', $oLanguageObject->getId()))), 'edit'));
-          $oTemplate->replaceIdentifierMultiple('references', $oRefTemplate);
-        }
-      }
+      $aReferences = ReferencePeer::getReferences($this->oLink);
+      $bHasReferences = count($aReferences) > 0;
       if($bHasReferences) {
+        $oTemplate->replaceIdentifier('references', $this->getReferenceMessages($aReferences));
         $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
         $sDeleteItemMessage = "delete_item_inactive";
         $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString('document.has_references'));
@@ -93,12 +80,15 @@ class LinksBackendModule extends BackendModule {
   }
   
   public function delete() {
-    if(count($this->aReferences) === 0) {
+    //Try to avoid an printing exception when references are still used
+    try {
       $this->oLink->delete();
-      $this->oLink=null;
       Util::redirect($this->link());
+    } catch (Exception $e) {
+      Flash::getFlash()->addMessage('link_delete_has_references');
+      Flash::getFlash()->finishReporting();
     }
-  }  
+  }
   
   protected function validateForm($oFlash) {
     $oFlash->checkForValue('name');

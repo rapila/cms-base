@@ -70,7 +70,11 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function includeTemplate($oTemplateIdentifier, &$iFlags) {
-    $oTemplate = new Template($oTemplateIdentifier->getValue(), $this->oTemplate->getTemplatePath(), false, false, null, $this->oTemplate->getTemplateName());
+    $oTemplatePath = $this->oTemplate->getTemplatePath();
+    if($oTemplateIdentifier->hasParameter('fromBase')) {
+      $oTemplatePath = null;
+    }
+    $oTemplate = new Template($oTemplateIdentifier->getValue(), $oTemplatePath, false, false, null, $this->oTemplate->getTemplateName());
     $iFlags = Template::LEAVE_IDENTIFIERS|Template::NO_RECODE;
     if($oTemplateIdentifier->hasParameter('omitIdentifiers')) {
       $iFlags = Template::NO_RECODE;
