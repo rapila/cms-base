@@ -1,0 +1,19 @@
+<script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
+  <script type="text/javascript">
+<!--//--><![CDATA[//><!--
+  jQuery(window).load = function() {
+    Recaptcha.create("{{key}}",
+    "{{id}}", {
+       theme: "red",
+       callback: Recaptcha.focus_response_field,
+       lang: '{{writeSessionAttribute=language}}'
+    });
+  };
+//--><!]]>
+</script>
+<div id="{{id}}"></div>
+<noscript>
+  <iframe src="{{server}}/noscript?k={{key}}" height="300" width="500" frameborder="0"></iframe><br />
+  <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+  <input type="hidden" name="recaptcha_response_field" value="manual_challenge" />
+</noscript>
