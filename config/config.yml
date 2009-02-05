@@ -75,6 +75,8 @@ frontend:
 #possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
   doctype: strict
   protect_email_addresses: false
+  re_captcha_private_key: '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'
+  re_captcha_public_key: '6Lfm_gQAAAAAACIbK9PxwwhDhkGJHcHEcdIRRRR9'
 
 encoding:
   db: utf-8

@@ -1,5 +1,7 @@
 <?php
 
+require_once('recaptcha/recaptchalib.php');
+
 class FormFrontendModule extends DynamicFrontendModule {
   
   public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
@@ -80,6 +82,19 @@ class FormFrontendModule extends DynamicFrontendModule {
     return $this->constructTemplate("backend.js")->render();
   }
   
+  public static function getRecaptchaCode($sId = '') {
+    $oTemplate = self::constructTemplateForModuleAndType(self::$MODULE_TYPE, 'form', 'recaptcha');
+    $oTemplate->replaceIdentifier('server', RECAPTCHA_API_SERVER);
+    $oTemplate->replaceIdentifier('key', Settings::getSetting('frontend', 're_captcha_public_key', '6Lfm_gQAAAAAACIbK9PxwwhDhkGJHcHEcdIRRRR9'));
+    $oTemplate->replaceIdentifier('id', 'recaptcha_content_'.$sId);
+    return $oTemplate;
+  }
+  
+  public static function validateRecaptchaInput() {
+    $oAnswer = recaptcha_check_answer(Settings::getSetting('frontend', 're_captcha_private_key', '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'), $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+    return $oAnswer->is_valid;
+  }
+  
   public static function getContentInfo($oLanguageObject) {
     $oFormStorage = unserialize($oLanguageObject->getData()->getContents());
     
@@ -125,6 +140,7 @@ class FormStorage {
       $oTemplate->replaceIdentifier('option', $sOptionValue, $sOptionName);
     }
     $oTemplate->replaceIdentifier('method', $this->getRequestMethod());
+    $oTemplate->replaceIdentifier('re_captcha', FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId));
   }
   
   public function getFormSessionKey() {
