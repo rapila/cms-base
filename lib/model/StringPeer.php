@@ -24,7 +24,7 @@ class StringPeer extends BaseStringPeer {
   public static function getStaticStrings($sLanguageId) {
     if(!isset(self::$STATIC_STRINGS[$sLanguageId])) {
       $oCache = new Cache($sLanguageId, DIRNAME_LANG);
-      $aLanguageFiles = ResourceFinder::findAllResources(array(DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_SITE_FIRST);
+      $aLanguageFiles = ResourceFinder::findAllResources(array(DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_BASE_FIRST);
       if($oCache->cacheFileExists() && !$oCache->isOutdated($aLanguageFiles)) {
         self::$STATIC_STRINGS[$sLanguageId] = $oCache->getContentsAsVariable();
       } else {
