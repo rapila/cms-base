@@ -31,11 +31,14 @@ class GetLinkArrayFileModule extends FileModule {
     }
     
     if(!in_array('documents', $this->aDisabledSections)) {
-      $aDocuments = DocumentPeer::getDocumentsByKindOfNotImage();
-      if(count($aDocuments) > 0) {
-        $aArrayText[] = '["--------'.StringPeer::getString('documents').'-----------",""]';
-      }
+      $aDocuments = DocumentPeer::getDocumentsForMceLinkArray();
+
+      $sDummyCat = null;
       foreach($aDocuments as $oDocument) {
+        if($oDocument->getDocumentCategoryId() !== $sDummyCat) {
+          $sDummyCat = $oDocument->getDocumentCategoryId();
+          $aArrayText[] = '["--------'.StringPeer::getString('documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
+        }
   	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
         $aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
       }

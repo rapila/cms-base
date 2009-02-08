@@ -37,7 +37,16 @@ class DocumentPeer extends BaseDocumentPeer {
       $oCriteria->addAscendingOrderByColumn(self::NAME);
     }
     return self::doSelect($oCriteria);
-  }  
+  } 
+  
+  public static function getDocumentsForMceLinkArray() {
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image', false)), Criteria::IN);
+    $oCriteria->addJoin(self::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
+    $oCriteria->addAscendingOrderByColumn(DocumentCategoryPeer::NAME);
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
+    return self::doSelect($oCriteria);
+  } 
     
   public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
     return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);

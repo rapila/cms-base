@@ -167,7 +167,7 @@ class DocumentsBackendModule extends BackendModule {
           $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
           $sDeleteItemMessage = "delete_item_inactive";
         } else {
-          $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
+          $oDeleteTemplate = $this->constructTemplate("delete_button", true);
           $sDeleteItemMessage = "delete_item";
         }
         $oDeleteTemplate->replaceIdentifier("action", $sActionLink);
@@ -188,7 +188,10 @@ class DocumentsBackendModule extends BackendModule {
       }
     } catch(Exception $e) {
       if($e->getCode() !== UPLOAD_ERR_NO_FILE) {
-        $oFlash->addMessage('upload_error');
+        switch($e->getCode()) {
+          case(UPLOAD_ERR_INI_SIZE) : $oFlash->addMessage('upload_error_php_max_size'); break;
+          default: $oFlash->addMessage('upload_error');
+        }
       } elseif($this->oDocument === null) {
         $oFlash->addMessage('no_upload_in_new_document');
       }
