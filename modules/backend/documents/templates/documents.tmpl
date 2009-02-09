@@ -1,8 +1,8 @@
 <fieldset id="resource_toggle">
   <form style="display:inline;min-width:200px" name="change_category" id="change_category" action="{{change_category_action}}" method="get">
-  {{identifierContext=start;name=document_kind_options}}
-    <select name="document_kind" id="document_kind" onchange="$('change_category').submit();">{{document_kind_options}}</select>
-  {{identifierContext=end;name=document_kind_options}}
+  {{identifierContext=start;name=selected_document_kind_options}}
+    <select name="selected_document_kind" id="selected_document_kind" onchange="$('change_category').submit();">{{selected_document_kind_options}}</select>
+  {{identifierContext=end;name=selected_document_kind_options}}
   {{identifierContext=start;name=document_categories_options}}
     <select name="selected_document_category_id" onchange="$('change_category').submit();">{{document_categories_options}}</select>
   {{identifierContext=end;name=document_categories_options}}

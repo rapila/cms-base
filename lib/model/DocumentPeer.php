@@ -20,22 +20,41 @@
  */	
 class DocumentPeer extends BaseDocumentPeer {
   
-  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsInverted = true, $sDocumentName = null) {
+  const ALL_CATEGORIES = '__all';
+  const WITHOUT_CATEGORY = '__without';
+  const ALL_KINDS = '__all';
+  
+  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsNotInverted=true, $sDocumentName=null) {
+    if($sDocumentKind === null) {
+      $sDocumentKind = self::ALL_KINDS;
+    }
+    if($iDocumentCategory === null) {
+      $iDocumentCategory = self::ALL_CATEGORIES;
+    }
+    
     $oCriteria = new Criteria();
+    
+    //Search
     if($sDocumentName !== null) {
       $oCriteria->add(self::NAME, "%$sDocumentName%", Criteria::LIKE);
     }
-    if($iDocumentCategory !== DocumentsBackendModule::ALL_CATEGORIES) {
-      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, is_int($iDocumentCategory) ? $iDocumentCategory : 0);
+    
+    //Catergory
+    if($iDocumentCategory !== self::ALL_CATEGORIES) {
+      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
     }
-    if($sDocumentKind !== null) {
-      $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsInverted)), Criteria::IN);
+    
+    //Kind
+    if($sDocumentKind !== self::ALL_KINDS) {
+      $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
+    
     $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
     $oCriteria->$sSortMethodName(constant('self::'.strtoupper($sOrderField)));
     if($sOrderField != 'NAME') {
       $oCriteria->addAscendingOrderByColumn(self::NAME);
     }
+    
     return self::doSelect($oCriteria);
   } 
   

@@ -60,7 +60,11 @@ class DocumentCategoriesBackendModule extends BackendModule {
     }
     $this->oDocCategory->setName($_POST['name']);
     // $this->oDocCategory->setSort($_POST['sort']);
-    $this->oDocCategory->setMaxWidth($_POST['max_width']);
+    if($_POST['max_width'] === '') {
+      $this->oDocCategory->setMaxWidth(null);
+    } else {
+      $this->oDocCategory->setMaxWidth($_POST['max_width']);
+    }
     $this->oDocCategory->setIsInactive(isset($_POST['is_inactive']));
     $this->oDocCategory->save();
     Util::redirect($this->link($this->oDocCategory->getId()));

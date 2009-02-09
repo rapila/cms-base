@@ -102,6 +102,44 @@ class Flash {
     }
   }
   
+  /**
+  * adds the following flash messages if 
+  */
+  public function checkForFileUpload($sName, $aAllowedMimeTypes = null, $bAllowEmpty = false) {
+    if(!isset($_FILES[$sName])) {
+      if(!$bAllowEmpty) {
+        $this->addMessage('no_upload');
+      }
+      return false;
+    }
+    if($_FILES[$sName]["error"] !== 0) {
+      switch($_FILES[$sName]["error"]) {
+        case UPLOAD_ERR_INI_SIZE:
+          $this->addMessage('upload_error_php_max_size', array('max_size' => ini_get('upload_max_filesize')));
+          return false;
+        case UPLOAD_ERR_NO_FILE:
+          if(!$bAllowEmpty) {
+            $this->addMessage('no_upload');
+          }
+          return false;
+        default:
+          $this->addMessage('upload_error');
+          return false;
+      }
+    }
+    if($aAllowedMimeTypes === 'DocumentType') {
+      if(DocumentTypePeer::getDocumentTypeForUpload($sName) === null) {
+        $this->addMessage('document_type');
+        return false;
+      }
+    } else if(is_array($aAllowedMimeTypes) && !in_array($_FILES[$sName]['type'], $aAllowedMimeTypes)) {
+        $this->addMessage('upload_type');
+        return false;
+    }
+    
+    return true;
+  }
+  
   public function getMessage($sName) {
     if(!isset($this->aMessages[$sName])) {
       return null;

@@ -33,10 +33,10 @@ class GetLinkArrayFileModule extends FileModule {
     if(!in_array('documents', $this->aDisabledSections)) {
       $aDocuments = DocumentPeer::getDocumentsForMceLinkArray();
 
-      $sDummyCat = null;
+      $iDummyCatId = 'null'; // cannot be null, since the document_category_id can be null
       foreach($aDocuments as $oDocument) {
-        if($oDocument->getDocumentCategoryId() !== $sDummyCat) {
-          $sDummyCat = $oDocument->getDocumentCategoryId();
+        if($oDocument->getDocumentCategoryId() !== $iDummyCatId) {
+          $iDummyCatId = $oDocument->getDocumentCategoryId();
           $aArrayText[] = '["--------'.StringPeer::getString('documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
         }
   	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
