@@ -102,3 +102,7 @@ CREATE TABLE `indirect_references`
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `indirect_references_U_1` (`from_id`, `from_model_name`, `to_id`, `to_model_name`)
 )Type=MyISAM;
+
+#svn r1817
+ALTER TABLE `documents` CHANGE `document_category_id` `document_category_id` INT( 11 ) NULL DEFAULT NULL;
+UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id` = 0;
