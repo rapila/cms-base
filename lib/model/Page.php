@@ -475,6 +475,21 @@ class Page extends BasePage {
     }
     return $this->getParent()->getPageOfType($sPageType);
   }
+  
+  public function getPageOfName($sName) {
+    if($this->getName() === $sName) {
+      return $this;
+    }
+    foreach($this->getChildren() as $oChild) {
+      if($oChild->getName() === $sName) {
+        return $oChild;
+      }
+    }
+    if($this->isRoot()) {
+      return $this->getName() === $sName ? $this : null;
+    }
+    return $this->getParent()->getPageOfName($sName);
+  }
 
   public function getTopNavigationName($bNameNotTitle = true) {
     $oPage = $this->getTopNavigationPage();

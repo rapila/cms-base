@@ -227,13 +227,20 @@ class FrontendManager extends Manager {
   
   //Used in fillAttributes to replace page_link identifiers
   public static function replacePageLinkIdentifier($oTemplateIdentifier) {
+    $oPage = null;
     $sName = $oTemplateIdentifier->getParameter('name');
+    if($sName !== null) {
+      if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
+        $oPage = self::getCurrentPage()->getPageOfName($sName);
+      } else {
+        $oPage = PagePeer::getPageByName($sName);
+      }
+    }
     $iId = $oTemplateIdentifier->getParameter('id');
-    $oPage = PagePeer::getPageByName($sName);
-    if($oPage == null) {
+    if($iId !== null) {
       $oPage = PagePeer::retrieveByPk($iId);
     }
-    if($oPage == null) {
+    if($oPage === null) {
       return null;
     }
     if(self::getCurrentPage() !== null && self::getCurrentPage()->getId() == $oPage->getId()) {
