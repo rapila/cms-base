@@ -69,4 +69,3 @@ class GetLinkArrayFileModule extends FileModule {
     print $oTemplate->render();
   }
 }
-?>
