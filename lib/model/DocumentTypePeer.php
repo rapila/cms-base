@@ -14,6 +14,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
   public static function getAllDocumentKindsWhereDocumentsExist() {
     $oCriteria = new Criteria();
     $oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_TYPE_ID, Criteria::INNER_JOIN);
+    $aResult = array();
     foreach(self::doSelect($oCriteria) as $oDocumentType) {
       $aKind = explode('/', $oDocumentType->getMimeType());
       $aResult[$aKind[0]] = StringPeer::getString('document_kind.'.$aKind[0]);
