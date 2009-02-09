@@ -23,6 +23,7 @@ class DisplayDocumentFileModule extends FileModule {
 
   public function renderFile() {
     $sCacheString = 'doc_'.$this->oDocument->getId().'_'.(isset($_REQUEST['max_width']) ? $_REQUEST['max_width'] : "full").(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
+    $oCache = new Cache($sCacheString, DIRNAME_IMAGES);
     
     $sDisplay = "inline";
     if(isset($_REQUEST['download']) && $_REQUEST['download'] == "true") {
@@ -30,12 +31,11 @@ class DisplayDocumentFileModule extends FileModule {
     }
     header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
     
-    $oCache = new Cache($sCacheString, DIRNAME_IMAGES);
-    
-    if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocument->getUpdatedAt())) {
+    $iTimestamp = $this->oDocument->getUpdatedAt();
+    if($oCache->cacheFileExists() && !$oCache->isOlderThan($iTimestamp)) {
+      $oCache->sendCacheControlHeaders($iTimestamp);
       header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
-      header("Content-Length: ".$oCache->fileSize());
-      $oCache->passContents();exit;
+      $oCache->passContents(true);exit;
     }
     
     if(isset($_REQUEST['max_width'])) {

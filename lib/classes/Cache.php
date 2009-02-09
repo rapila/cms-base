@@ -3,6 +3,7 @@ class Cache {
   
   private $bCacheIsNeverOff;
   private $sFilePath;
+  private $bCacheControlHeaderSent;
   
   public function __construct($sKey, $mPath=null) {
     $this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG;
@@ -12,6 +13,8 @@ class Cache {
    
     $sFileName = md5($sKey);
     $this->sFilePath = $sPath.'/'.$sFileName.'.cache';
+    
+    $this->bCacheControlHeaderSent = false;
   }
   
   /**
@@ -40,7 +43,9 @@ class Cache {
     return filemtime($this->sFilePath);
   }
   
-  //Returns the age of the cached contents in seconds
+  /**
+  * Returns the age of the cached contents in seconds
+  */
   public function getAge() {
     return time()-$this->getModificationDate();
   }
@@ -65,7 +70,9 @@ class Cache {
     return false;
   }
   
-  //Compares the timestamp of the cached contents to the given timestamp and returns true if the cached contents are older, false otherwise
+  /**
+  * Compares the timestamp of the cached contents to the given timestamp and returns true if the cached contents are older, false otherwise
+  */
   public function isOlderThan($iTimestamp) {
     if(is_string($iTimestamp)) {
       $iTimestamp = strtotime($iTimestamp);
@@ -73,7 +80,9 @@ class Cache {
     return $iTimestamp > $this->getModificationDate();
   }
   
-  //Convenience function for isOlderThan; takes a relative time and computes an absolute timestamp
+  /**
+  * Convenience function for isOlderThan; takes a relative time and computes an absolute timestamp
+  */
   public function ageIsMoreThan($iSeconds = 0, $iMinutes = 0, $iHours = 0, $iDays = 0) {
     $iHours += $iDays * 24;
     $iMinutes += $iHours * 60;
@@ -82,27 +91,40 @@ class Cache {
     return $this->isOlderThan(time() - $iSeconds);
   }
   
-  //Gets the raw (possibly binary) contents of the cache file
+  /**
+  * Gets the raw (possibly binary) contents of the cache file
+  */
   public function getContentsAsString() {
     return file_get_contents($this->sFilePath);
   }
   
-  //Gets the size of the cache file without reading the contents
+  /**
+  * Gets the size of the cache file without reading the contents
+  */
   public function fileSize() {
     return filesize($this->sFilePath);
   }
   
-  //Outputs the raw contents directly to the client
-  public function passContents() {
+  /**
+  * Outputs the raw contents directly to the client
+  */
+  public function passContents($bOutputContentLength=false) {
+    if($bOutputContentLength) {
+      header("Content-Length: ".$this->fileSize());
+    }
     return readfile($this->sFilePath);
   }
-  
-  //Returns the cached contents if they were not a string when saving
+
+  /**
+  * Returns the cached contents if they were not a string when saving
+  */
   public function getContentsAsVariable() {
     return unserialize(file_get_contents($this->sFilePath));
   }
   
-  //Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
+  /**
+  * Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
+  */
   public function setContents($mContents) {
     if($this->cacheIsOffForWriting()) {
       return;
@@ -113,9 +135,51 @@ class Cache {
     return file_put_contents($this->sFilePath, serialize($mContents));
   }
   
-  //Returns true if, for whatever reason, no data should be written to the cache.
-  //This can be triggered by the general->caching boolean setting in cms.yml
-  //Caching of config files is always on
+  /**
+  * Sends the cache control headers Last-Modified and ETag
+  * Uses the given timestamp as base for calculation. If it is omitted, the timestamp of the cache file is used;
+  * Additionally, this method exits if the client sent a matching If-None-Match or If-Modified-Since header
+  * You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
+  */
+  public function sendCacheControlHeaders($iTimestamp=null) {
+    if($this->bCacheControlHeaderSent) {
+      return;
+    }
+    
+    if($iTimestamp === null) {
+      if(!$this->cacheFileExists(false)) {
+        return;
+      }
+      $iTimestamp = $this->getModificationDate();
+    }
+    if(is_string($iTimestamp)) {
+      $iTimestamp = strtotime($iTimestamp);
+    }
+    
+    $sToken = md5($iTimestamp);
+    $sModifyDate = gmdate("D, d M Y H:i:s", $iTimestamp)." GMT";
+    header("ETag: $sToken");
+    header("Last-Modified: $sModifyDate");
+    $this->bCacheControlHeaderSent = true;
+    
+    if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $sToken) {
+      header("Not Modified", true, 304);
+      header('Content-Length: 0');
+      exit;
+    }
+    
+    if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $_SERVER['HTTP_IF_MODIFIED_SINCE'] === $sModifyDate) {
+      header("Not Modified", true, 304);
+      header('Content-Length: 0');
+      exit;
+    }
+  }
+  
+  /**
+  * Returns true if, for whatever reason, no data should be written to the cache.
+  * This can be triggered by the general->caching boolean setting in cms.yml
+  * Caching of config files is always on
+  */
   public function cacheIsOffForWriting() {
     return (!$this->bCacheIsNeverOff && !Settings::getSetting('general', 'caching', true));
   }
@@ -140,7 +204,9 @@ class Cache {
     return false;
   }
   
-  //Removes all cache files but not their parent directories. This is used by the mini_cms_clear_cache_and_set_permissions.sh script
+  /**
+  * Removes all cache files but not their parent directories. This is used by the mini_cms_clear_cache_and_set_permissions.sh script
+  */
   public static function clearAllCaches() {
     $aCachesDirs = ResourceFinder::findAllResources(array(DIRNAME_GENERATED, DIRNAME_CACHES), ResourceFinder::SEARCH_MAIN_ONLY);
     foreach($aCachesDirs as $sCachesDir) {

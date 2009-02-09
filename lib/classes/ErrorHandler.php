@@ -60,7 +60,7 @@ class ErrorHandler {
         $sAddress = Settings::getSetting('domain_holder', 'email', false);
       }
       if($sAddress) {
-        mb_send_mail($sAddress, "Error in Mini-CMS on ".Util::linkToSelf(), "[HTTP_REFERER] ".$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
+        mb_send_mail($sAddress, "Error in Mini-CMS on ".Util::linkToSelf(), "[HTTP_REFERER] ".@$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
       }
     }
   }
