@@ -6,7 +6,7 @@ requirements to install mini-cms
 
 procedure: 
 1. make database with dbuser and password and 
-- set them in the cms config file: site/config/cms.yml section [general/db_config/datasources/connection/]
+- set them in the cms config file: site/config/config.yml section [general/db_config/datasources/connection/]
 - import data/sql/cms_install.sql
     
 2. what about modrewrite/httpd/hosts/.htaccess

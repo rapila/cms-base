@@ -296,7 +296,7 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink());
       $this->oTemplate->replaceIdentifier("logout_link", Util::linkToSelf(null, array("be_logout" => 'true')));
     }
-    $this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config cms.yml for backend'));
+    $this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'));
   }
   
   private static function getWebLink($aPath = array(), $aParameters = array()) {
