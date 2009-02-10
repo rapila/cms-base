@@ -104,8 +104,8 @@ class UsersBackendModule extends BackendModule {
     
     //Groups
     if(!$this->oUser->isSessionUser()) { 
-      $oTemplate->replaceIdentifier("has_groups", "");
       $aGroups = GroupPeer::doSelect(new Criteria());
+      $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? '' : null);
       if(count($aGroups) > 0) {
         $aGroupOptions = Util::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
