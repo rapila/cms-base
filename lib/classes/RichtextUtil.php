@@ -6,6 +6,8 @@ class RichtextUtil {
   
   private static $RICHTEXT_INDEX = 0;
   
+  public static $USE_ABSOLUTE_LINKS = false;
+  
   private $sAreaName;
   private $aSettings;
   
@@ -97,7 +99,7 @@ class RichtextUtil {
         $aParameters['max_width'] = $oIdentifier->getParameter('max_width');
         $oWriter->setParameter('max_width', null);
       }
-      $oWriter->setParameter('src', Util::link(array('display_document', $oDocument->getId()), 'FileManager', $aParameters));
+      $oWriter->setParameter('src', self::getLink(array('display_document', $oDocument->getId()), 'FileManager', $aParameters));
       $oWriter->setParameter('alt', $oDocument->getDescription());
       $oWriter->setParameter('title', $oDocument->getDescription());
       return $oWriter->parse();
@@ -109,7 +111,7 @@ class RichtextUtil {
     $oDocument = DocumentPeer::retrieveByPk($iDocumentId);
     if($oDocument !== null && $oDocument->isImage()) {
       $oWriter = new TagWriter('img', $oIdentifier->getParameters());
-      $oWriter->setParameter('src', Util::link(array('display_document', $oDocument->getId()), 'FileManager'));
+      $oWriter->setParameter('src', self::getLink(array('display_document', $oDocument->getId()), 'FileManager'));
       $oWriter->setParameter('alt', $oDocument->getDescription());
       $oWriter->setParameter('title', $oDocument->getDescription());
       if($oIdentifier->hasParameter('max_width')) {
@@ -122,7 +124,7 @@ class RichtextUtil {
   public static function internalLinkCallback($oIdentifier) {
     $oPage = PagePeer::retrieveByPk($oIdentifier->getValue());
     if($oPage) {
-      $sLink = Util::link($oPage->getFullPathArray(), "FrontendManager");
+      $sLink = self::getLink($oPage->getFullPathArray(), "FrontendManager");
       return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier);
     }
   }
@@ -130,7 +132,7 @@ class RichtextUtil {
   public static function internalLinkCallbackBe($oIdentifier) {
     $oPage = PagePeer::retrieveByPk($oIdentifier->getValue());
     if($oPage) {
-      $sLink = Util::link(array('internal_link_proxy', $oPage->getId()), 'FileManager');
+      $sLink = self::getLink(array('internal_link_proxy', $oPage->getId()), 'FileManager');
       return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier);
     }
   }
@@ -161,7 +163,7 @@ class RichtextUtil {
   public static function externalLinkCallbackBe($oIdentifier) {
     $oLink = LinkPeer::retrieveByPk($oIdentifier->getValue());
     if($oLink) {
-      return self::writeTagForIdentifier("a", array('href' => Util::link(array('external_link_proxy', $oLink->getId()), 'FileManager')), $oIdentifier);
+      return self::writeTagForIdentifier("a", array('href' => self::getLink(array('external_link_proxy', $oLink->getId()), 'FileManager')), $oIdentifier);
     } else {
       return self::writeTagForIdentifier("a", array('href' => '#', 'style' => "color: red;!important;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Link missing!]');
     }
@@ -170,7 +172,7 @@ class RichtextUtil {
   public static function fileLinkCallback($oIdentifier) {
     $oDocument = DocumentPeer::retrieveByPk($oIdentifier->getValue());
     if($oDocument !== null) {
-     return self::writeTagForIdentifier("a", array('href' => Util::link(array('display_document', $oDocument->getId()), 'FileManager'), 'title' => $oDocument->getDescription() ? $oDocument->getDescription() : $oDocument->getName(), 'rel' => 'document', 'class' => 'document_link '.$oDocument->getExtension()), $oIdentifier);
+     return self::writeTagForIdentifier("a", array('href' => self::getLink(array('display_document', $oDocument->getId()), 'FileManager'), 'title' => $oDocument->getDescription() ? $oDocument->getDescription() : $oDocument->getName(), 'rel' => 'document', 'class' => 'document_link '.$oDocument->getExtension()), $oIdentifier);
     } else {
      return new Template($oIdentifier->getParameter('link_text'), null, true);
     }
@@ -179,9 +181,17 @@ class RichtextUtil {
   public static function fileLinkCallbackBe($oIdentifier) {
     $oDocument = DocumentPeer::retrieveByPk($oIdentifier->getValue());
     if($oDocument !== null) {
-      return self::writeTagForIdentifier("a", array('href' => Util::link(array('display_document', $oDocument->getId()), 'FileManager')), $oIdentifier);
+      return self::writeTagForIdentifier("a", array('href' => self::getLink(array('display_document', $oDocument->getId()), 'FileManager')), $oIdentifier);
     } else {
       return self::writeTagForIdentifier("a", array('style' => "color: red;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Document missing!]');
+    }
+  }
+  
+  private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
+    if(self::$USE_ABSOLUTE_LINKS) {
+      return Util::absoluteLink(Util::link($mLocation, $sManager, $aParameters));
+    } else {
+      return Util::link($mLocation, $sManager, $aParameters);
     }
   }
   

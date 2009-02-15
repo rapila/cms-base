@@ -22,6 +22,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
         $oItemTemplate->replaceIdentifier('description', $oDocument->getDescription());
         $oItemTemplate->replaceIdentifier('extension', $oDocument->getExtension());
         $oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
+        $oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
         $oListTemplate->replaceIdentifierMultiple('documents', $oItemTemplate);
       }
     } catch(Exception $e) {
