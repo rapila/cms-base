@@ -132,18 +132,7 @@ class TagsBackendModule extends BackendModule {
         if($sTag === "") {
           continue;
         }
-        $oTag = TagPeer::retrieveByName($sTag);
-        if($oTag === null) {
-          $oTag = new Tag();
-          $oTag->setName($sTag);
-          $oTag->save();
-        }
-        $oTagInstance = new TagInstance();
-        $oTagInstance->setTag($oTag);
-        $oTagInstance->setModelName($_REQUEST['model_name']);
-        $oTagInstance->setTaggedItemId($_REQUEST['tagged_item_id']);
-        $oTagInstance->setCreatedBy(Session::getSession()->getUserId());
-        $oTagInstance->save();
+        TagInstancePeer::newTagInstance($sTag, $_REQUEST['model_name'], $_REQUEST['tagged_item_id']);
       }
     } catch(Exception $e) {}
     

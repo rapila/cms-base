@@ -33,7 +33,7 @@ class Autoloader {
   
     if($sIncludeFilePath === null) {
       if(error_reporting() === 0) {
-        return eval("class $sClassName {function __construct() {throw new ClassNotFoundException('Could not find file for loading of class $sClassName', '$sClassName);}}");
+        return false;
       }
       throw new ClassNotFoundException("Could not find file for loading of class $sClassName", $sClassName);  
     }
@@ -41,6 +41,7 @@ class Autoloader {
     self::$CLASS_MAPPING[$sClassName] = $sIncludeFilePath;
     self::$MAPPING_HAS_BEEN_MODIFIED = true;
     require_once($sIncludeFilePath);
+    return true;
   }
   
   public static function saveIncludeCache() {

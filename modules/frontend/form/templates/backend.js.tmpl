@@ -8,7 +8,7 @@ Event.observe(window, "dom:loaded", function() {
 	var prototyper = new FormPrototyper($('clone_area'), $('form_fields'), Insertion.Bottom);
 	prototyper.bind_to(document_order_add, 'click');
 
-	$$("#form_fields button[type=delete]").each(function(delete_button) {
+	$$("#form_fields span.button.remove").each(function(delete_button) {
 	  Event.observe(delete_button, "click", function(event) {
 	    var up = delete_button.up();
 	    var label = up.previous();

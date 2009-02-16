@@ -18,6 +18,9 @@ class TagInstance extends BaseTagInstance {
   public function getCorrespondingDataEntry() { 
     if($this->getModelName() != '') {
       $sModelPeerName = $this->getModelName()."Peer";
+      if(!@class_exists($sModelPeerName)) {
+        return null;
+      }
       return call_user_func(array($sModelPeerName, 'retrieveByPk'), $this->getTaggedItemId());
     }
     return null;
@@ -27,11 +30,11 @@ class TagInstance extends BaseTagInstance {
     return $this->getTag()->getName();
   }
   
-  //Returns the OBJECT's name. call getTag()->getName() to get the tag name
+  //Returns the OBJECT's name. call getTagName() to get the tag name
   public function getName() {
     $oDataEntry = $this->getCorrespondingDataEntry();
     if($oDataEntry === null) {
-      return "";
+      return $this->getTaggedItemId();
     }
     return Util::nameForObject($oDataEntry);
   }
