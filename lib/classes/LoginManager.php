@@ -129,7 +129,7 @@ class LoginManager extends Manager {
     $oFlash->addMessage('login_check_params');
     $sUsernameDefault = $sUserName;
     $sPasswordDefault = $sPassword;
-    if (UserPeer::initializeFirstUserIfEmpty($sUsernameDefault, $sPasswordDefault)) {
+    if(UserPeer::initializeFirstUserIfEmpty($sUsernameDefault, $sPasswordDefault)) {
       $oFlash->removeMessage('login_check_params');
       $oFlash->addMessage('login_welcome');
       $oFlash->addMessage('login_welcome2', array( 'username' => $sUsernameDefault, 'password' => $sPasswordDefault));

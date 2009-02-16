@@ -66,8 +66,9 @@ class TagsBackendModule extends BackendModule {
     if($oTagInstance === null) {
       return;
     }
-    if(TagPeer::deleteInstance($oTagInstance) && $this->oTag === $oTag) {
-        $this->oTag = null;
+    $oTagInstance->delete();
+    if($this->oTag === $oTag && count($oTag->getTagInstances()) === 0) {
+      $this->oTag = null;
     }
   }
       
@@ -124,7 +125,7 @@ class TagsBackendModule extends BackendModule {
     try {
       $aTagInstances = TagPeer::tagInstancesForModel($_REQUEST['model_name'], $_REQUEST['tagged_item_id']);
       foreach($aTagInstances as $oTagInstance) {
-        TagPeer::deleteInstance($oTagInstance);
+        $oTagInstance->delete();
       }
       $aTags = explode(",", $_REQUEST['tags']);
       foreach($aTags as $sTag) {
@@ -158,25 +159,8 @@ class TagsBackendModule extends BackendModule {
       if(!Util::normalize($sTag)) {
         throw new Exception("Tag is empty");
       }
-      $oTag = TagPeer::retrieveByName($sTag);
-      if($oTag === null) {
-        $oTag = new Tag();
-        $oTag->setName($sTag);
-        $oTag->save();
-      }
-      $oTagInstance = TagInstancePeer::retrieveByPk($oTag->getId(), $_REQUEST['tagged_item_id'], $_REQUEST['model_name']);
-      if($oTagInstance !== null) {
-        throw new Exception("Instance of this tag does already exist");
-      }
-      $oTagInstance = new TagInstance();
-      $oTagInstance->setTag($oTag);
-      $oTagInstance->setModelName($_REQUEST['model_name']);
-      $oTagInstance->setTaggedItemId($_REQUEST['tagged_item_id']);
-      $oTagInstance->setCreatedBy(Session::getSession()->getUserId());
-      $oTagInstance->save();
-      return array($oTagInstance);
+      return array(TagInstancePeer::newTagInstance($sTag, $_REQUEST['model_name'], $_REQUEST['tagged_item_id']));
     } catch(Exception $e) {}
-    
     return array();
   }
   

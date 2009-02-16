@@ -23,6 +23,10 @@ class TagInstance extends BaseTagInstance {
     return null;
   }
   
+  public function getTagName() {
+    return $this->getTag()->getName();
+  }
+  
   //Returns the OBJECT's name. call getTag()->getName() to get the tag name
   public function getName() {
     $oDataEntry = $this->getCorrespondingDataEntry();
@@ -30,5 +34,22 @@ class TagInstance extends BaseTagInstance {
       return "";
     }
     return Util::nameForObject($oDataEntry);
+  }
+  
+  public function save($oConnection = null) {
+    if($this->isNew()) {
+      $this->setCreatedBy(Session::getSession()->getUserId());
+    }
+    return parent::save($oConnection);
+  }
+  
+  public function delete($oConnection = null) {
+    $oTag = $this->getTag();
+    if(count($oTag->getTagInstances()) === 1) {
+      $oTag->delete();
+    }
+    $mReturn = parent::delete($oConnection);
+    $oTag->reloadInstances();
+    return $mReturn;
   }
 } // TagInstance

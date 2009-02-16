@@ -82,6 +82,30 @@ class ContentBackendModule extends BackendModule {
     return call_user_func_array(array($this->oPageTypeModule, $sMethod), $aArgs);
   }
 
+  /**
+  * Returns the class name of the main model that is being modified at the moment by the backend module
+  * Used only to assign tags using the tag panel
+  * Default is null
+  */
+  public function getModelName() {
+    if($this->oPageTypeModule === null) {
+      return null;
+    }
+    return $this->oPageTypeModule->getModelName();
+  }
+  
+  /**
+  * Returns the primary key value of the main model ({@link getModelName}) row that is being modified at the moment by the backend module
+  * Used only to assign tags using the tag panel
+  * Default is null
+  */
+  public function getCurrentId() {
+    if($this->oPageTypeModule === null) {
+      return null;
+    }
+    return $this->oPageTypeModule->getCurrentId();
+  }
+
   public function customJs() {
     if($this->oPageTypeModule !== null) {
       return $this->oPageTypeModule->backendCustomJs;

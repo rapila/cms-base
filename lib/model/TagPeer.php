@@ -30,7 +30,7 @@ class TagPeer extends BaseTagPeer {
   public static function deleteTagsForObject($oObject) {
     $aTagInstances = self::tagInstancesForObject($oObject);
     foreach($aTagInstances as $oTagInstance) {
-      self::deleteInstance($oTagInstance);
+      $oTagInstance->delete();
     }
   }
   
@@ -43,16 +43,5 @@ class TagPeer extends BaseTagPeer {
     $oCriteria->add(TagInstancePeer::TAGGED_ITEM_ID, $iTaggedItemId);
     $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
     return TagInstancePeer::doSelect($oCriteria);
-  }
-  
-  public static function deleteInstance($oTagInstance) {
-    $oTag = $oTagInstance->getTag();
-    if(count($oTag->getTagInstances()) === 1) {
-      $oTag->delete();
-      return true;
-    }
-    $oTagInstance->delete();
-    $oTag->reloadInstances();
-    return false;
   }
 } // TagPeer

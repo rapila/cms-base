@@ -19,6 +19,28 @@
  * @package model
  */	
 class TagInstancePeer extends BaseTagInstancePeer {
+  public static function newTagInstance($sTagName, $sModelName, $iTaggedItemId) {
+    $oTag = TagPeer::retrieveByName($sTagName);
+    if($oTag === null) {
+      $oTag = new Tag();
+      $oTag->setName($sTagName);
+      $oTag->save();
+    }
+    $oTagInstance = self::retrieveByPk($oTag->getId(), $iTaggedItemId, $sModelName);
+    if($oTagInstance !== null) {
+      throw new Exception("Instance of this tag does already exist");
+    }
+    $oTagInstance = new TagInstance();
+    $oTagInstance->setTag($oTag);
+    $oTagInstance->setModelName($sModelName);
+    $oTagInstance->setTaggedItemId($iTaggedItemId);
+    $oTagInstance->save();
+    return $oTagInstance;
+  }
+  
+  public static function newTagInstanceForObject($sTagName, $oObject) {
+    return self::newTagInstance($sTagName, get_class($oObject), $oObject->getId());
+  }
   
   public static function getByModelNameAndIdCriteria($sModelName, $iId) {
     $oCriteria = new Criteria();

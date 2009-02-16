@@ -55,6 +55,18 @@ class Util {
   public static function trimStringsInArray(&$aArray) {
     return Util::runFunctionOnArrayValues($aArray, 'trim');
   }
+  
+  public static function arrayIsAssociative(&$aArray) {
+    if (!is_array($aArray) || empty($aArray) ) {
+      return false;
+    }
+    foreach (array_keys($aArray) as $mKey => $mValue) {
+      if ($mKey !== $mValue) { 
+        return true;
+      }
+    }
+    return false;
+  }
 
   public static function setEmptyArrayValuesToNull(&$aArray) {
     return Util::runFunctionOnArrayValues($aArray, create_function('$mValue', 'return $mValue === "" ? null : $mValue;'));
