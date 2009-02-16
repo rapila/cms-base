@@ -2,7 +2,7 @@
 <label for="form_type">{{writeString=form.form_type}}</label> <select id="form_type" name="form_type" class="switcher_field">{{form_types}}</select><br />
 <div class="conditional_field-for-form_type external"><label for="form_action">{{writeString=form.action}}</label> <input type="text" id="form_action" name="form_action" value="{{form_action}}" /><br /></div>
 <div class="conditional_field-for-form_type email"><label for="email_address">{{writeString=email}}</label> <input type="text" id="email_address" name="email_address" value="{{email_address}}" /><br />
-  <label for="template_addition">{{writeString=form.template_name_addition}}</label><input type="text" id="template_addition" name="template_addition" value="{{template_addition}}" /> {{writeString=template}}{{writeString=name}}e_mail_form_output_[input].tmpl<br /></div>
+  <label for="template_addition">{{writeString=form.template_name_addition}}</label><input type="text" id="template_addition" name="template_addition" value="{{template_addition}}" /> {{writeString=template}} {{writeString=name}} <span id="e_mail_template_name"></span><br /></div>
 <div class="conditional_field-for-form_type manager"><label for="manager">{{writeString=form_type.manager}}</label> <select name="manager" id="manager">{{manager}}</select><br /></div>
 <div id="form_fields" style="padding-top:.5em;">
   {{form_fields}}

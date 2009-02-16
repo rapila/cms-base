@@ -36,3 +36,18 @@ Event.observe(window, "dom:loaded", function() {
         add_conditional_to_switcher_field(switcher_field);
     });
 });
+
+
+Event.observe(window, "dom:loaded", function() {
+	var template_addition = $('template_addition');
+  var template_addition_preview = $('e_mail_template_name');
+  live_preview_handler = function(event) {
+	  if($F(template_addition) == '') {
+      template_addition_preview.innerHTML = 'e_mail_form_output.tmpl';
+	  } else {
+      template_addition_preview.innerHTML = 'e_mail_form_output_'+$F(template_addition)+'.tmpl';
+	  }
+  };
+	Event.observe(template_addition, 'keyup', live_preview_handler);
+  live_preview_handler();
+});
