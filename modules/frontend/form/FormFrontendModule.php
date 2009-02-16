@@ -57,7 +57,7 @@ class FormFrontendModule extends DynamicFrontendModule {
     if($oFormStorage->getFormType() === "manager") {
       $oFormStorage->addFormOption("manager", $_POST['manager']);
     }
-    
+
     foreach($_POST['field_names_'.$this->iId] as $iKey => $sFieldName) {
       if($sFieldName === "") {
         continue;
@@ -67,7 +67,7 @@ class FormFrontendModule extends DynamicFrontendModule {
       $oFormObject->setLabel($_POST['field_labels_'.$this->iId][$iKey]);
       $oFormObject->setDefaultValue($_POST['default_values_'.$this->iId][$iKey]);
       $oFormObject->setClassName($_POST['class_names_'.$this->iId][$iKey]);
-      $oFormObject->setIsRequired($_POST['is_required_'.$this->iId][$iKey]);
+      $oFormObject->setIsRequired(isset($_POST['is_required_'.$this->iId.'_'.$iKey]));
       $oFormStorage->addFormObject($oFormObject);
     }
     $oData->setContents(serialize($oFormStorage));
