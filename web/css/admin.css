@@ -534,6 +534,15 @@ span.button {
   background-image: url(../images/admin/edit.gif);
   background-position: 0 3px;
   background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+span.add {
+  background-image: url(../images/admin/add.png);
+}
+
+span.remove {
+  background-image: url(../images/admin/remove.png);
 }
 
 button,
