@@ -190,23 +190,19 @@ class FormStorage {
     return @$aFormAttributes[$sName];
   }
   
-  public function setRequestMethod($sRequestMethod)
-  {
+  public function setRequestMethod($sRequestMethod) {
       $this->sRequestMethod = $sRequestMethod;
   }
 
-  public function getRequestMethod()
-  {
+  public function getRequestMethod() {
       return $this->sRequestMethod;
   }
   
-  public function setFormType($sFormType)
-  {
+  public function setFormType($sFormType) {
       $this->sFormType = $sFormType;
   }
 
-  public function getFormType()
-  {
+  public function getFormType() {
       return $this->sFormType;
   }
   
@@ -232,6 +228,7 @@ class FormObject {
   private $sClassName;
   private $oParent;
   private $sValidator;
+  private $bIsRequired;
   
   public function __construct($sType, $sName = null, $sDefaultValue = null, $oParent = null, $sClassName = null) {
     $this->sType = $sType;
@@ -239,6 +236,8 @@ class FormObject {
     $this->sDefaultValue = $sDefaultValue;
     $this->sClassName = $sClassName;
     $this->oParent = $oParent;
+    $this->sValidator = null;
+    $this->bIsRequired = true;
   }
   
   public function renderFormObject($iFormId) {
@@ -265,74 +264,68 @@ class FormObject {
     return TagWriter::quickTag($sTagName, array('class' => $this->sClassName), $oKeyValueTemplate);
   }
   
-  public function setParent($oParent)
-  {
+  public function setParent($oParent) {
       $this->oParent = $oParent;
   }
 
-  public function getParent()
-  {
+  public function getParent() {
       return $this->oParent;
   }
   
-  public function setLabel($sLabel)
-  {
+  public function setLabel($sLabel) {
       $this->sLabel = $sLabel;
   }
 
-  public function getLabel()
-  {
+  public function getLabel() {
       return $this->sLabel;
   }
   
-  public function setDefaultValue($sDefaultValue)
-  {
+  public function setDefaultValue($sDefaultValue) {
       $this->sDefaultValue = $sDefaultValue;
   }
 
-  public function getDefaultValue()
-  {
+  public function getDefaultValue() {
       return $this->sDefaultValue;
   }
   
-  public function setType($sType)
-  {
+  public function setType($sType) {
       $this->sType = $sType;
   }
 
-  public function getType()
-  {
+  public function getType() {
       return $this->sType;
   }
   
-  public function setName($sName)
-  {
+  public function setName($sName) {
       $this->sName = $sName;
   }
 
-  public function getName()
-  {
+  public function getName() {
       return $this->sName;
   }
   
-  public function setClassName($sClassName)
-  {
+  public function setClassName($sClassName) {
       $this->sClassName = $sClassName;
   }
 
-  public function getClassName()
-  {
+  public function getClassName() {
       return $this->sClassName;
   }
   
-  public function setValidator($sValidator)
-  {
+  public function setValidator($sValidator) {
       $this->sValidator = $sValidator;
   }
 
-  public function getValidator()
-  {
+  public function getValidator() {
       return $this->sValidator;
+  }
+  
+  public function setIsRequired($bIsRequired) {
+      $this->bIsRequired = $bIsRequired;
+  }
+
+  public function isRequired() {
+      return $this->bIsRequired;
   }
   
   public function getCurrentValue() {
