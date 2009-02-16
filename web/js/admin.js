@@ -141,7 +141,7 @@ FormPrototyper.prototype = {
         form_label.setAttribute('for', form_label.getAttribute('for')+object.new_clone_id);
       });
     });
-    elements.invoke('getElementsBySelector', 'button[type=delete]').each(function(clone_elements) {
+    elements.invoke('getElementsBySelector', 'button[type=delete], .button.remove').each(function(clone_elements) {
       clone_elements.each(function(clone_element) {
         Event.observe(clone_element, "click", function(event) {
           elements.each(function(element) {
