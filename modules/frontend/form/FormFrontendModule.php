@@ -81,7 +81,7 @@ class FormFrontendModule extends DynamicFrontendModule {
   public function getJsForBackend() {
     return $this->constructTemplate("backend.js")->render();
   }
-  
+ 
   public static function getRecaptchaCode($sId = '') {
     $oTemplate = self::constructTemplateForModuleAndType(self::$MODULE_TYPE, 'form', 'recaptcha');
     $oTemplate->replaceIdentifier('server', RECAPTCHA_API_SERVER);
