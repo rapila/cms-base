@@ -147,7 +147,7 @@ class FormStorage {
   }
   
   public function getFormSessionKey() {
-    return "form_".md5(serialize($this->aFormOptions).$this->sFormSessionKeyPart);
+    return "form_".md5($this->sFormSessionKeyPart);
   }
   
   public function getRequestProperty($sName) {
@@ -176,6 +176,16 @@ class FormStorage {
   
   public function getFormOptions() {
     return $this->aFormOptions;
+  }
+  
+  public function &saveCurrentValuesToSession() {
+    $aCurrentValues = array();
+    foreach($this->aFormObjects as $oFormObject) {
+      $aCurrentValues[$oFormObject->getName()] = $oFormObject->getCurrentValue();
+    }
+    $oSession = Session::getSession();
+    $oSession->setAttribute($this->getFormSessionKey(), $aCurrentValues);
+    return $aCurrentValues;
   }
   
   public function getCurrentValueFor($sName) {
@@ -253,8 +263,8 @@ class FormObject {
       $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag($this->sType, array('id' => $this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $sValue));
     } else {
       $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag('input', array('value' => $sValue, 'id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName)));
-      $oKeyValueTemplate->replaceIdentifier("name", $this->sName);
     }
+    $oKeyValueTemplate->replaceIdentifier("name", $this->sName);
     $sTagName = 'p';
     if($this->sType !== 'hidden') {
       if($this->sLabel === '') {

@@ -20,8 +20,7 @@ class Flash {
     }
   }
   
-  public function setArrayToCheck($aArrayToCheck)
-  {
+  public function setArrayToCheck($aArrayToCheck) {
       $this->aArrayToCheck = $aArrayToCheck;
       $this->bArrayIsManual = true;
   }
@@ -69,7 +68,7 @@ class Flash {
   }
   
   public function checkForValue($sName, $sFlashName = null) {
-    $this->checkForExactMatch($sName, "", $sFlashName);
+    $this->checkForExactNotMatch($sName, "", $sFlashName);
   }
   
   public function checkForPattern($sName, $sPattern, $sFlashName = null) {
@@ -82,7 +81,7 @@ class Flash {
     }
   }
   
-  public function checkForExactMatch($sName, $sString, $sFlashName = null) {
+  public function checkForExactNotMatch($sName, $sString, $sFlashName = null) {
     if($sFlashName === null) {
       $sFlashName = $sName;
     }
@@ -92,7 +91,7 @@ class Flash {
     }
   }
   
-  public function checkForExactNotMatch($sName, $sString, $sFlashName = null) {
+  public function checkForExactMatch($sName, $sString, $sFlashName = null) {
     if($sFlashName === null) {
       $sFlashName = $sName;
     }

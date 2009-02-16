@@ -8,6 +8,9 @@ class FormFileModule extends FileModule {
   private $sLanguageId;
   private $oFormStorage;
   private $sPageName;
+  private $sEmailAddress;
+  private $oEmailTemplate;
+  private $oEmailItemTemplate;
 
   public function __construct($aRequestPath) {
     parent::__construct($aRequestPath);
@@ -22,35 +25,51 @@ class FormFileModule extends FileModule {
     }
     $this->oFormStorage = unserialize($oFormDataLanguageObject->getData()->getContents());
     $this->sPageName = $oFormDataLanguageObject->getContentObject()->getPage()->getName();
-  }
-
-  public function renderFile() {
+    
     if($this->oFormStorage->getFormType() !== 'email') {
       throw new Exception("Error in FormFileModule->renderFile(): form type {$this->oFormStorage->getFormType()} is not supported");
     }
-    $sEmailAddress = $this->oFormStorage->getFormOption('email_address');
+    $this->sEmailAddress = $this->oFormStorage->getFormOption('email_address');
     $sTemplateName = $this->oFormStorage->getFormOption('template_addition');
     if($sTemplateName) {
       $sTemplateName = 'e_mail_form_output_'.$sTemplateName;
     } else {
       $sTemplateName = 'e_mail_form_output';
     }
-    $oEmailTemplate = $this->constructTemplate($sTemplateName);
-    $oEmailItemTemplate = $this->constructTemplate('e_mail_form_item');
+    $this->oEmailTemplate = $this->constructTemplate($sTemplateName);
+    $this->oEmailItemTemplate = $this->constructTemplate('e_mail_form_item');
+  }
+
+  public function renderFile() {
+    $aCurrentValues = $this->oFormStorage->saveCurrentValuesToSession();
+    $oFlash = Flash::getFlash();
+    $oFlash->setArrayToCheck($aCurrentValues);
     foreach($this->oFormStorage->getFormObjects() as $oFormObject) {
       if($oFormObject->getType() === 'submit') {
         continue;
       }
-      $oEmailItemTemplateInstance = clone $oEmailItemTemplate;
+      if($oFormObject->isRequired()) {
+        $oFlash->checkForValue($oFormObject->getName());
+      }
+      $oEmailItemTemplateInstance = clone $this->oEmailItemTemplate;
       $oEmailItemTemplateInstance->replaceIdentifier('name', $oFormObject->getName());
       $oEmailItemTemplateInstance->replaceIdentifier('label', $oFormObject->getLabel());
       $oEmailItemTemplateInstance->replaceIdentifier('value', $oFormObject->getCurrentValue());
-      $oEmailTemplate->replaceIdentifierMultiple('form_content', $oEmailItemTemplateInstance);
+      $this->oEmailTemplate->replaceIdentifierMultiple('form_content', $oEmailItemTemplateInstance);
     }
-    $oEmail = new EMail(StringPeer::getString('form_module.email_subject', null, null, array('page' => $this->sPageName)), $oEmailTemplate);
-    $oEmail->addRecipient($sEmailAddress);
-    $oEmail->send();
-    Util::redirect($_REQUEST['origin'].'?form_success=true');
+    if(!FormFrontendModule::validateRecaptchaInput()) {
+      $oFlash->addMessage('captcha');
+    }
+    $oFlash->finishReporting();
+    if(Flash::noErrors()) {
+      $oEmail = new EMail(StringPeer::getString('form_module.email_subject', null, null, array('page' => $this->sPageName)), $this->oEmailTemplate);
+      $oEmail->addRecipient($this->sEmailAddress);
+      $oEmail->send();
+      Util::redirect($_REQUEST['origin'].'?form_success=true');
+    } else {
+      $oFlash->stick();
+      Util::redirect($_REQUEST['origin']);
+    }
   }
 
 }
