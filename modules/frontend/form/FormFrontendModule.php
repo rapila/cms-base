@@ -27,6 +27,7 @@ class FormFrontendModule extends DynamicFrontendModule {
       $oObjectTemplate->replaceIdentifier('field_label', $oFormObject->getLabel());
       $oObjectTemplate->replaceIdentifier('default_value', $oFormObject->getDefaultValue());
       $oObjectTemplate->replaceIdentifier('class_name', $oFormObject->getClassName());
+      $oObjectTemplate->replaceIdentifier('is_required_checked', $oFormObject->isRequired() ? ' checked="checked"' : '', null, Template::NO_HTML_ESCAPE);
       $oObjectTemplate->replaceIdentifier('sequence_id', $iKey);
       $oObjectTemplate->replaceIdentifier('available_types', Util::optionsFromArray(Util::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), $oFormObject->getType(), "", array()));
       $oTemplate->replaceIdentifierMultiple('form_fields', $oObjectTemplate, null, Template::LEAVE_IDENTIFIERS);
@@ -56,6 +57,7 @@ class FormFrontendModule extends DynamicFrontendModule {
     if($oFormStorage->getFormType() === "manager") {
       $oFormStorage->addFormOption("manager", $_POST['manager']);
     }
+    
     foreach($_POST['field_names_'.$this->iId] as $iKey => $sFieldName) {
       if($sFieldName === "") {
         continue;
@@ -65,6 +67,7 @@ class FormFrontendModule extends DynamicFrontendModule {
       $oFormObject->setLabel($_POST['field_labels_'.$this->iId][$iKey]);
       $oFormObject->setDefaultValue($_POST['default_values_'.$this->iId][$iKey]);
       $oFormObject->setClassName($_POST['class_names_'.$this->iId][$iKey]);
+      $oFormObject->setIsRequired($_POST['is_required_'.$this->iId][$iKey]);
       $oFormStorage->addFormObject($oFormObject);
     }
     $oData->setContents(serialize($oFormStorage));
