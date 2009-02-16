@@ -1043,8 +1043,6 @@ input#search_field:hover {
   background-color:#d2d2d2;
 }
 
-
-
 #search_container input.search {
   background-color: transparent;
   margin: 0;
@@ -1057,4 +1055,8 @@ input#search_field:hover {
   padding:0;
   margin: 0;
   height: 16px;
+}
+
+div.form_manager {
+ padding-top:1em;
 }
