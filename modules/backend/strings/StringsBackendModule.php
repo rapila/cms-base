@@ -6,10 +6,12 @@ class StringsBackendModule extends BackendModule {
   
   private $oString = null;
   private $sNameSpace = null;
+  private $sPath;
   
   public function __construct() { 
     if(Manager::hasNextPathItem()) {
-      $this->oString=StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), Manager::usePath());
+      $this->sPath = Manager::usePath();
+      $this->oString=StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $this->sPath);
     }
     if(isset($_REQUEST['namespace'])) {
       $this->sNameSpace = $_REQUEST['namespace'] == '' ? null : $_REQUEST['namespace'];
@@ -29,7 +31,7 @@ class StringsBackendModule extends BackendModule {
     
     $aNamespaceOptions = null;
     if (count($aNamespaces) > 0) {
-      $aNamespaceOptions =  Util::optionsFromArray($aNamespaces, $this->sNameSpace, null, array('' => StringPeer::getString('all_entries'), '0' => StringPeer::getString('strings_without_namespace')));
+      $aNamespaceOptions =  Util::optionsFromArray($aNamespaces, $this->sNameSpace, null, array('' => StringPeer::getString('all_entries'), '0' => StringPeer::getString('strings.without_namespace')));
     } 
     $oTemplate->replaceIdentifier("namespace_options", $aNamespaceOptions);
     $oStringTemplatePrototype = $this->constructTemplate("string_list_item");
@@ -51,6 +53,10 @@ class StringsBackendModule extends BackendModule {
       return;
     }
     $oTemplate = $this->constructTemplate("string_detail");
+    if(Manager::isPost()) {
+      $this->oString->setStringKey($_REQUEST['id']);
+      $this->oString->setText($_REQUEST['text']);
+    }
     
     if($this->oString->getStringKey() !== null) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
@@ -78,10 +84,22 @@ class StringsBackendModule extends BackendModule {
     }
   }
   
+  public function validateForm($oFlash) {
+    $oFlash->checkForValue('text', 'string.text_required');
+    if(trim($_POST['id']) == '') {
+      $oFlash->addMessage('string.key_required');
+    }
+    if($this->oString === null || $this->oString->isNew() || $_POST['id'] !== $this->sPath) {
+      if(StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $_POST['id'])) {
+        $oFlash->addMessage('string.key_exists');
+      }
+    }
+  }
+  
   public function save() {
     $sOldName = $this->oString === null ? null : $this->oString->getStringKey();
     $bHasNewId = $sOldName !== null && $sOldName !== $_POST['id'];
-    if($bHasNewId) {
+    if($bHasNewId && Flash::noErrors()) {
       $this->oString->delete();
       $this->create();
     }
@@ -89,10 +107,10 @@ class StringsBackendModule extends BackendModule {
     if($this->oString === null) {
       $this->create();
     }
-    $this->oString->setStringKey($_POST['id']);
-    $this->oString->setText($_POST['text']);
-    $this->oString->save();
-    if($bHasNewId) {
+    if(Flash::noErrors()) {
+      $this->oString->setStringKey($_POST['id']);
+      $this->oString->setText($_POST['text']);
+      $this->oString->save();
       Util::redirect($this->link($this->oString->getStringKey()));
     }
   }
