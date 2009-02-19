@@ -37,7 +37,20 @@ class FrontendManager extends Manager {
     }
      
     while(self::hasNextPathItem()) {
-      $oNextPage = $oMatchingPage->getChildByName(self::usePath());
+      // new feature added up for discussion. maybe this handling should be moved to its own method for transparency
+      // new optional config param added
+      // @see static method FrontendManager::getTopNavigationFilter()
+      // @see writeSessionAttribute=top_navigation_filter
+      $sTopNavigationPath = self::usePath();
+      $mTopNavigationUsedAsFilters = Settings::getSetting('frontend', 'top_navigation_used_as_filters', null);
+      if($mTopNavigationUsedAsFilters !== null) {
+        // write top_navigation_filter in session in order to use it in frontend modules to display filtered or ordered information
+        if(in_array($sTopNavigationPath, $mTopNavigationUsedAsFilters)) {
+          Session::getSession()->setAttribute('top_navigation_filter', $sTopNavigationPath);
+        }
+      } 
+      // end feature
+      $oNextPage = $oMatchingPage->getChildByName($sTopNavigationPath);
       if($oNextPage !== null) {
         if($oNextPage->getIsInactive()) {
           self::unusePath();
@@ -90,6 +103,10 @@ class FrontendManager extends Manager {
     }
     
     self::setCurrentPage($oMatchingPage);
+  }
+  
+  public static function getTopNavigationFilter() {
+    return Session::getSession()->getAttribute('top_navigation_filter');
   }
       
   /**
