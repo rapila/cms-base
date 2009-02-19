@@ -385,7 +385,7 @@ class PagesBackendModule extends BackendModule {
     // write path name if it is missing long_title is filled in
     $sContentEditLanguage = BackendManager::getContentEditLanguage();
     if($_POST['name'] == '') {
-      if(isset($_POST['title'][$sContentEditLanguage])) {
+      if(isset($_POST['title'][$sContentEditLanguage]) && $_POST['title'][$sContentEditLanguage] !== '') {
         $_POST['name'] = Util::normalize($_POST['title'][$sContentEditLanguage]);
       } else if(isset($_POST['long_title'][$sContentEditLanguage])) {
         $_POST['name'] = Util::normalize($_POST['long_title'][$sContentEditLanguage]);
