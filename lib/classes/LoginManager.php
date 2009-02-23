@@ -104,6 +104,7 @@ class LoginManager extends Manager {
       $oFlash->addMessage('login.empty_fields');
       return;
     }
+
     $iAdminTest = Session::getSession()->login($sUserName, $sPassword);
     //User is valid
     if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {

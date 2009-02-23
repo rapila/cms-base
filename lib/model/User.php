@@ -36,6 +36,13 @@ class User extends BaseUser {
     return false;
   }
   
+  public function isFirstAdministrator() {
+    return (UserPeer::doCount(new Criteria()) === 1) 
+            && $this->getIsAdmin() 
+            && !$this->getIsInactive()
+            && $this->getIsBackendLoginEnabled();
+  }
+  
   public function isSessionUser() {
     return $this->getId() === Session::getSession()->getUserId();
   }
