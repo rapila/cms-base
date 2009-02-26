@@ -1007,7 +1007,7 @@ a.sort_blind:hover {
   width: 200px;
 }
 
-#pages_detail .languages {
+#pages_detail .languages, #detail .languages {
   background-color: #c9d2df;
 }
 

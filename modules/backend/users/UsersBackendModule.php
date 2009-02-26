@@ -90,9 +90,15 @@ class UsersBackendModule extends BackendModule {
     }
     
     if($this->oUser->isNew()) {
+      $oTemplate->replaceIdentifier("display_class", ' open');
+      $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('password'));
       $oTemplate->replaceIdentifier("full_name", "[neu]");
+      $oTemplate->replaceIdentifier("display_style", ' block');
     } else {
+      $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('login.password_reset'));
+      $oTemplate->replaceIdentifier("display_class", '');
       $oTemplate->replaceIdentifier("full_name", $this->oUser->getFullName());
+      $oTemplate->replaceIdentifier("display_style", ' none');
     }
 
     if($this->oUser->getId() !== null) {
