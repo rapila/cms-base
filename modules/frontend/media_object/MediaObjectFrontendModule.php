@@ -16,13 +16,22 @@ class MediaObjectFrontendModule extends FrontendModule {
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
     foreach($aOptions as $aDocumentInfo) {
       $oDocument = DocumentPeer::retrieveByPk($aDocumentInfo['document_id']);
-      if($oDocument === null) {
+      $sMimeType = null;
+      $sSrc = null;
+      
+      if($oDocument !== null) {
+        $sSrc = $oDocument->getDisplayUrl();
+        $sMimeType = $oDocument->getMimetype();
+      } else if ((@$aDocumentInfo['url']) != '') {
+        $sSrc = @$aDocumentInfo['url'];
+        $aHeaders = get_headers($sSrc, true);
+        $sMimeType = $aHeaders['Content-Type'];
+      } else {
         continue;
       }
-      $aMimeType = explode("/", $oDocument->getMimetype());
       $oSubTemplate = null;
       try {
-        $oSubTemplate = $this->constructTemplate($aMimeType[0].'/'.$aMimeType[1]);
+        $oSubTemplate = $this->constructTemplate($sMimeType);
       } catch (Exception $e) {
         $oSubTemplate = $this->constructTemplate("generic");
       }
@@ -32,8 +41,8 @@ class MediaObjectFrontendModule extends FrontendModule {
       if($aDocumentInfo['height'] != '') {
         $oSubTemplate->replaceIdentifier('height', $aDocumentInfo['height']);
       }
-      $oSubTemplate->replaceIdentifier('src', $oDocument->getDisplayUrl());
-      $oSubTemplate->replaceIdentifier('mimeType', $oDocument->getMimetype());
+      $oSubTemplate->replaceIdentifier('src', $sSrc);
+      $oSubTemplate->replaceIdentifier('mimeType', $sMimeType);
       $oTemplate->replaceIdentifier("content", $oSubTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
     return $oTemplate;
@@ -47,9 +56,10 @@ class MediaObjectFrontendModule extends FrontendModule {
       foreach($aOptions as $iKey => $aDocumentInfo) {
         $oMediaItemTemplate = $this->constructTemplate("backend_media_item");
         $oMediaItemTemplate->replaceIdentifier("sequence_id", $iKey);
+        $oMediaItemTemplate->replaceIdentifier("url", @$aDocumentInfo['url']);
         $oMediaItemTemplate->replaceIdentifier("width", $aDocumentInfo['width']);
         $oMediaItemTemplate->replaceIdentifier("height", $aDocumentInfo['height']);
-        $this->replaceDocumentOptions($oMediaItemTemplate, $aDocumentInfo['document_id']);
+        $this->replaceDocumentOptions($oMediaItemTemplate, (int)$aDocumentInfo['document_id']);
         $oTemplate->replaceIdentifierMultiple("documents", $oMediaItemTemplate);
       }
     }
@@ -64,10 +74,10 @@ class MediaObjectFrontendModule extends FrontendModule {
   public function save(Blob $oData) {
     $aResults = array();
     foreach($_POST['document_id'] as $iKey => $sId) {
-      if($sId === "") {
+      if($sId === '' && $_POST['url'][$iKey] === '') {
         continue;
       }
-      $aResults[] = array("document_id" => $sId, "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey]);
+      $aResults[] = array("document_id" => $sId, 'url' => $_POST['url'][$iKey], "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey]);
     }
     $oData->setContents(serialize($aResults));
   }
