@@ -1,13 +1,16 @@
-<label for="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.type}}</label>
-<div class="grouped_items" style="margin-bottom:.5em;">
-  <select id="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}" name="field_types_{{form_id}}[]" class="switcher_field">
-    {{available_types}}
-  </select>
-  <label for="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.field_name_short}}</label>
-  <input class="autowidth" type="text" id="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}"  value="{{field_name}}" name="field_names_{{form_id}}[]" size="10" />
-  <label for="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.label_short}}</label> <input class="autoheight" type="text" id="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{field_label}}" name="field_labels_{{form_id}}[]"  size="12" />
-  <label for="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.default_value_short}}</label> <input class="autoheight" type="text" id="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{default_value}}" name="default_values_{{form_id}}[]" size="12" />
-  <label for="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.class_name_short}}</label> <input class="autoheight" type="text" id="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{class_name}}" name="class_names_{{form_id}}[]" size="12" />
-  {{if=ne;1=\{\{sequence_id\}\};2=}}<label for="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.is_required_short}}</label> <input class="autoheight" type="checkbox" id="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="1" name="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}"{{is_required_checked}} />{{endIf}}
-&nbsp;<span class="button remove" title="{{writeString=delete}}"></span>
+<div class="form_element_group">
+  <label for="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.type}}</label>
+  <div class="grouped_items" style="margin-bottom:.5em;">
+    <select id="field_types_{{form_id}}_{{sequence_id;defaultValue=new_}}" name="field_types_{{form_id}}[]" class="switcher_field">
+      {{available_types}}
+    </select>
+    <label for="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.field_name_short}}</label>
+    <input class="autowidth" type="text" id="field_names_{{form_id}}_{{sequence_id;defaultValue=new_}}"  value="{{field_name}}" name="field_names_{{form_id}}[]" size="10" />
+    <label for="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.label_short}}</label> <input class="autoheight" type="text" id="field_labels_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{field_label}}" name="field_labels_{{form_id}}[]"  size="12" />
+    <label for="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.default_value_short}}</label> <input class="autoheight" type="text" id="default_values_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{default_value}}" name="default_values_{{form_id}}[]" size="12" />
+    <label for="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.class_name_short}}</label> <input class="autoheight" type="text" id="class_names_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="{{class_name}}" name="class_names_{{form_id}}[]" size="12" />
+    {{if=ne;1=\{\{sequence_id\}\};2=}}<label for="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}">{{writeString=form.is_required_short}}</label> <input class="autoheight" type="checkbox" id="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}" value="1" name="is_required_{{form_id}}_{{sequence_id;defaultValue=new_}}"{{is_required_checked}} />{{endIf}}
+  &nbsp;<span class="button remove" title="{{writeString=delete}}"></span>
+        <span class="button up" title="{{writeString=move_up}}"></span>
+  </div>
 </div>

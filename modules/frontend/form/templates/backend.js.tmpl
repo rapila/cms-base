@@ -32,9 +32,22 @@ function add_conditional_to_switcher_field(switcher_field) {
 
 Event.observe(window, "dom:loaded", function() {
 	var switcher_fields = $$('.switcher_field');
-    switcher_fields.each(function(switcher_field) {
-        add_conditional_to_switcher_field(switcher_field);
-    });
+  switcher_fields.each(function(switcher_field) {
+      add_conditional_to_switcher_field(switcher_field);
+  });
+  var move_fields = $$('.form_element_group .button.up');
+  var move_handler = function(event) {
+    var form_element_group = this.up('.form_element_group');
+    var previous = form_element_group.previous();
+    if(previous) {
+      previous.insert({before: form_element_group});
+    } else {
+      $(form_element_group.parentNode).insert({bottom: form_element_group});
+    }
+  };
+  move_fields.each(function(move_field) {
+    Event.observe(move_field, 'click', move_handler.bindAsEventListener(move_field));
+  });
 });
 
 

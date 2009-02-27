@@ -541,6 +541,10 @@ span.add {
   background-image: url(../images/admin/add.png);
 }
 
+span.up {
+  background-image: url(../images/admin/arrow_up.png);
+}
+
 span.remove {
   background-image: url(../images/admin/remove.png);
 }
