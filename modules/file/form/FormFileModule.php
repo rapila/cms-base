@@ -44,9 +44,13 @@ class FormFileModule extends FileModule {
     $aCurrentValues = $this->oFormStorage->saveCurrentValuesToSession();
     $oFlash = Flash::getFlash();
     $oFlash->setArrayToCheck($aCurrentValues);
+    $bHasCaptcha = false;
     foreach($this->oFormStorage->getFormObjects() as $oFormObject) {
       if($oFormObject->getType() === 'submit') {
         continue;
+      }
+      if($oFormObject instanceof CaptchaObject) {
+        $bHasCaptcha = true;
       }
       if($oFormObject->isRequired()) {
         $oFlash->checkForValue($oFormObject->getName());
@@ -57,7 +61,7 @@ class FormFileModule extends FileModule {
       $oEmailItemTemplateInstance->replaceIdentifier('value', $oFormObject->getCurrentValue());
       $this->oEmailTemplate->replaceIdentifierMultiple('form_content', $oEmailItemTemplateInstance);
     }
-    if(!FormFrontendModule::validateRecaptchaInput()) {
+    if($bHasCaptcha && !FormFrontendModule::validateRecaptchaInput()) {
       $oFlash->addMessage('captcha');
     }
     $oFlash->finishReporting();

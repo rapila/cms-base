@@ -62,7 +62,12 @@ class FormFrontendModule extends DynamicFrontendModule {
       if($sFieldName === "") {
         continue;
       }
-      $oFormObject = new FormObject($_POST['field_types_'.$this->iId][$iKey]);
+      $oFormObject = null;
+      if($_POST['field_types_'.$this->iId][$iKey] === 'captcha') {
+        $oFormObject = new CaptchaObject($_POST['field_types_'.$this->iId][$iKey]);
+      } else {
+        $oFormObject = new FormObject($_POST['field_types_'.$this->iId][$iKey]);
+      }
       $oFormObject->setName($sFieldName);
       $oFormObject->setLabel($_POST['field_labels_'.$this->iId][$iKey]);
       $oFormObject->setDefaultValue($_POST['default_values_'.$this->iId][$iKey]);
@@ -143,7 +148,6 @@ class FormStorage {
       $oTemplate->replaceIdentifier('option', $sOptionValue, $sOptionName);
     }
     $oTemplate->replaceIdentifier('method', $this->getRequestMethod());
-    $oTemplate->replaceIdentifier('re_captcha', FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId));
   }
   
   public function getFormSessionKey() {
@@ -228,7 +232,7 @@ class FormStorage {
   }
   
   public static function getAvailableTypes() {
-    return array('text', 'textarea', 'password', 'submit', 'hidden', 'flash');
+    return array('text', 'textarea', 'password', 'submit', 'hidden', 'flash', 'captcha');
     // return array('textarea', 'text', 'password', 'submit', 'select', 'checkbox', 'radio', 'button');
   }
 }
@@ -343,5 +347,15 @@ class FormObject {
   
   public function getCurrentValue() {
     return $this->oParent->getCurrentValueFor($this->sName);
+  }
+}
+
+class CaptchaObject extends FormObject {
+  public function __construct($sType, $sName = null, $sDefaultValue = null, $oParent = null, $sClassName = null) {
+    parent::__construct($sType, $sName, $sDefaultValue, $oParent, $sClassName);
+  }
+  
+  public function renderFormObject($iFormId) {
+    return FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId);
   }
 }
