@@ -82,6 +82,7 @@ class StringsBackendModule extends BackendModule {
       $this->oString->delete();
       $this->oString=null;
     }
+    Util::redirect($this->link());
   }
   
   public function validateForm($oFlash) {
