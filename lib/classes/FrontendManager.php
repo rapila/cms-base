@@ -42,6 +42,7 @@ class FrontendManager extends Manager {
       // @see static method FrontendManager::getTopNavigationFilter()
       // @see writeSessionAttribute=top_navigation_filter
       $sTopNavigationPath = self::usePath();
+      $sTopNavigationPath = $sTopNavigationPath === null ? Settings::getSetting('frontend', 'top_navigation_default_filter', null) : $sTopNavigationPath;
       $mTopNavigationUsedAsFilters = Settings::getSetting('frontend', 'top_navigation_used_as_filters', null);
       if($mTopNavigationUsedAsFilters !== null) {
         // write top_navigation_filter in session in order to use it in frontend modules to display filtered or ordered information

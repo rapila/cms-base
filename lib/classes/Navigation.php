@@ -189,6 +189,7 @@ class Navigation {
       $oTemplate->replaceIdentifier('long_title', $oPageString->getPageTitle());
       $oTemplate->replaceIdentifier('language_warning', $sLanguageWarning);
       $oTemplate->replaceIdentifier('title', $oPageString->getLinkText());
+      $oTemplate->replaceIdentifier('page_name', $oPage->getName());
       $oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
       $oTemplate->replaceIdentifier('link', implode('/', $oPage->getLink()));
       $oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oPage->getLink()));
