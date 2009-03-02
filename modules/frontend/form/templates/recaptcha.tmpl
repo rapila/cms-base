@@ -5,7 +5,7 @@
     jQuery('noscript#{{id}}_noscript').remove();
     Recaptcha.create("{{key}}",
     "{{id}}", {
-       theme: "white",
+       theme: "{{writeSettingValue=re_captcha_theme;section=frontend;defaultValue=red}}",
        lang: '{{writeSessionAttribute=language}}'
     });
   });

@@ -77,6 +77,7 @@ frontend:
   protect_email_addresses: false
   re_captcha_private_key: '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'
   re_captcha_public_key: '6Lfm_gQAAAAAACIbK9PxwwhDhkGJHcHEcdIRRRR9'
+  re_captcha_theme: 'white'
 
 encoding:
   db: utf-8
