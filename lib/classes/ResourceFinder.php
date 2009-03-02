@@ -47,7 +47,7 @@ class ResourceFinder {
     }
     self::processArguments($mRelativePath, $iFlag, $bFindAll);
     $mResult = array();
-    foreach(self::buildSearchPathList($iFlag, $bFindAll) as $sSearchPath) {
+    foreach(self::buildSearchPathList($iFlag) as $sSearchPath) {
       $sPath = null;
       if($bByExpressions) {
         $sPath = self::findInPathByExpressions($mRelativePath, $sSearchPath);
@@ -88,7 +88,7 @@ class ResourceFinder {
     return self::findResourceByExpressions($aExpressions, $iFlag, true);
   }
   
-  public static function buildSearchPathList($iFlag, $bFindAll = false) {
+  public static function buildSearchPathList($iFlag) {
     switch($iFlag) {
       case self::SEARCH_MAIN_ONLY: return array(MAIN_DIR);
       case self::SEARCH_BASE_ONLY: return array(BASE_DIR);
