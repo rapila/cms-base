@@ -356,6 +356,8 @@ class CaptchaObject extends FormObject {
   }
   
   public function renderFormObject($iFormId) {
-    return FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId);
+    $oCaptchaTemplate = new Template("{{field}} {{identifierContext=start;name=writeFlashValue;value=captcha}}<br />{{writeFlashValue=captcha}}{{identifierContext=end;name=writeFlashValue;value=captcha}}", null, true);
+    $oCaptchaTemplate->replaceIdentifier('field', FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId));
+    return $oCaptchaTemplate;
   }
 }

@@ -4,8 +4,34 @@ Event.observe(window, "dom:loaded", function() {
 	  return;
 	}
 	
+	var switcher_fields = $$('.switcher_field');
+  switcher_fields.each(function(switcher_field) {
+      add_conditional_to_switcher_field(switcher_field);
+  });
+  
+  //Add the move event handler to all the up buttons
+  var move_fields = $$('.form_element_group .button.up');
+  var move_handler = function(event) {
+    var form_element_group = this.up('.form_element_group');
+    var previous = form_element_group.previous();
+    if(previous) {
+      previous.insert({before: form_element_group});
+    } else {
+      $(form_element_group.parentNode).insert({bottom: form_element_group});
+    }
+  };
+  move_fields.each(function(move_field) {
+    Event.observe(move_field, 'click', move_handler.bindAsEventListener(move_field));
+  });
 	
-	var prototyper = new FormPrototyper($('clone_area'), $('form_fields'), Insertion.Bottom);
+	var prototyper = new FormPrototyper($('clone_area'), $('form_fields'), Insertion.Bottom, {callback: function(elements) {
+    elements.invoke('getElementsBySelector', '.button.up').each(function(move_fields) {
+      move_fields.each(function(move_field) {
+      	//Add the move handler when the insert callback is executed
+        Event.observe(move_field, 'click', move_handler.bindAsEventListener(move_field));
+      });
+    });
+	}});
 	prototyper.bind_to(document_order_add, 'click');
 
 	$$("#form_fields span.button.remove").each(function(delete_button) {
@@ -28,27 +54,6 @@ function add_conditional_to_switcher_field(switcher_field) {
     Event.observe(switcher_field, 'change', change_handler_bound);
     change_handler_bound();
 }
-
-
-Event.observe(window, "dom:loaded", function() {
-	var switcher_fields = $$('.switcher_field');
-  switcher_fields.each(function(switcher_field) {
-      add_conditional_to_switcher_field(switcher_field);
-  });
-  var move_fields = $$('.form_element_group .button.up');
-  var move_handler = function(event) {
-    var form_element_group = this.up('.form_element_group');
-    var previous = form_element_group.previous();
-    if(previous) {
-      previous.insert({before: form_element_group});
-    } else {
-      $(form_element_group.parentNode).insert({bottom: form_element_group});
-    }
-  };
-  move_fields.each(function(move_field) {
-    Event.observe(move_field, 'click', move_handler.bindAsEventListener(move_field));
-  });
-});
 
 
 Event.observe(window, "dom:loaded", function() {
