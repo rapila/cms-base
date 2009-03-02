@@ -15,13 +15,13 @@ class ResourceFinder {
   
   private static $PLUGINS = null;
   
-  private static function getDefaultFlag() {
-    return self::SEARCH_BASE_FIRST;
+  private static function getDefaultFlag($bFindAll) {
+    return $bFindAll ? self::SEARCH_BASE_FIRST : self::SEARCH_SITE_FIRST;
   }
   
-  private static function processArguments(&$mRelativePath, &$iFlag) {
+  private static function processArguments(&$mRelativePath, &$iFlag, $bFindAll) {
     if($iFlag === null) {
-      $iFlag = self::getDefaultFlag();
+      $iFlag = self::getDefaultFlag($bFindAll);
     }
     
     if(is_array($mRelativePath) && array_key_exists('flag', $mRelativePath)) {
@@ -45,7 +45,7 @@ class ResourceFinder {
     if($bByExpressions) {
       $bFindAll = true;
     }
-    self::processArguments($mRelativePath, $iFlag);
+    self::processArguments($mRelativePath, $iFlag, $bFindAll);
     $mResult = array();
     foreach(self::buildSearchPathList($iFlag, $bFindAll) as $sSearchPath) {
       $sPath = null;
@@ -172,15 +172,15 @@ class ResourceFinder {
   }
   
   //Helper function for classes that are given a filename, base path and path name
-  public static function parsePathArguments($sBasicDirname = null, $mPath = null, $sFileName = null) {
+  public static function parsePathArguments($sBaseDirname = null, $mPath = null, $sFileName = null) {
     if($mPath === null) {
       $mPath = array();
     } else if(is_string($mPath)) {
       $mPath = explode("/", $mPath);
     }
     
-    if($sBasicDirname !== null) {
-      array_unshift($mPath, $sBasicDirname);
+    if($sBaseDirname !== null) {
+      array_unshift($mPath, $sBaseDirname);
     }
     
     if($sFileName !== null) {
