@@ -18,44 +18,35 @@ class PagesBackendModule extends BackendModule {
   public function __construct() { 
     if(Manager::hasNextPathItem()) {
       $iPageId = Manager::usePath();
-      if($iPageId == 0) {
+      if($iPageId === '') {
         $this->oPage = new Page();
       } else {
         $this->oPage = PagePeer::retrieveByPk($iPageId);
       }
-      BackendManager::setCurrentPage($this->oPage);
-      $this->bMayDeletePageTree = Settings::getSetting('backend', 'delete_pagetree_enable', false) === true;
-      $this->bMayDeleteMoveOrphans = Settings::getSetting('backend', 'inherit_children_enable', false) === true;
+      if($this->oPage !== null) {
+        BackendManager::setCurrentPage($this->oPage);
+        $this->bMayDeletePageTree = Settings::getSetting('backend', 'delete_pagetree_enable', false) === true;
+        $this->bMayDeleteMoveOrphans = Settings::getSetting('backend', 'inherit_children_enable', false) === true;
+        return;
+      }
+    }
+    //No page was found
+    if(PagePeer::doCount(new Criteria()) === 0) {
+      $aPages = array(PagePeer::initialiseRootPage());
     }
   }
   
   public function getChooser() {
-    $oCriteria = new Criteria();
-    $oCriteria->addAlias("children", PagePeer::TABLE_NAME);
-    $oCriteria->addJoin(PagePeer::ID, "children.parent_id", Criteria::LEFT_JOIN);
-    $oCriteria->add("children.id", null, Criteria::ISNULL);
-    $aPages = PagePeer::doSelectJoinAll($oCriteria);
-    if(count($aPages) == null) {
-      $aPages = array(PagePeer::initialiseRootPage());
-    }
-    
-    $iMaxLevel = 0;
-    foreach($aPages as $oPage) {
-      $iMaxLevel = max($oPage->getLevel(), $iMaxLevel);
-    }
-
     $aNavigationConfig = array();
     $aNavigationConfig["show_inactive"] = true;
     $aNavigationConfig["show_hidden"] = true;
     $aNavigationConfig["language"] = BackendManager::getContentEditLanguage();
     $aNavigationConfig["tree_language"] = null;
-    for($i=0;$i<=$iMaxLevel;$i++) {
-      $aNavigationConfig[$i] = array();
-      $aNavigationConfig[$i][] = array("template" => "main_be_with_create_link", "on" => 'user_may_create&user_may_edit');
-      $aNavigationConfig[$i][] = array("template" => "main_be_unlinked_with_create_link", "on" => 'user_may_create');
-      $aNavigationConfig[$i][] = array("template" => "main_be_no_new", "on" => 'user_may_edit');
-      $aNavigationConfig[$i][] = array("template" => "main_be_unlinked");
-    }
+    $aNavigationConfig['all'] = array();
+    $aNavigationConfig['all'][] = array("template" => "main_be_with_create_link", "on" => 'user_may_create&user_may_edit');
+    $aNavigationConfig['all'][] = array("template" => "main_be_unlinked_with_create_link", "on" => 'user_may_create');
+    $aNavigationConfig['all'][] = array("template" => "main_be_no_new", "on" => 'user_may_edit');
+    $aNavigationConfig['all'][] = array("template" => "main_be_unlinked");
     $oTemplate = $this->constructTemplate();
     $oNavigation = new Navigation($aNavigationConfig, Util::link($this->getModuleName()).'/');
 

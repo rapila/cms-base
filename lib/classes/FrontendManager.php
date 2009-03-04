@@ -49,7 +49,7 @@ class FrontendManager extends Manager {
         if(in_array($sTopNavigationPath, $mTopNavigationUsedAsFilters)) {
           Session::getSession()->setAttribute('top_navigation_filter', $sTopNavigationPath);
         }
-      } 
+      }
       // end feature
       $oNextPage = $oMatchingPage->getChildByName($sTopNavigationPath);
       if($oNextPage !== null) {
