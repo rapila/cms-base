@@ -264,7 +264,7 @@ class FormObject {
     }
     $oKeyValueTemplate = new Template("{{label}} {{field}} {{identifierContext=start;name=writeFlashValue;value=\{\{name\}\}}}<br />{{writeFlashValue=\{\{name\}\}}}{{identifierContext=end;name=writeFlashValue;value=\{\{name\}\}}}", null, true);
     if($this->sType === 'textarea') {
-      $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag($this->sType, array('id' => $this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $sValue));
+      $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag($this->sType, array('id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $sValue));
     } else {
       $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag('input', array('value' => $sValue, 'id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName)));
     }
