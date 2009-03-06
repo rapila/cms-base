@@ -92,10 +92,6 @@ class FrontendManager extends Manager {
     self::setCurrentPage($oMatchingPage);
   }
   
-  public static function getTopNavigationFilter() {
-    return Session::getSession()->getAttribute('top_navigation_filter');
-  }
-      
   /**
    * render()
    */
