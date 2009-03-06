@@ -270,7 +270,7 @@ class FormObject {
       if($this->sLabel === '') {
         $this->sLabel = new Template('&nbsp;', null, true);
       }
-      $oKeyValueTemplate->replaceIdentifier("label", TagWriter::quickTag("label", array('for' => 'form_'.$iFormId.'_'.$this->sName, 'class' => $this->sClassName), $this->sLabel));
+      $oKeyValueTemplate->replaceIdentifier("label", TagWriter::quickTag("label", array('for' => $this->getFormObjectId($iFormId), 'class' => $this->sClassName), $this->sLabel));
     } else {
       $sTagName = 'span';
     }
@@ -278,19 +278,23 @@ class FormObject {
   }
   
   //methods for deciding how to render a form object
-  private function isVisibleFormElement() {
+  protected function isVisibleFormElement() {
     return $this->sType !== 'hidden';
   }
   
-  private function getFieldCode($iFormId) {
-    if($this->sType === 'textarea') {
-      return TagWriter::quickTag($this->sType, array('id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $this->getCurrentValue());
-    }
-    return TagWriter::quickTag('input', array('value' => $this->getCurrentValue(), 'id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName));
+  protected function getFormObjectId($iFormId) {
+    return 'form_'.$iFormId.'_'.$this->sName;
   }
   
-  private function shouldExcludeFromReport() {
-    return $this->sType !== 'submit';
+  protected function getFieldCode($iFormId) {
+    if($this->sType === 'textarea') {
+      return TagWriter::quickTag($this->sType, array('id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'class' => $this->sClassName), $this->getCurrentValue());
+    }
+    return TagWriter::quickTag('input', array('value' => $this->getCurrentValue(), 'id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName));
+  }
+  
+  public function shouldExcludeFromReport() {
+    return $this->sType === 'submit';
   }
   
   public function setParent($oParent) {
@@ -371,15 +375,19 @@ class CaptchaObject extends FormObject {
     parent::__construct($sType, $sName, $sDefaultValue, $oParent, $sClassName);
   }
   
-  public function getFieldCode($iFormId) {
+  protected function getFormObjectId($iFormId) {
+    return 'recaptcha_response_field';
+  }
+  
+  protected function getFieldCode($iFormId) {
     return FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId);
   }
   
-  private function shouldExcludeFromReport() {
+  public function shouldExcludeFromReport() {
     return true;
   }
   
-  private function isVisibleFormElement() {
+  protected function isVisibleFormElement() {
     return true;
   }
 }
