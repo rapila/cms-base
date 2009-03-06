@@ -69,6 +69,7 @@ class FormFileModule extends FileModule {
       $oEmail = new EMail(StringPeer::getString('form_module.email_subject', null, null, array('page' => $this->sPageName)), $this->oEmailTemplate);
       $oEmail->addRecipient($this->sEmailAddress);
       $oEmail->send();
+      $this->oFormStorage->deleteCurrentValuesFromSession();
       Util::redirect($_REQUEST['origin'].'?form_success=true');
     } else {
       $oFlash->stick();

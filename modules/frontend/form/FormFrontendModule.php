@@ -192,6 +192,10 @@ class FormStorage {
     return $aCurrentValues;
   }
   
+  public function deleteCurrentValuesFromSession() {
+    Session::getSession()->resetAttribute($this->getFormSessionKey());
+  }
+  
   public function getCurrentValueFor($sName) {
     $sProperty = $this->getRequestProperty($sName);
     if($sProperty !== null) {
@@ -356,7 +360,7 @@ class CaptchaObject extends FormObject {
   }
   
   public function renderFormObject($iFormId) {
-    $oCaptchaTemplate = new Template("{{field}} {{identifierContext=start;name=writeFlashValue;value=captcha}}<br />{{writeFlashValue=captcha}}{{identifierContext=end;name=writeFlashValue;value=captcha}}", null, true);
+    $oCaptchaTemplate = new Template("{{label}} {{field}} {{identifierContext=start;name=writeFlashValue;value=captcha}}<br />{{writeFlashValue=captcha}}{{identifierContext=end;name=writeFlashValue;value=captcha}}", null, true);
     $oCaptchaTemplate->replaceIdentifier('field', FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId));
     return $oCaptchaTemplate;
   }
