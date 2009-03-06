@@ -130,9 +130,9 @@ class PagesBackendModule extends BackendModule {
           } elseif($oSibling->getSort() === $this->oPage->getSort()) {
             $aSortSelect[$iKey] = StringPeer::getString("sort_none");
           } elseif($oSibling->getSort() > $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_after", null, null, array("name" => $oSibling->getLinkText()));
+            $aSortSelect[$iKey] = StringPeer::getString("sort_after", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
           } elseif($oSibling->getSort() < $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_before", null, null, array("name" => $oSibling->getLinkText()));
+            $aSortSelect[$iKey] = StringPeer::getString("sort_before", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
           } 
           $iKey ++;
         }
