@@ -70,7 +70,7 @@ class Filters {
     foreach($aFilterModules as $sFilterModuleName => $aModuleMetadata) {
       $oFileModuleInstance = FilterModule::getModuleInstance($sFilterModuleName);
       foreach(get_class_methods($oFileModuleInstance) as $sMethodName) {
-        if(strlen($sMethodName) < 5 || !Util::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) === $sMethodName[2])) {
+        if(strlen($sMethodName) < 5 || !Util::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) !== $sMethodName[2])) {
           continue;
         }
         $sEventName = substr($sMethodName, strlen('on'));
