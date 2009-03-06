@@ -46,11 +46,11 @@ class FormFileModule extends FileModule {
     $oFlash->setArrayToCheck($aCurrentValues);
     $bHasCaptcha = false;
     foreach($this->oFormStorage->getFormObjects() as $oFormObject) {
-      if($oFormObject->getType() === 'submit') {
-        continue;
-      }
       if($oFormObject instanceof CaptchaObject) {
         $bHasCaptcha = true;
+      }
+      if($oFormObject->shouldExcludeFromReport()) {
+        continue;
       }
       if($oFormObject->isRequired()) {
         $oFlash->checkForValue($oFormObject->getName());

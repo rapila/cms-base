@@ -262,19 +262,11 @@ class FormObject {
   }
   
   public function renderFormObject($iFormId) {
-    $sValue = $this->getCurrentValue();
-    if($sValue === null) {
-      $sValue = $this->sDefaultValue;
-    }
     $oKeyValueTemplate = new Template("{{label}} {{field}} {{identifierContext=start;name=writeFlashValue;value=\{\{name\}\}}}<br />{{writeFlashValue=\{\{name\}\}}}{{identifierContext=end;name=writeFlashValue;value=\{\{name\}\}}}", null, true);
-    if($this->sType === 'textarea') {
-      $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag($this->sType, array('id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $sValue));
-    } else {
-      $oKeyValueTemplate->replaceIdentifier("field", TagWriter::quickTag('input', array('value' => $sValue, 'id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName)));
-    }
+    $oKeyValueTemplate->replaceIdentifier('field', $this->getFieldCode($iFormId));
     $oKeyValueTemplate->replaceIdentifier("name", $this->sName);
     $sTagName = 'p';
-    if($this->sType !== 'hidden') {
+    if($this->isVisibleFormElement()) {
       if($this->sLabel === '') {
         $this->sLabel = new Template('&nbsp;', null, true);
       }
@@ -283,6 +275,22 @@ class FormObject {
       $sTagName = 'span';
     }
     return TagWriter::quickTag($sTagName, array('class' => $this->sClassName), $oKeyValueTemplate);
+  }
+  
+  //methods for deciding how to render a form object
+  private function isVisibleFormElement() {
+    return $this->sType !== 'hidden';
+  }
+  
+  private function getFieldCode($iFormId) {
+    if($this->sType === 'textarea') {
+      return TagWriter::quickTag($this->sType, array('id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'class' => $this->sClassName), $this->getCurrentValue());
+    }
+    return TagWriter::quickTag('input', array('value' => $this->getCurrentValue(), 'id' => 'form_'.$iFormId.'_'.$this->sName, 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName));
+  }
+  
+  private function shouldExcludeFromReport() {
+    return $this->sType !== 'submit';
   }
   
   public function setParent($oParent) {
@@ -350,7 +358,11 @@ class FormObject {
   }
   
   public function getCurrentValue() {
-    return $this->oParent->getCurrentValueFor($this->sName);
+    $sValue = $this->oParent->getCurrentValueFor($this->sName);
+    if($sValue === null) {
+      $sValue = $this->sDefaultValue;
+    }
+    return $sValue;
   }
 }
 
@@ -359,9 +371,15 @@ class CaptchaObject extends FormObject {
     parent::__construct($sType, $sName, $sDefaultValue, $oParent, $sClassName);
   }
   
-  public function renderFormObject($iFormId) {
-    $oCaptchaTemplate = new Template("{{label}} {{field}} {{identifierContext=start;name=writeFlashValue;value=captcha}}<br />{{writeFlashValue=captcha}}{{identifierContext=end;name=writeFlashValue;value=captcha}}", null, true);
-    $oCaptchaTemplate->replaceIdentifier('field', FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId));
-    return $oCaptchaTemplate;
+  public function getFieldCode($iFormId) {
+    return FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId);
+  }
+  
+  private function shouldExcludeFromReport() {
+    return true;
+  }
+  
+  private function isVisibleFormElement() {
+    return true;
   }
 }
