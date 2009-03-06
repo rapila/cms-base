@@ -37,21 +37,7 @@ class FrontendManager extends Manager {
     }
      
     while(self::hasNextPathItem()) {
-      // new feature added up for discussion. maybe this handling should be moved to its own method for transparency
-      // new optional config param added
-      // @see static method FrontendManager::getTopNavigationFilter()
-      // @see writeSessionAttribute=top_navigation_filter
-      $sTopNavigationPath = self::usePath();
-      $sTopNavigationPath = $sTopNavigationPath === null ? Settings::getSetting('frontend', 'top_navigation_default_filter', null) : $sTopNavigationPath;
-      $mTopNavigationUsedAsFilters = Settings::getSetting('frontend', 'top_navigation_used_as_filters', null);
-      if($mTopNavigationUsedAsFilters !== null) {
-        // write top_navigation_filter in session in order to use it in frontend modules to display filtered or ordered information
-        if(in_array($sTopNavigationPath, $mTopNavigationUsedAsFilters)) {
-          Session::getSession()->setAttribute('top_navigation_filter', $sTopNavigationPath);
-        }
-      }
-      // end feature
-      $oNextPage = $oMatchingPage->getChildByName($sTopNavigationPath);
+      $oNextPage = $oMatchingPage->getChildByName(self::usePath());
       if($oNextPage !== null) {
         if($oNextPage->getIsInactive()) {
           self::unusePath();
@@ -114,6 +100,7 @@ class FrontendManager extends Manager {
    * render()
    */
   public function render() {
+    FilterModule::getFilters()->handleRequestStarted();
     $bIsDynamic = false;
     $aAllowedParams = array();
     
@@ -155,6 +142,7 @@ class FrontendManager extends Manager {
     
     $oCache = null;
     
+    $bIsCached = false;
     if(!$bIsDynamic && !Session::getSession()->isAuthenticated() && !$this->bIsNotFound) {
       $oCache = new Cache($sPageIdentifier, DIRNAME_FULL_PAGE);
     
@@ -195,6 +183,8 @@ class FrontendManager extends Manager {
     if($oCache !== null) {
       $oCache->setContents($this->oTemplate->getSentOutput());
     }
+    ob_flush();
+    FilterModule::getFilters()->handleRequestFinished(array(self::getCurrentPage(), $bIsDynamic, $bIsAjaxRequest, $bIsCached));
   }
 
   /**
@@ -219,7 +209,9 @@ class FrontendManager extends Manager {
    * fillAttributes()
    */
   private function fillAttributes() { 
+    FilterModule::getFilters()->handleStartFillAttributes(self::getCurrentPage());
     $oTopNavigationPage = self::getCurrentPage()->getTopNavigationPage();
+    FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage);
     $this->oTemplate->replaceIdentifier("top_navigation", $oTopNavigationPage->getName());
     $this->oTemplate->replaceIdentifier("top_navigation_linktext", $oTopNavigationPage->getLinkText());
     $this->oTemplate->replaceIdentifier("navigation_level", self::getCurrentPage()->getLevel());
@@ -241,6 +233,7 @@ class FrontendManager extends Manager {
     if(Settings::getSetting('general', 'multilingual', false) && $this->oTemplate->hasIdentifier('language_chooser')) {
       $this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser(), null, Template::NO_HTML_ESCAPE);
     }
+    FilterModule::getFilters()->handleEndFillAttributes(self::getCurrentPage());
   }
   
   //Used in fillAttributes to replace page_link identifiers
