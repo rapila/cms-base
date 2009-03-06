@@ -50,7 +50,7 @@ class FrontendManager extends Manager {
       }
     }
     
-    //Transfer unused path parts from the end of the path array as key/value-pairs to the $_REQUEST global
+    // Transfer unused path parts from the end of the path array as key/value-pairs to the $_REQUEST global
     $iTimesUsed = 0;
     while(self::hasNextPathItem()) {
       $sKey = self::usePath();
@@ -125,7 +125,6 @@ class FrontendManager extends Manager {
     }
     
     $bIsAjaxRequest = isset($_REQUEST['container_only']) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
-    
     if(!$bIsAjaxRequest) {
       $oOutput = new XHTMLOutput();
       $oOutput->render();
@@ -148,7 +147,6 @@ class FrontendManager extends Manager {
       if($bIsCached) {
         $bIsOutdated = $oCache->isOlderThan(self::getCurrentPage()->getTimestamp());
       }
-    
       if($bIsCached && !$bIsOutdated) {
         return print $oCache->getContentsAsString();
       }
@@ -205,9 +203,9 @@ class FrontendManager extends Manager {
    * fillAttributes()
    */
   private function fillAttributes() { 
-    FilterModule::getFilters()->handleStartFillAttributes(self::getCurrentPage());
+    FilterModule::getFilters()->handleFillAttributesStarted(self::getCurrentPage(), $this->oTemplate);
     $oTopNavigationPage = self::getCurrentPage()->getTopNavigationPage();
-    FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage);
+    FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage, $this->oTemplate);
     $this->oTemplate->replaceIdentifier("top_navigation", $oTopNavigationPage->getName());
     $this->oTemplate->replaceIdentifier("top_navigation_linktext", $oTopNavigationPage->getLinkText());
     $this->oTemplate->replaceIdentifier("navigation_level", self::getCurrentPage()->getLevel());
@@ -224,15 +222,21 @@ class FrontendManager extends Manager {
       $this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
     }
     $this->oTemplate->replaceIdentifier("page_id", self::getCurrentPage()->getId());
-    //replace page_link identifiers (mostly used in meta navigation)
     $this->oTemplate->replaceIdentifierCallback("page_link", 'FrontendManager', 'replacePageLinkIdentifier');
     if(Settings::getSetting('general', 'multilingual', false) && $this->oTemplate->hasIdentifier('language_chooser')) {
       $this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser(), null, Template::NO_HTML_ESCAPE);
     }
-    FilterModule::getFilters()->handleEndFillAttributes(self::getCurrentPage());
+    FilterModule::getFilters()->handleFillAttributesFinished(self::getCurrentPage(), $this->oTemplate);
   }
-  
-  //Used in fillAttributes to replace page_link identifiers
+
+  /**
+   * replacePageLinkIdentifier()
+   * @param object TemplateIdentifier
+   * @return object Template
+   * used in fillAttributes to replace page_link identifiers
+   * - get a page by name
+   * - get nearest neighbour page {@link PagePeer::getPageByName()}
+   */
   public static function replacePageLinkIdentifier($oTemplateIdentifier) {
     $oPage = null;
     $sName = $oTemplateIdentifier->getParameter('name');
@@ -259,4 +263,4 @@ class FrontendManager extends Manager {
   public static function shouldIncludeLanguageInLink() {
     return Settings::getSetting('general', 'multilingual', true);
   }
-} // class FrontendManager
+}
