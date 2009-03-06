@@ -106,7 +106,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       //Print Edit link
       $sEditImage = TagWriter::quickTag("img", array('src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
       
-      $oTag = TagWriter::quickTag("a", array("href" => Util::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'padding:0;margin:0;display:block;text-decoration:none;border:none', 'class' => 'edit_link', "title" => StringPeer::getString("content_edit")), $sEditImage);
+      $oTag = TagWriter::quickTag("a", array("href" => Util::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'padding:0;margin:0;display:block;text-decoration:none;border:none', "title" => StringPeer::getString("content_edit")), $sEditImage);
       $oTemplate->replaceIdentifierMultiple("container", $oTag);
     }
     return true;
@@ -202,7 +202,7 @@ class DefaultPageTypeModule extends PageTypeModule {
           if($iCount === 0) {
             $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow placeholder'), new Template("&nbsp;", null, true)));
           } else {
-            $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow', 'container' => $sContainerName, 'page_id' => $this->oPage->getId()), TagWriter::quickTag('img', array('src' => INT_IMAGES_DIR_FE.'/admin/arrow_up.png'))));
+            $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow', 'container' => $sContainerName, 'page_id' => $this->oPage->getId()), TagWriter::quickTag('img', array('src' => INT_IMAGES_DIR_FE.'/admin/arrow_up.gif'))));
           }
           $oLanguageObject = $oObject->getActiveLanguageObjectBe();
           $oObjectTemplate->replaceIdentifier("title", $oObject->getContainerName());
@@ -267,7 +267,7 @@ class DefaultPageTypeModule extends PageTypeModule {
   private function executeEdit() {
     $oLanguageObject = $this->getLanguageObject();
     $aLanguageObjectRevisions = LanguageObjectHistoryPeer::getHistoryByLanguageObject($oLanguageObject);
-    $this->getObjectHistory($oLanguageObject);
+    $oSelectedLanguageObjectHistory = $this->getObjectHistory($oLanguageObject);
     
     $oModule = $this->getFrontendModuleInstance();
     $this->backendCustomJs = $oModule->getJsForBackend();
@@ -303,10 +303,10 @@ class DefaultPageTypeModule extends PageTypeModule {
       $sSelected = null;
       $sDefaultOptionString = 'choose';
       if(isset($_REQUEST['language_object_revision_id']) && $_REQUEST['language_object_revision_id'] !== '') {
-        $sSelected = $_REQUEST['language_object_revision_id'];
+        $sSelected = $oSelectedLanguageObjectHistory;
         $sDefaultOptionString = 'revert_to_current';
-      } 
-      $oTemplate->replaceIdentifier("language_object_revisions", Util::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array( '' => StringPeer::getString($sDefaultOptionString))));
+      }
+      $oTemplate->replaceIdentifier("language_object_revisions", Util::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array('' => StringPeer::getString($sDefaultOptionString))));
     }
     
     $oTemplate->replaceIdentifier("page_title", $this->oPage->getLinkText());   
@@ -323,6 +323,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     if($oLanguageObjectHistory !== null) {
       $oLanguageObject->setData($oLanguageObjectHistory->getData());
     }
+    return $oLanguageObjectHistory;
   }
 
   public function delete() {
