@@ -114,7 +114,7 @@ class Util {
     return $sMimeType;
   }
   
-  public static function equals($mFirst, $mSecond) {
+  public static function equals($mFirst, $mSecond, $sKeyMethod = null) {
     if($mFirst === $mSecond) {
       return true;
     }
@@ -122,20 +122,28 @@ class Util {
       return ($mFirst->getPeer() === $mSecond->getPeer()) && ($mFirst->getPrimaryKey() === $mSecond->getPrimaryKey());
     }
     if(is_object($mFirst)) {
-      $mFirst = self::idForObject($mFirst);
+      if($sKeyMethod === null) {
+        $mFirst = self::idForObject($mFirst);
+      } else {
+        $mFirst = $mFirst->$sKeyMethod();
+      }
     }
     if(is_object($mSecond)) {
-      $mSecond = self::idForObject($mSecond);
+      if($sKeyMethod === null) {
+        $mSecond = self::idForObject($mSecond);
+      } else {
+        $mSecond = $mFirst->$sKeyMethod();
+      }
     }
     return $mFirst === $mSecond;
   }
   
-  public static function inArray($mScalar, $aArray, $bStrict = true) {
+  public static function inArray($mScalar, $aArray, $bStrict = true, $sKeyMethod = null) {
     if(in_array($mScalar, $aArray, $bStrict)) {
       return true;
     }
     foreach($aArray as $mValue) {
-      if(self::equals($mScalar, $mValue)) {
+      if(self::equals($mScalar, $mValue, $sKeyMethod)) {
         return true;
       }
     }
@@ -216,7 +224,7 @@ class Util {
         $sValue = $oObject->$sValueMethod();
       }
       $aResult[$sKey] = $sValue;
-      if(self::inArray($oObject, $mSelected)) {
+      if(self::inArray($oObject, $mSelected, true, $sKeyMethod)) {
         $aSelected[] = $sKey;
       }
     }
