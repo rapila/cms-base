@@ -10,7 +10,13 @@ abstract class FilterModule extends Module {
   
   public static function getFilters() {
     if(self::$FILTERS === null) {
-      self::$FILTERS = new Filters();
+      $oCache = new Cache("preconfigured_filter_handlers", DIRNAME_CONFIG);
+      if($oCache->cacheFileExists()) {
+        self::$FILTERS = $oCache->getContentsAsVariable();
+      } else {
+        self::$FILTERS = new Filters();
+        $oCache->setContents(self::$FILTERS);
+      }
     }
     return self::$FILTERS;
   }
@@ -59,35 +65,28 @@ class Filters {
   private static $EMPTY_ARRAY = array();
   
   public function __construct() {
-    $this->aRegisteredCallbacks = null;
-  }
-  
-  private function &getCallbacks() {
-    if($this->aRegisteredCallbacks === null) {
-      $aFilterModules = FilterModule::listModules();
-      foreach($aFilterModules as $sFilterModuleName => $aModuleMetadata) {
-        $oFileModuleInstance = FilterModule::getModuleInstance($sFilterModuleName);
-        foreach(get_class_methods($oFileModuleInstance) as $sMethodName) {
-          if(strlen($sMethodName) < 5 || !Util::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) === $sMethodName[2])) {
-            continue;
-          }
-          $sEventName = substr($sMethodName, strlen('on'));
-          if(!isset($this->aRegisteredCallbacks[$sEventName])) {
-            $this->aRegisteredCallbacks[$sEventName] = array();
-          }
-          $this->aRegisteredCallbacks[$sEventName][] = array($oFileModuleInstance, $sMethodName);
+    $this->aRegisteredCallbacks = array();
+    $aFilterModules = FilterModule::listModules();
+    foreach($aFilterModules as $sFilterModuleName => $aModuleMetadata) {
+      $oFileModuleInstance = FilterModule::getModuleInstance($sFilterModuleName);
+      foreach(get_class_methods($oFileModuleInstance) as $sMethodName) {
+        if(strlen($sMethodName) < 5 || !Util::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) === $sMethodName[2])) {
+          continue;
         }
+        $sEventName = substr($sMethodName, strlen('on'));
+        if(!isset($this->aRegisteredCallbacks[$sEventName])) {
+          $this->aRegisteredCallbacks[$sEventName] = array();
+        }
+        $this->aRegisteredCallbacks[$sEventName][] = array($oFileModuleInstance, $sMethodName);
       }
     }
-    return $this->aRegisteredCallbacks;
   }
   
   private function &getCallbacksForEvent($sEventName) {
-    $aCallbacks = $this->getCallbacks();
-    if(!isset($aCallbacks[$sEventName])) {
+    if(!isset($this->aRegisteredCallbacks[$sEventName])) {
       return self::$EMPTY_ARRAY;
     }
-    return $aCallbacks[$sEventName];
+    return $this->aRegisteredCallbacks[$sEventName];
   }
   
   public function doHandleEvent($sEventName, $aArguments) {
