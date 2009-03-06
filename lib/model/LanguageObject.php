@@ -49,6 +49,16 @@ class LanguageObject extends BaseLanguageObject {
     return parent::save($oConnection);
   }
   
+  public function revertToHistory($sHistoryId) {
+    if($sHistoryId === null) {
+      return;
+    }
+    $oLanguageObjectHistory = LanguageObjectHistoryPeer::retrieveByPK($this->getObjectId(), $this->getLanguageId(), $sHistoryId);
+    if($oLanguageObjectHistory !== null) {
+      $this->setData($oLanguageObjectHistory->getData());
+    }
+  }
+  
   public function getTimestamp() {
     return (int)$this->getUpdatedAt('U');
   }

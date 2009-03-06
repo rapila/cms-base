@@ -267,7 +267,7 @@ class DefaultPageTypeModule extends PageTypeModule {
   private function executeEdit() {
     $oLanguageObject = $this->getLanguageObject();
     $aLanguageObjectRevisions = LanguageObjectHistoryPeer::getHistoryByLanguageObject($oLanguageObject);
-    $oSelectedLanguageObjectHistory = $this->getObjectHistory($oLanguageObject);
+    $oLanguageObject->revertToHistory(@$_REQUEST['language_object_revision_id']);
     
     $oModule = $this->getFrontendModuleInstance();
     $this->backendCustomJs = $oModule->getJsForBackend();
@@ -303,10 +303,10 @@ class DefaultPageTypeModule extends PageTypeModule {
       $sSelected = null;
       $sDefaultOptionString = 'choose';
       if(isset($_REQUEST['language_object_revision_id']) && $_REQUEST['language_object_revision_id'] !== '') {
-        $sSelected = $oSelectedLanguageObjectHistory;
+        $sSelected = (int)$_REQUEST['language_object_revision_id'];
         $sDefaultOptionString = 'revert_to_current';
-      }
-      $oTemplate->replaceIdentifier("language_object_revisions", Util::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array('' => StringPeer::getString($sDefaultOptionString))));
+      } 
+      $oTemplate->replaceIdentifier("language_object_revisions", Util::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array( '' => StringPeer::getString($sDefaultOptionString))));
     }
     
     $oTemplate->replaceIdentifier("page_title", $this->oPage->getLinkText());   
@@ -315,17 +315,6 @@ class DefaultPageTypeModule extends PageTypeModule {
     return $oTemplate;
   }
   
-  private function getObjectHistory($oLanguageObject) {
-    if(!isset($_REQUEST['language_object_revision_id'])) {
-      return;
-    }
-    $oLanguageObjectHistory = LanguageObjectHistoryPeer::retrieveByPK($oLanguageObject->getObjectId(), $oLanguageObject->getLanguageId(), $_REQUEST['language_object_revision_id']);
-    if($oLanguageObjectHistory !== null) {
-      $oLanguageObject->setData($oLanguageObjectHistory->getData());
-    }
-    return $oLanguageObjectHistory;
-  }
-
   public function delete() {
     if(!Session::getSession()->getUser()->mayEditPageContents($this->oPage)) {
       return;
