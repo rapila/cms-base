@@ -12,6 +12,9 @@ class BackendManager extends Manager {
   public static $MODULES = array();
   const CONTENT_EDIT_LANGUAGE_SESSION_KEY = 'content_edit_language';
 
+ /**
+  * __construct()
+  */
   public function __construct() {
     parent::__construct();
     
@@ -68,6 +71,10 @@ class BackendManager extends Manager {
     $this->oTemplate = new Template($sTemplateName, null, false, true);
   }
 
+ /**
+  * render()
+  * @return void
+  */
   public function render() {
     try {
       $this->fillBackend();
@@ -96,6 +103,12 @@ class BackendManager extends Manager {
     $this->oTemplate->render();
   }
 
+ /**
+  * fillException()
+  * @param object Exception
+  * @param string optional message
+  * @return void
+  */
   private function fillException($e, $sMessage = null) {
     $this->oTemplate->replaceIdentifierMultiple("detail", "<pre>", null, Template::NO_HTML_ESCAPE);
     if($sMessage !== null) {
@@ -113,7 +126,11 @@ class BackendManager extends Manager {
     $this->oTemplate->replaceIdentifierMultiple("detail", "</pre>", null, Template::NO_HTML_ESCAPE);
     $this->oTemplate->replaceIdentifier("chooser", "An error occured in '".$this->sModuleName."'", null, Template::NO_HTML_ESCAPE);
   }
- 
+
+ /**
+  * fillBackendNavigation()
+  * @return void
+  */ 
   private function fillBackendNavigation() {
     foreach (self::$MODULES['direct_links'] as $sModuleName => $aConfig) {
       if(isset($aConfig['disabled']) || !Module::isModuleEnabled('backend', $sModuleName)) {
@@ -199,6 +216,9 @@ class BackendManager extends Manager {
     $this->oTemplate->replaceIdentifier('link_to_user', Util::link(array('users', Session::getSession()->getUserId())));
   }
 
+ /**
+  * fillBackend()
+  */ 
   private function fillBackend() {
     $this->oBackendModule = BackendModule::getModuleInstance($this->sModuleName);
     if(Manager::isPost()) {
@@ -287,6 +307,9 @@ class BackendManager extends Manager {
     Manager::setCurrentPage($oPage);
   }
 
+ /**
+  * fillAttributes()
+  */ 
   private function fillAttributes() {
     if(self::getCurrentPage() instanceof Page) {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink(self::getCurrentPage()->getFullPathArray()));
@@ -338,7 +361,7 @@ class BackendManager extends Manager {
   public static function shouldIncludeLanguageInLink() {
     return false;
   }
-} // class BackendManager
+}
 
 BackendManager::$MODULES['direct_links'] = Settings::getSetting('modules', 'direct_links', 1, 'backend');
 BackendManager::$MODULES['site_links'] = Settings::getSetting('modules', 'site_links', 1, 'backend');

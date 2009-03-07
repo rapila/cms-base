@@ -119,4 +119,4 @@ abstract class Manager {
     }
     return $aResult;
   }
-} // class Manager
+}
