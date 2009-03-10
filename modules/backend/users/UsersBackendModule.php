@@ -111,12 +111,13 @@ class UsersBackendModule extends BackendModule {
     //Groups
     if(!$this->oUser->isSessionUser()) { 
       $aGroups = GroupPeer::doSelect(new Criteria());
-      $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? '' : null);
+      $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? 'yes' : 'no');
       if(count($aGroups) > 0) {
         $aGroupOptions = Util::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
       } else {
         $oTemplate->replaceIdentifier("no_groups_message", StringPeer::getString('no_groups_message'));
+        $oTemplate->replaceIdentifier("edit_groups_link", TagWriter::quickTag('a', array('href' => Util::link(array('groups'), "BackendManager", array('action' => "create"))), StringPeer::getString('group.create')));
       }
     }
     return $oTemplate;
