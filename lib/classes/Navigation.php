@@ -69,7 +69,7 @@ class Navigation {
   /**
    * parse()
    */  
-  public function parse() {    
+  public function parse() {
     if (PagePeer::getRootPage() !== null) {
       return $this->parseTree(array(PagePeer::getRootPage()), 0);
     }
