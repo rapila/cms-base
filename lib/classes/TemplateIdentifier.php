@@ -60,7 +60,6 @@ class TemplateIdentifier {
   public function setValue($sValue) {
     if($sValue === "") {
       $sValue = null;
-      return;
     }
 
     $this->sValue = $sValue;

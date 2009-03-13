@@ -40,4 +40,24 @@ EOT;
     
     $this->assertEquals("cms_manager", $oTemplate->render());
   }
+  
+  public function testQuoteWithInner() {
+    Session::getSession()->setLanguage('en');
+    $sTemplateText = <<<EOT
+{{quoteString=\{\{test\}\}}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    
+    $this->assertEquals("“”", $oTemplate->render());
+  }
+  
+  public function testQuoteWithInnerDefault() {
+    Session::getSession()->setLanguage('en');
+    $sTemplateText = <<<EOT
+{{quoteString=\{\{test\;defaultValue=default\}\}}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);    
+
+    $this->assertEquals("“default”", $oTemplate->render());
+  }
 }

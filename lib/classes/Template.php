@@ -2,13 +2,15 @@
 define("TEMPLATE_IDENTIFIER_START_SINGLE", "{");
 define("TEMPLATE_IDENTIFIER_END_SINGLE", "}");
 
-define("TEMPLATE_IDENTIFIER_STARt", TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_START_SINGLE, true);
-define("TEMPLATE_IDENTIFIER_ENd", TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, true);
+define("TEMPLATE_IDENTIFIER_START", TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_START_SINGLE);
+define("TEMPLATE_IDENTIFIER_END", TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE);
 
 define("TEMPLATE_KEY_VALUE_SEPARATOR", "=");
 define("TEMPLATE_PARAMETER_SEPARATOR", ";");
 
-define("TEMPLATE_IDENTIFIER_MATCHEr", "/".preg_quote(TEMPLATE_IDENTIFIER_START, "/")."([^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_KEY_VALUE_SEPARATOR.TEMPLATE_PARAMETER_SEPARATOR, "/")."]+?)(".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])+)?)?(".preg_quote(TEMPLATE_PARAMETER_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])*))?".preg_quote(TEMPLATE_IDENTIFIER_END, "/")."/sm", true);
+define("TEMPLATE_IDENTIFIER_MATCHER", "/".preg_quote(TEMPLATE_IDENTIFIER_START, "/")."([^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_KEY_VALUE_SEPARATOR.TEMPLATE_PARAMETER_SEPARATOR, "/")."]+?)(".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])+)?)?(".preg_quote(TEMPLATE_PARAMETER_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])*))?".preg_quote(TEMPLATE_IDENTIFIER_END, "/")."/sm");
+
+// Util::dumpAll(TEMPLATE_IDENTIFIER_MATCHER);
 
 /**
  * class Template
@@ -544,11 +546,11 @@ class Template {
   }
   
   private function prepareForRender($bIsForSubtemplate = false) {
-    if(!$bIsForSubtemplate) {
-      $this->replaceSpecialIdentifiersOnEnd();
-    }
     if($this->bKillIdentifiersBeforeRender) {
       $this->killIdentifiersInIdentifiers();
+    }
+    if(!$bIsForSubtemplate) {
+      $this->replaceSpecialIdentifiersOnEnd();
     }
     $this->replaceConditionals();
     
@@ -590,6 +592,8 @@ class Template {
       if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
         $oValueTemplate = new Template($oIdentifier->getValue(), null, true, false, null, null, self::NO_HTML_ESCAPE);
         $oValueTemplate->bKillIdentifiersBeforeRender = true;
+        if($oIdentifier->getValue() === '{{test}}') {
+        }
         $oIdentifier->setValue($oValueTemplate->render());
       }
       //Identifier replacement in parameter values

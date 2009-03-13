@@ -4,7 +4,7 @@
  */
 class StaticModuleTests extends PHPUnit_Framework_TestCase {
   public function testModuleTypeList() {
-    $this->assertEquals(array('backend', 'file', 'frontend', 'page_type'), Module::listModuleTypes());
+    $this->assertEquals(array('backend', 'file', 'frontend', 'page_type', 'filter'), Module::listModuleTypes());
   }
   
   public function testAllModulesList() {
