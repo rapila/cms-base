@@ -35,7 +35,7 @@
 </fieldset>
 {{identifierContext=start;name=language_object_revisions}}
 <fieldset>
-  <form enctype="multipart/form-data" method="get" action="{{writeLink=to_self}}">
+  <form enctype="multipart/form-data" method="get" action="{{writeLink=to_self;ignore_request=true;position=last}}">
     <label for="revision">{{writeString=load_from_backup}}</label><select id="language_object_revision_id" name="language_object_revision_id" onchange="$(this).up().submit();">{{language_object_revisions}}</select>
   </form>
 </fieldset>
