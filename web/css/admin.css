@@ -476,6 +476,10 @@ fieldset.show {
   padding-left:.3em;
 }
 
+#detail fieldset.divider {
+  padding-bottom:.5em;
+}
+
 #detail fieldset fieldset {
   padding:0;
   margin:0;
