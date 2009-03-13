@@ -202,7 +202,7 @@ class DefaultPageTypeModule extends PageTypeModule {
           if($iCount === 0) {
             $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow placeholder'), new Template("&nbsp;", null, true)));
           } else {
-            $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow', 'container' => $sContainerName, 'page_id' => $this->oPage->getId()), TagWriter::quickTag('img', array('src' => INT_IMAGES_DIR_FE.'/admin/arrow_up.gif'))));
+            $oContainerTemplate->replaceIdentifierMultiple("arrow_up", TagWriter::quickTag('div', array('class' => 'up_arrow', 'container' => $sContainerName, 'page_id' => $this->oPage->getId()), TagWriter::quickTag('img', array('src' => INT_IMAGES_DIR_FE.'/admin/arrow_up.png'))));
           }
           $oLanguageObject = $oObject->getActiveLanguageObjectBe();
           $oObjectTemplate->replaceIdentifier("title", $oObject->getContainerName());
