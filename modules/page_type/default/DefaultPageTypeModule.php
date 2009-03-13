@@ -177,11 +177,9 @@ class DefaultPageTypeModule extends PageTypeModule {
         $oContainerTemplate = $this->constructTemplate("content_container");
         $oContainerTemplate->replaceIdentifier("inherit_info", $oContainer->getParameter('inherit') ? StringPeer::getString('container.inherit_message') : null);
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
-      
         $oContainerTemplate->replaceIdentifier("new_link", $this->backendLink(array($this->oPage->getId(), "edit", $sContainerName)));
       
         $aContentModuleNames = FrontendModule::listContentModules();
-        // krsort($aContentModuleNames);
         $aAllowedItems = array();
         if($oContainer->hasParameter("allowed_modules")) {
           foreach(Util::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
