@@ -101,7 +101,7 @@ class UsersBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("display_style", ' none');
     }
 
-    if($this->oUser->getId() !== null) {
+    if($this->oUser->getId() !== null && !$this->oUser->isSessionUser()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
       $oDeleteTemplate->replacePstring('delete_item', array('name' => $this->oUser->getFullName()));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
