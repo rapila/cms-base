@@ -599,7 +599,10 @@ class Util {
   }
 
   //Gets the user's locale for the current language
-  public static function getLocaleId($sLanguageId) {
+  public static function getLocaleId($sLanguageId = null) {
+    if($sLanguageId === null) {
+      $sLanguageId = Session::language();
+    }
     if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
       $sAcceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
       $aAcceptLanguages = explode(',' , $sAcceptLanguage);

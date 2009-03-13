@@ -44,6 +44,43 @@ class SpecialTemplateIdentifierActions {
     return Util::truncate($oTemplateIdentifier->getValue(), $iLength, $sPostfix, $iTolerance);
   }
   
+  public function quoteString($oTemplateIdentifier) {
+    $sLocale = Util::getLocaleId();
+    $sStyle = 'double';
+    if($oTemplateIdentifier->hasParameter('style')) {
+      $sStyle = $oTemplateIdentifier->getParameter('style');
+    }
+    $bAlternate = $oTemplateIdentifier->hasParameter('alternate') && $oTemplateIdentifier->getParameter('alternate') === 'true';
+    if(Util::startsWith($sLocale, 'en')) {
+      if($sStyle === 'single') {
+        return "‘{$oTemplateIdentifier->getValue()}’";
+      }
+      return "“{$oTemplateIdentifier->getValue()}”";
+    }
+    if(Util::startsWith($sLocale, 'fr') || $sLocale === 'de_CH') {
+      if($sStyle === 'single') {
+        return "‹{$oTemplateIdentifier->getValue()}›";
+      }
+      return "«{$oTemplateIdentifier->getValue()}»";
+    }
+    if(Util::startsWith($sLocale, 'de')) {
+      if($bAlternate) {
+        if($sStyle === 'single') {
+          return "›{$oTemplateIdentifier->getValue()}‹";
+        }
+        return "»{$oTemplateIdentifier->getValue()}«";
+      }
+      if($sStyle === 'single') {
+        return "‚{$oTemplateIdentifier->getValue()}‘";
+      }
+      return "„{$oTemplateIdentifier->getValue()}“";
+    }
+    if($sStyle === 'single') {
+      return "'{$oTemplateIdentifier->getValue()}'";
+    }
+    return '"'.$oTemplateIdentifier->getValue().'"';
+  }
+  
   public function writeLink($oTemplateIdentifier) {
     $sDestination = $oTemplateIdentifier->getValue();
     $aParameters = $oTemplateIdentifier->getParameters();
@@ -111,12 +148,12 @@ class SpecialTemplateIdentifierActions {
   public function writeTemplateName($oTemplateIdentifier) {
     return $this->oTemplate->getTemplateName();
   }
-    
+  
   public static function getSpecialIdentifierNames() {
     return array_diff(get_class_methods('SpecialTemplateIdentifierActions'), array('getSpecialIdentifierNames', 'getAlwaysLastNames', '__construct'));
   }
   
   public static function getAlwaysLastNames() {
-      return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue');
+      return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString');
   }
 }
