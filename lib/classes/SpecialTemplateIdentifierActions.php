@@ -45,6 +45,9 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function quoteString($oTemplateIdentifier) {
+    if(!$oTemplateIdentifier->getValue()) {
+      return $oTemplateIdentifier->hasParameter('defaultValue') ? $oTemplateIdentifier->getParameter('defaultValue') : null;
+    }
     $sLocale = Util::getLocaleId();
     $sStyle = 'double';
     if($oTemplateIdentifier->hasParameter('style')) {
