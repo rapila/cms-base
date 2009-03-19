@@ -256,6 +256,13 @@
   <column name="is_inactive" type="boolean" size="1" default="0" />
 </table>
 
+<table name="module_categories" phpName="ModuleCategory">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="80" required="true" />
+  <column name="module_name" type="varchar" size="80" />
+  <column name="params_for_execution" type="varchar" size="80" />
+</table>
+
 <table name="tags" phpName="Tag">
   <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
   <column name="name" type="varchar" size="80" required="true" />
