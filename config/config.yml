@@ -65,6 +65,7 @@ backend:
     blockformats: [p, h1, h2]
     classes: [external_link, internal_link, image_link]
     force_br_newlines: true
+    toolbar_location: bottom
   #possible values: images, internal_links, external_links, documents
   link_array_disabled: []
   

@@ -214,6 +214,8 @@ class RichtextUtil {
     if($aBlockformats !== null) {
       $oTemplate->replaceIdentifier('blockformats', implode(",", $aBlockformats));
     }
+    $sToolbarLocation = $this->getMceConfigArray('toolbar_location');
+    $oTemplate->replaceIdentifier('toolbar_location', $sToolbarLocation !== null ? $sToolbarLocation : 'bottom');
     
     $aClasses = $this->getMceConfigArray('classes');
     if($aClasses !== null) {

@@ -158,16 +158,18 @@ class FrontendManager extends Manager {
     } else {
       $this->oTemplate = self::getCurrentPage()->getTemplate(true);
     }
+    // should the TopNavigationPage be store in local/instance var? performance
+    FilterModule::getFilters()->handleFillTopNavigationPageBeforeContent(array(self::getCurrentPage()->getTopNavigationPage(), $this->oTemplate));
 
     if($bIsDynamic) {
       $this->fillContent();
       if(!$bIsAjaxRequest) {
-        $this->fillAttributes();
+        $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
         $this->fillNavigation();
       }
     } else {
       if(!$bIsAjaxRequest) {
-        $this->fillAttributes();
+        $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
         $this->fillNavigation();
       }
       $this->fillContent();
@@ -202,10 +204,10 @@ class FrontendManager extends Manager {
   /**
    * fillAttributes()
    */
-  private function fillAttributes() { 
-    FilterModule::getFilters()->handleFillAttributesStarted(self::getCurrentPage(), $this->oTemplate);
-    $oTopNavigationPage = self::getCurrentPage()->getTopNavigationPage();
-    FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage, $this->oTemplate);
+  private function fillAttributes($oTopNavigationPage) { 
+    // new pass $oTopNavigationPage
+    // not required now: if it is part of default cms handling think about name and function of this filter callback
+    // FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage, $this->oTemplate);
     $this->oTemplate->replaceIdentifier("top_navigation", $oTopNavigationPage->getName());
     $this->oTemplate->replaceIdentifier("top_navigation_linktext", $oTopNavigationPage->getLinkText());
     $this->oTemplate->replaceIdentifier("navigation_level", self::getCurrentPage()->getLevel());
