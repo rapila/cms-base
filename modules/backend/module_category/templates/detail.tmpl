@@ -1,0 +1,14 @@
+<h1>{{quoteString=\{\{name_title\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
+<fieldset><legend>{{writeString=module_category}}{{name}} [id:{{id}}]</legend>
+<form action="{{action}}"  method="post">
+  <input type="hidden" name="id" value="{{id}}" />
+  <label for="name">{{writeString=name}}</label>
+  <input type="text" name="name" value="{{name}}" /><br />
+  <label for="module_name">{{writeString=general.module_name}}</label>
+  <select name="module_name" id="module_name">{{module_name_options}}</select><br />
+  <label for="params_for_execution">Params for execution</label>
+  <input type="text" name="params_for_execution" value="{{params_for_execution}}" /><br />
+  <label for="save">&nbsp;</label><button id="save" type="submit" title="{{writeString=save}}"></button>
+</form>
+{{delete_button}}
+</fieldset>
