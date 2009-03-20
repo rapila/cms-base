@@ -74,10 +74,7 @@ class Filters {
           continue;
         }
         $sEventName = substr($sMethodName, strlen('on'));
-        if(!isset($this->aRegisteredCallbacks[$sEventName])) {
-          $this->aRegisteredCallbacks[$sEventName] = array();
-        }
-        $this->aRegisteredCallbacks[$sEventName][] = array($oFileModuleInstance, $sMethodName);
+        $this->appendHandler($sEventName, array($oFileModuleInstance, $sMethodName));
       }
     }
   }
@@ -87,6 +84,13 @@ class Filters {
       return self::$EMPTY_ARRAY;
     }
     return $this->aRegisteredCallbacks[$sEventName];
+  }
+  
+  public function appendHandler($sEventName, $cCallback) {
+    if(!isset($this->aRegisteredCallbacks[$sEventName])) {
+      $this->aRegisteredCallbacks[$sEventName] = array();
+    }
+    $this->aRegisteredCallbacks[$sEventName][] = $cCallback;
   }
   
   public function doHandleEvent($sEventName, $aArguments) {
@@ -105,11 +109,6 @@ class Filters {
     }
     $sEventName = substr($sMethodName, strlen('handle'));
     
-    //Event arguments
-    $aArguments = isset($aParameters[0]) ? $aParameters[0] : array();
-    if(!is_array($aArguments)) {
-      $aArguments = array($aArguments);
-    }
-    return $this->doHandleEvent($sEventName, $aArguments);
+    return $this->doHandleEvent($sEventName, $aParameters);
   }
 }
