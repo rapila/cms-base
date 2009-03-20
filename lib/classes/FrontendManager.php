@@ -158,21 +158,13 @@ class FrontendManager extends Manager {
     } else {
       $this->oTemplate = self::getCurrentPage()->getTemplate(true);
     }
-    FilterModule::getFilters()->handleHandleBeforePageFill(self::getCurrentPage()->getTopNavigationPage(), $this->oTemplate);
+    FilterModule::getFilters()->handleHandleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
 
-    if($bIsDynamic) {
-      $this->fillContent();
-      if(!$bIsAjaxRequest) {
-        $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
-        $this->fillNavigation();
-      }
-    } else {
-      if(!$bIsAjaxRequest) {
-        $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
-        $this->fillNavigation();
-      }
-      $this->fillContent();
+    if(!$bIsAjaxRequest) {
+      $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
+      $this->fillNavigation();
     }
+    $this->fillContent();
     
     $this->oTemplate->render();
     if($oCache !== null) {
