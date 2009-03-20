@@ -12,8 +12,11 @@
  */ 
 class TagPeer extends BaseTagPeer {
   
-  public static function getTagsSorted($sSearch = null) {
+  public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {
     $oCriteria = new Criteria();
+    if($bJoinInstances) {
+      $oCriteria->addJoin(self::ID, TagInstancePeer::TAG_ID, Criteria::INNER_JOIN);
+    }
     if($sSearch !== null) {
       $oCriteria->add(self::NAME, "%$sSearch%", Criteria::LIKE);
     }
@@ -44,4 +47,9 @@ class TagPeer extends BaseTagPeer {
     $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
     return TagInstancePeer::doSelect($oCriteria);
   }
-} // TagPeer
+  
+  public static function getTagsUsedInModel($sModelName) {
+    return self::getTagsSorted($sModelName, true);
+  }
+}
+

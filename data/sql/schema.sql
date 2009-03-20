@@ -416,22 +416,6 @@ CREATE TABLE `document_categories`
 )Type=MyISAM;
 
 #-----------------------------------------------------------------------------
-#-- module_categories
-#-----------------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `module_categories`;
-
-
-CREATE TABLE `module_categories`
-(
-	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(80)  NOT NULL,
-	`module_name` VARCHAR(80),
-	`params_for_execution` VARCHAR(80),
-	PRIMARY KEY (`id`)
-)Type=MyISAM;
-
-#-----------------------------------------------------------------------------
 #-- tags
 #-----------------------------------------------------------------------------
 

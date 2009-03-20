@@ -57,7 +57,7 @@ class DocumentsBackendModule extends BackendModule {
   public function getChooser() {
     // document categories select is only displayed when there are categories available
     $aDocumentCategoryOptions = null;
-    $aDocumentCategories = ModuleCategoryPeer::getDocumentCategories();
+    $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
     if(count($aDocumentCategories) > 0) {
       $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategory === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategory, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('all_entries'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
     } else {
@@ -138,8 +138,8 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("available_language_options", Util::optionsFromArray(LanguagePeer::getLanguagesAssoc(), $this->oDocument->getLanguageId(), '', array("" => StringPeer::getString("international"))));
       }
 
-      if(ModuleCategoryPeer::hasDocumentCategories()) {
-        $oTemplate->replaceIdentifier("doc_category_options", Util::optionsFromObjects(ModuleCategoryPeer::getDocumentCategories(), 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
+      if(DocumentCategoryPeer::hasDocumentCategories()) {
+        $oTemplate->replaceIdentifier("doc_category_options", Util::optionsFromObjects(DocumentCategoryPeer::getDocumentCategories(), 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
       }
 
       if(!$this->oDocument->isNew()) {

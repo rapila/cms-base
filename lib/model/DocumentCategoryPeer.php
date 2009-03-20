@@ -21,6 +21,10 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
     return self::doSelect($oC);
   }
   
+  public static function getDocumentCategories($bInactiveOnly = false) {
+    return self::getDocumentCategoriesSorted($bInactiveOnly);
+  }
+  
   public static function hasDocumentCategories($bInactiveOnly = false) {
     return count(self::getDocumentCategoriesSorted($bInactiveOnly)) > 0;
   }
