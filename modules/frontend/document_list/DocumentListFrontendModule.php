@@ -45,7 +45,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     $aListTemplates = array();
     foreach($aTemplateList as $sPath => $sListName) {
       if(Util::endsWith($sListName, self::LIST_ITEM_POSTFIX)) {
-        
         $aListTemplates[$sPath] = substr($sListName, 0, -strlen(self::LIST_ITEM_POSTFIX));
       }
     }
