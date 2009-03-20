@@ -89,6 +89,7 @@ class FrontendManager extends Manager {
       }
     }
     
+    FilterModule::getFilters()->handlePageHasBeenSet($oMatchingPage, $this->bIsNotFound);
     self::setCurrentPage($oMatchingPage);
   }
   
