@@ -145,7 +145,7 @@ class EMail {
     }
     
     if($this->sReplyTo !== null) {
-      $this->oContent->addToHeader("Reply-To", $this->sReplyTo);
+      $this->oContent->setHeader("Reply-To", $this->sReplyTo);
     }
     
     $this->oContent->setHeader('From', $this->getAddressToken($this->sSenderName, $this->sSenderAddress));
