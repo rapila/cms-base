@@ -11,6 +11,7 @@ class EMail {
   private $oContent;
   private $sSenderName;
   private $sSenderAddress;
+  private $sReplyTo;
   private $sSubject;
   
   private $oFlash;
@@ -35,6 +36,8 @@ class EMail {
     $this->sSenderName = null;
     $this->sSenderAddress = Settings::getSetting('domain_holder', 'email', 'mailer-daemon@localhost');
     $this->oFlash = new Flash();
+    
+    $this->sReplyTo = null;
     
     $this->sSubject = $sSubject;
   }
@@ -112,6 +115,14 @@ class EMail {
       return array($this->sSenderName, $this->sSenderAddress);
   }
   
+  public function setReplyTo($sReplyTo) {
+      $this->sReplyTo = $sReplyTo;
+  }
+
+  public function getReplyTo() {
+      return $this->sReplyTo;
+  }
+  
   public function send() {
     $aRecipients = array();
     
@@ -131,6 +142,10 @@ class EMail {
     
     foreach($this->aBlindCarbonCopyRecipients as $sAddress => $sName) {
       $this->oContent->addToHeader("Bcc", $this->getAddressToken($sName, $sAddress));
+    }
+    
+    if($this->sReplyTo !== null) {
+      $this->oContent->addToHeader("Reply-To", $this->sReplyTo);
     }
     
     $this->oContent->setHeader('From', $this->getAddressToken($this->sSenderName, $this->sSenderAddress));
