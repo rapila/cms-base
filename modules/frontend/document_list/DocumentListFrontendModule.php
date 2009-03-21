@@ -41,6 +41,9 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     $aDocumentCategories = DocumentCategoryPeer::doSelect(new Criteria());
     $oTemplate = $this->constructTemplate('backend');
     $oTemplate->replaceIdentifier('categories', Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', @$aOptions['categories'], false));
+    $oTemplate->replaceIdentifier('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('documents'), 'BackendManager')), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents')))));
+
+    
     $aTemplateList = Util::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
     $aListTemplates = array();
     foreach($aTemplateList as $sPath => $sListName) {
