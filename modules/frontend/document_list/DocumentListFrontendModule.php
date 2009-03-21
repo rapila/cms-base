@@ -14,7 +14,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
       $oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
     }
     $aDocuments = DocumentPeer::doSelect($oCriteria);
-    // var_dump($aOptions, new Template($aOptions['list_template'])); exit;
     
     try {
       $oListTemplate = new Template($aOptions['list_template']);
@@ -33,7 +32,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     }
     
     return $oListTemplate;
-  } // renderFrontend()
+  }
 
   
   public function renderBackend() {
@@ -60,14 +59,13 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     
     $oTemplate->replaceIdentifier('list_templates', Util::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
     return $oTemplate;
-  } // renderBackend()
+  } 
   
   public function save(Blob $oData) {
-    // fixed problem, is this correct
     $_POST['categories'] = is_array($_POST['categories']) ? $_POST['categories'] : array($_POST['categories']);
     foreach($_POST['categories'] as $sKey => $sValue) {
       settype($_POST['categories'][$sKey], 'integer');
     }
     $oData->setContents(serialize(array('categories' => $_POST['categories'], 'list_template' => $_POST['list_template'])));
-  } // save()
+  }
 }

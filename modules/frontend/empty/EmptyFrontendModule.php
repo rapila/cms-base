@@ -14,7 +14,7 @@ class EmptyFrontendModule extends FrontendModule {
   }
 
   public function renderBackend() {
-    return "Press save ";
+    return $this->constructTemplate('backend');
   }
 
   public function save(Blob $oData) {

@@ -21,10 +21,10 @@
   	{{writeFlashValue=self_is_inactive}}
 	</fieldset>
 	{{identifierContext=start;name=has_groups}}
-  <fieldset class="divider properties"><legend>{{writeString=user.group}}</legend>
+  <fieldset class="divider"><legend>{{writeString=user.group}}</legend>
     <input type="text" name="has_groups" value="{{has_groups}}" style="display: none;" /><label for="group_ids">&nbsp;</label>{{identifierContext=start;name=group_options}}<select name="group_ids[]" id="group_ids" multiple="multiple" style="height:auto;">{{group_options}}</select><br/>{{identifierContext=end;name=group_options}}{{identifierContext=start;name=no_groups_message}}<div>{{no_groups_message}}: {{edit_groups_link}}</div>{{identifierContext=end;name=no_groups_message}}
   </fieldset>{{identifierContext=end;name=has_groups}}
-  <fieldset class="divider properties"><legend class="toggler{{display_class}}">{{password_legend}}</legend>
+  <fieldset class="divider"><legend class="toggler{{display_class}}">{{password_legend}}</legend>
     <div style="display:{{display_style}};">
     <label for="be_password">{{writeString=password}}</label>
     <input type="password" autocomplete="off" name="be_password" id="be_password" value=""  /><br />

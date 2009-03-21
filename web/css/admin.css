@@ -623,7 +623,7 @@ a.edit {
 }
 
 #detail fieldset fieldset.condition {
-  margin: 1em 0 1em 1em;
+  padding: 0.3em 0;
 }
 
 .urights {
@@ -703,6 +703,9 @@ button.delete_inactive {
 }
 button.show {
   background-image: url(../images/admin/show.gif);
+}
+button.list {
+  background-image: url(../images/admin/list.gif);
 }
 button.is_doc,
 button.noclick {
@@ -907,7 +910,6 @@ a.help {
 /*  line-height: 1.2em;*/
 }
 
-
 a.help:hover + #page_properties_info {
   display: block;
 }
@@ -1017,6 +1019,10 @@ a.sort_blind:hover {
 
 #pages_detail .languages, #detail .languages {
   background-color: #c9d2df;
+}
+
+#detail fieldset.highlight_group {
+  background-color: #ccc !important;
 }
 
 #pages_detail button[type=submit] {
