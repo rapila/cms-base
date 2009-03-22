@@ -28,4 +28,13 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
   public static function hasDocumentCategories($bInactiveOnly = false) {
     return count(self::getDocumentCategoriesSorted($bInactiveOnly)) > 0;
   }
+  
+  public static function getCategoryNameById($iCategoryId) {
+    $oCriteria = new Criteria();
+    $oDocumentCategory = self::retrieveByPK($iCategoryId);
+    if($oDocumentCategory) {
+      return $oDocumentCategory->getName();
+    }
+    return null;
+  }
 }

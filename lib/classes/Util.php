@@ -762,4 +762,28 @@ class Util {
     }
     return $sDefaultPrefix.$sString;
   }
+  
+  /**
+  * @param optional string of template 'list item' identifier
+  * retrieve all templates from site template dir that follow a naming convention
+  * list template name: examplename.tmpl
+  * list_item template name: examplename_item.tmpl
+  * @return array assoc of path to examplename in key and value
+  */  
+  public static function getSiteTemplatesForListOutput($sPostFix = '_item') {
+    $aTemplateList = Util::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true)); 
+    $aListTemplates = array();
+    foreach($aTemplateList as $sPath => $sListName) {
+      if(Util::endsWith($sListName, $sPostFix)) {
+        $aListTemplates[$sPath] = substr($sListName, 0, -strlen($sPostFix));
+      }
+    }
+    foreach($aListTemplates as $sListItemPath => $sListPath) {
+      if(in_array($sListItemPath, $aTemplateList)) {
+        $aListTemplates[$sListPath] = $sListPath;
+      }
+      unset($aListTemplates[$sListItemPath]);
+    }
+    return $aListTemplates;
+  }
 }

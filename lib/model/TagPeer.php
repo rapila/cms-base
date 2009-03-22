@@ -49,7 +49,11 @@ class TagPeer extends BaseTagPeer {
   }
   
   public static function getTagsUsedInModel($sModelName) {
-    return self::getTagsSorted($sModelName, true);
+    $oCriteria = new Criteria();
+    $oCriteria->addJoin(self::ID, TagInstancePeer::TAG_ID, Criteria::INNER_JOIN);
+    $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
+    return self::doSelect($oCriteria);
   }
 }
 

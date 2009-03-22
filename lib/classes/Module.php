@@ -159,6 +159,7 @@ abstract class Module {
     if(!$bListEnabledOnly) {
       self::$MODULE_LIST[$sType] = $aResult;
     }
+    ksort($aResult);
     return $aResult;
   }
   

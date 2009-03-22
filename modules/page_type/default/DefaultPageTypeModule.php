@@ -190,6 +190,8 @@ class DefaultPageTypeModule extends PageTypeModule {
         } else {
           $aAllowedItems = $aContentModuleNames;
         }
+        // order by displayName
+        asort($aAllowedItems);
         $oContainerTemplate->replaceIdentifier("module_name_options", Util::optionsFromArray($aAllowedItems, null, null, false));
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         

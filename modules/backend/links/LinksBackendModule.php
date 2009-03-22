@@ -10,8 +10,8 @@ class LinksBackendModule extends BackendModule {
   private $sSelectedTagName;
   private $bUntaggedItemsOnly = false; //get tagged items if exist
   
-  const SELECTED_TAG_NONE = 'null';
-  const SELECTED_TAG_WITHOUT = 'none';
+  const SELECTED_TAG_NONE = '__null';
+  const SELECTED_TAG_WITHOUT = '__without';
 
   public function __construct() {
     if(Manager::hasNextPathItem()) {
@@ -19,16 +19,17 @@ class LinksBackendModule extends BackendModule {
     }
     // selected_tag options: all tags that exist for the modul, plus opions links without tags and all links
     if(isset($_REQUEST['selected_tag_name']) && $_REQUEST['selected_tag_name'] != null) {
-      switch($_REQUEST['selected_tag_name']) {
-        case self::SELECTED_TAG_NONE : $this->sSelectedTagName = null; break;
-        case self::SELECTED_TAG_WITHOUT : $this->sSelectedTagName = $_REQUEST['selected_tag_name']; $this->bUntaggedItemsOnly = true; break;
-        default: $this->sSelectedTagName = $_REQUEST['selected_tag_name'];
-        Session::getSession()->setAttribute('selected_tag_name', $this->sSelectedTagName);
-        Session::getSession()->setAttribute('only_untagged_items', $this->bUntaggedItemsOnly);
+      if($_REQUEST['selected_tag_name'] === self::SELECTED_TAG_WITHOUT) {
+        $this->bUntaggedItemsOnly = true;
+      } else {
+        $this->bUntaggedItemsOnly = false;
       }
+      $this->sSelectedTagName = $_REQUEST['selected_tag_name'];
+      Session::getSession()->setAttribute('selected_tag_name', $this->sSelectedTagName);
+      Session::getSession()->setAttribute('only_untagged_items', $this->bUntaggedItemsOnly);
     } else {
       $this->sSelectedTagName = Session::getSession()->getAttribute('selected_tag_name');
-      $this->bUntagged = Session::getSession()->getAttribute('selected_tag_name');
+      $this->bUntaggedItemsOnly = Session::getSession()->getAttribute('only_untagged_items') !== null ? Session::getSession()->getAttribute('only_untagged_items') : false;
     }
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
@@ -37,12 +38,14 @@ class LinksBackendModule extends BackendModule {
   public function getChooser() {
     $oTemplate = $this->constructTemplate();
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
-    $aTagNamesForLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
-    $oTemplate->replaceIdentifier("selected_tag_names_options", Util::optionsFromObjects($aTagNamesForLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
+    $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
+    $oTemplate->replaceIdentifier("selected_tag_names_options", Util::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
     
-    // correct SELECTED_TAG_WITHOUT for getting Links
-    $sSelectedTagName = $this->sSelectedTagName === self::SELECTED_TAG_WITHOUT ? null : $this->sSelectedTagName;
-    $aLinks = LinkPeer::getLinksByTagName($sSearch, $this->sSortField, $this->sSortOrder, $sSelectedTagName , $this->bUntaggedItemsOnly);
+    // fix SELECTED_TAG_WITHOUT for criteria
+    if($this->sSelectedTagName === self::SELECTED_TAG_WITHOUT || $this->sSelectedTagName === self::SELECTED_TAG_NONE) {
+      $this->sSelectedTagName = null;
+    }
+    $aLinks = LinkPeer::getLinksByTagNameBackend($sSearch, $this->sSortField, $this->sSortOrder, $this->sSelectedTagName , !$this->bUntaggedItemsOnly);
 
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';

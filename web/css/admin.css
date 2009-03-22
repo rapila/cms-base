@@ -331,6 +331,11 @@ div.form_message {
   margin-left:160px;
 }
 
+.content_edit_links a {
+  font-size: 12px;
+  display:block;
+}
+
 input, 
 select, 
 textarea, 

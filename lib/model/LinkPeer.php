@@ -17,31 +17,46 @@ class LinkPeer extends BaseLinkPeer {
     $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
     $sOrderfield = constant("LinkPeer::".strtoupper($sOrderField));
     $oCriteria->$sSortMethodName($sOrderfield);
-    return self::doSelect(self::getLinksSortedCriteria($sOrderField, $sSortOrder));
+    return self::doSelect($oCriteria);
   }
-  
-  public static function getLinksSortedCriteria($sOrderField='NAME', $sSortOrder='ASC', $oCriteria = null) {
-    $oCriteria = $oCriteria === null ? new Criteria() : $oCriteria;   
-    $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
-    $sOrderfield = constant("LinkPeer::".strtoupper($sOrderField));
-    $oCriteria->$sSortMethodName($sOrderfield);
-    return $oCriteria;
-  }
-  
-  public static function getLinksByTagName($sName=null, $sOrderField='NAME', $sSortOrder='ASC', $sTagName=null, $bCriteriaIsIn = true) {
+
+  /** 
+   * getLinksByTagNameBackend()
+   * for backend admin, also untagged links can be retrieved
+   */ 
+  public static function getLinksByTagNameBackend($sName=null, $sOrderField='NAME', $sSortOrder='ASC', $sTagName=null, $bCriteriaIsIn = true) {
     $oCriteria = new Criteria();
-    if($sTagName !== null || $bCriteriaIsIn === false) {
-      $aTaggedItemIds = null;
-      foreach(TagInstancePeer::getByModelName('Link') as $oTagInstance) {
-        $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
-      }
-      if($aTaggedItemIds !== null && $bCriteriaIsIn) {
-        $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::IN);
-      } elseif($bCriteriaIsIn) {
-        $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::NOT_IN);
-      }
-    } 
+    $aTaggedItemIds = array();
+    foreach(TagInstancePeer::getByModelNameAndTagName('Link', $sTagName) as $oTagInstance) {
+      $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
+    }
+    if($sTagName !== null && $bCriteriaIsIn) {
+      $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::IN);
+    } elseif($bCriteriaIsIn === false) {
+      $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::NOT_IN);
+    }
     return self::doSelect(self::getLinksByNameCriteria($sName, $sOrderField, $sSortOrder, $oCriteria));
+  }
+  
+  /** 
+   * getLinksByTagName()
+   * @param mixed string|array tagname
+   * @param boolean optional sortorder
+   * @return array of objects
+   */
+  public static function getLinksByTagName($mTagName, $bOrderByLinkName=true) {
+    $oCriteria = new Criteria();
+    $oCriteria->addJoin(self::ID, TagInstancePeer::TAGGED_ITEM_ID, Criteria::INNER_JOIN);
+    $oCriteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, Criteria::INNER_JOIN);
+    $oCriteria->add(TagInstancePeer::MODEL_NAME, 'Link');
+    if(!is_array($mTagName)) $mTagName = array($mTagName);
+    $oCriteria->add(TagPeer::NAME, $mTagName, Criteria::IN);
+    if($bOrderByLinkName) {
+      $oCriteria->addAscendingOrderByColumn(self::NAME);
+    } else {
+      $oCriteria->addAscendingOrderByColumn(self::URL);
+    }
+    return self::doSelect($oCriteria);
   }
   
   public static function getLinksByName($sName = null, $sOrderField='NAME', $sSortOrder='ASC') {
@@ -61,4 +76,5 @@ class LinkPeer extends BaseLinkPeer {
     return $oCriteria;
   }
 
-} // LinkPeer
+}
+

@@ -4,6 +4,7 @@
  */
 
 class DocumentListFrontendModule extends DynamicFrontendModule {
+  
   const LIST_ITEM_POSTFIX = '_item';
   
   public function renderFrontend() {
@@ -17,7 +18,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     
     try {
       $oListTemplate = new Template($aOptions['list_template']);
-
       foreach($aDocuments as $i => $oDocument) {
         $oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
         $oItemTemplate->replaceIdentifier('name', $oDocument->getName());
@@ -25,7 +25,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
         $oItemTemplate->replaceIdentifier('extension', $oDocument->getExtension());
         $oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
         $oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
-        $oListTemplate->replaceIdentifierMultiple('documents', $oItemTemplate);
+        $oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
       }
     } catch(Exception $e) {
       $oListTemplate = new Template("", null, true);
@@ -40,23 +40,14 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     $aDocumentCategories = DocumentCategoryPeer::doSelect(new Criteria());
     $oTemplate = $this->constructTemplate('backend');
     $oTemplate->replaceIdentifier('categories', Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', @$aOptions['categories'], false));
-    $oTemplate->replaceIdentifier('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('documents'), 'BackendManager')), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents')))));
-
     
-    $aTemplateList = Util::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
-    $aListTemplates = array();
-    foreach($aTemplateList as $sPath => $sListName) {
-      if(Util::endsWith($sListName, self::LIST_ITEM_POSTFIX)) {
-        $aListTemplates[$sPath] = substr($sListName, 0, -strlen(self::LIST_ITEM_POSTFIX));
+    if(isset($aOptions['categories']) && is_array($aOptions['categories'])) {
+      // var_dump($aOptions['categories']); exit;
+      foreach($aOptions['categories'] as $sCategoryId) {
+        $oTemplate->replaceIdentifierMultiple('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_category_id' => $sCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents'))).(' ['.DocumentCategoryPeer::getCategoryNameById($sCategoryId).']')));
       }
     }
-    foreach($aListTemplates as $sListItemPath => $sListPath) {
-      if(in_array($sListItemPath, $aTemplateList)) {
-        $aListTemplates[$sListPath] = $sListPath;
-      }
-      unset($aListTemplates[$sListItemPath]);
-    }
-    
+    $aListTemplates = Util::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
     $oTemplate->replaceIdentifier('list_templates', Util::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
     return $oTemplate;
   } 
