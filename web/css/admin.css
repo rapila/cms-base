@@ -334,6 +334,9 @@ div.form_message {
 .content_edit_links a {
   font-size: 12px;
   display:block;
+  padding: .5em 0;
+  color: #5174c2;
+  text-decoration:none;
 }
 
 input, 
