@@ -1,10 +1,31 @@
 var tag_area, input;
 
-var tag_handler = new TagHandler('all', 'all');
-
 Event.observe(document, "dom:loaded", function() {
   tag_area = $("tag_area");
   input = $('data');
+  var tag_handler = new TagHandler('all', 'all');
+  var get_tags = function(tags) {
+    $A(tags).each(function(tag) {
+      var the_span = document.createElement("span");
+      the_span.appendChild(document.createTextNode(tag.firstChild.nodeValue));
+      the_span.tag_name = tag.getAttribute("name");
+      the_span.className = "tag";
+      Event.observe(the_span, 'click', function() {
+        toggle_tag(the_span);
+      })
+      the_span.style.fontSize = ""+(1+(tag.getAttribute('quantity')/10))+"em";
+      tag_area.appendChild(the_span);
+    });
+  
+    var all_tags = $A($F(input).split(','));
+    var tag_elements = $$("#tag_area .tag");
+    tag_elements.each(function(element) {
+      if(all_tags.include(element.tag_name)) {
+        element.addClassName('active');
+      }
+    });
+  };
+  empty_element(tag_area);
   tag_handler.list_all_tags(get_tags);
 });
 
@@ -22,28 +43,5 @@ function empty_element(element) {
   var children = $A(element.childNodes);
   children.each(function(child) {
     element.removeChild(child);
-  });
-}
-
-function get_tags(tags) {
-  empty_element(tag_area);
-  $A(tags).each(function(tag) {
-    var the_span = document.createElement("span");
-    the_span.appendChild(document.createTextNode(tag.firstChild.nodeValue));
-    the_span.tag_name = tag.getAttribute("name");
-    the_span.className = "tag";
-    Event.observe(the_span, 'click', function() {
-      toggle_tag(the_span);
-    })
-    the_span.style.fontSize = ""+(1+(tag.getAttribute('quantity')/10))+"em";
-    tag_area.appendChild(the_span);
-  });
-  
-  var all_tags = $A($F(input).split(','));
-  var tag_elements = $$("#tag_area .tag");
-  tag_elements.each(function(element) {
-    if(all_tags.include(element.tag_name)) {
-      element.addClassName('active');
-    }
   });
 }

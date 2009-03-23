@@ -20,11 +20,16 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
       $oListTemplate = new Template($aOptions['list_template']);
       foreach($aDocuments as $i => $oDocument) {
         $oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
+        $oItemTemplate->replaceIdentifier('model', 'Document');
         $oItemTemplate->replaceIdentifier('name', $oDocument->getName());
+        $oItemTemplate->replaceIdentifier('link_text', $oDocument->getName());
+        $oItemTemplate->replaceIdentifier('title', $oDocument->getName());
         $oItemTemplate->replaceIdentifier('description', $oDocument->getDescription());
         $oItemTemplate->replaceIdentifier('extension', $oDocument->getExtension());
+        $oItemTemplate->replaceIdentifier('mimetype', $oDocument->getMimetype());
         $oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
         $oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
+        $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oDocument->getData()->getContents(), 'kb'));
         $oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
       }
     } catch(Exception $e) {
@@ -47,7 +52,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
         $oTemplate->replaceIdentifierMultiple('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_category_id' => $sCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents'))).(' ['.DocumentCategoryPeer::getCategoryNameById($sCategoryId).']')));
       }
     }
-    $aListTemplates = Util::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
+    $aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
     $oTemplate->replaceIdentifier('list_templates', Util::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
     return $oTemplate;
   } 

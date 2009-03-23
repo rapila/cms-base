@@ -229,7 +229,7 @@ TagHandler.prototype = {
   },
   
   list_all_tags: function(callback) {
-    var is_synchronous = arguments[1] && arguments[1] === true;
+    var is_synchronous = arguments[1] === true;
     this.do_request("all_tags", callback, {}, {asynchronous: !is_synchronous});
   },
   

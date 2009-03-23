@@ -4,15 +4,16 @@
  */
 class RelatedFrontendModule extends DynamicFrontendModule {
   
-  private static $TEXT_ENCODING = "utf-8";
+  private static $LIST_TYPES = array('document', 'link', 'page');
   
   public function __construct($oLanguageObject, $aRequestPath = null) {
     parent::__construct($oLanguageObject, $aRequestPath);
   }
   
   public function renderFrontend() {
-    $tmpl = $this->constructTemplate();
-    $sTags = $this->getData();
+    $aData = $this->getData();
+    $oTemplate = new Template($aData['template']);
+    $sTags = $aData['tags'];
     $bDocumentFound = false;
     
     $aTags = explode(",", $sTags);
@@ -29,14 +30,18 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           continue;
         }
         $bDocumentFound = true;
-        $sDocumentsTemp = $this->constructTemplate("document");
+        $sDocumentsTemp = new Template($aData['template'].'_item');
+        $sDocumentsTemp->replaceIdentifier('model', 'Document');
         $sDocumentsTemp->replaceIdentifier("name", $oCorrespondingDocument->getName());
-        $sDocumentsTemp->replaceIdentifier("link", $oCorrespondingDocument->getLink());
+        $sDocumentsTemp->replaceIdentifier("link_text", $oCorrespondingDocument->getName());
+        $sDocumentsTemp->replaceIdentifier("title", $oCorrespondingDocument->getName());
         $sDocumentsTemp->replaceIdentifier("description", $oCorrespondingDocument->getDescription());
-        $sDocumentsTemp->replaceIdentifier("type", $oCorrespondingDocument->getDocumentType()->getExtension());
-        $sDocumentsTemp->replaceIdentifier("doctype", strtoupper($oCorrespondingDocument->getDocumentType()->getExtension()));
+        $sDocumentsTemp->replaceIdentifier("extension", $oCorrespondingDocument->getExtension());
+        $sDocumentsTemp->replaceIdentifier("mimetype", $oCorrespondingDocument->getMimetype());
+        $sDocumentsTemp->replaceIdentifier("url", $oCorrespondingDocument->getLink());
+        $sDocumentsTemp->replaceIdentifier('category_id', $oCorrespondingDocument->getDocumentCategoryId());
         $sDocumentsTemp->replaceIdentifier("size", Util::getDocumentSize($oCorrespondingDocument->getData()->getContents(), 'kb'));
-        $tmpl->replaceIdentifierMultiple("documents", $sDocumentsTemp);
+        $oTemplate->replaceIdentifierMultiple("items", $sDocumentsTemp);
       }
       
       $aCorrespondingLinks = $oTag->getAllCorrespondingDataEntries("Link");
@@ -45,11 +50,14 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           continue;
         }
         $bDocumentFound = true;
-        $sLinksTemp = $this->constructTemplate("link");
+        $sLinksTemp = new Template($aData['template'].'_item');
+        $sLinksTemp->replaceIdentifier('model', 'Link');
         $sLinksTemp->replaceIdentifier("name", $oCorrespondingLink->getName());
-        $sLinksTemp->replaceIdentifier("link", Template::htmlEncode($oCorrespondingLink->getUrl()));
+        $sLinksTemp->replaceIdentifier("link_text", $oCorrespondingLink->getName());
+        $sLinksTemp->replaceIdentifier("title", $oCorrespondingLink->getName());
         $sLinksTemp->replaceIdentifier("description", $oCorrespondingLink->getDescription());
-        $tmpl->replaceIdentifierMultiple("links", $sLinksTemp);
+        $sLinksTemp->replaceIdentifier("url", Template::htmlEncode($oCorrespondingLink->getUrl()));
+        $oTemplate->replaceIdentifierMultiple("items", $sLinksTemp);
       }
       
       $aCorrespondingPages = $oTag->getAllCorrespondingDataEntries("Page");
@@ -58,23 +66,39 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           continue;
         }
         $bDocumentFound = true;
-        $oRelatedPagesTemp = $this->constructTemplate("page");
-        $oRelatedPagesTemp->replaceIdentifier("name", $oCorrespondingPage->getPageTitle());
-        $oRelatedPagesTemp->replaceIdentifier("link", Util::link($oCorrespondingPage->getLink()));
+        $oRelatedPagesTemp = new Template($aData['template'].'_item');
+        $oRelatedPagesTemp->replaceIdentifier('model', 'Page');
+        $oRelatedPagesTemp->replaceIdentifier("name", $oCorrespondingPage->getName());
         $oRelatedPagesTemp->replaceIdentifier("link_text", $oCorrespondingPage->getLinkText());
-        $tmpl->replaceIdentifierMultiple("pages", $oRelatedPagesTemp);
+        $oRelatedPagesTemp->replaceIdentifier("title", $oCorrespondingPage->getPageTitle());
+        $oRelatedPagesTemp->replaceIdentifier("description", $oCorrespondingPage->getPageTitle());
+        $oRelatedPagesTemp->replaceIdentifier("url", Util::link($oCorrespondingPage->getLink()));
+        $oTemplate->replaceIdentifierMultiple("items", $oRelatedPagesTemp);
       }
     }
     if(!$bDocumentFound) {
-      $tmpl = $this->constructTemplate("empty");
+      return null;
     }
-    return $tmpl;
+    return $oTemplate;
+  }
+  
+  public function getData() {
+    $aData = @unserialize(parent::getData());
+    if($aData === false) {
+      $aData = array('tags' => parent::getData(), 'types' => array(), 'template' => '');
+    }
+    return $aData;
   }
   
   public function renderBackend() {
-    $tmpl = $this->constructTemplate('main_admin');
-    $tmpl->replaceIdentifier("text", Util::encodeForBrowser($this->getData(), self::$TEXT_ENCODING));
-    return $tmpl;
+    $aData = $this->getData();
+    
+    $oTemplate = $this->constructTemplate('main_admin');
+    $oTemplate->replaceIdentifier("text", $aData['tags']);
+    $oTemplate->replaceIdentifier("type_options", Util::optionsFromArray(self::$LIST_TYPES, $aData['types'], null, null));
+    $oTemplate->replaceIdentifier("template_options", Util::optionsFromArray(BackendManager::getSiteTemplatesForListOutput(), $aData['template']));
+    
+    return $oTemplate;
   }
   
   public function getJsForBackend() {
@@ -82,7 +106,12 @@ class RelatedFrontendModule extends DynamicFrontendModule {
   }
   
   public function save(Blob $oData) {
-    $sText = $_POST['data'];
-    $oData->setContents($sText);
+    $aData = array();
+    
+    $aData['tags'] = $_POST['data'];
+    $aData['types'] = $_POST['types'];
+    $aData['template'] = $_POST['template'];
+    
+    $oData->setContents(serialize($aData));
   }
 }
