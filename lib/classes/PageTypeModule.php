@@ -22,6 +22,20 @@ abstract class PageTypeModule extends Module {
     array_unshift($aPath, "content");
     return Util::link($aPath, null, $aParameters);
   }
+
+  /**
+  * Returns the class name of the main model that is being modified at the moment by the backend module
+  * Used only to assign tags using the tag panel
+  * Default is null
+  */
+  public function getModelName() {return null;}
+  
+  /**
+  * Returns the primary key value of the main model ({@link getModelName}) row that is being modified at the moment by the backend module
+  * Used only to assign tags using the tag panel
+  * Default is null
+  */
+  public function getCurrentId() {return null;}
   
   //Functions which should actually be in Module superclass but can't because they rely on MODULE_TYPE
   public static function getType() {
