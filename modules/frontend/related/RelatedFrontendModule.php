@@ -105,7 +105,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
     $oTemplate->replaceIdentifier("text", $aData['tags']);
     $aListTypes = array();
     foreach(self::$LIST_TYPES as $sName) {
-      $aListTypes[] = StringPeer::getString('module.backend.'.$sName);
+      $aListTypes[$sName] = StringPeer::getString('module.backend.'.$sName);
     }
     $oTemplate->replaceIdentifier("type_options", Util::optionsFromArray($aListTypes, $aData['types'], null, null));
     $oTemplate->replaceIdentifier("template_options", Util::optionsFromArray(BackendManager::getSiteTemplatesForListOutput(), $aData['template']));
