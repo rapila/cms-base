@@ -378,11 +378,8 @@ class Util {
   }
 
   public static function arrayWithValuesAsKeys($aArray) {
-    $aResult = array();
-    foreach($aArray as $iKey => $sValue) {
-      $aResult[$sValue] = $sValue;
-    }
-    return $aResult;
+    $aValues = array_values($aArray);
+    return array_combine($aValues, $aValues);
   }
 
   public static function truncate($sText, $iLength=20, $sPostfix="…", $iTolerance=3) {

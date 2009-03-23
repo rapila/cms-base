@@ -13,6 +13,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
   public function renderFrontend() {
     $aData = $this->getData();
     $oTemplate = new Template($aData['template']);
+    $oItemTemplatePrototype = new Template($aData['template'].'_item');
     $sTags = $aData['tags'];
     $bDocumentFound = false;
     
@@ -24,57 +25,64 @@ class RelatedFrontendModule extends DynamicFrontendModule {
         continue;
       }
       
-      $aCorrespondingDocuments = $oTag->getAllCorrespondingDataEntries("Document");
-      foreach($aCorrespondingDocuments as $oCorrespondingDocument) {
-        if($oCorrespondingDocument->getLanguageId() !== null && $oCorrespondingDocument->getLanguageId() !== Session::language()) {
-          continue;
+      if(in_array('documents', $aData['types'])) {
+        $aCorrespondingDocuments = $oTag->getAllCorrespondingDataEntries("Document");
+        foreach($aCorrespondingDocuments as $oCorrespondingDocument) {
+          if($oCorrespondingDocument->getLanguageId() !== null && $oCorrespondingDocument->getLanguageId() !== Session::language()) {
+            continue;
+          }
+          $bDocumentFound = true;
+          $oItemTemplate = clone $oItemTemplatePrototype;
+          $oItemTemplate->replaceIdentifier('model', 'Document');
+          $oItemTemplate->replaceIdentifier("name", $oCorrespondingDocument->getName());
+          $oItemTemplate->replaceIdentifier("link_text", $oCorrespondingDocument->getName());
+          $oItemTemplate->replaceIdentifier("title", $oCorrespondingDocument->getName());
+          $oItemTemplate->replaceIdentifier("description", $oCorrespondingDocument->getDescription());
+          $oItemTemplate->replaceIdentifier("extension", $oCorrespondingDocument->getExtension());
+          $oItemTemplate->replaceIdentifier("mimetype", $oCorrespondingDocument->getMimetype());
+          $oItemTemplate->replaceIdentifier("url", $oCorrespondingDocument->getLink());
+          $oItemTemplate->replaceIdentifier('category_id', $oCorrespondingDocument->getDocumentCategoryId());
+          $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oCorrespondingDocument->getData()->getContents(), 'kb'));
+          $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
-        $bDocumentFound = true;
-        $sDocumentsTemp = new Template($aData['template'].'_item');
-        $sDocumentsTemp->replaceIdentifier('model', 'Document');
-        $sDocumentsTemp->replaceIdentifier("name", $oCorrespondingDocument->getName());
-        $sDocumentsTemp->replaceIdentifier("link_text", $oCorrespondingDocument->getName());
-        $sDocumentsTemp->replaceIdentifier("title", $oCorrespondingDocument->getName());
-        $sDocumentsTemp->replaceIdentifier("description", $oCorrespondingDocument->getDescription());
-        $sDocumentsTemp->replaceIdentifier("extension", $oCorrespondingDocument->getExtension());
-        $sDocumentsTemp->replaceIdentifier("mimetype", $oCorrespondingDocument->getMimetype());
-        $sDocumentsTemp->replaceIdentifier("url", $oCorrespondingDocument->getLink());
-        $sDocumentsTemp->replaceIdentifier('category_id', $oCorrespondingDocument->getDocumentCategoryId());
-        $sDocumentsTemp->replaceIdentifier("size", Util::getDocumentSize($oCorrespondingDocument->getData()->getContents(), 'kb'));
-        $oTemplate->replaceIdentifierMultiple("items", $sDocumentsTemp);
       }
       
-      $aCorrespondingLinks = $oTag->getAllCorrespondingDataEntries("Link");
-      foreach($aCorrespondingLinks as $oCorrespondingLink) {
-        if($oCorrespondingLink->getLanguageId() !== null && $oCorrespondingLink->getLanguageId() !== Session::language()) {
-          continue;
+      if(in_array('links', $aData['types'])) {
+        $aCorrespondingLinks = $oTag->getAllCorrespondingDataEntries("Link");
+        foreach($aCorrespondingLinks as $oCorrespondingLink) {
+          if($oCorrespondingLink->getLanguageId() !== null && $oCorrespondingLink->getLanguageId() !== Session::language()) {
+            continue;
+          }
+          $bDocumentFound = true;
+          $oItemTemplate = new Template($aData['template'].'_item');
+          $oItemTemplate->replaceIdentifier('model', 'Link');
+          $oItemTemplate->replaceIdentifier("name", $oCorrespondingLink->getName());
+          $oItemTemplate->replaceIdentifier("link_text", $oCorrespondingLink->getName());
+          $oItemTemplate->replaceIdentifier("title", $oCorrespondingLink->getName());
+          $oItemTemplate->replaceIdentifier("description", $oCorrespondingLink->getDescription());
+          $oItemTemplate->replaceIdentifier("url", Template::htmlEncode($oCorrespondingLink->getUrl()));
+          $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
-        $bDocumentFound = true;
-        $sLinksTemp = new Template($aData['template'].'_item');
-        $sLinksTemp->replaceIdentifier('model', 'Link');
-        $sLinksTemp->replaceIdentifier("name", $oCorrespondingLink->getName());
-        $sLinksTemp->replaceIdentifier("link_text", $oCorrespondingLink->getName());
-        $sLinksTemp->replaceIdentifier("title", $oCorrespondingLink->getName());
-        $sLinksTemp->replaceIdentifier("description", $oCorrespondingLink->getDescription());
-        $sLinksTemp->replaceIdentifier("url", Template::htmlEncode($oCorrespondingLink->getUrl()));
-        $oTemplate->replaceIdentifierMultiple("items", $sLinksTemp);
       }
       
-      $aCorrespondingPages = $oTag->getAllCorrespondingDataEntries("Page");
-      foreach($aCorrespondingPages as $oCorrespondingPage) {
-        if(Manager::getCurrentPage() !== null && $oCorrespondingPage->getId() === Manager::getCurrentPage()->getId()) {
-          continue;
+      if(in_array('pages', $aData['types'])) {
+        $aCorrespondingPages = $oTag->getAllCorrespondingDataEntries("Page");
+        foreach($aCorrespondingPages as $oCorrespondingPage) {
+          if(Manager::getCurrentPage() !== null && $oCorrespondingPage->getId() === Manager::getCurrentPage()->getId()) {
+            continue;
+          }
+          $bDocumentFound = true;
+          $oItemTemplate = new Template($aData['template'].'_item');
+          $oItemTemplate->replaceIdentifier('model', 'Page');
+          $oItemTemplate->replaceIdentifier("name", $oCorrespondingPage->getName());
+          $oItemTemplate->replaceIdentifier("link_text", $oCorrespondingPage->getLinkText());
+          $oItemTemplate->replaceIdentifier("title", $oCorrespondingPage->getPageTitle());
+          $oItemTemplate->replaceIdentifier("description", $oCorrespondingPage->getPageTitle());
+          $oItemTemplate->replaceIdentifier("url", Util::link($oCorrespondingPage->getLink()));
+          $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
-        $bDocumentFound = true;
-        $oRelatedPagesTemp = new Template($aData['template'].'_item');
-        $oRelatedPagesTemp->replaceIdentifier('model', 'Page');
-        $oRelatedPagesTemp->replaceIdentifier("name", $oCorrespondingPage->getName());
-        $oRelatedPagesTemp->replaceIdentifier("link_text", $oCorrespondingPage->getLinkText());
-        $oRelatedPagesTemp->replaceIdentifier("title", $oCorrespondingPage->getPageTitle());
-        $oRelatedPagesTemp->replaceIdentifier("description", $oCorrespondingPage->getPageTitle());
-        $oRelatedPagesTemp->replaceIdentifier("url", Util::link($oCorrespondingPage->getLink()));
-        $oTemplate->replaceIdentifierMultiple("items", $oRelatedPagesTemp);
       }
+    
     }
     if(!$bDocumentFound) {
       return null;
