@@ -424,11 +424,19 @@ fieldset textarea {
   background-color: #DDD;
   padding: 1em 1em 1em 0;
   border: #ccc 1px dotted;
+  border-right: none;
+  float:left;
+}
+.arrow_list {
+  background-color: #DDD;
+  padding: 1em 0 1em 0;
+  border: #ccc 1px dotted;
+  border-left: none;
   float:left;
 }
 
 div.up_arrow {
-  height: 1.7em;
+  height: 1.65em;
   font-size: 1.1em;
 }
 
