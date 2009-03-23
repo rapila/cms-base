@@ -422,7 +422,8 @@ fieldset textarea {
 
 .object_list {
   background-color: #DDD;
-  padding:.3em;
+  padding: 1em 1em 1em 0;
+  border: #ccc 1px dotted;
   float:left;
 }
 

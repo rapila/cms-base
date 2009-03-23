@@ -62,6 +62,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       if($this->fillContainerWithModule($oContainer, $oTemplate, $this->iModuleId) === false) {
         continue;
       }
+      // FilterModule::getFilters()->handleDefaultPageTypeFilledContainer($oContainer, $this->oPage, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
       $this->iModuleId++;
       
       if(isset($aObjectTypes[$oContainer->getObjectType()])) {
@@ -98,6 +99,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     if($sFrontentContents === null) {
       return false;
     }
+    FilterModule::getFilters()->handleDefaultPageTypeFilledContainerWithModule($oContentObject, $oModule, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
     $oTemplate->replaceIdentifierMultiple("container", $sFrontentContents, null, Template::NO_HTML_ESCAPE);
     $this->oFrontendTemplate->replaceIdentifierMultiple("custom_css", $oModule->getCssForFrontend());
     $this->oFrontendTemplate->replaceIdentifierMultiple("custom_js", $oModule->getJsForFrontend());
@@ -190,9 +192,9 @@ class DefaultPageTypeModule extends PageTypeModule {
         } else {
           $aAllowedItems = $aContentModuleNames;
         }
-        // order by displayName
+        // order by displayName and add choose
         asort($aAllowedItems);
-        $oContainerTemplate->replaceIdentifier("module_name_options", Util::optionsFromArray($aAllowedItems, null, null, false));
+        $oContainerTemplate->replaceIdentifier("module_name_options", Util::optionsFromArray($aAllowedItems, null, null));
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         
         $aObjects = $this->oPage->getObjectsForContainer($sContainerName);

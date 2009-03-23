@@ -21,4 +21,11 @@ Event.observe(document, "dom:loaded", function() {
 		up_arrow.item_number = $(up_arrow.parentNode).select('.up_arrow').indexOf(up_arrow);
 		Event.observe(up_arrow, "click", event_click_handler.bindAsEventListener(up_arrow));
 	});
+	
+	$$('select[name=module_name]').each(function(module_name_select) {
+    module_name_select.add_button = module_name_select.next();
+    Event.observe(module_name_select, 'change', function() {
+      module_name_select.add_button.disabled = $F(module_name_select) == '' ? 'disabled' : '';
+    });
+  });
 });

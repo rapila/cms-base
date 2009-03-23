@@ -159,7 +159,7 @@ class FrontendManager extends Manager {
     } else {
       $this->oTemplate = self::getCurrentPage()->getTemplate(true);
     }
-    FilterModule::getFilters()->handleHandleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
+    // FilterModule::getFilters()->handleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
 
     if(!$bIsAjaxRequest) {
       $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
@@ -190,6 +190,7 @@ class FrontendManager extends Manager {
    * fillContent()
    */
   private function fillContent() {
+    // FilterModule::getFilters()->handleBeforePageTypeDisplay(self::getCurrentPage(), $this->oPageType, $this->oTemplate);
     $this->oPageType->display($this->oTemplate);
   }
       
