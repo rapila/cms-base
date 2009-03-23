@@ -4,7 +4,7 @@
  */
 class RelatedFrontendModule extends DynamicFrontendModule {
   
-  private static $LIST_TYPES = array('document', 'link', 'page');
+  private static $LIST_TYPES = array('documents', 'links', 'pages');
   
   public function __construct($oLanguageObject, $aRequestPath = null) {
     parent::__construct($oLanguageObject, $aRequestPath);
@@ -93,9 +93,13 @@ class RelatedFrontendModule extends DynamicFrontendModule {
   public function renderBackend() {
     $aData = $this->getData();
     
-    $oTemplate = $this->constructTemplate('main_admin');
+    $oTemplate = $this->constructTemplate('backend');
     $oTemplate->replaceIdentifier("text", $aData['tags']);
-    $oTemplate->replaceIdentifier("type_options", Util::optionsFromArray(self::$LIST_TYPES, $aData['types'], null, null));
+    $aListTypes = array();
+    foreach(self::$LIST_TYPES as $sName) {
+      $aListTypes[] = StringPeer::getString('module.backend.'.$sName);
+    }
+    $oTemplate->replaceIdentifier("type_options", Util::optionsFromArray($aListTypes, $aData['types'], null, null));
     $oTemplate->replaceIdentifier("template_options", Util::optionsFromArray(BackendManager::getSiteTemplatesForListOutput(), $aData['template']));
     
     return $oTemplate;
