@@ -88,9 +88,11 @@ body.mceContentBody {
   padding-right:1em;
 }
 
-.toggler, 
-.link {
+.toggler {
   color:#5174c2;
+}
+.link {
+  color:#F2f2f2;
 }
 
 #admin_navigation a {
