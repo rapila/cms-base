@@ -110,6 +110,7 @@ class FrontendManager extends Manager {
     $this->bIsNotFound = $this->bIsNotFound || count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
     
     if($this->bIsNotFound) {
+      FilterModule::getFilters()->handlePageNotFound();
       header("HTTP/1.0 404 Not Found");
       $sErrorPageName = Settings::getSetting('error_pages', 'not_found', null);
       $oPage = null;

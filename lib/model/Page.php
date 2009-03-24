@@ -484,6 +484,11 @@ class Page extends BasePage {
       if($oChild->getName() === $sName) {
         return $oChild;
       }
+      foreach($oChild->getChildren() as $oChild) {
+        if($oChild->getName() === $sName) {
+          return $oChild;
+        }
+      }
     }
     if($this->isRoot()) {
       return $this->getName() === $sName ? $this : null;
