@@ -24,7 +24,8 @@ class RelatedFrontendModule extends DynamicFrontendModule {
       if($oTag === null) {
         continue;
       }
-      
+      $oTemplate->replaceIdentifier("tag_name", $sTag);
+     
       if(in_array('documents', $aData['types'])) {
         $aCorrespondingDocuments = $oTag->getAllCorrespondingDataEntries("Document");
         foreach($aCorrespondingDocuments as $oCorrespondingDocument) {
