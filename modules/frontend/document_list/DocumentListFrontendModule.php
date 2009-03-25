@@ -39,7 +39,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     return $oListTemplate;
   }
 
-  
   public function renderBackend() {
     $aOptions = @unserialize($this->getData());
     $aDocumentCategories = DocumentCategoryPeer::doSelect(new Criteria());
@@ -47,7 +46,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     $oTemplate->replaceIdentifier('categories', Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', @$aOptions['categories'], false));
     
     if(isset($aOptions['categories']) && is_array($aOptions['categories'])) {
-      // var_dump($aOptions['categories']); exit;
       foreach($aOptions['categories'] as $sCategoryId) {
         $oTemplate->replaceIdentifierMultiple('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_category_id' => $sCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents'))).(' ['.DocumentCategoryPeer::getCategoryNameById($sCategoryId).']')));
       }
