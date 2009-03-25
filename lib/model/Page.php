@@ -480,6 +480,7 @@ class Page extends BasePage {
     if($this->getName() === $sName) {
       return $this;
     }
+    // @fix: make recursive
     foreach($this->getChildren() as $oChild) {
       if($oChild->getName() === $sName) {
         return $oChild;
