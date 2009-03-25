@@ -192,6 +192,14 @@ class DefaultPageTypeModule extends PageTypeModule {
         } else {
           $aAllowedItems = $aContentModuleNames;
         }
+        if($oContainer->hasParameter("disabled_modules")) {
+          foreach(Util::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
+            if(isset($aAllowedItems[$sDisabledModuleName])) {
+              unset($aAllowedItems[$sDisabledModuleName]);
+            }
+          }
+        }
+        
         // order by displayName and add choose
         asort($aAllowedItems);
         $oContainerTemplate->replaceIdentifier("module_name_options", Util::optionsFromArray($aAllowedItems, null, null));
