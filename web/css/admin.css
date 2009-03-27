@@ -831,6 +831,13 @@ p.default_message {
   color:#253d74;
 }
 
+.module_info p {
+  margin: .5em;
+  font-size:1.3em;
+  color:#253d74;
+  padding: 0;
+}
+
 #detail li a {
   color:blue;
   margin-left: 1em;
