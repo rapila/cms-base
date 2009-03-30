@@ -13,12 +13,27 @@
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 
   public static function getDocumentCategoriesSorted($bInactiveOnly = false) {
-    $oC = new Criteria();
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::IS_EXTERNALLY_MANAGED, false);
     if($bInactiveOnly) {
       $oC->add(self::IS_INACTIVE, true);
     }
-    $oC->addAscendingOrderByColumn(self::NAME);
-    return self::doSelect($oC);
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
+    return self::doSelect($oCriteria);
+  }
+  
+  public static function getExternallyManagedDocumentCategories() {
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::IS_EXTERNALLY_MANAGED, true);
+    return self::doSelect($oCriteria);
+  }
+  
+  public static function getExternallyManagedDocumentCategoryIds() {
+    $aResult = array();
+    foreach(self::getExternallyManagedDocumentCategories() as $oDocumentCategory) {
+      $aResult[] = $oDocumentCategory->getId();
+    }
+    return $aResult;
   }
   
   public static function getDocumentCategories($bInactiveOnly = false) {

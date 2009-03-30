@@ -253,6 +253,7 @@
   <column name="name" type="varchar" size="80" required="true" />
   <column name="sort" type="integer" />
   <column name="max_width" type="integer" />
+  <column name="is_externally_managed" type="boolean" size="1" default="0" />
   <column name="is_inactive" type="boolean" size="1" default="0" />
 </table>
 

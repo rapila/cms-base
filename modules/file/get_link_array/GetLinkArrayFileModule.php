@@ -20,17 +20,6 @@ class GetLinkArrayFileModule extends FileModule {
     header("Content-Type: text/javascript;charset=".Settings::getSetting("encoding", "browser", "utf-8"));
     $aArrayText = array();
     
-    if(!in_array('external_links', $this->aDisabledSections)) {
-      $aLinks = LinkPeer::getLinksSorted();
-      if(count($aLinks) > 0) {
-        $aArrayText[] = '["--------'.StringPeer::getString('links_external').'-----------",""]';
-      }
-      foreach($aLinks as $oLink) {
-  	    $sLinkUrl = Util::link(array('external_link_proxy', $oLink->getId()));
-        $aArrayText[] = '["'.$oLink->getName().'", "'.$sLinkUrl.'"]';
-      }
-    }
-    
     if(!in_array('documents', $this->aDisabledSections)) {
       $aDocuments = DocumentPeer::getDocumentsForMceLinkArray();
 
@@ -51,6 +40,17 @@ class GetLinkArrayFileModule extends FileModule {
       foreach($aParents as $oParent) {
   	    $sLinkUrl = Util::link(array('internal_link_proxy', $oParent->getId()));
         $aArrayText[] = '["'.$oParent->getNameMceIndented().'", "'.$sLinkUrl.'"]';
+      }
+    }
+    
+    if(!in_array('external_links', $this->aDisabledSections)) {
+      $aLinks = LinkPeer::getLinksSorted();
+      if(count($aLinks) > 0) {
+        $aArrayText[] = '["--------'.StringPeer::getString('links_external').'-----------",""]';
+      }
+      foreach($aLinks as $oLink) {
+  	    $sLinkUrl = Util::link(array('external_link_proxy', $oLink->getId()));
+        $aArrayText[] = '["'.$oLink->getName().'", "'.$sLinkUrl.'"]';
       }
     }
     

@@ -42,6 +42,12 @@ class DocumentPeer extends BaseDocumentPeer {
     //Catergory
     if($iDocumentCategory !== self::ALL_CATEGORIES) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
+    } else {
+      // is always excluded for any document calls, also for tinymce
+      $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
+      if(count($aExcludeCategories) > 0) {
+        $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
+      }
     }
     
     //Kind
@@ -58,9 +64,15 @@ class DocumentPeer extends BaseDocumentPeer {
     return self::doSelect($oCriteria);
   } 
   
-  public static function getDocumentsForMceLinkArray() {
+  public static function getDocumentsForMceLinkArray($bExcludeExternallyManagedCategories=true) {
     $oCriteria = new Criteria();
     $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image', false)), Criteria::IN);
+    if($bExcludeExternallyManagedCategories) {
+      $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
+      if(count($aExcludeCategories) > 0) {
+        $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
+      }
+    }
     $oCriteria->addJoin(self::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
     $oCriteria->addAscendingOrderByColumn(DocumentCategoryPeer::NAME);
     $oCriteria->addAscendingOrderByColumn(self::NAME);
