@@ -8,14 +8,6 @@
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'documents' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
  * @package model
  */	
 class DocumentPeer extends BaseDocumentPeer {
@@ -39,11 +31,10 @@ class DocumentPeer extends BaseDocumentPeer {
       $oCriteria->add(self::NAME, "%$sDocumentName%", Criteria::LIKE);
     }
     
-    //Catergory
+    //By DocumentCategoryId or all internally managed Documents
     if($iDocumentCategory !== self::ALL_CATEGORIES) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
     } else {
-      // is always excluded for any document calls, also for tinymce
       $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
       if(count($aExcludeCategories) > 0) {
         $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
@@ -62,7 +53,30 @@ class DocumentPeer extends BaseDocumentPeer {
     }
     
     return self::doSelect($oCriteria);
-  } 
+  }
+  
+ /**
+  * countDocumentsInternallyManaged()
+  * exclude document categories that are externally managed by other objects and use documents for storage only
+  * @return int
+  */
+  public static function countDocumentsInternallyManaged() {
+    $oCriteria = new Criteria();
+    $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
+    if(count($aExcludeCategories) > 0) {
+      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
+    }
+    return self::doCount($oCriteria);
+  }
+
+ /**
+  * countDocumentsExceedsLimit()
+  * @param int limit
+  * @return boolean
+  */  
+  public static function countDocumentsExceedsLimit($iLimit = 40) {
+    return self::countDocumentsInternallyManaged() > $iLimit;
+  }
   
   public static function getDocumentsForMceLinkArray($bExcludeExternallyManagedCategories=true) {
     $oCriteria = new Criteria();
@@ -95,5 +109,5 @@ class DocumentPeer extends BaseDocumentPeer {
     $oCriteria = new Criteria();
     $oCriteria->addDescendingOrderByColumn(self::CREATED_AT);
     return self::doSelectOne($oCriteria);
-  } // getMostRecent()
+  }
 }

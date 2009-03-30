@@ -24,14 +24,23 @@ class DocumentsBackendModule extends BackendModule {
     } else {
       $this->sDocumentKind = Session::getSession()->getAttribute('selected_document_kind');
     }
-
+    
     // selected_document_category_id can be specific int, all, without category
     if(isset($_REQUEST['selected_document_category_id']) && $_REQUEST['selected_document_category_id'] !== '') {
       $this->sDocumentCategory = is_numeric($_REQUEST['selected_document_category_id']) ? (int) $_REQUEST['selected_document_category_id'] : $_REQUEST['selected_document_category_id'];
       Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategory);
     } else {
-      $this->sDocumentCategory = Session::getSession()->getAttribute('selected_document_category_id');
+      
+      // change default category in case the number of internally managed files exceed a number
+      if(Session::getSession()->getAttribute('selected_document_category_id') === null 
+        && DocumentPeer::countDocumentsExceedsLimit(40)) {
+        $this->sDocumentCategory = DocumentPeer::WITHOUT_CATEGORY;
+        Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategory);
+      } else {
+        $this->sDocumentCategory = Session::getSession()->getAttribute('selected_document_category_id');
+      }
     }
+    
     // order
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
