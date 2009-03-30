@@ -428,8 +428,12 @@ class Util {
 
   public static function getDocumentSize($sDocContent=null, $sFormat = 'KiB', $bAutomatic = true) {
     $iDocLength = 0;
-    if($sDocContent !== null) {
-      $iDocLength = strlen($sDocContent);
+    if(is_string($sDocContent)) {
+      $iDocLength = strlen($sDocContent); 
+    } else if($sDocContent instanceof Blob) {
+      $iDocLength = strlen($sDocContent->getContents()); 
+    } else if(is_numeric($sDocContent)) {
+      $iDocLength = $sDocContent;
     }
     $oOutputDividor = 1;
     switch($sFormat) {

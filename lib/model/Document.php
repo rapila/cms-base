@@ -18,6 +18,8 @@ class Document extends BaseDocument {
   
   private static $DOCUMENT_CATEGORIES = array();
   
+  private $iDataSize = null;
+  
   public function getMimetype() {
     return $this->getDocumentType()->getMimetype();
   }
@@ -56,6 +58,21 @@ class Document extends BaseDocument {
       return $this->getDocumentCategory()->getName();
     }
     return null;
+  }
+  
+  public function getDataSize($oConnection = null) {
+    if($this->iDataSize !== null) {
+      return $this->iDataSize;
+    }
+		$oCriteria = $this->buildPkeyCriteria();
+    $oCriteria->addSelectColumn('OCTET_LENGTH(data)');
+		try {
+			$rs = DocumentPeer::doSelectRS($oCriteria, $oConnection);
+			$rs->next();
+			return $this->iDataSize = $rs->getInt(1);
+		} catch (Exception $e) {
+			throw new PropelException("Error loading value for [size] column on demand.", $e);
+		}
   }
   
   public function getLink() {
