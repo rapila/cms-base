@@ -97,7 +97,6 @@ class DocumentsBackendModule extends BackendModule {
       if($this->oDocument && ($this->oDocument->getId() == $oDocument->getId())) {
         $oLinkTemplate->replaceIdentifier('class_active', ' active');
       }
-      var_dump($oDocument->getDataSize());
       $oLinkTemplate->replaceIdentifier('title', $oDocument->getName() .'  ['.$oDocument->getExtension().'/'.Util::getDocumentSize($oDocument->getDataSize()).']');
       $oTemplate->replaceIdentifierMultiple("result", $oLinkTemplate, null);
     }
