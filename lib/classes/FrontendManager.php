@@ -101,9 +101,11 @@ class FrontendManager extends Manager {
     $bIsDynamic = false;
     $aAllowedParams = array();
     
+    $bIsAjaxRequest = isset($_REQUEST['container_only']) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
+    
     $sPageType = self::getCurrentPage()->getPageType();
     $this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::getCurrentPage());
-    $this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams);
+    $this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, isset($_REQUEST['container_only']) ? array($_REQUEST['container_only']) : null);
     
     $bIsDynamic = $bIsDynamic || !Settings::getSetting('general', 'use_full_page_cache', true);
     
@@ -126,7 +128,6 @@ class FrontendManager extends Manager {
       $this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::getCurrentPage());
     }
     
-    $bIsAjaxRequest = isset($_REQUEST['container_only']) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
     if(!$bIsAjaxRequest) {
       $oOutput = new XHTMLOutput();
       $oOutput->render();

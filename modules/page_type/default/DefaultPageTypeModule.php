@@ -118,8 +118,11 @@ class DefaultPageTypeModule extends PageTypeModule {
     return $oModule->renderFrontend();
   }
   
-  public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams) {
+  public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
     foreach($this->oPage->getContentObjects() as $oContentObject) {
+      if($aModulesToCheck && !in_array($oContentObject->getContainerName(), $aModulesToCheck)) {
+        continue;
+      }
       $sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
       if(call_user_func(array($sModuleName, "isDynamic"))) {
         $bIsDynamic = true;
