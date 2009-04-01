@@ -851,6 +851,11 @@ table.doc_types tr.header td {
   color: #000;
 }
 
+fieldset table th {
+  font-weight: normal;
+  text-align: left;
+}
+
 p.description {
   font-style: italic;
 }
