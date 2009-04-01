@@ -4,6 +4,11 @@
     <select name="selected_tag_name" id="selected_tag_name" onchange="$('change_category').submit();">{{selected_tag_names_options}}</select>
   {{identifierContext=end;name=selected_tag_names_options}}
   </form>
+  <form style="display:inline;min-width:200px" name="change_category" id="change_types" action="{{change_category_action}}" method="get">
+  {{identifierContext=start;name=selected_protocol_options}}
+    <select name="selected_protocol" id="selected_protocol" onchange="$('change_types').submit();">{{selected_protocol_options}}</select>
+  {{identifierContext=end;name=selected_protocol_options}}
+  </form>
 </fieldset>
 <div id="list_header">
   <a href="{{link_name}}" class="{{link_name_class}}">{{writeString=name}}</a><a href="{{link_date}}" class="{{link_date_class}}">{{writeString=date}}</a>

@@ -67,7 +67,7 @@ class DocumentsBackendModule extends BackendModule {
     $aDocumentCategoryOptions = null;
     $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
     if(count($aDocumentCategories) > 0) {
-      $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategory === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategory, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('all_entries'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
+      $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategory === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategory, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
     } else {
       //Clear document category
       $this->sDocumentCategory = DocumentPeer::ALL_CATEGORIES;
@@ -120,7 +120,9 @@ class DocumentsBackendModule extends BackendModule {
       // preselect currently selected Document category for convenience
       $this->oDocument->setDocumentCategoryId($this->sDocumentCategory);
     } elseif ($this->oDocument === null) {
-      $oTemplate = $this->constructTemplate("message", true);
+      $oTemplate = $this->constructTemplate("module_info");
+      
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('documents', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
       $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_upload'), null, Template::NO_HTML_ESCAPE);
       $oTemplate->replaceIdentifier("document_types", Util::array2HtmlList(DocumentTypePeer::getDocumentTypesList()), null, Template::NO_HTML_ESCAPE);
       return $oTemplate;
@@ -128,6 +130,7 @@ class DocumentsBackendModule extends BackendModule {
 
     if($this->oDocument !== null) {
       $oTemplate = $this->constructTemplate("document_detail");
+      $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('documents'))));
       $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategory));
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());

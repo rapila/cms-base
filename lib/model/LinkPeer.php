@@ -12,6 +12,12 @@
  */	
 class LinkPeer extends BaseLinkPeer {
   
+  private static $aLinkProtocols = array('http'  => 'http://', 
+                                        'https' => 'https://', 
+                                        'ftp'   => 'ftp://', 
+                                        'ftps'  => 'ftps://', 
+                                        'mailto'=> 'mailto');
+  
   public static function getLinksSorted($sOrderField='NAME', $sSortOrder='ASC') {
     $oCriteria = new Criteria();   
     $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
@@ -24,8 +30,8 @@ class LinkPeer extends BaseLinkPeer {
    * getLinksByTagNameBackend()
    * for backend admin, also untagged links can be retrieved
    */ 
-  public static function getLinksByTagNameBackend($sName=null, $sOrderField='NAME', $sSortOrder='ASC', $sTagName=null, $bCriteriaIsIn = true) {
-    $oCriteria = new Criteria();
+  public static function getLinksByTagNameBackend($sName=null, $sProtocol=null, $sTagName=null, $sOrderField='NAME', $sSortOrder='ASC', $bCriteriaIsIn = true) {
+    $oCriteria = self::getLinksByNameCriteria($sName, $sOrderField, $sSortOrder, new Criteria());
     $aTaggedItemIds = array();
     foreach(TagInstancePeer::getByModelNameAndTagName('Link', $sTagName) as $oTagInstance) {
       $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
@@ -35,7 +41,10 @@ class LinkPeer extends BaseLinkPeer {
     } elseif($bCriteriaIsIn === false) {
       $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::NOT_IN);
     }
-    return self::doSelect(self::getLinksByNameCriteria($sName, $sOrderField, $sSortOrder, $oCriteria));
+    if($sProtocol !== null) {
+      $oCriteria->add(self::URL, "$sProtocol%", Criteria::LIKE);
+    }
+    return self::doSelect($oCriteria);
   }
   
   /** 
@@ -74,6 +83,33 @@ class LinkPeer extends BaseLinkPeer {
     $sOrderfield = constant("LinkPeer::".strtoupper($sOrderField));
     $oCriteria->$sSortMethodName($sOrderfield);
     return $oCriteria;
+  }
+  
+  public static function getProtocolsWithLinksAssoc() {
+    $aResult = array();
+    foreach(self::getProtocolsWithLinks() as $oLink) {
+      foreach(self::$aLinkProtocols as $sKey => $sProtocols) {
+        if(Util::startsWith($oLink->getUrl(), $sProtocols)) {
+          $aResult[$sKey] = $sProtocols;
+        }
+      }
+    }
+    return $aResult;
+  }
+  
+  public static function getProtocolsWithLinks() {
+    $oCriteria = new Criteria();
+    $oCriteria->setDistinct();
+    $oSearchCriterion = null;
+    foreach(self::$aLinkProtocols as $sProtocols) {
+      if($oSearchCriterion === null) {
+        $oSearchCriterion = $oCriteria->getNewCriterion(self::URL, "$sProtocols%", Criteria::LIKE);
+      } else {
+  	    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "$sProtocols%", Criteria::LIKE));
+      }
+    }
+    $oCriteria->add($oSearchCriterion);
+    return self::doSelect($oCriteria);
   }
 
 }

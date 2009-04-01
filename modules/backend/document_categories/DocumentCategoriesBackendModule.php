@@ -21,10 +21,12 @@ class DocumentCategoriesBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->oDocCategory === null) {
-      return;
-    }
-    
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
+      return $oTemplate;
+    }  
     $oTemplate = $this->constructTemplate("document_category_detail");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('document_categories'))));
 
     if(!$this->oDocCategory->isNew()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);

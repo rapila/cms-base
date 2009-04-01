@@ -8,10 +8,12 @@ class LinksBackendModule extends BackendModule {
   private $sSortField;
   private $sSortOrder;
   private $sSelectedTagName;
+  private $sProtocol;
   private $bUntaggedItemsOnly = false; //get tagged items if exist
   
   const SELECTED_TAG_NONE = '__null';
   const SELECTED_TAG_WITHOUT = '__without';
+  const SELECTED_PROTOCOL_ALL = '__all';
 
   public function __construct() {
     if(Manager::hasNextPathItem()) {
@@ -31,6 +33,13 @@ class LinksBackendModule extends BackendModule {
       $this->sSelectedTagName = Session::getSession()->getAttribute('selected_tag_name');
       $this->bUntaggedItemsOnly = Session::getSession()->getAttribute('only_untagged_items') !== null ? Session::getSession()->getAttribute('only_untagged_items') : false;
     }
+    // find by protocol: http, ftp, mailto etc
+    if(isset($_REQUEST['selected_protocol'])) {
+      $this->sProtocol = $_REQUEST['selected_protocol'] === self::SELECTED_PROTOCOL_ALL ? null : $_REQUEST['selected_protocol'];
+      Session::getSession()->setAttribute('selected_protocol', $this->sProtocol);
+    } else {
+      $this->sProtocol = Session::getSession()->getAttribute('selected_protocol');
+    }
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
   }
@@ -40,13 +49,15 @@ class LinksBackendModule extends BackendModule {
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
     $oTemplate->replaceIdentifier("selected_tag_names_options", Util::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
+
+    $oTemplate->replaceIdentifier("selected_protocol_options", Util::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(self::SELECTED_PROTOCOL_ALL => StringPeer::getString('links.all_protocols'))));
     
     // fix SELECTED_TAG_WITHOUT for criteria
     if($this->sSelectedTagName === self::SELECTED_TAG_WITHOUT || $this->sSelectedTagName === self::SELECTED_TAG_NONE) {
       $this->sSelectedTagName = null;
     }
-    $aLinks = LinkPeer::getLinksByTagNameBackend($sSearch, $this->sSortField, $this->sSortOrder, $this->sSelectedTagName , !$this->bUntaggedItemsOnly);
-
+    $aLinks = LinkPeer::getLinksByTagNameBackend($sSearch, $this->sProtocol, $this->sSelectedTagName, $this->sSortField, $this->sSortOrder,  !$this->bUntaggedItemsOnly);
+    
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $oTemplate->replaceIdentifier("link_name", Util::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
@@ -61,11 +72,12 @@ class LinksBackendModule extends BackendModule {
   
   public function getDetail() {
     if(!$this->oLink) {
-      $oTemplate = $this->constructTemplate("message", true);
-      $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_link'), null, Template::NO_HTML_ESCAPE);
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
       return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("link_detail");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('links'))));
     
     if(!$this->oLink->isNew()) {
       // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
