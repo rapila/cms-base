@@ -109,4 +109,4 @@ UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id
 
 #svn r1938
 ALTER TABLE `document_categories` ADD `is_externally_managed` TINYINT( 1 ) UNSIGNED NOT NULL AFTER `max_width` ,
-ADD INDEX ( is_externally_managed ) 
+ADD INDEX ( is_externally_managed );
