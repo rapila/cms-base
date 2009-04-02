@@ -169,6 +169,12 @@ class UserPeer extends BaseUserPeer {
     return self::retrieveByPk($iUserId) !== null;
   }
   
+  public static function getUserByEmail($sEmail) {
+    $oCriteria = new Criteria();
+    $oCriteria->add(UserPeer::EMAIL, $sEmail);
+    return UserPeer::doSelectOne($oCriteria);
+  }
+  
   public static function getUserByUserName($sUserName, $bActiveOnly = false) {
     $oCriteria = new Criteria();
     $oCriteria->add(self::USERNAME, $sUserName);

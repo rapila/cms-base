@@ -390,7 +390,7 @@ class Template {
       }
       
       if(($iFlags&self::ESCAPE)===self::ESCAPE) {
-        $aText[$iKey] = addslashes($aText[$iKey]);
+        $aText[$iKey] = str_replace("\n", "\\n", addslashes($aText[$iKey]));
       }
       
       if(($iFlags&self::FORCE_HTML_ESCAPE)===self::FORCE_HTML_ESCAPE || (($iFlags&self::NO_HTML_ESCAPE) !== self::NO_HTML_ESCAPE && !($mText instanceof Template))) {

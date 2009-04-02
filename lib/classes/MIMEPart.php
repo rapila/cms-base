@@ -20,7 +20,7 @@ abstract class MIMEPart {
     }
     foreach($aParameters as $sParameterName => $sParameterValue) {
       if($sParameterValue !== null) {
-        $sValue .= ";$sParameterName=$sParameterValue";
+        $sValue .= "; $sParameterName=\"$sParameterValue\"";
       }
     }
     $this->aHeaders[$sName] = $sValue;
@@ -46,7 +46,7 @@ abstract class MIMEPart {
       $aHeaders[] = "$sHeaderName: $sHeaderValue";
     }
     
-    return $sHeaders = implode("\r\n", $aHeaders);
+    return $sHeaders = implode(EMail::SEPARATOR, $aHeaders);
   }
   
   public function getMessage() {

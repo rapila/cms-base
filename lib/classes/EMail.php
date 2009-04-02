@@ -16,7 +16,7 @@ class EMail {
   
   private $oFlash;
   
-  const SEPARATOR = "\r\n";
+  const SEPARATOR = "\n";
   
   public function __construct($sSubject, $oContent = null, $bIsHtml = false, $bUseMultipart = false) {
     $this->aRecipients = array();
@@ -150,7 +150,7 @@ class EMail {
     
     $this->oContent->setHeader('From', $this->getAddressToken($this->sSenderName, $this->sSenderAddress));
     
-    $bResult = mb_send_mail($sRecipients, $this->sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
+    $bResult = mail($sRecipients, $this->sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
     
     if($bResult === false) {
     	throw new Exception("Error in EMail->send(): mail() returned false");

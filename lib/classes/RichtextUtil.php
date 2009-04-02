@@ -235,7 +235,7 @@ class RichtextUtil {
     $aPlugins = $this->getMceConfigArray('plugins') !== null ? $this->getMceConfigArray('plugins') : array('advimage', 'advlink');
     $oTemplate->replaceIdentifier('plugins', implode(",", $aPlugins));
     // buttons row 1 with defaults
-    $aButtons1 = $this->getMceConfigArray('advanced_buttons_1') !== null ? $this->getMceConfigArray('advanced_buttons_1') : array('"bold,link,unlink,undo,redo,');
+    $aButtons1 = $this->getMceConfigArray('advanced_buttons_1') !== null ? $this->getMceConfigArray('advanced_buttons_1') : array('bold','link','unlink','undo','redo');
     $oTemplate->replaceIdentifier('advanced_buttons_1', implode(",", $aButtons1));
     $aButtons2 = $this->getMceConfigArray('advanced_buttons_2');
     if($aButtons2 !== null) {

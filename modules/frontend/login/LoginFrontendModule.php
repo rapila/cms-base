@@ -29,7 +29,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
     }
     return $oTemplate;
   }
-  
+ 
   private function renderLogin($oTemplate, $sLoginType) {
     if($sLoginType === 'login_with_password_forgotten') {
       $oTemplate->replaceIdentifier('password_forgotten_action', Util::linkToSelf(null, array('password_forgotten' => 'true'), true));

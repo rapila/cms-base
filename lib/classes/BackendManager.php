@@ -359,7 +359,7 @@ class BackendManager extends Manager {
     }
     return $aListTemplates;
   }
-  
+   
   public static function setContentEditLanguage($sLanguageId) {
     Session::getSession()->setAttribute(self::CONTENT_EDIT_LANGUAGE_SESSION_KEY, $sLanguageId);
   }

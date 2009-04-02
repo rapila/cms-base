@@ -24,4 +24,20 @@ class CalendarUtil {
     $sLanguageId = $sLanguageId !== null ? $sLanguageId : Session::language();
     return self::$MONTH_NAMES[$sLanguageId][$iMonthId][$sType];
   }
+  
+  private static $DAY_NAMES = array('de' => 
+                                array(1 => 'Montag',
+                                      2 => 'Dienstag',
+                                      3 => 'Mittwoch',
+                                      4 => 'Donnerstag',
+                                      5 => 'Freitag',
+                                      6 => 'Samstag',
+                                      0 => 'Sonntag'
+                                  )
+                                );
+                                
+  public static function getDayNameByWeekDay($iWeekday, $sLanguageId=null) {
+    $sLanguageId = $sLanguageId !== null ? $sLanguageId : Session::language();
+    return self::$DAY_NAMES[$sLanguageId][$iWeekday];
+  }
 }

@@ -10,7 +10,7 @@ class MIMEMultipart extends MIMEPart {
   public function __construct($sMultipartType = 'mixed') {
     $this->sMultipartType = $sMultipartType;
     srand((double)microtime()*1000000);
-    $this->sPartSeparator = '=_' . md5(rand() . microtime());
+    $this->sPartSeparator = 'mime_'. md5(rand() . microtime());
     $this->aParts = array();
     $this->sEncoding = 'binary';
   }
@@ -20,7 +20,7 @@ class MIMEMultipart extends MIMEPart {
   }
   
   protected function finalizeHeaders() {
-    $this->setHeader('Content-Type', "multipart/$this->sMultipartType", array(EMail::SEPARATOR."\t".'boundary' => '"'.$this->sPartSeparator.'"'));
+    $this->setHeader('Content-Type', "multipart/$this->sMultipartType", array('boundary' => $this->sPartSeparator));
   }
   
   public function getBody() {
@@ -43,8 +43,8 @@ class MIMEMultipart extends MIMEPart {
       $sAlternative = $sContent;
     }
     $oMimeTree = new MIMEMultipart('alternative');
-    $oMimeTree->addPart(new MIMELeaf($sContent, 'text/html', '8bit', $sCharset));
     $oMimeTree->addPart(MIMELeaf::leafWithText($oMarkdownify->parseString($sAlternative), '8bit', $sCharset));
+    $oMimeTree->addPart(new MIMELeaf($sContent, 'text/html', '8bit', $sCharset));
     
     return $oMimeTree;
   }
