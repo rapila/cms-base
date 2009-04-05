@@ -282,10 +282,6 @@ label.inactive, span.inactive, span.attention {
   color:red;
 }
 
-.page_delete_button {
-  border-top: 0px solid transparent !important;
-}
-
 #page_main {
   width:600px;
 }
@@ -503,6 +499,10 @@ fieldset.show {
   margin:0;
   border: #F9F9F9 1px dotted;
   border-top: none;
+}
+
+#detail fieldset.nolegend {
+  margin-top:.8em;
 }
 
 #detail #user_rights {

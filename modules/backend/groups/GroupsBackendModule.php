@@ -43,6 +43,7 @@ class GroupsBackendModule extends BackendModule {
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oGroup->getName()));
       $oDeleteTemplate->replaceIdentifier("action", $this->link($this->oGroup->getId()));
       $oDeleteTemplate->replaceIdentifier("delete_icon", 'delete');
+      $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete'));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
     
