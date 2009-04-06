@@ -189,4 +189,29 @@ class ResourceFinder {
     
     return $mPath;
   }
+  
+  public static function mimeTypeOfFile($sFile) {
+    $sMimeType = null;
+    if(function_exists("finfo_open")) {
+      $rFinfo = finfo_open(FILEINFO_MIME);
+      $sMimeType = finfo_file($rFinfo, $sFile);
+      finfo_close($rFinfo);
+    } else if(function_exists("mime_content_type")) {
+      $sMimeType = mime_content_type($sFile);
+    } else {
+      $aName = explode(".", $sFile);
+      if(count($aName) > 0) {
+        $oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($aName[count($aName)-1]);
+      }
+      if($oDocumentType) {
+        $sMimeType = $oDocumentType->getMimetype();
+      }
+    }
+    if($sMimeType === null) {
+      $sMimeType = 'application/octet-stream';
+    }
+    return $sMimeType;
+  }
+  
+
 }
