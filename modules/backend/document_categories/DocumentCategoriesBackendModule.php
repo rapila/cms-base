@@ -35,7 +35,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
     }
     $oTemplate->replaceIdentifier("id", $this->oDocCategory->getId());
     $oTemplate->replaceIdentifier("name", $this->oDocCategory->getName());
-    $oTemplate->replaceIdentifier("name_title", $this->oDocCategory->getName() != '' ? $this->oDocCategory->getName() : '[Neu]');
+    $oTemplate->replaceIdentifier("name_title", $this->oDocCategory->getName() != '' ? $this->oDocCategory->getName() : null);
     $oTemplate->replaceIdentifier("sort", $this->oDocCategory->getSort());
     $oTemplate->replaceIdentifier("max_width", $this->oDocCategory->getMaxWidth());
     $sIsInactive = $this->oDocCategory->getIsInactive() === true ? 'checked="checked"' :'';
