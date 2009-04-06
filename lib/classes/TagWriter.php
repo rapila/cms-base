@@ -165,23 +165,23 @@ class TagWriter {
       $sKey = null;
       $sValue = null;
       if($sKeyMethod === null) {
-        $sKey = self::idForObject($oObject);
+        $sKey = Util::idForObject($oObject);
       } else {
         $sKey = $oObject->$sKeyMethod();
       }
       if($sValueMethod === null) {
-        $sValue = self::nameForObject($oObject);
+        $sValue = Util::nameForObject($oObject);
       } else {
         $sValue = $oObject->$sValueMethod();
       }
       $aResult[$sKey] = $sValue;
-      if(self::inArray($oObject, $mSelected, true, $sKeyMethod)) {
+      if(Util::inArray($oObject, $mSelected, true, $sKeyMethod)) {
         $aSelected[] = $sKey;
       }
     }
     if(is_array($aCustomOptions)) {
       foreach($aCustomOptions as $sCustomKey => $sCustomValue) {
-        if(self::inArray($sCustomKey, $mSelected, false)) {
+        if(Util::inArray($sCustomKey, $mSelected, false)) {
           $aSelected[] = $sCustomKey;
         }
       }
