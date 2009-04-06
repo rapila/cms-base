@@ -190,6 +190,25 @@ class ResourceFinder {
     return $mPath;
   }
   
+  public static function getFolderContents($sPath) {
+    if(!is_dir($sPath)){
+      return array();
+    }
+
+    $rFolderHandle = opendir($sPath);
+    $sFileName = "";
+
+    $aResult = array();
+    while (false !== ($sFileName = readdir($rFolderHandle)))
+    {
+      if(strpos($sFileName, ".")!==0) {
+        $aResult[$sFileName] = "$sPath/$sFileName";
+      }
+    }
+    natcasesort($aResult);
+    return $aResult;
+  }
+  
   public static function mimeTypeOfFile($sFile) {
     $sMimeType = null;
     if(function_exists("finfo_open")) {

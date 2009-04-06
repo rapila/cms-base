@@ -72,25 +72,6 @@ class Util {
     return Util::runFunctionOnArrayValues($aArray, create_function('$mValue', 'return $mValue === "" ? null : $mValue;'));
   }
 
-  public static function getFolderContents($sPath) {
-    if(!is_dir($sPath)){
-      return array();
-    }
-
-    $rFolderHandle = opendir($sPath);
-    $sFileName = "";
-
-    $aResult = array();
-    while (false !== ($sFileName = readdir($rFolderHandle)))
-    {
-      if(strpos($sFileName, ".")!==0) {
-        $aResult[$sFileName] = "$sPath/$sFileName";
-      }
-    }
-    natcasesort($aResult);
-    return $aResult;
-  }
-
   public static function equals($mFirst, $mSecond, $sKeyMethod = null) {
     if($mFirst === $mSecond) {
       return true;
