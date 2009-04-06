@@ -426,42 +426,6 @@ class Util {
     return $aResult;
   }
 
-  public static function getDocumentSize($sDocContent=null, $sFormat = 'KiB', $bAutomatic = true) {
-    $iDocLength = 0;
-    if(is_string($sDocContent)) {
-      $iDocLength = strlen($sDocContent); 
-    } else if($sDocContent instanceof Blob) {
-      $iDocLength = strlen($sDocContent->getContents()); 
-    } else if(is_numeric($sDocContent)) {
-      $iDocLength = $sDocContent;
-    }
-    $oOutputDividor = 1;
-    switch($sFormat) {
-      case "KiB":
-      case "kB":
-      case "kb":
-      case "k":
-      case "Kb":
-        $oOutputDividor = 1024;
-        break;
-      case "MiB":
-      case "MB":
-      case "M":
-        $oOutputDividor = 1024 * 1024;
-        break;
-      case "GiB":
-      case "GB":
-      case "Gb":
-        $oOutputDividor = 1024 * 1024 * 1024;
-        break;
-    }
-    if($bAutomatic && ($iDocLength > (1024*1024))) {
-      $oOutputDividor =  1024 * 1024;
-      $sFormat = 'MB';
-    }
-    return round($iDocLength/$oOutputDividor, 2)." ".$sFormat;
-  }
-
   public static function redirectToManager($mPath="", $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
     self::redirect(Util::link($mPath, $mManager, $aParameters, $bIncludeLanguage));
   }

@@ -29,7 +29,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
         $oItemTemplate->replaceIdentifier('mimetype', $oDocument->getMimetype());
         $oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
         $oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
-        $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oDocument->getDataSize(), 'kb'));
+        $oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'kb'));
         $oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
       }
     } catch(Exception $e) {
