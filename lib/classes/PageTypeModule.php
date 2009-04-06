@@ -16,7 +16,7 @@ abstract class PageTypeModule extends Module {
   public abstract function backendInit();
   public $backendCustomJs = "";
   
-  public abstract function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null);
+  public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
   
   protected function backendLink($aPath, $aParameters = array()) {
     array_unshift($aPath, "content");
