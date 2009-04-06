@@ -23,14 +23,17 @@ class DocumentCategoriesBackendModule extends BackendModule {
     if($this->oDocCategory === null) {
       $oTemplate = $this->constructTemplate("module_info");
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
+      $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
+      $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       return $oTemplate;
     }  
     $oTemplate = $this->constructTemplate("document_category_detail");
-    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('document_categories'))));
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('document_categories', null, array('get_module_info' => 'true')))));
 
     if(!$this->oDocCategory->isNew()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oDocCategory->getName()));
+      $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete'));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
     $oTemplate->replaceIdentifier("id", $this->oDocCategory->getId());

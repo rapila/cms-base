@@ -1,11 +1,17 @@
 <h1>{{module_info_link}} {{quoteString=\{\{id\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-<fieldset><legend>[{{writeString=language}}:{{language}}]</legend>
+<fieldset class="highlight_group"><legend>[{{writeString=language}}:{{language}}]</legend>
 <form action="{{action_path}}" method="post">
-  <label for="id">ID ({{writeString=placeholder}})</label>
-  <input type="text" id="id" name="id" value="{{id}}" /><br />{{writeFlashValue=string.key_required}}{{writeFlashValue=string.key_exists}}
-  <label for="text">{{writeString=string.language_display}}</label>
-  <textarea name="text" id="text" rows="2" cols="20">{{text}}</textarea><br />{{writeFlashValue=string.text_required}}
-  <label></label><button type="submit" title="{{writeString=save}}"></button>
+  <fieldset class="divider">
+    <label for="id">ID ({{writeString=placeholder}})</label>
+    <input type="text" id="id" name="id" value="{{id}}" /><br />{{writeFlashValue=string.key_required}}{{writeFlashValue=string.key_exists}}
+    <label for="text">{{writeString=string.language_display}}</label>
+    <textarea name="text" id="text" rows="2" cols="20">{{text}}</textarea><br />{{writeFlashValue=string.text_required}}
+  </fieldset>  
+  <fieldset class="divider">
+    <label></label><button type="submit" title="{{writeString=save}}"></button>
+  </fieldset>
 </form>
-{{delete_button}}
+  {{identifierContext=start;name=delete_button}}<fieldset class="divider">
+    {{delete_button}}
+  </fieldset>{{identifierContext=end;name=delete_button}}
 </fieldset>

@@ -1,14 +1,20 @@
 <h1>{{module_info_link}} {{quoteString=\{\{name_title\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-<fieldset><legend>{{writeString=document_category}}{{name}} [id:{{id}}]</legend>
+<fieldset class="highlight_group"><legend>{{writeString=document_category}}{{name}} [id:{{id}}]</legend>
 <form action="{{action}}"  method="post">
-  <input type="hidden" name="id" value="{{id}}" />
-  <label for="name">{{writeString=name}}</label>
-  <input type="text" name="name" value="{{name}}" /><br />
-  <label for="max_width">{{writeString=max_width}}</label>
-  <input class="autowidth" type="text" name="max_width" value="{{max_width}}" /><br />
-  <label for="is_inactive">{{writeString=is_inactive}}</label>
-  <input type="checkbox" name="is_inactive" id="is_inactive" value="1" {{is_inactive}} /><br />
-  <label for="save">&nbsp;</label><button id="save" type="submit" title="{{writeString=save}}"></button>
+  <fieldset class="divider">
+    <input type="hidden" name="id" value="{{id}}" />
+    <label for="name">{{writeString=name}}</label>
+    <input type="text" name="name" value="{{name}}" /><br />
+    <label for="max_width">{{writeString=max_width}}</label>
+    <input class="autowidth" type="text" name="max_width" value="{{max_width}}" /><br />
+    <label for="is_inactive">{{writeString=is_inactive}}</label>
+    <input type="checkbox" name="is_inactive" id="is_inactive" value="1" {{is_inactive}} /><br />
+  </fieldset>
+  <fieldset class="divider nolegend">
+  <label for="save">{{writeString=save}}</label><button id="save" type="submit" title="{{writeString=save}}"></button>
+  </fieldset>
 </form>
-{{delete_button}}
+  {{identifierContext=start;name=delete_button}}<fieldset class="divider">
+    {{delete_button}}
+  </fieldset>{{identifierContext=end;name=delete_button}}
 </fieldset>
