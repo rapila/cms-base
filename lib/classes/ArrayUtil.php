@@ -40,7 +40,7 @@ class ArrayUtil {
       return true;
     }
     foreach($aArray as $mValue) {
-      if(self::equals($mScalar, $mValue, $sKeyMethod)) {
+      if(Util::equals($mScalar, $mValue, $sKeyMethod)) {
         return true;
       }
     }
