@@ -117,7 +117,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
   public static function insertRow($aArrayOfValues) {
     $oDocumentType = new DocumentType();
     foreach ($aArrayOfValues as $sFieldName => $mValue) {
-      $sMethodName = 'set'.Util::camelize($sFieldName, true);
+      $sMethodName = 'set'.StringUtil::camelize($sFieldName, true);
       $mValue = $mValue === true ? 1 : $mValue;
       $oDocumentType->$sMethodName($mValue);
     }

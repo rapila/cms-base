@@ -23,7 +23,7 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function normalize($oTemplateIdentifier) {
-    return Util::normalize($oTemplateIdentifier->getValue());
+    return StringUtil::normalize($oTemplateIdentifier->getValue());
   }
   
   public function truncate($oTemplateIdentifier) {
@@ -41,32 +41,32 @@ class SpecialTemplateIdentifierActions {
     if($oTemplateIdentifier->hasParameter('tolerance')) {
       $iTolerance = $oTemplateIdentifier->getParameter('tolerance');
     }
-    return Util::truncate($oTemplateIdentifier->getValue(), $iLength, $sPostfix, $iTolerance);
+    return StringUtil::truncate($oTemplateIdentifier->getValue(), $iLength, $sPostfix, $iTolerance);
   }
   
   public function quoteString($oTemplateIdentifier) {
     if(!$oTemplateIdentifier->getValue()) {
       return $oTemplateIdentifier->hasParameter('defaultValue') ? $oTemplateIdentifier->getParameter('defaultValue') : null;
     }
-    $sLocale = Util::getLocaleId();
+    $sLocale = LocaleUtil::getLocaleId();
     $sStyle = 'double';
     if($oTemplateIdentifier->hasParameter('style')) {
       $sStyle = $oTemplateIdentifier->getParameter('style');
     }
     $bAlternate = $oTemplateIdentifier->hasParameter('alternate') && $oTemplateIdentifier->getParameter('alternate') === 'true';
-    if(Util::startsWith($sLocale, 'en')) {
+    if(StringUtil::startsWith($sLocale, 'en')) {
       if($sStyle === 'single') {
         return "‘{$oTemplateIdentifier->getValue()}’";
       }
       return "“{$oTemplateIdentifier->getValue()}”";
     }
-    if(Util::startsWith($sLocale, 'fr') || $sLocale === 'de_CH') {
+    if(StringUtil::startsWith($sLocale, 'fr') || $sLocale === 'de_CH') {
       if($sStyle === 'single') {
         return "‹{$oTemplateIdentifier->getValue()}›";
       }
       return "«{$oTemplateIdentifier->getValue()}»";
     }
-    if(Util::startsWith($sLocale, 'de')) {
+    if(StringUtil::startsWith($sLocale, 'de')) {
       if($bAlternate) {
         if($sStyle === 'single') {
           return "›{$oTemplateIdentifier->getValue()}‹";
@@ -90,10 +90,10 @@ class SpecialTemplateIdentifierActions {
     if($sDestination === "to_self") {
       $bIgnoreRequest = $oTemplateIdentifier->getParameter('ignore_request') === 'true';
       unset($aParameters['ignore_request']);
-      return Util::linkToSelf(null, $aParameters, $bIgnoreRequest);
+      return LinkUtil::linkToSelf(null, $aParameters, $bIgnoreRequest);
     }
     if($sDestination === "base_href") {
-      return Util::absoluteLink(MAIN_DIR_FE);
+      return LinkUtil::absoluteLink(MAIN_DIR_FE);
     }
     $sManager = null;
     if($oTemplateIdentifier->hasParameter('manager')) {
@@ -103,9 +103,9 @@ class SpecialTemplateIdentifierActions {
     $bIsAbsolute = $oTemplateIdentifier->getParameter('is_absolute') === 'true';
     unset($aParameters['is_absolute']);
     if($bIsAbsolute) {
-      return Util::absoluteLink(Util::link($sDestination, $sManager, $aParameters));
+      return LinkUtil::absoluteLink(LinkUtil::link($sDestination, $sManager, $aParameters));
     } else {
-      return Util::link($sDestination, $sManager, $aParameters);
+      return LinkUtil::link($sDestination, $sManager, $aParameters);
     }
   }
   
@@ -123,7 +123,7 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function writeDate($oTemplateIdentifier) {
-    return Util::localizeDate(null, null, $oTemplateIdentifier->getValue());
+    return LocaleUtil::localizeDate(null, null, $oTemplateIdentifier->getValue());
   }
   
   public function writeRequestValue($oTemplateIdentifier) {

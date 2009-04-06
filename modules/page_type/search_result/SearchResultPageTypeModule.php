@@ -27,7 +27,7 @@ class SearchResultPageTypeModule extends PageTypeModule {
     if(isset($_REQUEST['quicksearch'])) {
       $oPage = $oSearch->findPage($sSearch);
       if($oPage !== null) {
-        Util::redirectToManager($oPage->getId(), 'GotoManager');
+        LinkUtil::redirectToManager($oPage->getId(), 'GotoManager');
       }
     }
     
@@ -41,7 +41,7 @@ class SearchResultPageTypeModule extends PageTypeModule {
       }
       $iResultCount++;
       $oResultTemplate = new Template($sResultTemplateName);
-      $oResultTemplate->replaceIdentifier('link', Util::link($oPage->getFullPathArray(), 'FrontendManager'));
+      $oResultTemplate->replaceIdentifier('link', LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
       $oResultTemplate->replaceIdentifier('title', $oPage->getPageTitle());
       $oResultTemplate->replaceIdentifier('long_title', $oPage->getLinkText());
       $oResultTemplate->replaceIdentifier('id', $oPage->getId());

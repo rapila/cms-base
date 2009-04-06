@@ -42,7 +42,7 @@ class StringPeer extends BaseStringPeer {
         
         //Fix string encoding
         foreach(self::$STATIC_STRINGS[$sLanguageId] as $sStringKey => $sValue) {
-          self::$STATIC_STRINGS[$sLanguageId][$sStringKey] = Util::encodeForDbFromFile($sValue);
+          self::$STATIC_STRINGS[$sLanguageId][$sStringKey] = StringUtil::encodeForDbFromFile($sValue);
         }
         $oCache->setContents(self::$STATIC_STRINGS[$sLanguageId]);
       }

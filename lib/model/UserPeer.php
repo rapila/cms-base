@@ -100,7 +100,7 @@ class UserPeer extends BaseUserPeer {
       return ($aBackendUsers - $aBackendUsersWithRights) > 0;
     }
     foreach($aBackendUsersWithRights as $i => $oBackendUser) {
-      if(Util::inArray($oBackendUser, $aBackendUsers)) unset($aBackendUsers[$i]);
+      if(ArrayUtil::inArray($oBackendUser, $aBackendUsers)) unset($aBackendUsers[$i]);
     }
     return $aBackendUsers;
   }

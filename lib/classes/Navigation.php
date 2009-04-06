@@ -50,9 +50,9 @@ class Navigation {
       throw new Exception("Navigation $mConfig not configured");
     }
     if($sLinkPrefix===null) {
-      $sLinkPrefix = Util::link();
+      $sLinkPrefix = LinkUtil::link();
     }
-    if(!Util::endsWith($sLinkPrefix, "/")) {
+    if(!StringUtil::endsWith($sLinkPrefix, "/")) {
       $sLinkPrefix .= "/";
     }
     $this->sLinkPrefix = $sLinkPrefix;
@@ -75,7 +75,7 @@ class Navigation {
     }
     
     // FIXME the whole redirection in case of a missing rootelement
-    Util::redirectToManager(array('pages', 'newPage'));
+    LinkUtil::redirectToManager(array('pages', 'newPage'));
   } // parse()
   
   /**
@@ -294,7 +294,7 @@ class Navigation {
     unset($aParameters['content_language']);
     
     // check whether manager needs language to be included
-    $bCurrentPathIncludesLanguage = call_user_func(array(Util::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
+    $bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
     $aRequestPath = explode("/", Manager::getRequestedPath());
 
     $aLanguages = LanguagePeer::getLanguages(true, true);
@@ -309,9 +309,9 @@ class Navigation {
       // if language is included, replace it by oLanguage->getId() and set include_language param to false
       if($bCurrentPathIncludesLanguage) {
         $aRequestPath[0] = $oLanguage->getId();  
-        $oCurrrentTemplate->replaceIdentifier('link', Util::link($aRequestPath, null, $aParameters, false));
+        $oCurrrentTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
       } else {
-        $oCurrrentTemplate->replaceIdentifier('link', Util::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));
+        $oCurrrentTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));
       }
       $oCurrrentTemplate->replaceIdentifier('language_id', $oLanguage->getId());
       $oCurrrentTemplate->replaceIdentifier('title', @$aSettings['display_fullname'] ? $oLanguage->getLanguageName($oLanguage->getId()) : $oLanguage->getId());

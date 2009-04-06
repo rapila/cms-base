@@ -44,7 +44,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
     $oTemplate->replaceIdentifier('tags', TagWriter::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
     if(isset($aOptions['tags']) && is_array($aOptions['tags'])) {
       foreach($aOptions['tags'] as $sTagName) {
-        $oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_tag_name' => $sTagName))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$sTagName.']')));
+        $oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('href' => LinkUtil::link(array('links'), 'BackendManager', array('selected_tag_name' => $sTagName))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$sTagName.']')));
       }
     }
     $aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);

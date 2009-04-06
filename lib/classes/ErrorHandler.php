@@ -49,7 +49,7 @@ class ErrorHandler {
     }
     if(self::shouldLogErrors()) {
       if(is_writable(MAIN_DIR.'/error.log')) {
-        file_put_contents(MAIN_DIR.'/error.log', "Error in Mini-CMS on ".Util::linkToSelf()."\n[HTTP_REFERER] ".$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
+        file_put_contents(MAIN_DIR.'/error.log', "Error in Mini-CMS on ".LinkUtil::linkToSelf()."\n[HTTP_REFERER] ".$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
       } else {
         die("Error could not be logged, ".MAIN_DIR.'/error.log is not writable');
       }
@@ -60,7 +60,7 @@ class ErrorHandler {
         $sAddress = Settings::getSetting('domain_holder', 'email', false);
       }
       if($sAddress) {
-        mb_send_mail($sAddress, "Error in Mini-CMS on ".Util::linkToSelf(), "[HTTP_REFERER] ".@$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
+        mb_send_mail($sAddress, "Error in Mini-CMS on ".LinkUtil::linkToSelf(), "[HTTP_REFERER] ".@$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
       }
     }
   }

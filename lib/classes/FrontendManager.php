@@ -24,16 +24,16 @@ class FrontendManager extends Manager {
         Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
       }
       if(!LanguagePeer::languageIsActive(Session::language())) {
-        Util::redirectToManager('', "BackendManager");
+        LinkUtil::redirectToManager('', "BackendManager");
       }
-      Util::redirectToLanguage();
+      LinkUtil::redirectToLanguage();
     }
 
     // Find requested page
     $oMatchingPage = PagePeer::getRootPage(); 
     if($oMatchingPage === null) {
       echo "please create root node in database! <br />"; 
-      echo "to backend: <a href=\"".Util::link('pages', "BackendManager")."\">Pages</a>"; exit;
+      echo "to backend: <a href=\"".LinkUtil::link('pages', "BackendManager")."\">Pages</a>"; exit;
     }
      
     while(self::hasNextPathItem()) {
@@ -72,7 +72,7 @@ class FrontendManager extends Manager {
     if($oMatchingPage->getIsFolder()) {
       $oFirstChild = $oMatchingPage->getFirstEnabledChild(Session::language());
       if($oFirstChild !== null) {
-        Util::redirectToManager($oFirstChild->getLink());
+        LinkUtil::redirectToManager($oFirstChild->getLink());
       } else {
         $this->bIsNotFound = true;
       }
@@ -81,9 +81,9 @@ class FrontendManager extends Manager {
     if($oMatchingPage->getIsProtected()) {
       if(!(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->mayViewPage($oMatchingPage))) {
         $oLoginPage = $oMatchingPage->getLoginPage();
-        Session::getSession()->setAttribute('login_referrer', Util::link($oMatchingPage->getFullPathArray(), "FrontendManager"));
+        Session::getSession()->setAttribute('login_referrer', LinkUtil::link($oMatchingPage->getFullPathArray(), "FrontendManager"));
         if($oLoginPage === null) {
-          Util::redirect(Util::link('', "LoginManager"));
+          LinkUtil::redirect(LinkUtil::link('', "LoginManager"));
         }
         $oMatchingPage = $oLoginPage;
       }
@@ -207,7 +207,7 @@ class FrontendManager extends Manager {
     $this->oTemplate->replaceIdentifier("navigation_level", self::getCurrentPage()->getLevel());
     $oSearchPage = PagePeer::getPageByName(Settings::getSetting('special_pages', 'search_result', 'search'));
     if($oSearchPage !== null) {
-      $this->oTemplate->replaceIdentifier("search_action", Util::link($oSearchPage->getLink()));
+      $this->oTemplate->replaceIdentifier("search_action", LinkUtil::link($oSearchPage->getLink()));
     }
     
     $this->oTemplate->replaceIdentifier("meta_keywords", self::getCurrentPage()->getConsolidatedKeywords());
@@ -253,7 +253,7 @@ class FrontendManager extends Manager {
     if(self::getCurrentPage() !== null && self::getCurrentPage()->getId() == $oPage->getId()) {
       return TagWriter::quickTag('span', array('class' => "meta_navigation {$oPage->getName()}", 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
     }
-    return TagWriter::quickTag('a', array('class' => "meta_navigation {$oPage->getName()}", 'href' => Util::link($oPage->getLink()), 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
+    return TagWriter::quickTag('a', array('class' => "meta_navigation {$oPage->getName()}", 'href' => LinkUtil::link($oPage->getLink()), 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
   }
   
   public static function shouldIncludeLanguageInLink() {

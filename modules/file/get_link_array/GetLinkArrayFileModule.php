@@ -29,7 +29,7 @@ class GetLinkArrayFileModule extends FileModule {
           $iDummyCatId = $oDocument->getDocumentCategoryId();
           $aArrayText[] = '["--------'.StringPeer::getString('documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
         }
-  	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
+  	    $sLinkUrl = LinkUtil::link(array('display_document', $oDocument->getId()));
         $aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
       }
     }
@@ -38,7 +38,7 @@ class GetLinkArrayFileModule extends FileModule {
     if(!in_array('internal_links', $this->aDisabledSections) && count($aParents) > 0) {
       $aArrayText[] = '["--------'.StringPeer::getString('links_internal').'-----------",""]';
       foreach($aParents as $oParent) {
-  	    $sLinkUrl = Util::link(array('internal_link_proxy', $oParent->getId()));
+  	    $sLinkUrl = LinkUtil::link(array('internal_link_proxy', $oParent->getId()));
         $aArrayText[] = '["'.$oParent->getNameMceIndented().'", "'.$sLinkUrl.'"]';
       }
     }
@@ -49,7 +49,7 @@ class GetLinkArrayFileModule extends FileModule {
         $aArrayText[] = '["--------'.StringPeer::getString('links_external').'-----------",""]';
       }
       foreach($aLinks as $oLink) {
-  	    $sLinkUrl = Util::link(array('external_link_proxy', $oLink->getId()));
+  	    $sLinkUrl = LinkUtil::link(array('external_link_proxy', $oLink->getId()));
         $aArrayText[] = '["'.$oLink->getName().'", "'.$sLinkUrl.'"]';
       }
     }
@@ -60,7 +60,7 @@ class GetLinkArrayFileModule extends FileModule {
         $aArrayText[] = '["--------'.StringPeer::getString('images').'-----------",""]';
       }
       foreach($aDocuments as $oDocument) {
-  	    $sLinkUrl = Util::link(array('display_document', $oDocument->getId()));
+  	    $sLinkUrl = LinkUtil::link(array('display_document', $oDocument->getId()));
         $aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
       }
     }

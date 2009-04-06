@@ -66,7 +66,7 @@ class LanguagesBackendModule extends BackendModule {
     $this->oLanguage->setIsActive(isset($_POST['is_active']));
     if(Flash::noErrors()) {
       $this->oLanguage->save();
-      Util::redirect($this->link($this->oLanguage->getId()));
+      LinkUtil::redirect($this->link($this->oLanguage->getId()));
     }
   }
   

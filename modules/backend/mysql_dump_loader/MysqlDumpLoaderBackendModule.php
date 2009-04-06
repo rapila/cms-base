@@ -63,10 +63,10 @@ class MysqlDumpLoaderBackendModule extends BackendModule {
     $sReadLine = "";
     $iQueryCount = 1;
     while (($sReadLine = fgets($rFile)) !== false ) {
-      if($sReadLine !== "\n" && !Util::startsWith($sReadLine, "#") && !Util::startsWith($sReadLine, "--")) {
+      if($sReadLine !== "\n" && !StringUtil::startsWith($sReadLine, "#") && !StringUtil::startsWith($sReadLine, "--")) {
         $sStatement .= $sReadLine;
       }
-      if($sReadLine === "\n" || Util::endsWith($sReadLine, ";\n")) {
+      if($sReadLine === "\n" || StringUtil::endsWith($sReadLine, ";\n")) {
         if(trim($sStatement) !== "") {
           $oConnection->executeQuery($sStatement);
           $iQueryCount++;

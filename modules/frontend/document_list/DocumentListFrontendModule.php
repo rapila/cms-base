@@ -47,7 +47,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     
     if(isset($aOptions['categories']) && is_array($aOptions['categories'])) {
       foreach($aOptions['categories'] as $sCategoryId) {
-        $oTemplate->replaceIdentifierMultiple('documents_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_category_id' => $sCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents'))).(' ['.DocumentCategoryPeer::getCategoryNameById($sCategoryId).']')));
+        $oTemplate->replaceIdentifierMultiple('documents_edit_link', TagWriter::quickTag('a', array('href' => LinkUtil::link(array('links'), 'BackendManager', array('selected_category_id' => $sCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('documents'))).(' ['.DocumentCategoryPeer::getCategoryNameById($sCategoryId).']')));
       }
     }
     $aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);

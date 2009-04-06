@@ -80,8 +80,8 @@ class DocumentsBackendModule extends BackendModule {
 
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $oTemplate->replaceIdentifier("link_name", Util::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
-    $oTemplate->replaceIdentifier("link_date", Util::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
+    $oTemplate->replaceIdentifier("link_name", LinkUtil::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
+    $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
     $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("change_category_action", $this->link());
@@ -100,7 +100,7 @@ class DocumentsBackendModule extends BackendModule {
     foreach($aDocuments as $oDocument) {
       $oLinkTemplate = clone $oLinkTemplatePrototype;
       $oLinkTemplate->replaceIdentifier("link", $this->link($oDocument->getId()));
-      $oLinkTemplate->replaceIdentifier("name", Util::truncate($oDocument->getName(), 29));
+      $oLinkTemplate->replaceIdentifier("name", StringUtil::truncate($oDocument->getName(), 29));
       $oLinkTemplate->replaceIdentifier("doc_type", ' ['.$oDocument->getExtension().']');
       if($this->oDocument && ($this->oDocument->getId() == $oDocument->getId())) {
         $oLinkTemplate->replaceIdentifier('class_active', ' active');
@@ -121,7 +121,7 @@ class DocumentsBackendModule extends BackendModule {
     } elseif ($this->oDocument === null) {
       $oTemplate = $this->constructTemplate("module_info");
       
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('documents/new', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('documents/new', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
       $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_upload'), null, Template::NO_HTML_ESCAPE);
       $aDocumentTypesList = array();
       foreach(DocumentTypePeer::getDocumentTypesByCategory() as $oDocumentType) {
@@ -136,7 +136,7 @@ class DocumentsBackendModule extends BackendModule {
 
     if($this->oDocument !== null) {
       $oTemplate = $this->constructTemplate("document_detail");
-      $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('documents', null, array('get_module_info' => 'true')))));
+      $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('documents', null, array('get_module_info' => 'true')))));
       $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategoryId));
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());
@@ -164,10 +164,10 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("document_type_info", '['.$this->oDocument->getDocumentType()->getExtension().' | '.$this->oDocument->getDocumentType()->getMimetype().']');
         if($this->oDocument->isImage()) {
           $oImageTemplate = new Template('<p><img src="{{link}}"/></p>', null, true);
-          $oImageTemplate->replaceIdentifier('link', Util::link(array("display_document", $this->oDocument->getId()), "FileManager", array("max_width" => 500)));
+          $oImageTemplate->replaceIdentifier('link', LinkUtil::link(array("display_document", $this->oDocument->getId()), "FileManager", array("max_width" => 500)));
           $oTemplate->replaceIdentifier("image", $oImageTemplate);
         }
-        $sDocLink = $this->oDocument->getName() != '' ? '<a href="'.Util::link(array('display_document', $this->oDocument->getId()), 'FileManager').'" title="anschauen" target="_blank">view</a>' : '';
+        $sDocLink = $this->oDocument->getName() != '' ? '<a href="'.LinkUtil::link(array('display_document', $this->oDocument->getId()), 'FileManager').'" title="anschauen" target="_blank">view</a>' : '';
         $oTemplate->replaceIdentifier("document_link", $sDocLink, null, Template::NO_HTML_ESCAPE);
 
         // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
@@ -250,7 +250,7 @@ class DocumentsBackendModule extends BackendModule {
         $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind(); 
       }
 
-      Util::redirect($this->link($this->oDocument->getId(),array('selected_document_category_id' => $this->sDocumentCategoryId, 'selected_document_kind' => $this->sDocumentKind)));
+      LinkUtil::redirect($this->link($this->oDocument->getId(),array('selected_document_category_id' => $this->sDocumentCategoryId, 'selected_document_kind' => $this->sDocumentKind)));
     }
   }
 
@@ -271,7 +271,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->oDocument !== null && !$this->mayNotDelete() && count($this->aReferences) === 0) {
       $this->oDocument->delete();
     }
-    Util::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategoryId));
+    LinkUtil::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategoryId));
   }
 
   public function getModelName() {

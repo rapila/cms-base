@@ -13,7 +13,7 @@ class LoginManager extends Manager {
     parent::__construct();
     $this->sAction = 'login';
     if(Manager::isPost()) {
-      Util::trimStringsInArray($_POST);
+      ArrayUtil::trimStringsInArray($_POST);
     }
     //1st step: user clicked on the recovery link
     //  • Display email field
@@ -53,7 +53,7 @@ class LoginManager extends Manager {
   public function render() {
     $this->oTemplate->replaceIdentifier('login_action', $this->sAction);
     $this->oTemplate->doIncludes();
-    $this->oTemplate->replaceIdentifier('action', Util::link());
+    $this->oTemplate->replaceIdentifier('action', LinkUtil::link());
     $this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'login.password_reset' : 'login'));
     if($this->sAction === 'login') {
       $this->renderLogin();
@@ -85,10 +85,10 @@ class LoginManager extends Manager {
     if($sBrowserMessage) {
       $this->oTemplate->replaceIdentifier('firefox_download_linktext', 'Firefox Download '.StringPeer::getString('page'));
     }
-    $this->oTemplate->replaceIdentifier('title', Util::getHostName(). ' | Login');
-    $this->oTemplate->replaceIdentifier('action_password_forgotten', Util::link(null, null, array('password_forgotten' => 'true')));
+    $this->oTemplate->replaceIdentifier('title', LinkUtil::getHostName(). ' | Login');
+    $this->oTemplate->replaceIdentifier('action_password_forgotten', LinkUtil::link(null, null, array('password_forgotten' => 'true')));
     $this->oTemplate->replaceIdentifier(self::USER_NAME, '');
-    $this->oTemplate->replaceIdentifier('domain_name', Util::getHostName(). ' | Login');
+    $this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName(). ' | Login');
     $this->oTemplate->replaceIdentifier(self::LOGIN_PASSWORD, '');
   }
 
@@ -113,13 +113,13 @@ class LoginManager extends Manager {
         $sReferrer = Session::getSession()->getAttribute('login_referrer');
         Session::getSession()->resetAttribute('login_referrer');
       } else {
-        $sReferrer = Util::link(array(), 'BackendManager');
+        $sReferrer = LinkUtil::link(array(), 'BackendManager');
       }
       if ($iAdminTest === Session::USER_IS_DEFAULT_USER) { 
         Session::getSession()->setAttribute('change_password', 1);
-        $sReferrer = Util::link(array('users', Session::getSession()->getUserId()), 'BackendManager');
+        $sReferrer = LinkUtil::link(array('users', Session::getSession()->getUserId()), 'BackendManager');
       }
-      Util::redirect($sReferrer);
+      LinkUtil::redirect($sReferrer);
     }
     //User is inactive
     if(($iAdminTest & Session::USER_IS_INACTIVE) === Session::USER_IS_INACTIVE) {
@@ -157,9 +157,9 @@ class LoginManager extends Manager {
     $oEmailTemplate->replaceIdentifier('first_name', $oUser->getFirstName());
     $oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
     if($sLinkBase === null) {
-      $sLinkBase = Util::linkToSelf(null, null, true);
+      $sLinkBase = LinkUtil::linkToSelf(null, null, true);
     }
-    $sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.Util::prepareLinkParameters(array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_referrer' => Session::getSession()->getAttribute('login_referrer'), 'recover_username' => $oUser->getUsername()));
+    $sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters(array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_referrer' => Session::getSession()->getAttribute('login_referrer'), 'recover_username' => $oUser->getUsername()));
     $oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
     $oEmail = new EMail(StringPeer::getString('login.password_recover_email_subject'), $oEmailTemplate);
     $oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'Mini-CMS on '.$_SERVER['HTTP_HOST']), Settings::getSetting('domain_holder', 'email', 'cms@'.$_SERVER['HTTP_HOST']));

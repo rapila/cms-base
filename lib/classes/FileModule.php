@@ -21,14 +21,14 @@ abstract class FileModule extends Module {
   }
   
   public static function getClassNameByName($sModuleName) {
-    return Util::camelize($sModuleName, true).get_class();
+    return StringUtil::camelize($sModuleName, true).get_class();
   }
   
   public static function getNameByClassName($sClassName) {
     if(strpos($sClassName, get_class()) === false) {
       return $sClassName;
     }
-    return Util::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+    return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
   }
   
   public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {
@@ -46,6 +46,6 @@ abstract class FileModule extends Module {
   }
   
   public static function isValidModuleClassName($sName) {
-    return Util::endsWith($sName, Util::camelize(self::$MODULE_TYPE, true)."Module");
+    return StringUtil::endsWith($sName, StringUtil::camelize(self::$MODULE_TYPE, true)."Module");
   }
 }

@@ -26,7 +26,7 @@ class TagPeer extends BaseTagPeer {
   
   public static function retrieveByName($sTagName) {
     $oCriteria = new Criteria(self::DATABASE_NAME);
-    $oCriteria->add(self::NAME, Util::normalize($sTagName));
+    $oCriteria->add(self::NAME, StringUtil::normalize($sTagName));
     return self::doSelectOne($oCriteria);
   }
   

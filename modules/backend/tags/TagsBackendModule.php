@@ -145,7 +145,7 @@ class TagsBackendModule extends BackendModule {
         throw new Exception("You don't have the permissions to edit this tag");
       }
       $sTag = $_REQUEST['tag'];
-      if(!Util::normalize($sTag)) {
+      if(!StringUtil::normalize($sTag)) {
         throw new Exception("Tag is empty");
       }
       return array(TagInstancePeer::newTagInstance($sTag, $_REQUEST['model_name'], $_REQUEST['tagged_item_id']));

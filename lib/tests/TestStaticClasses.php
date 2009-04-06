@@ -6,7 +6,7 @@ class TestStaticClasses {
   public static function suite() {
     $oResult = new PHPUnit_Framework_TestSuite("Template test suite");
     foreach(ResourceFinder::getFolderContents(dirname(__FILE__)) as $sFileName => $sFilePath) {
-      if(Util::endsWith($sFileName, "Tests.php") && (Util::startsWith($sFileName, "PasswordHash") || Util::startsWith($sFileName, "Util") || Util::startsWith($sFileName, "Static"))) {
+      if(StringUtil::endsWith($sFileName, "Tests.php") && (StringUtil::startsWith($sFileName, "PasswordHash") || StringUtil::startsWith($sFileName, "Util") || StringUtil::startsWith($sFileName, "Static"))) {
         $oResult->addTestFile($sFileName);
       }
     }

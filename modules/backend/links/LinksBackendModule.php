@@ -60,8 +60,8 @@ class LinksBackendModule extends BackendModule {
     
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $oTemplate->replaceIdentifier("link_name", Util::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
-    $oTemplate->replaceIdentifier("link_date", Util::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
+    $oTemplate->replaceIdentifier("link_name", LinkUtil::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
+    $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
     $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("change_category_action", $this->link());
@@ -73,13 +73,11 @@ class LinksBackendModule extends BackendModule {
   public function getDetail() {
     if(!$this->oLink) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
-      $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
-      $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
       return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("link_detail");
-    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('links', null, array('get_module_info' => 'true')))));
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('links'))));
     
     if(!$this->oLink->isNew()) {
       // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?
@@ -90,7 +88,6 @@ class LinksBackendModule extends BackendModule {
         $oDeleteTemplate = $this->constructTemplate("delete_button_inactive", true);
         $sDeleteItemMessage = "delete_item_inactive";
         $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString('document.has_references'));
-        $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete'));
       } else {
         $oDeleteTemplate = $this->constructTemplate("delete_button", true);
       }
@@ -123,7 +120,7 @@ class LinksBackendModule extends BackendModule {
     //Try to avoid an printing exception when references are still used
     try {
       $this->oLink->delete();
-      Util::redirect($this->link());
+      LinkUtil::redirect($this->link());
     } catch (Exception $e) {
       Flash::getFlash()->addMessage('link_delete_has_references');
       Flash::getFlash()->finishReporting();
@@ -144,10 +141,10 @@ class LinksBackendModule extends BackendModule {
       $this->oLink->setOwnerId(isset($_REQUEST['owner_id']) && $_REQUEST['owner_id'] != '' ? $_REQUEST['owner_id'] : Session::getSession()->getUserId());
       $this->oLink->setUpdatedAt(date('c'));
       $this->oLink->setName($_POST['name']);
-      $this->oLink->setUrl(Util::getUrlWithProtocolIfNotSet($_POST['url']));
+      $this->oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($_POST['url']));
       $this->oLink->setDescription($_POST['description']);
       $this->oLink->save();
-      Util::redirect($this->link($this->oLink->getId()));
+      LinkUtil::redirect($this->link($this->oLink->getId()));
     }
   }
   

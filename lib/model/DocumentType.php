@@ -16,7 +16,7 @@ require_once 'model/om/BaseDocumentType.php';
  */	
 class DocumentType extends BaseDocumentType {
   public function isImageType($sType = '') {
-    return Util::startsWith($this->getMimetype(), "image/$sType");
+    return StringUtil::startsWith($this->getMimetype(), "image/$sType");
   }
   
   public function getDocumentKind() {

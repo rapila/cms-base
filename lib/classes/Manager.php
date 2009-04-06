@@ -77,7 +77,7 @@ abstract class Manager {
     $sDefaultRoute = Settings::getSetting('routing', "default", "content");
     $aRoutes = Settings::getSetting('routing', "routes", array());
     foreach($aRoutes as $sRouteName => $sClassName) {
-      if(Util::startsWith(self::getRequestedPath(), $sRouteName.'/') || (Util::endsWith(self::getRequestedPath(), $sRouteName) && Util::startsWith(self::getRequestedPath(), $sRouteName))) {
+      if(StringUtil::startsWith(self::getRequestedPath(), $sRouteName.'/') || (StringUtil::endsWith(self::getRequestedPath(), $sRouteName) && StringUtil::startsWith(self::getRequestedPath(), $sRouteName))) {
         self::setRequestedPath(substr(self::getRequestedPath(), strlen($sRouteName.'/')));
         new $sClassName();
         return self::$CURRENT_MANAGER;
@@ -118,5 +118,15 @@ abstract class Manager {
       $aResult[$iKey] = substr($sValue, strrpos($sValue, '/')+1, 0-strlen('.php'));
     }
     return $aResult;
+  }
+
+  public static function getManagerClassNormalized($mManager = null) {
+    if($mManager === null) {
+      return self::getCurrentManager();
+    }
+    if(is_object($mManager)) {
+      return get_class($mManager);
+    }
+    return $mManager;
   }
 }

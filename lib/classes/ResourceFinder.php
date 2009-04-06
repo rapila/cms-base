@@ -1,6 +1,6 @@
 <?php
 
-require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Util.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
 
 class ResourceFinder {
   const SEARCH_MAIN_ONLY = 0;
@@ -140,10 +140,10 @@ class ResourceFinder {
     
     if($sParentName !== null) {
       $sPathExpression = str_replace('${parent_name}', $sParentName, $sPathExpression);
-      $sPathExpression = str_replace('${parent_name_camelized}', Util::camelize($sParentName, true), $sPathExpression);
+      $sPathExpression = str_replace('${parent_name_camelized}', StringUtil::camelize($sParentName, true), $sPathExpression);
     }
     
-    if(!Util::startsWith($sPathExpression, "/")) {
+    if(!StringUtil::startsWith($sPathExpression, "/")) {
       $sPathExpression = '/^'.preg_quote($sPathExpression, '/').'$/';
     }
     

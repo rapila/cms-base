@@ -77,7 +77,7 @@ class LinkPeer extends BaseLinkPeer {
 	    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sName%", Criteria::LIKE));
       $oCriteria->add($oSearchCriterion);
     }
-    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sSortOrder);
+    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sOrderfield)
     return $oCriteria;
   }
   
@@ -85,7 +85,7 @@ class LinkPeer extends BaseLinkPeer {
     $aResult = array();
     foreach(self::getProtocolsWithLinks() as $oLink) {
       foreach(self::$aLinkProtocols as $sKey => $sProtocols) {
-        if(Util::startsWith($oLink->getUrl(), $sProtocols)) {
+        if(StringUtil::startsWith($oLink->getUrl(), $sProtocols)) {
           $aResult[$sKey] = $sProtocols;
         }
       }
@@ -107,4 +107,6 @@ class LinkPeer extends BaseLinkPeer {
     $oCriteria->add($oSearchCriterion);
     return self::doSelect($oCriteria);
   }
+
 }
+

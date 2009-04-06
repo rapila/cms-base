@@ -72,7 +72,7 @@ class UsersBackendModule extends BackendModule {
     $aLanguageFiles = ResourceFinder::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_BASE_ONLY));
     $aLanguages = array();
     foreach($aLanguageFiles as $sKey => $sValue) {
-      if(Util::endsWith($sKey, '.ini')) {
+      if(StringUtil::endsWith($sKey, '.ini')) {
         $sLanguageId = substr($sKey, 0, -4);  
         $aLanguages[$sLanguageId] = StringPeer::getString('language.'.$sLanguageId);
       }
@@ -116,7 +116,7 @@ class UsersBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
       } else {
         $oTemplate->replaceIdentifier("no_groups_message", StringPeer::getString('no_groups_message'));
-        $oTemplate->replaceIdentifier("edit_groups_link", TagWriter::quickTag('a', array('href' => Util::link(array('groups'), "BackendManager", array('action' => "create"))), StringPeer::getString('group.create')));
+        $oTemplate->replaceIdentifier("edit_groups_link", TagWriter::quickTag('a', array('href' => LinkUtil::link(array('groups'), "BackendManager", array('action' => "create"))), StringPeer::getString('group.create')));
       }
     }
     return $oTemplate;
@@ -205,7 +205,7 @@ class UsersBackendModule extends BackendModule {
       $this->oUser->setUpdatedBy(Session::getSession()->getUserId());
       $this->oUser->setUpdatedAt(date('c'));
       $this->oUser->save();
-      Util::redirect($this->link($this->oUser->getId()));
+      LinkUtil::redirect($this->link($this->oUser->getId()));
     }
   }
   

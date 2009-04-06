@@ -6,7 +6,7 @@ class TestTemplate {
   public static function suite() {
     $oResult = new PHPUnit_Framework_TestSuite("Template test suite");
     foreach(ResourceFinder::getFolderContents(dirname(__FILE__)) as $sFileName => $sFilePath) {
-      if(Util::endsWith($sFileName, "Tests.php") && Util::startsWith($sFileName, "Template")) {
+      if(StringUtil::endsWith($sFileName, "Tests.php") && StringUtil::startsWith($sFileName, "Template")) {
         $oResult->addTestFile($sFileName);
       }
     }

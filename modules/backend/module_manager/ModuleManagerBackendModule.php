@@ -68,6 +68,6 @@ class ModuleManagerBackendModule extends BackendModule {
     }
     $aInfo['enabled'] = $bShouldBeEnabled;
     file_put_contents($sInfoFilePath, Spyc::YAMLDump($aInfo));
-    Util::redirect($this->link("$this->sModuleType/$this->sModuleName"));
+    LinkUtil::redirect($this->link("$this->sModuleType/$this->sModuleName"));
   }
 }

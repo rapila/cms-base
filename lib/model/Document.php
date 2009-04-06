@@ -50,7 +50,7 @@ class Document extends BaseDocument {
   }
   
   public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
-    return Util::link(array($sFileModule, $this->getId()), "FileManager", $aUrlParameters);
+    return LinkUtil::link(array($sFileModule, $this->getId()), "FileManager", $aUrlParameters);
   }
   
   public function getCategoryName() {
@@ -76,7 +76,7 @@ class Document extends BaseDocument {
   }
   
   public function getLink() {
-    return Util::link(array('display_document', $this->getId()), 'FileManager');
+    return LinkUtil::link(array('display_document', $this->getId()), 'FileManager');
   }
   
   public function save($oConnection = null) {

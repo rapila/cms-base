@@ -52,7 +52,7 @@ Propel::initialize();
 //Set MySQL connection charset
 $sAdapter = Settings::getSetting('general', 'db_config', null);
 $sAdapter = $sAdapter['datasources'][$sAdapter['datasources']['default']]['adapter'];
-if(Util::startsWith($sAdapter, 'mysql')) {
+if(StringUtil::startsWith($sAdapter, 'mysql')) {
   $con = Propel::getConnection();
   $con->executeQuery('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
   $con->executeQuery('SET character_set_connection="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');

@@ -175,13 +175,13 @@ class TagWriter {
         $sValue = $oObject->$sValueMethod();
       }
       $aResult[$sKey] = $sValue;
-      if(Util::inArray($oObject, $mSelected, true, $sKeyMethod)) {
+      if(ArrayUtil::inArray($oObject, $mSelected, true, $sKeyMethod)) {
         $aSelected[] = $sKey;
       }
     }
     if(is_array($aCustomOptions)) {
       foreach($aCustomOptions as $sCustomKey => $sCustomValue) {
-        if(Util::inArray($sCustomKey, $mSelected, false)) {
+        if(ArrayUtil::inArray($sCustomKey, $mSelected, false)) {
           $aSelected[] = $sCustomKey;
         }
       }

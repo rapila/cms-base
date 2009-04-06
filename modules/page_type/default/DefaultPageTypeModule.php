@@ -108,7 +108,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       //Print Edit link
       $sEditImage = TagWriter::quickTag("img", array('src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
       
-      $oTag = TagWriter::quickTag("a", array("href" => Util::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
+      $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
       $oTemplate->replaceIdentifierMultiple("container", $oTag);
     }
     return true;
@@ -187,7 +187,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         $aContentModuleNames = FrontendModule::listContentModules();
         $aAllowedItems = array();
         if($oContainer->hasParameter("allowed_modules")) {
-          foreach(Util::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
+          foreach(ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
             if(isset($aContentModuleNames[$sAllowedModuleName])) {
               $aAllowedItems[$sAllowedModuleName] = $aContentModuleNames[$sAllowedModuleName];
             }
@@ -196,7 +196,7 @@ class DefaultPageTypeModule extends PageTypeModule {
           $aAllowedItems = $aContentModuleNames;
         }
         if($oContainer->hasParameter("disabled_modules")) {
-          foreach(Util::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
+          foreach(ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
             if(isset($aAllowedItems[$sDisabledModuleName])) {
               unset($aAllowedItems[$sDisabledModuleName]);
             }
@@ -408,7 +408,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     if($sRedirectUrl === null) {
       $sRedirectUrl = $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getId()));
     }
-    Util::redirect($sRedirectUrl);
+    LinkUtil::redirect($sRedirectUrl);
   }
   
   public function getAjax($aPath) {

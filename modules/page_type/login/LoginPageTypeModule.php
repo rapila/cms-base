@@ -12,7 +12,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 
   public function display(Template $oTemplate) {
     if(Manager::isPost()) {
-      Util::trimStringsInArray($_POST);
+      ArrayUtil::trimStringsInArray($_POST);
     }
     
     //1st step: user clicked on the recovery link
@@ -24,7 +24,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
     //  • Send the email with the recovery link (and generate the hint)
     //  • Add confirmation message to flash
     if(isset($_POST['password_reset_user_name'])) {
-      $this->sAction = LoginManager::sendResetMail(Util::link($this->oPage->getFullPathArray(), 'FrontendManager'));
+      $this->sAction = LoginManager::sendResetMail(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
     }
     //3rd step: user has clicked on the reset link in the e-mail
     //  • Validate the hint

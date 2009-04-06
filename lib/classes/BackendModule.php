@@ -39,7 +39,7 @@ abstract class BackendModule extends Module {
   }
   
   protected function link($sPath="", $aParameters = array()) {
-    return Util::link($this->getModuleName()."/".$sPath, null, $aParameters);
+    return LinkUtil::link($this->getModuleName()."/".$sPath, null, $aParameters);
   }
   
   protected function getReferenceMessages($aReferences) {
@@ -52,7 +52,7 @@ abstract class BackendModule extends Module {
         $oRefTemplate = $this->constructTemplate('reference_language_object', true);
         $oRefTemplate->replaceIdentifier('page_name', $oContentObject->getPage()->getName());
         $oRefTemplate->replaceIdentifier('container_name', $oContentObject->getContainerName());
-        $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'BackendManager')), 'edit'));
+        $oRefTemplate->replaceIdentifier('edit_link', TagWriter::quickTag('a', array('href' => LinkUtil::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'BackendManager')), 'edit'));
       } else {
         $oRefTemplate = $this->constructTemplate('reference_other', true);
         $oRefTemplate->replaceIdentifier('object_class', $oReference->getFromModelName());
@@ -96,14 +96,14 @@ abstract class BackendModule extends Module {
   }
   
   public static function getClassNameByName($sModuleName) {
-    return Util::camelize($sModuleName, true).get_class();
+    return StringUtil::camelize($sModuleName, true).get_class();
   }
   
   public static function getNameByClassName($sClassName) {
     if(strpos($sClassName, get_class()) === false) {
       return $sClassName;
     }
-    return Util::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+    return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
   }
   
   public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {
@@ -121,7 +121,7 @@ abstract class BackendModule extends Module {
   }
   
   public static function isValidModuleClassName($sName) {
-    return Util::endsWith($sName, Util::camelize(self::$MODULE_TYPE, true)."Module");
+    return StringUtil::endsWith($sName, StringUtil::camelize(self::$MODULE_TYPE, true)."Module");
   }
 } // class BackendModule
 ?>

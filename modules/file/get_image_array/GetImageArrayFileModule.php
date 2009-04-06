@@ -17,7 +17,7 @@ class GetImageArrayFileModule extends FileModule {
 	  header("Content-Type: text/javascript;charset=".Settings::getSetting("encoding", "browser", "utf-8"));
 	  $aArrayText = array();
 	  foreach($this->aImages as $oImage) {
-	    $sLinkUrl = Util::link(array('display_document', $oImage->getId()));
+	    $sLinkUrl = LinkUtil::link(array('display_document', $oImage->getId()));
 	    $aArrayText[] = '["'.$oImage->getName().'.'.$oImage->getDocumentType()->getExtension()." (".$oImage->getId().")".'", "'.$sLinkUrl.'"]';
 	  }
 	  $oTemplate = $this->constructTemplate("array");

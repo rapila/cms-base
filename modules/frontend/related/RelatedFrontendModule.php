@@ -79,7 +79,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           $oItemTemplate->replaceIdentifier("link_text", $oCorrespondingPage->getLinkText());
           $oItemTemplate->replaceIdentifier("title", $oCorrespondingPage->getPageTitle());
           $oItemTemplate->replaceIdentifier("description", $oCorrespondingPage->getPageTitle());
-          $oItemTemplate->replaceIdentifier("url", Util::link($oCorrespondingPage->getLink()));
+          $oItemTemplate->replaceIdentifier("url", LinkUtil::link($oCorrespondingPage->getLink()));
           $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
       }

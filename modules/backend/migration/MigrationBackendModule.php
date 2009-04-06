@@ -146,10 +146,10 @@ class MigrationBackendModule extends BackendModule {
         continue;
       }
       if($iCurrentlyReadRevision > $iStartRevision) {
-        if($sReadLine !== "\n" && !Util::startsWith($sReadLine, "#") && !Util::startsWith($sReadLine, "--")) {
+        if($sReadLine !== "\n" && !StringUtil::startsWith($sReadLine, "#") && !StringUtil::startsWith($sReadLine, "--")) {
           $sStatement .= $sReadLine;
         }
-        if(Util::endsWith($sReadLine, ";\n")) {
+        if(StringUtil::endsWith($sReadLine, ";\n")) {
           $iQueryCount += $this->executeQuery($sStatement, $bIsTest);
           $sStatement = "";
         }
@@ -157,7 +157,7 @@ class MigrationBackendModule extends BackendModule {
     }
     $iQueryCount += $this->executeQuery($sStatement, $bIsTest);
     if($bIsTest) {
-      $this->oTemplate->replaceIdentifier('content', TagWriter::quickTag('a', array('href' => Util::linkToSelf(null, array('execute' => true))), "Execute!"));
+      $this->oTemplate->replaceIdentifier('content', TagWriter::quickTag('a', array('href' => LinkUtil::linkToSelf(null, array('execute' => true))), "Execute!"));
     } else {
       $this->oTemplate->replaceIdentifierMultiple('messages', "Executed $iQueryCount queries");
     }

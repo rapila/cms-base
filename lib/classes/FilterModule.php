@@ -31,14 +31,14 @@ abstract class FilterModule extends Module {
   }
   
   public static function getClassNameByName($sModuleName) {
-    return Util::camelize($sModuleName, true).get_class();
+    return StringUtil::camelize($sModuleName, true).get_class();
   }
   
   public static function getNameByClassName($sClassName) {
     if(strpos($sClassName, get_class()) === false) {
       return $sClassName;
     }
-    return Util::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+    return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
   }
   
   public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {
@@ -56,7 +56,7 @@ abstract class FilterModule extends Module {
   }
   
   public static function isValidModuleClassName($sName) {
-    return Util::endsWith($sName, Util::camelize(self::$MODULE_TYPE, true)."Module");
+    return StringUtil::endsWith($sName, StringUtil::camelize(self::$MODULE_TYPE, true)."Module");
   }
 }
 
@@ -70,7 +70,7 @@ class Filters {
     foreach($aFilterModules as $sFilterModuleName => $aModuleMetadata) {
       $oFileModuleInstance = FilterModule::getModuleInstance($sFilterModuleName);
       foreach(get_class_methods($oFileModuleInstance) as $sMethodName) {
-        if(strlen($sMethodName) < 5 || !Util::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) !== $sMethodName[2])) {
+        if(strlen($sMethodName) < 5 || !StringUtil::startsWith($sMethodName, 'on') || (strtoupper($sMethodName[2]) !== $sMethodName[2])) {
           continue;
         }
         $sEventName = substr($sMethodName, strlen('on'));
@@ -104,7 +104,7 @@ class Filters {
   
   public function __call($sMethodName, $aParameters) {
     //Event name
-    if(!Util::startsWith($sMethodName, 'handle')) {
+    if(!StringUtil::startsWith($sMethodName, 'handle')) {
       return 0;
     }
     $sEventName = substr($sMethodName, strlen('handle'));

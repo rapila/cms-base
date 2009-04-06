@@ -24,9 +24,9 @@ class SearchIndex {
       }
       
       // get words from Page LongTitle
-      $this->addWordsToIndexForPage(Util::getWords($oPage->getPageStringByLanguage($this->sLanguage)->getPageTitle()), $oPage);
+      $this->addWordsToIndexForPage(StringUtil::getWords($oPage->getPageStringByLanguage($this->sLanguage)->getPageTitle()), $oPage);
       // get words from Page keywords
-      $this->addWordsToIndexForPage(Util::getWords($oPage->getConsolidatedKeywords($this->sLanguage)), $oPage);
+      $this->addWordsToIndexForPage(StringUtil::getWords($oPage->getConsolidatedKeywords($this->sLanguage)), $oPage);
       
       $aObjects = $oPage->getContentObjects();
       foreach($aObjects as $oObject) {
@@ -79,7 +79,7 @@ class SearchIndex {
   
   public function find($sSearchString) {
     $aResults = array();
-    $aSearchItems = Util::getWords($sSearchString);
+    $aSearchItems = StringUtil::getWords($sSearchString);
     foreach($aSearchItems as $sSearchItem) {
       $sSearchItem = $this->findRootWord($sSearchItem);
       if(!isset($this->aIndex[$sSearchItem])) {
@@ -109,7 +109,7 @@ class SearchIndex {
     $iPageCount = PagePeer::doCount(new Criteria());
     $aResults = $this->aIndex;
     foreach($aResults as $sWord => $iCount) {
-      if(!Util::startsWith($sWord, $sBeginning)) {
+      if(!StringUtil::startsWith($sWord, $sBeginning)) {
         unset($aResults[$sWord]);
       } else {
         $aResults[$sWord] = round(count($aResults[$sWord])/$iPageCount, 2);
@@ -117,7 +117,7 @@ class SearchIndex {
     }
     
     foreach($this->getAllSynonymedWords() as $sSynonym) {
-      if(!Util::startsWith($sSynonym, $sBeginning)) {
+      if(!StringUtil::startsWith($sSynonym, $sBeginning)) {
         continue;
       }
       $iCount = count($this->find($sSynonym));
@@ -144,10 +144,10 @@ class SearchIndex {
       foreach(self::$SYNONYMS as $sLanguage => $aSynonymList) {
         foreach($aSynonymList as $sRootWord => $aSynonyms) {
           foreach($aSynonyms as $iKey => $sSynonym) {
-            $aSynonyms[$iKey] = Util::normalize($sSynonym);
+            $aSynonyms[$iKey] = StringUtil::normalize($sSynonym);
           }
           unset(self::$SYNONYMS[$sLanguage][$sRootWord]);
-          $sRootWord = Util::normalize($sRootWord);
+          $sRootWord = StringUtil::normalize($sRootWord);
           self::$SYNONYMS[$sLanguage][$sRootWord] = $aSynonyms;
         }
       }

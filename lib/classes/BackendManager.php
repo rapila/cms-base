@@ -25,18 +25,18 @@ class BackendManager extends Manager {
       }
       unset($_REQUEST["logout"]);
       unset($_REQUEST["be_logout"]);
-      Session::getSession()->setAttribute('login_referrer', Util::linkToSelf(Manager::getRequestedPath()));
-      Util::redirectToManager('', 'LoginManager');
+      Session::getSession()->setAttribute('login_referrer', LinkUtil::linkToSelf(Manager::getRequestedPath()));
+      LinkUtil::redirectToManager('', 'LoginManager');
     }
     if(isset($_REQUEST['be_logout'])) {
       Cache::clearAllCaches();
       $bLogoutBackToLogin = Settings::getSetting('general', 'logout_to_login', false, 'backend');
       $aLogoutParam = array('logout' => 'true');
       if($bLogoutBackToLogin) {
-        Util::redirect(Util::linkToSelf(null, $aLogoutParam));
+        LinkUtil::redirect(LinkUtil::linkToSelf(null, $aLogoutParam));
       } else {
         $oPage = isset($_REQUEST['page_id']) ? PagePeer::retrieveByPk($_REQUEST['page_id']) : null;
-        Util::redirect(self::getWebLink(($oPage !== null) ? $oPage->getFullPathArray() : null, $aLogoutParam));
+        LinkUtil::redirect(self::getWebLink(($oPage !== null) ? $oPage->getFullPathArray() : null, $aLogoutParam));
       }
     }
     if(Session::getSession()->getUser()->getLanguageId() != null) {
@@ -54,10 +54,10 @@ class BackendManager extends Manager {
       $this->sModuleName = self::usePath();
     } else {
       $aModuleNames = array_keys(self::$MODULES['direct_links']);
-      Util::redirectToManager($aModuleNames[0]);
+      LinkUtil::redirectToManager($aModuleNames[0]);
     }
     if(isset($_REQUEST['select_link'])) {
-      Util::redirectToManager($_REQUEST['select_link']);
+      LinkUtil::redirectToManager($_REQUEST['select_link']);
     }
   }
 
@@ -149,7 +149,7 @@ class BackendManager extends Manager {
       if(($sModuleName === "pages" || $sModuleName === "content") && Manager::getCurrentPage()) {
         array_push($aUrlParameters, Manager::getCurrentPage()->getId());
       }
-      $sUrl = Util::link($aUrlParameters);
+      $sUrl = LinkUtil::link($aUrlParameters);
       
       $oTemplate->replaceIdentifier('status', $sClassName);
       $oTemplate->replaceIdentifier('title', BackendModule::getDisplayNameByName($sModuleName));
@@ -190,7 +190,7 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("admin_select_class", $sSelected != '' ? 'active_select' : '');
       $this->oTemplate->replaceIdentifier("available_admin_links", TagWriter::optionsFromArray($aAdminOptions, $sSelected));
     }
-    $this->oTemplate->replaceIdentifier("page_url", Util::link(Manager::getUsedPath(), null, array(), false));
+    $this->oTemplate->replaceIdentifier("page_url", LinkUtil::link(Manager::getUsedPath(), null, array(), false));
 
     if(!Manager::isPost()) {
       $this->oTemplate->replaceIdentifier("available_language_options", TagWriter::optionsFromArray(LanguagePeer::getLanguagesAssoc(), self::getContentEditLanguage(), '', array()));
@@ -213,7 +213,7 @@ class BackendManager extends Manager {
     $sUserName = (Session::getSession()->getUser() !== null && trim(Session::getSession()->getUser()->getFullName()) != '') ? Session::getSession()->getUser()->getFullName() : Session::getSession()->getUser()->getUsername();
     $sUserName = Session::getSession()->getUser() ? $sUserName: 'Hans Muster';
     $this->oTemplate->replaceIdentifier('user_name', $sUserName);
-    $this->oTemplate->replaceIdentifier('link_to_user', Util::link(array('users', Session::getSession()->getUserId())));
+    $this->oTemplate->replaceIdentifier('link_to_user', LinkUtil::link(array('users', Session::getSession()->getUserId())));
   }
 
  /**
@@ -222,10 +222,10 @@ class BackendManager extends Manager {
   private function fillBackend() {
     $this->oBackendModule = BackendModule::getModuleInstance($this->sModuleName);
     if(Manager::isPost()) {
-      Util::trimStringsInArray($_POST);
-      Util::runFunctionOnArrayValues($_POST, array('Util', "encode"), Settings::getSetting("encoding", "browser", "utf-8"), Settings::getSetting("encoding", "db", "utf-8"));
+      ArrayUtil::trimStringsInArray($_POST);
+      ArrayUtil::runFunctionOnArrayValues($_POST, array('StringUtil', "encode"), Settings::getSetting("encoding", "browser", "utf-8"), Settings::getSetting("encoding", "db", "utf-8"));
       if(isset($_POST['action'])) {
-        $sMethod = Util::camelize($_POST['action']);
+        $sMethod = StringUtil::camelize($_POST['action']);
         if(method_exists($this->oBackendModule, $sMethod) || method_exists($this->oBackendModule, "__call")) {
           $this->oBackendModule->$sMethod();
         } else {
@@ -235,7 +235,7 @@ class BackendManager extends Manager {
         $this->oBackendModule->doSave();
       }
     } else if (isset($_GET['action'])) {
-      $sMethod = Util::camelize($_GET['action']);
+      $sMethod = StringUtil::camelize($_GET['action']);
       if(method_exists($this->oBackendModule, $sMethod)) {
         $this->oBackendModule->$sMethod();
       }
@@ -298,7 +298,7 @@ class BackendManager extends Manager {
     }
     $oSession->setAttribute("backend_search_panel", $aSearchPanelValues);
     $oSearchPanelTemplate = new Template('search_panel', array(DIRNAME_TEMPLATES, DIRNAME_BACKEND));
-    $oSearchPanelTemplate->replaceIdentifier('clear_link', Util::linkToSelf(null, array('search' => '')));
+    $oSearchPanelTemplate->replaceIdentifier('clear_link', LinkUtil::linkToSelf(null, array('search' => '')));
     $oSearchPanelTemplate->replaceIdentifier('search_value', $aSearchPanelValues[$this->oBackendModule->getModuleName()]);
     $this->oTemplate->replaceIdentifier('search_panel', $oSearchPanelTemplate);
   }
@@ -314,10 +314,10 @@ class BackendManager extends Manager {
     if(self::getCurrentPage() instanceof Page) {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink(self::getCurrentPage()->getFullPathArray()));
       $this->oTemplate->replacePstring("preview_title", array("link_title" => self::getCurrentPage()->getLinkText()));
-      $this->oTemplate->replaceIdentifier("logout_link", Util::linkToSelf(null, array("be_logout" => 'true', 'page_id' => self::getCurrentPage()->getId())));
+      $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true', 'page_id' => self::getCurrentPage()->getId())));
     } else {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink());
-      $this->oTemplate->replaceIdentifier("logout_link", Util::linkToSelf(null, array("be_logout" => 'true')));
+      $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true')));
     }
     $this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'));
   }
@@ -325,7 +325,7 @@ class BackendManager extends Manager {
   private static function getWebLink($aPath = array(), $aParameters = array()) {
     $bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
     if(!$bIsMultilingual) {
-      return Util::link($aPath, "FrontendManager", $aParameters);
+      return LinkUtil::link($aPath, "FrontendManager", $aParameters);
     }
     $sLanguageId = self::getContentEditLanguage();
     $oLanguage = LanguagePeer::retrieveByPk($sLanguageId);
@@ -333,7 +333,7 @@ class BackendManager extends Manager {
       $sLanguageId = Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, null);
     }
     array_unshift($aPath, $sLanguageId);
-    return Util::link($aPath, "FrontendManager", $aParameters, false);
+    return LinkUtil::link($aPath, "FrontendManager", $aParameters, false);
   }
   
   /**
@@ -344,10 +344,10 @@ class BackendManager extends Manager {
   * @return array assoc of path to examplename in key and value
   */  
   public static function getSiteTemplatesForListOutput($sPostfix = '_item') {
-    $aTemplateList = Util::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
+    $aTemplateList = ArrayUtil::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
     $aListTemplates = array();
     foreach($aTemplateList as $sPath => $sListName) {
-      if(Util::endsWith($sListName, $sPostfix)) {
+      if(StringUtil::endsWith($sListName, $sPostfix)) {
         $sPath = substr($sListName, 0, -strlen($sPostfix));
         $aListTemplates[$sPath] = $sPath;
       }

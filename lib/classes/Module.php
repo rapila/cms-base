@@ -45,7 +45,7 @@ abstract class Module {
   }
   
   public static function getClassNameByTypeAndName($sType, $sName = '') {
-    return Util::camelize($sName, true).Util::camelize($sType, true).get_class();
+    return StringUtil::camelize($sName, true).StringUtil::camelize($sType, true).get_class();
   }
   
   public static function getDisplayNameByTypeAndName($sType, $sName, $sLanguageId = null) {
@@ -55,7 +55,7 @@ abstract class Module {
       if(isset($aModuleInfo['name'])) {
         $sDisplayName = $aModuleInfo['name'];
       } else {
-        $sDisplayName = Util::makeReadableName($sName);
+        $sDisplayName = StringUtil::makeReadableName($sName);
       }
     }
     return $sDisplayName;
@@ -205,7 +205,7 @@ abstract class Module {
   */
   
   public static function isValidModuleClassNameOfAnyType($sName) {
-    return Util::endsWith($sName, "Module");
+    return StringUtil::endsWith($sName, "Module");
   }
   
   public abstract function getModuleName();

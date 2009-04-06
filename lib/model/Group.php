@@ -17,7 +17,7 @@ require_once 'model/om/BaseGroup.php';
 class Group extends BaseGroup {
 
   public function may($oPage, $sRightName, $bInheritedOnly = false) {
-    $sRightName = "getMay".Util::camelize($sRightName, true);
+    $sRightName = "getMay".StringUtil::camelize($sRightName, true);
     $aRights = $this->getRights();
     foreach($aRights as $oRight) {
       if($bInheritedOnly && !$oRight->getIsInherited()) {
@@ -64,7 +64,7 @@ class Group extends BaseGroup {
     $oRightMethods = get_class_methods("Right");
     $aResult = array();
     foreach($oRightMethods as $iKey => $sRightMethodName) {
-      if(!Util::startsWith($sRightMethodName, 'getMay')) {
+      if(!StringUtil::startsWith($sRightMethodName, 'getMay')) {
         continue;
       }
       $sRightName = substr($sRightMethodName, strlen('getMay'));

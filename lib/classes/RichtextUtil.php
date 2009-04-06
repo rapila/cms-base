@@ -140,7 +140,7 @@ class RichtextUtil {
   public static function mailtoLinkCallback($oIdentifier) {
     $sLinkUrl = $oIdentifier->getValue();
     $sText = $oIdentifier->getParameter("link_text");
-    $oWriter = TagWriter::getEmailLinkWriter($sLinkUrl, $sText);
+    $oWriter = Util::getEmailLinkWriter($sLinkUrl, $sText);
     return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
   }
   
@@ -152,7 +152,7 @@ class RichtextUtil {
     $oLink = LinkPeer::retrieveByPk($oIdentifier->getValue());
     if($oLink) {
       //Mailto-Link handling
-      if(Util::startsWith($oLink->getUrl(), 'mailto:')) {
+      if(StringUtil::startsWith($oLink->getUrl(), 'mailto:')) {
         return self::mailtoLinkCallback(new TemplateIdentifier('mailto_link', substr($oLink->getUrl(), strlen('mailto:')), array('link_text' => $oIdentifier->getParameter("link_text"))));
       }
       return self::writeTagForIdentifier("a", array('href' => $oLink->getUrl(), 'title' => $oLink->getDescription(), 'rel' => 'external', 'class' => 'external_link'), $oIdentifier);
@@ -189,9 +189,9 @@ class RichtextUtil {
   
   private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
     if(self::$USE_ABSOLUTE_LINKS) {
-      return Util::absoluteLink(Util::link($mLocation, $sManager, $aParameters));
+      return LinkUtil::absoluteLink(LinkUtil::link($mLocation, $sManager, $aParameters));
     } else {
-      return Util::link($mLocation, $sManager, $aParameters);
+      return LinkUtil::link($mLocation, $sManager, $aParameters);
     }
   }
   

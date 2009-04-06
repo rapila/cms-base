@@ -44,11 +44,11 @@ EOT;
   public function testQuoteWithInner() {
     Session::getSession()->setLanguage('en');
     $sTemplateText = <<<EOT
-{{quoteString=\{\{test\}\}}}
+{{quoteString=test}}
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("“”", $oTemplate->render());
+    $this->assertEquals("“test”", $oTemplate->render());
   }
   
   public function testQuoteWithInnerDefault() {
@@ -59,5 +59,15 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);    
 
     $this->assertEquals("“default”", $oTemplate->render());
+  }
+  
+  public function testQuoteWithInnerDefaultValue() {
+    Session::getSession()->setLanguage('en');
+    $sTemplateText = <<<EOT
+{{quoteString=\{\{test\}\};defaultValue=default}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);    
+
+    $this->assertEquals("default", $oTemplate->render());
   }
 }

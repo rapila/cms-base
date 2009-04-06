@@ -22,13 +22,13 @@ class DocumentCategoriesBackendModule extends BackendModule {
   public function getDetail() {
     if($this->oDocCategory === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       return $oTemplate;
     }  
     $oTemplate = $this->constructTemplate("document_category_detail");
-    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('document_categories', null, array('get_module_info' => 'true')))));
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('document_categories', null, array('get_module_info' => 'true')))));
 
     if(!$this->oDocCategory->isNew()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
@@ -56,7 +56,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
   public function delete() {
     $this->oDocCategory->delete();
     $this->oDocCategory=null;
-    Util::redirect($this->link());
+    LinkUtil::redirect($this->link());
   }
   
   public function save() {
@@ -72,7 +72,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
     }
     $this->oDocCategory->setIsInactive(isset($_POST['is_inactive']));
     $this->oDocCategory->save();
-    Util::redirect($this->link($this->oDocCategory->getId()));
+    LinkUtil::redirect($this->link($this->oDocCategory->getId()));
   }
 
   public function getNewEntryActionParams() {

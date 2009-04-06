@@ -19,7 +19,7 @@ class Tag extends BaseTag {
   }
   
   public function setName($sNewName) {
-    $sNewName = Util::normalize($sNewName);
+    $sNewName = StringUtil::normalize($sNewName);
     parent::setName($sNewName);
   }
   

@@ -121,7 +121,7 @@ class Template {
       $mPath = $aPath;
       array_pop($mPath);
       
-      if(Util::startsWith($sTemplateName, 'e_mail_')) {
+      if(StringUtil::startsWith($sTemplateName, 'e_mail_')) {
         $iDefaultFlags = $iDefaultFlags | self::NO_HTML_ESCAPE;
       }
     }
@@ -137,7 +137,7 @@ class Template {
       if(is_array($sTemplateText)) {
         $this->aTemplateContents = $sTemplateText;
       } else {
-        $sTemplateText = Util::encode($sTemplateText, $this->sEncoding, $sTargetEncoding);
+        $sTemplateText = StringUtil::encode($sTemplateText, $this->sEncoding, $sTargetEncoding);
         $this->aTemplateContents = self::templateContentsFromText($sTemplateText, $this);
       }
       $this->replaceSpecialIdentifiersOnStart();
@@ -241,7 +241,7 @@ class Template {
         }
         $bMatches = true;
         foreach($aParameters as $sParameterName => $sParameterValue) {
-          if(is_string($sParameterValue) && Util::startsWith($sParameterValue, "!")) {
+          if(is_string($sParameterValue) && StringUtil::startsWith($sParameterValue, "!")) {
             //search for non-matching values
             $sParameterValue = substr($sParameterValue, 1);
             if($mValue->hasParameter($sParameterName) && $mValue->getParameter($sParameterName) === $sParameterValue) {
@@ -386,7 +386,7 @@ class Template {
         continue;
       }
       if(!($mText instanceof Template)  && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
-        $aText[$iKey] = Util::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
+        $aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
       }
       
       if(($iFlags&self::ESCAPE)===self::ESCAPE) {

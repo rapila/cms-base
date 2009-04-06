@@ -48,7 +48,7 @@ class PagesBackendModule extends BackendModule {
     $aNavigationConfig['all'][] = array("template" => "main_be_no_new", "on" => 'user_may_edit');
     $aNavigationConfig['all'][] = array("template" => "main_be_unlinked");
     $oTemplate = $this->constructTemplate();
-    $oNavigation = new Navigation($aNavigationConfig, Util::link($this->getModuleName()).'/');
+    $oNavigation = new Navigation($aNavigationConfig, LinkUtil::link($this->getModuleName()).'/');
 
     $oTemplate->replaceIdentifier("tree", $oNavigation->parse());
     return $oTemplate;
@@ -71,7 +71,7 @@ class PagesBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate("page_detail");
     if ($this->oPage->getId() != PagePeer::getRootPage()->getId() && !$this->oPage->isNew()) {
       $oTemplate->replaceIdentifier("parent_id", $this->oPage->getParentId());
-      $oTemplate->replaceIdentifier("link_prefix", Util::link('pages'));
+      $oTemplate->replaceIdentifier("link_prefix", LinkUtil::link('pages'));
       if(Session::getSession()->getUser()->mayEditPageDetails($this->oPage->getParent())) {
         $oTemplate->replaceIdentifier("parent_title", PagePeer::getRootPage()->getName());
       }
@@ -89,7 +89,7 @@ class PagesBackendModule extends BackendModule {
     // if not new and if user mayEditPageDetails
     if(!$this->oPage->isNew() && Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
       $oContentLinkTemplate = $this->constructTemplate("page_edit_content");
-      $sContentLink = Util::link(array("content", "show", $this->oPage->getId()));
+      $sContentLink = LinkUtil::link(array("content", "show", $this->oPage->getId()));
       $oContentLinkTemplate->replaceIdentifier("content_link", $sContentLink);
       $oTemplate->replaceIdentifier("edit_content", $oContentLinkTemplate);
     }
@@ -318,7 +318,7 @@ class PagesBackendModule extends BackendModule {
       if($this->oPage->hasChildren() && isset($_POST['delete_what'])) {
         if($_POST['delete_what'] == self::ON_DELETE_CHILDREN_DELETE && Session::getSession()->getUser()->getIsAdmin()) {
           $this->oPage->deletePageAndDescendants();
-          Util::redirect($this->link());
+          LinkUtil::redirect($this->link());
           
         } elseif($_POST['delete_what'] == self::ON_DELETE_CHILDREN_INHERIT) {
           $iNewParentId = $this->oPage->getParentId();
@@ -349,7 +349,7 @@ class PagesBackendModule extends BackendModule {
     }
     $oFlash->finishReporting();
     if(Flash::noErrors()) {
-      Util::redirect($this->link());
+      LinkUtil::redirect($this->link());
     }
   }
   
@@ -377,9 +377,9 @@ class PagesBackendModule extends BackendModule {
     $sContentEditLanguage = BackendManager::getContentEditLanguage();
     if($_POST['name'] == '') {
       if(isset($_POST['title'][$sContentEditLanguage]) && $_POST['title'][$sContentEditLanguage] !== '') {
-        $_POST['name'] = Util::normalize($_POST['title'][$sContentEditLanguage]);
+        $_POST['name'] = StringUtil::normalize($_POST['title'][$sContentEditLanguage]);
       } else if(isset($_POST['long_title'][$sContentEditLanguage])) {
-        $_POST['name'] = Util::normalize($_POST['long_title'][$sContentEditLanguage]);
+        $_POST['name'] = StringUtil::normalize($_POST['long_title'][$sContentEditLanguage]);
       }
     }
     
@@ -396,13 +396,13 @@ class PagesBackendModule extends BackendModule {
       }
     }
     // check for uniqueness of name and parent_id
-    if(PagePeer::pageIsNotUnique(Util::normalize($_POST['name']), $_POST['parent_id'], $this->oPage->getId())) {
+    if(PagePeer::pageIsNotUnique(StringUtil::normalize($_POST['name']), $_POST['parent_id'], $this->oPage->getId())) {
       $oFlash->addMessage('page_name_duplicated');
     }
     
     // page name validation
     try {
-      if(strlen(Util::normalize($_POST['name'])) < 3){
+      if(strlen(StringUtil::normalize($_POST['name'])) < 3){
         $oFlash->addMessage('page_name');
       }
     } catch(Exception $e) {
@@ -490,7 +490,7 @@ class PagesBackendModule extends BackendModule {
     }
     
     // set name
-    $this->oPage->setName(Util::normalize($_POST['name']));
+    $this->oPage->setName(StringUtil::normalize($_POST['name']));
     
     //set page type
     $this->oPage->setPageType($_POST['page_type']);
@@ -561,7 +561,7 @@ class PagesBackendModule extends BackendModule {
         $oRight->save();
       }
 
-      Util::redirect($this->link($this->oPage->getId()));
+      LinkUtil::redirect($this->link($this->oPage->getId()));
     }
   }
   
@@ -625,14 +625,14 @@ class PagesBackendModule extends BackendModule {
     $aOptionsArray = array();
     if($this->oPage !== null && $this->oPage->getId() !== PagePeer::getRootPage()->getId()
       && Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk($this->oPage->getParentId()))) {
-      $sNameTruncated = Util::truncate($this->oPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
+      $sNameTruncated = StringUtil::truncate($this->oPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
       $iParentId = $this->oPage->getParentId();
       $aOptionsArray[$this->oPage->getParentId()] = StringPeer::getString('page.sibling_of').' '.$sNameTruncated;
       $aOptionsArray[$this->oPage->getId()] = StringPeer::getString('page.child_of').' '.$sNameTruncated;
     } else if (Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk(PagePeer::getRootPage()->getId()))) {
       $oRootPage = PagePeer::getRootPage();
       $iParentId = $oRootPage->getId();
-      $aOptionsArray[$oRootPage->getId()] = StringPeer::getString('page.child_of').' '.Util::truncate($oRootPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
+      $aOptionsArray[$oRootPage->getId()] = StringPeer::getString('page.child_of').' '.StringUtil::truncate($oRootPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
     } else {
       $bShowSelect = false;
     }

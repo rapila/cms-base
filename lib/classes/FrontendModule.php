@@ -42,7 +42,7 @@ abstract class FrontendModule extends Module {
   }
 
   public function getWords() {
-    return Util::getWords($this->renderFrontend(), true);
+    return StringUtil::getWords($this->renderFrontend(), true);
   }
   
   protected function constructTemplate($sTemplateName = "main", $bUseGlobalTemplatesDir = false) {
@@ -111,14 +111,14 @@ abstract class FrontendModule extends Module {
   }
   
   public static function getClassNameByName($sModuleName) {
-    return Util::camelize($sModuleName, true).get_class();
+    return StringUtil::camelize($sModuleName, true).get_class();
   }
   
   public static function getNameByClassName($sClassName) {
     if(strpos($sClassName, get_class()) === false) {
       return $sClassName;
     }
-    return Util::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+    return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
   }
   
   public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {
@@ -136,6 +136,6 @@ abstract class FrontendModule extends Module {
   }
   
   public static function isValidModuleClassName($sName) {
-    return Util::endsWith($sName, Util::camelize(self::$MODULE_TYPE, true)."Module");
+    return StringUtil::endsWith($sName, StringUtil::camelize(self::$MODULE_TYPE, true)."Module");
   }
 }

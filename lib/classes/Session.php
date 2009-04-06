@@ -131,7 +131,7 @@ class Session {
 }
 
 try {
-  session_name("Session".str_replace(array('/', '.'), '_', Util::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE));
+  session_name("Session".str_replace(array('/', '.'), '_', StringUtil::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE));
   @session_start();
 } catch (ClassNotFoundException $e) {
   //Tried to load class that does not exist (may be because the user’s session contains old data, clearing the session)

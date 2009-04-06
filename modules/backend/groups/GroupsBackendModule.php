@@ -158,7 +158,7 @@ class GroupsBackendModule extends BackendModule {
       $this->oGroup->setUpdatedAt(date('c'));
       $this->oGroup->setUpdatedBy(Session::getSession()->getUserId());
       $this->oGroup->save();
-      Util::redirect($this->link($this->oGroup->getId()));
+      LinkUtil::redirect($this->link($this->oGroup->getId()));
     }
   }
   

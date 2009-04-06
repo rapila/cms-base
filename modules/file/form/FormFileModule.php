@@ -70,10 +70,10 @@ class FormFileModule extends FileModule {
       $oEmail->addRecipient($this->sEmailAddress);
       $oEmail->send();
       $this->oFormStorage->deleteCurrentValuesFromSession();
-      Util::redirect($_REQUEST['origin'].'?form_success=true');
+      LinkUtil::redirect($_REQUEST['origin'].'?form_success=true');
     } else {
       $oFlash->stick();
-      Util::redirect($_REQUEST['origin']);
+      LinkUtil::redirect($_REQUEST['origin']);
     }
   }
 
