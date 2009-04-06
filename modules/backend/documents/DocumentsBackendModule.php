@@ -10,7 +10,7 @@ class DocumentsBackendModule extends BackendModule {
   private $oDocument = null;
   private $sDocumentKind;
   private $bHasUploadedFile = false;
-  private $sDocumentCategory;
+  private $sDocumentCategoryId;
   private $sSortField;
   private $sSortOrder;
   private $aReferences = array();
@@ -27,17 +27,17 @@ class DocumentsBackendModule extends BackendModule {
     
     // selected_document_category_id can be specific int, all, without category
     if(isset($_REQUEST['selected_document_category_id']) && $_REQUEST['selected_document_category_id'] !== '') {
-      $this->sDocumentCategory = is_numeric($_REQUEST['selected_document_category_id']) ? (int) $_REQUEST['selected_document_category_id'] : $_REQUEST['selected_document_category_id'];
-      Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategory);
+      $this->sDocumentCategoryId = is_numeric($_REQUEST['selected_document_category_id']) ? (int) $_REQUEST['selected_document_category_id'] : $_REQUEST['selected_document_category_id'];
+      Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategoryId);
     } else {
       
       // change default category in case the number of internally managed files exceed a number
       if(Session::getSession()->getAttribute('selected_document_category_id') === null 
         && DocumentPeer::countDocumentsExceedsLimit(40)) {
-        $this->sDocumentCategory = DocumentPeer::WITHOUT_CATEGORY;
-        Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategory);
+        $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
+        Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategoryId);
       } else {
-        $this->sDocumentCategory = Session::getSession()->getAttribute('selected_document_category_id');
+        $this->sDocumentCategoryId = Session::getSession()->getAttribute('selected_document_category_id');
       }
     }
     
@@ -67,15 +67,15 @@ class DocumentsBackendModule extends BackendModule {
     $aDocumentCategoryOptions = null;
     $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
     if(count($aDocumentCategories) > 0) {
-      $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategory === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategory, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
+      $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategoryId, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
     } else {
       //Clear document category
-      $this->sDocumentCategory = DocumentPeer::ALL_CATEGORIES;
+      $this->sDocumentCategoryId = DocumentPeer::ALL_CATEGORIES;
       Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
     }
     
     $sDocumentName = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
-    $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategory, $this->sSortField, $this->sSortOrder, true, $sDocumentName);
+    $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategoryId, $this->sSortField, $this->sSortOrder, true, $sDocumentName);
     $oTemplate = $this->constructTemplate("documents");
 
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
@@ -86,7 +86,6 @@ class DocumentsBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("change_category_action", $this->link());
 
-    
     if(count($aDocuments) === 0) {
       $oTemplate->replaceIdentifier("no_document_message", StringPeer::getString('no_document_message', null, '[Keine Dokumente]'));
     }
@@ -118,7 +117,7 @@ class DocumentsBackendModule extends BackendModule {
       $this->oDocument->setDocumentType(DocumentTypePeer::doSelectOne(new Criteria()));
 
       // preselect currently selected Document category for convenience
-      $this->oDocument->setDocumentCategoryId($this->sDocumentCategory);
+      $this->oDocument->setDocumentCategoryId($this->sDocumentCategoryId);
     } elseif ($this->oDocument === null) {
       $oTemplate = $this->constructTemplate("module_info");
       
@@ -134,7 +133,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->oDocument !== null) {
       $oTemplate = $this->constructTemplate("document_detail");
       $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('documents', null, array('get_module_info' => 'true')))));
-      $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategory));
+      $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategoryId));
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());
       $oTemplate->replaceIdentifier("name", $this->oDocument->getName() != '' ? $this->oDocument->getName() : '[Neu]');
@@ -247,7 +246,7 @@ class DocumentsBackendModule extends BackendModule {
         $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind(); 
       }
 
-      Util::redirect($this->link($this->oDocument->getId(),array('selected_document_category_id' => $this->sDocumentCategory, 'selected_document_kind' => $this->sDocumentKind)));
+      Util::redirect($this->link($this->oDocument->getId(),array('selected_document_category_id' => $this->sDocumentCategoryId, 'selected_document_kind' => $this->sDocumentKind)));
     }
   }
 
@@ -268,7 +267,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->oDocument !== null && !$this->mayNotDelete() && count($this->aReferences) === 0) {
       $this->oDocument->delete();
     }
-    Util::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategory));
+    Util::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategoryId));
   }
 
   public function getModelName() {
@@ -283,7 +282,7 @@ class DocumentsBackendModule extends BackendModule {
   }
 
   public function getNewEntryActionParams() {
-    return array('action' => $this->link('new', array('selected_document_kind' => $this->sDocumentKind, 'selected_document_category_id' => $this->sDocumentCategory)));
+    return array('action' => $this->link('new', array('selected_document_kind' => $this->sDocumentKind, 'selected_document_category_id' => $this->sDocumentCategoryId)));
   }
 
   public function hasSearch() {
