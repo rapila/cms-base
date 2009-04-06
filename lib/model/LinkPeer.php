@@ -77,7 +77,7 @@ class LinkPeer extends BaseLinkPeer {
 	    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sName%", Criteria::LIKE));
       $oCriteria->add($oSearchCriterion);
     }
-    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sOrderfield)
+    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sOrderfield);
     return $oCriteria;
   }
   
