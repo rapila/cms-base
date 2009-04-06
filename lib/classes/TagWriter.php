@@ -77,6 +77,29 @@ class TagWriter {
     $oTagWriter = new TagWriter($sTagName, $aParameters, $sContent);
     return $oTagWriter->parse();
   }
+
+  public static function getEmailLinkWriter($sLinkUrl, $sText=null) {
+    if($sText === null) {
+      $sText = StringPeer::getString("email");
+    } else if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
+      $sText = str_replace("@", " [at] ", $sText);
+    }
+
+    if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
+      $sLinkUrl = str_replace("@", "^", $sLinkUrl);
+      $sLinkUrl = str_replace(".", "!", $sLinkUrl);
+    } else {
+      $sLinkUrl = "mailto:".$sLinkUrl;
+    }
+
+    $oWriter = new TagWriter("a", array('class' => 'mailto_link', 'href' => $sLinkUrl), $sText);
+
+    return $oWriter;
+  }
+
+  public static function writeEmailLink($sLinkUrl, $sText) {
+    return self::getEmailLinkWriter($sLinkUrl, $sText)->parse();
+  }
   
 /**
  * optionsFromArray
