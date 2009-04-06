@@ -671,7 +671,7 @@ class Util {
   }
 
   public static function getHostName() {
-    return Settings::getSetting('domain_holder', 'name', 'Sitename');
+    return Settings::getSetting('domain_holder', 'name', $_SERVER['HTTP_HOST']);
   }
 
   public static function getBackendLanguages() {
