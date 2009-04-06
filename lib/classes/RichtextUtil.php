@@ -140,7 +140,7 @@ class RichtextUtil {
   public static function mailtoLinkCallback($oIdentifier) {
     $sLinkUrl = $oIdentifier->getValue();
     $sText = $oIdentifier->getParameter("link_text");
-    $oWriter = Util::getEmailLinkWriter($sLinkUrl, $sText);
+    $oWriter = TagWriter::getEmailLinkWriter($sLinkUrl, $sText);
     return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
   }
   
