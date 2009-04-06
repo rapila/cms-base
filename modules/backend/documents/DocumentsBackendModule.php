@@ -121,7 +121,7 @@ class DocumentsBackendModule extends BackendModule {
     } elseif ($this->oDocument === null) {
       $oTemplate = $this->constructTemplate("module_info");
       
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('documents', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('documents/new', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
       $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_upload'), null, Template::NO_HTML_ESCAPE);
       $oTemplate->replaceIdentifier("document_types", Util::array2HtmlList(DocumentTypePeer::getDocumentTypesList()), null, Template::NO_HTML_ESCAPE);
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
