@@ -147,7 +147,7 @@ class ResourceFinder {
       $sPathExpression = '/^'.preg_quote($sPathExpression, '/').'$/';
     }
     
-    foreach(Util::getFolderContents($sPath) as $sFileName => $sFilePath) {
+    foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
       if(preg_match($sPathExpression, $sFileName) !== 0) {
         $sNextRelativePath = $sFileName;
         if($sRelativePath !== null) {
