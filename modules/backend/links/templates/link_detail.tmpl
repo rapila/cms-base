@@ -1,19 +1,23 @@
 <h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-<fieldset><legend>{{writeString=link}} "{{name}}" [id:{{id}}]</legend>
+<fieldset class="highlight_group"><legend>{{writeString=link}} "{{name}}" [id:{{id}}]</legend>
 <form action="{{action}}" method="post">
-  <label for="name">{{writeString=name}}</label>
-  <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
-  <label for="url">{{writeString=url}}</label>
-  <input type="text" id="url" name="url" value="{{url}}" /><br />{{writeFlashValue=url}}
-  <label for="description">{{writeString=description}}</label>
-  <textarea rows="2" cols="30" name="description" id="description">{{description}}</textarea>{{identifierContext=start;name=owner}}
- {{identifierContext=start;name=owner}}<label>Owner</label>
-  <div>{{owner}}
-</div>{{identifierContext=end;name=owner}}<br />
-  <br />
-  <label></label><button type="submit" title="{{writeString=save}}"></button>
+  <fieldset class="divider">
+    <label for="name">{{writeString=name}}</label>
+    <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
+    <label for="url">{{writeString=url}}</label>
+    <input type="text" id="url" name="url" value="{{url}}" /><br />{{writeFlashValue=url}}
+    <label for="description">{{writeString=description}}</label>
+    <textarea rows="2" cols="30" name="description" id="description">{{description}}</textarea>{{identifierContext=start;name=owner}}
+   {{identifierContext=start;name=owner}}<label>Owner</label>
+    <div style="padding-top:0.3em;">{{owner}}
+  </div>{{identifierContext=end;name=owner}}<br />
+  </fieldset>
+  <fieldset class="divider nolegend">
+    <label>{{writeString=save}}</label><button type="submit" title="{{writeString=save}}"></button>
+  </fieldset>
 </form>
-{{writeFlashValue=url}}
+{{identifierContext=start;name=delete_button}}<fieldset class="divider">
 {{delete_button}}
+</fieldset>{{identifierContext=end;name=delete_button}}
 </fieldset>
 {{identifierContext=start;name=references}}<fieldset><legend>{{writeString=reference.existing_references}}</legend><p class="show_image">{{references}}</p></fieldset>{{identifierContext=end;name=references}}

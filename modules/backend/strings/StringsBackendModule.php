@@ -50,9 +50,15 @@ class StringsBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->oString === null) {
-      return;
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('strings', null, array('action' => 'create'))), StringPeer::getString('strings.create')));
+      $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
+      $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
+      return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("string_detail");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => Util::link('strings', null, array('get_module_info' => 'true')))));
+    
     if(Manager::isPost()) {
       $this->oString->setStringKey($_REQUEST['id']);
       $this->oString->setText($_REQUEST['text']);
