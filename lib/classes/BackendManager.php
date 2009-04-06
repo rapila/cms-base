@@ -42,7 +42,7 @@ class BackendManager extends Manager {
     if(Session::getSession()->getUser()->getLanguageId() != null) {
       Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
     } else {
-      if(!in_array(Session::language(), Util::getBackendLanguages())) {
+      if(!in_array(Session::language(), LanguagePeer::getBackendLanguages())) {
         Session::getSession()->setLanguage("de");
       }
     }

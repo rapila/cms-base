@@ -202,5 +202,24 @@ class TagWriter {
     }
     return $oTemplate;
   }
+
+  public static function tableFromArray($aParams, $sClassName='doc_types') {
+    if(count($aParams) === 0) return;
+    $sOutput = "<table class=\"".Template::htmlEncode($sClassName)."\">".PHP_EOL;
+    $sOutput .= "\t<tr class=\"header\">".PHP_EOL;
+    foreach($aParams[0] as $sKey => $sValue) {
+      $sOutput .= "\t\t<td>". Template::htmlEncode($sKey) . "</td>".PHP_EOL;
+    }
+    $sOutput .= "\t</tr>".PHP_EOL;
+    foreach($aParams as $aValues) {
+      $sOutput .= "\t<tr>".PHP_EOL;
+      foreach($aValues as $sValue) {
+        $sOutput .= "\t\t<td>". Template::htmlEncode($sValue) . "</td>".PHP_EOL;
+      }
+      $sOutput .= "\t</tr>".PHP_EOL;
+    }
+    $sOutput .= "</table>".PHP_EOL;
+    return new Template($sOutput, null, true);
+  }
 }
 ?>

@@ -124,14 +124,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     $oDocumentType->save();
   }
   
-  public static function getDocumentTypesList($bIsOfficeDocType = null) {
-    $aResult = array();
-    foreach(self::getDocumentTypesByCategory($bIsOfficeDocType) as $oDocumentType) {
-      $aResult[] = array('extension' => $oDocumentType->getExtension(), 'mimetype' => $oDocumentType->getMimetype(), 'office_use' => ($oDocumentType->getIsOfficeDoc() ? 'x' : ''));
-    }
-    return $aResult;
-  }
-  
   public static function getDocumentTypesByCategory($bIsOfficeDocType = null) {
     $oCriteria = new Criteria();
     if (is_bool($bIsOfficeDocType)) {

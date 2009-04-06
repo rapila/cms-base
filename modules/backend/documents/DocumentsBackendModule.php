@@ -123,7 +123,11 @@ class DocumentsBackendModule extends BackendModule {
       
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => Util::link('documents/new', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
       $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_upload'), null, Template::NO_HTML_ESCAPE);
-      $oTemplate->replaceIdentifier("document_types", Util::array2HtmlList(DocumentTypePeer::getDocumentTypesList()), null, Template::NO_HTML_ESCAPE);
+      $aDocumentTypesList = array();
+      foreach(DocumentTypePeer::getDocumentTypesByCategory() as $oDocumentType) {
+        $aDocumentTypesList[] = array('extension' => $oDocumentType->getExtension(), 'mimetype' => $oDocumentType->getMimetype(), 'office_use' => ($oDocumentType->getIsOfficeDoc() ? '✔' : '✗'));
+      }
+      $oTemplate->replaceIdentifier("document_types", TagWriter::tableFromArray($aDocumentTypesList));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       

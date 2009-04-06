@@ -377,25 +377,6 @@ class Util {
     return $sParameters;
   }
 
-  public static function array2HtmlList($aParams, $sClassName='doc_types') {
-    if(count($aParams) === 0) return;
-    $sOutput = "<table class=\"".$sClassName."\">".PHP_EOL;
-    $sOutput .= "\t<tr class=\"header\">".PHP_EOL;
-    foreach($aParams[0] as $sKey => $sValue) {
-      $sOutput .= "\t\t<td>". $sKey . "</td>".PHP_EOL;
-    }
-    $sOutput .= "\t</tr>".PHP_EOL;
-    foreach($aParams as $aValues) {
-      $sOutput .= "\t<tr>".PHP_EOL;
-      foreach($aValues as $sValue) {
-        $sOutput .= "\t\t<td>". $sValue . "</td>".PHP_EOL;
-      }
-      $sOutput .= "\t</tr>".PHP_EOL;
-    }
-    $sOutput .= "</table>".PHP_EOL;
-    return $sOutput;
-  }
-
   //Gets the user's locale for the current language
   public static function getLocaleId($sLanguageId = null) {
     if($sLanguageId === null) {
@@ -528,15 +509,6 @@ class Util {
 
   public static function getHostName() {
     return Settings::getSetting('domain_holder', 'name', $_SERVER['HTTP_HOST']);
-  }
-
-  public static function getBackendLanguages() {
-    $aLanguages = array();
-    foreach(self::getFolderContents(MAIN_DIR.'/resources/lang/') as $sLanguage => $sPath) {
-      $sName = substr($sLanguage, 0, 2);
-      $aLanguages[] = $sName;
-    }
-    return $aLanguages;
   }
 
   public static function addSortColumn($oCriteria, $sSortColumn, $sSortOrder = 'asc') {
