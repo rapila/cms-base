@@ -173,7 +173,7 @@ class BackendManager extends Manager {
       }
     }
     $this->oTemplate->replaceIdentifier("site_select_class", $sSelected != '' ? 'active_select' : '');
-    $this->oTemplate->replaceIdentifier("available_site_links", Util::optionsFromArray($aSelectOptions, $sSelected));
+    $this->oTemplate->replaceIdentifier("available_site_links", TagWriter::optionsFromArray($aSelectOptions, $sSelected));
     
     $aAdminOptions = array('' => '-------');
     $sSelected = '';
@@ -188,12 +188,12 @@ class BackendManager extends Manager {
     }
     if(count($aAdminOptions) > 1) {
       $this->oTemplate->replaceIdentifier("admin_select_class", $sSelected != '' ? 'active_select' : '');
-      $this->oTemplate->replaceIdentifier("available_admin_links", Util::optionsFromArray($aAdminOptions, $sSelected));
+      $this->oTemplate->replaceIdentifier("available_admin_links", TagWriter::optionsFromArray($aAdminOptions, $sSelected));
     }
     $this->oTemplate->replaceIdentifier("page_url", Util::link(Manager::getUsedPath(), null, array(), false));
 
     if(!Manager::isPost()) {
-      $this->oTemplate->replaceIdentifier("available_language_options", Util::optionsFromArray(LanguagePeer::getLanguagesAssoc(), self::getContentEditLanguage(), '', array()));
+      $this->oTemplate->replaceIdentifier("available_language_options", TagWriter::optionsFromArray(LanguagePeer::getLanguagesAssoc(), self::getContentEditLanguage(), '', array()));
       foreach(array_diff_assoc($_REQUEST, $_COOKIE) as $sName=>$sValue) {
         if($sName === 'path' || $sName === 'content_language') {
           continue;
@@ -209,7 +209,7 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("static_language", LanguagePeer::retrieveByPk(self::getContentEditLanguage())->getLanguageName());
     }
     
-    $this->oTemplate->replaceIdentifier("domain_name", Util::getHostName());
+    $this->oTemplate->replaceIdentifier("domain_name", Settings::getSetting('domain_holder', 'name', 'Sitename'));
     $sUserName = (Session::getSession()->getUser() !== null && trim(Session::getSession()->getUser()->getFullName()) != '') ? Session::getSession()->getUser()->getFullName() : Session::getSession()->getUser()->getUsername();
     $sUserName = Session::getSession()->getUser() ? $sUserName: 'Hans Muster';
     $this->oTemplate->replaceIdentifier('user_name', $sUserName);

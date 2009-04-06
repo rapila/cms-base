@@ -19,8 +19,8 @@ class FormFrontendModule extends DynamicFrontendModule {
   public function renderBackend() {
     $oFormStorage = $this->getFormStorage();
     $oTemplate = $this->constructTemplate('backend');
-    $oTemplate->replaceIdentifier('request_methods', Util::optionsFromArray(Util::arrayWithValuesAsKeys(array('post', 'get')), $oFormStorage->getRequestMethod(), "", array()));
-    $oTemplate->replaceIdentifier('form_types', Util::optionsFromArray(array('email' => StringPeer::getString('form_type.email'), 'external' => StringPeer::getString('form_type.external'), 'manager' => StringPeer::getString('form_type.manager')), $oFormStorage->getFormType(), "", array()));
+    $oTemplate->replaceIdentifier('request_methods', TagWriter::optionsFromArray(Util::arrayWithValuesAsKeys(array('post', 'get')), $oFormStorage->getRequestMethod(), "", array()));
+    $oTemplate->replaceIdentifier('form_types', TagWriter::optionsFromArray(array('email' => StringPeer::getString('form_type.email'), 'external' => StringPeer::getString('form_type.external'), 'manager' => StringPeer::getString('form_type.manager')), $oFormStorage->getFormType(), "", array()));
     foreach($oFormStorage->getFormObjects() as $iKey => $oFormObject) {
       $oObjectTemplate = $this->constructTemplate('backend_form_field');
       $oObjectTemplate->replaceIdentifier('field_name', $oFormObject->getName());
@@ -29,15 +29,15 @@ class FormFrontendModule extends DynamicFrontendModule {
       $oObjectTemplate->replaceIdentifier('class_name', $oFormObject->getClassName());
       $oObjectTemplate->replaceIdentifier('is_required_checked', $oFormObject->isRequired() ? ' checked="checked"' : '', null, Template::NO_HTML_ESCAPE);
       $oObjectTemplate->replaceIdentifier('sequence_id', $iKey);
-      $oObjectTemplate->replaceIdentifier('available_types', Util::optionsFromArray(Util::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), $oFormObject->getType(), "", array()));
+      $oObjectTemplate->replaceIdentifier('available_types', TagWriter::optionsFromArray(Util::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), $oFormObject->getType(), "", array()));
       $oTemplate->replaceIdentifierMultiple('form_fields', $oObjectTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
     $oTemplate->replaceIdentifier('form_id', $this->iId);
     $oTemplate->replaceIdentifier('form_action', $oFormStorage->getFormOption('form_action'));
     $oTemplate->replaceIdentifier('email_address', $oFormStorage->getFormOption('email_address'));
     $oTemplate->replaceIdentifier('template_addition', $oFormStorage->getFormOption('template_addition'));
-    $oTemplate->replaceIdentifier('manager', Util::optionsFromArray(Util::arrayWithValuesAsKeys(Manager::listManagers()), $oFormStorage->getFormOption('manager')));
-    $oTemplate->replaceIdentifier('available_types', Util::optionsFromArray(Util::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), null, "", array()));
+    $oTemplate->replaceIdentifier('manager', TagWriter::optionsFromArray(Util::arrayWithValuesAsKeys(Manager::listManagers()), $oFormStorage->getFormOption('manager')));
+    $oTemplate->replaceIdentifier('available_types', TagWriter::optionsFromArray(Util::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), null, "", array()));
     return $oTemplate;
   }
   

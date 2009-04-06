@@ -40,7 +40,7 @@ class UsersBackendModule extends BackendModule {
         $aUsers = UserPeer::getFrontendUsers($sSearch);
       }
       if($aUserOptions = UserPeer::getUserOptions()) {
-        $oTemplate->replaceIdentifier("user_options", Util::optionsFromArray($aUserOptions, $this->iUserKind, null, array()));
+        $oTemplate->replaceIdentifier("user_options", TagWriter::optionsFromArray($aUserOptions, $this->iUserKind, null, array()));
       }
     } elseif($this->oUser && Util::equals($this->oUser, Session::getSession()->getUser())) {
       $aUsers = array($this->oUser);
@@ -77,7 +77,7 @@ class UsersBackendModule extends BackendModule {
         $aLanguages[$sLanguageId] = StringPeer::getString('language.'.$sLanguageId);
       }
     }
-    $aUserLanguageOptions = Util::optionsFromArray($aLanguages, $this->oUser->getLanguageId(), null, false);
+    $aUserLanguageOptions = TagWriter::optionsFromArray($aLanguages, $this->oUser->getLanguageId(), null, false);
     $oTemplate->replaceIdentifier("user_language_options", $aUserLanguageOptions);
     $sChecked = ' checked="checked"';
 
@@ -112,7 +112,7 @@ class UsersBackendModule extends BackendModule {
       $aGroups = GroupPeer::doSelect(new Criteria());
       $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? 'yes' : 'no');
       if(count($aGroups) > 0) {
-        $aGroupOptions = Util::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
+        $aGroupOptions = TagWriter::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
       } else {
         $oTemplate->replaceIdentifier("no_groups_message", StringPeer::getString('no_groups_message'));

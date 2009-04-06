@@ -43,7 +43,7 @@ class MysqlDumpLoaderBackendModule extends BackendModule {
 	private function doFromLocalFile() {
     $oTemplate = $this->constructTemplate("local_file");
     $aAllSqlFiles = ResourceFinder::findResourceByExpressions(array(DIRNAME_DATA, "sql", "/.*\.sql/"));
-    $oTemplate->replaceIdentifier("sql_file_select", Util::optionsFromArray(array_flip($aAllSqlFiles)));
+    $oTemplate->replaceIdentifier("sql_file_select", TagWriter::optionsFromArray(array_flip($aAllSqlFiles)));
     return $oTemplate;
 	}
 	

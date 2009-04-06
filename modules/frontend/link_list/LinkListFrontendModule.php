@@ -41,14 +41,14 @@ class LinkListFrontendModule extends DynamicFrontendModule {
     $aOptions = @unserialize($this->getData());
     $aListTags = TagPeer::getTagsUsedInModel('Link');
     $oTemplate = $this->constructTemplate('backend');
-    $oTemplate->replaceIdentifier('tags', Util::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
+    $oTemplate->replaceIdentifier('tags', TagWriter::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
     if(isset($aOptions['tags']) && is_array($aOptions['tags'])) {
       foreach($aOptions['tags'] as $sTagName) {
         $oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('href' => Util::link(array('links'), 'BackendManager', array('selected_tag_name' => $sTagName))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$sTagName.']')));
       }
     }
     $aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
-    $oTemplate->replaceIdentifier('list_templates', Util::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
+    $oTemplate->replaceIdentifier('list_templates', TagWriter::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
     return $oTemplate;
   } 
   

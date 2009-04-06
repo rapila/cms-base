@@ -205,7 +205,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         
         // order by displayName and add choose
         asort($aAllowedItems);
-        $oContainerTemplate->replaceIdentifier("module_name_options", Util::optionsFromArray($aAllowedItems, null, null));
+        $oContainerTemplate->replaceIdentifier("module_name_options", TagWriter::optionsFromArray($aAllowedItems, null, null));
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         
         $aObjects = $this->oPage->getObjectsForContainer($sContainerName);
@@ -309,7 +309,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       $oTemplate->replaceIdentifier("comparison_2", $oIfIdentifier->getParameter('2'));
       $sComparatorValue = $oIfIdentifier->getValue();
     }
-    $oTemplate->replaceIdentifier("comparator_options", Util::optionsFromArray(self::$COMPARISONS, $sComparatorValue, null, null));
+    $oTemplate->replaceIdentifier("comparator_options", TagWriter::optionsFromArray(self::$COMPARISONS, $sComparatorValue, null, null));
     
     // handle revisions select
     if(!$oLanguageObject->isNew() && count($aLanguageObjectRevisions) > 0) {
@@ -319,7 +319,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         $sSelected = (int)$_REQUEST['language_object_revision_id'];
         $sDefaultOptionString = 'revert_to_current';
       } 
-      $oTemplate->replaceIdentifier("language_object_revisions", Util::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array( '' => StringPeer::getString($sDefaultOptionString))));
+      $oTemplate->replaceIdentifier("language_object_revisions", TagWriter::optionsFromObjects($aLanguageObjectRevisions, 'getRevision', 'getName', $sSelected, array( '' => StringPeer::getString($sDefaultOptionString))));
     }
     
     $oTemplate->replaceIdentifier("page_title", $this->oPage->getLinkText());   

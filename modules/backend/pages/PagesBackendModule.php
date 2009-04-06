@@ -101,7 +101,7 @@ class PagesBackendModule extends BackendModule {
       $aOptions[$sTemplateName] = $sTemplateName;
     }
 
-    $oTemplate->replaceIdentifier("template_name_options", Util::optionsFromArray($aOptions, $this->oPage->getTemplateName() === null ? "" : $this->oPage->getTemplateName(), null, array('' => StringPeer::getString('default'))));
+    $oTemplate->replaceIdentifier("template_name_options", TagWriter::optionsFromArray($aOptions, $this->oPage->getTemplateName() === null ? "" : $this->oPage->getTemplateName(), null, array('' => StringPeer::getString('default'))));
     
     $aPageTypeOptions = Module::listModulesByType(PageTypeModule::getType());
     $sPageType = $this->oPage->getPageType() !== null ? $this->oPage->getPageType() : 'default';
@@ -110,7 +110,7 @@ class PagesBackendModule extends BackendModule {
     foreach($aPageTypeOptions as $sKey => $aValues) {
       $aPageTypeOptions[$sKey] = isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name'];
     }
-    $oTemplate->replaceIdentifier("page_type_options", Util::optionsFromArray($aPageTypeOptions, $sPageType, null, array()));
+    $oTemplate->replaceIdentifier("page_type_options", TagWriter::optionsFromArray($aPageTypeOptions, $sPageType, null, array()));
     
     $aSortSelect = array();
     if($this->oPage->getId() !== null){
@@ -138,7 +138,7 @@ class PagesBackendModule extends BackendModule {
         }
       } 
       if(!$this->oPage->isNew() && $bNeedsSortSelect) {
-        $aSortSelect = Util::optionsFromArray($aSortSelect, $this->oPage->getSort(), null, false);
+        $aSortSelect = TagWriter::optionsFromArray($aSortSelect, $this->oPage->getSort(), null, false);
       }
       // only Session users who mayEditPageDetails of parent of current page may change the sort value
       $oTemplate->replaceIdentifier("sort_option_disabled", (Session::getSession()->getUser()->mayEditPageDetails($this->oPage->getParent()) ? '' : ' disabled="disabled"'), null, Template::NO_HTML_ESCAPE);
@@ -174,7 +174,7 @@ class PagesBackendModule extends BackendModule {
             $aDeleteOptions[self::ON_DELETE_CHILDREN_INHERIT] = "vererben!";
             $aDeleteOptions[self::ON_DELETE_CHILDREN_DELETE]  = "ganzer Ast löschen!";
             if($this->oPage->hasChildren()) { 
-              $oDeleteTemplate->replaceIdentifier("options_delete_what", Util::optionsFromArray($aDeleteOptions, self::ON_DELETE_CHILDREN_INHERIT,null, array()), null, Template::NO_HTML_ESCAPE);          
+              $oDeleteTemplate->replaceIdentifier("options_delete_what", TagWriter::optionsFromArray($aDeleteOptions, self::ON_DELETE_CHILDREN_INHERIT,null, array()), null, Template::NO_HTML_ESCAPE);          
             }
           }
         }
@@ -201,7 +201,7 @@ class PagesBackendModule extends BackendModule {
     // only Session users who are admin or mayEditPageDetails of all the pages may change the parent_id
     $oTemplate->replaceIdentifier("parent_id_option_disabled", (Session::getSession()->getUser()->mayEditPageDetails(PagePeer::getRootPage()) ? '' : ' disabled="disabled"'), null, Template::NO_HTML_ESCAPE);
 
-    $oTemplate->replaceIdentifier("parent_id_options", Util::optionsFromArray($aPagesForParentSelect, $this->oPage->getParentId(), '_', false));
+    $oTemplate->replaceIdentifier("parent_id_options", TagWriter::optionsFromArray($aPagesForParentSelect, $this->oPage->getParentId(), '_', false));
     $oTemplate->replaceIdentifier("lang", Session::getSession()->getLanguage());
     $sIsInactive = $this->oPage->getIsInactive() === true ? 'checked="checked"' :'';
     $oTemplate->replaceIdentifier("status_is_inactive", $this->oPage->getIsInactive() ? ' inactive' : ' active', null, Template::NO_HTML_ESCAPE);
@@ -637,7 +637,7 @@ class PagesBackendModule extends BackendModule {
       $bShowSelect = false;
     }
     if($bShowSelect) {
-      $sSelect = TagWriter::QuickTag('select', array('name' => 'parent_id'), Util::optionsFromArray($aOptionsArray, $iParentId, null, array()));
+      $sSelect = TagWriter::QuickTag('select', array('name' => 'parent_id'), TagWriter::optionsFromArray($aOptionsArray, $iParentId, null, array()));
       return array('action' => $this->link(), 'custom' => $sSelect);
     }
   }

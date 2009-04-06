@@ -31,7 +31,7 @@ class StringsBackendModule extends BackendModule {
     
     $aNamespaceOptions = null;
     if (count($aNamespaces) > 0) {
-      $aNamespaceOptions =  Util::optionsFromArray($aNamespaces, $this->sNameSpace, null, array('' => StringPeer::getString('all_entries'), '0' => StringPeer::getString('strings.without_namespace')));
+      $aNamespaceOptions =  TagWriter::optionsFromArray($aNamespaces, $this->sNameSpace, null, array('' => StringPeer::getString('all_entries'), '0' => StringPeer::getString('strings.without_namespace')));
     } 
     $oTemplate->replaceIdentifier("namespace_options", $aNamespaceOptions);
     $oStringTemplatePrototype = $this->constructTemplate("string_list_item");

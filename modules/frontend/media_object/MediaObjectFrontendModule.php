@@ -96,7 +96,7 @@ class MediaObjectFrontendModule extends FrontendModule {
   }
   
   private function replaceDocumentOptions($oTemplate, $iSelectedId = null) {
-    $oTemplate->replaceIdentifier("available_documents", Util::optionsFromObjects(DocumentPeer::getDocumentsByKindAndCategory(), "getId", "getNameAndExtension", $iSelectedId));
+    $oTemplate->replaceIdentifier("available_documents", TagWriter::optionsFromObjects(DocumentPeer::getDocumentsByKindAndCategory(), "getId", "getNameAndExtension", $iSelectedId));
   }
 }
 ?>

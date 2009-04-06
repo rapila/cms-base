@@ -67,7 +67,7 @@ class DocumentsBackendModule extends BackendModule {
     $aDocumentCategoryOptions = null;
     $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
     if(count($aDocumentCategories) > 0) {
-      $aDocumentCategoryOptions =  Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategoryId, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
+      $aDocumentCategoryOptions =  TagWriter::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategoryId, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
     } else {
       //Clear document category
       $this->sDocumentCategoryId = DocumentPeer::ALL_CATEGORIES;
@@ -93,7 +93,7 @@ class DocumentsBackendModule extends BackendModule {
     
     // selected_document_kind_options are only displayed if there are any documents
     $aDocumentKindOptions = null;
-    $aDocumentKindOptions =  Util::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(DocumentPeer::ALL_KINDS => StringPeer::getString('document.all_kinds')));
+    $aDocumentKindOptions =  TagWriter::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(DocumentPeer::ALL_KINDS => StringPeer::getString('document.all_kinds')));
     $oTemplate->replaceIdentifier("selected_document_kind_options", $aDocumentKindOptions);
     $oLinkTemplatePrototype = $this->constructTemplate("document_list_item");
 
@@ -148,11 +148,11 @@ class DocumentsBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("is_protected_checked", ($this->oDocument->getIsProtected() ? ' checked="checked"' : ''), null, Template::NO_HTML_ESCAPE);
 
       if(Settings::getSetting('general', 'multilingual', false)) {
-        $oTemplate->replaceIdentifier("available_language_options", Util::optionsFromArray(LanguagePeer::getLanguagesAssoc(), $this->oDocument->getLanguageId(), '', array("" => StringPeer::getString("international"))));
+        $oTemplate->replaceIdentifier("available_language_options", TagWriter::optionsFromArray(LanguagePeer::getLanguagesAssoc(), $this->oDocument->getLanguageId(), '', array("" => StringPeer::getString("international"))));
       }
 
       if(DocumentCategoryPeer::hasDocumentCategories()) {
-        $oTemplate->replaceIdentifier("doc_category_options", Util::optionsFromObjects(DocumentCategoryPeer::getDocumentCategories(), 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
+        $oTemplate->replaceIdentifier("doc_category_options", TagWriter::optionsFromObjects(DocumentCategoryPeer::getDocumentCategories(), 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
       }
 
       if(!$this->oDocument->isNew()) {

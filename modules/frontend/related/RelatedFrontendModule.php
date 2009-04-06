@@ -43,7 +43,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           $oItemTemplate->replaceIdentifier("mimetype", $oCorrespondingDocument->getMimetype());
           $oItemTemplate->replaceIdentifier("url", $oCorrespondingDocument->getLink());
           $oItemTemplate->replaceIdentifier('category_id', $oCorrespondingDocument->getDocumentCategoryId());
-          $oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oCorrespondingDocument->getDataSize(), 'kb'));
+          $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oCorrespondingDocument->getDataSize(), 'kb'));
           $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
       }
@@ -108,8 +108,8 @@ class RelatedFrontendModule extends DynamicFrontendModule {
     foreach(self::$LIST_TYPES as $sName) {
       $aListTypes[$sName] = StringPeer::getString('module.backend.'.$sName);
     }
-    $oTemplate->replaceIdentifier("type_options", Util::optionsFromArray($aListTypes, $aData['types'], null, null));
-    $oTemplate->replaceIdentifier("template_options", Util::optionsFromArray(BackendManager::getSiteTemplatesForListOutput(), $aData['template']));
+    $oTemplate->replaceIdentifier("type_options", TagWriter::optionsFromArray($aListTypes, $aData['types'], null, null));
+    $oTemplate->replaceIdentifier("template_options", TagWriter::optionsFromArray(BackendManager::getSiteTemplatesForListOutput(), $aData['template']));
     
     return $oTemplate;
   }

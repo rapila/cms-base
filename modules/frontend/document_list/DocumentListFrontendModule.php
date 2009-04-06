@@ -29,7 +29,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
         $oItemTemplate->replaceIdentifier('mimetype', $oDocument->getMimetype());
         $oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
         $oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
-        $oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'kb'));
+        $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oDocument->getDataSize(), 'kb'));
         $oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
       }
     } catch(Exception $e) {
@@ -43,7 +43,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
     $aOptions = @unserialize($this->getData());
     $aDocumentCategories = DocumentCategoryPeer::doSelect(new Criteria());
     $oTemplate = $this->constructTemplate('backend');
-    $oTemplate->replaceIdentifier('categories', Util::optionsFromObjects($aDocumentCategories, 'getId', 'getName', @$aOptions['categories'], false));
+    $oTemplate->replaceIdentifier('categories', TagWriter::optionsFromObjects($aDocumentCategories, 'getId', 'getName', @$aOptions['categories'], false));
     
     if(isset($aOptions['categories']) && is_array($aOptions['categories'])) {
       foreach($aOptions['categories'] as $sCategoryId) {
@@ -51,7 +51,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
       }
     }
     $aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
-    $oTemplate->replaceIdentifier('list_templates', Util::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
+    $oTemplate->replaceIdentifier('list_templates', TagWriter::optionsFromArray($aListTemplates, @$aOptions['list_template'], false));
     return $oTemplate;
   } 
   

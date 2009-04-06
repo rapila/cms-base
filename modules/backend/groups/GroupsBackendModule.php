@@ -56,7 +56,7 @@ class GroupsBackendModule extends BackendModule {
     $aPages = PagePeer::getRootPage()->getTree(true);
     foreach($aRights as $oRight) {
       $oRightTemplate = $this->constructTemplate("group_rights");
-      $oRightTemplate->replaceIdentifier("options_pages", Util::optionsFromArray($aPages, $oRight->getPageId()));
+      $oRightTemplate->replaceIdentifier("options_pages", TagWriter::optionsFromArray($aPages, $oRight->getPageId()));
       $oRightTemplate->replaceIdentifier("right_id", $oRight->getId());
       $oRightTemplate->replaceIdentifier("may_edit_page_details", $oRight->getMayEditPageDetails() ? ' checked="checked"' : '', null, Template::NO_HTML_ESCAPE);
       $oRightTemplate->replaceIdentifier("may_edit_page_contents", $oRight->getMayEditPageContents() ? ' checked="checked"' : '', null, Template::NO_HTML_ESCAPE);
@@ -70,7 +70,7 @@ class GroupsBackendModule extends BackendModule {
     
     //Clone area (prototype)
     $oRightTemplate = $this->constructTemplate("group_rights");
-    $oRightTemplate->replaceIdentifier("options_pages", Util::optionsFromArray($aPages));
+    $oRightTemplate->replaceIdentifier("options_pages", TagWriter::optionsFromArray($aPages));
     $oRightTemplate->replaceIdentifier("right_id", "new_");
     $oTemplate->replaceIdentifierMultiple("group_right", $oRightTemplate);
 

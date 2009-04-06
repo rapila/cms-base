@@ -48,9 +48,9 @@ class LinksBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate();
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
-    $oTemplate->replaceIdentifier("selected_tag_names_options", Util::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
+    $oTemplate->replaceIdentifier("selected_tag_names_options", TagWriter::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
 
-    $oTemplate->replaceIdentifier("selected_protocol_options", Util::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(self::SELECTED_PROTOCOL_ALL => StringPeer::getString('links.all_protocols'))));
+    $oTemplate->replaceIdentifier("selected_protocol_options", TagWriter::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(self::SELECTED_PROTOCOL_ALL => StringPeer::getString('links.all_protocols'))));
     
     // fix SELECTED_TAG_WITHOUT for criteria
     if($this->sSelectedTagName === self::SELECTED_TAG_WITHOUT || $this->sSelectedTagName === self::SELECTED_TAG_NONE) {

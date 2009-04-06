@@ -39,7 +39,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
   public function renderBackend() {
     $aOptions = @unserialize($this->getData());
     $oTemplate = $this->constructTemplate('backend');
-    $oTemplate->replaceIdentifier('login_types', Util::optionsFromArray(Util::arrayWithValuesAsKeys(self::$ACTIONS), @$aOptions['login_type'], false, array()));
+    $oTemplate->replaceIdentifier('login_types', TagWriter::optionsFromArray(Util::arrayWithValuesAsKeys(self::$ACTIONS), @$aOptions['login_type'], false, array()));
     return $oTemplate;
   }
 
