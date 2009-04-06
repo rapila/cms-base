@@ -539,8 +539,14 @@ class Util {
     return $aLanguages;
   }
 
-  public static function getPropelSortMethodName($sSortOrder = 'asc') {
-    return 'add'.ucfirst(strtolower($sSortOrder)).'endingOrderByColumn';
+  public static function addSortColumn($oCriteria, $sSortColumn, $sSortOrder = 'asc') {
+    if($sSortOrder === true) {
+      $sSortOrder = 'asc';
+    } else if($sSortOrder === false) {
+      $sSortOrder = 'desc';
+    }
+    $sMethod = 'add'.ucfirst(strtolower($sSortOrder)).'endingOrderByColumn';
+    $oCriteria->$sMethod($sSortColumn);
   }
 
   public static function getUrlWithProtocolIfNotSet($sUrl) {

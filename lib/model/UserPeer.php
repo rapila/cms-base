@@ -131,8 +131,7 @@ class UserPeer extends BaseUserPeer {
     if ($iUserId !== null) {
       $oCriteria->add(UserPeer::ID, $iUserId);
     }
-    $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
-    $oCriteria->$sSortMethodName(constant('UserPeer::'.strtoupper($sSortField)));
+    Util::addSortColumn($oCriteria, constant('UserPeer::'.strtoupper($sSortField)), $sSortOrder);
     if($sSortField != 'last_name') {
       $oCriteria->addAscendingOrderByColumn(UserPeer::LAST_NAME);
     }

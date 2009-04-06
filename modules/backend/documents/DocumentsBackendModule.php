@@ -100,7 +100,7 @@ class DocumentsBackendModule extends BackendModule {
     foreach($aDocuments as $oDocument) {
       $oLinkTemplate = clone $oLinkTemplatePrototype;
       $oLinkTemplate->replaceIdentifier("link", $this->link($oDocument->getId()));
-      $oLinkTemplate->replaceIdentifier("name", Util::truncate($oDocument->getName(),29));
+      $oLinkTemplate->replaceIdentifier("name", Util::truncate($oDocument->getName(), 29));
       $oLinkTemplate->replaceIdentifier("doc_type", ' ['.$oDocument->getExtension().']');
       if($this->oDocument && ($this->oDocument->getId() == $oDocument->getId())) {
         $oLinkTemplate->replaceIdentifier('class_active', ' active');
@@ -136,7 +136,7 @@ class DocumentsBackendModule extends BackendModule {
       $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategoryId));
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());
-      $oTemplate->replaceIdentifier("name", $this->oDocument->getName() != '' ? $this->oDocument->getName() : '[Neu]');
+      $oTemplate->replaceIdentifier("name", $this->oDocument->getName() != '' ? $this->oDocument->getName() : null);
       $oTemplate->replaceIdentifier("file_name", $this->oDocument->getName());
       $oTemplate->replaceIdentifier("description", $this->oDocument->getDescription());
       $bHasValidUser = false;

@@ -19,10 +19,8 @@ class LinkPeer extends BaseLinkPeer {
                                         'mailto'=> 'mailto');
   
   public static function getLinksSorted($sOrderField='NAME', $sSortOrder='ASC') {
-    $oCriteria = new Criteria();   
-    $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
-    $sOrderfield = constant("LinkPeer::".strtoupper($sOrderField));
-    $oCriteria->$sSortMethodName($sOrderfield);
+    $oCriteria = new Criteria();
+    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sSortOrder);
     return self::doSelect($oCriteria);
   }
 
@@ -79,9 +77,7 @@ class LinkPeer extends BaseLinkPeer {
 	    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sName%", Criteria::LIKE));
       $oCriteria->add($oSearchCriterion);
     }
-    $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
-    $sOrderfield = constant("LinkPeer::".strtoupper($sOrderField));
-    $oCriteria->$sSortMethodName($sOrderfield);
+    Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sOrderfield)
     return $oCriteria;
   }
   

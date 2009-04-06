@@ -112,7 +112,7 @@ class UsersBackendModule extends BackendModule {
       $aGroups = GroupPeer::doSelect(new Criteria());
       $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? 'yes' : 'no');
       if(count($aGroups) > 0) {
-        $aGroupOptions = TagWriter::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
+        $aGroupOptions = Util::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
       } else {
         $oTemplate->replaceIdentifier("no_groups_message", StringPeer::getString('no_groups_message'));

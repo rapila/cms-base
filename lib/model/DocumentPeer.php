@@ -46,8 +46,7 @@ class DocumentPeer extends BaseDocumentPeer {
       $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
     
-    $sSortMethodName = Util::getPropelSortMethodName($sSortOrder);
-    $oCriteria->$sSortMethodName(constant('self::'.strtoupper($sOrderField)));
+    Util::addSortColumn($oCriteria, constant('self::'.strtoupper($sOrderField)), $sSortOrder);
     if($sOrderField != 'NAME') {
       $oCriteria->addAscendingOrderByColumn(self::NAME);
     }
