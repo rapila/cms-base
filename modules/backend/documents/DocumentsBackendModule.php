@@ -122,7 +122,7 @@ class DocumentsBackendModule extends BackendModule {
       $oTemplate = $this->constructTemplate("module_info");
       
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('documents/new', null, array('action' => 'create'))), StringPeer::getString('documents.create')));
-      $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_upload'), null, Template::NO_HTML_ESCAPE);
+      $oTemplate->replaceIdentifier("default_message", StringPeer::getString('document.choose_or_create'), null, Template::NO_HTML_ESCAPE);
       $aDocumentTypesList = array();
       foreach(DocumentTypePeer::getDocumentTypesByCategory() as $oDocumentType) {
         $aDocumentTypesList[] = array('extension' => $oDocumentType->getExtension(), 'mimetype' => $oDocumentType->getMimetype(), 'office_use' => ($oDocumentType->getIsOfficeDoc() ? '✔' : '✗'));
@@ -187,7 +187,7 @@ class DocumentsBackendModule extends BackendModule {
         }
         $oDeleteTemplate->replaceIdentifier("action", $sActionLink);
         $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete'));
-        $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString($this->mayNotDelete() ? 'no_permission_for_action' : 'document.has_references'));
+        $oDeleteTemplate->replaceIdentifier("message_js", StringPeer::getString($this->mayNotDelete() ? 'user.no_permission_for_action' : 'document.has_references'));
         $oDeleteTemplate->replacePstring($sDeleteItemMessage, array('name' => $this->oDocument->getName()));
         $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
       }

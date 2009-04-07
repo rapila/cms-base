@@ -10,6 +10,6 @@ class StringPeerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals("Tags", StringPeer::getString("module.backend.tags", "de"));
   }
   public function testReplacedTemplateString() {
-    $this->assertEquals("[vor] TEst", StringPeer::getString("sort_before", "de", null, array("name" => "TEst")));
+    $this->assertEquals("[vor] TEst", StringPeer::getString("page.sort_before", "de", null, array("name" => "TEst")));
   }
 }

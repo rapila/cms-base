@@ -60,10 +60,10 @@ class PagesBackendModule extends BackendModule {
       // this action should not happen anyway????
       if(isset($_REQUEST['error404'])) {
         $oTemplate = $this->constructTemplate("error404");
-        $oTemplate->replaceIdentifier("error_message", StringPeer::getString('error404_pages'), null, Template::NO_HTML_ESCAPE);
+        $oTemplate->replaceIdentifier("error_message", StringPeer::getString('page.error_403'), null, Template::NO_HTML_ESCAPE);
       } else {
         $oTemplate = $this->constructTemplate("message", true);
-        $oTemplate->replaceIdentifier("default_message", StringPeer::getString('default_message_pages'), null, Template::NO_HTML_ESCAPE);
+        $oTemplate->replaceIdentifier("default_message", StringPeer::getString('page.choose_or_create'), null, Template::NO_HTML_ESCAPE);
       }
       return $oTemplate;
     }
@@ -124,15 +124,15 @@ class PagesBackendModule extends BackendModule {
         $iKey = 1;
         foreach($aSiblingsForSort as $oSibling) {
           if($oSibling->getSort() === 1 && $oSibling->getSort() < $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_as_first");
+            $aSortSelect[$iKey] = StringPeer::getString("page.sort_as_first");
           } elseif($oSibling->getSort() == count($aSiblingsForSort) && $oSibling->getSort() > $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString('sort_as_last');
+            $aSortSelect[$iKey] = StringPeer::getString('page.sort_as_last');
           } elseif($oSibling->getSort() === $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_none");
+            $aSortSelect[$iKey] = StringPeer::getString("page.sort_none");
           } elseif($oSibling->getSort() > $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_after", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
+            $aSortSelect[$iKey] = StringPeer::getString("page.sort_after", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
           } elseif($oSibling->getSort() < $this->oPage->getSort()) {
-            $aSortSelect[$iKey] = StringPeer::getString("sort_before", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
+            $aSortSelect[$iKey] = StringPeer::getString("page.sort_before", null, null, array("name" => $oSibling->getLinkText(BackendManager::getContentEditLanguage())));
           } 
           $iKey ++;
         }
@@ -234,7 +234,7 @@ class PagesBackendModule extends BackendModule {
       $aPagePropertiyIdentifiers = $oPageTemplate->identifiersMatching("pageProperty", Template::$ANY_VALUE);
      
       if(count($aPagePropertiyIdentifiers) > 0) {
-        $oPropertyTemplate->replaceIdentifier("page_properties_title", StringPeer::getString('page_properties_info'));
+        $oPropertyTemplate->replaceIdentifier("page_properties_title", StringPeer::getString('page.properties_info'));
         foreach($aPagePropertiyIdentifiers as $oPageProperty) {
           $oPagePropertyIdentifierTemplate = $this->constructTemplate("page_property_identifiers");
           $oPagePropertyIdentifierTemplate->replaceIdentifier("property_name", $oPageProperty->getValue());
@@ -242,7 +242,7 @@ class PagesBackendModule extends BackendModule {
           $oPropertyTemplate->replaceIdentifierMultiple("page_property_identifiers", $oPagePropertyIdentifierTemplate);
         }
       } else {
-        $oPropertyTemplate->replaceIdentifier("page_properties_title", StringPeer::getString('page_properties_no_identifiers'));
+        $oPropertyTemplate->replaceIdentifier("page_properties_title", StringPeer::getString('page.properties_no_identifiers'));
       }
       $oTemplate->replaceIdentifier("page_properties", $oPropertyTemplate);
     }

@@ -120,7 +120,7 @@ class FrontendManager extends Manager {
         $oPage = PagePeer::getPageByName($sErrorPageName);
       }
       if($oPage === null) {
-        die(StringPeer::getString('page_not_found'));
+        die(StringPeer::getString('page.not_found'));
       }
       self::setCurrentPage($oPage);
       //Set correct page type of 404 page

@@ -58,7 +58,7 @@ class UsersBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate("user_detail");
     $oTemplate->replaceIdentifier("id", $this->oUser->getId());
     if(Session::getSession()->hasAttribute('change_password')) {
-      $oTemplate->replaceIdentifier("change_password", StringPeer::getString('user_change_password'));
+      $oTemplate->replaceIdentifier("change_password", StringPeer::getString('user.change_password'));
       Session::getSession()->resetAttribute('change_password');
       $this->oUser->setIsAdmin(true);
     }
@@ -115,7 +115,7 @@ class UsersBackendModule extends BackendModule {
         $aGroupOptions = TagWriter::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
       } else {
-        $oTemplate->replaceIdentifier("no_groups_message", StringPeer::getString('no_groups_message'));
+        $oTemplate->replaceIdentifier("user.no_groups_message", StringPeer::getString('user.no_groups_message'));
         $oTemplate->replaceIdentifier("edit_groups_link", TagWriter::quickTag('a', array('href' => LinkUtil::link(array('groups'), "BackendManager", array('action' => "create"))), StringPeer::getString('group.create')));
       }
     }

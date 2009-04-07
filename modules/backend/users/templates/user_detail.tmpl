@@ -14,15 +14,15 @@
     <label for="email">{{writeString=email}}</label>
     <input type="text" name="email" id="email" value="{{email}}" /><br />
   	{{writeFlashValue=email}}
-    <label for="language_id">{{writeString=user_language}}</label>
-    <select id="language_id" name="language_id">{{user_language_options}}</select><br />
+    <label for="language_id">{{writeString=user.language}}</label>
+    <select id="language_id" name="language_id">{{user.language_options}}</select><br />
     {{user_booleans}}
   	{{writeFlashValue=self_is_admin}}
   	{{writeFlashValue=self_is_inactive}}
 	</fieldset>
 	{{identifierContext=start;name=has_groups}}
   <fieldset class="divider"><legend>{{writeString=user.group}}</legend>
-    <input type="text" name="has_groups" value="{{has_groups}}" style="display: none;" /><label for="group_ids">&nbsp;</label>{{identifierContext=start;name=group_options}}<select name="group_ids[]" id="group_ids" multiple="multiple" style="height:auto;">{{group_options}}</select><br/>{{identifierContext=end;name=group_options}}{{identifierContext=start;name=no_groups_message}}<div>{{no_groups_message}}: {{edit_groups_link}}</div>{{identifierContext=end;name=no_groups_message}}
+    <input type="text" name="has_groups" value="{{has_groups}}" style="display: none;" /><label for="group_ids">&nbsp;</label>{{identifierContext=start;name=group_options}}<select name="group_ids[]" id="group_ids" multiple="multiple" style="height:auto;">{{group_options}}</select><br/>{{identifierContext=end;name=group_options}}{{identifierContext=start;name=user.no_groups_message}}<div>{{user.no_groups_message}}: {{edit_groups_link}}</div>{{identifierContext=end;name=user.no_groups_message}}
   </fieldset>{{identifierContext=end;name=has_groups}}
   <fieldset class="divider"><legend class="toggler{{display_class}}">{{password_legend}}</legend>
     <div style="display:{{display_style}};">

@@ -67,7 +67,7 @@ abstract class BackendModule extends Module {
     foreach($aItems as $oItem) {
       $oItemTemplate = $this->constructTemplate("tree_item", true);
       $oItemTemplate->replaceIdentifier("name", Util::nameForObject($oItem));
-      $oItemTemplate->replacePstring('item_title', array("title" => Util::nameForObject($oItem)));
+      $oItemTemplate->replacePstring('edit.item_title', array("title" => Util::nameForObject($oItem)));
       $sClassIsIncative = 'edit';
       if(Util::equals($oCurrentObject, $oItem)) {
         $oItemTemplate->replaceIdentifier("class_active", ' active');

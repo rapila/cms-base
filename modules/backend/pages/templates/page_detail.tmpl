@@ -25,7 +25,7 @@
         <input type="checkbox" name="is_protected" id="is_protected" value="1" {{is_protected}} />
       </div>
       <div id="selectors_container">
-        <label for="sort"{{hide_if_needed}}>{{writeString=sort}}</label>
+        <label for="sort"{{hide_if_needed}}>{{writeString=page.sort}}</label>
         <select {{hide_if_needed}}id="sort" name="sort"{{sort_option_disabled}}>{{sort_options}}</select>
         <label class="helptext" for="page_type" style="float:left;" title="{{writeString=helptext.page_type}}">{{writeString=page.type}}</label>  
         <select id="page_type" name="page_type" style="margin-right:0;">{{page_type_options}}</select>
@@ -40,7 +40,7 @@
     {{page_properties}}    
     <fieldset>
       {{identifierContext=start;name=may_edit_page}}
-      <label for="edit_page">{{writeString=save_page}}</label>
+      <label for="edit_page">{{writeString=page.save}}</label>
       <button type="submit" title="{{writeString=save}}" class="{{may_edit_page}}" name="submit" id="edit_page"></button>
       {{identifierContext=end;name=may_edit_page}}
     </fieldset>
