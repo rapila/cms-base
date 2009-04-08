@@ -16,7 +16,7 @@ class TagsBackendModule extends BackendModule {
   public function getChooser() { 
     $sSearch = isset($_REQUEST['search']) ? trim($_REQUEST['search']) : null;
     $aTags = TagPeer::getTagsSorted($sSearch);
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     
     if($aTags != null) {
       $oTemplate->replaceIdentifier("new_link", $this->link(), Template::NO_HTML_ESCAPE);
@@ -30,7 +30,7 @@ class TagsBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->oTag !== null) {
-      $oTemplate = $this->constructTemplate("tag_detail");
+      $oTemplate = $this->constructTemplate("detail");
       $oTemplate->replaceIdentifier("action", $this->link($this->oTag->getId()));
       $oTemplate->replaceIdentifier("id", $this->oTag->getId());
       $oTemplate->replaceIdentifier("name", $this->oTag->getName());  
