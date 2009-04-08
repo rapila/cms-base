@@ -167,7 +167,7 @@ class PagesBackendModule extends BackendModule {
         $oDeleteTemplate->replaceIdentifier("name", $this->oPage->getPageTitle());
         $oDeleteTemplate->replaceIdentifier("on_action", $sOnAction);
         $oDeleteTemplate->replaceIdentifier("message_js", $sConfirmText);
-        $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete_page_label'));
+        $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('page.delete_label'));
         $aDeleteOptions = array();
         if (Session::getSession()->getUser()->getIsAdmin()) {
           if (Settings::getSetting('backend','delete_pagetree_enable', false)) {
