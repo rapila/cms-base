@@ -1,10 +1,11 @@
 <h1>{{quoteString=\{\{writeString=module.backend.document_categories\}\};alternate=true}} Module Info</h1>
-<fieldset class="divider module_info">
-  <p>{{writeString=document_categories.choose_or_create}}</p>
-  <p>{{create_link}}</p>
-</fieldset>
 <fieldset class="divider module_info"><legend class="toggler{{toggler_style}}">{{writeString=module_info}}</legend>
   <div style="display:{{display_style}};">
   <p>{{writeString=document_categories.info_message}}</p>
   </div>
 </fieldset>
+<fieldset class="divider module_info nolegend">
+  <p>{{writeString=document_categories.choose_or_create}}</p>
+  <p>{{create_link}}</p>
+</fieldset>
+
