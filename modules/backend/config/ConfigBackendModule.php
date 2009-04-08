@@ -21,7 +21,7 @@ class ConfigBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     
     $aResult = array();
     $aConfigFilesInt = ResourceFinder::findResourceByExpressions(array(DIRNAME_CONFIG, "/[\w_-].yml/"), ResourceFinder::SEARCH_BASE_ONLY);

@@ -31,7 +31,7 @@ class CheckBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $this->parseTree($oTemplate, array("pages", "strings", "static strings", "config", "tags", "content"), $this->sCheckName);
     return $oTemplate;
   }

@@ -13,7 +13,7 @@ class DocumentTypesBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $aStrings = DocumentTypePeer::doSelect(new Criteria());
     $this->parseTree($oTemplate, $aStrings, $this->oDocumentType);
     return $oTemplate;

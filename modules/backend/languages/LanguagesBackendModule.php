@@ -13,7 +13,7 @@ class LanguagesBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $aLanguages = LanguagePeer::getLanguages();
     $this->parseTree($oTemplate, $aLanguages, $this->oLanguage);
     return $oTemplate;

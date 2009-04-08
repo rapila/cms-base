@@ -13,7 +13,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $aDocumentCategories = DocumentCategoryPeer::getDocumentCategoriesSorted();
     $this->parseTree($oTemplate, $aDocumentCategories, $this->oDocCategory);
     return $oTemplate;
