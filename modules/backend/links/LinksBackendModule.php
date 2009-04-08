@@ -76,7 +76,7 @@ class LinksBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
       return $oTemplate;
     }
-    $oTemplate = $this->constructTemplate("link_detail");
+    $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('links'))));
     
     if(!$this->oLink->isNew()) {

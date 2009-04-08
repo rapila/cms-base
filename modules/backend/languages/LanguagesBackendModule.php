@@ -24,7 +24,7 @@ class LanguagesBackendModule extends BackendModule {
       return;
     }
     
-    $oTemplate = $this->constructTemplate("language_detail");
+    $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier("id", $this->oLanguage->getId());
     $sIsActive = $this->oLanguage->getIsActive() === true ? 'checked="checked"' :'';
     $oTemplate->replaceIdentifier("sort", $this->oLanguage->getSort());

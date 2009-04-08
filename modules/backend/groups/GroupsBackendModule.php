@@ -36,7 +36,7 @@ class GroupsBackendModule extends BackendModule {
     if($this->oGroup === null) {
       return;
     }
-    $oTemplate = $this->constructTemplate("group_detail");
+    $oTemplate = $this->constructTemplate("detail");
     
     if($this->oGroup->getId() !== null) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);

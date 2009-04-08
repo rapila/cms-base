@@ -23,7 +23,7 @@ class DocumentTypesBackendModule extends BackendModule {
 	  if($this->oDocumentType === null) {
 	    return;
 	  }
-    $oTemplate = $this->constructTemplate("document_type_detail");
+    $oTemplate = $this->constructTemplate("detail");
 	  
 	  if($this->oDocumentType->getId() !== null) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);

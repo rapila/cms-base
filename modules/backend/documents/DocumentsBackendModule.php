@@ -76,7 +76,7 @@ class DocumentsBackendModule extends BackendModule {
     
     $sDocumentName = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategoryId, $this->sSortField, $this->sSortOrder, true, $sDocumentName);
-    $oTemplate = $this->constructTemplate("documents");
+    $oTemplate = $this->constructTemplate("list");
 
     $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
@@ -95,7 +95,7 @@ class DocumentsBackendModule extends BackendModule {
     $aDocumentKindOptions = null;
     $aDocumentKindOptions =  TagWriter::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(DocumentPeer::ALL_KINDS => StringPeer::getString('document.all_kinds')));
     $oTemplate->replaceIdentifier("selected_document_kind_options", $aDocumentKindOptions);
-    $oLinkTemplatePrototype = $this->constructTemplate("document_list_item");
+    $oLinkTemplatePrototype = $this->constructTemplate("list_item");
 
     foreach($aDocuments as $oDocument) {
       $oLinkTemplate = clone $oLinkTemplatePrototype;
@@ -135,7 +135,7 @@ class DocumentsBackendModule extends BackendModule {
     }
 
     if($this->oDocument !== null) {
-      $oTemplate = $this->constructTemplate("document_detail");
+      $oTemplate = $this->constructTemplate("detail");
       $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('documents', null, array('get_module_info' => 'true')))));
       $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategoryId));
       $oTemplate->replaceIdentifier("action", $sActionLink);

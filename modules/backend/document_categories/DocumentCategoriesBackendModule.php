@@ -27,7 +27,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       return $oTemplate;
     }  
-    $oTemplate = $this->constructTemplate("document_category_detail");
+    $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('document_categories', null, array('get_module_info' => 'true')))));
 
     if(!$this->oDocCategory->isNew()) {

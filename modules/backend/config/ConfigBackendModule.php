@@ -49,7 +49,7 @@ class ConfigBackendModule extends BackendModule {
       throw new Exception('something wrong with YAMLload of Configfile '.$this->sFileName);
     }
     
-    $oTemplateConfig = $this->constructTemplate("config_detail");
+    $oTemplateConfig = $this->constructTemplate("detail");
     
     $oTemplateConfig->replaceIdentifier("title", $this->sFileName);
     $oTemplateConfig->replaceIdentifier("action", $this->link($this->sFileName));
