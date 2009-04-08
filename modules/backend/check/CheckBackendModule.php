@@ -27,8 +27,7 @@ class CheckBackendModule extends BackendModule {
     if(Manager::hasNextPathItem()) {
       $this->sCheckName = Manager::usePath();
     }
-    
-    $this->oTemplate = $this->constructTemplate("check_detail");
+    $this->oTemplate = $this->constructTemplate("detail");
   }
   
   public function getChooser() {
