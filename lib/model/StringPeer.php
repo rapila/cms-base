@@ -128,5 +128,5 @@ EOT;
     $oCriteria->addAscendingOrderByColumn(self::STRING_KEY);
     return self::doSelect($oCriteria);
   }
-
+  
 } // StringPeer
