@@ -106,7 +106,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     
     if(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->mayEditPageContents($oContentObject->getPage())) {
       //Print Edit link
-      $sEditImage = TagWriter::quickTag("img", array('src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
+      $sEditImage = TagWriter::quickTag("img", array('class' => 'mini_cms_fe_edit_button', 'src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
       
       $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
       $oTemplate->replaceIdentifierMultiple("container", $oTag);
