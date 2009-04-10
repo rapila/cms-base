@@ -109,4 +109,25 @@ class Util {
     $sMethod = 'add'.ucfirst(strtolower($sSortOrder)).'endingOrderByColumn';
     $oCriteria->$sMethod($sSortColumn);
   }
+  
+    /**
+   * hasBitsSet()
+   *
+   * @param int bitmap of bits to be checked (needle)
+   * @param int bitmap to check against (haystack)
+   * @return bolean, true if _ALL_ bits of needle are set in haystack, false otherwise
+   */
+  public static function hasBitsSet($iBits, $iBitmap) {
+    return (($iBitmap & $iBits) === ($iBits));
+  }
+  
+  public static function bitmapToBitsArray($iBitmap) {
+    $aBitsDissected = array();
+    for ($iBitToCheck = 1; $iBitToCheck <= $iBitmap; $iBitToCheck *= 2) {
+      if (self::hasBitsSet($iBitToCheck, $iBitmap)) {
+        $aBitsDissected[] = $iBitToCheck;
+      }
+    }
+    return $aBitsDissected;
+  }
 }
