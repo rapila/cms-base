@@ -64,9 +64,7 @@ class ContentBackendModule extends BackendModule {
 
   public function getDetail() {
     if($this->oCurrentPage === null) {
-      $oTemplate = $this->constructTemplate("message", true);
-      $oTemplate->replaceIdentifier("default_message", StringPeer::getString('content.choose_or_create'), null, Template::NO_HTML_ESCAPE);
-      return $oTemplate;
+      return $this->constructTemplate('module_info');
     }
     return $this->oPageTypeModule->backendDisplay();
   }

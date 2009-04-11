@@ -50,9 +50,13 @@ class UsersBackendModule extends BackendModule {
   }
 
   public function getDetail() {
-    if($this->oUser === null || 
-        !Session::getSession()->getUser()->mayEditUser($this->oUser)) {
-      return;
+    if($this->oUser === null) {
+      if(!Session::getSession()->getUser()->mayEditUser($this->oUser)) {
+        return;
+      }
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('users', null, array('action' => 'create'))), StringPeer::getString('user.create')));
+      return $oTemplate;
     }
 
     $oTemplate = $this->constructTemplate("detail");
