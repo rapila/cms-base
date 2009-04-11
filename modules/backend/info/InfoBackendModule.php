@@ -8,7 +8,7 @@ class InfoBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $oTemplate->replaceIdentifier("php_version", phpversion());
     foreach(FrontendModule::listModules() as $aModule) {
       $sModuleName = Module::getDisplayNameByTypeAndName($aModule['type'], $aModule['name']);
