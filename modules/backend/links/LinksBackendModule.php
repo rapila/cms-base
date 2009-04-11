@@ -13,7 +13,6 @@ class LinksBackendModule extends BackendModule {
   
   const SELECTED_TAG_NONE = '__null';
   const SELECTED_TAG_WITHOUT = '__without';
-  const SELECTED_PROTOCOL_ALL = '__all';
 
   public function __construct() {
     if(Manager::hasNextPathItem()) {
@@ -35,7 +34,7 @@ class LinksBackendModule extends BackendModule {
     }
     // find by protocol: http, ftp, mailto etc
     if(isset($_REQUEST['selected_protocol'])) {
-      $this->sProtocol = $_REQUEST['selected_protocol'] === self::SELECTED_PROTOCOL_ALL ? null : $_REQUEST['selected_protocol'];
+      $this->sProtocol = $_REQUEST['selected_protocol'] === ListUtil::SELECT_ALL ? null : $_REQUEST['selected_protocol'];
       Session::getSession()->setAttribute('selected_protocol', $this->sProtocol);
     } else {
       $this->sProtocol = Session::getSession()->getAttribute('selected_protocol');
@@ -50,7 +49,7 @@ class LinksBackendModule extends BackendModule {
     $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
     $oTemplate->replaceIdentifier("selected_tag_names_options", TagWriter::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
 
-    $oTemplate->replaceIdentifier("selected_protocol_options", TagWriter::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(self::SELECTED_PROTOCOL_ALL => StringPeer::getString('links.all_protocols'))));
+    $oTemplate->replaceIdentifier("selected_protocol_options", TagWriter::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(ListUtil::SELECT_ALL => StringPeer::getString('links.all_protocols'))));
     
     // fix SELECTED_TAG_WITHOUT for criteria
     if($this->sSelectedTagName === self::SELECTED_TAG_WITHOUT || $this->sSelectedTagName === self::SELECTED_TAG_NONE) {
@@ -64,7 +63,7 @@ class LinksBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
     $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("change_category_action", $this->link());
+    $oTemplate->replaceIdentifier("change_select_action", $this->link());
 
     $this->parseTree($oTemplate, $aLinks, $this->oLink);
     return $oTemplate;

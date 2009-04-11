@@ -12,16 +12,14 @@
  */	
 class DocumentPeer extends BaseDocumentPeer {
   
-  const ALL_CATEGORIES = '__all';
   const WITHOUT_CATEGORY = '__without';
-  const ALL_KINDS = '__all';
   
   public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsNotInverted=true, $sDocumentName=null) {
     if($sDocumentKind === null) {
-      $sDocumentKind = self::ALL_KINDS;
+      $sDocumentKind = ListUtil::SELECT_ALL;
     }
     if($iDocumentCategory === null) {
-      $iDocumentCategory = self::ALL_CATEGORIES;
+      $iDocumentCategory = ListUtil::SELECT_ALL;
     }
     
     $oCriteria = new Criteria();
@@ -32,7 +30,7 @@ class DocumentPeer extends BaseDocumentPeer {
     }
     
     //By DocumentCategoryId or all internally managed Documents
-    if($iDocumentCategory !== self::ALL_CATEGORIES) {
+    if($iDocumentCategory !== ListUtil::SELECT_ALL) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
     } else {
       $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
@@ -42,7 +40,7 @@ class DocumentPeer extends BaseDocumentPeer {
     }
     
     //Kind
-    if($sDocumentKind !== self::ALL_KINDS) {
+    if($sDocumentKind !== ListUtil::SELECT_ALL) {
       $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
     

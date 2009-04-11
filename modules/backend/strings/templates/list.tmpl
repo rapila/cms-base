@@ -1,7 +1,7 @@
 <fieldset id="resource_toggle">
-  <form style="display:inline;min-width:200px" name="change_category" id="change_category" action="{{change_category_action}}" method="get">
+  <form style="display:inline;min-width:200px" name="change_selected" id="change_selected" action="{{change_select_action}}" method="get">
   {{identifierContext=start;name=namespace_options}}
-    <select name="namespace" id="namespace" onchange="$('change_category').submit();">{{namespace_options}}</select>
+    <select name="namespace" id="namespace" onchange="$('change_selected').submit();">{{namespace_options}}</select>
   {{identifierContext=end;name=namespace_options}}
   </form>
 </fieldset>

@@ -18,19 +18,13 @@ class DocumentsBackendModule extends BackendModule {
   public function __construct() {
     
     // selected_document_kind = text, application, image etc
-    if(isset($_REQUEST['selected_document_kind'])) {
-      $this->sDocumentKind = $_REQUEST['selected_document_kind'] !== DocumentPeer::ALL_KINDS ? $_REQUEST['selected_document_kind'] : null;
-      Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
-    } else {
-      $this->sDocumentKind = Session::getSession()->getAttribute('selected_document_kind');
-    }
+    $this->sDocumentKind = ListUtil::getSelectedListFilter('selected_document_kind');
     
     // selected_document_category_id can be specific int, all, without category
     if(isset($_REQUEST['selected_document_category_id']) && $_REQUEST['selected_document_category_id'] !== '') {
       $this->sDocumentCategoryId = is_numeric($_REQUEST['selected_document_category_id']) ? (int) $_REQUEST['selected_document_category_id'] : $_REQUEST['selected_document_category_id'];
       Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategoryId);
     } else {
-      
       // change default category in case the number of internally managed files exceed a number
       if(Session::getSession()->getAttribute('selected_document_category_id') === null 
         && DocumentPeer::countDocumentsExceedsLimit(40)) {
@@ -50,7 +44,8 @@ class DocumentsBackendModule extends BackendModule {
       $iId = Manager::peekNextPathItem();
       $this->oDocument = DocumentPeer::retrieveByPk($iId);
       if($this->oDocument) {
-        if($this->sDocumentKind !== DocumentPeer::ALL_KINDS && $this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
+        // correct document kind if selected is not the same like the one of the current document
+        if($this->sDocumentKind !== ListUtil::SELECT_ALL && $this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
           $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind();
         }
         $this->aReferences = ReferencePeer::getReferences($this->oDocument);
@@ -67,10 +62,10 @@ class DocumentsBackendModule extends BackendModule {
     $aDocumentCategoryOptions = null;
     $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
     if(count($aDocumentCategories) > 0) {
-      $aDocumentCategoryOptions =  TagWriter::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? DocumentPeer::ALL_CATEGORIES : $this->sDocumentCategoryId, array(DocumentPeer::ALL_CATEGORIES => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
+      $aDocumentCategoryOptions =  TagWriter::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? ListUtil::SELECT_ALL : $this->sDocumentCategoryId, array(ListUtil::SELECT_ALL => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
     } else {
       //Clear document category
-      $this->sDocumentCategoryId = DocumentPeer::ALL_CATEGORIES;
+      $this->sDocumentCategoryId = ListUtil::SELECT_ALL;
       Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
     }
     
@@ -84,7 +79,7 @@ class DocumentsBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
     $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("change_category_action", $this->link());
+    $oTemplate->replaceIdentifier("change_select_action", $this->link());
 
     if(count($aDocuments) === 0) {
       $oTemplate->replaceIdentifier("no_document_message", StringPeer::getString('no_document_message', null, '[Keine Dokumente]'));
@@ -93,7 +88,7 @@ class DocumentsBackendModule extends BackendModule {
     
     // selected_document_kind_options are only displayed if there are any documents
     $aDocumentKindOptions = null;
-    $aDocumentKindOptions =  TagWriter::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(DocumentPeer::ALL_KINDS => StringPeer::getString('document.all_kinds')));
+    $aDocumentKindOptions =  TagWriter::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(ListUtil::SELECT_ALL => StringPeer::getString('document.all_kinds')));
     $oTemplate->replaceIdentifier("selected_document_kind_options", $aDocumentKindOptions);
     $oLinkTemplatePrototype = $this->constructTemplate("list_item");
 
@@ -246,7 +241,7 @@ class DocumentsBackendModule extends BackendModule {
       $this->oDocument->save();
       
       // in case document kind is not "all" the document kind always has to be checked/updated in order to display the doc
-      if($this->sDocumentKind !== DocumentPeer::ALL_CATEGORIES) {
+      if($this->sDocumentKind !== ListUtil::SELECT_ALL) {
         $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind(); 
       }
 

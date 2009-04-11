@@ -64,8 +64,8 @@ class UserPeer extends BaseUserPeer {
   
   public static function getBackendAdministrators($sSearch=null, $iUserId=null, $bCountOnly=false) {
     $oCriteria = new Criteria();
-    $oCriteria->add(UserPeer::IS_ADMIN, true);
     $oCriteria = self::getUsersCriteria($sSearch, true, $iUserId, $oCriteria);
+    $oCriteria->add(UserPeer::IS_ADMIN, true);
     if($bCountOnly === true) {
       return self::doCount($oCriteria);
     }

@@ -13,12 +13,7 @@ class StringsBackendModule extends BackendModule {
       $this->sPath = Manager::usePath();
       $this->oString=StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $this->sPath);
     }
-    if(isset($_REQUEST['namespace'])) {
-      $this->sNameSpace = $_REQUEST['namespace'] == '' ? null : $_REQUEST['namespace'];
-      Session::getSession()->setAttribute('namespace', $this->sNameSpace);
-    } else {
-      $this->sNameSpace = Session::getSession()->getAttribute('namespace') !== null ? Session::getSession()->getAttribute('namespace') : $this->sNameSpace;
-    }
+    $this->sNameSpace = ListUtil::getSelectedListFilter('namespace', false);
   }
   
   public function getChooser() {
@@ -27,7 +22,7 @@ class StringsBackendModule extends BackendModule {
     $aStrings = StringPeer::getStringsByLanguageId(BackendManager::getContentEditLanguage(), $sSearch, $this->sNameSpace);
 
     $oTemplate = $this->constructTemplate("list");
-    $oTemplate->replaceIdentifier("change_category_action", $this->link());
+    $oTemplate->replaceIdentifier("change_select_action", $this->link());
     
     $aNamespaceOptions = null;
     if (count($aNamespaces) > 0) {

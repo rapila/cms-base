@@ -12,17 +12,13 @@ class UsersBackendModule extends BackendModule {
     if(Manager::hasNextPathItem()) {
       $this->oUser=UserPeer::retrieveByPk(Manager::usePath());
     }
-    if(isset($_REQUEST['user_kind'])) {
-      $this->iUserKind = $_REQUEST['user_kind'];
-      Session::getSession()->setAttribute('user_kind', $this->iUserKind);
-    } else {
-      $this->iUserKind = Session::getSession()->getAttribute('user_kind') !== null ? Session::getSession()->getAttribute('user_kind') : UserPeer::BACKEND_USER;
-    }
+    $this->iUserKind = ListUtil::getSelectedListFilter('user_kind', false, UserPeer::BACKEND_USER);
     $this->bIsBackendLoginEnabled = $this->iUserKind !== UserPeer::FRONTEND_USER;
   }
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('list');
+    $oTemplate->replaceIdentifier("change_select_action", $this->link());
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     // users that are not administrators can only see their own entry
     $aUsers = array();
@@ -58,7 +54,7 @@ class UsersBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('users', null, array('action' => 'create'))), StringPeer::getString('user.create')));
       return $oTemplate;
     }
-
+    // detail
     $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier("id", $this->oUser->getId());
     if(Session::getSession()->hasAttribute('change_password')) {
@@ -84,12 +80,11 @@ class UsersBackendModule extends BackendModule {
     $aUserLanguageOptions = TagWriter::optionsFromArray($aLanguages, $this->oUser->getLanguageId(), null, false);
     $oTemplate->replaceIdentifier("user_language_options", $aUserLanguageOptions);
     $sChecked = ' checked="checked"';
-
     if(!$this->oUser->isSessionUser()) { 
       $oUserBooleanTemplate = $this->constructTemplate('booleans');
-      $oUserBooleanTemplate->replaceIdentifier("is_inactive", $this->oUser->getIsInactive() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
-      $oUserBooleanTemplate->replaceIdentifier("is_admin", $this->oUser->getIsAdmin() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
-      $oUserBooleanTemplate->replaceIdentifier("is_backend_login_enabled", $this->oUser->getIsBackendLoginEnabled() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+      $oUserBooleanTemplate->replaceIdentifier("is_inactive_checked", $this->oUser->getIsInactive() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+      $oUserBooleanTemplate->replaceIdentifier("is_admin_checked", $this->oUser->getIsAdmin() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+      $oUserBooleanTemplate->replaceIdentifier("is_backend_login_enabled_checked", $this->oUser->getIsBackendLoginEnabled() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
       $oTemplate->replaceIdentifier('user_booleans', $oUserBooleanTemplate);
     }
     
