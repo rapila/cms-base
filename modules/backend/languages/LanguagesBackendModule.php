@@ -21,7 +21,9 @@ class LanguagesBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->oLanguage === null) {
-      return;
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('languages', null, array('action' => 'create'))), StringPeer::getString('language.create')));
+      return $oTemplate;
     }
     
     $oTemplate = $this->constructTemplate("detail");
@@ -29,7 +31,7 @@ class LanguagesBackendModule extends BackendModule {
     $sIsActive = $this->oLanguage->getIsActive() === true ? 'checked="checked"' :'';
     $oTemplate->replaceIdentifier("sort", $this->oLanguage->getSort());
     $oTemplate->replaceIdentifier("is_active", $sIsActive, null, Template::NO_HTML_ESCAPE);
-    if($this->oLanguage->getId() !== null) {
+    if($this->oLanguage->getId() !== null && Session::getSession()->getUser()->getIsAdmin()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oLanguage->getId()));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
@@ -45,7 +47,7 @@ class LanguagesBackendModule extends BackendModule {
   }
   
   public function delete() {
-    if($this->oLanguage) {
+    if($this->oLanguage  && Session::getSession()->getUser()->getIsAdmin()) {
       $this->oLanguage->delete();
       $this->oLanguage=null;
     }

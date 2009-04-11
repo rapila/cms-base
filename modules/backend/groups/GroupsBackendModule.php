@@ -34,9 +34,12 @@ class GroupsBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->oGroup === null) {
-      return;
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('groups', null, array('action' => 'create'))), StringPeer::getString('group.create')));
+      return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("detail");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('groups', null, array('get_module_info' => 'true')))));
     
     if($this->oGroup->getId() !== null) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);

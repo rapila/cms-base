@@ -62,8 +62,10 @@ class PagesBackendModule extends BackendModule {
         $oTemplate = $this->constructTemplate("error404");
         $oTemplate->replaceIdentifier("error_message", StringPeer::getString('page.error_403'), null, Template::NO_HTML_ESCAPE);
       } else {
-        $oTemplate = $this->constructTemplate("message", true);
-        $oTemplate->replaceIdentifier("default_message", StringPeer::getString('page.choose_or_create'), null, Template::NO_HTML_ESCAPE);
+        $oTemplate = $this->constructTemplate("module_info");
+        $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('pages/new', null, array('action' => 'create', 'parent_id' => PagePeer::getRootPage()->getId()))), StringPeer::getString('page.create_child', null,null,array('title' => PagePeer::getRootPage()->getPageTitle()))));
+        $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
+        $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       }
       return $oTemplate;
     }

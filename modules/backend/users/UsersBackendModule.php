@@ -22,7 +22,7 @@ class UsersBackendModule extends BackendModule {
   }
   
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     // users that are not administrators can only see their own entry
     $aUsers = array();
@@ -55,7 +55,7 @@ class UsersBackendModule extends BackendModule {
       return;
     }
 
-    $oTemplate = $this->constructTemplate("user_detail");
+    $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier("id", $this->oUser->getId());
     if(Session::getSession()->hasAttribute('change_password')) {
       $oTemplate->replaceIdentifier("change_password", StringPeer::getString('user.change_password'));
@@ -82,7 +82,7 @@ class UsersBackendModule extends BackendModule {
     $sChecked = ' checked="checked"';
 
     if(!$this->oUser->isSessionUser()) { 
-      $oUserBooleanTemplate = $this->constructTemplate('user_booleans');
+      $oUserBooleanTemplate = $this->constructTemplate('booleans');
       $oUserBooleanTemplate->replaceIdentifier("is_inactive", $this->oUser->getIsInactive() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
       $oUserBooleanTemplate->replaceIdentifier("is_admin", $this->oUser->getIsAdmin() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
       $oUserBooleanTemplate->replaceIdentifier("is_backend_login_enabled", $this->oUser->getIsBackendLoginEnabled() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);

@@ -30,8 +30,8 @@
       <button type="submit" title="{{writeString=save}}"></button>
     </fieldset>
   </form>
-  <fieldset class="divider">
-  {{delete_button}}
-  </fieldset>
+  {{identifierContext=start;name=delete_button}}<fieldset class="divider">
+    {{delete_button}}
+  </fieldset>{{identifierContext=end;name=delete_button}}
 {{identifierContext=start;name=image}}<fieldset><legend>{{writeString=preview}}</legend><p class="show_image">{{image}}</p></fieldset>{{identifierContext=end;name=image}}
 {{identifierContext=start;name=references}}<fieldset><legend>{{writeString=reference.existing_references}}</legend><p class="show_image">{{references}}</p></fieldset>{{identifierContext=end;name=references}}
