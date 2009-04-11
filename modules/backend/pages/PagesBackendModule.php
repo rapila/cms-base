@@ -47,7 +47,7 @@ class PagesBackendModule extends BackendModule {
     $aNavigationConfig['all'][] = array("template" => "main_be_unlinked_with_create_link", "on" => 'user_may_create');
     $aNavigationConfig['all'][] = array("template" => "main_be_no_new", "on" => 'user_may_edit');
     $aNavigationConfig['all'][] = array("template" => "main_be_unlinked");
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $oNavigation = new Navigation($aNavigationConfig, LinkUtil::link($this->getModuleName()).'/');
 
     $oTemplate->replaceIdentifier("tree", $oNavigation->parse());
@@ -68,7 +68,7 @@ class PagesBackendModule extends BackendModule {
       return $oTemplate;
     }
 
-    $oTemplate = $this->constructTemplate("page_detail");
+    $oTemplate = $this->constructTemplate("detail");
     if ($this->oPage->getId() != PagePeer::getRootPage()->getId() && !$this->oPage->isNew()) {
       $oTemplate->replaceIdentifier("parent_id", $this->oPage->getParentId());
       $oTemplate->replaceIdentifier("link_prefix", LinkUtil::link('pages'));
@@ -88,7 +88,7 @@ class PagesBackendModule extends BackendModule {
     
     // if not new and if user mayEditPageDetails
     if(!$this->oPage->isNew() && Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
-      $oContentLinkTemplate = $this->constructTemplate("page_edit_content");
+      $oContentLinkTemplate = $this->constructTemplate("edit_content");
       $sContentLink = LinkUtil::link(array("content", "show", $this->oPage->getId()));
       $oContentLinkTemplate->replaceIdentifier("content_link", $sContentLink);
       $oTemplate->replaceIdentifier("edit_content", $oContentLinkTemplate);
@@ -145,7 +145,7 @@ class PagesBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("sort_options", $aSortSelect);
       
       // default delete action and message_js
-      $sDeleteTemplate = "delete_button_page";
+      $sDeleteTemplate = "delete_button";
       $sAction = $this->link($this->oPage->getId());
       $sConfirmText = null;
       $sOnAction = 'onsubmit';
@@ -218,12 +218,12 @@ class PagesBackendModule extends BackendModule {
     
     // page properties, if are set in backend.yml or if they exist
     if(Settings::getSetting('backend', 'page_properties_allow', false) || (count($this->oPage->getPageProperties()) > 0)) {
-      $oPropertyTemplate = $this->constructTemplate("page_properties");
+      $oPropertyTemplate = $this->constructTemplate("properties");
       
       //Properties
       $aPageProperties = $this->oPage->getPageProperties();
       foreach($aPageProperties as $oPageProperty) {
-        $oPagePropertyTemplate = $this->constructTemplate("page_detail_property");
+        $oPagePropertyTemplate = $this->constructTemplate("property_detail");
         $oPagePropertyTemplate->replaceIdentifier("id", $oPageProperty->getId());
         $oPagePropertyTemplate->replaceIdentifier("name", $oPageProperty->getName());
         $oPagePropertyTemplate->replaceIdentifier("value", $oPageProperty->getValue());
@@ -236,7 +236,7 @@ class PagesBackendModule extends BackendModule {
       if(count($aPagePropertiyIdentifiers) > 0) {
         $oPropertyTemplate->replaceIdentifier("page_properties_title", StringPeer::getString('page.properties_info'));
         foreach($aPagePropertiyIdentifiers as $oPageProperty) {
-          $oPagePropertyIdentifierTemplate = $this->constructTemplate("page_property_identifiers");
+          $oPagePropertyIdentifierTemplate = $this->constructTemplate("property_identifiers");
           $oPagePropertyIdentifierTemplate->replaceIdentifier("property_name", $oPageProperty->getValue());
           $oPagePropertyIdentifierTemplate->replaceIdentifier("default_value", $oPageProperty->getParameter('defaultValue'));
           $oPropertyTemplate->replaceIdentifierMultiple("page_property_identifiers", $oPagePropertyIdentifierTemplate);
@@ -252,7 +252,7 @@ class PagesBackendModule extends BackendModule {
     if($aLanguages != null) {
       foreach($aLanguages as $oLanguage) {
         $oPageString = $this->oPage->getPageStringByLanguage($oLanguage->getId());
-        $oTitleTemplate = $this->constructTemplate("page_title");
+        $oTitleTemplate = $this->constructTemplate("title");
         if($oPageString !== null) {
           $oTitleTemplate->replaceIdentifier("title", $oPageString->getTitle());
           $oTitleTemplate->replaceIdentifier("long_title", $oPageString->getLongTitle());

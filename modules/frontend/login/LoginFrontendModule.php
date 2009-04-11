@@ -46,7 +46,6 @@ class LoginFrontendModule extends DynamicFrontendModule {
   private function executeRecover() {
   }
 
-
   public function save(Blob $oData) {
     $oData->setContents(serialize($_POST));
   }
