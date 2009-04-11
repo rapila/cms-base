@@ -51,7 +51,7 @@ class ContentBackendModule extends BackendModule {
         $aNavigationConfig[$i][] = array("template" => "content_be_edit", "on" => 'user_may_edit');
         $aNavigationConfig[$i][] = array("template" => "content_be_no_edit");
       }
-      $oTemplate = $this->constructTemplate();
+      $oTemplate = $this->constructTemplate('list');
       $oNavigation = new Navigation($aNavigationConfig, LinkUtil::link($this->getModuleName()).'/');
     
       $oTemplate->replaceIdentifier("tree", $oNavigation->parse());
