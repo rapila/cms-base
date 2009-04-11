@@ -34,11 +34,11 @@ class MigrationBackendModule extends BackendModule {
     if(Manager::hasNextPathItem()) {
       $this->sCheckName = Manager::usePath();
     }
-    $this->oTemplate = $this->constructTemplate("migration_detail");
+    $this->oTemplate = $this->constructTemplate("detail");
   }
 
   public function getChooser() {
-    $oTemplate = $this->constructTemplate();
+    $oTemplate = $this->constructTemplate('list');
     $this->parseTree($oTemplate, array('template_identifier_change_test', 'template_identifier_change', 'SQL Migration'), $this->sCheckName);
     return $oTemplate;
   }
