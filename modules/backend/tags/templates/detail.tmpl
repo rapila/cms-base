@@ -1,12 +1,14 @@
 <h1>{{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-<fieldset><legend>{{writeString=tag}} {{name}} [id:{{id}}]</legend>
 <form action="{{action}}" method="post">
+<fieldset><legend>{{writeString=tag}} [id:{{id}}]</legend>
   <input type="hidden" name="id" value="{{id}}" />
   <label for="name">{{writeString=name}}</label>
-  <input type="text" name="name" value="{{name}}" readonly="readonly" /><br />
+  <input type="text" name="name" value="{{name}}" readonly="readonly" />
+</fieldset>
+<fieldset class="divider nolegend">
   <label></label><button type="submit" title="{{writeString=save}}"></button>
 </form>
 </fieldset>
-<fieldset><legend>{{writeString=tag_instances}}</legend>
+<fieldset><legend class="toggler open">{{writeString=tag_instances}}</legend>
 {{tag_instances}}
 </fieldset>

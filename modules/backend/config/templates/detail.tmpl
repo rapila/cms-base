@@ -1,13 +1,12 @@
-<fieldset><legend>{{writeString=config_prefix}}{{title}}</legend>
+<h1>{{writeString=config.prefix}} {{quoteString=\{\{title\}\};alternate=true;defaultValue=\{\{writeString=config\}\}}}</h1>
 <form action="{{action}}" method="post">
-  <label for="text">{{writeString=config_text}}</label>
-  <textarea rows="30" style="width: 800px;" name="text" id="text">{{config_text}}</textarea>
-  <br />
-  <label for="save">{{writeString=save}}</label>
-  <button type="submit" title="{{writeString=save}}" name="save" id="save"></button>
-</form>
+  <textarea rows="30" style="width: 800px;" name="text" id="text">{{config_text}}</textarea><br />
+<fieldset class="divider nolegend">
+  <label for="save">{{writeString=save}}</label><button type="submit" title="{{writeString=save}}" name="save" id="save"></button>
 </fieldset>
-
+</form>
+<fieldset class="divider nolegend">
 <pre>
 {{config}}
 </pre>
+</fieldset>

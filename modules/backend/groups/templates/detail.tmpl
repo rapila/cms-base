@@ -1,17 +1,15 @@
 <h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-<fieldset class="highlight_group"><legend>{{writeString=user.group}} "{{name}}" [id:{{id}}]</legend>
-  <form action="{{action}}" method="post">
-    <fieldset class="divider" style="padding-top:.5em;">
-      <label for="name">{{writeString=name}}</label>
-      <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
-    </fieldset>
-      {{group_rights_part}}
-    <fieldset class="divider nolegend">
-      <label>{{writeString=save}}</label><button type="submit" title="{{writeString=save}}"></button>
-    </fieldset>
-  </form>
-  {{identifierContext=start;name=delete_button}}<fieldset class="divider">
-    {{delete_button}}
-  </fieldset>{{identifierContext=end;name=delete_button}}
+<form action="{{action}}" method="post">
+<fieldset><legend>{{writeString=user.group}} [id:{{id}}]</legend>
+  <label for="name">{{writeString=name}}</label>
+  <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
 </fieldset>
+  {{group_rights_part}}
+<fieldset class="divider nolegend">
+  <label>{{writeString=save}}</label><button type="submit" title="{{writeString=save}}"></button>
+</fieldset>
+</form>
+{{identifierContext=start;name=delete_button}}<fieldset class="divider">
+  {{delete_button}}
+</fieldset>{{identifierContext=end;name=delete_button}}
 <div id="clone_area">{{group_right}}</div>

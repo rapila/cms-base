@@ -40,7 +40,7 @@ class ConfigBackendModule extends BackendModule {
   
   public function getDetail() {
     if($this->sFileName === null) {
-      return;
+	    return $this->constructTemplate('module_info');
     }
     
     $sConfigFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, $this->sFileName), @$_REQUEST['int'] ? ResourceFinder::SEARCH_BASE_ONLY : ResourceFinder::SEARCH_SITE_ONLY);

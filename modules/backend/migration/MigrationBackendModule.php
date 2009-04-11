@@ -63,7 +63,7 @@ class MigrationBackendModule extends BackendModule {
         }
       break;
     }
-    $this->oTemplate->replacePstring("check_text", array('check_item' => $this->sCheckName));
+    $this->oTemplate->replacePstring("check.text", array('check_item' => $this->sCheckName));
     return $this->oTemplate;
   }
 
@@ -100,7 +100,7 @@ class MigrationBackendModule extends BackendModule {
         }
       }
       $sCheckName = !$bTestOnly ? $this->sCheckName : "$this->sCheckName (Identifiers to be replaced: $iCount in $iCountObjects Objects of type $sModelName)";
-      $this->oTemplate->replaceIdentifierMultiple("messages", StringPeer::getString('check_text', null, null, array('check_item' => $sCheckName)));
+      $this->oTemplate->replaceIdentifierMultiple("messages", StringPeer::getString('check.text', null, null, array('check_item' => $sCheckName)));
     }
   }
 

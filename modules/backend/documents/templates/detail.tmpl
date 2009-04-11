@@ -1,37 +1,36 @@
 <h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
-  <form action="{{action}}" enctype="multipart/form-data" method="post">
-    <fieldset><legend>[id:{{id}}]</legend>
-      <input type="hidden" name="id" value="{{id}}" />
-      <label for="document_upload">{{writeString=upload}}</label>
-      <input type="file" id="document_upload" name="document_upload" size="50" /><br />
-      {{writeFlashValue=no_upload}}
-      {{writeFlashValue=document_type}}
-      {{writeFlashValue=upload_error}}
-      {{writeFlashValue=upload_error_php_max_size}}
-      <label for="name">{{writeString=name}}</label>
-      <input type="text" name="name" id="name" value="{{file_name}}" /><br />
-      {{identifierContext=start;name=doc_category_options}}<label for="document_category_id">{{writeString=document_category}}</label>
-      <select name="document_category_id" id="document_category_id">
-        {{doc_category_options}}
-      </select><br />{{identifierContext=end;name=doc_category_options}}
-      {{identifierContext=start;name=available_language_options}}<label for="language_id">{{writeString=language}}</label>
-      <select name="language_id" id="language_id">
-        {{available_language_options}}
-      </select><br />{{identifierContext=end;name=available_language_options}}
-      <label for="description">{{writeString=description}}</label>
-      <textarea name="description" id="description" rows="2" cols="40">{{description}}</textarea><br />
-      {{identifierContext=start;name=is_protected}}<label for="is_protected">{{writeString=is_protected}}</label><input type="checkbox" name="is_protected" id="is_protected" value="1" {{is_protected_checked}} /><br />{{identifierContext=end;name=is_protected}}  {{identifierContext=start;name=document_type}}
-      <label>{{writeString=document.type}}</label>
-      <div id="document_info"> {{document_type}} {{document_link}}&nbsp;&nbsp;&nbsp;Owner: {{owner}}</div><br />
-      {{identifierContext=end;name=document_type}}
-    </fieldset>
-    <fieldset class="divider nolegend">
-      <label>{{writeString=save}}</label>
-      <button type="submit" title="{{writeString=save}}"></button>
-    </fieldset>
-  </form>
-  {{identifierContext=start;name=delete_button}}<fieldset class="divider">
-    {{delete_button}}
-  </fieldset>{{identifierContext=end;name=delete_button}}
+<form action="{{action}}" enctype="multipart/form-data" method="post">
+  <fieldset><legend>[id:{{id}}]</legend>
+    <input type="hidden" name="id" value="{{id}}" />
+    <label for="document_upload">{{writeString=upload}}</label>
+    <input type="file" id="document_upload" name="document_upload" size="50" /><br />
+    {{writeFlashValue=no_upload}}
+    {{writeFlashValue=document_type}}
+    {{writeFlashValue=upload_error}}
+    {{writeFlashValue=upload_error_php_max_size}}
+    <label for="name">{{writeString=name}}</label>
+    <input type="text" name="name" id="name" value="{{file_name}}" /><br />
+    {{identifierContext=start;name=doc_category_options}}<label for="document_category_id">{{writeString=document_category}}</label>
+    <select name="document_category_id" id="document_category_id">
+      {{doc_category_options}}
+    </select><br />{{identifierContext=end;name=doc_category_options}}
+    {{identifierContext=start;name=available_language_options}}<label for="language_id">{{writeString=language}}</label>
+    <select name="language_id" id="language_id">
+      {{available_language_options}}
+    </select><br />{{identifierContext=end;name=available_language_options}}
+    <label for="description">{{writeString=description}}</label>
+    <textarea name="description" id="description" rows="2" cols="40">{{description}}</textarea><br />
+    {{identifierContext=start;name=is_protected}}<label for="is_protected">{{writeString=is_protected}}</label><input type="checkbox" name="is_protected" id="is_protected" value="1" {{is_protected_checked}} /><br />{{identifierContext=end;name=is_protected}}  {{identifierContext=start;name=document_type}}
+    <label>{{writeString=document.type}}</label>
+    <div id="document_info"> {{document_type}} {{document_link}}&nbsp;&nbsp;&nbsp;Owner: {{owner}}</div><br />
+    {{identifierContext=end;name=document_type}}
+  </fieldset>
+  <fieldset class="divider nolegend">
+    <label>{{writeString=save}}</label><button type="submit" title="{{writeString=save}}"></button>
+  </fieldset>
+</form>
+{{identifierContext=start;name=delete_button}}<fieldset class="divider">
+  {{delete_button}}
+</fieldset>{{identifierContext=end;name=delete_button}}
 {{identifierContext=start;name=image}}<fieldset><legend>{{writeString=preview}}</legend><p class="show_image">{{image}}</p></fieldset>{{identifierContext=end;name=image}}
 {{identifierContext=start;name=references}}<fieldset><legend>{{writeString=reference.existing_references}}</legend><p class="show_image">{{references}}</p></fieldset>{{identifierContext=end;name=references}}

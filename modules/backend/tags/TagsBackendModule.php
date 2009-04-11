@@ -22,37 +22,37 @@ class TagsBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("new_link", $this->link(), Template::NO_HTML_ESCAPE);
       $this->parseTree($oTemplate, $aTags, $this->oTag);
     } else {
-      $sMessage = 'Tags are set in all the objects that can relate to a page';
-      $oTemplate->replaceIdentifier("message_notags", $sMessage);
+      $oTemplate->replaceIdentifier("message_notags", StringPeer::getString('tags.none'));
     }
     return $oTemplate;
   }
   
   public function getDetail() {
-    if($this->oTag !== null) {
-      $oTemplate = $this->constructTemplate("detail");
-      $oTemplate->replaceIdentifier("action", $this->link($this->oTag->getId()));
-      $oTemplate->replaceIdentifier("id", $this->oTag->getId());
-      $oTemplate->replaceIdentifier("name", $this->oTag->getName());  
-      $aTagInstances = $this->oTag->getTagInstances();
-      $oInstanceTemplate = $this->constructTemplate("tag_instance");
-      if($aTagInstances === null) {
-        $oInstanceTemplate = $this->constructTemplate("tag_instance");
-        $oInstanceTemplate->replaceIdentifier("title", 'keine Instanzen'); 
-        $oTemplate->replaceIdentifier("tag_instances", $oInstanceTemplate);  
-      } else {
-        foreach($aTagInstances as $oTagInstance) {
-          $oInstanceTemplate = $this->constructTemplate("tag_instance");
-          $oInstanceTemplate->replaceIdentifier("name", $oTagInstance->getName());
-          $oInstanceTemplate->replaceIdentifier("action", $this->link($this->oTag->getId()));
-          $oInstanceTemplate->replaceIdentifier("tag_id", $this->oTag->getId());
-          $oInstanceTemplate->replaceIdentifier("tagged_item_id", $oTagInstance->getTaggedItemId());
-          $oInstanceTemplate->replaceIdentifier("model_name", $oTagInstance->getModelName());
-          $oTemplate->replaceIdentifierMultiple("tag_instances", $oInstanceTemplate);
-        }
-      }
-      return $oTemplate;
+    if($this->oTag === null) {
+      return $this->constructTemplate("module_info");
     }
+    $oTemplate = $this->constructTemplate("detail");
+    $oTemplate->replaceIdentifier("action", $this->link($this->oTag->getId()));
+    $oTemplate->replaceIdentifier("id", $this->oTag->getId());
+    $oTemplate->replaceIdentifier("name", $this->oTag->getName());  
+    $aTagInstances = $this->oTag->getTagInstances();
+    $oInstanceTemplate = $this->constructTemplate("tag_instance");
+    if($aTagInstances === null) {
+      $oInstanceTemplate = $this->constructTemplate("tag_instance");
+      $oInstanceTemplate->replaceIdentifier("title", 'keine Instanzen'); 
+      $oTemplate->replaceIdentifier("tag_instances", $oInstanceTemplate);  
+    } else {
+      foreach($aTagInstances as $oTagInstance) {
+        $oInstanceTemplate = $this->constructTemplate("tag_instance");
+        $oInstanceTemplate->replaceIdentifier("name", $oTagInstance->getName());
+        $oInstanceTemplate->replaceIdentifier("action", $this->link($this->oTag->getId()));
+        $oInstanceTemplate->replaceIdentifier("tag_id", $this->oTag->getId());
+        $oInstanceTemplate->replaceIdentifier("tagged_item_id", $oTagInstance->getTaggedItemId());
+        $oInstanceTemplate->replaceIdentifier("model_name", $oTagInstance->getModelName());
+        $oTemplate->replaceIdentifierMultiple("tag_instances", $oInstanceTemplate);
+      }
+    }
+    return $oTemplate;
   }
   
   public function deleteInstance($oTag=null) {

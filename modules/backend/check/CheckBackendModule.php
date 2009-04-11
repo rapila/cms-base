@@ -38,7 +38,7 @@ class CheckBackendModule extends BackendModule {
   
 	public function getDetail() {
 	  if($this->sCheckName === null) {
-	    return;
+	    return $this->constructTemplate('module_info');
 	  }
 	  
 	  switch($this->sCheckName) {
@@ -61,7 +61,9 @@ class CheckBackendModule extends BackendModule {
         $this->doCheckContent();
 	    break;
 	  }
-	  $this->oTemplate->replacePstring("check_text", array('check_item' => $this->sCheckName));
+	  $this->sCheckName = ucfirst($this->sCheckName);
+	  $this->oTemplate->replaceIdentifier("name", $this->sCheckName);
+	  $this->oTemplate->replacePstring("check.text", array('check_item' => $this->sCheckName));
 	  return $this->oTemplate;
 	}
 	
