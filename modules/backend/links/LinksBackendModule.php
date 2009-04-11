@@ -20,11 +20,7 @@ class LinksBackendModule extends BackendModule {
     }
     // selected_tag options: all tags that exist for the modul, plus opions links without tags and all links
     if(isset($_REQUEST['selected_tag_name']) && $_REQUEST['selected_tag_name'] != null) {
-      if($_REQUEST['selected_tag_name'] === self::SELECTED_TAG_WITHOUT) {
-        $this->bUntaggedItemsOnly = true;
-      } else {
-        $this->bUntaggedItemsOnly = false;
-      }
+      $this->bUntaggedItemsOnly = $_REQUEST['selected_tag_name'] === self::SELECTED_TAG_WITHOUT;
       $this->sSelectedTagName = $_REQUEST['selected_tag_name'];
       Session::getSession()->setAttribute('selected_tag_name', $this->sSelectedTagName);
       Session::getSession()->setAttribute('only_untagged_items', $this->bUntaggedItemsOnly);
@@ -33,12 +29,8 @@ class LinksBackendModule extends BackendModule {
       $this->bUntaggedItemsOnly = Session::getSession()->getAttribute('only_untagged_items') !== null ? Session::getSession()->getAttribute('only_untagged_items') : false;
     }
     // find by protocol: http, ftp, mailto etc
-    if(isset($_REQUEST['selected_protocol'])) {
-      $this->sProtocol = $_REQUEST['selected_protocol'] === ListUtil::SELECT_ALL ? null : $_REQUEST['selected_protocol'];
-      Session::getSession()->setAttribute('selected_protocol', $this->sProtocol);
-    } else {
-      $this->sProtocol = Session::getSession()->getAttribute('selected_protocol');
-    }
+    $this->sProtocol = ListUtil::getSelectedListFilter('selected_protocol');
+
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
   }

@@ -18,22 +18,13 @@ class DocumentsBackendModule extends BackendModule {
   public function __construct() {
     
     // selected_document_kind = text, application, image etc
-    $this->sDocumentKind = ListUtil::getSelectedListFilter('selected_document_kind');
+    $this->sDocumentKind = ListUtil::getSelectedListFilter('selected_document_kind', true, DOCUMENT_DEFAULT_KIND);
     
     // selected_document_category_id can be specific int, all, without category
-    if(isset($_REQUEST['selected_document_category_id']) && $_REQUEST['selected_document_category_id'] !== '') {
-      $this->sDocumentCategoryId = is_numeric($_REQUEST['selected_document_category_id']) ? (int) $_REQUEST['selected_document_category_id'] : $_REQUEST['selected_document_category_id'];
-      Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategoryId);
-    } else {
-      // change default category in case the number of internally managed files exceed a number
-      if(Session::getSession()->getAttribute('selected_document_category_id') === null 
-        && DocumentPeer::countDocumentsExceedsLimit(40)) {
-        $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
-        Session::getSession()->setAttribute('selected_document_category_id', $this->sDocumentCategoryId);
-      } else {
-        $this->sDocumentCategoryId = Session::getSession()->getAttribute('selected_document_category_id');
-      }
-    }
+    $this->sDocumentCategoryId = ListUtil::getSelectedListFilter('selected_document_category_id');
+    if($this->sDocumentCategoryId === null && DocumentPeer::countDocumentsExceedsLimit(40)) {
+      $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
+    } 
     
     // order
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
