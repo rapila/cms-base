@@ -45,7 +45,7 @@ class MigrationBackendModule extends BackendModule {
 
   public function getDetail() {
     if($this->sCheckName === null) {
-      return;
+      return $this->constructTemplate("module_info");
     }
 
     switch($this->sCheckName) {

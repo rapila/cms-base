@@ -26,7 +26,7 @@ class StringsBackendModule extends BackendModule {
     $sSearch = isset($_REQUEST['search']) ? trim($_REQUEST['search']) : null;
     $aStrings = StringPeer::getStringsByLanguageId(BackendManager::getContentEditLanguage(), $sSearch, $this->sNameSpace);
 
-    $oTemplate = $this->constructTemplate("strings");
+    $oTemplate = $this->constructTemplate("list");
     $oTemplate->replaceIdentifier("change_category_action", $this->link());
     
     $aNamespaceOptions = null;
@@ -34,7 +34,7 @@ class StringsBackendModule extends BackendModule {
       $aNamespaceOptions =  TagWriter::optionsFromArray($aNamespaces, $this->sNameSpace, null, array('' => StringPeer::getString('all_entries'), '0' => StringPeer::getString('strings.without_namespace')));
     } 
     $oTemplate->replaceIdentifier("namespace_options", $aNamespaceOptions);
-    $oStringTemplatePrototype = $this->constructTemplate("string_list_item");
+    $oStringTemplatePrototype = $this->constructTemplate("list_item");
     
     foreach($aStrings as $oString) {
       $oStringTemplate = clone $oStringTemplatePrototype;
@@ -52,7 +52,7 @@ class StringsBackendModule extends BackendModule {
     if($this->oString === null) {
       return;
     }
-    $oTemplate = $this->constructTemplate("string_detail");
+    $oTemplate = $this->constructTemplate("detail");
     if(Manager::isPost()) {
       $this->oString->setStringKey($_REQUEST['id']);
       $this->oString->setText($_REQUEST['text']);

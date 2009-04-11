@@ -16,7 +16,7 @@ class MysqlDumpLoaderBackendModule extends BackendModule {
   
 	public function getDetail() {
 	  if($this->sMethod === null) {
-	    return;
+      return $this->constructTemplate("module_info");
 	  }
 	  
 	  if(Manager::isPost()) {
