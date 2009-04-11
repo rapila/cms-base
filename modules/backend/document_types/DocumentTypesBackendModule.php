@@ -21,7 +21,9 @@ class DocumentTypesBackendModule extends BackendModule {
   
 	public function getDetail() {
 	  if($this->oDocumentType === null) {
-	    return;
+      $oTemplate = $this->constructTemplate("module_info");
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('document_types', null, array('action' => 'create'))), StringPeer::getString('document_types.create')));
+      return $oTemplate;
 	  }
     $oTemplate = $this->constructTemplate("detail");
 	  
