@@ -15,10 +15,7 @@ class ListUtil {
   * 
   * @return mixed int|str|null
   */
-  public static function handleBackendChooserListSelection( $sRequestName = 'selected_name_id', 
-                                                            $bNumericToInt=true, 
-                                                            $sPresetValue=null, 
-                                                            $sDefaultReturn=null) {
+  public static function handleBackendChooserListSelection($sRequestName = 'selected_name_id', $bNumericToInt = true, $sPresetValue = null, $sDefaultReturn = null) {
     if(isset($_REQUEST[$sRequestName])) {
       $mSelectedValue = $_REQUEST[$sRequestName];
       if($mSelectedValue === self::SELECT_ALL || $mSelectedValue === '') {
