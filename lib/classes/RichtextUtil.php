@@ -1,6 +1,6 @@
 <?php
 /**
- * classname:   RichtextUtil
+ * @package utils
  */
 class RichtextUtil {
   

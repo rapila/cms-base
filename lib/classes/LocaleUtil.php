@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package utils
+ */
+ 
 class LocaleUtil {
 
   //Gets the user's locale for the current language

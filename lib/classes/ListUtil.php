@@ -1,7 +1,8 @@
 <?php
 /**
- * classname:   ListUtil
+ * @package utils
  */
+ 
 class ListUtil {
   const SELECT_ALL = '__all';
   

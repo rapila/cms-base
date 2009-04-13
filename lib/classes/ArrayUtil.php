@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package utils
+ */
 
 class ArrayUtil {
   public static function runFunctionOnArrayValues(&$aArray, $mCallback) {

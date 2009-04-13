@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package utils
+ */
 
 class StringUtil {
   public static function encodeFromDatabase($sText) {

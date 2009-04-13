@@ -1,6 +1,6 @@
 <?php
 /**
- * classname:   Util
+ * @package utils
  */
 class Util {
   private static $SQL_ENCODINGS = array("utf-8" => "utf8",

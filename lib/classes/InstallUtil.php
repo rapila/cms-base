@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package utils
+ */
 require_once("spyc/Spyc.php");
 
 /**
