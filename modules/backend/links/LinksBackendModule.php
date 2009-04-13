@@ -5,57 +5,31 @@
 class LinksBackendModule extends BackendModule {
   
   private $oLink = null;
-  private $sSortField;
-  private $sSortOrder;
   private $sSelectedTagName;
-  private $sProtocol;
+  private $oListHelper;
   private $bUntaggedItemsOnly = false; //get tagged items if exist
   
-  const SELECTED_TAG_NONE = '__null';
-  const SELECTED_TAG_WITHOUT = '__without';
-
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oLink=LinkPeer::retrieveByPk(Manager::usePath()); 
+      $this->oLink = LinkPeer::retrieveByPk(Manager::usePath()); 
     }
-    // selected_tag options: all tags that exist for the modul, plus opions links without tags and all links
-    if(isset($_REQUEST['selected_tag_name']) && $_REQUEST['selected_tag_name'] != null) {
-      $this->bUntaggedItemsOnly = $_REQUEST['selected_tag_name'] === self::SELECTED_TAG_WITHOUT;
-      $this->sSelectedTagName = $_REQUEST['selected_tag_name'];
-      Session::getSession()->setAttribute('selected_tag_name', $this->sSelectedTagName);
-      Session::getSession()->setAttribute('only_untagged_items', $this->bUntaggedItemsOnly);
-    } else {
-      $this->sSelectedTagName = Session::getSession()->getAttribute('selected_tag_name');
-      $this->bUntaggedItemsOnly = Session::getSession()->getAttribute('only_untagged_items') !== null ? Session::getSession()->getAttribute('only_untagged_items') : false;
-    }
-    // find by protocol: http, ftp, mailto etc
-    $this->sProtocol = ListUtil::handleBackendChooserListSelection('selected_protocol');
-
-    $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
-    $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
+    
+    $this->oListHelper = new ListHelper($this);
   }
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('list');
-    $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
+    
     $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
-    $oTemplate->replaceIdentifier("selected_tag_names_options", TagWriter::optionsFromObjects($aTagsUsedInLinkModule, 'getName', 'getName',$this->sSelectedTagName, array(self::SELECTED_TAG_NONE => StringPeer::getString('all_entries'), self::SELECTED_TAG_WITHOUT => StringPeer::getString('link.without_tags'))));
-
-    $oTemplate->replaceIdentifier("selected_protocol_options", TagWriter::optionsFromArray(LinkPeer::getProtocolsWithLinksAssoc(),  @$_REQUEST['selected_protocol'], null, array(ListUtil::SELECT_ALL => StringPeer::getString('links.all_protocols'))));
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelectForTagFilter());
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(LinkPeer::URL, LinkPeer::getProtocolsWithLinksAssoc(), StringPeer::getString('links.all_protocols'), null, ListHelper::SELECTION_TYPE_BEGINS));
     
-    // fix SELECTED_TAG_WITHOUT for criteria
-    if($this->sSelectedTagName === self::SELECTED_TAG_WITHOUT || $this->sSelectedTagName === self::SELECTED_TAG_NONE) {
-      $this->sSelectedTagName = null;
-    }
-    $aLinks = LinkPeer::getLinksByTagNameBackend($sSearch, $this->sProtocol, $this->sSelectedTagName, $this->sSortField, $this->sSortOrder,  !$this->bUntaggedItemsOnly);
+    $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(LinkPeer::NAME, 'name', true));
+    $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(LinkPeer::UPDATED_AT, 'date'));
     
-    $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $oTemplate->replaceIdentifier("link_name", LinkUtil::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
-    $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
-    $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("change_select_action", $this->link());
+    $oCriteria = new Criteria();
+    $this->oListHelper->handle($oCriteria);
+    $aLinks = LinkPeer::doSelect($oCriteria);
 
     $this->parseTree($oTemplate, $aLinks, $this->oLink);
     return $oTemplate;
@@ -140,7 +114,7 @@ class LinksBackendModule extends BackendModule {
   }
   
   public function getNewEntryActionParams() {
-    return array('action' => $this->link('new', array('selected_tag_name' => $this->sSelectedTagName)));
+    return array('action' => $this->link('new'));
   }
   
   public function hasSearch() {

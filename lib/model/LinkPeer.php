@@ -28,21 +28,10 @@ class LinkPeer extends BaseLinkPeer {
    * getLinksByTagNameBackend()
    * for backend admin, also untagged links can be retrieved
    */ 
-  public static function getLinksByTagNameBackend($sName=null, $sProtocol=null, $sTagName=null, $sOrderField='NAME', $sSortOrder='ASC', $bCriteriaIsIn = true) {
-    $oCriteria = self::getLinksByNameCriteria($sName, $sOrderField, $sSortOrder, new Criteria());
-    $aTaggedItemIds = array();
-    foreach(TagInstancePeer::getByModelNameAndTagName('Link', $sTagName) as $oTagInstance) {
-      $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
-    }
-    if($sTagName !== null && $bCriteriaIsIn) {
-      $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::IN);
-    } elseif($bCriteriaIsIn === false) {
-      $oCriteria->add(self::ID, $aTaggedItemIds, Criteria::NOT_IN);
-    }
-    if($sProtocol !== null) {
-      $oCriteria->add(self::URL, "$sProtocol%", Criteria::LIKE);
-    }
-    return self::doSelect($oCriteria);
+  public static function addSearchToCriteria($sSearch, $oCriteria) {
+    $oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
+    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sSearch%", Criteria::LIKE));
+    $oCriteria->add($oSearchCriterion);
   }
   
   /** 
@@ -73,9 +62,7 @@ class LinkPeer extends BaseLinkPeer {
   public static function getLinksByNameCriteria($sName = null, $sOrderField='NAME', $sSortOrder='ASC', $oCriteria=null) {
     $oCriteria = $oCriteria === null ? new Criteria() : $oCriteria; 
     if($sName !== null) {
-      $oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sName%", Criteria::LIKE);
-	    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sName%", Criteria::LIKE));
-      $oCriteria->add($oSearchCriterion);
+      self::addSearchToCriteria($sName, $oCriteria);
     }
     Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sSortOrder);
     return $oCriteria;

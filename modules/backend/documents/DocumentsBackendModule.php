@@ -53,7 +53,6 @@ class DocumentsBackendModule extends BackendModule {
       $this->sDocumentCategoryId = ListUtil::SELECT_ALL;
       Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
     }
-    var_dump($this->sDocumentCategoryId); exit;
     
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     // order

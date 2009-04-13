@@ -60,9 +60,18 @@ class ArrayUtil {
   public static function assocUnshift(&$aArray) {
     $aArray = array_reverse($aArray, true);
     for($i=func_num_args()-1;$i>=1;$i-=2) {
+      unset($aArray[func_get_arg($i-1)]);
       $aArray[func_get_arg($i-1)] = func_get_arg($i);
     }
     $aArray = array_reverse($aArray, true);
+  }
+  
+  public static function assocPeek(&$aArray) {
+    $mKey = array_keys($aArray);
+    if(!isset($mKey[0])) {
+      return null;
+    }$mKey = $mKey[0];
+    return $aArray[$mKey];
   }
 
   public static function arrayWithValuesAsKeys($aArray) {
