@@ -23,7 +23,7 @@ EOT;
 {{if==;1=1;2=1}}true{{endIf}}{{if==;1=1;2=2}}false{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("true", $oTemplate->render());
+    $this->assertSame("true", $oTemplate->render());
   }
   
   public function testSimpleExpressionAbbreviated() {
@@ -31,7 +31,7 @@ EOT;
 {{if;1=}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
   
   public function testExpressionAbbreviated() {
@@ -39,7 +39,7 @@ EOT;
 {{if;1=\{\{test\}\}}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
   
   public function testExpressionAbbreviatedWithValue() {
@@ -48,7 +48,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("test", "see");
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testSimpleExpressionNotEqual() {
@@ -56,7 +56,7 @@ EOT;
 {{if=!=;1=1;2=2}}true{{endIf}}{{if=!=;1=1;2=1}}false{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("true", $oTemplate->render());
+    $this->assertSame("true", $oTemplate->render());
   }
   
   public function testSimpleExpressionGreaterThan() {
@@ -64,22 +64,22 @@ EOT;
 {{if=>;1=12;2=2}}true{{endIf}}{{if=>;1=22;2=232}}false{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("true", $oTemplate->render());
+    $this->assertSame("true", $oTemplate->render());
   }
   
   public function testSimpleExpressionLessThan() {
     $oTemplate = new Template("{{if=<;1=22;2=232}}true{{endIf}}{{if=<;1=232;2=22}}false{{endIf}}", null, true);
-    $this->assertEquals("true", $oTemplate->render());
+    $this->assertSame("true", $oTemplate->render());
   }
   
   public function testSimpleExpressionLessThanEqual() {
     $oTemplate = new Template("{{if=<=;1=22;2=22}}true{{endIf}} {{if=<=;1=2;2=22}}true{{endIf}}{{if=<=;1=233;2=22}}false{{endIf}}", null, true);
-    $this->assertEquals("true true", $oTemplate->render());
+    $this->assertSame("true true", $oTemplate->render());
   }
   
   public function testSimpleExpressionGreaterThanEqual() {
     $oTemplate = new Template("{{if=>=;1=22;2=22}}true{{endIf}} {{if=>=;1=2;2=22}}false{{endIf}} {{if=>=;1=233;2=22}}true{{endIf}}", null, true);
-    $this->assertEquals("true  true", $oTemplate->render());
+    $this->assertSame("true  true", $oTemplate->render());
   }
   
   public function testConditionalsVariableNotEqualFalse() {
@@ -88,7 +88,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("test", "see");
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testConditionalsVariableNotEqualTrue() {
@@ -97,7 +97,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("test", "seen");
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
   
   public function testConditionalsVariableNotEqualEmptyTrue() {
@@ -106,7 +106,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("test", "seen");
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
   
   public function testConditionalsVariableNotEqualEmptyFalse() {
@@ -114,7 +114,7 @@ EOT;
 {{if=ne;1=\{\{test\}\};2=}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testFunctionConditionalsExpression() {
@@ -122,7 +122,7 @@ EOT;
 {{if=~;1=/st/;2=string}}test{{endIf}} END
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test END", $oTemplate->render());
+    $this->assertSame("test END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsExpressionNegative() {
@@ -130,7 +130,7 @@ EOT;
 {{if=~;1=/sta/;2=string}}test{{endIf}} END
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals(" END", $oTemplate->render());
+    $this->assertSame(" END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsVariableExpression() {
@@ -139,7 +139,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("standard", "intring");
-    $this->assertEquals(" END", $oTemplate->render());
+    $this->assertSame(" END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsVariableExpressionNegative() {
@@ -148,7 +148,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("standard", "instring");
-    $this->assertEquals("test END", $oTemplate->render());
+    $this->assertSame("test END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsContains() {
@@ -156,7 +156,7 @@ EOT;
 {{if=contains;2=/st/;1=/st/ring}}test{{endIf}} END
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test END", $oTemplate->render());
+    $this->assertSame("test END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsContainsNegative() {
@@ -164,7 +164,7 @@ EOT;
 {{if=contains;2=/sta/;1=string}}test{{endIf}} END
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals(" END", $oTemplate->render());
+    $this->assertSame(" END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsVariableContains() {
@@ -173,7 +173,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("standard", "in/tr/ing");
-    $this->assertEquals(" END", $oTemplate->render());
+    $this->assertSame(" END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsVariableContainsNegative() {
@@ -182,7 +182,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sText, null, true);
     $oTemplate->replaceIdentifier("standard", "in/st/ring");
-    $this->assertEquals("test END", $oTemplate->render());
+    $this->assertSame("test END", $oTemplate->render());
   }
   
   public function testFunctionConditionalsFileExists() {
@@ -190,7 +190,7 @@ EOT;
 {{if=file_exists;1=/base/config;2=true}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
   
   public function testFunctionConditionalsFileExistsFalse() {
@@ -198,7 +198,7 @@ EOT;
 {{if=file_exists;1=/base/config;2=false}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testFunctionConditionalsFileNotExists() {
@@ -206,7 +206,7 @@ EOT;
 {{if=file_exists;1=/configs;2=true}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testFunctionConditionalsFileNotExistsFalse() {
@@ -214,6 +214,6 @@ EOT;
 {{if=file_exists;1=/configs;2=false}}test{{endIf}}
 EOT;
     $oTemplate = new Template($sText, null, true);
-    $this->assertEquals("test", $oTemplate->render());
+    $this->assertSame("test", $oTemplate->render());
   }
 }

@@ -9,7 +9,7 @@ class TemplateNameTests extends PHPUnit_Framework_TestCase {
 EOT;
     $oTemplate = new Template($sTemplateText, null, true, false, null, 'name');
     
-    $this->assertEquals("name", $oTemplate->render());
+    $this->assertSame("name", $oTemplate->render());
   }
   
   public function testSubTemplateWithDefaultValue() {
@@ -18,6 +18,6 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true, false, null, 'name2');
     
-    $this->assertEquals("name2", $oTemplate->render());
+    $this->assertSame("name2", $oTemplate->render());
   }
 }

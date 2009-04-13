@@ -374,8 +374,10 @@ class Template {
       $aText[] = $mText;
     } else if (is_array($mText)) {
       $aText = $mText;
-    } else if(is_int($mText) || is_float($mText)) {
-      $aText[] = ((string) $mText);
+    } else if(is_float($mText)) {
+      $aText[] = sprintf('%f', $mText);
+    } else if(is_numeric($mText)) {
+      $aText[] = sprintf('%d', $mText);
     } else if(is_object($mText)) {
       $aText[] = Util::descriptionForObject($mText);
     } else if (is_bool($mText)) {

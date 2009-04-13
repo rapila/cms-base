@@ -11,7 +11,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('identifier', 'identifier');
     
-    $this->assertEquals(" sidentifier", $oTemplate->render());
+    $this->assertSame(" sidentifier", $oTemplate->render());
   }
   
 	public function testSimpleContextNegative() {
@@ -21,7 +21,7 @@ EOT;
 
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
 	public function testSimpleContextWithValue() {
     $sTemplateText = <<<EOT
@@ -31,7 +31,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('identifier', 'identifier', "so");
     
-    $this->assertEquals(" sidentifier", $oTemplate->render());
+    $this->assertSame(" sidentifier", $oTemplate->render());
   }
   
 	public function testSimpleContextNegativeWithValue() {
@@ -41,7 +41,7 @@ EOT;
 
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
 	public function testContextWithNestedIf1() {
@@ -52,7 +52,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifierMultiple('identifier', 'test');
     
-    $this->assertEquals("test\n T E S T", $oTemplate->render());
+    $this->assertSame("test\n T E S T", $oTemplate->render());
   }
   
  public function testContextWithNestedIf2() {
@@ -99,13 +99,13 @@ EOT;
 
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals($oTemplate->__toString(), $sTemplateText);
+    $this->assertSame($oTemplate->__toString(), $sTemplateText);
 
     $oTemplate->replaceIdentifierMultiple('identifier', '');
     
-    $this->assertEquals($oTemplate->__toString(), $sTemplateTextAfterFirstReplacement);
+    $this->assertSame($oTemplate->__toString(), $sTemplateTextAfterFirstReplacement);
     
-    $this->assertEquals($sTemplateTexOnEnd, $oTemplate->render());
+    $this->assertSame($sTemplateTexOnEnd, $oTemplate->render());
   }
   
 	public function testContextWithNestedTrueIf1() {
@@ -118,7 +118,7 @@ EOT;
     $oTemplate->replaceIdentifier('main_navigation_name', 'hello');
     $oTemplate->replaceIdentifierMultiple('identifier', '');
     
-    $this->assertEquals("BEFORE s\n T E S T", $oTemplate->render());
+    $this->assertSame("BEFORE s\n T E S T", $oTemplate->render());
   }
   
  public function testContextWithNestedTrueIf2() {
@@ -131,6 +131,6 @@ EOT;
     $oTemplate->replaceIdentifierMultiple('identifier', '');
     $oTemplate->replaceIdentifier('main_navigation_name', 'hello');
     
-    $this->assertEquals("BEFORE s\n T E S T", $oTemplate->render());
+    $this->assertSame("BEFORE s\n T E S T", $oTemplate->render());
   }
 }

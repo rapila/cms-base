@@ -11,7 +11,7 @@ class TemplateSpecialIdentifierTests extends PHPUnit_Framework_TestCase {
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("myTest is great", $oTemplate->render());
+    $this->assertSame("myTest is great", $oTemplate->render());
   }
   
   public function testConstantInSubTemplateWithDefaultValue() {
@@ -20,7 +20,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("myTest is great", $oTemplate->render());
+    $this->assertSame("myTest is great", $oTemplate->render());
   }
   
   public function testConstantInSubTemplateWithConditional() {
@@ -29,7 +29,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("TEST", $oTemplate->render());
+    $this->assertSame("TEST", $oTemplate->render());
   }
   
   public function testConstantInTemplateIdentifierValue() {
@@ -38,7 +38,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("cms_manager", $oTemplate->render());
+    $this->assertSame("cms_manager", $oTemplate->render());
   }
   
   public function testQuoteWithInner() {
@@ -48,7 +48,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertEquals("“test”", $oTemplate->render());
+    $this->assertSame("“test”", $oTemplate->render());
   }
   
   public function testQuoteWithInnerDefault() {
@@ -58,7 +58,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);    
 
-    $this->assertEquals("“default”", $oTemplate->render());
+    $this->assertSame("“default”", $oTemplate->render());
   }
   
   public function testQuoteWithInnerDefaultValue() {
@@ -68,6 +68,6 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);    
 
-    $this->assertEquals("default", $oTemplate->render());
+    $this->assertSame("default", $oTemplate->render());
   }
 }

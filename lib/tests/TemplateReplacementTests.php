@@ -10,7 +10,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('test', 'name');
     
-    $this->assertEquals("name", $oTemplate->render());
+    $this->assertSame("name", $oTemplate->render());
   }
   
   public function testSimpleReplacementWithValueFalse() {
@@ -20,7 +20,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('test', 'name');
     
-    $this->assertEquals("", $oTemplate->render());
+    $this->assertSame("", $oTemplate->render());
   }
   
   public function testSimpleReplacementWithValueTrue() {
@@ -30,7 +30,7 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('test', 'name', "1");
     
-    $this->assertEquals("name", $oTemplate->render());
+    $this->assertSame("name", $oTemplate->render());
   }
   
   public function testSimpleReplacementOfDifferentTypes() {
@@ -44,7 +44,7 @@ EOT;
     $oTemplate->replaceIdentifier('test4', 0x10);
     $oTemplate->replaceIdentifier('test5', array("list", "item"));
     
-    $this->assertEquals("string|1|true|16|listitem", $oTemplate->render());
+    $this->assertSame("string|1|true|16|listitem", $oTemplate->render());
   }
   
   public function testReplaceIdentifierValueReplacement() {
@@ -58,7 +58,7 @@ EOT;
     
     $oTemplate->bKillIdentifiersBeforeRender = false;
     
-    $this->assertEquals("{{test=test1;param=test2}}", $oTemplate->render());
+    $this->assertSame("{{test=test1;param=test2}}", $oTemplate->render());
   }
   
   public function testReplaceIdentifierSubtemplate() {
@@ -70,7 +70,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', $oSubTemplate);
     
-    $this->assertEquals("<html>&so<html>&so", $oTemplate->render());
+    $this->assertSame("<html>&so<html>&so", $oTemplate->render());
   }
   
   public function testReplaceIdentifierSubtemplateDirectOutput() {
@@ -83,7 +83,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', $oSubTemplate, '1');
     $oTemplate->render();
-    $this->assertEquals("<html>&so<html>&so", ob_get_contents());
+    $this->assertSame("<html>&so<html>&so", ob_get_contents());
     ob_end_clean();
   }
   
@@ -96,7 +96,7 @@ EOT;
     $oTemplate->replaceIdentifier('test', null);
     $oTemplate->replaceIdentifier('test', 'test');
     
-    $this->assertEquals("ga test ga", $oTemplate->render());
+    $this->assertSame("ga test ga", $oTemplate->render());
   }
   
   public function testReplaceIdentifierMultiple() {
@@ -110,7 +110,7 @@ EOT;
     $oTemplate->replaceIdentifierMultiple('test', 0x10);
     $oTemplate->replaceIdentifierMultiple('test', array("list", "item"));
     
-    $this->assertEquals("string\n1\ntrue\n16\nlistitem\n", $oTemplate->render());
+    $this->assertSame("string\n1\ntrue\n16\nlistitem\n", $oTemplate->render());
   }
   
   public function testReplaceIdentifierMultipleNoNewline() {
@@ -126,7 +126,7 @@ EOT;
     $oTemplate->replaceIdentifierMultiple('test', 0xff);
     $oTemplate->replaceIdentifierMultiple('test', array("list", "item"));
     
-    $this->assertEquals("string1true255listitem", $oTemplate->render());
+    $this->assertSame("string1true255listitem", $oTemplate->render());
   }
   
   public function testReplaceIdentifierHtmlEscape() {
@@ -137,7 +137,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', '&<>;"\'');
     
-    $this->assertEquals("&amp;&lt;&gt;;&quot;&#039;", $oTemplate->render());
+    $this->assertSame("&amp;&lt;&gt;;&quot;&#039;", $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagNoHtmlEscape() {
@@ -148,7 +148,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', '&<>;"\'', null, Template::NO_HTML_ESCAPE);
     
-    $this->assertEquals('&<>;"\'', $oTemplate->render());
+    $this->assertSame('&<>;"\'', $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagEscape() {
@@ -159,7 +159,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', '&<>;"\'', null, Template::ESCAPE);
     
-    $this->assertEquals('&amp;&lt;&gt;;\\&quot;\\&#039;', $oTemplate->render());
+    $this->assertSame('&amp;&lt;&gt;;\\&quot;\\&#039;', $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagJavaScriptEscape() {
@@ -170,7 +170,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', '&<>;"\'', null, Template::JAVASCRIPT_ESCAPE);
     
-    $this->assertEquals('&<>;\\\'\\\'', $oTemplate->render());
+    $this->assertSame('&<>;\\\'\\\'', $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagLeaveIdentifiers() {
@@ -182,7 +182,7 @@ EOT;
     $oTemplate->replaceIdentifier('test', $sTemplateText, null, Template::LEAVE_IDENTIFIERS);
     $oTemplate->replaceIdentifier('test', $sTemplateText);
     
-    $this->assertEquals($sTemplateText, $oTemplate->render());
+    $this->assertSame($sTemplateText, $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagForceHtmlEscape() {
@@ -194,7 +194,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', $oSubTemplate, null, Template::FORCE_HTML_ESCAPE);
     
-    $this->assertEquals("&lt;html&gt;&amp;so<html>&so", $oTemplate->render());
+    $this->assertSame("&lt;html&gt;&amp;so<html>&so", $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagNoIdentifierValueReplacement() {
@@ -208,7 +208,7 @@ EOT;
     
     $oTemplate->bKillIdentifiersBeforeRender = false;
     
-    $this->assertEquals("{{test=\{\{text1\}\};param=\{\{text2\}\}}}", $oTemplate->render());
+    $this->assertSame("{{test=\{\{text1\}\};param=\{\{text2\}\}}}", $oTemplate->render());
   }
   
 }

@@ -15,14 +15,14 @@ EOT;
     $sPassword = <<<EOT
 myTestPassword
 EOT;
-    $this->assertEquals(true, PasswordHash::comparePassword($sPassword, PasswordHash::hashPassword($sPassword)));
+    $this->assertSame(true, PasswordHash::comparePassword($sPassword, PasswordHash::hashPassword($sPassword)));
   }
   
   public function testSimplePasswordCheckFallback() {
     $sPassword = <<<EOT
 myTestPassword
 EOT;
-    $this->assertEquals(true, PasswordHash::comparePasswordFallback($sPassword, md5($sPassword)));
+    $this->assertSame(true, PasswordHash::comparePasswordFallback($sPassword, md5($sPassword)));
   }
   
   public function testSimplePasswordCheckFalse() {
@@ -32,19 +32,19 @@ EOT;
     $sHash = <<<EOT
 0af11d132e45f9b3b96407174c7a6151ae5e11b7cfb7b26ea4bb27f746a9e02aaaa22da50dd1834aef1182a52f14ab6f857ed582bac7b285135d9544c410dcac400f27098fe333c1
 EOT;
-    $this->assertEquals(false, PasswordHash::comparePassword($sPassword, $sHash));
+    $this->assertSame(false, PasswordHash::comparePassword($sPassword, $sHash));
   }
   
   public function testComplicatedPassword() {
     $sPassword = <<<EOT
 myTestPassword-#%!@#$%^&*()_üöYÿØ
 EOT;
-    $this->assertEquals(true, PasswordHash::comparePassword($sPassword, PasswordHash::hashPassword($sPassword)));
+    $this->assertSame(true, PasswordHash::comparePassword($sPassword, PasswordHash::hashPassword($sPassword)));
   }
   
   public function testGeneratedPassword() {
     $sPassword = PasswordHash::generatePassword();
-    $this->assertEquals(1, preg_match("/^\w+$/", $sPassword));
+    $this->assertSame(1, preg_match("/^\w+$/", $sPassword));
   }
   
   public function testGeneratedPasswordRepeatedly() {
@@ -56,7 +56,7 @@ EOT;
   public function testGeneratedPasswordEncryption() {
     $sPassword = PasswordHash::generatePassword();
     $sHash = PasswordHash::hashPassword($sPassword);
-    $this->assertEquals(true, PasswordHash::comparePassword($sPassword, $sHash));
+    $this->assertSame(true, PasswordHash::comparePassword($sPassword, $sHash));
   }
   
   public function testGeneratedPasswordEncryptionRepeatedly() {
