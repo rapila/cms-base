@@ -1,6 +1,6 @@
 <?php
 /**
- * classname:   DocumentUtil
+ * @package utils
  */
 class DocumentUtil {
  /**
