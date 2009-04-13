@@ -16,10 +16,10 @@ class DocumentsBackendModule extends BackendModule {
   public function __construct() {
     
     // selected_document_kind = text, application, image etc
-    $this->sDocumentKind = ListUtil::getSelectedListFilter('selected_document_kind', true, DOCUMENT_DEFAULT_KIND);
+    $this->sDocumentKind = ListUtil::handleBackendChooserListSelection('selected_document_kind', true, DOCUMENT_DEFAULT_KIND);
     
     // selected_document_category_id can be specific int, all, without category
-    $this->sDocumentCategoryId = ListUtil::getSelectedListFilter('selected_document_category_id');
+    $this->sDocumentCategoryId = ListUtil::handleBackendChooserListSelection('selected_document_category_id');
     if($this->sDocumentCategoryId === null && DocumentPeer::countDocumentsExceedsLimit(40)) {
       $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
     } 
@@ -53,6 +53,7 @@ class DocumentsBackendModule extends BackendModule {
       $this->sDocumentCategoryId = ListUtil::SELECT_ALL;
       Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
     }
+    var_dump($this->sDocumentCategoryId); exit;
     
     $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
     // order

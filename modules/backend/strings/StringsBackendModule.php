@@ -13,7 +13,7 @@ class StringsBackendModule extends BackendModule {
       $this->sPath = Manager::usePath();
       $this->oString=StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $this->sPath);
     }
-    $this->sNameSpace = ListUtil::getSelectedListFilter('namespace', false);
+    $this->sNameSpace = ListUtil::handleBackendChooserListSelection('namespace', false);
   }
   
   public function getChooser() {

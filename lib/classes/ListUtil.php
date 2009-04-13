@@ -7,7 +7,7 @@ class ListUtil {
   const SELECT_ALL = '__all';
   
   /**
-  * getSelectedListFilter()
+  * handleBackendChooserListSelection()
   * @param string request name
   * @param boolean numeric to int, default: true
   * @param string preset value if nothing is selected, default: null
@@ -15,10 +15,10 @@ class ListUtil {
   * 
   * @return mixed int|str|null
   */
-  public static function getSelectedListFilter( $sRequestName = 'selected_name_id', 
-                                                $bNumericToInt=true, 
-                                                $sPresetValue=null, 
-                                                $sDefaultReturn=null) {
+  public static function handleBackendChooserListSelection( $sRequestName = 'selected_name_id', 
+                                                            $bNumericToInt=true, 
+                                                            $sPresetValue=null, 
+                                                            $sDefaultReturn=null) {
     if(isset($_REQUEST[$sRequestName])) {
       $mSelectedValue = $_REQUEST[$sRequestName];
       if($mSelectedValue === self::SELECT_ALL || $mSelectedValue === '') {

@@ -29,7 +29,7 @@ class LinksBackendModule extends BackendModule {
       $this->bUntaggedItemsOnly = Session::getSession()->getAttribute('only_untagged_items') !== null ? Session::getSession()->getAttribute('only_untagged_items') : false;
     }
     // find by protocol: http, ftp, mailto etc
-    $this->sProtocol = ListUtil::getSelectedListFilter('selected_protocol');
+    $this->sProtocol = ListUtil::handleBackendChooserListSelection('selected_protocol');
 
     $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
     $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
