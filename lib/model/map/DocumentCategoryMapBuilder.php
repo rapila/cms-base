@@ -72,6 +72,8 @@ class DocumentCategoryMapBuilder {
 
 		$tMap->addColumn('MAX_WIDTH', 'MaxWidth', 'int', CreoleTypes::INTEGER, false, null);
 
+		$tMap->addColumn('IS_EXTERNALLY_MANAGED', 'IsExternallyManaged', 'boolean', CreoleTypes::BOOLEAN, false, 1);
+
 		$tMap->addColumn('IS_INACTIVE', 'IsInactive', 'boolean', CreoleTypes::BOOLEAN, false, 1);
 
 	} // doBuild()

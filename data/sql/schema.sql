@@ -411,6 +411,7 @@ CREATE TABLE `document_categories`
 	`name` VARCHAR(80)  NOT NULL,
 	`sort` INTEGER,
 	`max_width` INTEGER,
+	`is_externally_managed` INTEGER(1) default 0,
 	`is_inactive` INTEGER(1) default 0,
 	PRIMARY KEY (`id`)
 )Type=MyISAM;

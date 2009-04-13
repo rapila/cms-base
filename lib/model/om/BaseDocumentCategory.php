@@ -57,6 +57,13 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 
 
 	/**
+	 * The value for the is_externally_managed field.
+	 * @var        boolean
+	 */
+	protected $is_externally_managed = false;
+
+
+	/**
 	 * The value for the is_inactive field.
 	 * @var        boolean
 	 */
@@ -142,6 +149,17 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 	{
 
 		return $this->max_width;
+	}
+
+	/**
+	 * Get the [is_externally_managed] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getIsExternallyManaged()
+	{
+
+		return $this->is_externally_managed;
 	}
 
 	/**
@@ -244,6 +262,22 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 	} // setMaxWidth()
 
 	/**
+	 * Set the value of [is_externally_managed] column.
+	 * 
+	 * @param      boolean $v new value
+	 * @return     void
+	 */
+	public function setIsExternallyManaged($v)
+	{
+
+		if ($this->is_externally_managed !== $v || $v === false) {
+			$this->is_externally_managed = $v;
+			$this->modifiedColumns[] = DocumentCategoryPeer::IS_EXTERNALLY_MANAGED;
+		}
+
+	} // setIsExternallyManaged()
+
+	/**
 	 * Set the value of [is_inactive] column.
 	 * 
 	 * @param      boolean $v new value
@@ -284,14 +318,16 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 
 			$this->max_width = $rs->getInt($startcol + 3);
 
-			$this->is_inactive = $rs->getBoolean($startcol + 4);
+			$this->is_externally_managed = $rs->getBoolean($startcol + 4);
+
+			$this->is_inactive = $rs->getBoolean($startcol + 5);
 
 			$this->resetModified();
 
 			$this->setNew(false);
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 5; // 5 = DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating DocumentCategory object", $e);
@@ -541,6 +577,9 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 				return $this->getMaxWidth();
 				break;
 			case 4:
+				return $this->getIsExternallyManaged();
+				break;
+			case 5:
 				return $this->getIsInactive();
 				break;
 			default:
@@ -567,7 +606,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 			$keys[1] => $this->getName(),
 			$keys[2] => $this->getSort(),
 			$keys[3] => $this->getMaxWidth(),
-			$keys[4] => $this->getIsInactive(),
+			$keys[4] => $this->getIsExternallyManaged(),
+			$keys[5] => $this->getIsInactive(),
 		);
 		return $result;
 	}
@@ -612,6 +652,9 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 				$this->setMaxWidth($value);
 				break;
 			case 4:
+				$this->setIsExternallyManaged($value);
+				break;
+			case 5:
 				$this->setIsInactive($value);
 				break;
 		} // switch()
@@ -641,7 +684,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setMaxWidth($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setIsInactive($arr[$keys[4]]);
+		if (array_key_exists($keys[4], $arr)) $this->setIsExternallyManaged($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setIsInactive($arr[$keys[5]]);
 	}
 
 	/**
@@ -657,6 +701,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(DocumentCategoryPeer::NAME)) $criteria->add(DocumentCategoryPeer::NAME, $this->name);
 		if ($this->isColumnModified(DocumentCategoryPeer::SORT)) $criteria->add(DocumentCategoryPeer::SORT, $this->sort);
 		if ($this->isColumnModified(DocumentCategoryPeer::MAX_WIDTH)) $criteria->add(DocumentCategoryPeer::MAX_WIDTH, $this->max_width);
+		if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) $criteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, $this->is_externally_managed);
 		if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) $criteria->add(DocumentCategoryPeer::IS_INACTIVE, $this->is_inactive);
 
 		return $criteria;
@@ -717,6 +762,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent {
 		$copyObj->setSort($this->sort);
 
 		$copyObj->setMaxWidth($this->max_width);
+
+		$copyObj->setIsExternallyManaged($this->is_externally_managed);
 
 		$copyObj->setIsInactive($this->is_inactive);
 

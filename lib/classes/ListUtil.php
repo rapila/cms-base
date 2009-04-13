@@ -5,6 +5,7 @@
  
 class ListUtil {
   const SELECT_ALL = '__all';
+  const SELECT_NONE = '__without';
   
   /**
   * handleBackendChooserListSelection()

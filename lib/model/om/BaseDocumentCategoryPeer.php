@@ -24,7 +24,7 @@ abstract class BaseDocumentCategoryPeer {
 	const CLASS_DEFAULT = 'model.DocumentCategory';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 5;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -42,6 +42,9 @@ abstract class BaseDocumentCategoryPeer {
 	/** the column name for the MAX_WIDTH field */
 	const MAX_WIDTH = 'document_categories.MAX_WIDTH';
 
+	/** the column name for the IS_EXTERNALLY_MANAGED field */
+	const IS_EXTERNALLY_MANAGED = 'document_categories.IS_EXTERNALLY_MANAGED';
+
 	/** the column name for the IS_INACTIVE field */
 	const IS_INACTIVE = 'document_categories.IS_INACTIVE';
 
@@ -56,10 +59,10 @@ abstract class BaseDocumentCategoryPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Sort', 'MaxWidth', 'IsInactive', ),
-		BasePeer::TYPE_COLNAME => array (DocumentCategoryPeer::ID, DocumentCategoryPeer::NAME, DocumentCategoryPeer::SORT, DocumentCategoryPeer::MAX_WIDTH, DocumentCategoryPeer::IS_INACTIVE, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'sort', 'max_width', 'is_inactive', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Sort', 'MaxWidth', 'IsExternallyManaged', 'IsInactive', ),
+		BasePeer::TYPE_COLNAME => array (DocumentCategoryPeer::ID, DocumentCategoryPeer::NAME, DocumentCategoryPeer::SORT, DocumentCategoryPeer::MAX_WIDTH, DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, DocumentCategoryPeer::IS_INACTIVE, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'sort', 'max_width', 'is_externally_managed', 'is_inactive', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -69,10 +72,10 @@ abstract class BaseDocumentCategoryPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Sort' => 2, 'MaxWidth' => 3, 'IsInactive' => 4, ),
-		BasePeer::TYPE_COLNAME => array (DocumentCategoryPeer::ID => 0, DocumentCategoryPeer::NAME => 1, DocumentCategoryPeer::SORT => 2, DocumentCategoryPeer::MAX_WIDTH => 3, DocumentCategoryPeer::IS_INACTIVE => 4, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'sort' => 2, 'max_width' => 3, 'is_inactive' => 4, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Sort' => 2, 'MaxWidth' => 3, 'IsExternallyManaged' => 4, 'IsInactive' => 5, ),
+		BasePeer::TYPE_COLNAME => array (DocumentCategoryPeer::ID => 0, DocumentCategoryPeer::NAME => 1, DocumentCategoryPeer::SORT => 2, DocumentCategoryPeer::MAX_WIDTH => 3, DocumentCategoryPeer::IS_EXTERNALLY_MANAGED => 4, DocumentCategoryPeer::IS_INACTIVE => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'sort' => 2, 'max_width' => 3, 'is_externally_managed' => 4, 'is_inactive' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -180,6 +183,8 @@ abstract class BaseDocumentCategoryPeer {
 		$criteria->addSelectColumn(DocumentCategoryPeer::SORT);
 
 		$criteria->addSelectColumn(DocumentCategoryPeer::MAX_WIDTH);
+
+		$criteria->addSelectColumn(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED);
 
 		$criteria->addSelectColumn(DocumentCategoryPeer::IS_INACTIVE);
 
