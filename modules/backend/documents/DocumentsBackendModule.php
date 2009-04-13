@@ -11,8 +11,6 @@ class DocumentsBackendModule extends BackendModule {
   private $sDocumentKind;
   private $bHasUploadedFile = false;
   private $sDocumentCategoryId;
-  private $sSortField;
-  private $sSortOrder;
   private $aReferences = array();
 
   public function __construct() {
@@ -25,11 +23,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->sDocumentCategoryId === null && DocumentPeer::countDocumentsExceedsLimit(40)) {
       $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
     } 
-    
-    // order
-    $this->sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
-    $this->sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
-    
+        
     // if there is a key and a document
     if(Manager::hasNextPathItem()) {
       $iId = Manager::peekNextPathItem();
@@ -60,16 +54,20 @@ class DocumentsBackendModule extends BackendModule {
       Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
     }
     
-    $sDocumentName = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
-    $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategoryId, $this->sSortField, $this->sSortOrder, true, $sDocumentName);
+    $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
+    // order
+    $sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
+    $sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
+
+    $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategoryId, $sSortField, $sSortOrder, true, $sSearch);
     $oTemplate = $this->constructTemplate("list");
 
-    $sSortOrderName = $this->sSortField == 'name' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $sSortOrderUpdatedBy = $this->sSortField == 'updated_at' ? $this->sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
+    $sSortOrderName = $sSortField == 'name' ? $sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
+    $sSortOrderUpdatedBy = $sSortField == 'updated_at' ? $sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
     $oTemplate->replaceIdentifier("link_name", LinkUtil::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
     $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
-    $oTemplate->replaceIdentifier("link_name_class", $this->sSortField == 'name' ? 'sort_'.$this->sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("link_date_class", $this->sSortField == 'updated_at' ? 'sort_'.$this->sSortOrder : 'sort_blind');
+    $oTemplate->replaceIdentifier("link_name_class", $sSortField == 'name' ? 'sort_'.$sSortOrder : 'sort_blind');
+    $oTemplate->replaceIdentifier("link_date_class", $sSortField == 'updated_at' ? 'sort_'.$sSortOrder : 'sort_blind');
     $oTemplate->replaceIdentifier("change_select_action", $this->link());
 
     if(count($aDocuments) === 0) {

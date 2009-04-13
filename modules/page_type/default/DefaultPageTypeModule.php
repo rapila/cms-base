@@ -108,7 +108,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       //Print Edit link
       $sEditImage = TagWriter::quickTag("img", array('class' => 'mini_cms_fe_edit_button', 'src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
       
-      $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager"), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
+      $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager", array("content_language" => Session::language())), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
       $oTemplate->replaceIdentifierMultiple("container", $oTag);
     }
     return true;
