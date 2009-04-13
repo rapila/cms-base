@@ -1,8 +1,7 @@
 <?php
-
 /**
-* @package helpers
-*/
+ * @package utils
+ */
 class BuildHelper {
   const CLASSNAME_PATTERN = "/phpName=\"(\w+)\"/";
   

@@ -3,9 +3,6 @@
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
 
-/**
-* @package helpers
-*/
 class Autoloader {
   const CACHE_KEY = 'AUTOLOAD_CLASS_MAPPING';
   
