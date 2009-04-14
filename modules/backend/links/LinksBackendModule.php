@@ -101,13 +101,13 @@ class LinksBackendModule extends BackendModule {
     if($this->oLink === null) {
       $this->create();
     }
+    $this->oLink->setName($_POST['name']);
+    $this->oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($_POST['url']));
+    $this->oLink->setDescription($_POST['description']);
     if(Flash::noErrors()) {
       $this->oLink->setUpdatedBy(Session::getSession()->getUserId());
       $this->oLink->setOwnerId(isset($_REQUEST['owner_id']) && $_REQUEST['owner_id'] != '' ? $_REQUEST['owner_id'] : Session::getSession()->getUserId());
       $this->oLink->setUpdatedAt(date('c'));
-      $this->oLink->setName($_POST['name']);
-      $this->oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($_POST['url']));
-      $this->oLink->setDescription($_POST['description']);
       $this->oLink->save();
       LinkUtil::redirect($this->link($this->oLink->getId()));
     }

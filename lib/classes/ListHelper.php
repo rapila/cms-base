@@ -153,6 +153,8 @@ class ListHelper {
         $oCriteria->add($sFilterColumn, "%$sFilterValue%", $bInverted ? Criteria::NOT_LIKE : Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_TAG) {
         $aTaggedItemIds = array();
+        // fixed: if invert, then $sFilterValue should be null
+        $sFilterValue = $bInverted ? null : $sFilterValue;
         foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {
           $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
         }
