@@ -91,6 +91,8 @@ class ListHelper {
       $sColumn = constant($this->sPeerClass.'::ID');
     }
     $aTagsUsedInModel = TagPeer::getTagsUsedInModel($this->sModelName);
+    
+    // @todo needs to be generic
     return $this->getFilterSelect($sColumn, $aTagsUsedInModel, StringPeer::getString('all_entries'), StringPeer::getString('link.without_tags'), self::SELECTION_TYPE_TAG, 'getName');
   }
   
@@ -137,7 +139,7 @@ class ListHelper {
     }
   }
   
-  private function handleListFiltering($oCriteria) {
+  private function handleListFiltering($oCriteria, $aParams=array()) {
     $oListSettings = $this->getListSettings();
     foreach($oListSettings->aFilters as $sFilterColumn => $sFilterValue) {
       if($sFilterValue === self::SELECT_ALL) {
@@ -147,13 +149,18 @@ class ListHelper {
       $bInverted = $sFilterValue === self::SELECT_WITHOUT;
       if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS) {
         $oCriteria->add($sFilterColumn, $sFilterValue, $bInverted ? Criteria::NOT_EQUAL : Criteria::EQUAL);
+        // @todo somekind of callback for special criterias
+        if(count($aParams) > 0 && isset($aParams['extract_boolean'])) {
+          // special handling for mixed, hacked selects like butti section boolean is_archive
+          // do something to extract boolean from value and fix value
+        }
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_BEGINS) {
         $oCriteria->add($sFilterColumn, "$sFilterValue%", $bInverted ? Criteria::NOT_LIKE : Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_CONTAINS) {
         $oCriteria->add($sFilterColumn, "%$sFilterValue%", $bInverted ? Criteria::NOT_LIKE : Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_TAG) {
         $aTaggedItemIds = array();
-        // fixed: if invert, then $sFilterValue should be null
+        // @todo check fixed: if invert, then $sFilterValue should be null
         $sFilterValue = $bInverted ? null : $sFilterValue;
         foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {
           $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
