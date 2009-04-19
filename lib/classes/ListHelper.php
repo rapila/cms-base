@@ -171,6 +171,7 @@ class ListHelper {
   }
   
   public function getListSettings() {
+    // @todo fix session problem accross applications. storage is too persistent, maybe add domain name
     $oSession = Session::getSession();
     if(!$oSession->hasAttribute($this->sSessionKey)) {
       $oSession->setAttribute($this->sSessionKey, new ListSettings());
