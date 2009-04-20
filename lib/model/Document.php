@@ -100,4 +100,8 @@ class Document extends BaseDocument {
     }
     return self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()];
   }
+  
+  public function setDocumentCategoryId($mCategoryId) {
+    parent::setDocumentCategoryId(is_numeric($mCategoryId) && $mCategoryId > 0 ? $mCategoryId : null);
+  }
 } // Document
