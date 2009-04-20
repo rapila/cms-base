@@ -46,11 +46,10 @@ class DefaultPageTypeModule extends PageTypeModule {
     $sContainerName = $oTemplateIdentifier->getValue();
     $aPageObjects = $this->oPage->getObjectsForContainer($sContainerName);
     if(count($aPageObjects) === 0 && $bInheritContainer) {
-      $aPageObjects = array();
       $oParent = $this->oPage;
-      do {
+      while (($oParent = $oParent->getParent()) !== null && count($aPageObjects) === 0) {
         $aPageObjects = $oParent->getObjectsForContainer($sContainerName);
-      } while (($oParent = $oParent->getParent()) !== null && count($aPageObjects) === 0);
+      }
     }
     if(count($aPageObjects) === 0) {
       return null;
