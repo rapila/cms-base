@@ -105,11 +105,9 @@ CREATE TABLE `indirect_references`
 
 #svn r1817
 ALTER TABLE `documents` CHANGE `document_category_id` `document_category_id` INT( 11 ) NULL DEFAULT NULL;
-UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id` = 0;
 
 #svn r1938
-ALTER TABLE `document_categories` ADD `is_externally_managed` TINYINT( 1 ) UNSIGNED NOT NULL AFTER `max_width` ,
-ADD INDEX ( is_externally_managed );
+ALTER TABLE `document_categories` ADD `is_externally_managed` TINYINT( 1 ) UNSIGNED NOT NULL AFTER `max_width`;
 
-#general change of documents document_category_id default to null
-UPDATE documents SET document_category_id = null WHERE document_category_id = 0 ;
+#svn r2019
+UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id` = 0;
