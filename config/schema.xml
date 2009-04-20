@@ -221,7 +221,7 @@
   <foreign-key foreignTable="document_types">
     <reference local="document_type_id" foreign="id" />
   </foreign-key>
-  <column name="document_category_id" type="integer" required="false" />
+  <column name="document_category_id" type="integer" required="false" default="null" />
   <foreign-key foreignTable="document_categories">
     <reference local="document_category_id" foreign="id" />
   </foreign-key>

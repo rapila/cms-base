@@ -33,6 +33,7 @@ class DocumentPeer extends BaseDocumentPeer {
     if($iDocumentCategory !== ListUtil::SELECT_ALL) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
     } else {
+      // exclude externally managed - uploads from custom modules - images
       $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
       if(count($aExcludeCategories) > 0) {
         $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
