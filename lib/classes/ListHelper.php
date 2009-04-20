@@ -74,6 +74,9 @@ class ListHelper {
       $aAdditionalOptions[self::SELECT_ALL] = $sIncludeAllString;
     }
     if($sIncludeWithoutString !== null) {
+      if($sSelectionType === self::SELECTION_TYPE_CONTAINS || $sSelectionType === self::SELECTION_TYPE_BEGINS) {
+        throw new Exception("Exception in ListHelper->getFilterSelect() selection type$sSelectionType not supported to have a __without value");
+      }
       $aAdditionalOptions[self::SELECT_WITHOUT] = $sIncludeWithoutString;
     }
     if($sSelectedItem !== self::SELECT_ALL && $sSelectedItem !== self::SELECT_WITHOUT && is_numeric($sSelectedItem)) {
@@ -149,21 +152,16 @@ class ListHelper {
         continue;
       }
       $bInverted = $sFilterValue === self::SELECT_WITHOUT;
+      $sFilterValue = $bInverted ? null : $sFilterValue;
       if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS) {
-        $oCriteria->add($sFilterColumn, $sFilterValue, $bInverted ? Criteria::NOT_EQUAL : Criteria::EQUAL);
-        // @todo somekind of callback for special criterias
-        if(count($aParams) > 0 && isset($aParams['extract_boolean'])) {
-          // special handling for mixed, hacked selects like butti section boolean is_archive
-          // do something to extract boolean from value and fix value
-        }
+        $oCriteria->add($sFilterColumn, $sFilterValue, Criteria::EQUAL);
+      //LIKE criterias are not compatible with $bInverted == true
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_BEGINS) {
-        $oCriteria->add($sFilterColumn, "$sFilterValue%", $bInverted ? Criteria::NOT_LIKE : Criteria::LIKE);
+        $oCriteria->add($sFilterColumn, "$sFilterValue%", Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_CONTAINS) {
-        $oCriteria->add($sFilterColumn, "%$sFilterValue%", $bInverted ? Criteria::NOT_LIKE : Criteria::LIKE);
+        $oCriteria->add($sFilterColumn, "%$sFilterValue%", Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_TAG) {
         $aTaggedItemIds = array();
-        // @todo check fixed: if invert, then $sFilterValue should be null
-        $sFilterValue = $bInverted ? null : $sFilterValue;
         foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {
           $aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
         }
