@@ -19,6 +19,8 @@ class ListHelper {
   const SELECTION_TYPE_BEGINS = 'begins';
   const SELECTION_TYPE_CONTAINS = 'contains';
   const SELECTION_TYPE_TAG = 'tag';
+  //Be sure to handle manual selections in the criteria before calling handleListFiltering()
+  const SELECTION_TYPE_MANUAL = 'manual';
   
   private $sCallerClass;
   private $sModelName;
@@ -142,7 +144,7 @@ class ListHelper {
   private function handleListFiltering($oCriteria, $aParams=array()) {
     $oListSettings = $this->getListSettings();
     foreach($oListSettings->aFilters as $sFilterColumn => $sFilterValue) {
-      if($sFilterValue === self::SELECT_ALL) {
+      if($sFilterValue === self::SELECT_ALL || $this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_MANUAL) {
         //Don’t confine
         continue;
       }
