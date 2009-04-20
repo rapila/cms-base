@@ -101,8 +101,8 @@ class Image {
     imagefttext($this->rImageHandle, $iFontSize, $iAngle, $this->iOriginalWidth-$iWidth, $this->iOriginalHeight-$iHeight, imagecolorallocatealpha($this->rImageHandle, 255, 255, 255, 30), $sFontFilePath, $sText);
   }
   
-  public function fill($iRed, $iGreen, $iBlue) {
-    imagefill($this->rImageHandle, 0, 0, imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue));
+  public function fill($iRed, $iGreen, $iBlue, $iAlpha = 0) {
+    imagefill($this->rImageHandle, 0, 0, $iAlpha === 0 ? imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue) : imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iAlpha));
   }
   
   public function render($bDontBlowUp = true, $sFileName = null, $oCache = null) {
@@ -194,10 +194,14 @@ class Image {
     return Image::imageFromData(file_get_contents($sPath));
   }
   
-  public static function imageWithText($sText, $sFontFilePath, $iFontSize, $iRed, $iGreen, $iBlue, $iOpacity, $iBackgoundRed = 255, $iBackgoundGreen = 255, $iBackgoundBlue = 255) {
+  public static function imageWithText($sText, $sFontFilePath, $iFontSize, $iRed, $iGreen, $iBlue, $iOpacity, $iBackgoundRed = 255, $iBackgoundGreen = 255, $iBackgoundBlue = 255, $iBackgoundAlpha = 0) {
     list($iWidth, $iHeight) = self::textSize($sFontFilePath, $sText, $iFontSize);
     $oImage = self::emptyImage($iWidth+4, $iHeight+4);
-    $oImage->fill($iBackgoundRed, $iBackgoundGreen, $iBackgoundBlue);
+    if($iBackgoundAlpha !== 0) {
+      imagealphablending($oImage->rImageHandle, false);
+      imagesavealpha($oImage->rImageHandle, true);
+    }
+    $oImage->fill($iBackgoundRed, $iBackgoundGreen, $iBackgoundBlue, $iBackgoundAlpha);
     $oImage->addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue);
     return $oImage;
   }
