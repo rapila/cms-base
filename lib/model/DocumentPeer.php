@@ -14,21 +14,21 @@ class DocumentPeer extends BaseDocumentPeer {
   
   public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsNotInverted=true, $sDocumentName=null) {
     if($sDocumentKind === null) {
-      $sDocumentKind = ListUtil::SELECT_ALL;
+      $sDocumentKind = ListHelper::SELECT_ALL;
     }
     if($iDocumentCategory === null) {
-      $iDocumentCategory = ListUtil::SELECT_ALL;
+      $iDocumentCategory = ListHelper::SELECT_ALL;
     }
     
     $oCriteria = new Criteria();
     
     //Search
     if($sDocumentName !== null) {
-      $oCriteria->add(self::NAME, "%$sDocumentName%", Criteria::LIKE);
+      self::addSearchToCriteria($sDocumentName, $oCriteria);
     }
     
     //By DocumentCategoryId or all internally managed Documents
-    if($iDocumentCategory !== ListUtil::SELECT_ALL) {
+    if($iDocumentCategory !== ListHelper::SELECT_ALL) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
     } else {
       // exclude externally managed - uploads from custom modules - images
@@ -39,7 +39,7 @@ class DocumentPeer extends BaseDocumentPeer {
     }
     
     //Kind
-    if($sDocumentKind !== ListUtil::SELECT_ALL) {
+    if($sDocumentKind !== ListHelper::SELECT_ALL) {
       $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
     
@@ -49,6 +49,10 @@ class DocumentPeer extends BaseDocumentPeer {
     }
     
     return self::doSelect($oCriteria);
+  }
+  
+  public static function addSearchToCriteria($sSearch, $oCriteria) {
+    $oCriteria->add(self::NAME, "%$sSearch%", Criteria::LIKE);
   }
   
  /**
