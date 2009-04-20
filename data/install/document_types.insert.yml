@@ -34,6 +34,8 @@ inserts:
     mimetype:       "image/vnd.microsoft.icon"
   swf:
     mimetype:       "application/x-shockwave-flash"
+  flv:
+    mimetype:       "video/x-flv"
   
 insert_pattern:
 # key is optional

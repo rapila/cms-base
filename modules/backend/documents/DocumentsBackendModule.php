@@ -8,31 +8,17 @@ define('DOCUMENT_DEFAULT_KIND', 'application');
 class DocumentsBackendModule extends BackendModule {
 
   private $oDocument = null;
-  private $sDocumentKind;
   private $bHasUploadedFile = false;
-  private $sDocumentCategoryId;
   private $aReferences = array();
+  
+  private $oListHelper;
 
   public function __construct() {
-    
-    // selected_document_kind = text, application, image etc
-    $this->sDocumentKind = ListUtil::handleBackendChooserListSelection('selected_document_kind', true, DOCUMENT_DEFAULT_KIND);
-    
-    // selected_document_category_id can be specific int, all, without category
-    $this->sDocumentCategoryId = ListUtil::handleBackendChooserListSelection('selected_document_category_id');
-    if($this->sDocumentCategoryId === null && DocumentPeer::countDocumentsExceedsLimit(40)) {
-      $this->sDocumentCategoryId = DocumentPeer::WITHOUT_CATEGORY;
-    } 
-        
     // if there is a key and a document
     if(Manager::hasNextPathItem()) {
       $iId = Manager::peekNextPathItem();
       $this->oDocument = DocumentPeer::retrieveByPk($iId);
       if($this->oDocument) {
-        // correct document kind if selected is not the same like the one of the current document
-        if($this->sDocumentKind !== ListUtil::SELECT_ALL && $this->oDocument->getDocumentType()->getDocumentKind() !== $this->sDocumentKind) {
-          $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind();
-        }
         $this->aReferences = ReferencePeer::getReferences($this->oDocument);
       }
     }
@@ -40,47 +26,30 @@ class DocumentsBackendModule extends BackendModule {
     if(!DocumentTypePeer::hasDocTypesPreset()) {
       InstallUtil::loadToDbFromYamlFile('document_types');
     }
+    $this->oListHelper = new ListHelper($this);
   }
 
   public function getChooser() {
-    // document categories select is only displayed when there are categories available
-    $aDocumentCategoryOptions = null;
-    $aDocumentCategories = DocumentCategoryPeer::getDocumentCategories();
-    if(count($aDocumentCategories) > 0) {
-      $aDocumentCategoryOptions =  TagWriter::optionsFromObjects($aDocumentCategories, 'getId', 'getName', $this->sDocumentCategoryId === null ? ListUtil::SELECT_ALL : $this->sDocumentCategoryId, array(ListUtil::SELECT_ALL => StringPeer::getString('documents.all_categories'), DocumentPeer::WITHOUT_CATEGORY => StringPeer::getString('document.without_category')));
-    } else {
-      //Clear document category
-      $this->sDocumentCategoryId = ListUtil::SELECT_ALL;
-      Session::getSession()->setAttribute('selected_document_kind', $this->sDocumentKind);
-    }
-    
-    $sSearch = isset($_REQUEST['search']) && $_REQUEST['search'] != null ? $_REQUEST['search'] : null;
-    // order
-    $sSortField  = @$_REQUEST['sort_field'] ? $_REQUEST['sort_field'] : 'name';
-    $sSortOrder  = @$_REQUEST['sort_order'] ? $_REQUEST['sort_order'] : 'asc';
-
-    $aDocuments = DocumentPeer::getDocumentsByKindAndCategory($this->sDocumentKind, $this->sDocumentCategoryId, $sSortField, $sSortOrder, true, $sSearch);
     $oTemplate = $this->constructTemplate("list");
-
-    $sSortOrderName = $sSortField == 'name' ? $sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $sSortOrderUpdatedBy = $sSortField == 'updated_at' ? $sSortOrder == 'asc' ? 'desc' : 'asc' : 'asc';
-    $oTemplate->replaceIdentifier("link_name", LinkUtil::linkToSelf(null, array('sort_field' => 'name', 'sort_order' => $sSortOrderName)));
-    $oTemplate->replaceIdentifier("link_date", LinkUtil::linkToSelf(null, array('sort_field' => 'updated_at', 'sort_order' => $sSortOrderUpdatedBy)));
-    $oTemplate->replaceIdentifier("link_name_class", $sSortField == 'name' ? 'sort_'.$sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("link_date_class", $sSortField == 'updated_at' ? 'sort_'.$sSortOrder : 'sort_blind');
-    $oTemplate->replaceIdentifier("change_select_action", $this->link());
+    
+    // document categories select is only displayed when there are categories available
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::getDocumentCategories(), StringPeer::getString('documents.all_categories'), StringPeer::getString('document.without_category')));
+    
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentTypePeer::MIMETYPE, DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), StringPeer::getString('document.all_kinds'), null, ListHelper::SELECTION_TYPE_BEGINS));
+    
+    $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(DocumentPeer::NAME, 'name', true));
+    $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(DocumentPeer::UPDATED_AT, 'date'));
+    
+    $oCriteria = new Criteria();
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
+    $this->oListHelper->handle($oCriteria);
+    $aDocuments = DocumentPeer::doSelect($oCriteria);
 
     if(count($aDocuments) === 0) {
-      $oTemplate->replaceIdentifier("no_document_message", StringPeer::getString('no_document_message', null, '[Keine Dokumente]'));
+      $oTemplate->replaceIdentifier("no_document_message", StringPeer::getString('no_document_message'));
     }
-    $oTemplate->replaceIdentifier("document_categories_options", $aDocumentCategoryOptions);
     
-    // selected_document_kind_options are only displayed if there are any documents
-    $aDocumentKindOptions = null;
-    $aDocumentKindOptions =  TagWriter::optionsFromArray(DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), $this->sDocumentKind, null, array(ListUtil::SELECT_ALL => StringPeer::getString('document.all_kinds')));
-    $oTemplate->replaceIdentifier("selected_document_kind_options", $aDocumentKindOptions);
     $oLinkTemplatePrototype = $this->constructTemplate("list_item");
-
     foreach($aDocuments as $oDocument) {
       $oLinkTemplate = clone $oLinkTemplatePrototype;
       $oLinkTemplate->replaceIdentifier("link", $this->link($oDocument->getId()));
@@ -92,6 +61,7 @@ class DocumentsBackendModule extends BackendModule {
       $oLinkTemplate->replaceIdentifier('title', $oDocument->getName() .'  ['.$oDocument->getExtension().'/'.DocumentUtil::getDocumentSize($oDocument->getDataSize()).']');
       $oTemplate->replaceIdentifierMultiple("result", $oLinkTemplate, null);
     }
+    
     return $oTemplate;
   }
 
@@ -101,7 +71,8 @@ class DocumentsBackendModule extends BackendModule {
       $this->oDocument->setDocumentType(DocumentTypePeer::doSelectOne(new Criteria()));
 
       // preselect currently selected Document category for convenience
-      $this->oDocument->setDocumentCategoryId($this->sDocumentCategoryId);
+      $sPreselectedDocumentCategoryId = $this->oListHelper->getListSettings()->getFilterColumnValue(DocumentPeer::DOCUMENT_CATEGORY_ID);
+      $this->oDocument->setDocumentCategoryId(is_numeric($sPreselectedDocumentCategoryId) ? $sPreselectedDocumentCategoryId : null);
     } elseif ($this->oDocument === null) {
       $oTemplate = $this->constructTemplate("module_info");
       
@@ -121,7 +92,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->oDocument !== null) {
       $oTemplate = $this->constructTemplate("detail");
       $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('documents', null, array('get_module_info' => 'true')))));
-      $sActionLink = $this->link($this->oDocument->getId(), array('document_category_id' => $this->sDocumentCategoryId));
+      $sActionLink = $this->link($this->oDocument->getId());
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());
       $oTemplate->replaceIdentifier("name", $this->oDocument->getName() != '' ? $this->oDocument->getName() : null);
@@ -228,13 +199,8 @@ class DocumentsBackendModule extends BackendModule {
         }
       }
       $this->oDocument->save();
-      
-      // in case document kind is not "all" the document kind always has to be checked/updated in order to display the doc
-      if($this->sDocumentKind !== ListUtil::SELECT_ALL) {
-        $this->sDocumentKind = $this->oDocument->getDocumentType()->getDocumentKind(); 
-      }
 
-      LinkUtil::redirect($this->link($this->oDocument->getId(),array('selected_document_category_id' => $this->sDocumentCategoryId, 'selected_document_kind' => $this->sDocumentKind)));
+      LinkUtil::redirect($this->link($this->oDocument->getId()));
     }
   }
 
@@ -255,7 +221,7 @@ class DocumentsBackendModule extends BackendModule {
     if($this->oDocument !== null && !$this->mayNotDelete() && count($this->aReferences) === 0) {
       $this->oDocument->delete();
     }
-    LinkUtil::redirectToManager("documents", null, array('selected_document_category_id' => $this->sDocumentCategoryId));
+    LinkUtil::redirectToManager("documents");
   }
 
   public function getModelName() {
@@ -270,7 +236,7 @@ class DocumentsBackendModule extends BackendModule {
   }
 
   public function getNewEntryActionParams() {
-    return array('action' => $this->link('new', array('selected_document_kind' => $this->sDocumentKind, 'selected_document_category_id' => $this->sDocumentCategoryId)));
+    return array('action' => $this->link('new'));
   }
 
   public function hasSearch() {

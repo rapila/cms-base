@@ -19,7 +19,7 @@ class ListHelper {
   const SELECTION_TYPE_BEGINS = 'begins';
   const SELECTION_TYPE_CONTAINS = 'contains';
   const SELECTION_TYPE_TAG = 'tag';
-  //Be sure to handle manual selections in the criteria before calling handleListFiltering()
+  //Be sure to handle manual selections in the criteria before calling handle()
   const SELECTION_TYPE_MANUAL = 'manual';
   
   private $sCallerClass;
@@ -27,15 +27,30 @@ class ListHelper {
   private $sPeerClass;
   private $sSessionKey;
   private $sRequestPrefix;
+  
+  private $oSortHeaderTemplate;
+  private $oSelectTemplate;
 
   private $aSelectionTypes = array();
   
-  public function __construct($oCaller) {
+  public function __construct($oCaller, $oSortHeaderTemplate = null, $oSelectTemplate = null) {
     $this->sCallerClass = get_class($oCaller);
     $this->sModelName = $oCaller->getModelName();
     $this->sPeerClass = $this->sModelName.'Peer';
     $this->sSessionKey = $this->sCallerClass.self::SESSION_SUFFIX;
     $this->sRequestPrefix = $this->sCallerClass.self::REQUEST_PREFIX;
+    
+    if($oSortHeaderTemplate === null) {
+      global $LIST_HELPER_SORT_HEADER_TEMPLATE;
+      $oSortHeaderTemplate = $LIST_HELPER_SORT_HEADER_TEMPLATE;
+    }
+    $this->oSortHeaderTemplate = $oSortHeaderTemplate;
+    
+    if($oSelectTemplate === null) {
+      global $LIST_HELPER_SELECT_TEMPLATE;
+      $oSelectTemplate = $LIST_HELPER_SELECT_TEMPLATE;
+    }
+    $this->oSelectTemplate = $oSelectTemplate;
     
     $this->prepareSort();
   }
@@ -67,8 +82,7 @@ class ListHelper {
     $this->aSelectionTypes[$sColumn] = $sSelectionType;
     
     $sSelectedItem = $oListSettings->getFilterColumnValue($sColumn);
-    global $LIST_HELPER_SELECT_TEMPLATE;
-    $oSelectTemplate = clone $LIST_HELPER_SELECT_TEMPLATE;
+    $oSelectTemplate = clone $this->oSelectTemplate;
     $aAdditionalOptions = array();
     if($sIncludeAllString !== null) {
       $aAdditionalOptions[self::SELECT_ALL] = $sIncludeAllString;
@@ -109,8 +123,7 @@ class ListHelper {
     if($bIsDefault && count($oListSettings->aSorts) == 0) {
       $oListSettings->addSortColumn($sColumn, 'asc');
     }
-    global $LIST_HELPER_SORT_HEADER_TEMPLATE;
-    $oSortItemTemplate = clone $LIST_HELPER_SORT_HEADER_TEMPLATE;
+    $oSortItemTemplate = clone $this->oSortHeaderTemplate;
     $oCurrentSortValue = $oListSettings->getSortColumnValue($sColumn);
     $oSortItemTemplate->replaceIdentifier("sort_link", LinkUtil::linkToSelf(null, array(self::normalizeRequestKey('sort_field') => $sColumn, self::normalizeRequestKey('sort_order') => $oListSettings->isTopSort($sColumn) ? $oCurrentSortValue === 'asc' ? 'desc' : 'asc' : 'asc')));
     $oSortItemTemplate->replaceIdentifier("sort_class", $oListSettings->isTopSort($sColumn) ? $oCurrentSortValue : 'blind');

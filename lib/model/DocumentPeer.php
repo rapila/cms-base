@@ -12,8 +12,6 @@
  */	
 class DocumentPeer extends BaseDocumentPeer {
   
-  const WITHOUT_CATEGORY = '__without';
-  
   public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsNotInverted=true, $sDocumentName=null) {
     if($sDocumentKind === null) {
       $sDocumentKind = ListUtil::SELECT_ALL;
@@ -31,7 +29,7 @@ class DocumentPeer extends BaseDocumentPeer {
     
     //By DocumentCategoryId or all internally managed Documents
     if($iDocumentCategory !== ListUtil::SELECT_ALL) {
-      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory === self::WITHOUT_CATEGORY ? null : $iDocumentCategory);
+      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
     } else {
       // exclude externally managed - uploads from custom modules - images
       $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
