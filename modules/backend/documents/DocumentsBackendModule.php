@@ -8,6 +8,7 @@ define('DOCUMENT_DEFAULT_KIND', 'application');
 class DocumentsBackendModule extends BackendModule {
 
   private $oDocument = null;
+  private $oDocumentCategories;
   private $bHasUploadedFile = false;
   private $aReferences = array();
   
@@ -22,6 +23,8 @@ class DocumentsBackendModule extends BackendModule {
         $this->aReferences = ReferencePeer::getReferences($this->oDocument);
       }
     }
+    
+    $this->oDocumentCategories = DocumentCategoryPeer::getDocumentCategoriesBackend();
     // if there are no document types, then load default entries from 'document_types.insert.yml'
     if(!DocumentTypePeer::hasDocTypesPreset()) {
       InstallUtil::loadToDbFromYamlFile('document_types');
@@ -33,7 +36,7 @@ class DocumentsBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate("list");
     
     // document categories select is only displayed when there are categories available
-    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::getDocumentCategories(), StringPeer::getString('documents.all_categories'), StringPeer::getString('document.without_category')));
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->oDocumentCategories, StringPeer::getString('documents.all_categories'), StringPeer::getString('document.without_category')));
     
     $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentTypePeer::MIMETYPE, DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist(), StringPeer::getString('document.all_kinds'), null, ListHelper::SELECTION_TYPE_BEGINS));
     
@@ -42,11 +45,13 @@ class DocumentsBackendModule extends BackendModule {
     
     $oCriteria = new Criteria();
     $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+    $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
     $this->oListHelper->handle($oCriteria);
     $aDocuments = DocumentPeer::doSelect($oCriteria);
 
     if(count($aDocuments) === 0) {
-      $oTemplate->replaceIdentifier("no_document_message", StringPeer::getString('no_document_message'));
+      $oTemplate->replaceIdentifier("has_no_entries", StringPeer::getString('has_no_entries'));
     }
     
     $oLinkTemplatePrototype = $this->constructTemplate("list_item");
@@ -111,7 +116,7 @@ class DocumentsBackendModule extends BackendModule {
       }
 
       if(DocumentCategoryPeer::hasDocumentCategories()) {
-        $oTemplate->replaceIdentifier("doc_category_options", TagWriter::optionsFromObjects(DocumentCategoryPeer::getDocumentCategories(), 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
+        $oTemplate->replaceIdentifier("doc_category_options", TagWriter::optionsFromObjects($this->oDocumentCategories, 'getId', 'getName', $this->oDocument->getDocumentCategoryId()));
       }
 
       if(!$this->oDocument->isNew()) {

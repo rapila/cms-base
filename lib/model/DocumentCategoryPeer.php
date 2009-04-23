@@ -12,9 +12,9 @@
  */	
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 
-  public static function getDocumentCategoriesSorted($bInactiveOnly = false) {
+  public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
     $oCriteria = new Criteria();
-    $oCriteria->add(self::IS_EXTERNALLY_MANAGED, false);
+    $oCriteria->add(self::IS_EXTERNALLY_MANAGED, $bUseInternallyManagedOnly);
     if($bInactiveOnly) {
       $oC->add(self::IS_INACTIVE, true);
     }
@@ -36,12 +36,12 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
     return $aResult;
   }
   
-  public static function getDocumentCategories($bInactiveOnly = false) {
-    return self::getDocumentCategoriesSorted($bInactiveOnly);
+  public static function getDocumentCategoriesBackend($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
+    return self::getDocumentCategoriesSorted($bInactiveOnly, $bUseInternallyManagedOnly);
   }
   
-  public static function hasDocumentCategories($bInactiveOnly = false) {
-    return count(self::getDocumentCategoriesSorted($bInactiveOnly)) > 0;
+  public static function hasDocumentCategories($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
+    return count(self::getDocumentCategoriesSorted($bInactiveOnly, $bUseInternallyManagedOnly)) > 0;
   }
   
   public static function getCategoryNameById($iCategoryId) {
