@@ -54,19 +54,19 @@ class SpecialTemplateIdentifierActions {
       $sStyle = $oTemplateIdentifier->getParameter('style');
     }
     $bAlternate = $oTemplateIdentifier->hasParameter('alternate') && $oTemplateIdentifier->getParameter('alternate') === 'true';
-    if(StringUtil::startsWith($sLocale, 'en')) {
+    if(StringUtil::startsWith($sLocale, 'en_')) {
       if($sStyle === 'single') {
         return "‘{$oTemplateIdentifier->getValue()}’";
       }
       return "“{$oTemplateIdentifier->getValue()}”";
     }
-    if(StringUtil::startsWith($sLocale, 'fr') || $sLocale === 'de_CH') {
+    if(StringUtil::startsWith($sLocale, 'fr_') || $sLocale === 'de_CH') {
       if($sStyle === 'single') {
         return "‹{$oTemplateIdentifier->getValue()}›";
       }
       return "«{$oTemplateIdentifier->getValue()}»";
     }
-    if(StringUtil::startsWith($sLocale, 'de')) {
+    if(StringUtil::startsWith($sLocale, 'de_')) {
       if($bAlternate) {
         if($sStyle === 'single') {
           return "›{$oTemplateIdentifier->getValue()}‹";
