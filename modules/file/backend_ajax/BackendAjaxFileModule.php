@@ -13,7 +13,6 @@ class BackendAjaxFileModule extends FileModule {
   
   public function __construct($aRequestPath) {
     parent::__construct($aRequestPath);
-    array_shift($aRequestPath);
     $this->sBackendModuleName = array_shift($aRequestPath);
     $this->aRequestPath = $aRequestPath;
   }

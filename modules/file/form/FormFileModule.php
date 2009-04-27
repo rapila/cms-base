@@ -14,11 +14,11 @@ class FormFileModule extends FileModule {
 
   public function __construct($aRequestPath) {
     parent::__construct($aRequestPath);
-    if(!isset($this->aPath[2])) {
+    if(!isset($this->aPath[1])) {
       throw new Exception("Error in FormFileModule->__construct: no object ID or no language ID given");
     }
-    $this->sLanguageId = $this->aPath[1];
-    $this->iObjectId = $this->aPath[2];
+    $this->sLanguageId = $this->aPath[0];
+    $this->iObjectId = $this->aPath[1];
     $oFormDataLanguageObject = LanguageObjectPeer::retrieveByPK($this->iObjectId, $this->sLanguageId);
     if($oFormDataLanguageObject == null || $oFormDataLanguageObject->getContentObject()->getObjectType() !== 'form') {
       throw new Exception("Error in FormFileModule->__construct: object ID does not correspond to form object in given language");
