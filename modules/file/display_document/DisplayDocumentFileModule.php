@@ -7,10 +7,10 @@ class DisplayDocumentFileModule extends FileModule {
   
   public function __construct($aRequestPath) {
     parent::__construct($aRequestPath);
-    if(!isset($this->aPath[1])) {
+    if(!isset($this->aPath[0])) {
       throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
     }
-    $this->oDocument = DocumentPeer::retrieveByPk($this->aPath[1]);
+    $this->oDocument = DocumentPeer::retrieveByPk($this->aPath[0]);
     if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
       LinkUtil::redirect(LinkUtil::link(PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'))->getLink(), "FrontendManager"));
       break;
