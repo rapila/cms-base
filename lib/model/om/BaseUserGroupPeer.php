@@ -1071,8 +1071,8 @@ abstract class BaseUserGroupPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param int $user_id
-	   @param int $group_id
-	   
+	 * @param int $group_id
+	 * 	   
 	 * @param      Connection $con
 	 * @return     UserGroup
 	 */
