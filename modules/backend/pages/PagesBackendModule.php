@@ -7,7 +7,6 @@ class PagesBackendModule extends BackendModule {
   
   private static $NEW_PAGE_DEFAULT_NAME = '';
   
-  private $aAllowedParentPages = array();
   private $oPage = null;
   private $bMayDeletePageTree = false;
   private $bMayDeleteMoveOrphans = false;
@@ -190,7 +189,7 @@ class PagesBackendModule extends BackendModule {
     // @jmg only display optional parent pages if the session user has the right for the parent page too
     // otherwise just display the current parent_id and name
     if(!$this->oPage->isRoot()) {
-      $aPagesForParentSelect = $this->getParentIdSelect();
+      $this->getParentPagesPerLevel(PagePeer::getRootPage(), 0, $aPagesForParentSelect);
     } else {
       $aPagesForParentSelect = array();
     }
@@ -203,7 +202,7 @@ class PagesBackendModule extends BackendModule {
     // only Session users who are admin or mayEditPageDetails of all the pages may change the parent_id
     $oTemplate->replaceIdentifier("parent_id_option_disabled", (Session::getSession()->getUser()->mayEditPageDetails(PagePeer::getRootPage()) ? '' : ' disabled="disabled"'), null, Template::NO_HTML_ESCAPE);
 
-    $oTemplate->replaceIdentifier("parent_id_options", TagWriter::optionsFromArray($aPagesForParentSelect, $this->oPage->getParentId(), '_', false));
+    $oTemplate->replaceIdentifier("parent_id_options", TagWriter::optionsFromArray($aPagesForParentSelect, $this->oPage->getParentId(), '+', false));
     $oTemplate->replaceIdentifier("lang", Session::getSession()->getLanguage());
     $sIsInactive = $this->oPage->getIsInactive() === true ? 'checked="checked"' :'';
     $oTemplate->replaceIdentifier("status_is_inactive", $this->oPage->getIsInactive() ? ' inactive' : ' active', null, Template::NO_HTML_ESCAPE);
@@ -274,30 +273,17 @@ class PagesBackendModule extends BackendModule {
     return $oTemplate;
   }
   
-  private function setParentPagesPerLevel($oPage, $iLevel=0, $bExcludeCurrent=true) {
-    if(!$bExcludeCurrent  || ($this->oPage->getId() !== $oPage->getId())) {
-      $this->aAllowedParentPages[$oPage->getId()]['name'] = $oPage->getName();
-      $this->aAllowedParentPages[$oPage->getId()]['level'] = $iLevel;
+  private function getParentPagesPerLevel($oPage, $iLevel = 0, &$aAllowedParentPages) {
+    if($this->oPage->getId() !== $oPage->getId()) {
+      $aAllowedParentPages[$oPage->getId()]['value'] = $oPage->getName();
+      $aAllowedParentPages[$oPage->getId()]['level'] = $iLevel;
     }
     $aChildren = $oPage->getChildren();
     if(count($aChildren)> 0) {
       foreach($aChildren as $oChild) {
-        $this->setParentPagesPerLevel($oChild, $iLevel+1);
+        $this->getParentPagesPerLevel($oChild, $iLevel+1, $aAllowedParentPages);
       }
     }
-  }
-  
-  private function getParentIdSelect() {
-    $this->setParentPagesPerLevel(PagePeer::getRootPage(), 0);
-    $aPagesForParentSelect = array();
-    foreach($this->aAllowedParentPages as $iId => $aPage) {
-      $sIndent = '';
-      for($i=0; $i <$aPage['level']; $i++) {
-        $sIndent .= '_';
-      }
-      $aPagesForParentSelect[$iId]=$sIndent.$aPage['name'];
-    }
-    return $aPagesForParentSelect;
   }
   
   public function create() {

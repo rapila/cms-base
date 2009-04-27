@@ -111,7 +111,7 @@ class TagWriter {
  * @return string of html options
  *
  */
-  public static function optionsFromArray($aKeyValues, $mSelected=null, $sIndent='_', $aCustomOptions = array('' => '------')) {
+  public static function optionsFromArray($aKeyValues, $mSelected=null, $sIndentType='┼', $aCustomOptions = array('' => '------')) {
     if(!is_array($mSelected)) {
       if($mSelected === null) {
         $mSelected = array();
@@ -122,14 +122,23 @@ class TagWriter {
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier('result'), null, true);
     $aKeyValuesToRender = is_array($aCustomOptions) ? $aCustomOptions : array();
     $aKeyValuesToRender = $aKeyValuesToRender+$aKeyValues;
-
-    foreach($aKeyValuesToRender as $mKey => $mValue) {
-      $sIntented = '';
+    $aKeys = array_keys($aKeyValuesToRender);
+    
+    foreach($aKeys as $iCounter => $mKey) {
+      $mValue = $aKeyValuesToRender[$mKey];
+      $sIndented = '';
       if(is_array($mValue)) {
         $sValue = $mValue['value'];
         $iLevel = $mValue['level'];
-        for($i=0; $i < $mValue['level']; $i++) {
-          $sIntented .= $sIndent;
+        if(($sIndentType === '┼' || $sIndentType === '+') && $iLevel > 0) {
+          $sIndented = str_repeat('│', $iLevel-1);
+          if(@$aKeyValuesToRender[@$aKeys[$iCounter+1]]['level'] >= $mValue['level']) {
+            $sIndented .= '├';
+          } else {
+            $sIndented .= '└';
+          }
+        } else {
+          $sIndented = str_repeat($sIndentType, $mValue['level']);
         }
       } else {
         $sValue = $mValue;
@@ -142,7 +151,7 @@ class TagWriter {
       $oOptionTemplate->replaceIdentifier("key", $mKey);
       $oOptionTemplate->replaceIdentifier("selected", $sSelectedString, null, Template::NO_HTML_ESCAPE);
       $oOptionTemplate->replaceIdentifier("class", $sClass, null, Template::NO_HTML_ESCAPE);
-      $oOptionTemplate->replaceIdentifier("indent", $sIntented);
+      $oOptionTemplate->replaceIdentifier("indent", $sIndented);
       $oOptionTemplate->replaceIdentifier("value", $sValue);
 
       $oTemplate->replaceIdentifierMultiple("result", $oOptionTemplate);
