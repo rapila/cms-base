@@ -301,6 +301,10 @@ label.inactive, span.inactive, span.attention {
   top: -6px;
 }
 
+#parent_id {
+  font-family: monospace;
+}
+
 fieldset legend {
   margin-left:.5em;
   padding-right:.5em;

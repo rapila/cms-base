@@ -4,9 +4,6 @@
  */
  
 class ListUtil {
-  const SELECT_ALL = '__all';
-  const SELECT_NONE = '__without';
-  
   /**
   * handleBackendChooserListSelection()
   * @param string request name
@@ -19,7 +16,7 @@ class ListUtil {
   public static function handleBackendChooserListSelection($sRequestName = 'selected_name_id', $bNumericToInt = true, $sPresetValue = null, $sDefaultReturn = null) {
     if(isset($_REQUEST[$sRequestName])) {
       $mSelectedValue = $_REQUEST[$sRequestName];
-      if($mSelectedValue === self::SELECT_ALL || $mSelectedValue === '') {
+      if($mSelectedValue === ListHelper::SELECT_ALL || $mSelectedValue === '') {
         $mSelectedValue = $sDefaultReturn;
       } else if(is_numeric($mSelectedValue) && $bNumericToInt) {
         $mSelectedValue= (int) $mSelectedValue;
