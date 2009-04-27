@@ -4,19 +4,19 @@ require_once('propel/util/Criteria.php');
  * class Session
  */
 class Session {
-  
+
   private $oUser;
   private $iUserId;
   private $aAttributes;
-  
+
   const SESSION_LANGUAGE_KEY = "language";
   const SESSION_OBJECT_KEY = "session_object_key";
-  
+
   const USER_IS_VALID = 1;
   const USER_IS_DEFAULT_USER = 2;
   const USER_IS_INACTIVE = 4;
   const USER_IS_FRONTEND_ONLY = 8;
-  
+
   public function __construct() {
     $_SESSION[self::SESSION_OBJECT_KEY] = $this;
     $this->aAttributes = array();
@@ -34,11 +34,11 @@ class Session {
     }
     $this->oUser = UserPeer::retrieveByPk($this->iUserId);
   }
-  
+
   public function isAuthenticated() {
     return ($this->oUser !== null);
   }
-  
+
   public function login($sUsername, $sPassword) {
     $oCriteria = new Criteria();
     $oCriteria->add(UserPeer::USERNAME, $sUsername, Criteria::EQUAL);
@@ -73,20 +73,20 @@ class Session {
     }
     return $iReturnValue;
   }
-  
+
   public function logout() {
     $this->oUser = null;
     $this->iUserId = null;
   }
-  
+
   public function getLanguage() {
     return $this->getAttribute(self::SESSION_LANGUAGE_KEY);
   }
-  
+
   public function setLanguage($sLanguage) {
     return $this->setAttribute(self::SESSION_LANGUAGE_KEY, $sLanguage);
   }
-  
+
   public function setAttribute($sAttribute, $mValue) {
     if($mValue === null) {
       unset($this->aAttributes[$sAttribute]);
@@ -94,37 +94,40 @@ class Session {
     }
     $this->aAttributes[$sAttribute] = $mValue;
   }
-  
+
   public function getAttribute($sAttribute) {
+    if(in_array($sAttribute, array('isAuthenticated', 'getUserId'))) {
+      return $this->$sAttribute();
+    }
     if($this->hasAttribute($sAttribute)) {
       return $this->aAttributes[$sAttribute];
     }
     return Settings::getSetting("session_default", $sAttribute, null);
   }
-  
+
   public function resetAttribute($sAttribute) {
     $this->setAttribute($sAttribute, null);
   }
-  
+
   public function hasAttribute($sAttribute) {
     return isset($this->aAttributes[$sAttribute]);
   }
-  
+
   public static function language() {
     return self::getSession()->getLanguage();
   }
-  
+
   public static function getSession() {
     if(isset($_SESSION[self::SESSION_OBJECT_KEY])) {
       return $_SESSION[self::SESSION_OBJECT_KEY];
     }
     return new Session();
   }
-  
+
   public function getUser() {
     return $this->oUser;
   }
-  
+
   public function getUserId() {
     return $this->iUserId;
   }
