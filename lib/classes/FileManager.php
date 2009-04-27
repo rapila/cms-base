@@ -15,7 +15,7 @@ class FileManager extends Manager {
     if(!self::hasNextPathItem()) {
       throw new Exception("Request to /".Manager::getPrefixForManager($this)." without moduleName");
     }
-    $this->oModule = FileModule::getModuleInstance(self::peekNextPathItem(), self::$REQUEST_PATH);
+    $this->oModule = FileModule::getModuleInstance(self::usePath(), self::$REQUEST_PATH);
     $this->oModule->renderFile();
   } // __construct()
       

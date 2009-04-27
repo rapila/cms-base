@@ -119,7 +119,7 @@ class Image {
     if($oCache !== null && !$oCache->cacheIsOffForWriting()) {
       $sFilePath = $oCache->getFilePath();
       $this->save($sFilePath);
-      //This is only for sending Last-Modified and ETag. You’ll still have to call this explicitly as soon as you know the cache string to send a Not Modified header
+      //This is only for sending Last-Modified and ETag. You’ll still have to call this explicitly as soon as you know the cache string (as early as possible – a lot earlier than this) to send a Not Modified header
       $oCache->sendCacheControlHeaders();
     }
     
