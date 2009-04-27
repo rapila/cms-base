@@ -13,11 +13,17 @@ class LoginFrontendModule extends DynamicFrontendModule {
   public function renderFrontend($sAction = 'login') {
     $aOptions = @unserialize($this->getData());
     $sLoginType = isset($aOptions['login_type']) ? $aOptions['login_type'] : 'login_simple';
-    if(Session::getSession()->getUser() && Session::getSession()->getUser()->mayViewPage($this->oPage)) {
-      $oTemplate = $this->constructTemplate('logout');
-      $oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
-      $oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
-      return $oTemplate;
+    if(Session::getSession()->getUser()) {
+      if(Session::getSession()->getUser()->mayViewPage($this->oPage)) {
+        $oTemplate = $this->constructTemplate('logout');
+        $oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
+        $oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
+        return $oTemplate;
+      } else {
+        $oFlash = Flash::getFlash();
+        $oFlash->addMessage('login.logged_in_no_access');
+        $oFlash->finishReporting();
+      }
     }
     $oTemplate = $this->constructTemplate('login');
     $oTemplate->replaceIdentifier('login_action', $sAction);
