@@ -1,7 +1,7 @@
 <h1>{{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>{{identifierContext=start;name=parent_title}}
 <form action="{{action}}" method="post">
   <div id="pages_detail">
-    <fieldset><legend>{{writeString=page.info}}</legend>
+    <fieldset><legend>{{writeString=page.info}} [id: {{id}}]</legend>
       {{identifierContext=start;name=dummy}}<label for="parent_id">{{writeString=page.parent}}</label>
       <select id="parent_id" name="parent_id" class="{{dummy}}"{{parent_id_option_disabled}}>{{parent_id_options}}</select><br />{{identifierContext=end;name=dummy}}
       <label for="name" class="helptext" title="{{writeString=page.path_name_info}}">{{writeString=page.path_name}}</label>
