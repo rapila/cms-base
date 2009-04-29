@@ -12,9 +12,13 @@
  */	
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 
-  public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
+  public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bExternallyManaged=false) {
     $oCriteria = new Criteria();
-    $oCriteria->add(self::IS_EXTERNALLY_MANAGED, $bUseInternallyManagedOnly);
+    if($bExternallyManaged !== null) {
+      $oCriteria->add(self::IS_EXTERNALLY_MANAGED, $bExternallyManaged);
+    } else {
+      $oCriteria->addAscendingOrderByColumn(self::IS_EXTERNALLY_MANAGED);
+    }
     if($bInactiveOnly) {
       $oC->add(self::IS_INACTIVE, true);
     }
@@ -36,12 +40,12 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
     return $aResult;
   }
   
-  public static function getDocumentCategoriesBackend($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
-    return self::getDocumentCategoriesSorted($bInactiveOnly, $bUseInternallyManagedOnly);
+  public static function getDocumentCategoriesBackend($bInactiveOnly = false, $bIsExternallyManaged=false) {
+    return self::getDocumentCategoriesSorted($bInactiveOnly, $bIsExternallyManaged);
   }
   
-  public static function hasDocumentCategories($bInactiveOnly = false, $bUseInternallyManagedOnly=false) {
-    return count(self::getDocumentCategoriesSorted($bInactiveOnly, $bUseInternallyManagedOnly)) > 0;
+  public static function hasDocumentCategories($bInactiveOnly = false, $bIsExternallyManaged=false) {
+    return count(self::getDocumentCategoriesSorted($bInactiveOnly, $bIsExternallyManaged)) > 0;
   }
   
   public static function getCategoryNameById($iCategoryId) {

@@ -4,23 +4,38 @@
  */
 class DocumentCategoriesBackendModule extends BackendModule {
   
-  private $oDocCategory = null;
+  private $oDocumentCategory = null;
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oDocCategory=DocumentCategoryPeer::retrieveByPk(Manager::usePath()); 
+      $this->oDocumentCategory=DocumentCategoryPeer::retrieveByPk(Manager::usePath()); 
     }
   }
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('list');
-    $aDocumentCategories = DocumentCategoryPeer::getDocumentCategoriesSorted();
-    $this->parseTree($oTemplate, $aDocumentCategories, $this->oDocCategory);
+    $aDocumentCategories = DocumentCategoryPeer::getDocumentCategoriesSorted(false, Session::getSession()->getUser()->getIsAdmin() ? null : false);
+    foreach($aDocumentCategories as $oDocumentCategory) {
+      $oItemTemplate = $this->constructTemplate('list_item');
+      $sExternallyManaged = '';      
+      if($oDocumentCategory->getIsExternallyManaged()) {
+        $sExternallyManaged = ' [EM]';
+      }
+      $oItemTemplate->replaceIdentifier('title', $oDocumentCategory->getName().$sExternallyManaged);
+      $oItemTemplate->replaceIdentifier('link', LinkUtil::link('document_categories/'.$oDocumentCategory->getId()));
+      if($this->oDocumentCategory && ($this->oDocumentCategory->getId() == $oDocumentCategory->getId())) {
+        $oItemTemplate->replaceIdentifier('class_active', ' active');
+      }      
+      if($oDocumentCategory->getIsInactive()) {
+        $oItemTemplate->replaceIdentifier('edit_inactive', ' edit_inactive');
+      }
+      $oTemplate->replaceIdentifierMultiple('tree', $oItemTemplate);
+    }
     return $oTemplate;
   }
   
   public function getDetail() {
-    if($this->oDocCategory === null) {
+    if($this->oDocumentCategory === null) {
       $oTemplate = $this->constructTemplate("module_info");
       $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
@@ -30,61 +45,61 @@ class DocumentCategoriesBackendModule extends BackendModule {
     $oTemplate = $this->constructTemplate("detail");
     $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('document_categories', null, array('get_module_info' => 'true')))));
 
-    if(!$this->oDocCategory->isNew()) {
+    if(!$this->oDocumentCategory->isNew()) {
       $oDeleteTemplate = $this->constructTemplate("delete_button", true);
-      $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oDocCategory->getName()));
+      $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oDocumentCategory->getName()));
       $oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('delete'));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
-    $oTemplate->replaceIdentifier("id", $this->oDocCategory->getId());
-    $oTemplate->replaceIdentifier("name", $this->oDocCategory->getName());
-    $oTemplate->replaceIdentifier("name_title", $this->oDocCategory->getName() != '' ? $this->oDocCategory->getName() : null);
-    $oTemplate->replaceIdentifier("sort", $this->oDocCategory->getSort());
-    $oTemplate->replaceIdentifier("max_width", $this->oDocCategory->getMaxWidth());
+    $oTemplate->replaceIdentifier("id", $this->oDocumentCategory->getId());
+    $oTemplate->replaceIdentifier("name", $this->oDocumentCategory->getName());
+    $oTemplate->replaceIdentifier("name_title", $this->oDocumentCategory->getName() != '' ? $this->oDocumentCategory->getName() : null);
+    $oTemplate->replaceIdentifier("sort", $this->oDocumentCategory->getSort());
+    $oTemplate->replaceIdentifier("max_width", $this->oDocumentCategory->getMaxWidth());
     $sChecked = ' checked="checked"';
-    $sIsInactive = $this->oDocCategory->getIsInactive() === true ? $sChecked : '';
+    $sIsInactive = $this->oDocumentCategory->getIsInactive() === true ? $sChecked : '';
     $oTemplate->replaceIdentifier("is_inactive", $sIsInactive, null, Template::NO_HTML_ESCAPE);
     if(Session::getSession()->getUser()->getIsAdmin()) {
-      $oTemplate->replaceIdentifier("is_externally_managed_checked", $this->oDocCategory->getIsExternallyManaged() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+      $oTemplate->replaceIdentifier("is_externally_managed_checked", $this->oDocumentCategory->getIsExternallyManaged() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
     }
-    $oTemplate->replaceIdentifier("action", $this->link($this->oDocCategory->getId()));
+    $oTemplate->replaceIdentifier("action", $this->link($this->oDocumentCategory->getId()));
     
     return $oTemplate;
   }
   
   public function create() {
-    $this->oDocCategory = new DocumentCategory();
-    $this->oDocCategory->setIsInactive(false);
+    $this->oDocumentCategory = new DocumentCategory();
+    $this->oDocumentCategory->setIsInactive(false);
   }
   
   public function delete() {
-    $this->oDocCategory->delete();
-    $this->oDocCategory=null;
+    $this->oDocumentCategory->delete();
+    $this->oDocumentCategory=null;
     LinkUtil::redirect($this->link());
   }
   
   public function save() {
-    if($this->oDocCategory === null) {
+    if($this->oDocumentCategory === null) {
       $this->create();
     }
-    $this->oDocCategory->setName($_POST['name']);
-    // $this->oDocCategory->setSort($_POST['sort']);
+    $this->oDocumentCategory->setName($_POST['name']);
+    // $this->oDocumentCategory->setSort($_POST['sort']);
     if($_POST['max_width'] === '') {
-      $this->oDocCategory->setMaxWidth(null);
+      $this->oDocumentCategory->setMaxWidth(null);
     } else {
-      $this->oDocCategory->setMaxWidth($_POST['max_width']);
+      $this->oDocumentCategory->setMaxWidth($_POST['max_width']);
     }
     if(Session::getSession()->getUser()->getIsAdmin()) {
-      $this->oDocCategory->setIsExternallyManaged(isset($_POST['is_externally_managed']));
+      $this->oDocumentCategory->setIsExternallyManaged(isset($_POST['is_externally_managed']));
     }
 
-    $this->oDocCategory->setIsInactive(isset($_POST['is_inactive']));
-    $this->oDocCategory->save();
-    LinkUtil::redirect($this->link($this->oDocCategory->getId()));
+    $this->oDocumentCategory->setIsInactive(isset($_POST['is_inactive']));
+    $this->oDocumentCategory->save();
+    LinkUtil::redirect($this->link($this->oDocumentCategory->getId()));
   }
 
   public function getNewEntryActionParams() {
-    if(!$this->oDocCategory || !$this->oDocCategory->isNew()) {
+    if(!$this->oDocumentCategory || !$this->oDocumentCategory->isNew()) {
       return array('action' => $this->link()); 
     }
   }
