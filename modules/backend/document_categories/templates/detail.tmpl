@@ -7,7 +7,11 @@
     <label for="max_width">{{writeString=max_width}}</label>
     <input class="autowidth" type="text" name="max_width" value="{{max_width}}" /><br />
     <label for="is_inactive">{{writeString=is_inactive}}</label>
-    <input type="checkbox" name="is_inactive" id="is_inactive" value="1" {{is_inactive}} /><br />
+    <div class="grouped_items">
+      <input type="checkbox" name="is_inactive" id="is_inactive" value="1"{{is_inactive}} />
+      {{identifierContext=start;name=is_externally_managed_checked}}<label for="is_externally_managed">{{writeString=document_category.is_externally_managed}}</label><input type="checkbox" name="is_externally_managed" id="is_externally_managed" value="1"{{is_externally_managed_checked}} />
+{{identifierContext=end;name=is_externally_managed_checked}}
+    </div>
   </fieldset>
   <fieldset class="divider nolegend">
     <label for="save">{{writeString=save}}</label><button id="save" type="submit" title="{{writeString=save}}"></button>

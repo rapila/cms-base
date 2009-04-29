@@ -41,8 +41,12 @@ class DocumentCategoriesBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("name_title", $this->oDocCategory->getName() != '' ? $this->oDocCategory->getName() : null);
     $oTemplate->replaceIdentifier("sort", $this->oDocCategory->getSort());
     $oTemplate->replaceIdentifier("max_width", $this->oDocCategory->getMaxWidth());
-    $sIsInactive = $this->oDocCategory->getIsInactive() === true ? 'checked="checked"' :'';
+    $sChecked = ' checked="checked"';
+    $sIsInactive = $this->oDocCategory->getIsInactive() === true ? $sChecked : '';
     $oTemplate->replaceIdentifier("is_inactive", $sIsInactive, null, Template::NO_HTML_ESCAPE);
+    if(Session::getSession()->getUser()->getIsAdmin()) {
+      $oTemplate->replaceIdentifier("is_externally_managed_checked", $this->oDocCategory->getIsExternallyManaged() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
+    }
     $oTemplate->replaceIdentifier("action", $this->link($this->oDocCategory->getId()));
     
     return $oTemplate;
@@ -70,6 +74,10 @@ class DocumentCategoriesBackendModule extends BackendModule {
     } else {
       $this->oDocCategory->setMaxWidth($_POST['max_width']);
     }
+    if(Session::getSession()->getUser()->getIsAdmin()) {
+      $this->oDocCategory->setIsExternallyManaged(isset($_POST['is_externally_managed']));
+    }
+
     $this->oDocCategory->setIsInactive(isset($_POST['is_inactive']));
     $this->oDocCategory->save();
     LinkUtil::redirect($this->link($this->oDocCategory->getId()));
