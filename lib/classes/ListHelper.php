@@ -115,13 +115,13 @@ class ListHelper {
     return $this->getFilterSelect($sColumn, $aTagsUsedInModel, StringPeer::getString('all_entries'), StringPeer::getString('link.without_tags'), self::SELECTION_TYPE_TAG, 'getName');
   }
   
-  public function getSortColumn($sColumn, $sString = null, $bIsDefault = false) {
+  public function getSortColumn($sColumn, $sString = null, $bIsDefault = false, $sSortOrder = 'asc') {
     if($sString === null) {
       $sString = 'columns.'.$sColumn;
     }
     $oListSettings = $this->getListSettings();
     if($bIsDefault && count($oListSettings->aSorts) == 0) {
-      $oListSettings->addSortColumn($sColumn, 'asc');
+      $oListSettings->addSortColumn($sColumn, $sSortOrder);
     }
     $oSortItemTemplate = clone $this->oSortHeaderTemplate;
     $oCurrentSortValue = $oListSettings->getSortColumnValue($sColumn);
