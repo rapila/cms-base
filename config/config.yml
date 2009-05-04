@@ -18,7 +18,8 @@ general:
       default:      'mini_cms'
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  environment: 'developer'
+  # possible environments: development, production, test, automatic (should only be used while in testing phase since it slows down)
+  environment: 'development'
 
 routing:
   routes:

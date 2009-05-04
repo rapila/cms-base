@@ -1,5 +1,7 @@
 <?php
 class ErrorHandler {
+  private static $ENVIRONMENT = null;
+  
   public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext) {
     if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
       return false;
@@ -19,16 +21,33 @@ class ErrorHandler {
     self::handle($oException);
   }
   
+  public static function getEnvironment() {
+    if(self::$ENVIRONMENT === null) {
+      self::$ENVIRONMENT = Settings::getSetting('general', 'environment', 'production');
+      if(self::$ENVIRONMENT === 'developer') {
+        self::$ENVIRONMENT = 'development';
+      }
+      if(self::$ENVIRONMENT === 'auto') {
+        if(strpos($_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.local')) {
+          self::$ENVIRONMENT = ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1' || $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
+        } else {
+          self::$ENVIRONMENT = 'production';
+        }
+      }
+    }
+    return self::$ENVIRONMENT;
+  }
+  
   public static function shouldPrintErrors() {
-    return Settings::getSetting('general', 'environment', 'production') === "developer";
+    return self::getEnvironment() === "development";
   }
   
   public static function shouldLogErrors() {
-    return Settings::getSetting('general', 'environment', 'production') === "test";
+    return self::getEnvironment() === "test";
   }
   
   public static function shouldMailErrors() {
-    return Settings::getSetting('general', 'environment', 'production') === "production";
+    return self::getEnvironment() === "production";
   }
   
   private static function shouldContinue($iErrorNumber) {
