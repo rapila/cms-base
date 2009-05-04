@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package modules.backend
+ */
+ 
 class MysqlDumpLoaderBackendModule extends BackendModule {
   private $sMethod;
   

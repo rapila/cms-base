@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package modules.frontend
+ */
 
 class LoginFrontendModule extends DynamicFrontendModule {
   private $oPage;

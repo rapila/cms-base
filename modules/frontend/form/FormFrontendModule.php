@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package modules.frontend
+ */
 
 require_once('recaptcha/recaptchalib.php');
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package modules.file
+ */
 
 require_once(BASE_DIR.'/'.DIRNAME_MODULES.'/frontend/form/FormFrontendModule.php');
 

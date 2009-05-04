@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package modules.backend
+ */
+
 class ModuleManagerBackendModule extends BackendModule {
   private $sModuleType;
   private $sModuleNamel;
