@@ -36,7 +36,7 @@ class BackendManager extends Manager {
         LinkUtil::redirect(LinkUtil::linkToSelf(null, $aLogoutParam));
       } else {
         $oPage = isset($_REQUEST['page_id']) ? PagePeer::retrieveByPk($_REQUEST['page_id']) : null;
-        LinkUtil::redirect(self::getWebLink(($oPage !== null) ? $oPage->getFullPathArray() : null, $aLogoutParam));
+        LinkUtil::redirect(self::getWebLink(($oPage !== null) ? $oPage->getFullPathArray() : array(), $aLogoutParam));
       }
     }
     if(Session::getSession()->getUser()->getLanguageId() != null) {
@@ -323,8 +323,6 @@ class BackendManager extends Manager {
   }
   
   private static function getWebLink($aPath = array(), $aParameters = array()) {
-    // @todo quickfix of error in case the first argument is no array
-    $aPath = is_array($aPath) ? $aPath : array();
     $bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
     if(!$bIsMultilingual) {
       return LinkUtil::link($aPath, "FrontendManager", $aParameters);
