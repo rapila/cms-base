@@ -20,7 +20,7 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
       $oCriteria->addAscendingOrderByColumn(self::IS_EXTERNALLY_MANAGED);
     }
     if($bInactiveOnly) {
-      $oC->add(self::IS_INACTIVE, true);
+      $oCriteria->add(self::IS_INACTIVE, true);
     }
     $oCriteria->addAscendingOrderByColumn(self::NAME);
     return self::doSelect($oCriteria);
