@@ -323,6 +323,8 @@ class BackendManager extends Manager {
   }
   
   private static function getWebLink($aPath = array(), $aParameters = array()) {
+    // @todo quickfix of error in case the first argument is no array
+    $aPath = is_array($aPath) ? $aPath : array();
     $bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
     if(!$bIsMultilingual) {
       return LinkUtil::link($aPath, "FrontendManager", $aParameters);
