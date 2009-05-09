@@ -85,7 +85,7 @@ class LanguagePeer extends BaseLanguagePeer {
 
   public static function getBackendLanguages() {
     $aLanguages = array();
-    foreach(self::getFolderContents(MAIN_DIR.'/resources/lang/') as $sLanguage => $sPath) {
+    foreach(ResourceFinder::getFolderContents(MAIN_DIR.'/resources/lang/') as $sLanguage => $sPath) {
       $sName = substr($sLanguage, 0, 2);
       $aLanguages[] = $sName;
     }
