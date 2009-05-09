@@ -75,6 +75,9 @@ class StringUtil {
     return $sText;
   }
 
+  // implement preg_replace with     
+  // $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/') 
+  // $aReplace = array('ae', 'ae', 'oe', 'oe', 'ue', 'ue');
   public static function normalize($sInput, $sReplaceSpaceBy = '-') {
     if($sInput === null || $sInput === '') {
       return null;
