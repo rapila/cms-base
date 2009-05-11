@@ -10,7 +10,7 @@ abstract class Manager {
   private static $CURRENT_PAGE = null;
   private static $CURRENT_MANAGER = null;
   
-  protected function __construct() { 
+  protected function __construct() {
     if(strrpos(self::getRequestedPath(), "/") === (strlen(self::getRequestedPath())-1)) {
       self::setRequestedPath(substr(self::getRequestedPath(), 0, -1));
     }
@@ -98,6 +98,14 @@ abstract class Manager {
   
   public static function isPost($sMethod = 'POST') {
     return $_SERVER['REQUEST_METHOD'] === $sMethod;
+  }
+  
+  public static function isAjaxRequest() {
+    return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
+  }
+  
+  public static function isXMLHttpRequest() {
+    return self::isAjaxRequest();
   }
 
   public static function getCurrentManager() {

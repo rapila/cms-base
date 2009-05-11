@@ -18,6 +18,7 @@ class DefaultPageTypeModule extends PageTypeModule {
                                       "file_exists" => "file_exists");
   
   public function __construct(Page $oPage) {
+
     parent::__construct($oPage);
   }
   

@@ -101,7 +101,7 @@ class FrontendManager extends Manager {
     $bIsDynamic = false;
     $aAllowedParams = array();
     
-    $bIsAjaxRequest = isset($_REQUEST['container_only']) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
+    $bIsAjaxRequest = isset($_REQUEST['container_only']) && Manager::isXMLHttpRequest();
     
     $sPageType = self::getCurrentPage()->getPageType();
     $this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::getCurrentPage());
