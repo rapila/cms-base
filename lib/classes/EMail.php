@@ -150,7 +150,9 @@ class EMail {
     
     $this->oContent->setHeader('From', $this->getAddressToken($this->sSenderName, $this->sSenderAddress));
     
-    $bResult = mail($sRecipients, $this->sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
+    $sSubject = '=?'.Settings::getSetting("encoding", "db", "utf-8").'?Q?'.str_replace(' ', '_', MIMELeaf::encodeQuotedPrintable($this->sSubject, -1)).'?=';
+    
+    $bResult = mail($sRecipients, $sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
     
     if($bResult === false) {
     	throw new Exception("Error in EMail->send(): mail() returned false");

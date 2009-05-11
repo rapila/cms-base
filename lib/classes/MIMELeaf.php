@@ -72,7 +72,7 @@ class MIMELeaf extends MIMEPart {
     return rtrim(chunk_split(base64_encode($sContent), $iMaxLineLength, EMail::SEPARATOR));
   }
   
-  public static function encodeQuotedPrintable($sContent, $iMaxLineLength) {
+  public static function encodeQuotedPrintable($sContent, $iMaxLineLength, $bAlwaysEncodeSpaces = false) {
     $aLines  = preg_split("/\r?\n/", $sContent);
     $sEscape = '=';
     $sOutput = '';
@@ -84,7 +84,7 @@ class MIMELeaf extends MIMEPart {
         $sCharValue = $sLine[$i];
         $iDecValue = ord($sCharValue);
 
-        if (($iDecValue == 32) AND ($i == ($iLineLength - 1))) {    // convert space at eol only
+        if (($iDecValue == 32) AND ($i == ($iLineLength - 1) || $bAlwaysEncodeSpaces)) {    // convert space at eol only
             $sCharValue = '=20';
 
         } elseif (($iDecValue == 9) AND ($i == ($iLineLength - 1))) {  // convert tab at eol only
@@ -99,7 +99,7 @@ class MIMELeaf extends MIMEPart {
             $sCharValue = '=2E';
         }
 
-        if ((strlen($sNewLine) + strlen($sCharValue)) >= $iMaxLineLength) {        // MAIL_MIMEPART_CRLF is not counted
+        if ($iMaxLineLength !== -1 && (strlen($sNewLine) + strlen($sCharValue)) >= $iMaxLineLength) {        // MAIL_MIMEPART_CRLF is not counted
             $sOutput .= $sNewLine.$sEscape.EMail::SEPARATOR;                    // soft line break; " =\r\n" is okay
             $sNewLine = '';
         }
