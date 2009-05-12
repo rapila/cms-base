@@ -7,7 +7,7 @@ class LinksBackendModule extends BackendModule {
   private $oLink = null;
   private $sSelectedTagName;
   private $oListHelper;
-  private $sSelectedTag = null;
+
   const USE_SELECTED_TAG = 'use_selected_tag';
   
   public function __construct() {
@@ -23,10 +23,6 @@ class LinksBackendModule extends BackendModule {
     
     $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
     $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelectForTagFilter());
-    $sTagName = $this->oListHelper->getListSettings()->getFilterColumnValue(LinkPeer::ID);
-    if($sTagName !== ListHelper::SELECT_ALL && $sTagName !== ListHelper::SELECT_WITHOUT) {
-      $this->sSelectedTag = $sTagName;
-    }
     $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(LinkPeer::URL, LinkPeer::getProtocolsWithLinksAssoc(), StringPeer::getString('links.all_protocols'), null, ListHelper::SELECTION_TYPE_BEGINS));
     
     $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(LinkPeer::NAME, 'name', true));
@@ -63,6 +59,12 @@ class LinksBackendModule extends BackendModule {
       }
       $oDeleteTemplate->replacePstring("delete_item", array('name' => $this->oLink->getName()));
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
+    } else {
+      $sTagName = $this->oListHelper->getListSettings()->getFilterColumnValue(LinkPeer::ID);
+      if($sTagName !== ListHelper::SELECT_ALL && $sTagName !== ListHelper::SELECT_WITHOUT) {
+        $oSelectedTag = TagWriter::quickTag('input', array('type' => 'checkbox', 'name' => self::USE_SELECTED_TAG, 'checked' => "checked", 'title' => 'set tag', 'style' => 'height:0;margin-right:.2em;'));
+        $oTemplate->replaceIdentifier("use_selected_tag_checkbox", $oSelectedTag);
+      }
     }
     $oTemplate->replaceIdentifier("id", $this->oLink->getId());
     $oTemplate->replaceIdentifier("name", $this->oLink->getName());
@@ -116,22 +118,16 @@ class LinksBackendModule extends BackendModule {
       $this->oLink->setOwnerId(isset($_REQUEST['owner_id']) && $_REQUEST['owner_id'] != '' ? $_REQUEST['owner_id'] : Session::getSession()->getUserId());
       $this->oLink->setUpdatedAt(date('c'));
       
-      // set tag if use_selected_tag is set and the entry is new
-      $bSetTag = $this->sSelectedTag !== null && $this->oLink->isNew() && isset($_REQUEST[self::USE_SELECTED_TAG]);
       $this->oLink->save();
       
-      if($bSetTag) {
-        TagInstancePeer::newTagInstance($this->sSelectedTag, 'Link', $this->oLink->getId());
+      if(isset($_REQUEST[self::USE_SELECTED_TAG])) {
+        TagInstancePeer::newTagInstance($this->oListHelper->getListSettings()->getFilterColumnValue(LinkPeer::ID), 'Link', $this->oLink->getId());
       }
       LinkUtil::redirect($this->link($this->oLink->getId()));
     }
   }
   
   public function getNewEntryActionParams() {
-    if($this->sSelectedTag !== null) {
-       $oCustomTag = TagWriter::quickTag('input', array('type' => 'checkbox', 'name' => self::USE_SELECTED_TAG, 'checked' => "checked", 'title' => 'set tag', 'style' => 'height:0;margin-right:.2em;'));
-       return array('action' => $this->link('new'), 'custom' => $oCustomTag);
-    }
     return array('action' => $this->link('new'));
   }
   
