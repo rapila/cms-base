@@ -62,7 +62,8 @@ class ListHelper {
     }
   }
   
-  public function getFilterSelect($sColumn, $aPossibleItems, $sIncludeAllString = null, $sIncludeWithoutString = null, $sSelectionType = null, $sKeyMethod = null) {
+  public function getFilterSelect($sColumn, $aPossibleItems, $sIncludeAllString = null, $sIncludeWithoutString = null, $sSelectionType = null, $sKeyMethod = null, $mDefaultValue = self::SELECT_ALL) {
+    
     if($sSelectionType === null) {
       $sSelectionType = self::SELECTION_TYPE_IS;
     }
@@ -80,8 +81,8 @@ class ListHelper {
     }
     //Set selection type
     $this->aSelectionTypes[$sColumn] = $sSelectionType;
-    
-    $sSelectedItem = $oListSettings->getFilterColumnValue($sColumn);
+
+    $sSelectedItem = $oListSettings->getFilterColumnValue($sColumn, $mDefaultValue);
     $oSelectTemplate = clone $this->oSelectTemplate;
     $aAdditionalOptions = array();
     if($sIncludeAllString !== null) {
