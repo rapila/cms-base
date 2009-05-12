@@ -11,6 +11,8 @@ class Session {
 
   const SESSION_LANGUAGE_KEY = "language";
   const SESSION_OBJECT_KEY = "session_object_key";
+  const SESSION_LAST_EDIT_MODULE  = 'last_edit_module';
+  const SESSION_LAST_EDIT_ID      = 'last_edit_id';
 
   const USER_IS_VALID = 1;
   const USER_IS_DEFAULT_USER = 2;
