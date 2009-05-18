@@ -23,13 +23,25 @@ class LinkUtil {
     self::redirectToManager(array_merge(array($sLanguageId), Manager::getRequestPath()), null, array(), false);
   }
 
-  public static function redirect($sLocation, $sHost = null, $sProtocol = 'http://') {
-    header("HTTP/1.0 301 Moved Permanently");
+  /**
+  * Redirects (locally by default).
+  * Use with LinkUtil::link()ed URLs (because this redirect does not add the base path/context MAIN_DIR_FE).
+  * Discards all buffered output and exits
+  */
+  public static function redirect($sLocation, $sHost = null, $sProtocol = null, $bPermanent = true) {
+    if($bPermanent) {
+      header("HTTP/1.0 301 Moved Permanently");
+    } else {
+      header("HTTP/1.0 302 Found");
+    }
     $sRedirectString = "Location: ".self::absoluteLink($sLocation, $sHost, $sProtocol);
     ob_clean();header($sRedirectString);exit;
   }
   
-  public static function absoluteLink($sLocation, $sHost = null, $sProtocol = "http://") {
+  public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
+    if($sProtocol === null) {
+      $sProtocol = 'http://';
+    }
     if($sHost === null) {
       $sHost = $_SERVER['HTTP_HOST'];
     }
