@@ -22,7 +22,10 @@ class DisplayDocumentFileModule extends FileModule {
   }
 
   public function renderFile() {
-    $sCacheString = 'doc_'.$this->oDocument->getId().'_'.(isset($_REQUEST['max_width']) ? $_REQUEST['max_width'] : "full").(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
+    $mMaxWidth = is_numeric(@$_REQUEST['max_width']) ? (int)$_REQUEST['max_width'] : 'full';
+    $mMaxHeight = is_numeric(@$_REQUEST['max_height']) ? (int)$_REQUEST['max_height'] : 'full';
+    
+    $sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
     $oCache = new Cache($sCacheString, DIRNAME_IMAGES);
     
     $sDisplay = "inline";
@@ -38,24 +41,29 @@ class DisplayDocumentFileModule extends FileModule {
       $oCache->passContents(true);exit;
     }
     
-    if(isset($_REQUEST['max_width'])) {
-      $bRenderImage = true;
+    if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
       $oImage = Image::imageFromData($this->oDocument->getData()->getContents());
-      if(isset($_REQUEST['max_width'])) {
-        $oImage->setSize((int)$_REQUEST['max_width'], 200, Image::RESIZE_TO_WIDTH);
-        if($oImage->getWidth() >= $oImage->getOriginalWidth()) {
-          $bRenderImage = false;
-        }
+      if(is_int($mMaxWidth) && is_int($mMaxHeight)) {
+        $oImage->setSize($mMaxWidth, $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
+      } else if(is_int($mMaxWidth)) {
+        $oImage->setSize($mMaxWidth, 0, Image::RESIZE_TO_WIDTH);
+      } else {
+        $oImage->setSize(0, $mMaxHeight, Image::RESIZE_TO_HEIGHT);
       }
-      if($bRenderImage) {
+      //Since $bDontBlowUp is true, do a preliminary check whether it’s necessary to even use the image class
+      if($oImage->getScalingFactor() < 1.0) {
         $oImage->setFileType($this->oDocument->getDocumentType()->getExtension());
         $oImage->render(true, null, $oCache); exit;
+      } else {
+        //Free up space
+        $oImage->destroy();
       }
     }
     
     header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
     header("Content-Length: ".strlen($this->oDocument->getData()->getContents()));
     $oCache->setContents($this->oDocument->getData()->getContents());
+    $oCache->sendCacheControlHeaders($iTimestamp);
     $this->oDocument->getData()->dump(); exit;
   }
 }

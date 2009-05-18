@@ -36,10 +36,10 @@ class Image {
     switch($iMode) {
       case (self::RESIZE_TO_LARGER_VALUE):
       case (self::RESIZE_TO_SMALLER_VALUE):
-        $bWidhIsLarger = $fFactorOnScaleToWidth > $fFactorOnScaleToHeight;
-        $this->$fScalingFactor = ($iMode === self::RESIZE_TO_LARGER_VALUE) ? 
-                          ($bWidhIsLarger ? $fFactorOnScaleToWidth : $fFactorOnScaleToHeight) : 
-                          ($bWidhIsLarger ? $fFactorOnScaleToHeight : $fFactorOnScaleToWidth);
+        $bWidthIsLarger = $fFactorOnScaleToWidth > $fFactorOnScaleToHeight;
+        $this->fScalingFactor = ($iMode === self::RESIZE_TO_LARGER_VALUE) ? 
+                          ($bWidthIsLarger ? $fFactorOnScaleToWidth : $fFactorOnScaleToHeight) : 
+                          ($bWidthIsLarger ? $fFactorOnScaleToHeight : $fFactorOnScaleToWidth);
         break;
       case (self::RESIZE_TO_WIDTH):
         $this->fScalingFactor = $fFactorOnScaleToWidth;
@@ -70,6 +70,11 @@ class Image {
   public function getHeight()
   {
       return $this->iHeight;
+  }
+
+  public function getScalingFactor()
+  {
+      return $this->fScalingFactor;
   }
 
   public function getImageHandle()
@@ -103,6 +108,14 @@ class Image {
   
   public function fill($iRed, $iGreen, $iBlue, $iAlpha = 0) {
     imagefill($this->rImageHandle, 0, 0, $iAlpha === 0 ? imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue) : imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iAlpha));
+  }
+  
+  /**
+  * frees up the image buffer
+  * only call this when discarding the image object
+  */
+  public function destroy() {
+    imagedestroy($this->rImageHandle);
   }
   
   public function render($bDontBlowUp = true, $sFileName = null, $oCache = null) {
