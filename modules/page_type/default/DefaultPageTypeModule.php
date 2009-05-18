@@ -343,6 +343,8 @@ class DefaultPageTypeModule extends PageTypeModule {
   }
   
   public function backendSave($sRedirectUrl=null) {
+    if(Manager::isAjaxRequest()) return;
+
     $oLanguageObjectHistory = null;
     if(!Session::getSession()->getUser()->mayEditPageContents($this->oPage)) {
       return;
