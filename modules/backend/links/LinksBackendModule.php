@@ -63,8 +63,9 @@ class LinksBackendModule extends BackendModule {
     } else {
       $sTagName = $this->oListHelper->getListSettings()->getFilterColumnValue(LinkPeer::ID);
       if($sTagName !== ListHelper::SELECT_ALL && $sTagName !== ListHelper::SELECT_WITHOUT) {
-        $oSelectedTag = TagWriter::quickTag('input', array('type' => 'checkbox', 'name' => self::USE_SELECTED_TAG, 'checked' => "checked", 'title' => 'set tag', 'style' => 'height:0;margin-right:.2em;'));
+        $oSelectedTag = TagWriter::quickTag('input', array('type' => 'checkbox', 'name' => self::USE_SELECTED_TAG, 'checked' => "checked", 'title' => 'set tag', 'style' => 'margin-right:.2em;'));
         $oTemplate->replaceIdentifier("use_selected_tag_checkbox", $oSelectedTag);
+        $oTemplate->replacePstring("link.tag_selected", array('tag_name' => $sTagName));
       }
     }
     $oTemplate->replaceIdentifier("id", $this->oLink->getId());
