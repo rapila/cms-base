@@ -67,11 +67,19 @@ class ArrayUtil {
   }
   
   public static function assocPeek(&$aArray) {
+    $mKey = self::assocKeyPeek($aArray);
+    if($mKey === null) {
+      return null;
+    }
+    return $aArray[$mKey];
+  }
+  
+  public static function assocKeyPeek(&$aArray) {
     $mKey = array_keys($aArray);
     if(!isset($mKey[0])) {
       return null;
-    }$mKey = $mKey[0];
-    return $aArray[$mKey];
+    } $mKey = $mKey[0];
+    return $mKey;
   }
 
   public static function arrayWithValuesAsKeys($aArray) {
