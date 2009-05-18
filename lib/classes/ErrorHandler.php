@@ -6,19 +6,36 @@ class ErrorHandler {
     if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
       return false;
     }
-    self::handle(array( "number" => $iErrorNumber,
-                        "message" => $sErrorString,
-                        "filename" => $sErrorFile,
-                        "line" => $iErrorLine,
-                        "context" => $aErrorContext), !self::shouldContinue($iErrorNumber));
+    self::handle(array("number" => $iErrorNumber,
+                       "message" => $sErrorString,
+                       "filename" => $sErrorFile,
+                       "line" => $iErrorLine,
+                       "context" => $aErrorContext));
     if(self::shouldContinue($iErrorNumber)) {
       return true;
     }
-    die("An Error occured, exiting");
+    self::displayErrorMessage($iErrorNumber);
   }
   
   public static function handleException($oException) {
-    self::handle($oException);
+    self::handle(array('exception' => $oException));
+    self::displayErrorMessage(E_NOTICE);
+  }
+  
+  /**
+  * if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
+  * This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
+  */
+  private static function displayErrorMessage($iErrorNumber) {
+    ob_clean();
+    $sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
+    if($iErrorNumber == E_ERROR || !file_exists($sErrorFileName)) {
+      die("An Error occured, exiting");
+    }
+    header('Content-Type: text/html;charset=utf-8');
+    header('HTTP/1.0 500 Internal Server Error');
+    include($sErrorFileName);
+    exit;
   }
   
   public static function getEnvironment() {
@@ -51,26 +68,69 @@ class ErrorHandler {
   }
   
   private static function shouldContinue($iErrorNumber) {
-    if(self::shouldPrintErrors()) {
-      return $iErrorNumber !== E_ERROR;
-    } else {
-      return false;
-    }
+    return $iErrorNumber == E_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_USER_NOTICE;
   }
   
-  private static function handle($aError, $bIsFatal = true) {
-    if(self::shouldPrintErrors()) {
-      if($bIsFatal) {
-        Util::dumpAll($aError);
-      } else {
-        var_dump($aError);
-      }
+  private static function readableDump($mToDump, $iMaxLevel = 5, $sVariableSeparationString = ', ', $iCurrentLevel = 1, &$aReferenceChain = array()) {
+    if ($iCurrentLevel > $iMaxLevel) { 
+      return "[…]";
     }
+    $sResult = '';
+    if (is_object($mToDump)) {
+      foreach ($aReferenceChain as $refVal) {
+        if ($aReferenceChain === $mToDump) {
+          return "[#]";
+        }
+      }
+      array_push($aReferenceChain, $mToDump);
+      $sResult .= get_class($mToDump) . " Object: (";
+      $mToDump = (array) $mToDump;
+      $bHasLooped = false;
+      foreach ($mToDump as $key => $val) {
+        $bHasLooped = true;
+        $sResult .= '[';
+        if ($key{0} == "\0") {
+          $keyParts = explode("\0", $key);
+          $sResult .= $keyParts[2];
+        } else {
+          $sResult .= $key;
+        }
+        $sResult .= '] => ';
+        $sResult .= self::readableDump($val, $iMaxLevel, $sVariableSeparationString, $iCurrentLevel + 1, $aReferenceChain).$sVariableSeparationString;
+      }
+      if($bHasLooped)
+        $sResult = substr($sResult, 0, -strlen($sVariableSeparationString)).")";
+      array_pop($aReferenceChain);
+    } elseif (is_array($mToDump)) {
+      $sResult .= '(';
+      $bHasLooped = false;
+      foreach ($mToDump as $key => $val) {
+        $bHasLooped = true;
+        $sResult .= '[' . $key . '] => ';
+        $sResult .= self::readableDump($val, $iMaxLevel, $sVariableSeparationString, $iCurrentLevel + 1, $aReferenceChain);
+        $sResult .= $sVariableSeparationString;
+      }
+      if($bHasLooped)
+        $sResult = substr($sResult, 0, -strlen($sVariableSeparationString)).")";
+    } else {
+      $sResult .= var_export($mToDump, true);
+    }
+    return $sResult;
+  }
+
+  private static function handle($aError) {
+    if(self::shouldPrintErrors()) {
+      Util::dumpAll($aError);
+    }
+    //Add additional information for logging/sending
+    $aError['referrer'] = @$_SERVER['HTTP_REFERER'];
+    $aError['host'] = @$_SERVER['HTTP_HOST'];
+    $aError['path'] = @$_REQUEST['path'];
     if(self::shouldLogErrors()) {
-      if(is_writable(MAIN_DIR.'/error.log')) {
-        file_put_contents(MAIN_DIR.'/error.log', "Error in Mini-CMS on ".LinkUtil::linkToSelf()."\n[HTTP_REFERER] ".$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
-      } else {
-        die("Error could not be logged, ".MAIN_DIR.'/error.log is not writable');
+      $sLogFilePath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/error.log';
+      $sErrorMessage = "[".date(DATE_RFC822)."] ".self::readableDump($aError)."\n";
+      if(file_put_contents($sLogFilePath, $sErrorMessage, FILE_APPEND) === false) {
+        die("Error could not be logged, ".$sLogFilePath.' is not writable');
       }
     }
     if(self::shouldMailErrors()) {
@@ -79,7 +139,7 @@ class ErrorHandler {
         $sAddress = Settings::getSetting('domain_holder', 'email', false);
       }
       if($sAddress) {
-        mb_send_mail($sAddress, "Error in Mini-CMS on ".LinkUtil::linkToSelf(), "[HTTP_REFERER] ".@$_SERVER['HTTP_REFERER']."\n".print_r($aError, true));
+        mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'].MAIN_DIR_FE.$aError['path'], print_r($aError, true));
       }
     }
   }
