@@ -654,6 +654,9 @@ a.edit {
 button[type=submit] {
   background-image: url(../images/admin/save.gif);
 }
+button[type=submit].active {
+  background-image: url(../images/admin/save_active.gif);
+}
 button.new, label.new {
   background-image: url(../images/admin/new.gif);
 }

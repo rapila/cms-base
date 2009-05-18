@@ -1,3 +1,4 @@
+//Init stuff
 Event.observe(document, "dom:loaded", function() {
   var the_body = document.getElementsByTagName('body')[0];
   var the_chooser = $("chooser");
@@ -7,6 +8,7 @@ Event.observe(document, "dom:loaded", function() {
   init_toggle_fieldsets();
   init_delete_forms();
   init_tags();
+  init_save_buttons();
 });
 
 function init_tags() {
@@ -53,6 +55,18 @@ function init_tags() {
     tag_handler.add_tags($F(this).split(','), update_tags);
     this.value = "";
   }.bindAsEventListener(add_tag_input));
+}
+
+function init_save_buttons() {
+  $$('#detail button[type=submit]').each(function(submit) {
+    Event.observe(submit.up('form'), 'submit', function(event) {
+      if(submit.hasAttribute('class') && submit.getAttribute('class') !== '' && !submit.hasClass('save')) {
+        return;
+      }
+      submit.addClassName('active');
+      submit.setAttribute('disabled', 'disabled');
+    });
+  });
 }
 
 function init_add_property_button() {
