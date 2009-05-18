@@ -143,7 +143,7 @@ class TagWriter {
       } else {
         $sValue = $mValue;
       }
-      $bActiveKey = in_array($mKey, $mSelected);
+      $bActiveKey = in_array($mKey, $mSelected, true);
       $sSelectedString = $bActiveKey ? ' selected="selected"' : '';
       $sClass = $bActiveKey ? ' class="selected"' : '';
 

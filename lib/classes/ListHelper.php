@@ -62,7 +62,7 @@ class ListHelper {
     }
   }
   
-  public function getFilterSelect($sColumn, $aPossibleItems, $sIncludeAllString = null, $sIncludeWithoutString = null, $sSelectionType = null, $sKeyMethod = null, $mDefaultValue = self::SELECT_ALL) {
+  public function getFilterSelect($sColumn, $aPossibleItems, $sIncludeAllString = null, $sIncludeWithoutString = null, $sSelectionType = null, $sKeyMethod = null, $mDefaultValue = null) {
     
     if($sSelectionType === null) {
       $sSelectionType = self::SELECTION_TYPE_IS;
@@ -81,8 +81,6 @@ class ListHelper {
     }
     //Set selection type
     $this->aSelectionTypes[$sColumn] = $sSelectionType;
-
-    $sSelectedItem = $oListSettings->getFilterColumnValue($sColumn, $mDefaultValue);
     $oSelectTemplate = clone $this->oSelectTemplate;
     $aAdditionalOptions = array();
     if($sIncludeAllString !== null) {
@@ -94,6 +92,13 @@ class ListHelper {
       }
       $aAdditionalOptions[self::SELECT_WITHOUT] = $sIncludeWithoutString;
     }
+    if($mDefaultValue === null) {
+      $mDefaultValue = ArrayUtil::assocKeyPeek($aAdditionalOptions);
+      if($mDefaultValue === null) {
+        $mDefaultValue = ArrayUtil::assocKeyPeek($aPossibleItems);
+      }
+    }
+    $sSelectedItem = $oListSettings->getFilterColumnValue($sColumn, $mDefaultValue);
     if($sSelectedItem !== self::SELECT_ALL && $sSelectedItem !== self::SELECT_WITHOUT && is_numeric($sSelectedItem)) {
       $sSelectedItem = (int) $sSelectedItem;
     }

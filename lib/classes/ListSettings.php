@@ -16,7 +16,7 @@ class ListSettings {
   }
   
   public function setFilterColumnValue($sColumnName, $sValue) {
-    if(!$sValue) {
+    if($sValue === null || $sValue === '') {
       unset($this->aFilters[$sColumnName]);
       return;
     }
