@@ -68,7 +68,7 @@ class ErrorHandler {
   }
   
   private static function shouldContinue($iErrorNumber) {
-    return $iErrorNumber == E_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_USER_NOTICE;
+    return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT/* || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED*/;
   }
   
   private static function readableDump($mToDump, $iMaxLevel = 5, $sVariableSeparationString = ', ', $iCurrentLevel = 1, &$aReferenceChain = array()) {
