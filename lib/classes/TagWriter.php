@@ -111,7 +111,7 @@ class TagWriter {
  * @return string of html options
  *
  */
-  public static function optionsFromArray($aKeyValues, $mSelected=null, $sIndentType='┼', $aCustomOptions = array('' => '------')) {
+  public static function optionsFromArray($aKeyValues, $mSelected=null, $sIndentType='┼', $aCustomOptions = array('' => '------'), $bStrict = false) {
     if(!is_array($mSelected)) {
       if($mSelected === null) {
         $mSelected = array();
@@ -145,7 +145,8 @@ class TagWriter {
       }
       // strict in_array creates a problem here.
       // $bActiveKey = in_array($mKey, $mSelected, true);
-      $bActiveKey = in_array($mKey, $mSelected);
+      $bActiveKey = in_array($mKey, $mSelected, $bStrict);
+
       $sSelectedString = $bActiveKey ? ' selected="selected"' : '';
       $sClass = $bActiveKey ? ' class="selected"' : '';
 
@@ -161,7 +162,7 @@ class TagWriter {
     return $oTemplate;
   }
 
-  public static function optionsFromObjects($aObjects, $sKeyMethod = null, $sValueMethod = null, $mSelected = null, $aCustomOptions = array( '' => '------')) {
+  public static function optionsFromObjects($aObjects, $sKeyMethod = null, $sValueMethod = null, $mSelected = null, $aCustomOptions = array( '' => '------'), $bStrict = false) {
     $aResult = array();
     if(!is_array($mSelected)) {
       if($mSelected === null) {
@@ -197,7 +198,7 @@ class TagWriter {
         }
       }
     }
-    return self::optionsFromArray($aResult, $aSelected, '_', $aCustomOptions);
+    return self::optionsFromArray($aResult, $aSelected, '_', $aCustomOptions, $bStrict);
   }
 
   public static function listItemsFromArray($aArray) {

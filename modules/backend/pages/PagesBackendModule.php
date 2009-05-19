@@ -70,6 +70,8 @@ class PagesBackendModule extends BackendModule {
     }
 
     $oTemplate = $this->constructTemplate("detail");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('pages', null, array('get_module_info' => 'true')))));
+
     if ($this->oPage->getId() != PagePeer::getRootPage()->getId() && !$this->oPage->isNew()) {
       $oTemplate->replaceIdentifier("parent_id", $this->oPage->getParentId());
       $oTemplate->replaceIdentifier("link_prefix", LinkUtil::link('pages'));

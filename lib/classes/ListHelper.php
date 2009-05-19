@@ -16,6 +16,7 @@ class ListHelper {
   const REQUEST_PREFIX = '_list_storage_';
   
   const SELECTION_TYPE_IS = 'is';
+  const SELECTION_TYPE_IS_STRICT = 'strict';
   const SELECTION_TYPE_BEGINS = 'begins';
   const SELECTION_TYPE_CONTAINS = 'contains';
   const SELECTION_TYPE_TAG = 'tag';
@@ -103,10 +104,11 @@ class ListHelper {
       $sSelectedItem = (int) $sSelectedItem;
     }
     $oSelectTemplate->replaceIdentifier('name', self::normalizeRequestKey($sColumn));
+
     if($bListIsOfObjects) {
-      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromObjects($aPossibleItems, $sKeyMethod, null, $sSelectedItem, $aAdditionalOptions));
+      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromObjects($aPossibleItems, $sKeyMethod, null, $sSelectedItem, $aAdditionalOptions, $sSelectionType === self::SELECTION_TYPE_IS_STRICT));
     } else {
-      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromArray($aPossibleItems, $sSelectedItem, '', $aAdditionalOptions));
+      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromArray($aPossibleItems, $sSelectedItem, '', $aAdditionalOptions, $sSelectionType === self::SELECTION_TYPE_IS_STRICT));
     }
     return $oSelectTemplate;
   }
@@ -172,7 +174,7 @@ class ListHelper {
       }
       $bInverted = $sFilterValue === self::SELECT_WITHOUT;
       $sFilterValue = $bInverted ? null : $sFilterValue;
-      if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS) {
+      if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS || $this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS_STRICT) {
         $oCriteria->add($sFilterColumn, $sFilterValue, Criteria::EQUAL);
       //LIKE criterias are not compatible with $bInverted == true
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_BEGINS) {
