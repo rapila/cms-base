@@ -63,11 +63,11 @@ class ListHelper {
   }
   
   public function getFilterSelect($sColumn, $aPossibleItems, $sIncludeAllString = null, $sIncludeWithoutString = null, $sSelectionType = null, $sKeyMethod = null, $mDefaultValue = null) {
-    
     if($sSelectionType === null) {
       $sSelectionType = self::SELECTION_TYPE_IS;
     }
     $oListSettings = $this->getListSettings();
+
     $bListIsOfObjects = false;
     if(count($aPossibleItems) === 0) {
       $oListSettings->setFilterColumnValue($sColumn, self::SELECT_ALL);

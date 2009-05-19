@@ -10,7 +10,7 @@ class ListSettings {
   
   public function getFilterColumnValue($sColumnName, $mDefaultValue = ListHelper::SELECT_ALL) {
     if(!isset($this->aFilters[$sColumnName])) {
-      return $mDefaultValue;
+      $this->aFilters[$sColumnName] = $mDefaultValue;
     }
     return $this->aFilters[$sColumnName];
   }

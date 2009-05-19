@@ -143,7 +143,9 @@ class TagWriter {
       } else {
         $sValue = $mValue;
       }
-      $bActiveKey = in_array($mKey, $mSelected, true);
+      // strict in_array creates a problem here.
+      // $bActiveKey = in_array($mKey, $mSelected, true);
+      $bActiveKey = in_array($mKey, $mSelected);
       $sSelectedString = $bActiveKey ? ' selected="selected"' : '';
       $sClass = $bActiveKey ? ' class="selected"' : '';
 
