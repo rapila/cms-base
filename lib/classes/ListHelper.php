@@ -16,7 +16,6 @@ class ListHelper {
   const REQUEST_PREFIX = '_list_storage_';
   
   const SELECTION_TYPE_IS = 'is';
-  const SELECTION_TYPE_IS_STRICT = 'strict';
   const SELECTION_TYPE_BEGINS = 'begins';
   const SELECTION_TYPE_CONTAINS = 'contains';
   const SELECTION_TYPE_TAG = 'tag';
@@ -77,6 +76,7 @@ class ListHelper {
       //If list is of objects, options must be created using optionsFromObjects, else optionsFromArray
       $bListIsOfObjects = is_object(ArrayUtil::assocPeek($aPossibleItems));
     }
+    //Set the current value to the one that’s coming from the request (if any)
     if($this->hasRequestValue($sColumn)) {
       $oListSettings->setFilterColumnValue($sColumn, $this->getRequestValue($sColumn));
     }
@@ -104,11 +104,10 @@ class ListHelper {
       $sSelectedItem = (int) $sSelectedItem;
     }
     $oSelectTemplate->replaceIdentifier('name', self::normalizeRequestKey($sColumn));
-
     if($bListIsOfObjects) {
-      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromObjects($aPossibleItems, $sKeyMethod, null, $sSelectedItem, $aAdditionalOptions, $sSelectionType === self::SELECTION_TYPE_IS_STRICT));
+      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromObjects($aPossibleItems, $sKeyMethod, null, $sSelectedItem, $aAdditionalOptions, true));
     } else {
-      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromArray($aPossibleItems, $sSelectedItem, '', $aAdditionalOptions, $sSelectionType === self::SELECTION_TYPE_IS_STRICT));
+      $oSelectTemplate->replaceIdentifier('options', TagWriter::optionsFromArray($aPossibleItems, $sSelectedItem, '', $aAdditionalOptions, true));
     }
     return $oSelectTemplate;
   }
@@ -174,7 +173,7 @@ class ListHelper {
       }
       $bInverted = $sFilterValue === self::SELECT_WITHOUT;
       $sFilterValue = $bInverted ? null : $sFilterValue;
-      if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS || $this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS_STRICT) {
+      if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS) {
         $oCriteria->add($sFilterColumn, $sFilterValue, Criteria::EQUAL);
       //LIKE criterias are not compatible with $bInverted == true
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_BEGINS) {
