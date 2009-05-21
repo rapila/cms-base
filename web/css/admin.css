@@ -552,42 +552,6 @@ fieldset.show {
   font-weight: bold;
 }
 
-span.button {
-  display:inline-block;
-  padding-left:20.2px;
-  padding-bottom:3px;
-  height: 16px;
-  background-image: url(../images/admin/edit.gif);
-  background-position: 0 3px;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-span.add {
-  background-image: url(../images/admin/add.png);
-}
-
-span.up {
-  background-image: url(../images/admin/arrow_up.png);
-}
-
-span.remove {
-  background-image: url(../images/admin/remove.png);
-}
-
-button,
-a.edit, label.edit, label.delete, label.new {
-  background-color: transparent;
-  border: none;
-  cursor:pointer;
-  height:16px; 
-  width:400px;
-  padding-left:20px;
-  text-decoration:none;
-  background-image: url(../images/admin/edit.gif);
-  background-repeat: no-repeat;
-}
-
 ul.pages button {
   padding-left:10px;
 }
@@ -751,6 +715,42 @@ label.inherit {
 }
 label.edit_content {
   background-image: url(../images/admin/edit_content.gif);
+}
+
+span.button {
+  display:inline-block;
+  padding-left:20.2px;
+  padding-bottom:3px;
+  height: 16px;
+  background-image: url(../images/admin/edit.gif);
+  background-position: 0 3px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+span.add, button.add {
+  background-image: url(../images/admin/add.png);
+}
+
+span.up, button.up {
+  background-image: url(../images/admin/arrow_up.png);
+}
+
+span.remove, button.remove {
+  background-image: url(../images/admin/remove.png);
+}
+
+button,
+a.edit, label.edit, label.delete, label.new {
+  background-color: transparent;
+  border: none;
+  cursor:pointer;
+  height:16px; 
+  width:400px;
+  padding-left:20px;
+  text-decoration:none;
+  background-image: url(../images/admin/edit.gif);
+  background-repeat: no-repeat;
 }
 span.wwwpreview {
   text-decoration:none;

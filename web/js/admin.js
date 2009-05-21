@@ -199,6 +199,9 @@ FormPrototyper.prototype = {
   },
   
   update_id: function(element){
+    if(this.options.no_id_update) {
+      return;
+    }
     if($(element).hasAttribute('id')) {
       element.setAttribute('id', element.getAttribute('id')+this.new_clone_id);
     }

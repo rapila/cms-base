@@ -111,7 +111,7 @@ class Flash {
       }
       return false;
     }
-    if($_FILES[$sName]["error"] !== 0) {
+    if($_FILES[$sName]["error"] !== UPLOAD_ERR_OK) {
       switch($_FILES[$sName]["error"]) {
         case UPLOAD_ERR_INI_SIZE:
           $this->addMessage('upload_error_php_max_size', array('max_size' => ini_get('upload_max_filesize')));

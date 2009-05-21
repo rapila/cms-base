@@ -9,6 +9,7 @@ modules:
     tags: true
     strings: true
     languages: true
+    mass_upload: true
   admin_links:
     users:
       requires_right:   is_admin

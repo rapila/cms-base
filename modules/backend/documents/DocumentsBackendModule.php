@@ -45,8 +45,10 @@ class DocumentsBackendModule extends BackendModule {
     
     $oCriteria = new Criteria();
     $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
-    $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, 'LEFT OUTER JOIN');
+    $oExternallyManagedCriterion = $oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
+    $oExternallyManagedCriterion->addOr($oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL));
+    $oCriteria->add($oExternallyManagedCriterion);
     $this->oListHelper->handle($oCriteria);
     $aDocuments = DocumentPeer::doSelect($oCriteria);
 
@@ -191,7 +193,7 @@ class DocumentsBackendModule extends BackendModule {
     }
 
     if(Flash::noErrors()) {
-      if($this->reduceSizeIfRequired()) {
+      if($this->sizeReductionIsRequired()) {
         $iMaxWidth = $this->oDocument->getDocumentCategory()->getMaxWidth();
         $oImage = Image::imageFromData($this->oDocument->getData()->getContents());
         if($oImage->getOriginalWidth() > $this->oDocument->getDocumentCategory()->getMaxWidth()) {
@@ -209,7 +211,7 @@ class DocumentsBackendModule extends BackendModule {
     }
   }
 
-  private function reduceSizeIfRequired() {
+  private function sizeReductionIsRequired() {
     return $this->oDocument->isImage()
         && $this->oDocument->getDocumentCategoryId() != null
         && $this->oDocument->getDocumentCategory()->getMaxWidth() != null;
