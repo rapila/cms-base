@@ -77,7 +77,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * The value for the document_category_id field.
 	 * @var        int
 	 */
-	protected $document_category_id;
+	protected $document_category_id = 0;
 
 
 	/**
@@ -581,7 +581,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->document_category_id !== $v) {
+		if ($this->document_category_id !== $v || $v === 0) {
 			$this->document_category_id = $v;
 			$this->modifiedColumns[] = DocumentPeer::DOCUMENT_CATEGORY_ID;
 		}
@@ -1633,7 +1633,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 
 		if ($v === null) {
-			$this->setDocumentCategoryId(NULL);
+			$this->setDocumentCategoryId('null');
 		} else {
 			$this->setDocumentCategoryId($v->getId());
 		}

@@ -346,7 +346,7 @@ CREATE TABLE `documents`
 	`language_id` VARCHAR(3),
 	`owner_id` INTEGER  NOT NULL,
 	`document_type_id` INTEGER  NOT NULL,
-	`document_category_id` INTEGER,
+	`document_category_id` INTEGER default null,
 	`is_private` INTEGER(1) default 0,
 	`is_inactive` INTEGER(1) default 0,
 	`is_protected` INTEGER(1) default 0,
