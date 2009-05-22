@@ -26,29 +26,26 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     $oCriteria = new Criteria();
     $oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_TYPE_ID, Criteria::INNER_JOIN);
     $oCriteria->add(self::MIMETYPE, "$sDocumentKind%", Criteria::LIKE);
-    return self::doSelectOne($oCriteria) !== null;
+    return self::doCount($oCriteria) > 0;
   }
   
   public static function getDocumentTypeByMimetype($sMimetype=null) {
-    $oC = new Criteria();
-    $oC->add(self::MIMETYPE, $sMimetype);
-    $oDocument = self::doSelectOne($oC);
-    return $oDocument;
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::MIMETYPE, $sMimetype);
+    return self::doSelectOne($oCriteria);
   }
   
   public static function getDocumentTypeByExtension($sExtension=null) {
-    $oC = new Criteria();
-    $oC->add(self::EXTENSION, $sExtension);
-    $oDocument = self::doSelectOne($oC);
-    return $oDocument;
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::EXTENSION, $sExtension);
+    return self::doSelectOne($oCriteria);
   }
   
   public static function getDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind='image', $bLike=true) {
-    $oC = new Criteria();
-    $oC->add(self::MIMETYPE, "$sMimeTypeKind/%", $bLike ? Criteria::LIKE : Criteria::NOT_LIKE);
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::MIMETYPE, "$sMimeTypeKind/%", $bLike ? Criteria::LIKE : Criteria::NOT_LIKE);
     $aResult = array();
-    $aDocumentTypes = self::doSelect($oC);
-    foreach($aDocumentTypes as $aDocumentType) {
+    foreach(self::doSelect($oCriteria) as $aDocumentType) {
       $aResult[$aDocumentType->getId()]=$aDocumentType->getMimetype();
     }
     return $aResult;
@@ -95,7 +92,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
         unset($aSortedMimeTypes[$sKey]);
       }
     }
-    
     foreach($aDocTypeCompare as $sKey => $sDocType) {
       if(isset($aSortedMimeTypes[$sDocType])) {
         $oDocType = self::getDocumentTypeByMimetype($sDocType);
@@ -107,11 +103,10 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     
     //Try setting application/octet-stream
     return self::getDocumentTypeByMimetype('application/octet-stream');
-  } // getDocumentTypeForUpload()
+  }
   
   public static function hasDocTypesPreset($iMinEntries = 0) {
-    $iCount = self::doCount(new Criteria());
-    return $iCount > $iMinEntries;
+    return self::doCount(new Criteria()) > $iMinEntries;
   }
   
   public static function insertRow($aArrayOfValues) {
@@ -134,4 +129,5 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
     return self::doSelect($oCriteria);
   }
   
-} // DocumentTypePeer
+}
+
