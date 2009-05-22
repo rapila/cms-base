@@ -64,7 +64,10 @@ class ContentBackendModule extends BackendModule {
 
   public function getDetail() {
     if($this->oCurrentPage === null) {
-      return $this->constructTemplate('module_info');
+      $oTemplate = $this->constructTemplate('module_info');
+      $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
+      $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
+      return $oTemplate;
     }
     return $this->oPageTypeModule->backendDisplay();
   }

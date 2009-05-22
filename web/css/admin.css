@@ -884,7 +884,7 @@ fieldset {
   padding-left:0;
 }
 
-a.help {
+a.help, a.info {
   background-image: url(../images/admin/help.gif);  
   background-repeat: no-repeat;
   background-position: right;
@@ -892,6 +892,10 @@ a.help {
   text-decoration: none;
   font-size: 1.2em;
   color: #2B51C2;
+}
+
+a.info {
+  background-image: url(../images/admin/info.gif);  
 }
 
 #detail fieldset.show {

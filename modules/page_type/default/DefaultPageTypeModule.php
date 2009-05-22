@@ -164,7 +164,7 @@ class DefaultPageTypeModule extends PageTypeModule {
   private function executeShow() {
     $bMayEditContents = Session::getSession()->getUser()->mayEditPageContents($this->oPage);
     $oTemplate = $this->constructTemplate("content_show".($bMayEditContents ? "" : "_forbidden"));
-    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
     
     $oTemplate->replaceIdentifier("title", $this->oPage->getPageTitle(BackendManager::getContentEditLanguage()));
     $this->backendCustomJs = $this->constructTemplate("show.js")->render();

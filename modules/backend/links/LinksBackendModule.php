@@ -45,7 +45,7 @@ class LinksBackendModule extends BackendModule {
       return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("detail");
-    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('links', null, array('get_module_info' => 'true')))));
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('links', null, array('get_module_info' => 'true')))));
     
     if(!$this->oLink->isNew()) {
       // Reference Handling needs to be checked, maybe used not only in pages, might be other objects too?

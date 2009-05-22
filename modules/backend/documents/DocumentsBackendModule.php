@@ -45,10 +45,8 @@ class DocumentsBackendModule extends BackendModule {
     
     $oCriteria = new Criteria();
     $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, 'LEFT OUTER JOIN');
-    $oExternallyManagedCriterion = $oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
-    $oExternallyManagedCriterion->addOr($oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL));
-    $oCriteria->add($oExternallyManagedCriterion);
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+    $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
     $this->oListHelper->handle($oCriteria);
     $aDocuments = DocumentPeer::doSelect($oCriteria);
 
@@ -98,7 +96,7 @@ class DocumentsBackendModule extends BackendModule {
 
     if($this->oDocument !== null) {
       $oTemplate = $this->constructTemplate("detail");
-      $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'help', 'href' => LinkUtil::link('documents', null, array('get_module_info' => 'true')))));
+      $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('documents', null, array('get_module_info' => 'true')))));
       $sActionLink = $this->link($this->oDocument->getId());
       $oTemplate->replaceIdentifier("action", $sActionLink);
       $oTemplate->replaceIdentifier("id", $this->oDocument->getId());
@@ -193,7 +191,7 @@ class DocumentsBackendModule extends BackendModule {
     }
 
     if(Flash::noErrors()) {
-      if($this->sizeReductionIsRequired()) {
+      if($this->reduceSizeIfRequired()) {
         $iMaxWidth = $this->oDocument->getDocumentCategory()->getMaxWidth();
         $oImage = Image::imageFromData($this->oDocument->getData()->getContents());
         if($oImage->getOriginalWidth() > $this->oDocument->getDocumentCategory()->getMaxWidth()) {
@@ -211,7 +209,7 @@ class DocumentsBackendModule extends BackendModule {
     }
   }
 
-  private function sizeReductionIsRequired() {
+  private function reduceSizeIfRequired() {
     return $this->oDocument->isImage()
         && $this->oDocument->getDocumentCategoryId() != null
         && $this->oDocument->getDocumentCategory()->getMaxWidth() != null;
