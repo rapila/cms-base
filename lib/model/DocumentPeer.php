@@ -6,108 +6,71 @@
   // include object class
   include_once 'model/Document.php';
 
-
 /**
  * @package model
  */	
 class DocumentPeer extends BaseDocumentPeer {
   
-  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $sOrderField='NAME', $sSortOrder='ASC', $bDocumentKindIsNotInverted=true, $sDocumentName=null) {
-    if($sDocumentKind === null) {
-      $sDocumentKind = ListHelper::SELECT_ALL;
-    }
-    if($iDocumentCategory === null) {
-      $iDocumentCategory = ListHelper::SELECT_ALL;
-    }
-    
-    $oCriteria = new Criteria();
-    
-    //Search
-    if($sDocumentName !== null) {
-      self::addSearchToCriteria($sDocumentName, $oCriteria);
-    }
-    
-    //By DocumentCategoryId or all internally managed Documents
-    if($iDocumentCategory !== ListHelper::SELECT_ALL) {
+  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true) {
+    $oCriteria = self::getDocumentsCriteria();
+    if($iDocumentCategory !== null) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
-    } else {
-      // exclude externally managed - uploads from custom modules - images
-      $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
-      if(count($aExcludeCategories) > 0) {
-        $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
-      }
     }
-    
-    //Kind
-    if($sDocumentKind !== ListHelper::SELECT_ALL) {
+    if($sDocumentKind !== null) {
       $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
-    
-    Util::addSortColumn($oCriteria, constant('self::'.strtoupper($sOrderField)), $sSortOrder);
-    if($sOrderField != 'NAME') {
-      $oCriteria->addAscendingOrderByColumn(self::NAME);
-    }
-    
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
     return self::doSelect($oCriteria);
+  }
+  
+  public static function getDocumentsCriteria($bExcludeExternallyManaged = true) {
+    $oCriteria = new Criteria();
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
+    if($bExcludeExternallyManaged) {
+      $oExternalCriterion = $oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, null);
+      $oExternalCriterion->addOr($oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false));
+      $oCriteria->add($oExternalCriterion);
+    }
+    return $oCriteria;
   }
   
   public static function addSearchToCriteria($sSearch, $oCriteria) {
     $oCriteria->add(self::NAME, "%$sSearch%", Criteria::LIKE);
   }
+    public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
+    return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
+  }
   
- /**
-  * countDocumentsInternallyManaged()
-  * exclude document categories that are externally managed by other objects and use documents for storage only
-  * @return int
-  */
-  public static function countDocumentsInternallyManaged() {
-    $oCriteria = new Criteria();
-    $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
-    if(count($aExcludeCategories) > 0) {
-      $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
-    }
-    return self::doCount($oCriteria);
+  public static function getDocumentsByKindOfNotImage() {
+    return self::getDocumentsByKindAndCategory('image', null, false);
+  }
+  
+  public static function getDocumentsByKindOfImage() {
+    return self::getDocumentsByKindAndCategory('image', null, true);
   }
 
- /**
-  * countDocumentsExceedsLimit()
-  * @param int limit
-  * @return boolean
-  */  
+  public static function countDocumentsInternallyManaged() {
+    return self::doCount(self::getDocumentsCriteria());
+  }
+
   public static function countDocumentsExceedsLimit($iLimit = 40) {
     return self::countDocumentsInternallyManaged() > $iLimit;
   }
   
   public static function getDocumentsForMceLinkArray($bExcludeExternallyManagedCategories=true) {
-    $oCriteria = new Criteria();
+    $oCriteria = self::getDocumentsCriteria();
     $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image', false)), Criteria::IN);
-    if($bExcludeExternallyManagedCategories) {
-      $aExcludeCategories = DocumentCategoryPeer::getExternallyManagedDocumentCategoryIds();
-      if(count($aExcludeCategories) > 0) {
-        $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $aExcludeCategories, Criteria::NOT_IN);
-      }
-    }
-    $oCriteria->addJoin(self::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
     $oCriteria->addAscendingOrderByColumn(DocumentCategoryPeer::NAME);
     $oCriteria->addAscendingOrderByColumn(self::NAME);
     return self::doSelect($oCriteria);
   } 
     
-  public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
-    return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
-  }
-  
-  public static function getDocumentsByKindOfNotImage() {
-    return self::getDocumentsByKindAndCategory('image', null, 'NAME', 'ASC', false);
-  }
-  
-  public static function getDocumentsByKindOfImage() {
-    return self::getDocumentsByKindAndCategory('image', null, 'NAME', 'ASC', true);
-  }
-  
-  public static function getMostRecent() {
+  public static function getMostRecent($bIsProtected = false) {
     $oCriteria = new Criteria();
     $oCriteria->addDescendingOrderByColumn(self::CREATED_AT);
+    $oCriteria->add(self::IS_INACTIVE, false);
+    $oCriteria->add(self::IS_PROTECTED, $bIsProtected);
     return self::doSelectOne($oCriteria);
   }
 }

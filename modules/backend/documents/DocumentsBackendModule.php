@@ -43,10 +43,7 @@ class DocumentsBackendModule extends BackendModule {
     $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(DocumentPeer::NAME, 'name', true));
     $oTemplate->replaceIdentifierMultiple("sort_link", $this->oListHelper->getSortColumn(DocumentPeer::UPDATED_AT, 'date'));
     
-    $oCriteria = new Criteria();
-    $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-    // $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+    $oCriteria = DocumentPeer::getDocumentsCriteria();
     $this->oListHelper->handle($oCriteria);
     $aDocuments = DocumentPeer::doSelect($oCriteria);
 
