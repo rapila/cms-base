@@ -45,8 +45,8 @@ class DocumentsBackendModule extends BackendModule {
     
     $oCriteria = new Criteria();
     $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
-    $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, true, Criteria::NOT_EQUAL);
+    $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
+    // $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
     $this->oListHelper->handle($oCriteria);
     $aDocuments = DocumentPeer::doSelect($oCriteria);
 
