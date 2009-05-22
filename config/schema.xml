@@ -141,6 +141,7 @@
   <column name="is_backend_login_enabled" type="boolean" size="1" default="1" />
   <column name="is_inactive" type="boolean" size="1" default="0" />
   <column name="password_recover_hint" type="varchar" size="10" />
+  <column name="backend_settings" type="longvarchar" required="false" />
   <column name="created_by" type="integer" required="false" /> <!-- Not required for first user -->
   <foreign-key foreignTable="users">
     <reference local="created_by" foreign="id" />

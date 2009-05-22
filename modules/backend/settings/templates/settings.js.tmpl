@@ -1,0 +1,74 @@
+var unassigned_modules = null;
+
+function handleDrop(module, section) {
+  if(module.up() === section) {
+    return;
+  }
+  section.insert({bottom: module});
+  if(section !== unassigned_modules) {
+    Sortable.create(section, {tag: 'div', hoverclass: 'reorder', constraint: false});
+  }
+}
+
+Event.observe(document, 'dom:loaded', function() {
+  unassigned_modules = $('unassigned_modules');
+  $$('div.module').each(function(module) {
+    new Draggable(module, {scroll: $('detail'), revert: true});
+  });
+  $$('#sections .section').each(function(section) {
+    Droppables.add(section, {accept: 'module', hoverclass: 'hover', onDrop: handleDrop});
+  });
+  
+  $$('button.remove').each(function(remove_button) {
+    Event.observe(remove_button, 'click', handleDrop.bind(window, remove_button.up('.module'), $('unassigned_modules')));
+  });
+  
+  //Load default config
+  new Ajax.Request('{{writeLink=backend_ajax/settings/load;manager=FileManager}}', {
+    method: 'get',
+    onSuccess: function(transport) {
+      $A(transport.responseXML.documentElement.childNodes).each(function(setting) {
+        var section_name = setting.getAttribute('name');
+        var section = $('section-'+section_name);
+        $A(setting.childNodes).each(function(item) {
+          var module_name = item.getAttribute('name');
+          var module = $('module-'+module_name);
+          if(section && module)
+            handleDrop(module, section);
+        });
+      });
+    }
+  });
+  
+  //Handle save
+  var save_button = $('save_button');
+  Event.observe(save_button, 'click', function(event) {
+    var modules = $$('div.module');
+    var result = {};
+    modules.each(function(module) {
+      if(module.up() === unassigned_modules) {
+        return;
+      }
+      var section = module.up();
+      var section_name = section.id.substring('section-'.length);
+      var module_name = module.id.substring('module-'.length);
+      if(result[section_name]) {
+        result[section_name] += ","+module_name;
+      } else {
+        result[section_name] = module_name;
+      }
+    });
+    save_button.addClassName('active');
+    new Ajax.Request('{{writeLink=backend_ajax/settings/save;manager=FileManager}}', {
+      method: 'get',
+      parameters: result,
+      onSuccess: function(transport) {
+        save_button.removeClassName('active');
+      },
+      onFailure: function(transport) {
+        save_button.removeClassName('save');
+        save_button.addClassName('error');
+      }
+    });
+  });
+});

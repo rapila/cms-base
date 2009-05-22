@@ -24,7 +24,7 @@ abstract class BaseUserPeer {
 	const CLASS_DEFAULT = 'model.User';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 15;
+	const NUM_COLUMNS = 16;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -63,6 +63,9 @@ abstract class BaseUserPeer {
 	/** the column name for the PASSWORD_RECOVER_HINT field */
 	const PASSWORD_RECOVER_HINT = 'users.PASSWORD_RECOVER_HINT';
 
+	/** the column name for the BACKEND_SETTINGS field */
+	const BACKEND_SETTINGS = 'users.BACKEND_SETTINGS';
+
 	/** the column name for the CREATED_BY field */
 	const CREATED_BY = 'users.CREATED_BY';
 
@@ -86,10 +89,10 @@ abstract class BaseUserPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'FirstName', 'LastName', 'Email', 'LanguageId', 'IsAdmin', 'IsBackendLoginEnabled', 'IsInactive', 'PasswordRecoverHint', 'CreatedBy', 'UpdatedBy', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::PASSWORD, UserPeer::FIRST_NAME, UserPeer::LAST_NAME, UserPeer::EMAIL, UserPeer::LANGUAGE_ID, UserPeer::IS_ADMIN, UserPeer::IS_BACKEND_LOGIN_ENABLED, UserPeer::IS_INACTIVE, UserPeer::PASSWORD_RECOVER_HINT, UserPeer::CREATED_BY, UserPeer::UPDATED_BY, UserPeer::CREATED_AT, UserPeer::UPDATED_AT, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'password', 'first_name', 'last_name', 'email', 'language_id', 'is_admin', 'is_backend_login_enabled', 'is_inactive', 'password_recover_hint', 'created_by', 'updated_by', 'created_at', 'updated_at', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'FirstName', 'LastName', 'Email', 'LanguageId', 'IsAdmin', 'IsBackendLoginEnabled', 'IsInactive', 'PasswordRecoverHint', 'BackendSettings', 'CreatedBy', 'UpdatedBy', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::PASSWORD, UserPeer::FIRST_NAME, UserPeer::LAST_NAME, UserPeer::EMAIL, UserPeer::LANGUAGE_ID, UserPeer::IS_ADMIN, UserPeer::IS_BACKEND_LOGIN_ENABLED, UserPeer::IS_INACTIVE, UserPeer::PASSWORD_RECOVER_HINT, UserPeer::BACKEND_SETTINGS, UserPeer::CREATED_BY, UserPeer::UPDATED_BY, UserPeer::CREATED_AT, UserPeer::UPDATED_AT, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'password', 'first_name', 'last_name', 'email', 'language_id', 'is_admin', 'is_backend_login_enabled', 'is_inactive', 'password_recover_hint', 'backend_settings', 'created_by', 'updated_by', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -99,10 +102,10 @@ abstract class BaseUserPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'FirstName' => 3, 'LastName' => 4, 'Email' => 5, 'LanguageId' => 6, 'IsAdmin' => 7, 'IsBackendLoginEnabled' => 8, 'IsInactive' => 9, 'PasswordRecoverHint' => 10, 'CreatedBy' => 11, 'UpdatedBy' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
-		BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::PASSWORD => 2, UserPeer::FIRST_NAME => 3, UserPeer::LAST_NAME => 4, UserPeer::EMAIL => 5, UserPeer::LANGUAGE_ID => 6, UserPeer::IS_ADMIN => 7, UserPeer::IS_BACKEND_LOGIN_ENABLED => 8, UserPeer::IS_INACTIVE => 9, UserPeer::PASSWORD_RECOVER_HINT => 10, UserPeer::CREATED_BY => 11, UserPeer::UPDATED_BY => 12, UserPeer::CREATED_AT => 13, UserPeer::UPDATED_AT => 14, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'first_name' => 3, 'last_name' => 4, 'email' => 5, 'language_id' => 6, 'is_admin' => 7, 'is_backend_login_enabled' => 8, 'is_inactive' => 9, 'password_recover_hint' => 10, 'created_by' => 11, 'updated_by' => 12, 'created_at' => 13, 'updated_at' => 14, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'FirstName' => 3, 'LastName' => 4, 'Email' => 5, 'LanguageId' => 6, 'IsAdmin' => 7, 'IsBackendLoginEnabled' => 8, 'IsInactive' => 9, 'PasswordRecoverHint' => 10, 'BackendSettings' => 11, 'CreatedBy' => 12, 'UpdatedBy' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
+		BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::PASSWORD => 2, UserPeer::FIRST_NAME => 3, UserPeer::LAST_NAME => 4, UserPeer::EMAIL => 5, UserPeer::LANGUAGE_ID => 6, UserPeer::IS_ADMIN => 7, UserPeer::IS_BACKEND_LOGIN_ENABLED => 8, UserPeer::IS_INACTIVE => 9, UserPeer::PASSWORD_RECOVER_HINT => 10, UserPeer::BACKEND_SETTINGS => 11, UserPeer::CREATED_BY => 12, UserPeer::UPDATED_BY => 13, UserPeer::CREATED_AT => 14, UserPeer::UPDATED_AT => 15, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'first_name' => 3, 'last_name' => 4, 'email' => 5, 'language_id' => 6, 'is_admin' => 7, 'is_backend_login_enabled' => 8, 'is_inactive' => 9, 'password_recover_hint' => 10, 'backend_settings' => 11, 'created_by' => 12, 'updated_by' => 13, 'created_at' => 14, 'updated_at' => 15, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -224,6 +227,8 @@ abstract class BaseUserPeer {
 		$criteria->addSelectColumn(UserPeer::IS_INACTIVE);
 
 		$criteria->addSelectColumn(UserPeer::PASSWORD_RECOVER_HINT);
+
+		$criteria->addSelectColumn(UserPeer::BACKEND_SETTINGS);
 
 		$criteria->addSelectColumn(UserPeer::CREATED_BY);
 

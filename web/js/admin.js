@@ -9,6 +9,7 @@ Event.observe(document, "dom:loaded", function() {
   init_delete_forms();
   init_tags();
   init_save_buttons();
+  init_popup_menu_toggles();
 });
 
 function init_tags() {
@@ -120,6 +121,14 @@ function init_delete_forms() {
       return;
     }
     Event.observe(form, "submit", delete_form_event_handler.bindAsEventListener(form));
+  });
+}
+
+function init_popup_menu_toggles() {
+  $$('.link.popup').each(function(link_popup) {
+    Event.observe(link_popup, 'click', function() {
+      link_popup.next('.popup').toggle();
+    });
   });
 }
 

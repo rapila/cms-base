@@ -14,7 +14,7 @@
     <div>
       <label>{{writeString=direct_links}}</label>
       <div class="link_container links" style="padding-top:1px;">{{admin_links}}</div>
-    </div>
+    </div>{{identifierContext=start;name=available_site_links}} 
     <div>
       <label>{{writeString=site_links}}</label>
       <form id="site_link_chooser" method="get" action="{{page_url}}">
@@ -22,7 +22,7 @@
           {{available_site_links}}
         </select>
       </form>  
-    </div>{{identifierContext=start;name=available_admin_links}} 
+    </div>{{identifierContext=end;name=available_site_links}}{{identifierContext=start;name=available_admin_links}} 
     <div>
       <label>{{writeString=admin_links}}</label>
       <form id="admin_link_chooser" method="get" action="{{page_url}}">
@@ -47,7 +47,13 @@
     </div>
     <div id="user">
       <label id="logout">{{writeString=user}}</label>
-      <div class="link_container links"><a class="links" href="{{link_to_user}}" title="{{writeParameterizedString=user.edit_profile;user_name=\{\{user_name\}\}}}">{{user_name}}</a><a  id="logout_link" href="{{logout_link}}">&nbsp;</a></div>
+      <div class="link_container links">
+        <span class="popup link">{{user_name}}</span><a id="logout_link" href="{{logout_link}}">&nbsp;</a>
+        <div class="popup" style="display:none;">
+          <a class="links" href="{{link_to_settings}}">{{writeParameterizedString=user.edit_settings;user_name=\{\{user_shortcut\}\}}}</a>
+          <a class="links" href="{{link_to_user}}">{{writeParameterizedString=user.edit_profile;user_name=\{\{user_shortcut\}\}}}</a>
+        </div>
+      </div>    
     </div>
   </div>
   <div id="bottom_wrapper">

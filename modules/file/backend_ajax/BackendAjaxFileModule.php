@@ -28,7 +28,11 @@ class BackendAjaxFileModule extends FileModule {
     if($oModule === null) {
       self::printError(self::ERROR_MODULE_NOT_FOUND);
     }
-    $oModule->getAjax($this->aRequestPath);
+    $mResult = $oModule->getAjax($this->aRequestPath);
+    if($mResult instanceof DOMDocument) {
+      ob_clean();
+      print $mResult->saveXML();
+    }
   }
   
   public static function printError($sErrorMessage) {

@@ -1,5 +1,6 @@
 enabled: true
 required: true
+admin_required: true
 author: "Raphael Schweikert <rs@mini-cms.ch>"
 name: "Module-manager"
 description: "Provides an interface to easily find information about plugins, enable or disable them"

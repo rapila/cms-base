@@ -86,6 +86,8 @@ class UserMapBuilder {
 
 		$tMap->addColumn('PASSWORD_RECOVER_HINT', 'PasswordRecoverHint', 'string', CreoleTypes::VARCHAR, false, 10);
 
+		$tMap->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'string', CreoleTypes::LONGVARCHAR, false, null);
+
 		$tMap->addForeignKey('CREATED_BY', 'CreatedBy', 'int', CreoleTypes::INTEGER, 'users', 'ID', false, null);
 
 		$tMap->addForeignKey('UPDATED_BY', 'UpdatedBy', 'int', CreoleTypes::INTEGER, 'users', 'ID', false, null);

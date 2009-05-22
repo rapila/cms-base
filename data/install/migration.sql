@@ -111,3 +111,6 @@ ALTER TABLE `document_categories` ADD `is_externally_managed` TINYINT( 1 ) UNSIG
 
 #svn r2019
 UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id` = 0;
+
+#svn r2079
+ALTER TABLE `users` ADD `backend_settings` TEXT NULL DEFAULT NULL AFTER `password_recover_hint`;

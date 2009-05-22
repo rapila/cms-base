@@ -9,7 +9,6 @@ class BackendManager extends Manager {
   private $sModuleName;
   private $iId = null;
   private $oBackendModule = null;
-  public static $MODULES = array();
   const CONTENT_EDIT_LANGUAGE_SESSION_KEY = 'content_edit_language';
 
  /**
@@ -132,8 +131,12 @@ class BackendManager extends Manager {
   * @return void
   */ 
   private function fillBackendNavigation() {
-    foreach (self::$MODULES['direct_links'] as $sModuleName => $aConfig) {
-      if(isset($aConfig['disabled']) || !Module::isModuleEnabled('backend', $sModuleName)) {
+    $oUser = Session::getSession()->getUser();
+    $aBackendSettings = $oUser->getBackendSettingsValue();
+    
+    foreach($aBackendSettings['direct_links'] as $sModuleName => $mConfig) {
+      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
+      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
         continue;
       }
       $sClassName = '';
@@ -158,38 +161,37 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifierMultiple("admin_links", $oTemplate);
     }
     
-    $aSelectOptions = array('' => '-------');
-    $sSelected = '';
+    $aSelectOptions = array();
+    $sSelected = $this->sModuleName;
     
     $aFrontendModules = BackendModule::listModules();
-    foreach (self::$MODULES['site_links'] as $sModuleName => $bIsEnabled) {
-      if(!$bIsEnabled || !Module::isModuleEnabled('backend', $sModuleName)) {
+    foreach($aBackendSettings['site_links'] as $sModuleName => $mConfig) {
+      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
+      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
         continue;
       }
       
       $aSelectOptions[$sModuleName] = BackendModule::getDisplayNameByName($sModuleName);
-      if($this->sModuleName == $sModuleName) {
-        $sSelected = $sModuleName;
-      }
     }
-    $this->oTemplate->replaceIdentifier("site_select_class", $sSelected != '' ? 'active_select' : '');
-    $this->oTemplate->replaceIdentifier("available_site_links", TagWriter::optionsFromArray($aSelectOptions, $sSelected));
+    if(count($aSelectOptions) > 0) {
+      $this->oTemplate->replaceIdentifier("site_select_class", $sSelected != '' ? 'active_select' : '');
+      $this->oTemplate->replaceIdentifier("available_site_links", TagWriter::optionsFromArray($aSelectOptions, $sSelected));
+    }
     
-    $aAdminOptions = array('' => '-------');
-    $sSelected = '';
-    foreach (self::$MODULES['admin_links'] as $sModuleName => $aConfig) {
-      if(!isset($aConfig['requires_right']) || ($aConfig['requires_right'] == 'is_admin' && !Session::getSession()->getUser()->getIsAdmin()) || !Module::isModuleEnabled('backend', $sModuleName)) {
+    $aAdminOptions = array();
+    foreach($aBackendSettings['admin_links'] as $sModuleName => $mConfig) {
+      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
+      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
         continue;
       }
       $aAdminOptions[$sModuleName] = BackendModule::getDisplayNameByName($sModuleName);
-      if($this->sModuleName == $sModuleName) {
-        $sSelected = $sModuleName;
-      }
     }
-    if(count($aAdminOptions) > 1) {
+    if(count($aAdminOptions) > 0) {
       $this->oTemplate->replaceIdentifier("admin_select_class", $sSelected != '' ? 'active_select' : '');
       $this->oTemplate->replaceIdentifier("available_admin_links", TagWriter::optionsFromArray($aAdminOptions, $sSelected));
     }
+    
+    
     $this->oTemplate->replaceIdentifier("page_url", LinkUtil::link(Manager::getUsedPath(), null, array(), false));
 
     if(!Manager::isPost()) {
@@ -210,10 +212,12 @@ class BackendManager extends Manager {
     }
     
     $this->oTemplate->replaceIdentifier("domain_name", Settings::getSetting('domain_holder', 'name', 'Sitename'));
-    $sUserName = (Session::getSession()->getUser() !== null && trim(Session::getSession()->getUser()->getFullName()) != '') ? Session::getSession()->getUser()->getFullName() : Session::getSession()->getUser()->getUsername();
+    $sUserName = (trim(Session::getSession()->getUser()->getFullName()) != '') ? Session::getSession()->getUser()->getFullName() : Session::getSession()->getUser()->getUsername();
     $sUserName = Session::getSession()->getUser() ? $sUserName: 'Hans Muster';
     $this->oTemplate->replaceIdentifier('user_name', $sUserName);
+    $this->oTemplate->replaceIdentifier('user_shortcut', Session::getSession()->getUser()->getUsername());
     $this->oTemplate->replaceIdentifier('link_to_user', LinkUtil::link(array('users', Session::getSession()->getUserId())));
+    $this->oTemplate->replaceIdentifier('link_to_settings', LinkUtil::link('settings'));
   }
 
  /**
@@ -386,7 +390,3 @@ class BackendManager extends Manager {
     return false;
   }
 }
-
-BackendManager::$MODULES['direct_links'] = Settings::getSetting('modules', 'direct_links', 1, 'backend');
-BackendManager::$MODULES['site_links'] = Settings::getSetting('modules', 'site_links', 1, 'backend');
-BackendManager::$MODULES['admin_links'] = Settings::getSetting('modules', 'admin_links', 1, 'backend');

@@ -1,4 +1,5 @@
 enabled: true
+admin_required: true
 author: "Raphael Schweikert <rs@mini-cms.ch>"
 name: "MySQL Dump Exporter"
 description: "Makes saving large database dumps easy. Requires the mysqldump tool to be installed and PHP be able to use it…"

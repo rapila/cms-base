@@ -1,0 +1,57 @@
+div.module {
+  background-color: #5F5F5F;
+  margin: 0 0.5em 0.5em 0;
+  color: white;
+  padding: 0.5em;
+  font-size: 0.9em;
+  cursor: move;
+}
+
+div.module h3,
+div.module p {
+  margin: 0;
+}
+
+div.module p {
+  display: none;
+  margin: 0;
+}
+
+#unassigned_modules {
+    clear: left;
+}
+
+#unassigned_modules div.module {
+  float: left;
+  width: 120px;
+  height: 90px;
+}
+
+#unassigned_modules div.module p {
+  display: block;
+}
+
+#unassigned_modules div.module .remove {
+  display: none;
+}
+
+#sections {
+  vertical-align: top;
+}
+
+#sections .section {
+  float: left;
+  width: 200px;
+  min-height: 200px;
+}
+
+#sections .section.hover,
+#unassigned_modules.hover {
+  background-color: white;
+}
+
+#sections .section div.module .remove {
+  float: right;
+  width: auto;
+  padding-left: 10px;
+}

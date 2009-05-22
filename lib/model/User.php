@@ -59,6 +59,17 @@ class User extends BaseUser {
     return $this->may($oPage, 'view_page');
   }
   
+  public function getBackendSettingsValue() {
+    if($this->getBackendSettings() !== null) {
+      return unserialize($this->getBackendSettings());
+    }
+    $aResult = array();
+    foreach(SettingsBackendModule::$AVAILABLE_SECTIONS as $sSectionName) {
+      $aResult[$sSectionName] = Settings::getSetting('modules', $sSectionName, array(), 'backend');
+    }
+    return $aResult;
+  }
+  
   public function getGroups() {
     $aResult = array();
     foreach($this->getUserGroupsJoinGroup() as $oGroupUser) {

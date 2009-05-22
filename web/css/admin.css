@@ -19,7 +19,7 @@ body.mceContentBody {
   left:0px;
   right:0px;
   height: 53px;
-  z-index:2;
+  z-index:3;
   background-image: url("../images/admin/bg_admin.gif");
   background-repeat: repeat-x;
   background-attachment: fixed;
@@ -42,7 +42,8 @@ body.mceContentBody {
   clear:both;
 }
 
-#admin_navigation .link_container a {
+#admin_navigation .link_container a,
+#admin_navigation .link_container .link {
   margin-top:0.1em;
   padding: .1em 1em;
 }
@@ -125,6 +126,18 @@ body.mceContentBody {
 
 #admin_navigation a.vorschau:hover {
   background-image: url(../images/admin/preview_hover.gif);
+}
+
+#admin_navigation div.popup {
+  position: absolute;
+  background-color: #5174C2;
+  height: auto;
+  width: auto;
+  margin-top: 0.3em;
+}
+
+#admin_navigation div.popup a {
+  display: block;
 }
 
 #bottom_wrapper {
@@ -615,10 +628,12 @@ a.edit {
 .urights {
   border-bottom:#d2d2d2 1px solid;
 }
-button[type=submit] {
+button[type=submit],
+button.save {
   background-image: url(../images/admin/save.gif);
 }
-button[type=submit].active {
+button[type=submit].active,
+button.save.active {
   background-image: url(../images/admin/save_active.gif);
 }
 button.new, label.new {
@@ -692,6 +707,9 @@ button.delete_inactive {
 }
 button.show {
   background-image: url(../images/admin/show.gif);
+}
+button.error {
+  background-image: url(../images/admin/exclamation.png);
 }
 button.list {
   background-image: url(../images/admin/list.gif);

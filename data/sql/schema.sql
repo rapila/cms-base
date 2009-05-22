@@ -230,6 +230,7 @@ CREATE TABLE `users`
 	`is_backend_login_enabled` INTEGER(1) default 1,
 	`is_inactive` INTEGER(1) default 0,
 	`password_recover_hint` VARCHAR(10),
+	`backend_settings` TEXT,
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	`created_at` DATETIME,

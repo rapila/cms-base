@@ -106,6 +106,13 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 
 
 	/**
+	 * The value for the backend_settings field.
+	 * @var        string
+	 */
+	protected $backend_settings;
+
+
+	/**
 	 * The value for the created_by field.
 	 * @var        int
 	 */
@@ -487,6 +494,17 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Get the [backend_settings] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getBackendSettings()
+	{
+
+		return $this->backend_settings;
+	}
+
+	/**
 	 * Get the [created_by] column value.
 	 * 
 	 * @return     int
@@ -799,6 +817,28 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 	} // setPasswordRecoverHint()
 
 	/**
+	 * Set the value of [backend_settings] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     void
+	 */
+	public function setBackendSettings($v)
+	{
+
+		// Since the native PHP type for this column is string,
+		// we will cast the input to a string (if it is not).
+		if ($v !== null && !is_string($v)) {
+			$v = (string) $v; 
+		}
+
+		if ($this->backend_settings !== $v) {
+			$this->backend_settings = $v;
+			$this->modifiedColumns[] = UserPeer::BACKEND_SETTINGS;
+		}
+
+	} // setBackendSettings()
+
+	/**
 	 * Set the value of [created_by] column.
 	 * 
 	 * @param      int $v new value
@@ -937,20 +977,22 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 
 			$this->password_recover_hint = $rs->getString($startcol + 10);
 
-			$this->created_by = $rs->getInt($startcol + 11);
+			$this->backend_settings = $rs->getString($startcol + 11);
 
-			$this->updated_by = $rs->getInt($startcol + 12);
+			$this->created_by = $rs->getInt($startcol + 12);
 
-			$this->created_at = $rs->getTimestamp($startcol + 13, null);
+			$this->updated_by = $rs->getInt($startcol + 13);
 
-			$this->updated_at = $rs->getTimestamp($startcol + 14, null);
+			$this->created_at = $rs->getTimestamp($startcol + 14, null);
+
+			$this->updated_at = $rs->getTimestamp($startcol + 15, null);
 
 			$this->resetModified();
 
 			$this->setNew(false);
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 15; // 15 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 16; // 16 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating User object", $e);
@@ -1496,15 +1538,18 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 				return $this->getPasswordRecoverHint();
 				break;
 			case 11:
-				return $this->getCreatedBy();
+				return $this->getBackendSettings();
 				break;
 			case 12:
-				return $this->getUpdatedBy();
+				return $this->getCreatedBy();
 				break;
 			case 13:
-				return $this->getCreatedAt();
+				return $this->getUpdatedBy();
 				break;
 			case 14:
+				return $this->getCreatedAt();
+				break;
+			case 15:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1538,10 +1583,11 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 			$keys[8] => $this->getIsBackendLoginEnabled(),
 			$keys[9] => $this->getIsInactive(),
 			$keys[10] => $this->getPasswordRecoverHint(),
-			$keys[11] => $this->getCreatedBy(),
-			$keys[12] => $this->getUpdatedBy(),
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
+			$keys[11] => $this->getBackendSettings(),
+			$keys[12] => $this->getCreatedBy(),
+			$keys[13] => $this->getUpdatedBy(),
+			$keys[14] => $this->getCreatedAt(),
+			$keys[15] => $this->getUpdatedAt(),
 		);
 		return $result;
 	}
@@ -1607,15 +1653,18 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 				$this->setPasswordRecoverHint($value);
 				break;
 			case 11:
-				$this->setCreatedBy($value);
+				$this->setBackendSettings($value);
 				break;
 			case 12:
-				$this->setUpdatedBy($value);
+				$this->setCreatedBy($value);
 				break;
 			case 13:
-				$this->setCreatedAt($value);
+				$this->setUpdatedBy($value);
 				break;
 			case 14:
+				$this->setCreatedAt($value);
+				break;
+			case 15:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1652,10 +1701,11 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[8], $arr)) $this->setIsBackendLoginEnabled($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setPasswordRecoverHint($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setCreatedBy($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setUpdatedBy($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[11], $arr)) $this->setBackendSettings($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setCreatedBy($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setUpdatedBy($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
 	}
 
 	/**
@@ -1678,6 +1728,7 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(UserPeer::IS_BACKEND_LOGIN_ENABLED)) $criteria->add(UserPeer::IS_BACKEND_LOGIN_ENABLED, $this->is_backend_login_enabled);
 		if ($this->isColumnModified(UserPeer::IS_INACTIVE)) $criteria->add(UserPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(UserPeer::PASSWORD_RECOVER_HINT)) $criteria->add(UserPeer::PASSWORD_RECOVER_HINT, $this->password_recover_hint);
+		if ($this->isColumnModified(UserPeer::BACKEND_SETTINGS)) $criteria->add(UserPeer::BACKEND_SETTINGS, $this->backend_settings);
 		if ($this->isColumnModified(UserPeer::CREATED_BY)) $criteria->add(UserPeer::CREATED_BY, $this->created_by);
 		if ($this->isColumnModified(UserPeer::UPDATED_BY)) $criteria->add(UserPeer::UPDATED_BY, $this->updated_by);
 		if ($this->isColumnModified(UserPeer::CREATED_AT)) $criteria->add(UserPeer::CREATED_AT, $this->created_at);
@@ -1755,6 +1806,8 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 		$copyObj->setIsInactive($this->is_inactive);
 
 		$copyObj->setPasswordRecoverHint($this->password_recover_hint);
+
+		$copyObj->setBackendSettings($this->backend_settings);
 
 		$copyObj->setCreatedBy($this->created_by);
 
