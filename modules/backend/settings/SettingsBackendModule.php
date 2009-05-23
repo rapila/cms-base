@@ -9,10 +9,17 @@ class SettingsBackendModule extends BackendModule {
   }
   
   public function getDetail() {
+    $oUser = Session::getSession()->getUser();
+    if(@$_REQUEST['_reset'] === 'true') {
+      $oUser->setBackendSettings(null);
+      $oUser->save();
+      LinkUtil::redirect(LinkUtil::linkToSelf(null, null, true));
+    }
+    
     $oTemplate = $this->constructTemplate('detail');
     $aBackendModules = BackendModule::listModules();
     foreach($aBackendModules as $sBackendModuleName => $aModuleInfo) {
-      if(!Session::getSession()->getUser()->getIsAdmin() && @$aModuleInfo['module_info']['admin_required']) {
+      if(!$oUser->getIsAdmin() && @$aModuleInfo['module_info']['admin_required']) {
         continue;
       }
       if($sBackendModuleName === $this->getModuleName()) {
