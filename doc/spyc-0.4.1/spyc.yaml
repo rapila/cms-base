@@ -1,17 +1,15 @@
 #
 #    S P Y C
 #      a simple php yaml class
-#   v0.2(.3)
 #
-# author: [chris wanstrath, chris@ozmm.org]
+# authors: [vlad andersen (vlad.andersen@gmail.com), chris wanstrath (chris@ozmm.org)]
 # websites: [http://www.yaml.org, http://spyc.sourceforge.net/]
 # license: [MIT License, http://www.opensource.org/licenses/mit-license.php]
-# copyright: (c) 2005-2006 Chris Wanstrath
+# copyright: (c) 2005-2006 Chris Wanstrath, 2006-2009 Vlad Andersen
 #
 # spyc.yml - A file containing the YAML that Spyc understands.
 
-# Added in .2
-1040: Ooo, a numeric key! # And working comments? Wow!
+---
 
 # Mappings - with proper types
 String: Anyone's name, really.
@@ -30,19 +28,19 @@ Float: 5.34
 # A sequence of a sequence
 -
   - YAML is so easy to learn.
-  - Your config files will never be the same. 
-  
+  - Your config files will never be the same.
+
 # Sequence of mappings
 -
   cpu: 1.5ghz
   ram: 1 gig
   os : os x 10.4.1
-  
+
 # Mapped sequence
 domains:
   - yaml.org
-  - php.net 
-  
+  - php.net
+
 # A sequence like this.
 - program: Adium
   platform: OS X
@@ -52,14 +50,14 @@ domains:
 no time: >
   There isn't any time
   for your tricks!
-  
+
   Do you understand?
-  
+
 # A literal block as a mapped value
 some time: |
   There is nothing but time
   for your tricks.
-  
+
 # Crazy combinations
 databases:
   - name: spartan
@@ -67,7 +65,7 @@ databases:
       - Needs to be backed up
       - Needs to be normalized
     type: mysql
-    
+
 # You can be a bit tricky
 "if: you'd": like
 
@@ -97,8 +95,8 @@ compiled languages: &CLANGS
   - Java
 all languages:
   - *DLANGS
-  - *CLANGS 
-  
+  - *CLANGS
+
 # Added in .2.2: Escaped quotes
 - you know, this shouldn't work.  but it does.
 - 'that''s my value.'
@@ -107,3 +105,46 @@ all languages:
 
 # added in .2.3
 - {name: "Foo, Bar's", age: 20}
+
+# Added in .2.4: bug [ 1418193 ] Quote Values in Nested Arrays
+- [a, ['1', "2"], b]
+
+# Added in .2.4: malformed YAML
+all
+  javascripts:     [dom1.js, dom.js]
+
+# Added in .2
+1040: Ooo, a numeric key! # And working comments? Wow! Colons in comments: a menace (0.3).
+
+hash_1: Hash #and a comment
+hash_2: "Hash #and a comment"
+"hash#3": "Hash (#) can appear in key too"
+
+float_test: 1.0
+float_test_with_quotes: '1.0'
+float_inverse_test: 001
+
+a_really_large_number: 115792089237316195423570985008687907853269984665640564039457584007913129639936 # 2^256
+
+int array: [ 1, 2, 3 ]
+
+array on several lines:
+  [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+    10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+
+morelesskey: "<value>"
+
+array_of_zero: [0]
+sophisticated_array_of_zero: {rx: {tx: [0]} }
+
+switches:
+  - { row: 0, col: 0, func: {tx: [0, 1]} }
+
+empty_sequence: [ ]
+empty_hash: { }
+
+special_characters: "[{]]{{]]"
+
+# [Endloop]
+endloop: |
+  Does this line in the end indeed make Spyc go to an infinite loop?

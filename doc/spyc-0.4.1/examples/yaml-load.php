@@ -3,7 +3,7 @@
 #
 #    S P Y C
 #      a simple php yaml class
-#   v0.2(.3)
+#   v0.2(.5)
 #
 # author: [chris wanstrath, chris@ozmm.org]
 # websites: [http://www.yaml.org, http://spyc.sourceforge.net/]
@@ -11,11 +11,11 @@
 # copyright: (c) 2005-2006 Chris Wanstrath
 #
 
-include('spyc.php');
+include('../spyc.php');
 
-$array = Spyc::YAMLLoad('spyc.yml');
+$array = Spyc::YAMLLoad('../spyc.yaml');
 
-echo '<pre><a href="spyc.yml">spyc.yml</a> loaded into PHP:<br/>';
+echo '<pre><a href="spyc.yaml">spyc.yaml</a> loaded into PHP:<br/>';
 print_r($array);
 echo '</pre>';
 

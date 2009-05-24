@@ -11,7 +11,7 @@ general:
           phptype:    'mysqli'
           hostspec:   'localhost'
           database:   'database'
-          username:   &un 'username'
+          username:   'username' &un
           user:       *un
           password:   'password'
           dsn:        'mysql:dbname=database;host=localhost'

@@ -3,7 +3,7 @@
 #
 #    S P Y C
 #      a simple php yaml class
-#   v0.2(.3)
+#   v0.2(.5)
 #
 # author: [chris wanstrath, chris@ozmm.org]
 # websites: [http://www.yaml.org, http://spyc.sourceforge.net/]
@@ -15,7 +15,7 @@
 # learn some basic YAML.
 #
 
-include('spyc.php');
+include('../spyc.php');
 
 $array[] = 'Sequence item';
 $array['The Key'] = 'Mapped value';
@@ -26,6 +26,7 @@ $array['A Note'] = 'What if your text is too long?';
 $array['Another Note'] = 'If that is the case, the dumper will probably fold your text by using a block.  Kinda like this.';
 $array['The trick?'] = 'The trick is that we overrode the default indent, 2, to 4 and the default wordwrap, 40, to 60.';
 $array['Old Dog'] = "And if you want\n to preserve line breaks, \ngo ahead!";
+$array['key:withcolon'] = "Should support this to";
 
 $yaml = Spyc::YAMLDump($array,4,60);
 
