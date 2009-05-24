@@ -72,3 +72,8 @@ Event.observe(document, 'dom:loaded', function() {
     });
   });
 });
+
+Event.observe(window, 'unload', function() {
+  var save_button = $('save_button');
+  save_button.click();
+});

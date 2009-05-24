@@ -1,4 +1,7 @@
 <?php
+/**
+* @package modules.backend
+*/
 class SettingsBackendModule extends BackendModule {
   public static $AVAILABLE_SECTIONS = array('direct_links', 'site_links', 'admin_links');
   
