@@ -82,7 +82,7 @@ class StringPeer extends BaseStringPeer {
       if(!$bMayReturnTemplate) {
         $iFlags = $iFlags|Template::NO_HTML_ESCAPE;
       }
-      $tmpl = new Template($sString, "db", true, false, Settings::getSetting("encoding", "db", "utf-8"), null, $iFlags);
+      $tmpl = new Template(Template::htmlEncode($sString), "db", true, false, Settings::getSetting("encoding", "db", "utf-8"), null, $iFlags);
       foreach($aParameters as $sKey => $sValue) {
         //NO_HTML_ESCAPE should work in any case since strings will always be included in templates and thus always be encoded correctly in a second step
         $tmpl->replaceIdentifier($sKey, $sValue);

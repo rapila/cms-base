@@ -8,8 +8,7 @@ class ArrayUtil {
     $aShortenedArgs = func_get_args();
     $aShortenedArgs = array_slice($aShortenedArgs, 2);
     foreach($aArray as $mKey => $mValue) {
-      if(is_string($mValue))
-      {
+      if(is_string($mValue)) {
         $aArray[$mKey] = call_user_func_array($mCallback, array_merge(array($mValue), $aShortenedArgs));
       } else if(is_array($mValue)) {
         $aArray[$mKey] = call_user_func_array(array("ArrayUtil", 'runFunctionOnArrayValues'), array_merge(array($mValue), array($mCallback), $aShortenedArgs));

@@ -26,6 +26,10 @@ class SpecialTemplateIdentifierActions {
     return StringUtil::normalize($oTemplateIdentifier->getValue());
   }
   
+  public function br($oTemplateIdentifier) {
+    return '<br />';
+  }
+  
   public function truncate($oTemplateIdentifier) {
     $iLength=20;
     if($oTemplateIdentifier->hasParameter('length')) {
