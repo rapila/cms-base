@@ -26,7 +26,8 @@ class SpecialTemplateIdentifierActions {
     return StringUtil::normalize($oTemplateIdentifier->getValue());
   }
   
-  public function br($oTemplateIdentifier) {
+  public function br($oTemplateIdentifier, &$iFlags) {
+    $iFlags = Template::NO_HTML_ESCAPE;
     return '<br />';
   }
   
