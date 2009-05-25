@@ -79,12 +79,12 @@ var PageTreeBuilder = Class.create({
       element.child_list = element.child_list ? element.child_list : null;
       if(element.child_list) {
         element.child_list.hide();
-        element.clicker = new Element(this.options.clickerTag, {class: this.options.clickerClass+' '+this.options.closedClickerClass});
+        element.clicker = new Element(this.options.clickerTag, {'class': this.options.clickerClass+' '+this.options.closedClickerClass});
         element.clicker.page_id = element.page_id;
         element.insert({top: element.clicker});
         Event.observe(element.clicker, 'click', this.handle_click.bindAsEventListener(this, element));
       } else {
-        element.insert({top: new Element(this.options.clickerTag, {class: this.options.clickerProxyClass})});
+        element.insert({top: new Element(this.options.clickerTag, {'class': this.options.clickerProxyClass})});
       }
     }.bind(this));
     

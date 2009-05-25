@@ -40,11 +40,11 @@ class ErrorHandler {
   
   public static function getEnvironment() {
     if(self::$ENVIRONMENT === null) {
-      self::$ENVIRONMENT = Settings::getSetting('general', 'environment', 'production');
+      self::$ENVIRONMENT = Settings::getSetting('general', 'environment', null);
       if(self::$ENVIRONMENT === 'developer') {
         self::$ENVIRONMENT = 'development';
       }
-      if(self::$ENVIRONMENT === 'auto') {
+      if(self::$ENVIRONMENT === 'auto' || self::$ENVIRONMENT === null) {
         if(strpos($_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.local')) {
           self::$ENVIRONMENT = ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1' || $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
         } else {

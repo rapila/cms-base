@@ -325,7 +325,7 @@ Object.extend(Suggestion.prototype, {
   	this.latestWord = null;
   	this.currentRequest = null;
 	
-  	this.displayLayer = new Element("div", {class: 'suggest_results'});
+  	this.displayLayer = new Element("div", {'class': 'suggest_results'});
     document.body.appendChild(this.displayLayer);
   	this.layerIsVisible = false
 	
@@ -431,7 +431,7 @@ Object.extend(Suggestion.prototype, {
   },
   
   addSuggestion: function(suggestion, resultCounter) {
-  	var suggestionResult = new Element('a', {href: '#', class: 'suggest_result'});
+  	var suggestionResult = new Element('a', {href: '#', 'class': 'suggest_result'});
   	this.displayLayer.appendChild(suggestionResult);
   	suggestionResult.appendChild(document.createTextNode(suggestion));
   	suggestionResult.missingWordPart = suggestion.substring(this.latestWord.length, suggestion.length);

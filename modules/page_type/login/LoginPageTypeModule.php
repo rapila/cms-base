@@ -8,13 +8,15 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
   public function __construct(Page $oPage) {
     parent::__construct($oPage);
     $this->sAction = 'login';
+    if(isset($_REQUEST['origin']) && !Session::getSession()->hasAttribute('login_referrer')) {
+      Session::getSession()->setAttribute('login_referrer', $_REQUEST['origin']);
+    }
   }
 
   public function display(Template $oTemplate) {
     if(Manager::isPost()) {
       ArrayUtil::trimStringsInArray($_POST);
     }
-    
     //1st step: user clicked on the recovery link
     //  • Display email field
     if(isset($_REQUEST['password_forgotten'])) {
@@ -46,7 +48,6 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
     if(isset($_POST[LoginManager::USER_NAME])) {
       $iLogin = LoginManager::login();
     }
-    
     return parent::display($oTemplate);
   }
   
@@ -55,6 +56,11 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
       return $oModule->renderFrontend($this->sAction);
     }
     return $oModule->renderFrontend();
+  }
+  
+  public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
+    $bIsDynamic = true;
+    $aAllowedParams = array();
   }
   
   public function backendInit() {

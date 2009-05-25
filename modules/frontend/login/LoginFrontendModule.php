@@ -6,7 +6,7 @@
 class LoginFrontendModule extends DynamicFrontendModule {
   private $oPage;
 
-  private static $ACTIONS = array('login_simple', 'login_with_password_forgotten');
+  private static $LOGIN_TYPES = array('login_simple', 'login_with_password_forgotten');
 
   public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
     parent::__construct($oLanguageObject, $aRequestPath, $iId);
@@ -32,7 +32,12 @@ class LoginFrontendModule extends DynamicFrontendModule {
     $oTemplate->replaceIdentifier('login_action', $sAction);
     $oTemplate->replaceIdentifier('login_title', StringPeer::getString('login'));
     $oTemplate->doIncludes();
-    $oTemplate->replaceIdentifier('action', LinkUtil::linkToSelf(null, null, true));
+    $oTemplate->replaceIdentifier('origin', LinkUtil::linkToSelf(null, null, true));
+    if($oLoginPage = $this->oPage->getLoginPage()) {
+      $oTemplate->replaceIdentifier('action', LinkUtil::link($oLoginPage->getFullPathArray()));
+    } else {
+      $oTemplate->replaceIdentifier('action', LinkUtil::linkToSelf(null, null, true));
+    }
     if($sAction === 'login') {
       $this->renderLogin($oTemplate, $sLoginType);
     }
@@ -49,11 +54,8 @@ class LoginFrontendModule extends DynamicFrontendModule {
   public function renderBackend() {
     $aOptions = @unserialize($this->getData());
     $oTemplate = $this->constructTemplate('backend');
-    $oTemplate->replaceIdentifier('login_types', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(self::$ACTIONS), @$aOptions['login_type'], false, array()));
+    $oTemplate->replaceIdentifier('login_types', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(self::$LOGIN_TYPES), @$aOptions['login_type'], false, array()));
     return $oTemplate;
-  }
-
-  private function executeRecover() {
   }
 
   public function save(Blob $oData) {

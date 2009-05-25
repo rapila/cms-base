@@ -112,10 +112,12 @@ class LoginManager extends Manager {
       if(Session::getSession()->hasAttribute('login_referrer')) {
         $sReferrer = Session::getSession()->getAttribute('login_referrer');
         Session::getSession()->resetAttribute('login_referrer');
+      } else if(isset($_REQUEST['origin'])) {
+        $sReferrer = $_REQUEST['origin'];
       } else {
         $sReferrer = LinkUtil::link(array(), 'BackendManager');
       }
-      if ($iAdminTest === Session::USER_IS_DEFAULT_USER) { 
+      if($iAdminTest === Session::USER_IS_DEFAULT_USER) { 
         Session::getSession()->setAttribute('change_password', 1);
         $sReferrer = LinkUtil::link(array('users', Session::getSession()->getUserId()), 'BackendManager');
       }

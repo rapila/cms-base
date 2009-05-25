@@ -191,7 +191,7 @@ class FrontendManager extends Manager {
   /**
    * fillContent()
    */
-  private function fillContent() {
+  private function fillContent() { 
     // FilterModule::getFilters()->handleBeforePageTypeDisplay(self::getCurrentPage(), $this->oPageType, $this->oTemplate);
     $this->oPageType->display($this->oTemplate);
   }
