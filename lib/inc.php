@@ -32,6 +32,22 @@ require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Autoloader.php");
 Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
+// frontend dir constants
+define('MAIN_DIR_FE',        isset($_SERVER['SHELL']) ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
+
+define('BASE_DIR_FE',        MAIN_DIR_FE.DIRNAME_BASE);
+define('SITE_DIR_FE',        MAIN_DIR_FE.DIRNAME_SITE);
+define('INT_WEB_DIR_FE',     BASE_DIR_FE."/".DIRNAME_WEB);
+define('EXT_WEB_DIR_FE',     SITE_DIR_FE."/".DIRNAME_WEB);
+define('INT_CSS_DIR_FE',     INT_WEB_DIR_FE.'/css');
+define('EXT_CSS_DIR_FE',     EXT_WEB_DIR_FE.'/css');
+define('INT_JS_DIR_FE',      INT_WEB_DIR_FE.'/js');
+define('EXT_JS_DIR_FE',      EXT_WEB_DIR_FE.'/js');
+define('INT_MEDIA_DIR_FE',   INT_WEB_DIR_FE.'/media');
+define('EXT_MEDIA_DIR_FE',   EXT_WEB_DIR_FE.'/media');
+define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');
+define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');
+
 // include path for all classes
 $aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
 $aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
@@ -58,19 +74,3 @@ if(StringUtil::startsWith($sAdapter, 'mysql')) {
   $con->executeQuery('SET character_set_connection="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
   $con->executeQuery('SET character_set_results="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
 }
-
-// frontend dir constants
-define('MAIN_DIR_FE',        isset($_SERVER['SHELL']) ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
-
-define('BASE_DIR_FE',        MAIN_DIR_FE.DIRNAME_BASE);
-define('SITE_DIR_FE',        MAIN_DIR_FE.DIRNAME_SITE);
-define('INT_WEB_DIR_FE',     BASE_DIR_FE."/".DIRNAME_WEB);
-define('EXT_WEB_DIR_FE',     SITE_DIR_FE."/".DIRNAME_WEB);
-define('INT_CSS_DIR_FE',     INT_WEB_DIR_FE.'/css');
-define('EXT_CSS_DIR_FE',     EXT_WEB_DIR_FE.'/css');
-define('INT_JS_DIR_FE',      INT_WEB_DIR_FE.'/js');
-define('EXT_JS_DIR_FE',      EXT_WEB_DIR_FE.'/js');
-define('INT_MEDIA_DIR_FE',   INT_WEB_DIR_FE.'/media');
-define('EXT_MEDIA_DIR_FE',   EXT_WEB_DIR_FE.'/media');
-define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images'); 
-define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images'); 
