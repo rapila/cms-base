@@ -17,8 +17,6 @@ class BackendManager extends Manager {
   */
   public function __construct() {
     parent::__construct();
-    $this->aBackendSettings = Session::getSession()->getUser()->getBackendSettingsValue();
-    
     if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
       if(Session::getSession()->isAuthenticated() && !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
         Flash::getFlash()->addMessage('backend_login_denied');
@@ -47,6 +45,8 @@ class BackendManager extends Manager {
         Session::getSession()->setLanguage("de");
       }
     }
+    
+    $this->aBackendSettings = Session::getSession()->getUser()->getBackendSettingsValue();
     
     if(isset($_REQUEST['content_language'])) {
       self::setContentEditLanguage($_REQUEST['content_language']);

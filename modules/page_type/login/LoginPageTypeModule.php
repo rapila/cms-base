@@ -58,6 +58,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
     return $oModule->renderFrontend();
   }
   
+  // setIsDynamic because it might be filled in a is_inherited container and not set on the current page
   public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
     $bIsDynamic = true;
     $aAllowedParams = array();

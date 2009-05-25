@@ -32,6 +32,12 @@ require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Autoloader.php");
 Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
+// include path for all classes
+$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
+$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
+
+set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
+
 // frontend dir constants
 define('MAIN_DIR_FE',        isset($_SERVER['SHELL']) ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
 
@@ -47,12 +53,6 @@ define('INT_MEDIA_DIR_FE',   INT_WEB_DIR_FE.'/media');
 define('EXT_MEDIA_DIR_FE',   EXT_WEB_DIR_FE.'/media');
 define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');
 define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');
-
-// include path for all classes
-$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
-$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
-
-set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
 
 mb_internal_encoding(Settings::getSetting('encoding', 'browser', 'utf-8'));
 mb_regex_encoding(mb_internal_encoding());
