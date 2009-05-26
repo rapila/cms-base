@@ -22,7 +22,8 @@ class SpecialTemplateIdentifierActions {
     return Flash::getFlash()->getMessage($oTemplateIdentifier->getValue());
   }
   
-  public function normalize($oTemplateIdentifier) {
+  public function normalize($oTemplateIdentifier, &$iFlags) {
+    $iFlags = Template::NO_HTML_ESCAPE;
     return StringUtil::normalize($oTemplateIdentifier->getValue());
   }
   
@@ -31,7 +32,8 @@ class SpecialTemplateIdentifierActions {
     return '<br />';
   }
   
-  public function truncate($oTemplateIdentifier) {
+  public function truncate($oTemplateIdentifier, &$iFlags) {
+    $iFlags = Template::NO_HTML_ESCAPE;
     $iLength=20;
     if($oTemplateIdentifier->hasParameter('length')) {
       $iLength = $oTemplateIdentifier->getParameter('length');
@@ -49,7 +51,8 @@ class SpecialTemplateIdentifierActions {
     return StringUtil::truncate($oTemplateIdentifier->getValue(), $iLength, $sPostfix, $iTolerance);
   }
   
-  public function quoteString($oTemplateIdentifier) {
+  public function quoteString($oTemplateIdentifier, &$iFlags) {
+    $iFlags = Template::NO_HTML_ESCAPE;
     if(!$oTemplateIdentifier->getValue()) {
       return $oTemplateIdentifier->hasParameter('defaultValue') ? $oTemplateIdentifier->getParameter('defaultValue') : null;
     }

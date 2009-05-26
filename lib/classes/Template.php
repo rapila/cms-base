@@ -444,7 +444,7 @@ class Template {
       foreach($aIdentifiers as $oIdentifier) {
         //Identifier replacement in value
         if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
-          $oValueTemplate = new Template($oIdentifier->getValue(), null, true, false, null, null, self::NO_HTML_ESCAPE);
+          $oValueTemplate = new Template($oIdentifier->getValue(), null, true);
           $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags);
           $oValueTemplate->bKillIdentifiersBeforeRender = false;
           $oIdentifier->setValue($oValueTemplate->render());
@@ -452,7 +452,7 @@ class Template {
         //Identifier replacement in parameter values
         foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
           if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
-            $oValueTemplate = new Template($sIdentifierValue, null, true, false, null, null, self::NO_HTML_ESCAPE);
+            $oValueTemplate = new Template($sIdentifierValue, null, true);
             $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags);
             $oValueTemplate->bKillIdentifiersBeforeRender = false;
             $oIdentifier->setParameter($sKey, $oValueTemplate->render());
