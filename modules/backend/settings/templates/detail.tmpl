@@ -1,9 +1,14 @@
-<button class="autowidth save" id="save_button">{{writeString=save}}</button>
-<div id="sections">
+<h1>Menuleisten konfigurieren</h1>
+<fieldset>
+  <button class="autowidth save" id="save_button">{{writeString=save}}</button>
+</fieldset>
+<fieldset>
+  <div id="sections">
   {{section_list}}
-</div>
-<div id="unassigned_modules">
-  <h1>{{writeString=settings.available_backend_modules}}</h1>
-  {{module_list}}
-</div>
-<br clear="left" />
+  </div>
+  <div id="unassigned_modules">
+    <h1>{{writeString=settings.available_backend_modules}}</h1>
+    {{module_list}}
+  </div>
+  <br clear="left" />
+</fieldset>
