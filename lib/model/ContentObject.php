@@ -27,9 +27,9 @@ class ContentObject extends BaseContentObject {
   }
     
   public function getLanguageObjectsByLanguage($sLanguage) {
-    $c = new Criteria();
-    $c->add(LanguageObjectPeer::LANGUAGE_ID, $sLanguage);
-    return $this->getLanguageObjects($c);
+    $oCriteria = new Criteria();
+    $oCriteria->add(LanguageObjectPeer::LANGUAGE_ID, $sLanguage);
+    return $this->getLanguageObjects($oCriteria);
   }
   
   public function hasLanguage($sLanguageId) {
@@ -40,4 +40,3 @@ class ContentObject extends BaseContentObject {
     return FrontendModule::getDisplayNameByName($this->getObjectType(), $sLanguageId);
   }
 }
-?>

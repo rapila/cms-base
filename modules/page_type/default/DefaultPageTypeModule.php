@@ -334,7 +334,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       return;
     }
     if($this->oCurrentContentObject !== null && $this->oCurrentContentObject->getActiveLanguageObjectBe() !== null) {
-      $this->oCurrentContentObject->getActiveLanguageObjectBe ()->delete();
+      $this->oCurrentContentObject->getActiveLanguageObjectBe()->delete();
     }
     $oLanguageObjects = $this->oCurrentContentObject->getLanguageObjects();
     // should LanguageObjectHistory be deleted too?
