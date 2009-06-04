@@ -38,7 +38,8 @@ class DocumentPeer extends BaseDocumentPeer {
   public static function addSearchToCriteria($sSearch, $oCriteria) {
     $oCriteria->add(self::NAME, "%$sSearch%", Criteria::LIKE);
   }
-    public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
+    
+  public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
     return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
   }
   

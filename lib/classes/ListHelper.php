@@ -145,6 +145,7 @@ class ListHelper {
   }
   
   private function handleListSearching($oCriteria) {
+
     $oListSettings = $this->getListSettings();
     if(isset($_REQUEST['search'])) {
       $oListSettings->setSearchPhrase($_REQUEST['search']);
