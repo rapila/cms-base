@@ -17,12 +17,12 @@ class LinkListFrontendModule extends DynamicFrontendModule {
     } else {
       $aLinks = LinkPeer::getLinksSorted();
     }
-    
     try {
       $oListTemplate = new Template($aOptions['list_template']);
       if($bOneTagnameOnly) {
-        $oListTemplate->replaceIdentifier('tag_name', $aOptions['tags'][0]);
+        $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
       }
+      var_dump($aLinks); exit;
       foreach($aLinks as $i => $oLink) {
         $oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
         $oItemTemplate->replaceIdentifier('name', $oLink->getName());
