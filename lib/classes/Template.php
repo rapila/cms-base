@@ -39,6 +39,7 @@ class Template {
   const NO_NEW_CONTEXT = 64;
   const NO_IDENTIFIER_VALUE_REPLACEMENT = 128;
   const NO_RECODE = 256;
+  const STRIP_TAGS = 512;
   
   //Holds all of the template's contents as either strings or TemplateIdentifier objects
   private $aTemplateContents;
@@ -387,8 +388,13 @@ class Template {
       if($aText[$iKey] instanceof TemplateIdentifier) {
         continue;
       }
+      
       if(!($mText instanceof Template)  && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
         $aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
+      }
+
+      if(($iFlags&self::STRIP_TAGS)===self::STRIP_TAGS) {
+        $aText[$iKey] = strip_tags($aText[$iKey]);
       }
       
       if(($iFlags&self::ESCAPE)===self::ESCAPE) {
@@ -416,13 +422,10 @@ class Template {
    * replaceIdentifier()
    * @return void
    */
-  public function replaceIdentifier($sIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mCallbackObject=null, $sCallbackMethod=null) {
+  public function replaceIdentifier($sIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mFunction=null) {
     $iFlags = $iFlags | $this->iDefaultFlags;
     $aText = null;
-    $mFunction = null;
-    if($sCallbackMethod !== null) {
-      $mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
-    } else {
+    if($mFunction === null) {
       if($mOriginalText === null) {
         return;
       }
@@ -430,14 +433,22 @@ class Template {
     }
     $aIdentifiersToBeReplaced = $this->identifiersMatching($sIdentifier, $sValue);
     foreach($aIdentifiersToBeReplaced as $oIdentifier) {
+      $iIdentifierFlags = $oIdentifier->iFlags | $iFlags;
+      $aOldText = null;
       if($mFunction !== null) {
-        $mText = call_user_func_array($mFunction, array($oIdentifier, &$iFlags));
+        $mText = call_user_func_array($mFunction, array($oIdentifier, &$iIdentifierFlags));
         if($mText === null) {
           continue;
         }
-        $aText = $this->getTextForReplaceIdentifier($mText, $iFlags);
+        $aText = $this->getTextForReplaceIdentifier($mText, $iIdentifierFlags);
+      } else if($iIdentifierFlags !== $iFlags) {
+        $aOldText = &$aText;
+        $aText = $this->getTextForReplaceIdentifier($mOriginalText, $iIdentifierFlags);
       }
       $this->replaceAt($oIdentifier, $aText);
+      if($aOldText !== null) {
+        $aText = &$aOldText;
+      }
     }
     if($mFunction === null && ($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === 0) {
       $aIdentifiers = $this->allIdentifiers();
@@ -445,7 +456,7 @@ class Template {
         //Identifier replacement in value
         if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
           $oValueTemplate = new Template($oIdentifier->getValue(), null, true);
-          $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags);
+          $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
           $oValueTemplate->bKillIdentifiersBeforeRender = false;
           $oIdentifier->setValue($oValueTemplate->render());
         }
@@ -453,7 +464,7 @@ class Template {
         foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
           if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
             $oValueTemplate = new Template($sIdentifierValue, null, true);
-            $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags);
+            $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
             $oValueTemplate->bKillIdentifiersBeforeRender = false;
             $oIdentifier->setParameter($sKey, $oValueTemplate->render());
           }
@@ -467,43 +478,54 @@ class Template {
    * replaceIdentifierMultiple()
    * @return void
    */
-  public function replaceIdentifierMultiple($sIdentifier, $mText=null, $sValue=null, $iFlags=0, $mCallbackObject=null, $sCallbackMethod=null) {
+  public function replaceIdentifierMultiple($sIdentifier, $mOriginalText=null, $sValue=null, $iFlags=0, $mFunction=null) {
     $iFlags = $iFlags | $this->iDefaultFlags;
-    $mFunction = null;
-    if($sCallbackMethod !== null) {
-      $mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
-    } else {
-      $mText = $this->getTextForReplaceIdentifier($mText, $iFlags);
+    $aText = null;
+    if($mFunction === null) {
+      if($mOriginalText === null) {
+        return;
+      }
+      $aText = $this->getTextForReplaceIdentifier($mOriginalText, $iFlags);
     }
     $aIdentifiersToBeReplaced = $this->identifiersMatching($sIdentifier, $sValue);
     foreach($aIdentifiersToBeReplaced as $oIdentifier) {
+      $iIdentifierFlags = $oIdentifier->iFlags | $iFlags;
+      $aOldText = null;
       if($mFunction !== null) {
-        $mText = call_user_func_array($mFunction, array($oIdentifier, &$iFlags));
+        $mText = call_user_func_array($mFunction, array($oIdentifier, &$iIdentifierFlags));
         if($mText === null) {
           continue;
         }
-        $mText = $this->getTextForReplaceIdentifier($mText, $iFlags);
-      }
-      if($mText === null) {
-        continue;
+        $aText = $this->getTextForReplaceIdentifier($mText, $iIdentifierFlags);
+      } else if($iIdentifierFlags !== $iFlags) {
+        $aOldText = &$aText;
+        $aText = $this->getTextForReplaceIdentifier($mOriginalText, $iIdentifierFlags);
       }
       $aIdentifierContext = $this->findIdentifierContext($oIdentifier);
-      $mReplaceValues = $mText;
+      $mReplaceValues = $aText;
       if($aIdentifierContext !== null) {
-        $aContextPart = $this->partBetween($aIdentifierContext["start"], $aIdentifierContext["end"]);
-        $iIdentifierPosition = array_search($oIdentifier, $aContextPart, true);
-        foreach($aContextPart as $iContextPartKey => $mContextPartItem) {
-          if($mContextPartItem instanceof TemplateIdentifier) {
-            $aContextPart[$iContextPartKey] = clone $mContextPartItem;
+        if(($iIdentifierFlags&self::NO_NEW_CONTEXT)!==self::NO_NEW_CONTEXT) {
+          $aContextPart = $this->partBetween($aIdentifierContext["start"], $aIdentifierContext["end"]);
+          $iIdentifierPosition = array_search($oIdentifier, $aContextPart, true);
+          foreach($aContextPart as $iContextPartKey => $mContextPartItem) {
+            if($mContextPartItem instanceof TemplateIdentifier) {
+              $aContextPart[$iContextPartKey] = clone $mContextPartItem;
+            }
           }
+          array_splice($aContextPart, $iIdentifierPosition, 1, $mReplaceValues);
+          $oIdentifier = $aIdentifierContext["start"];
+          $mReplaceValues = $aContextPart;
+        } else {
+          $this->replaceAt($aIdentifierContext["end"]);
+          $this->replaceAt($aIdentifierContext["start"]);
         }
-        array_splice($aContextPart, $iIdentifierPosition, 1, $mReplaceValues);
-        $oIdentifier = $aIdentifierContext["start"];
-        $mReplaceValues = $aContextPart;
       }
       $this->insertAt($oIdentifier, $mReplaceValues);
-      if(($iFlags&self::NO_NEWLINE) !== self::NO_NEWLINE) {
+      if(($iIdentifierFlags&self::NO_NEWLINE) !== self::NO_NEWLINE) {
         $this->insertAt($oIdentifier, self::$NEWLINE_VALUE);
+      }
+      if($aOldText !== null) {
+        $aText = &$aOldText;
       }
     }
     $this->renderDirectOutput();
@@ -514,7 +536,8 @@ class Template {
    * @return void
    */
   public function replaceIdentifierMultipleCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags) {
-    $this->replaceIdentifierMultiple($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mCallbackObject, $sCallbackMethod);
+    $mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
+    $this->replaceIdentifierMultiple($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
   }
   
   /**
@@ -522,7 +545,8 @@ class Template {
    * @return void
    */
   public function replaceIdentifierCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags=0) {
-    $this->replaceIdentifier($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mCallbackObject, $sCallbackMethod);
+    $mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
+    $this->replaceIdentifier($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
   }
   
   public function replacePstring($sPstringName, $aParameters, $sStringKey=null) {

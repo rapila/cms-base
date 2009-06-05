@@ -129,6 +129,32 @@ EOT;
     $this->assertSame("string1true255listitem", $oTemplate->render());
   }
   
+  public function testReplaceIdentifierMultipleNoNewContext1() {
+    $sTemplateText = <<<EOT
+{{identifierContext=start;name=test}}{{test}} GAGA{{identifierContext=end;name=test}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oTemplate->setDefaultFlags(Template::NO_NEWLINE|Template::NO_NEW_CONTEXT);
+    
+    $oTemplate->replaceIdentifierMultiple('test', 'string');
+    $oTemplate->replaceIdentifierMultiple('test', 1);
+    $oTemplate->replaceIdentifierMultiple('test', true);
+    $oTemplate->replaceIdentifierMultiple('test', 0xff);
+    $oTemplate->replaceIdentifierMultiple('test', array("list", "item"));
+    
+    $this->assertSame("string1true255listitem GAGA", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierMultipleNoNewContext2() {
+    $sTemplateText = <<<EOT
+{{identifierContext=start;name=test}}{{test}} GAGA{{identifierContext=end;name=test}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oTemplate->setDefaultFlags(Template::NO_NEW_CONTEXT);
+    
+    $this->assertSame("", $oTemplate->render());
+  }
+  
   public function testReplaceIdentifierHtmlEscape() {
     $sTemplateText = <<<EOT
 {{test}}
@@ -197,6 +223,29 @@ EOT;
     $this->assertSame("&lt;html&gt;&amp;so<html>&so", $oTemplate->render());
   }
   
+  public function testReplaceIdentifierFlagStripTags1() {
+    $sTemplateText = <<<EOT
+{{test}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oSubTemplate = new Template($sTemplateText, null, true);
+    
+    $oTemplate->replaceIdentifier('test', $oSubTemplate, null, Template::STRIP_TAGS);
+    
+    $this->assertSame("&so<html>&so", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierFlagStripTags2() {
+    $sTemplateText = <<<EOT
+{{test}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    
+    $oTemplate->replaceIdentifier('test', '<html>&so</html><a href="test">Hallo', null, Template::STRIP_TAGS);
+    
+    $this->assertSame("&amp;soHallo<html>&so", $oTemplate->render());
+  }
+  
   public function testReplaceIdentifierFlagNoIdentifierValueReplacement() {
     $sTemplateText = <<<EOT
 {{test=\{\{text1\}\};param=\{\{text2\}\}}}
@@ -206,9 +255,7 @@ EOT;
     $oTemplate->replaceIdentifier('text1', "test1", null, Template::NO_IDENTIFIER_VALUE_REPLACEMENT);
     $oTemplate->replaceIdentifier('text2', "test2", null, Template::NO_IDENTIFIER_VALUE_REPLACEMENT);
     
-    $oTemplate->bKillIdentifiersBeforeRender = false;
-    
-    $this->assertSame("{{test=\{\{text1\}\};param=\{\{text2\}\}}}", $oTemplate->render());
+    $this->assertSame("{{test=\{\{text1\}\};param=\{\{text2\}\}}}", $oTemplate->__toString());
   }
   
 }

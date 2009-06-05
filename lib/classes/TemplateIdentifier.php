@@ -4,6 +4,8 @@ class TemplateIdentifier {
   private $sName;
   private $sValue;
   private $aParameters;
+  
+  public $iFlags = 0;
 
   private $oTemplate;
 
@@ -44,6 +46,10 @@ class TemplateIdentifier {
           $oValueTemplate->bKillIdentifiersBeforeRender = false;
           $sParameterValue = $oValueTemplate->render(true);
         }
+      }
+      if($aKeyValuePair[0] === 'templateFlag') {
+        $this->iFlags = constant('Template::'.$sParameterValue);
+        continue;
       }
       $this->aParameters[$aKeyValuePair[0]] = $sParameterValue;
     }
