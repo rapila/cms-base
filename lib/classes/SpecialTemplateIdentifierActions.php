@@ -23,17 +23,17 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function normalize($oTemplateIdentifier, &$iFlags) {
-    $iFlags = Template::NO_HTML_ESCAPE;
+    $iFlags |= Template::NO_HTML_ESCAPE;
     return StringUtil::normalize($oTemplateIdentifier->getValue());
   }
   
   public function br($oTemplateIdentifier, &$iFlags) {
-    $iFlags = Template::NO_HTML_ESCAPE;
+    $iFlags |= Template::NO_HTML_ESCAPE;
     return '<br />';
   }
   
   public function truncate($oTemplateIdentifier, &$iFlags) {
-    $iFlags = Template::NO_HTML_ESCAPE;
+    $iFlags |= Template::NO_HTML_ESCAPE;
     $iLength=20;
     if($oTemplateIdentifier->hasParameter('length')) {
       $iLength = $oTemplateIdentifier->getParameter('length');
@@ -52,7 +52,7 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function quoteString($oTemplateIdentifier, &$iFlags) {
-    $iFlags = Template::NO_HTML_ESCAPE;
+    $iFlags |= Template::NO_HTML_ESCAPE;
     if(!$oTemplateIdentifier->getValue()) {
       return $oTemplateIdentifier->hasParameter('defaultValue') ? $oTemplateIdentifier->getParameter('defaultValue') : null;
     }
@@ -123,9 +123,9 @@ class SpecialTemplateIdentifierActions {
       $oTemplatePath = null;
     }
     $oTemplate = new Template($oTemplateIdentifier->getValue(), $oTemplatePath, false, false, null, $this->oTemplate->getTemplateName());
-    $iFlags = Template::LEAVE_IDENTIFIERS|Template::NO_RECODE;
+    $iFlags |= Template::LEAVE_IDENTIFIERS|Template::NO_RECODE;
     if($oTemplateIdentifier->hasParameter('omitIdentifiers')) {
-      $iFlags = Template::NO_RECODE;
+      $iFlags &= ~Template::LEAVE_IDENTIFIERS;
     }
     return $oTemplate;
   }

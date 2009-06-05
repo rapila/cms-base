@@ -392,10 +392,6 @@ class Template {
       if(!($mText instanceof Template)  && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
         $aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
       }
-
-      if(($iFlags&self::STRIP_TAGS)===self::STRIP_TAGS) {
-        $aText[$iKey] = strip_tags($aText[$iKey]);
-      }
       
       if(($iFlags&self::ESCAPE)===self::ESCAPE) {
         $aText[$iKey] = str_replace("\n", "\\n", addslashes($aText[$iKey]));
@@ -415,6 +411,11 @@ class Template {
         break;
       }
     }
+
+    if(($iFlags&self::STRIP_TAGS)===self::STRIP_TAGS) {
+      $aText = array(strip_tags(implode('', $aText)));
+    }
+    
     return $aText;
   }
   
@@ -764,7 +765,7 @@ class Template {
         if($oIdentifier->hasParameter('position')) {
           $oIdentifier->unsetParameter('position');
         }
-        $iFlags = 0;
+        $iFlags = $oIdentifier->iFlags;
         $mReplacement = $this->oSpecialTemplateIdentifierActions->$sIdentifierName($oIdentifier, $iFlags);
         if($mReplacement !== null) {
           $this->replaceAt($oIdentifier, $this->getTextForReplaceIdentifier($mReplacement, $iFlags));

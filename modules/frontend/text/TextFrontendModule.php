@@ -36,7 +36,7 @@ class TextFrontendModule extends FrontendModule {
   
   public static function getContentInfo($oLanguageObject) {
     $sText = RichtextUtil::parseStorageForFrontendOutput($oLanguageObject->getData()->getContents());
-    return StringUtil::truncate(implode(" ", StringUtil::getWords($sText, true)));
+    return implode(" ", StringUtil::getWords($sText, true));
   }
 }
 ?>
