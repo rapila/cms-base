@@ -35,7 +35,7 @@ class PasswordHash {
   }
   
   public static function generatePassword() {
-    $iLength = mt_rand(10, 15);
+    $iLength = mt_rand(8, 10);
     $sResult = "";
     while(mb_strlen($sResult)<$iLength) {
       $iCharCode = mt_rand(65, 116);
