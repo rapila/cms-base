@@ -6,6 +6,7 @@ html, body {
   background:#d2d2d2;
   overflow: hidden;
 }
+
 /* example tinymce code */
 body.mceContentBody {
   text-align: left;

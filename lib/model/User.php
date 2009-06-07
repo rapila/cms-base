@@ -35,6 +35,10 @@ class User extends BaseUser {
             && $this->getIsBackendLoginEnabled();
   }
   
+  public function requiresUserName() {
+    return trim($this->getFullName()) !== null;
+  }
+  
   public function isSessionUser() {
     return $this->getId() === Session::getSession()->getUserId();
   }

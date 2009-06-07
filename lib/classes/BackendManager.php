@@ -51,9 +51,16 @@ class BackendManager extends Manager {
     if(isset($_REQUEST['content_language'])) {
       self::setContentEditLanguage($_REQUEST['content_language']);
     }
+
     if(self::hasNextPathItem()) {
       $this->sModuleName = self::usePath();
     } else {
+      $oUser = Session::getSession()->getUser();
+      if($oUser->isFirstAdministrator() && $oUser->requiresUserName()) {
+        Flash::getFlash()->addMessage('backend_first_user_name_required');
+        Flash::getFlash()->stick();
+        LinkUtil::redirectToManager(array('users', $oUser->getId()));
+      }
       $aModuleNames = array_keys(ArrayUtil::assocPeek($this->aBackendSettings));
       LinkUtil::redirectToManager($aModuleNames[0]);
     }
