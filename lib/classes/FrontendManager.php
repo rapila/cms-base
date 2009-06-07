@@ -250,6 +250,10 @@ class FrontendManager extends Manager {
     if($oPage === null) {
       return null;
     }
+    // hack to be able to display another name than the page_name, thanks to sl
+    if($oTemplateIdentifier->hasParameter('href_only')) {
+      return LinkUtil::link($oPage->getLink());
+    }
     if(self::getCurrentPage() !== null && self::getCurrentPage()->getId() == $oPage->getId()) {
       return TagWriter::quickTag('span', array('class' => "meta_navigation {$oPage->getName()}", 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
     }
