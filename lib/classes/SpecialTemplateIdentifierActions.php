@@ -141,6 +141,13 @@ class SpecialTemplateIdentifierActions {
     return null;
   }
   
+  public function writeServerVariable($oTemplateIdentifier) {
+    if(isset($_SERVER[$oTemplateIdentifier->getValue()])) {
+      return $_SERVER[$oTemplateIdentifier->getValue()];
+    }
+    return null;
+  }
+  
   public function writeSettingValue($oTemplateIdentifier) {
     if(!$oTemplateIdentifier->hasParameter('section')) {
       return null;
