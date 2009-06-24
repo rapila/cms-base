@@ -81,7 +81,9 @@ class FrontendManager extends Manager {
     if($oMatchingPage->getIsProtected()) {
       if(!(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->mayViewPage($oMatchingPage))) {
         $oLoginPage = $oMatchingPage->getLoginPage();
-        Session::getSession()->setAttribute('login_referrer', LinkUtil::link($oMatchingPage->getFullPathArray(), "FrontendManager"));
+        if($oLoginPage !== $oMatchingPage) {
+          Session::getSession()->setAttribute('login_referrer', LinkUtil::link($oMatchingPage->getFullPathArray(), "FrontendManager"));
+        }
         if($oLoginPage === null) {
           LinkUtil::redirect(LinkUtil::link('', "LoginManager"));
         }
