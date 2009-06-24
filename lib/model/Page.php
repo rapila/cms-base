@@ -471,7 +471,10 @@ class Page extends BasePage {
       }
     }
     if($this->isRoot()) {
-      return $this->isOfType($sPageType) ? $this : null;
+      $oCriteria = new Criteria();
+      $oCriteria->add(PagePeer::IS_INACTIVE, false);
+      $oCriteria->add(PagePeer::PAGE_TYPE, $sPageType);
+      return PagePeer::doSelectOne($oCriteria);
     }
     return $this->getParent()->getPageOfType($sPageType);
   }

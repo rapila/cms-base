@@ -90,9 +90,11 @@ body.mceContentBody {
   padding-right:1em;
 }
 
-.toggler {
+.toggler,
+.form_link {
   color:#5174c2;
 }
+
 .link {
   color:#F2f2f2;
 }
