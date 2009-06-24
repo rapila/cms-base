@@ -35,16 +35,13 @@ class LoginFrontendModule extends DynamicFrontendModule {
     $oTemplate->replaceIdentifier('login_action', $sAction);
     $oTemplate->replaceIdentifier('login_title', StringPeer::getString('login'));
     $oTemplate->doIncludes();
-    $oTemplate->replaceIdentifier('origin', LinkUtil::linkToSelf(null, null, true));
-    // if($oLoginPage = $this->oPage->getLoginPage()) {
-    //   $oTemplate->replaceIdentifier('action', LinkUtil::link($oLoginPage->getFullPathArray()));
-    // } else {
-    //   $oTemplate->replaceIdentifier('action', LinkUtil::linkToSelf(null, null, true));
-    // }
+    $sOrigin = isset($_REQUEST['origin']) ? $_REQUEST['origin'] : LinkUtil::linkToSelf();
+    $oTemplate->replaceIdentifier('origin', $sOrigin);
     $oLoginPage = $this->oPage->getLoginPage();
     if($oLoginPage === null) {
       throw new Exception('Error in '.__METHOD__.' There is no page with PAGE_TYPE login');
     }
+    $oTemplate->replaceIdentifier('action', LinkUtil::link($oLoginPage->getFullPathArray()));
 
     if($sAction === 'login') {
       $this->renderLogin($oTemplate, $sLoginType);

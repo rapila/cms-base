@@ -1,7 +1,7 @@
 {{writeFlashValue=login.logged_in_no_access}}
 <input type="hidden" name="origin" value="{{origin}}" />
 <label for="user_name">{{writeString=login.user_name}}</label>
-<input type="text" name="user_name" id="user_name" value="{{user_name}}" />
+<input type="text" name="user_name" id="user_name" value="{{writeRequestValue=user_name}}" />
 <label for="be_password">{{writeString=password}}</label>
 <input type="password" name="password" id="password" value="" autocomplete="off" />
 {{writeFlashValue=login_check_params}}
