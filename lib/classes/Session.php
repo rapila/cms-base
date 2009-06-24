@@ -32,6 +32,9 @@ class Session {
   public function __wakeup() {
     if($this->iUserId === null || @$_REQUEST['logout'] === "true") {
       $this->iUserId = null;
+      unset($_REQUEST['logout']);
+      unset($_POST['logout']);
+      unset($_GET['logout']);
       return;
     }
     $this->oUser = UserPeer::retrieveByPk($this->iUserId);
