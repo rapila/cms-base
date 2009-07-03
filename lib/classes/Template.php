@@ -856,23 +856,25 @@ class Template {
     if(!is_array($mDirName)) {
       $mDirName = explode("/", $mDirName);
     }
-    $sDirectory = ResourceFinder::findResource($mDirName);
-    if($iTemplatesDir = opendir($sDirectory)) {
-      while (false !== ($sFileName = readdir($iTemplatesDir))) {
-        if(strpos($sFileName, ".tmpl") === (strlen($sFileName)-strlen(".tmpl")) && is_file("$sDirectory/$sFileName"))
-        {
-          $aResult[]=substr($sFileName, 0, (strlen($sFileName)-strlen(".tmpl")));
-        } else if(is_dir($sDirectory."/".$sFileName) && strpos($sFileName, ".") !== 0 && $bListSubdirs) {
-            $aDirName = $mDirName;
-            $aDirName[] = $sFileName;
-            $aSubItems = self::listTemplates($aDirName, true);
-            foreach($aSubItems as $sSubItem) {
-              $aResult[] = "$sFileName/$sSubItem";
-            }
+    $aDirectories = ResourceFinder::findResource($mDirName, null, false, true);
+    foreach($aDirectories as $sDirectory) {
+      if($iTemplatesDir = opendir($sDirectory)) {
+        while (false !== ($sFileName = readdir($iTemplatesDir))) {
+          if(strpos($sFileName, ".tmpl") === (strlen($sFileName)-strlen(".tmpl")) && is_file("$sDirectory/$sFileName"))
+          {
+            $aResult[]=substr($sFileName, 0, (strlen($sFileName)-strlen(".tmpl")));
+          } else if(is_dir($sDirectory."/".$sFileName) && strpos($sFileName, ".") !== 0 && $bListSubdirs) {
+              $aDirName = $mDirName;
+              $aDirName[] = $sFileName;
+              $aSubItems = self::listTemplates($aDirName, true);
+              foreach($aSubItems as $sSubItem) {
+                $aResult[] = "$sFileName/$sSubItem";
+              }
+          }
         }
+        closedir($iTemplatesDir);
       }
-      closedir($iTemplatesDir);
     }
-    return $aResult;
+    return array_unique($aResult);
   }
 }
