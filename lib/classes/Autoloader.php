@@ -29,9 +29,6 @@ class Autoloader {
     $sIncludeFilePath = self::findIncludePath($sClassName);
   
     if($sIncludeFilePath === null) {
-      if(error_reporting() === 0) {
-        return false;
-      }
       throw new ClassNotFoundException("Could not find file for loading of class $sClassName", $sClassName);  
     }
     

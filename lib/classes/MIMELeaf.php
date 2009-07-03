@@ -72,7 +72,7 @@ class MIMELeaf extends MIMEPart {
     return rtrim(chunk_split(base64_encode($sContent), $iMaxLineLength, EMail::SEPARATOR));
   }
   
-  public static function encodeQuotedPrintable($sContent, $iMaxLineLength, $bAlwaysEncodeSpaces = false) {
+  public static function encodeQuotedPrintable($sContent, $iMaxLineLength = 76, $bAlwaysEncodeSpaces = false, $bAlwaysEncodeTabs = false) {
     $aLines  = preg_split("/\r?\n/", $sContent);
     $sEscape = '=';
     $sOutput = '';
@@ -86,12 +86,11 @@ class MIMELeaf extends MIMEPart {
 
         if (($iDecValue == 32) AND ($i == ($iLineLength - 1) || $bAlwaysEncodeSpaces)) {    // convert space at eol only
             $sCharValue = '=20';
-
-        } elseif (($iDecValue == 9) AND ($i == ($iLineLength - 1))) {  // convert tab at eol only
+        } elseif (($iDecValue == 9) AND ($i == ($iLineLength - 1) || $bAlwaysEncodeTabs)) {  // convert tab at eol only
             $sCharValue = '=09';
         } elseif ($iDecValue == 9) {
             ; // Do nothing if a tab.
-        } elseif (($iDecValue == 61) OR ($iDecValue < 32 ) OR ($iDecValue > 126)) {
+        } elseif (($iDecValue == 61) OR ($iDecValue < 32 ) OR ($iDecValue > 126)) { // always encode "\t", which is *not* required
             $sCharValue = $sEscape.strtoupper(sprintf('%02s', dechex($iDecValue)));
         } elseif (($iDecValue == 46) AND ($sNewLine == '')) {
             //Bug #9722: convert full-stop at bol

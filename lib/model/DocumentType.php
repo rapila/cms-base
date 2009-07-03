@@ -23,4 +23,9 @@ class DocumentType extends BaseDocumentType {
     $aResult = explode('/', $this->getMimeType());
     return $aResult[0];
   }
+  
+  public function getDocumentKindDetail() {
+    $aResult = explode('/', $this->getMimeType());
+    return $aResult[1];
+  }
 } // DocumentType

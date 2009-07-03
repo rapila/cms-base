@@ -28,23 +28,23 @@ abstract class Manager {
     return self::$REQUEST_PATH;
   }
   
-  public final function usePath() {
+  public static final function usePath() {
     $sPathItem = array_shift(self::$REQUEST_PATH);
     array_push(self::$USED_PATH, $sPathItem);
     return $sPathItem;
   }
   
-  public final function unusePath() {
+  public static final function unusePath() {
     $sPathItem = array_pop(self::$USED_PATH);
     array_unshift(self::$REQUEST_PATH, $sPathItem);
     return $sPathItem;
   }
   
-  public function hasNextPathItem() {
+  public static function hasNextPathItem() {
     return isset(self::$REQUEST_PATH[0]);
   }
   
-  public function peekNextPathItem() {
+  public static function peekNextPathItem() {
     return @self::$REQUEST_PATH[0];
   }
   
