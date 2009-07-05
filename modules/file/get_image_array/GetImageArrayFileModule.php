@@ -10,7 +10,7 @@ class GetImageArrayFileModule extends FileModule {
   	
   public function __construct($aRequestPath) {
     parent::__construct($aRequestPath);
-	  $this->aImages = DocumentPeer::getDocumentsByKindOfImage();
+	  $this->aImages = DocumentPeer::getDocumentsByKindOfImage(!isset($_REQUEST['include_externally_managed']));
 	}
 	
 	public function renderFile() {

@@ -1,6 +1,11 @@
 <?php
 /**
  * @package modules.frontend
+ * 
+ * NOTE
+ * if the login page is protected, then the origin redirect does not work 
+ * if the login is called from an unprotected page, since origin will be overwritten
+ * is there a reason to protect a login page?
  */
 
 class LoginFrontendModule extends DynamicFrontendModule {

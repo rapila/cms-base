@@ -11,8 +11,8 @@
  */	
 class DocumentPeer extends BaseDocumentPeer {
   
-  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true) {
-    $oCriteria = self::getDocumentsCriteria();
+  public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
+    $oCriteria = self::getDocumentsCriteria($bExcludeExternallyManaged);
     if($iDocumentCategory !== null) {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
     }
@@ -43,12 +43,12 @@ class DocumentPeer extends BaseDocumentPeer {
     return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
   }
   
-  public static function getDocumentsByKindOfNotImage() {
-    return self::getDocumentsByKindAndCategory('image', null, false);
+  public static function getDocumentsByKindOfNotImage($bExcludeExternallyManaged = true) {
+    return self::getDocumentsByKindAndCategory('image', null, false, $bExcludeExternallyManaged);
   }
   
-  public static function getDocumentsByKindOfImage() {
-    return self::getDocumentsByKindAndCategory('image', null, true);
+  public static function getDocumentsByKindOfImage($bExcludeExternallyManaged = true) {
+    return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
   }
 
   public static function countDocumentsInternallyManaged() {

@@ -108,4 +108,13 @@ class User extends BaseUser {
     }
     return $aResult;
   }
+  
+  public function hasGroup($iGroupId) {
+    foreach($this->getGroups() as $oGroup) {
+      if($oGroup->getId() === $iGroupId) {
+        return true;
+      }
+    }
+    return false;
+  }
 } // User

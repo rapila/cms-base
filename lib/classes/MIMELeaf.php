@@ -109,4 +109,5 @@ class MIMELeaf extends MIMEPart {
     $sOutput = substr($sOutput, 0, -1 * strlen(EMail::SEPARATOR)); // Don't want last crlf
     return $sOutput;
   }
+  
 }
