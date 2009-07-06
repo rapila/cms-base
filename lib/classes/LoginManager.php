@@ -104,16 +104,15 @@ class LoginManager extends Manager {
       $oFlash->addMessage('login.empty_fields');
       return;
     }
-
     $iAdminTest = Session::getSession()->login($sUserName, $sPassword);
     //User is valid
     if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
       $sReferrer = '';
-      if(Session::getSession()->hasAttribute('login_referrer')) {
+       if(isset($_REQUEST['origin'])) {
+        $sReferrer = $_REQUEST['origin'];
+      } else if(Session::getSession()->hasAttribute('login_referrer')) {
         $sReferrer = Session::getSession()->getAttribute('login_referrer');
         Session::getSession()->resetAttribute('login_referrer');
-      } else if(isset($_REQUEST['origin'])) {
-        $sReferrer = $_REQUEST['origin'];
       } else {
         $sReferrer = LinkUtil::link(array(), 'BackendManager');
       }
