@@ -139,7 +139,7 @@ class ErrorHandler {
         $sAddress = Settings::getSetting('domain_holder', 'email', false);
       }
       if($sAddress) {
-        FilterModule::handleErrorEmailSend($sAddress);
+        FilterModule::handleErrorEmailSend(array(&$sAddress, &$aError));
         mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'].MAIN_DIR_FE.$aError['path'], print_r($aError, true));
       }
     }
