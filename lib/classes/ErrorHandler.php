@@ -119,16 +119,19 @@ class ErrorHandler {
   }
 
   private static function handle($aError) {
-    if(self::shouldPrintErrors()) {
-      Util::dumpAll($aError);
-    }
     //Add additional information for logging/sending
     $aError['referrer'] = @$_SERVER['HTTP_REFERER'];
     $aError['host'] = @$_SERVER['HTTP_HOST'];
     $aError['path'] = @$_REQUEST['path'];
+    FilterModule::getFilters()->handleAnyError(array(&$aError));
+    if(self::shouldPrintErrors()) {
+      FilterModule::getFilters()->handleErrorPrint(array(&$aError));
+      Util::dumpAll($aError);
+    }
     if(self::shouldLogErrors()) {
       $sLogFilePath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/error.log';
       $sErrorMessage = "[".date(DATE_RFC822)."] ".self::readableDump($aError)."\n";
+      FilterModule::getFilters()->handleErrorLog(array(&$sLogFilePath, &$aError, &$sErrorMessage));
       if(file_put_contents($sLogFilePath, $sErrorMessage, FILE_APPEND) === false) {
         die("Error could not be logged, ".$sLogFilePath.' is not writable');
       }
@@ -139,7 +142,7 @@ class ErrorHandler {
         $sAddress = Settings::getSetting('domain_holder', 'email', false);
       }
       if($sAddress) {
-        FilterModule::handleErrorEmailSend(array(&$sAddress, &$aError));
+        FilterModule::getFilters()->handleErrorEmailSend(array(&$sAddress, &$aError));
         mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'].MAIN_DIR_FE.$aError['path'], print_r($aError, true));
       }
     }

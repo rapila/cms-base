@@ -107,6 +107,9 @@ class LinkUtil {
     return MAIN_DIR_FE.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
   }
   
+  /**
+  * @todo: check use of http_build_query()
+  */
   public static function prepareLinkParameters($aParameters) {
     $sParameters = '';
     foreach($aParameters as $sKey => $sValue) {
