@@ -88,7 +88,7 @@ class UsersBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier('user_booleans', $oUserBooleanTemplate);
     }
     
-    if($this->oUser->isNew()) {
+    if($this->oUser->isNew() || isset($_POST['be_password'])) {
       $oTemplate->replaceIdentifier("display_class", ' open');
       $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('password'));
       $oTemplate->replaceIdentifier("display_style", ' block');
