@@ -18,7 +18,7 @@ class ErrorHandler {
   }
   
   public static function handleException($oException) {
-    self::handle(array('exception' => $oException));
+    self::handle(array('exception' => $oException, 'message' => $oException->getMessage()));
     self::displayErrorMessage(E_NOTICE);
   }
   
@@ -123,6 +123,7 @@ class ErrorHandler {
     $aError['referrer'] = @$_SERVER['HTTP_REFERER'];
     $aError['host'] = @$_SERVER['HTTP_HOST'];
     $aError['path'] = @$_REQUEST['path'];
+    
     FilterModule::getFilters()->handleAnyError(array(&$aError));
     if(self::shouldPrintErrors()) {
       FilterModule::getFilters()->handleErrorPrint(array(&$aError));

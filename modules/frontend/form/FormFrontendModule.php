@@ -102,7 +102,7 @@ class FormFrontendModule extends DynamicFrontendModule {
   }
   
   public static function validateRecaptchaInput() {
-    $oAnswer = recaptcha_check_answer(Settings::getSetting('frontend', 're_captcha_private_key', '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'), $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+    $oAnswer = recaptcha_check_answer(Settings::getSetting('frontend', 're_captcha_private_key', '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
     return $oAnswer->is_valid;
   }
   

@@ -61,6 +61,11 @@ if(function_exists("date_default_timezone_set")) {
   date_default_timezone_set(Settings::getSetting('general', 'timezone', 'Europe/Zurich'));
 }
 
+if(get_magic_quotes_gpc()) {
+  ArrayUtil::runFunctionOnArrayValues($_REQUEST, 'stripslashes');
+  ArrayUtil::runFunctionOnArrayValues($_POST, 'stripslashes');
+}
+
 require_once("propel/Propel.php");
 $aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
 $aDbSettings['adapter'] = $aDbSettings['database']['adapter'];
