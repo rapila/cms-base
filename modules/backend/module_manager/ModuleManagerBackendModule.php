@@ -37,21 +37,29 @@ class ModuleManagerBackendModule extends BackendModule {
     $aModuleInfo = Module::getModuleInfoByTypeAndName($this->sModuleType, $this->sModuleName);
     $sDisplayName = Module::getDisplayNameByTypeAndName($this->sModuleType, $this->sModuleName);
     
+    if($this->sModuleType === 'backend') {
+      $oBackendModuleTemplate = $this->constructTemplate('backend_module_detail_info');
+      $oBackendModuleTemplate->replaceIdentifier('allowed_groups', TagWriter::optionsFromObjects(GroupPeer::doSelect(new Criteria()), null, null, @$aModuleInfo['allowed_groups'], array()));
+      $oTemplate->replaceIdentifier('backend_module_detail_info', $oBackendModuleTemplate, null, Template::LEAVE_IDENTIFIERS);
+    }
     $oTemplate->replaceIdentifier('display_name', $sDisplayName);
     $oTemplate->replaceIdentifier('action', $this->link("$this->sModuleType/$this->sModuleName"));
     foreach($aModuleInfo as $sModuleInfoKey => $sModuleInfoValue) {
       $oTemplate->replaceIdentifier($sModuleInfoKey, $sModuleInfoValue);
     }
     
+    
     return $oTemplate;
   }
   
   public function doSave() {
-    $bIsEnabled = Module::isModuleEnabled($this->sModuleType, $this->sModuleName);
+    $aModuleInfo = Module::getModuleInfoByTypeAndName($this->sModuleType, $this->sModuleName);
     $aInfo = array();
-    $bShouldBeEnabled = isset($_POST['enabled']);
-    if($bIsEnabled === $bShouldBeEnabled) {
-      return;
+    
+    $aInfo['enabled'] = isset($_POST['enabled']) || @$aModuleInfo['required'];
+    $aInfo['admin_required'] = isset($_POST['admin_required']);
+    if(isset($_POST['allowed_groups'])) {
+      $aInfo['allowed_groups'] = $_POST['allowed_groups'];
     }
     require_once("spyc/Spyc.php");
     $sInfoFilePath = SITE_DIR.'/'.DIRNAME_MODULES;
@@ -67,10 +75,6 @@ class ModuleManagerBackendModule extends BackendModule {
       mkdir($sInfoFilePath);
     }
     $sInfoFilePath .= "/".Module::INFO_FILE;
-    if(file_exists($sInfoFilePath)) {
-      $aInfo = Spyc::YAMLLoad($sInfoFilePath);
-    }
-    $aInfo['enabled'] = $bShouldBeEnabled;
     file_put_contents($sInfoFilePath, Spyc::YAMLDump($aInfo));
     LinkUtil::redirect($this->link("$this->sModuleType/$this->sModuleName"));
   }

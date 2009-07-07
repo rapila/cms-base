@@ -63,9 +63,31 @@ class User extends BaseUser {
     return $this->may($oPage, 'view_page');
   }
   
-  public function mayUseBackendModule($sBackendModuleName) {
+  public function mayUseBackendModule($sBackendModuleName, $bCheckEnabled = true) {
+    //Case 1: Module is disabled (this check is not mandatory): deny
+    if($bCheckEnabled && !Module::isModuleEnabled('backend', $sBackendModuleName)) {
+      return false;
+    }
+    //Case 2: User is allowed: allow
+    if($this->getIsAdmin()) {
+      return true;
+    }
     $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sBackendModuleName);
-    return ($this->getIsAdmin() || !(@$aModuleInfo['admin_required'])) && Module::isModuleEnabled('backend', $sBackendModuleName);
+    $aGroupIds = isset($aModuleInfo['allowed_groups']) ? $aModuleInfo['allowed_groups'] : array();
+    //Cases 3 and 4: No groups defined
+    if(count($aGroupIds) === 0) {
+      //Case 3: Access to module is unrestricted: allow
+      //Case 4: Access to module is restricted to admins: deny (because the user is not one of them)
+      return !(@$aModuleInfo['admin_required']);
+    }
+    //Case 5: Access is restricted to certain groups: allow if in group
+    foreach($this->getUserGroups() as $oUserGroup) {
+      if(in_array($oUserGroup->getGroupId(), $aGroupIds)) {
+        return true;
+      }
+    }
+    //Case 6: User is not in allowed groups
+    return false;
   }
   
   public function getBackendSettingsValue() {

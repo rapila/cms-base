@@ -414,8 +414,9 @@ input[type=checkbox] {
   border-bottom: #a8a8a8 1px solid;
 }
 
-select[multiple] {
-  height: auto;
+select[multiple],
+.autoheight {
+  height: auto !important;
 }
 
 select {

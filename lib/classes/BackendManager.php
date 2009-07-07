@@ -230,7 +230,7 @@ class BackendManager extends Manager {
   * fillBackend()
   */ 
   private function fillBackend() {
-    if(!$this->oUser->mayUseBackendModule($this->sModuleName)) {
+    if(!$this->oUser->mayUseBackendModule($this->sModuleName, false)) {
       throw new Exception("User is not allowed to use Backend module $this->sModuleName");
     }
     $this->oBackendModule = BackendModule::getModuleInstance($this->sModuleName);

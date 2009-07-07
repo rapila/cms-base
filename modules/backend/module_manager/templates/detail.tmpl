@@ -12,6 +12,7 @@
       <dt>{{writeString=module_manager.version}}</dt><dd>{{version;defaultValue=n/a}}</dd>
     </dl>
     <input type="checkbox" {{if=;1=\{\{enabled\}\};2=true}}checked="checked" {{endIf}}{{if=;1=\{\{required\}\};2=true}}disabled="disabled" {{endIf}}name="enabled" id="enabled" /><label for="enabled">{{writeString=enabled}}</label><br />
+    {{backend_module_detail_info}}
   </fieldset>
   <button class="save"></button>
 </form>
