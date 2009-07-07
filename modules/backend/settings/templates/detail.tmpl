@@ -1,11 +1,13 @@
 <h1>{{writeString=settings.configure_menu}}</h1>
 <fieldset>
-  <button class="autowidth save" id="save_button">{{writeString=save}}</button>
-</fieldset>
-<fieldset>
   <div id="sections">
   {{section_list}}
   </div>
+</fieldset>
+<fieldset class="divider nolegend">
+  <button class="autowidth save" id="save_button">{{writeString=save}}</button>
+</fieldset>
+<fieldset class="divider">
   <div id="unassigned_modules">
     <h1>{{writeString=settings.available_backend_modules}}</h1>
     {{module_list}}
