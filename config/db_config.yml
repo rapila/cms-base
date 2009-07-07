@@ -1,0 +1,11 @@
+%YAML 1.1
+connection:
+  phptype:    'mysqli'
+  hostspec:   'localhost'
+  database:   'database'
+  username:   'username' &un
+  user:       *un
+  password:   'password'
+  dsn:        'mysql:dbname=database;host=localhost'
+database:
+  adapter:  'mysqli'

@@ -62,12 +62,14 @@ if(function_exists("date_default_timezone_set")) {
 }
 
 require_once("propel/Propel.php");
-Propel::setConfiguration(array('propel' => Settings::getSetting('general', 'db_config', null)));
+$aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
+$aDbSettings['adapter'] = $aDbSettings['database']['adapter'];
+unset($aDbSettings['database']);
+Propel::setConfiguration(array('propel' => array('datasources' => array('mini_cms' => $aDbSettings, 'default' => 'mini_cms'))));
 Propel::initialize();
 
 //Set MySQL connection charset
-$sAdapter = Settings::getSetting('general', 'db_config', null);
-$sAdapter = $sAdapter['datasources'][$sAdapter['datasources']['default']]['adapter'];
+$sAdapter = $aDbSettings['adapter'];
 if(StringUtil::startsWith($sAdapter, 'mysql')) {
   $con = Propel::getConnection();
   $con->executeQuery('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');

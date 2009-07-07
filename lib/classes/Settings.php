@@ -48,7 +48,7 @@ class Settings {
     return $aSettingsPart[$sKey];
   }
   
-  public function getSettingsArray() {
+  public function &getSettingsArray() {
     return $this->aSettings;
   }
   
