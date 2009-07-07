@@ -63,6 +63,11 @@ class User extends BaseUser {
     return $this->may($oPage, 'view_page');
   }
   
+  public function mayUseBackendModule($sBackendModuleName) {
+    $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sBackendModuleName);
+    return ($this->getIsAdmin() || !(@$aModuleInfo['admin_required'])) && Module::isModuleEnabled('backend', $sBackendModuleName);
+  }
+  
   public function getBackendSettingsValue() {
     if($this->getBackendSettings() !== null) {
       return unserialize($this->getBackendSettings());

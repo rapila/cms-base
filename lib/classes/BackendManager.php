@@ -10,6 +10,7 @@ class BackendManager extends Manager {
   private $iId = null;
   private $oBackendModule = null;
   private $aBackendSettings = null;
+  private $oUser;
   const CONTENT_EDIT_LANGUAGE_SESSION_KEY = 'content_edit_language';
 
  /**
@@ -52,14 +53,14 @@ class BackendManager extends Manager {
       self::setContentEditLanguage($_REQUEST['content_language']);
     }
 
+    $this->oUser = Session::getSession()->getUser();
     if(self::hasNextPathItem()) {
       $this->sModuleName = self::usePath();
     } else {
-      $oUser = Session::getSession()->getUser();
-      if($oUser->isFirstAdministrator() && $oUser->requiresUserName()) {
+      if($this->oUser->isFirstAdministrator() && $this->oUser->requiresUserName()) {
         Flash::getFlash()->addMessage('backend_first_user_name_required');
         Flash::getFlash()->stick();
-        LinkUtil::redirectToManager(array('users', $oUser->getId()));
+        LinkUtil::redirectToManager(array('users', $this->oUser->getId()));
       }
       $aModuleNames = array_keys(ArrayUtil::assocPeek($this->aBackendSettings));
       LinkUtil::redirectToManager($aModuleNames[0]);
@@ -140,11 +141,9 @@ class BackendManager extends Manager {
   * @return void
   */ 
   private function fillBackendNavigation() {
-    $oUser = Session::getSession()->getUser();
-    
+    //Direct links
     foreach($this->aBackendSettings['direct_links'] as $sModuleName => $mConfig) {
-      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
-      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
+      if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
       $sClassName = '';
@@ -172,10 +171,9 @@ class BackendManager extends Manager {
     $aSelectOptions = array();
     $sSelected = $this->sModuleName;
     
-    $aFrontendModules = BackendModule::listModules();
+    //Site links
     foreach($this->aBackendSettings['site_links'] as $sModuleName => $mConfig) {
-      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
-      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
+      if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
       
@@ -186,10 +184,10 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("available_site_links", TagWriter::optionsFromArray($aSelectOptions, $sSelected));
     }
     
+    //Admin links
     $aAdminOptions = array();
     foreach($this->aBackendSettings['admin_links'] as $sModuleName => $mConfig) {
-      $aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sModuleName);
-      if((!$oUser->getIsAdmin() && @$aModuleInfo['admin_required']) || !Module::isModuleEnabled('backend', $sModuleName)) {
+      if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
       $aAdminOptions[$sModuleName] = BackendModule::getDisplayNameByName($sModuleName);
@@ -232,6 +230,9 @@ class BackendManager extends Manager {
   * fillBackend()
   */ 
   private function fillBackend() {
+    if(!$this->oUser->mayUseBackendModule($this->sModuleName)) {
+      throw new Exception("User is not allowed to use Backend module $this->sModuleName");
+    }
     $this->oBackendModule = BackendModule::getModuleInstance($this->sModuleName);
     if(Manager::isPost()) {
       ArrayUtil::trimStringsInArray($_POST);
