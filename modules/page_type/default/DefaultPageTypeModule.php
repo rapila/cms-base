@@ -188,7 +188,7 @@ class DefaultPageTypeModule extends PageTypeModule {
         $aContentModuleNames = FrontendModule::listContentModules();
         $aAllowedItems = array();
         if($oContainer->hasParameter("allowed_modules")) {
-          foreach(ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
+          foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
             if(isset($aContentModuleNames[$sAllowedModuleName])) {
               $aAllowedItems[$sAllowedModuleName] = $aContentModuleNames[$sAllowedModuleName];
             }
@@ -197,7 +197,7 @@ class DefaultPageTypeModule extends PageTypeModule {
           $aAllowedItems = $aContentModuleNames;
         }
         if($oContainer->hasParameter("disabled_modules")) {
-          foreach(ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
+          foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
             if(isset($aAllowedItems[$sDisabledModuleName])) {
               unset($aAllowedItems[$sDisabledModuleName]);
             }
