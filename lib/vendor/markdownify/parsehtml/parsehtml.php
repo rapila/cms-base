@@ -225,6 +225,15 @@ class parseHTML {
     'var' => false,
   );
   /**
+   * setup the HTML for parsing
+   *
+   * @param string code
+   */
+  function setHTML($html) {
+      // normalize on \n
+      $this->html = str_replace("\r", "\n", str_replace("\r\n", "\n", $html));
+  }
+  /**
    * get next node, set $this->html prior!
    *
    * @param void
