@@ -6,7 +6,7 @@ general:
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
   # possible environments: development, production, test, automatic (should only be used while in testing phase since it slows down)
-  environment: 'development'
+  environment: 'auto'
 
 routing:
   routes:
@@ -53,7 +53,7 @@ backend:
     blockformats: [p, h1, h2]
     classes: [external_link, internal_link, image_link]
     force_br_newlines: true
-    toolbar_location: bottom
+    toolbar_location: top
   #possible values: images, internal_links, external_links, documents
   link_array_disabled: []
   
