@@ -32,9 +32,7 @@ domain_holder:
   email:  'info@mini-cms.ch'
 
 backend:
-  title: 'Mini-CMS Admin'
-  main_template: be_main
-  
+  title: 'Mini-CMS Admin — {{module_name}}'
   # custom css file in site/web/css for site specific changes
   custom_backend_css: null 
   inherit_children_enable: true

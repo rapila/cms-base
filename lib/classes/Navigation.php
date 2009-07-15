@@ -297,11 +297,10 @@ class Navigation {
     $bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
     $aRequestPath = explode("/", Manager::getRequestedPath());
 
-    $aLanguages = LanguagePeer::getLanguages(true, true);
+    $aLanguages = LanguagePeer::getLanguages(true, true, !$bShowActiveLanguage);
     foreach($aLanguages as $i => $oLanguage) {
       $oCurrrentTemplate = null;
       if($oLanguage->getId() === Session::language()) {
-        if(!$bShowActiveLanguage) continue;
         $oCurrrentTemplate = clone $oLanguageActiveTemplate;
       } else {
         $oCurrrentTemplate = clone $oLanguageTemplate;

@@ -28,10 +28,13 @@ class LanguagePeer extends BaseLanguagePeer {
     return true;
   }
 
-  public static function getLanguages($bActiveOnly=false, $bSortBySort = false) {
+  public static function getLanguages($bActiveOnly=false, $bSortBySort = false, $bExcludeCurrent = false) {
     $oCriteria = new Criteria();
     if($bActiveOnly) {
       $oCriteria->add(self::IS_ACTIVE, true);
+    }
+    if($bExcludeCurrent) {
+      $oCriteria->add(self::ID, Session::language(), Criteria::NOT_EQUAL);
     }
     if($bSortBySort) {
       $oCriteria->addAscendingOrderByColumn(self::SORT);

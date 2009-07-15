@@ -43,7 +43,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
           $oItemTemplate->replaceIdentifier("mimetype", $oCorrespondingDocument->getMimetype());
           $oItemTemplate->replaceIdentifier("url", $oCorrespondingDocument->getLink());
           $oItemTemplate->replaceIdentifier('category_id', $oCorrespondingDocument->getDocumentCategoryId());
-          $oItemTemplate->replaceIdentifier("size", Util::getDocumentSize($oCorrespondingDocument->getDataSize(), 'kb'));
+          $oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oCorrespondingDocument->getDataSize(), 'kb'));
           $oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
         }
       }

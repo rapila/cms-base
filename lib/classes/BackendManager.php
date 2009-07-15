@@ -74,10 +74,10 @@ class BackendManager extends Manager {
     if($this->oTemplate !== null) {
       return;
     }
-    $sTemplateName = Settings::getSetting("backend", "main_template", "index");
     $oOutput = new XHTMLOutput('transitional');
     $oOutput->render();
-    $this->oTemplate = new Template($sTemplateName, null, false, true);
+    $this->oTemplate = new Template('be_main', null, false, true);
+    $this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'), null, Template::LEAVE_IDENTIFIERS);
   }
 
  /**
@@ -328,11 +328,11 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink(self::getCurrentPage()->getFullPathArray()));
       $this->oTemplate->replacePstring("preview_title", array("link_title" => self::getCurrentPage()->getLinkText()));
       $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true', 'page_id' => self::getCurrentPage()->getId())));
+      $this->oTemplate->replaceIdentifier("current_page_title", self::getCurrentPage()->getLinkText());
     } else {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink());
       $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true')));
     }
-    $this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'));
   }
   
   private static function getWebLink($aPath = array(), $aParameters = array()) {
