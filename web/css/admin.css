@@ -784,17 +784,23 @@ a.edit, label.edit, label.delete, label.new {
 span.wwwpreview {
   text-decoration:none;
 }
+
 .noclick {
   cursor: default;
 }
+
 #error_messages {
   padding:.4em;
   color:red;
 }
 
 .browser_error_message {
-  padding-top:2em;
-  font-size: 1.3em;
+  width: 48em;
+  margin-right: auto;
+  border: 4px #C21E20 solid;
+  padding:2em;
+  margin-bottom: 1em;
+  font-size: 1.4em;
   color: #C21E20;
 }
 

@@ -12,16 +12,16 @@
     </div>
   </div>
   <div id="bottom_wrapper">
-    <div id="detail">
+    <div id="detail">{{identifierContext=start;name=browser_message}}
+      <div class="browser_error_message">
+        {{browser_message}}
+<br /><a href="http://www.mozilla.com/en-US/firefox/all.html">{{firefox_download_linktext}}</a>
+      </div>{{identifierContext=end;name=browser_message}}
       <fieldset><legend>{{login_title}}</legend>
         <form action="{{action}}" method="post">
           {{includeTemplate=login_action_\{\{login_action\}\};position=last}}
         </form>
       </fieldset>
-      <div class="browser_error_message">{{contextIdentifier=start;name=browser_message}}
-        {{browser_message}}{{contextIdentifier=end;name=browser_message}}
-{{contextIdentifier=start;name=firefox_download_linktext}}<br /><a href="http://www.mozilla.com/en-US/firefox/all.html">{{firefox_download_linktext}}</a>{{contextIdentifier=end;name=firefox_download_linktext}}
-      </div>
     </div>
   </div>
   </body>

@@ -64,7 +64,7 @@ class LoginManager extends Manager {
   private function renderLogin() {
     // should be configured in default cms.yml
     $sPreferredBrowser = 'Firefox';
-    $sPreferredBrowserVersion = '3';
+    $sPreferredBrowserVersion = '3.5';
     $sBrowserMessage = null;
     $iStrPos = strpos($_SERVER['HTTP_USER_AGENT'], $sPreferredBrowser);
     $sVersion = null;
@@ -75,14 +75,13 @@ class LoginManager extends Manager {
     if($aVersion[0] !== $sPreferredBrowser) {
       $sBrowserMessage = StringPeer::getString('browser_preferred_message');
     } elseif(isset($aVersion[1])) {
-      $iVersionNo = substr($aVersion[1],0,1);
+      $iVersionNo = substr($aVersion[1],0,3);
       if($iVersionNo < $sPreferredBrowserVersion) {
         $sBrowserMessage = StringPeer::getString('browser_version_message');
       }
     }
-    
-    $this->oTemplate->replaceIdentifier('browser_message', $sBrowserMessage);
-    if($sBrowserMessage) {
+    if($sBrowserMessage !== null) {
+      $this->oTemplate->replaceIdentifier('browser_message', $sBrowserMessage);
       $this->oTemplate->replaceIdentifier('firefox_download_linktext', 'Firefox Download '.StringPeer::getString('page'));
     }
     $this->oTemplate->replaceIdentifier('title', LinkUtil::getHostName(). ' | Login');
