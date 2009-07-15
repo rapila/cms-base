@@ -1,6 +1,6 @@
 <?php
 /**
- * Module is the base class for all modules. There are currently three types of modules, page types, frontend and backend modules. Read the description in those files to see what they do.
+ * Module is the base class for all modules. There are currently five types of modules: page type, filter, file, frontend and backend modules. Read the description in those files to see what they do.
  * All modules are found in the folder modules/module_type under either the root or site folder
  *
  * Modules always have the following directory structure:
@@ -9,17 +9,14 @@
  * module_name/
  * 	templates/ (optional, can be read with $this->{@link constructTemplate}('name') inside the module)
  * 	lang/ (optional, contains translation files with strings)
- * 	config/  (optional, contains the schema and various yml files)
- * 		schema.xml (defines tables to be mixed into the main schema.xml file on model generation)
- * 	model/ (this is where database classes are copied after being generated)
- * 		om/
- * 		map/
  * 	ModuleNameModuleTypeModule.php (contains the actual module code)
- *  </pre>
+ * 	info.yml (optional) contains info about the module as well as permission settings
+ * </pre>
  * @see PageTypeModule
  * @see FrontendModule
  * @see BackendModule
  * @see FileModule
+ * @see FilterModule
  */
 abstract class Module {
   const INFO_FILE = "info.yml";
