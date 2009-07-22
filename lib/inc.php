@@ -68,13 +68,16 @@ if(get_magic_quotes_gpc()) {
 
 require_once("propel/Propel.php");
 $aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
-$aDbSettings['adapter'] = $aDbSettings['database']['adapter'];
+$sAdapter = $aDbSettings['database']['adapter'];
 unset($aDbSettings['database']);
+$aDbSettings['adapter'] = $sAdapter;
+if($sAdapter === 'sqlite' && !StringUtil::startsWith($aDbSettings['connection']['database'], '/')) {
+  $aDbSettings['connection']['database'] = MAIN_DIR.'/'.$aDbSettings['connection']['database'];
+}
 Propel::setConfiguration(array('propel' => array('datasources' => array('mini_cms' => $aDbSettings, 'default' => 'mini_cms'))));
 Propel::initialize();
 
 //Set MySQL connection charset
-$sAdapter = $aDbSettings['adapter'];
 if(StringUtil::startsWith($sAdapter, 'mysql')) {
   $con = Propel::getConnection();
   $con->executeQuery('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
