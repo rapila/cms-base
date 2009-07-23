@@ -18,9 +18,9 @@ abstract class PageTypeModule extends Module {
   
   public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
   
-  protected function backendLink($aPath, $aParameters = array()) {
+  protected function backendLink($aPath = array(), $aParameters = array()) {
     array_unshift($aPath, "content");
-    return LinkUtil::link($aPath, null, $aParameters);
+    return LinkUtil::link($aPath, 'BackendManager', $aParameters);
   }
 
   /**

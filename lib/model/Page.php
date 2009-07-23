@@ -119,6 +119,26 @@ class Page extends BasePage {
     return $sDefaultValue;
   }
   
+  public function updatePageProperty($sPropertyName, $sPropertyValue) {
+    $this->getPageProperties();
+    $oTempProperty = $this->getPagePropertyByName($sPropertyName);
+    if($oTempProperty !== null) {
+      if($sPropertyValue === null) {
+        $oTempProperty->delete();
+        return;
+      }
+      $oTempProperty->setValue($sPropertyValue);
+      $oTempProperty->save();
+      return;
+    } else if($sPropertyValue === null) {
+      return;
+    }
+    $oTempProperty = new PageProperty();
+    $oTempProperty->setName($sPropertyName);
+    $oTempProperty->setValue($sPropertyValue);
+    $this->addPageProperty($oTempProperty);
+  }
+  
   public function addTempPageProperty($sName, $sValue) {
     $this->getPageProperties();
     $oTempProperty = new PageProperty();
