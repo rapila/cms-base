@@ -22,7 +22,7 @@
     <textarea name="description" id="description" rows="2" cols="40">{{description}}</textarea><br />
     {{identifierContext=start;name=is_protected}}<label for="is_protected">{{writeString=is_protected}}</label><input type="checkbox" name="is_protected" id="is_protected" value="1" {{is_protected_checked}} /><br />{{identifierContext=end;name=is_protected}}  {{identifierContext=start;name=document_type}}
     <label>{{writeString=document.type}}</label>
-    <div id="document_info"> {{document_type}} {{document_link}}&nbsp;&nbsp;&nbsp;Owner: {{owner}}</div><br />
+    <div id="document_info"> {{document_type}} {{document_link}}&nbsp;&nbsp;&nbsp;{{writeString=owner}}: {{owner}}&nbsp;&nbsp;&nbsp; {{date_updated}}</div><br />
     {{identifierContext=end;name=document_type}}
   </fieldset>
   <fieldset class="divider nolegend">

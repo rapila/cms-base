@@ -105,6 +105,8 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("owner", $this->oDocument->getUserRelatedByOwnerId()->getUsername());
         $bHasValidUser = true;
       }
+      
+      $oTemplate->replaceIdentifier("date_updated", $this->oDocument->getUpdatedAt('Y-m-d h:m:s'));
       $oTemplate->replaceIdentifier("is_protected", $this->oDocument->getIsProtected());
       $oTemplate->replaceIdentifier("is_protected_checked", ($this->oDocument->getIsProtected() ? ' checked="checked"' : ''), null, Template::NO_HTML_ESCAPE);
 
