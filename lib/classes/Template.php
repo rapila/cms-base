@@ -105,8 +105,8 @@ class Template {
     } else {
       $aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
       $oPath = ResourceFinder::findResourceObject($aPath);
-      if(!$oPath) {
-        throw new Exception("Error in Template construct: Template file ".implode("/", $oPath->getRelativePath())." does not exist");
+      if($oPath === null) {
+        throw new Exception("Error in Template construct: Template file ".implode("/", $aPath+array($sTemplateName.self::$SUFFIX))." does not exist");
       }
       
       if(Settings::getSetting('general', 'template_caching', false)) {
