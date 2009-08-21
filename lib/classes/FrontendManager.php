@@ -175,7 +175,10 @@ class FrontendManager extends Manager {
     if($oCache !== null) {
       $oCache->setContents($this->oTemplate->getSentOutput());
     }
-    ob_flush();
+
+    while(ob_get_level() > 0) {
+      ob_end_flush();
+    }
     FilterModule::getFilters()->handleRequestFinished(array(self::getCurrentPage(), $bIsDynamic, $bIsAjaxRequest, $bIsCached));
   }
 

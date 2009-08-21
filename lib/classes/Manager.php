@@ -121,9 +121,9 @@ abstract class Manager {
   }
   
   public static function listManagers() {
-    $aResult = array_keys(ResourceFinder::findResourceByExpressions(array('classes', "/(\w+)Manager.php/")));
-    foreach($aResult as $iKey => $sValue) {
-      $aResult[$iKey] = substr($sValue, strrpos($sValue, '/')+1, 0-strlen('.php'));
+    $aResult = ResourceFinder::findResourceObjectsByExpressions(array('classes', "/(\w+)Manager.php/"));
+    foreach($aResult as $oResource) {
+      $aResult[$oResource->getRelativePath()] = $oResource->getFileName('.php');
     }
     return $aResult;
   }

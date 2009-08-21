@@ -6,10 +6,10 @@
   <label for="url">{{writeString=url}}</label>
   <input type="text" id="url" name="url" value="{{url}}" /><br />{{writeFlashValue=url}}
   <label for="description">{{writeString=description}}</label>
-  <textarea rows="2" cols="30" name="description" id="description">{{description}}</textarea>{{identifierContext=start;name=owner}}
- {{identifierContext=start;name=owner}}<label>Owner</label>
-  <div style="padding-top:0.3em;">{{owner}}
-  </div>{{identifierContext=end;name=owner}}<br />
+  <textarea rows="2" cols="30" name="description" id="description">{{description}}</textarea><br />
+ {{identifierContext=start;name=updated_by}}<label>&nbsp;</label>
+  <div class="document_info">{{updated_by}} {{updated_at}}
+  </div>{{identifierContext=end;name=updated_by}}<br />
 </fieldset>
 <fieldset class="divider nolegend">
   <label>{{writeString=save}}</label>

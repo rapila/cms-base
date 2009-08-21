@@ -73,11 +73,11 @@ class LinksBackendModule extends BackendModule {
     $oTemplate->replaceIdentifier("url", $this->oLink->getUrl());
     $oTemplate->replaceIdentifier("description", $this->oLink->getDescription());
     
-    if($this->oLink->getOwnerId() > 0 && $this->oLink->getUserRelatedByOwnerId() !== null) {
-      $oTemplate->replaceIdentifier("owner", $this->oLink->getUserRelatedByOwnerId()->getUsername());
+    if($this->oLink->getUserRelatedByOwnerId() !== null) {
+      $oTemplate->replaceIdentifier("updated_by", $this->oLink->getUserRelatedByUpdatedBy()->getUsername());
     }
     if($this->oLink->getUpdatedAt() != null) {
-      $oTemplate->replaceIdentifier("created_at", $this->oLink->getUpdatedAt());
+      $oTemplate->replaceIdentifier("updated_at", $this->oLink->getUpdatedAt('Y-m-d h:m:s'));
     }
     
     $oTemplate->replaceIdentifier("action", $this->link($this->oLink->getId()));    

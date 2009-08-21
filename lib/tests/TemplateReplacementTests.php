@@ -241,9 +241,54 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
+    $oTemplate->replaceIdentifier('test', '<html>&so</html><a href="test">Hallo', null, Template::STRIP_TAGS|Template::NO_HTML_ESCAPE);
+    
+    $this->assertSame("&soHallo<html>&so", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierFlagStripTags3() {
+    $sTemplateText = <<<EOT
+{{test}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    
     $oTemplate->replaceIdentifier('test', '<html>&so</html><a href="test">Hallo', null, Template::STRIP_TAGS);
     
-    $this->assertSame("&amp;soHallo<html>&so", $oTemplate->render());
+    $this->assertSame("&lt;html&gt;&amp;so&lt;/html&gt;&lt;a href=&quot;test&quot;&gt;Hallo<html>&so", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierFlagStripTags1InlineFlag() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=STRIP_TAGS}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oSubTemplate = new Template($sTemplateText, null, true);
+    
+    $oTemplate->replaceIdentifier('test', $oSubTemplate);
+    
+    $this->assertSame("&so<html>&so", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierFlagStripTags2InlineFlag() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=NO_HTML_ESCAPE}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    
+    $oTemplate->replaceIdentifier('test', '<html>&so</html><a href="test">Hallo', null, Template::STRIP_TAGS);
+    
+    $this->assertSame("&soHallo<html>&so", $oTemplate->render());
+  }
+  
+  public function testReplaceIdentifierFlagStripTags3InlineFlag() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=STRIP_TAGS}}<html>&so
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    
+    $oTemplate->replaceIdentifier('test', '<html>&so</html><a href="test">Hallo');
+    
+    $this->assertSame("&lt;html&gt;&amp;so&lt;/html&gt;&lt;a href=&quot;test&quot;&gt;Hallo<html>&so", $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagNoIdentifierValueReplacement() {

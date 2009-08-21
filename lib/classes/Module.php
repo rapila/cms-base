@@ -100,10 +100,9 @@ abstract class Module {
     
       //Folders
       $aModuleMetadata['folders'] = array();
-      $aFolders = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, $sType, $sName, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
-      foreach($aFolders as $sRelativeFolderPath => $sAbsoluteFolderPath) {
-        $sFolderName = explode("/", $sRelativeFolderPath);
-        $aModuleMetadata['folders'][] = $sFolderName[count($sFolderName)-1];
+      $aFolders = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, $sType, $sName, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
+      foreach($aFolders as $oFolder) {
+        $aModuleMetadata['folders'][] = $oFolder->getFileName();
       }
     
       //Module-info
@@ -162,11 +161,10 @@ abstract class Module {
   
   public static function listModuleTypes() {
     if(self::$MODULE_TYPE_LIST === null) {
-      $aPaths = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
+      $aPaths = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
       self::$MODULE_TYPE_LIST = array();
-      foreach($aPaths as $sPath => $aAbsolutePath) {
-        $aPathParts = explode("/", $sPath);
-        self::$MODULE_TYPE_LIST[] = $aPathParts[count($aPathParts)-1];
+      foreach($aPaths as $oPath) {
+        self::$MODULE_TYPE_LIST[] = $oPath->getFileName();
       }
     }
     return self::$MODULE_TYPE_LIST;

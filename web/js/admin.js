@@ -90,21 +90,27 @@ function init_add_right_button() {
 }
 
 function init_toggle_fieldsets() {
-  var togglers = $A(document.getElementsByTagName('legend'));
-  togglers = togglers.findAll(function(toggler) {return Element.hasClassName(toggler, 'toggler')});
-  var toggle_method = function() {
-    legend = this;
-    Element.toggleClassName(this, 'open');
-    var siblings = $A(this.parentNode.childNodes).without(this);
-    siblings.each(function(element_to_be_toggled) {
-      if(element_to_be_toggled.nodeType !== 1) {
+  var togglers = $$('legend.toggler');
+  var switch_elements = function(toggler) {
+    var open = toggler.hasClassName('open');
+    toggler.siblings().each(function(element_to_be_toggled) {
+      if(element_to_be_toggled.tagName.toLowerCase() == 'textarea' && element_to_be_toggled.id.indexOf('richtext_area_') === 0) {
         return;
       }
-      Element.toggle(element_to_be_toggled);
+      if(open)
+        element_to_be_toggled.show();
+      else
+        element_to_be_toggled.hide();
     });
   };
+  var toggle_method = function() {
+    legend = this;
+    this.toggleClassName('open');
+    switch_elements(this);
+  };
   togglers.each(function(toggler) {
-    toggler.onclick = toggle_method;
+    Event.observe(toggler, 'click', toggle_method.bindAsEventListener(toggler));
+    switch_elements(toggler);
   });
 }
 

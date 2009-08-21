@@ -1,6 +1,7 @@
 <?php
 
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/FileResource.php");
 
 class ResourceFinder {
   const SEARCH_MAIN_ONLY = 0;
@@ -40,7 +41,23 @@ class ResourceFinder {
     }
   }
   
-  public static function findResource($mRelativePath, $iFlag = null, $bByExpressions = false, $bFindAll = false) {
+  /**
+  * Finds files which reside inside the CMS’ main direcory. The goal of findResource is to provide a way of accessing all the desired resource from
+  * the most specific location. Files in the site folder override files in the plugins folders which, in turn, override files in the base folder.
+  * The return type varies depending on the given options ($bByExpressions, $bFindAll, $bReturnObjects).
+  * If $bReturnObjects is false, the returned value(s) will be strings containing the files canonical full path on the file system.
+  * $bReturnObjects set to true will return FileResource objects which store much more information and can be used to get to things such as the 
+  * relative path, the directory the relative path was found in, or the frontend path which is used to directly render a file to the user agent.
+  * If $bByExpressions and $bFindAll are set to false, only a single string/object is returned (null if not found). Otherwise, an array is returned.
+  * If $bFindAll is set, the returned array is index-based; if only $bByExpressions is set, the returned array’s keys are the relative paths of the respective files.
+  * @param array|string $mRelativePath relative path to search for in base, plugins or site folders. This can be an array or a string of /-separated directory/file names.
+  * @param int $iFlag can be one of either ResourceFinder::SEARCH_MAIN_ONLY, ResourceFinder::SEARCH_BASE_ONLY, ResourceFinder::SEARCH_SITE_ONLY, ResourceFinder::SEARCH_PLUGINS_ONLY, ResourceFinder::SEARCH_BASE_FIRST, ResourceFinder::SEARCH_SITE_FIRST, ResourceFinder::SEARCH_PLUGINS_FIRST. The *_ONLY constants are just for convenience since they only find files in specific directories, you might just as well do file_exists(MAIN_DIR.'my/dir').
+  * @param boolean $bByExpressions If set, $mRelativePath becomes not a fixed set of names but an array of regular expressions to evaluate against possible matches. This is slow when used on large directories. There are the following special values which can be used in the expression: ${parent_name} and ${parent_name_camelized} which do exactly what you would expect. For convenience, any array item not starting with a slash is considered to be a regular file name. This means that a slash is the only accepted delimiter.
+  * @param boolean $bFindAll If set, all matching files will be returned even if they have the same relative path inside different instance prefixes. Note: when used in conjunction with $bByExpressions, the return value becomes an index-based array since there could be duplicate relative urls.
+  * @param boolean $bReturnObjects If set, all returned paths become FileResource objects. This is much cheaper than calling new FileResource() on the returned value(s) because a) FileResource objects are used internally by findResource and b) the additional information maintained by FileResource was added when it was already known and does not have to be deducted.
+  * @return mixed
+  */
+  public static function findResource($mRelativePath, $iFlag = null, $bByExpressions = false, $bFindAll = false, $bReturnObjects = false) {
     $bWaitForAll = $bByExpressions && $bFindAll;
     if($bByExpressions) {
       $bFindAll = true;
@@ -48,44 +65,99 @@ class ResourceFinder {
     self::processArguments($mRelativePath, $iFlag, $bFindAll);
     $mResult = array();
     foreach(self::buildSearchPathList($iFlag) as $sSearchPath) {
-      $sPath = null;
+      $sInstancePrefix = substr(realpath($sSearchPath), strlen(realpath(MAIN_DIR))+1);
+      if($sInstancePrefix === false) {
+        $sInstancePrefix = '';
+      }
+      $mPath = null;
       if($bByExpressions) {
-        $sPath = self::findInPathByExpressions($mRelativePath, $sSearchPath);
+        $mPath = self::findInPathByExpressions($mRelativePath, $sSearchPath, $sInstancePrefix);
         if($bWaitForAll) {
-          $sPath = array_values($sPath);
+          $mPath = array_values($mPath);
         }
       } else {
-        $sPath = self::findInPath($mRelativePath, $sSearchPath);
+        $mPath = self::findInPath($mRelativePath, $sSearchPath, $sInstancePrefix);
       }
-      if($sPath) {
+      if($mPath) {
         if($bFindAll) {
           if(!$bByExpressions) {
-            $sPath = array($sPath);
+            $mPath = array($mPath);
           }
-          $mResult = array_merge($mResult, $sPath);
+          $mResult = array_merge($mResult, $mPath);
         } else {
-          return $sPath;
+          return self::returnFromFindResource($mPath, $bReturnObjects);
         }
       }
     }
     
     if($bFindAll) {
-      return $mResult;
+      return self::returnFromFindResource($mResult, $bReturnObjects);
     }
     
     return null;
   }
   
-  public static function findAllResources($mRelativePath, $iFlag = null, $bByExpressions = false) {
-    return self::findResource($mRelativePath, $iFlag, $bByExpressions, true);
+  private static function returnFromFindResource(&$mResult, $bReturnObjects) {
+    if($bReturnObjects) {
+      return $mResult;
+    }
+    if(is_array($mResult)) {
+      foreach($mResult as $mKey => $oValue) {
+        $mResult[$mKey] = $oValue->getFullPath();
+      }
+      return $mResult;
+    }
+    return $mResult->getFullPath();
   }
   
-  public static function findResourceByExpressions($aExpressions, $iFlag = null, $bFindAll = false) {
-    return self::findResource($aExpressions, $iFlag, true, $bFindAll);
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bFindAll set.
+  */
+  public static function findAllResources($mRelativePath, $iFlag = null) {
+    return self::findResource($mRelativePath, $iFlag, false, true, false);
   }
   
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions set.
+  */
+  public static function findResourceByExpressions($aExpressions, $iFlag = null) {
+    return self::findResource($aExpressions, $iFlag, true, false, false);
+  }
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bFindAll and $bByExpressions set.
+  */
   public static function findAllResourcesByExpressions($aExpressions, $iFlag = null) {
-    return self::findResourceByExpressions($aExpressions, $iFlag, true);
+    return self::findResource($aExpressions, $iFlag, true, true, false);
+  }
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bReturnObjects set.
+  */
+  public static function findResourceObject($mRelativePath, $iFlag = null) {
+    return self::findResource($mRelativePath, $iFlag, false, false, true);
+  }
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bFindAll and $bReturnObjects set.
+  */
+  public static function findAllResourceObjects($mRelativePath, $iFlag = null) {
+    return self::findResource($mRelativePath, $iFlag, false, true, true);
+  }
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions and $bReturnObjects set.
+  */
+  public static function findResourceObjectByExpressions($aExpressions, $iFlag = null) {
+    return self::findResource($aExpressions, $iFlag, true, false, true);
+  }
+  
+  /**
+  * Shorthand for {@link ResourceFinder::findResource()} with $bFindAll, $bByExpressions and $bReturnObjects set.
+  */
+  public static function findAllResourceObjectsByExpressions($aExpressions, $iFlag = null) {
+    return self::findResource($aExpressions, $iFlag, true, true, true);
   }
   
   public static function buildSearchPathList($iFlag) {
@@ -114,7 +186,7 @@ class ResourceFinder {
     return $aResult;
   }
   
-  private static function findInPath($aPath, $sPath) {
+  private static function findInPath($aPath, $sPath, $sInstancePrefix) {
     foreach($aPath as $sPathElement) {
       if(file_exists("$sPath/$sPathElement")) {
         $sPath .= "/$sPathElement";
@@ -122,10 +194,10 @@ class ResourceFinder {
         return null;
       }
     }
-    return $sPath;
+    return new FileResource($sPath, $sInstancePrefix, implode('/', $aPath));
   }
   
-  private static function findInPathByExpressions($aExpressions, $sPath, $sRelativePath = null) {
+  private static function findInPathByExpressions($aExpressions, $sPath, $sInstancePrefix, $sRelativePath = null) {
     if(count($aExpressions) === 0) {
       return array();
     }
@@ -144,23 +216,38 @@ class ResourceFinder {
     }
     
     if(!StringUtil::startsWith($sPathExpression, "/")) {
-      $sPathExpression = '/^'.preg_quote($sPathExpression, '/').'$/';
-    }
-    
-    foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-      if(preg_match($sPathExpression, $sFileName) !== 0) {
-        $sNextRelativePath = $sFileName;
-        if($sRelativePath !== null) {
-          $sNextRelativePath = "$sRelativePath/$sFileName";
-        }
-        if(count($aExpressions) > 1) {
-          $aNewResult = self::findInPathByExpressions(array_slice($aExpressions, 1), $sFilePath, $sNextRelativePath);
-          $aResult = array_merge($aResult, $aNewResult);
-        } else {
-          $aResult[$sNextRelativePath] = $sFilePath;
+      //Take the shortcut when only dealing with a static file name
+      $sFilePath = "$sPath/$sPathExpression";
+      if($sRelativePath === null) {
+        $sNextRelativePath = $sPathExpression;
+      } else {
+        $sNextRelativePath = "$sRelativePath/$sPathExpression";
+      }
+      if(!file_exists($sFilePath)) {
+        return array();
+      }
+      if(count($aExpressions) > 1) {
+        return self::findInPathByExpressions(array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sNextRelativePath);
+      } else {
+        return array($sNextRelativePath => new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath));
+      }
+    } else {
+      foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
+        if(preg_match($sPathExpression, $sFileName) !== 0) {
+          $sNextRelativePath = $sFileName;
+          if($sRelativePath !== null) {
+            $sNextRelativePath = "$sRelativePath/$sFileName";
+          }
+          if(count($aExpressions) > 1) {
+            $aNewResult = self::findInPathByExpressions(array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sNextRelativePath);
+            $aResult = array_merge($aResult, $aNewResult);
+          } else {
+            $aResult[$sNextRelativePath] = new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath);
+          }
         }
       }
     }
+    
     return $aResult;
   }
   

@@ -67,13 +67,12 @@ class Template {
   /**
    * __construct()
    * @param string template name
-   * @param string/array template dir path
+   * @param string|array template dir path
    * @param boolean template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
    * @param boolean template will output directly to stream? only one the main template should have set this to true
    * @param string target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding
    * @param string root template name, used internally when including subtemplates, default=null
-   * @param integer default flags, will be ORed to the flags you provide when calling replaceIdentifier() and replaceIdentifierMultiple()
-   * @return void
+   * @param int default flags, will be ORed to the flags you provide when calling {@link replaceIdentifier()} and {@link replaceIdentifierMultiple()}
    */
   public function __construct($sTemplateName, $mPath=null, $bTemplateIsTextOnly=false, $bDirectOutput=false, $sTargetEncoding=null, $sRootTemplateName=null, $iDefaultFlags = 0) {
     if($sTargetEncoding === null) {
@@ -105,18 +104,18 @@ class Template {
       $sTemplateText = $sTemplateName;
     } else {
       $aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
-      $sPath = ResourceFinder::findResource($aPath);
-      if(!$sPath) {
-        throw new Exception("Error in Template construct: Template file ".implode("/", $aPath)." does not exist");
+      $oPath = ResourceFinder::findResourceObject($aPath);
+      if(!$oPath) {
+        throw new Exception("Error in Template construct: Template file ".implode("/", $oPath->getRelativePath())." does not exist");
       }
       
       if(Settings::getSetting('general', 'template_caching', false)) {
-        $oCache = new Cache($sPath."_".Session::language(), DIRNAME_TEMPLATES);
-        $bCacheIsCurrent = $oCache->cacheFileExists() && !$oCache->isOutdated($sPath);
+        $oCache = new Cache($oPath->getRelativePath()."_".Session::language(), DIRNAME_TEMPLATES);
+        $bCacheIsCurrent = $oCache->cacheFileExists() && !$oCache->isOutdated($oPath->getFullPath());
       }
       
       if(!$bCacheIsCurrent) {
-        $sTemplateText = file_get_contents($sPath);
+        $sTemplateText = file_get_contents($oPath->getFullPath());
       }
       
       $mPath = $aPath;
@@ -355,8 +354,7 @@ class Template {
     throw new Exception("Template $this->sTemplateName not well-formed: no matching close tag found for ".$oIf->__toString());
   }
   
-  public function setDefaultFlags($iDefaultFlags)
-  {
+  public function setDefaultFlags($iDefaultFlags) {
       $this->iDefaultFlags = $iDefaultFlags;
   }
   
@@ -797,6 +795,7 @@ class Template {
     }
     while(isset($this->aTemplateContents[0]) && !$this->aTemplateContents[0] instanceof TemplateIdentifier) {
       print $this->aTemplateContents[0];
+      ob_flush();
       $this->sSentOutput .= $this->aTemplateContents[0];
       $this->replaceAt(0);
     }
