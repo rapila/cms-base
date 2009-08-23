@@ -192,12 +192,12 @@ class ResourceIncluder {
     }
     
     //Handle duplicate includes
-    if(isset($this->aIncludedResources[self::RESOURCE_TYPE_JS][$sResourceIdentifier])) {
-      $aResourceInfo = $this->aIncludedResources[self::RESOURCE_TYPE_JS][$sResourceIdentifier];
+    if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+      $aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
       if(version_compare($aResourceInfo['version'], $sLibraryVersion, '<>')) {
         throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName already included with different version");
       }
-      if(!$aResourceInfo['use_compression'] && $bUseCompression) {
+      if((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression)) {
         return;
       }
     }
