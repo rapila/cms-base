@@ -194,4 +194,36 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
     $oIncluder->addResource('tiny_mce/tiny_mce.js');
     $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
   }
+  
+  public function testInlineJs() {
+    $oIncluder = ResourceIncluder::defaultIncluder();
+    $sOuterTemplate = <<<EOT
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+  {{content}}
+//--><!]]>
+</script>
+
+EOT;
+
+    $oTemplate = new Template('settings.js', array(DIRNAME_MODULES, 'backend', 'settings', 'templates'));
+    $oIncluder->addCustomJs($oTemplate);
+    $this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
+  }
+  
+  public function testInlineCss() {
+    $oIncluder = ResourceIncluder::defaultIncluder();
+    $sOuterTemplate = <<<EOT
+<style type="text/css">
+<!--/*--><![CDATA[/*><!--*/
+	  {{content}}
+/*]]>*/-->
+</style>
+
+EOT;
+
+    $oTemplate = new Template('settings.css', array(DIRNAME_MODULES, 'backend', 'settings', 'templates'));
+    $oIncluder->addCustomCss($oTemplate);
+    $this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
+  }
 }

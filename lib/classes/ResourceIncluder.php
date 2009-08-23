@@ -9,6 +9,7 @@ class ResourceIncluder {
   const LIBRARY_VERSION_NEWEST = 'newest';
   
   const RESOURCE_PREFIX_LIBRARY = 'lib_';
+  const RESOURCE_PREFIX_CUSTOM = 'cust_';
   const RESOURCE_PREFIX_INTERNAL = 'int_';
   const RESOURCE_PREFIX_EXTERNAL = 'ext_';
   
@@ -49,6 +50,28 @@ class ResourceIncluder {
   
   private function __construct() {
     $this->clearIncludedResources();
+  }
+  
+  private function findResourceTypeForLocation($sLocation) {
+    if(strrpos($sLocation, '#') !== false) {
+      $sLocation = substr($sLocation, 0, strrpos($sLocation, '#'));
+    }
+    if(strrpos($sLocation, '?') !== false) {
+      $sLocation = substr($sLocation, 0, strrpos($sLocation, '?'));
+    }
+    if(strrpos($sLocation, '.') === false) {
+      throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type given for indecisive $sLocation");
+    }
+    $sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
+    if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg' || $sExtension === 'ico') {
+      return self::RESOURCE_TYPE_IMAGE;
+    } else if ($sExtension === 'css') {
+      return self::RESOURCE_TYPE_CSS;
+    } else if ($sExtension === 'js') {
+      return self::RESOURCE_TYPE_JS;
+    } else {
+      throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type found for $sLocation");
+    }
   }
   
   public function addResource($mLocation, $sResourceType = null, $sIdentifier = null, $aExtraInfo = array()) {
@@ -115,28 +138,6 @@ class ResourceIncluder {
     $this->aIncludedResources[$sResourceType][$sIdentifier] = $aExtraInfo;
   }
   
-  private function findResourceTypeForLocation($sLocation) {
-    if(strrpos($sLocation, '#') !== false) {
-      $sLocation = substr($sLocation, 0, strrpos($sLocation, '#'));
-    }
-    if(strrpos($sLocation, '?') !== false) {
-      $sLocation = substr($sLocation, 0, strrpos($sLocation, '?'));
-    }
-    if(strrpos($sLocation, '.') === false) {
-      throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type given for indecisive $sLocation");
-    }
-    $sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
-    if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg' || $sExtension === 'ico') {
-      return self::RESOURCE_TYPE_IMAGE;
-    } else if ($sExtension === 'css') {
-      return self::RESOURCE_TYPE_CSS;
-    } else if ($sExtension === 'js') {
-      return self::RESOURCE_TYPE_JS;
-    } else {
-      throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type found for $sLocation");
-    }
-  }
-  
   public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = true, $bInlcudeDependencies = true, $bUseSsl = false) {
     if(!is_string($sLibraryVersion)) {
       $sLibraryVersion = "$sLibraryVersion";
@@ -174,6 +175,22 @@ class ResourceIncluder {
       $sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
     }
     $this->addResource($sLibraryUrl, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression));
+  }
+  
+  public function addCustomResource($sResourceType, $aResourceInfo) {
+    $sIdentifier = self::RESOURCE_PREFIX_CUSTOM.md5(serialize($aResourceInfo));
+    if(isset($this->aIncludedResources[$sResourceType][$sIdentifier])) {
+      unset($this->aIncludedResources[$sResourceType][$sIdentifier]);
+    }
+    $this->aIncludedResources[$sResourceType][$sIdentifier] = $aResourceInfo;
+  }
+  
+  public function addCustomJs($mCustomJs) {
+    $this->addCustomResource(self::RESOURCE_TYPE_JS, array('template' => 'inline_js', 'content' => $mCustomJs));
+  }
+  
+  public function addCustomCss($mCustomJs) {
+    $this->addCustomResource(self::RESOURCE_TYPE_CSS, array('template' => 'inline_css', 'content' => $mCustomJs));
   }
 
   public function getIncludedResources() {
