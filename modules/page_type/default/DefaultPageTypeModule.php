@@ -167,7 +167,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
     
     $oTemplate->replaceIdentifier("title", $this->oPage->getPageTitle(BackendManager::getContentEditLanguage()));
-    $this->backendCustomJs = $this->constructTemplate("show.js")->render();
+    $this->backendCustomJs = $this->constructTemplate("show.js");
 
     if($bMayEditContents) {
       $oPageTemplate = $this->oPage->getTemplate();

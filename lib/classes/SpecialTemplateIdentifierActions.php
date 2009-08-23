@@ -167,11 +167,42 @@ class SpecialTemplateIdentifierActions {
     return $this->oTemplate->getTemplateName();
   }
   
+  public function addResourceInclude($oIdentifier) {
+    $mLocation = $oIdentifier->getValue();
+    $oResourceIncluder = $oIdentifier->hasParameter('name') ? ResourceIncluder::namedIncluder($oIdentifier->getParameter('name')) : ResourceIncluder::defaultIncluder();
+    $iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
+    if($oIdentifier->hasParameter('library')) {
+      $oResourceIncluder->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
+      return null;
+    }
+    if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
+      $mLocation = explode('/', $mLocation);
+    }
+    $aParams = $oIdentifier->getParameters();
+    $aParams['from_template'] = true;
+    
+    $sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
+    $sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
+    
+    $oResourceIncluder->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition);
+    return null;
+  }
+  
+  public function writeResourceIncludes($oTemplateIdentifier) {
+    $oResourceIncluder = null;
+    if($oTemplateIdentifier->hasParameter('name')) {
+      $oResourceIncluder = ResourceIncluder::namedIncluder($oTemplateIdentifier->getParameter('name'));
+    } else {
+      $oResourceIncluder = ResourceIncluder::defaultIncluder($oTemplateIdentifier->getParameter('name'));
+    }
+    return $oResourceIncluder->getIncludes();
+  }
+  
   public static function getSpecialIdentifierNames() {
     return array_diff(get_class_methods('SpecialTemplateIdentifierActions'), array('getSpecialIdentifierNames', 'getAlwaysLastNames', '__construct'));
   }
   
   public static function getAlwaysLastNames() {
-      return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString');
+    return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes');
   }
 }

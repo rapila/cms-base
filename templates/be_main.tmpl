@@ -1,20 +1,5 @@
 {{includeTemplate=includes/be_top}}
-    <link rel="stylesheet" rev="stylesheet" href="{{writeConstantValue=INT_CSS_DIR_FE}}/admin.css" />
-    <link rel="stylesheet" rev="stylesheet" href="{{writeConstantValue=INT_CSS_DIR_FE}}/datepicker.css" />
-    <link rel="stylesheet" rev="stylesheet" href="{{writeConstantValue=INT_CSS_DIR_FE}}/pagetree.css" />{{identifierContext=start;name=custom_backend_css}}
-    <link rel="stylesheet" rev="stylesheet" href="{{writeConstantValue=EXT_CSS_DIR_FE}}/{{custom_backend_css}}.css" />{{identifierContext=end;name=custom_backend_css}}
-    <link rel="stylesheet" rev="stylesheet" media="print" href="{{writeConstantValue=INT_CSS_DIR_FE}}/print.css" />
-    {{includeTemplate=includes/be_js_constants}}
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/prototype.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/effects.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/dragdrop.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/datepicker.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/tiny_mce/tiny_mce_src.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/admin.js"></script>
-    <script type="text/javascript" src="{{writeConstantValue=INT_JS_DIR_FE}}/pagetree.js"></script>
-    <!-- compliance patch for microsoft browsers -->
-    <!--[if lt IE 7]>
-    <script src="{{writeConstantValue=INT_JS_DIR_FE}}/ie7/ie7-standard-p.js" type="text/javascript">
-    </script>
-    <![endif]-->
-{{includeTemplate=includes/be_bottom}}
+
+  {{includeTemplate=includes/be_js_constants}}
+{{writeResourceIncludes}}{{addResourceInclude=admin.css}}{{addResourceInclude=datepicker.css}}{{addResourceInclude=pagetree.css}}{{addResourceInclude=print.css;media=print}}{{addResourceInclude=scriptaculous?load=effects,dragdrop;library=1.8;priority=first}}{{addResourceInclude=datepicker.js}}{{addResourceInclude=tiny_mce/tiny_mce.js;priority=first}}{{addResourceInclude=admin.js}}{{addResourceInclude=pagetree.js}}
+  {{includeTemplate=includes/be_bottom}}

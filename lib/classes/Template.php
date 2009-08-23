@@ -44,7 +44,7 @@ class Template {
   //Holds all of the template's contents as either strings or TemplateIdentifier objects
   private $aTemplateContents;
   
-  //If set to false, identifiers will be re-constructed and inserted into the final output
+  //If set to false, identifiers will be inserted into the final output
   public $bKillIdentifiersBeforeRender = true;
   
   //If set to true, the output will be rendered on the fly
@@ -60,8 +60,10 @@ class Template {
   
   public $iDefaultFlags = 0;
   
+  //The template’s internal encoding
   private $sEncoding = "utf-8";
   
+  //Instance to the SpecialTemplateIdentifierActions for better resource management
   private $oSpecialTemplateIdentifierActions;
   
   /**
