@@ -192,7 +192,7 @@ class ResourceIncluder {
     }
     
     //Handle duplicate includes
-    if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+    if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
       $aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
       if(version_compare($aResourceInfo['version'], $sLibraryVersion, '<>')) {
         throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName already included with different version");

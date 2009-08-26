@@ -271,8 +271,12 @@ class BackendManager extends Manager {
     }
     $this->oTemplate->replaceIdentifier("detail", $this->oBackendModule->getDetail(), null, Template::NO_HTML_ESCAPE);
     $oResourceIncluder = ResourceIncluder::defaultIncluder();
-    $oResourceIncluder->addCustomJs($this->oBackendModule->customJs());
-    $oResourceIncluder->addCustomCss($this->oBackendModule->customCss());
+    if($this->oBackendModule->customJs()) {
+      $oResourceIncluder->addCustomJs($this->oBackendModule->customJs());
+    }
+    if($this->oBackendModule->customCss()) {
+      $oResourceIncluder->addCustomCss($this->oBackendModule->customCss());
+    }
     if(Settings::getSetting('backend', 'custom_backend_css', null) !== null) {
       ResourceIncluder::defaultIncluder()->addResource(Settings::getSetting('backend', 'custom_backend_css', null));
     }
