@@ -123,5 +123,4 @@ abstract class BackendModule extends Module {
   public static function isValidModuleClassName($sName) {
     return StringUtil::endsWith($sName, StringUtil::camelize(self::$MODULE_TYPE, true)."Module");
   }
-} // class BackendModule
-?>
+}

@@ -123,7 +123,7 @@ class DocumentsBackendModule extends BackendModule {
         $oTemplate->replaceIdentifier("document_type_info", '['.$this->oDocument->getDocumentType()->getExtension().' | '.$this->oDocument->getDocumentType()->getMimetype().']');
         if($this->oDocument->isImage()) {
           $oImageTemplate = new Template('<p><img src="{{link}}"/></p>', null, true);
-          $oImageTemplate->replaceIdentifier('link', LinkUtil::link(array("display_document", $this->oDocument->getId()), "FileManager", array("max_width" => 500)));
+          $oImageTemplate->replaceIdentifier('link', LinkUtil::link(array("display_document", $this->oDocument->getId()), "FileManager", array("max_width" => 500, 'timestamp' => time())));
           $oTemplate->replaceIdentifier("image", $oImageTemplate);
         }
         $sDocLink = $this->oDocument->getName() != '' ? '<a href="'.LinkUtil::link(array('display_document', $this->oDocument->getId()), 'FileManager').'" title="anschauen" target="_blank">view</a>' : '';
