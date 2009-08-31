@@ -6,11 +6,11 @@ class BooleanParser
 {
   private $aItems;
 
-  private static $TRUE = "true";
-  private static $FALSE = "false";
-  private static $AND = "&";
-  private static $OR = "|";
-  private static $NOT = "!";
+  const BP_TRUE = "true";
+  const BP_FALSE = "false";
+  const BP_AND = "&";
+  const BP_OR = "|";
+  const BP_NOT = "!";
 
   public function __construct($aItems = null)
   {
@@ -27,7 +27,7 @@ class BooleanParser
 
   public function __set($sName, $sValue)
   {
-    if($sName === self::$TRUE || $sName === self::$FALSE) {
+    if($sName === self::BP_TRUE || $sName === self::BP_FALSE) {
       throw new Exception("Error in BooleanParser->__set: invalid key");
     }
     if(!is_bool($sValue)) {
@@ -81,7 +81,7 @@ class BooleanParser
 
   private function replaceVarsWithBooleanValues($aExpression) {
     foreach($aExpression as $iKey => $sItem) {
-      if($sItem === self::$TRUE || $sItem === self::$FALSE || $sItem === self::$AND || $sItem === self::$OR || $sItem === self::$NOT) {
+      if($sItem === self::BP_TRUE || $sItem === self::BP_FALSE || $sItem === self::BP_AND || $sItem === self::BP_OR || $sItem === self::BP_NOT) {
         continue;
       }
       if(!$this->__isset($sItem)) {
@@ -128,15 +128,15 @@ class BooleanParser
   }
 
   public static function booleanForString($sValue, $bIsReversed=false) {
-    return (($sValue === self::$TRUE) xor $bIsReversed);
+    return (($sValue === self::BP_TRUE) xor $bIsReversed);
   }
 
   public static function stringForBoolean($bValue, $bIsReversed=false) {
-    return ($bValue xor $bIsReversed) ? self::$TRUE : self::$FALSE;
+    return ($bValue xor $bIsReversed) ? self::BP_TRUE : self::BP_FALSE;
   }
 
   private function parseSimpleExpression($sExpression) {
-    $aMatches = preg_split("/(\\".self::$OR."|".self::$NOT."|".self::$AND.")/", $sExpression, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+    $aMatches = preg_split("/(\\".self::BP_OR."|".self::BP_NOT."|".self::BP_AND.")/", $sExpression, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
     return $aMatches;
   }
 
@@ -146,13 +146,13 @@ class BooleanParser
     $bNextIsReversed = false;
     foreach($aExpression as $sExpressionItem) {
       switch($sExpressionItem) {
-        case self::$TRUE:
-        case self::$FALSE:
+        case self::BP_TRUE:
+        case self::BP_FALSE:
           switch($sLastOperator) {
-            case self::$AND:
+            case self::BP_AND:
               $bValue = $bValue && self::booleanForString($sExpressionItem, $bNextIsReversed);
               break;
-            case self::$OR:
+            case self::BP_OR:
               $bValue = $bValue || self::booleanForString($sExpressionItem, $bNextIsReversed);
               break;
             case null:
@@ -161,7 +161,7 @@ class BooleanParser
           }
           $bNextIsReversed = false;
           break;
-        case self::$NOT:
+        case self::BP_NOT:
           $bNextIsReversed = !$bNextIsReversed;
           break;
         default:
