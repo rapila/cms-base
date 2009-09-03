@@ -177,7 +177,7 @@ class Cache {
   
   /**
   * Returns true if, for whatever reason, no data should be written to the cache.
-  * This can be triggered by the general->caching boolean setting in cms.yml
+  * This can be triggered by the general->caching boolean setting in config.yml
   * Caching of config files is always on
   */
   public function cacheIsOffForWriting() {

@@ -62,7 +62,7 @@ class LoginManager extends Manager {
   }
 
   private function renderLogin() {
-    // should be configured in default cms.yml
+    // should be improved or configurable
     $sPreferredBrowser = 'Firefox';
     $sPreferredBrowserVersion = '3.5';
     $sBrowserMessage = null;

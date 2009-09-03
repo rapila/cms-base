@@ -32,7 +32,7 @@ class Navigation {
   /**
    * __constructor()
    * @param string navigation name
-   * each navigation part needs configuration in section called 'navigation' in cms.yml
+   * each navigation part needs configuration in section called 'navigation' in the site/config/config.yml
    * @return void / exception on missing configuration
    */
   public function __construct($mConfig, $sLinkPrefix=null, $sTemplatesDir = null) {

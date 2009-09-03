@@ -1,5 +1,8 @@
 INSTALL
 
+// braucht es dieses file, und wenn. Neu machen.
+
+
 mkdir > name of project
 cd project dir
 
@@ -15,7 +18,7 @@ script mini_cms_update_cms_into_site.sh && mini_cms_clear_cache_and_set_permissi
 whenever you want to update to the latest version do this again.
 do not change anything outside your site folder
 
-projectname/site/config/cms.yml
+projectname/site/config/config.yml
 change to your requirements:
 - connection
 - multilingual
@@ -23,7 +26,7 @@ change to your requirements:
 - domain_holder
 - session_defaults
 
-in cms.yml you can overwrite any parameter that is configured in root/config/cms.yml
+in config.yml you can overwrite any parameter that is configured in base/config/config.yml
 
 Ready for running mini-cms the first time?
 request url
