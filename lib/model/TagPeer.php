@@ -55,5 +55,6 @@ class TagPeer extends BaseTagPeer {
     $oCriteria->addAscendingOrderByColumn(self::NAME);
     return self::doSelect($oCriteria);
   }
+  
 }
 

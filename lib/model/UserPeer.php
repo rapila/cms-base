@@ -182,4 +182,5 @@ class UserPeer extends BaseUserPeer {
     }
     return self::doSelectOne($oCriteria);
   }
+  
 }

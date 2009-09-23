@@ -26,4 +26,5 @@ class Tag extends BaseTag {
   public function reloadInstances() {
     $this->collTagInstances=null;
   }
-} // Tag
+}
+

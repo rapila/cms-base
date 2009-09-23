@@ -3,7 +3,10 @@
  * @package manager
  */
 class GotoManager extends Manager {
-    
+  
+  /**
+  * Redirects to a page with the given id
+  */
   public function __construct() {
     parent::__construct();
     $oPage = PagePeer::retrieveByPk(Manager::usePath());
@@ -11,7 +14,7 @@ class GotoManager extends Manager {
   }
   
   /**
-   * render()
+   * empty
    */
   public function render() {}
 }

@@ -66,4 +66,5 @@ class TagInstancePeer extends BaseTagInstancePeer {
     }
     return self::doSelect($oCriteria);
   }
+  
 }

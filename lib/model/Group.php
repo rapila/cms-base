@@ -93,4 +93,5 @@ class Group extends BaseGroup {
     return $this->countUserGroups($oCriteria) > 0;
   }
 
-} // Group
+}
+

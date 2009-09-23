@@ -21,10 +21,15 @@ class LoginFrontendModule extends DynamicFrontendModule {
   public function renderFrontend($sAction = 'login') {
     $aOptions = @unserialize($this->getData());
     if(isset($aOptions['login_type']) && $aOptions['login_type'] === 'logout_link') {
-      $this->renderLogout();
+      return $this->renderLogout();
     }
     $sLoginType = isset($aOptions['login_type']) ? $aOptions['login_type'] : 'login_simple';
     if(Session::getSession()->getUser()) {
+      $oPage = $this->oPage;
+      if(Session::getSession()->hasAttribute('login_referrer_page')) {
+        $oPage = Session::getSession()->getAttribute('login_referrer_page');
+        Session::getSession()->resetAttribute('login_referrer_page');
+      }
       if(!$this->oPage->getIsProtected() || Session::getSession()->getUser()->mayViewPage($this->oPage)) {
         $oTemplate = $this->constructTemplate('logout');
         $oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
@@ -33,7 +38,6 @@ class LoginFrontendModule extends DynamicFrontendModule {
       } else {
         $oFlash = Flash::getFlash();
         $oFlash->addMessage('login.logged_in_no_access');
-        $oFlash->finishReporting();
       }
     }
     $oTemplate = $this->constructTemplate('login');

@@ -33,8 +33,6 @@ domain_holder:
 
 backend:
   title: 'Mini-CMS Admin — {{module_name}}'
-  # custom css file in site/web/css for site specific changes
-  custom_backend_css: null 
   inherit_children_enable: true
   delete_pagetree_enable: true
   page_properties_allow: false
@@ -58,7 +56,6 @@ backend:
 frontend:
   title: 'Mini-CMS | Frontend Title'
   main_template: general
-  inherit_contents: false
 #possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
   doctype: strict
   protect_email_addresses: false

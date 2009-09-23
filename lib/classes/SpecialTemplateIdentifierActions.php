@@ -7,11 +7,19 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function writeSessionAttribute($oTemplateIdentifier) {
-    return Session::getSession()->getAttribute($oTemplateIdentifier->getValue());
+    $sValue = Session::getSession()->getAttribute($oTemplateIdentifier->getValue());
+    if($oTemplateIdentifier->hasParameter('reset')) {
+      Session::getSession()->resetAttribute($oTemplateIdentifier->getValue());
+    }
+    return $sValue;
   }
   
   public function writeString($oTemplateIdentifier) {
-    return StringPeer::getString($oTemplateIdentifier->getValue(), null, null, null, true, $this->oTemplate->iDefaultFlags);
+    $sDefaultValue = null;
+    if($oTemplateIdentifier->hasParameter('defaultValue')) {
+      $sDefaultValue = $oTemplateIdentifier->getParameter('defaultValue');
+    }
+    return StringPeer::getString($oTemplateIdentifier->getValue(), null, $sDefaultValue, null, true, $this->oTemplate->iDefaultFlags);
   }
   
   public function writeParameterizedString($oTemplateIdentifier) {
@@ -183,8 +191,9 @@ class SpecialTemplateIdentifierActions {
     
     $sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
     $sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
+    $bIncludeAll = $oIdentifier->hasParameter('include_all');
     
-    $oResourceIncluder->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition);
+    $oResourceIncluder->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
     return null;
   }
   

@@ -144,4 +144,6 @@ class User extends BaseUser {
     }
     return false;
   }
-} // User
+  
+}
+

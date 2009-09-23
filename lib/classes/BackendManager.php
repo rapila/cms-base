@@ -277,9 +277,6 @@ class BackendManager extends Manager {
     if($this->oBackendModule->customCss()) {
       $oResourceIncluder->addCustomCss($this->oBackendModule->customCss());
     }
-    if(Settings::getSetting('backend', 'custom_backend_css', null) !== null) {
-      ResourceIncluder::defaultIncluder()->addResource(Settings::getSetting('backend', 'custom_backend_css', null));
-    }
     $this->fillPanels();
   }
   

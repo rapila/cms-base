@@ -13,10 +13,10 @@
 class LinkPeer extends BaseLinkPeer {
   
   private static $aLinkProtocols = array('http'  => 'http://', 
-                                        'https' => 'https://', 
-                                        'ftp'   => 'ftp://', 
-                                        'ftps'  => 'ftps://', 
-                                        'mailto'=> 'mailto');
+                                         'https' => 'https://', 
+                                         'ftp'   => 'ftp://', 
+                                         'ftps'  => 'ftps://', 
+                                         'mailto'=> 'mailto');
   
   public static function getLinksSorted($sOrderField='NAME', $sSortOrder='ASC') {
     $oCriteria = new Criteria();

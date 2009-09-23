@@ -49,7 +49,7 @@ class MysqlDumpExporterBackendModule extends BackendModule {
     $sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/";
     $oTemplate->replaceIdentifier("save_dir", $sFilePath);
     $aDbConfig = $this->getDbConfig();
-    $oTemplate->replaceIdentifier("dump_name", "{$aDbConfig['database']}@{$aDbConfig['host']}-".date('Ymd').".sql");
+    $oTemplate->replaceIdentifier("dump_name", "{$aDbConfig['database']}@{$aDbConfig['host']}-".date('Ymd-Hi').".sql");
     exec('which mysqldump', $sOutput, $iCode);
     if($iCode !== 0) {
       $sOutput = 'no mysqldump in '.exec('echo $PATH');

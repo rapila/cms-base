@@ -16,4 +16,6 @@ class String extends BaseString {
   public function getOriginalText() {
     return parent::getText();
   }
-} // String
+  
+}
+

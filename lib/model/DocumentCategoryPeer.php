@@ -7,7 +7,6 @@
   include_once 'model/DocumentCategory.php';
 
 /**
- * Skeleton subclass for performing query and update operations on the 'document_categories' table.
  * @package model
  */	
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {

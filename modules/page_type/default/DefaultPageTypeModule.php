@@ -39,11 +39,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       return $oTemplate;
     }
     
-    $bInheritContainer = Settings::getSetting("frontend", "inherit_contents", false);
-    $sExpectedSetting = BooleanParser::stringForBoolean(!$bInheritContainer);
-    if($oTemplateIdentifier->getParameter("inherit") === $sExpectedSetting) {
-      $bInheritContainer = !$bInheritContainer;
-    }
+    $bInheritContainer = BooleanParser::booleanForString($oTemplateIdentifier->getParameter("inherit"));
     $sContainerName = $oTemplateIdentifier->getValue();
     $aPageObjects = $this->oPage->getObjectsForContainer($sContainerName);
     if(count($aPageObjects) === 0 && $bInheritContainer) {
@@ -181,10 +177,21 @@ class DefaultPageTypeModule extends PageTypeModule {
         }
         $sContainerName = $oContainer->getValue();
         $oContainerTemplate = $this->constructTemplate("content_container");
-        $oContainerTemplate->replaceIdentifier("inherit_info", $oContainer->getParameter('inherit') ? StringPeer::getString('container.inherit_message') : null);
+        
+        $aObjects = $this->oPage->getObjectsForContainer($sContainerName);
+        $bHasNoObjects = count($aObjects) === 0;
+        
+        $oInheritedFrom = null;
+        if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
+          $oInheritedFrom = $this->oPage;
+          $iInheritedObjectCount = 0;
+          while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
+            $iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
+          }
+        }
+        $oContainerTemplate->replaceIdentifier("inherit_info", $oInheritedFrom !== null ? StringPeer::getString('container.inherit_message', null, null, array('pathname' => $oInheritedFrom->getName()), true) : null);
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         $oContainerTemplate->replaceIdentifier("new_link", $this->backendLink(array($this->oPage->getId(), "edit", $sContainerName)));
-      
         $aContentModuleNames = FrontendModule::listContentModules();
         $aAllowedItems = array();
         if($oContainer->hasParameter("allowed_modules")) {
@@ -209,8 +216,6 @@ class DefaultPageTypeModule extends PageTypeModule {
         $oContainerTemplate->replaceIdentifier("module_name_options", TagWriter::optionsFromArray($aAllowedItems, null, null));
         $oContainerTemplate->replaceIdentifier("container_name", $sContainerName);
         
-        $aObjects = $this->oPage->getObjectsForContainer($sContainerName);
-        $bHasNoObjects = count($aObjects) === 0;
         foreach($aObjects as $iCount => $oObject) {
           $oObjectTemplate = $this->constructTemplate("content_object");
           if($iCount === 0) {

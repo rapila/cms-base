@@ -1,6 +1,9 @@
 <?php
 require_once 'model/om/BasePage.php';
- 
+
+/**
+ * @package model
+ */	 
 class Page extends BasePage {  
   
   const DELETE_NOT_ALLOWED_CODE = 11;
@@ -8,6 +11,8 @@ class Page extends BasePage {
   
   private $bIsActive = null;
   private $bIsRoot = null;
+  
+  private $aFullPathArray = null;
   
   public function getChildByName($sName) {
     $aChildren = $this->getChildren();
@@ -411,13 +416,22 @@ class Page extends BasePage {
   public function getTemplate($bDirectOutput = false) {
     return new Template($this->getTemplateNameUsed(), null, false, $bDirectOutput);
   }
-
-  public function getObjectsForContainer($sContainerName) {
+  
+  public function getObjectsForContainerCriteria($sContainerName) {
     $oCrit = new Criteria();
     $oCrit->add(ContentObjectPeer::CONTAINER_NAME, $sContainerName);
+    return $oCrit;
+  }
+  
+  public function getObjectsForContainer($sContainerName) {
+    $oCrit = $this->getObjectsForContainerCriteria($sContainerName);
     $oCrit->addAscendingOrderByColumn(ContentObjectPeer::SORT);
     $oCrit->addAscendingOrderByColumn(ContentObjectPeer::ID);
     return $this->getContentObjects($oCrit);
+  }
+
+  public function countObjectsForContainer($sContainerName) {
+    return $this->countContentObjects($this->getObjectsForContainerCriteria($sContainerName));
   }
 
   public function getFirstChild() {
@@ -440,13 +454,15 @@ class Page extends BasePage {
   }
 
   public function getFullPathArray() {
-    $aResult = array();
-    $oActive = $this;
-    while($oActive->getParent() !== null) {
-      array_unshift($aResult, $oActive->getName());
-      $oActive = $oActive->getParent();
+    if(!$this->aFullPathArray) {
+      $this->aFullPathArray = array();
+      $oActive = $this;
+      while($oActive->getParent() !== null) {
+        array_unshift($this->aFullPathArray, $oActive->getName());
+        $oActive = $oActive->getParent();
+      }
     }
-    return $aResult;
+    return $this->aFullPathArray;
   }
 
   /**
