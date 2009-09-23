@@ -78,23 +78,10 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
     $oIncluder->addResource('admin.css');
     $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
-  
-  public function testSimpleIncludeCssNoExtension() {
-    $oIncluder = ResourceIncluder::defaultIncluder();
-    $oIncluder->addResource('admin', ResourceIncluder::RESOURCE_TYPE_CSS);
-    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n", $oIncluder->getIncludes()->render());
-  }
-  
+    
   public function testSimpleIncludeJs() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addResource('admin.js');
-    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
-  }
-  
-  public function testSimpleIncludeJsNoExtension() {
-    $oIncluder = ResourceIncluder::defaultIncluder();
-    $oIncluder->addResource('admin', ResourceIncluder::RESOURCE_TYPE_JS);
     $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
   
@@ -239,7 +226,7 @@ EOT;
     $sOuterTemplate = <<<EOT
 <style type="text/css">
 <!--/*--><![CDATA[/*><!--*/
-	  {{content}}
+  {{content}}
 /*]]>*/-->
 </style>
 

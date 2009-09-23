@@ -1,0 +1,14 @@
+.tree-clicker, .tree-clicker-proxy {
+  display: -moz-inline-block;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+}
+
+.tree-clicker.closed {
+  background-image: url('../../images/admin/plus.gif');
+}
+
+.tree-clicker.opened {
+  background-image: url('../../images/admin/minus.gif');
+}

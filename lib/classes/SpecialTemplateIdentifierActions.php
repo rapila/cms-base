@@ -176,25 +176,15 @@ class SpecialTemplateIdentifierActions {
   }
   
   public function addResourceInclude($oIdentifier) {
-    $mLocation = $oIdentifier->getValue();
     $oResourceIncluder = $oIdentifier->hasParameter('name') ? ResourceIncluder::namedIncluder($oIdentifier->getParameter('name')) : ResourceIncluder::defaultIncluder();
-    $iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
-    if($oIdentifier->hasParameter('library')) {
-      $oResourceIncluder->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
-      return null;
-    }
-    if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
-      $mLocation = explode('/', $mLocation);
-    }
-    $aParams = $oIdentifier->getParameters();
-    $aParams['from_template'] = true;
-    
-    $sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
-    $sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
-    $bIncludeAll = $oIdentifier->hasParameter('include_all');
-    
-    $oResourceIncluder->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
+    $oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);
     return null;
+  }
+    
+  public function writeDirectInclude($oIdentifier) {
+    $oResourceIncluder = new ResourceIncluder();
+    $oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);
+    return $oResourceIncluder->getIncludes(false);
   }
   
   public function writeResourceIncludes($oTemplateIdentifier) {

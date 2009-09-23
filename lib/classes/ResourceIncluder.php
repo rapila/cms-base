@@ -55,7 +55,7 @@ class ResourceIncluder {
     return self::namedIncluder(self::DEFAULT_INSTANCE_NAME);
   }
   
-  private function __construct() {
+  public function __construct() {
     $this->clearIncludedResources();
   }
   
@@ -258,8 +258,12 @@ class ResourceIncluder {
     return $aResult;
   }
   
-  public function getIncludes() {
-    $oTemplate = new Template(TemplateIdentifier::constructIdentifier('includes'), null, true);
+  public function getIncludes($bPrintNewlines = true) {
+    $iTemplateFlags = 0;
+    if(!$bPrintNewlines) {
+      $iTemplateFlags = Template::NO_NEWLINE;
+    }
+    $oTemplate = new Template(TemplateIdentifier::constructIdentifier('includes'), null, true, false, null, null, $iTemplateFlags);
     $aTemplateMasters = array();
     foreach($this->aIncludedResources as $iPriority => $aIncludedResourcesOfType) {
       if(count($aIncludedResourcesOfType) === 0) {
@@ -283,6 +287,26 @@ class ResourceIncluder {
       }
     }
     return $oTemplate;
+  }
+  
+  public function addResourceFromTemplateIdentifier($oIdentifier) {
+    $mLocation = $oIdentifier->getValue();
+    $iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
+    if($oIdentifier->hasParameter('library')) {
+      $this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
+      return null;
+    }
+    if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
+      $mLocation = explode('/', $mLocation);
+    }
+    $aParams = $oIdentifier->getParameters();
+    $aParams['from_template'] = true;
+    
+    $sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
+    $sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
+    $bIncludeAll = $oIdentifier->hasParameter('include_all');
+    
+    $this->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
   }
   
   public function clearIncludedResources() {

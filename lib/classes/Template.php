@@ -797,7 +797,6 @@ class Template {
     }
     while(isset($this->aTemplateContents[0]) && !$this->aTemplateContents[0] instanceof TemplateIdentifier) {
       print $this->aTemplateContents[0];
-      ob_flush();
       $this->sSentOutput .= $this->aTemplateContents[0];
       $this->replaceAt(0);
     }
