@@ -125,7 +125,7 @@ class Session {
     } else if(!is_array($this->aAttributes[$sAttribute])) {
       throw new Exception("Error in Session->getArrayAttributeValueForKey: Attribute $sAttribute is not an array");
     }
-    return $this->aAttributes[$sAttribute][$sKey];
+    return @$this->aAttributes[$sAttribute][$sKey];
   }
 
   public function resetAttribute($sAttribute) {
