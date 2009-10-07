@@ -160,6 +160,9 @@ class ResourceIncluder {
     }
     
     if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+      if($iPrevResoucePriority === $iPriority) {
+        return;
+      }
       unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
     }
     
@@ -225,6 +228,9 @@ class ResourceIncluder {
   public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL) {
     $sIdentifier = self::RESOURCE_PREFIX_CUSTOM.md5(serialize($aResourceInfo));
     if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+      if($iPrevResoucePriority === $iPriority) {
+        return;
+      }
       unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
     }
     $this->aIncludedResources[$iPriority][$sIdentifier] = $aResourceInfo;
