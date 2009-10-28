@@ -110,6 +110,57 @@ class Image {
     imagefill($this->rImageHandle, 0, 0, $iAlpha === 0 ? imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue) : imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iAlpha));
   }
   
+  public function filterGrayscale() {
+    imagefilter($this->rImageHandle, IMG_FILTER_GRAYSCALE);
+  }
+  
+  public function filterInvert() {
+    imagefilter($this->rImageHandle, IMG_FILTER_NEGATE);
+  }
+  
+  public function filterMeanRemoval() {
+    imagefilter($this->rImageHandle, IMG_FILTER_MEAN_REMOVAL);
+  }
+  
+  public function filterEdgeDetect() {
+    imagefilter($this->rImageHandle, IMG_FILTER_EDGEDETECT);
+  }
+  
+  public function filterEmboss() {
+    imagefilter($this->rImageHandle, IMG_FILTER_EMBOSS);
+  }
+  
+  public function filterColorize($iRed, $iGreen, $iBlue) {
+    imagefilter($this->rImageHandle, IMG_FILTER_COLORIZE, $iRed, $iGreen, $iBlue);
+  }
+  
+  public function filterPixelate($iBlockSize = 20, $bUseAdvancedPixelation = false) {
+    imagefilter($this->rImageHandle, IMG_FILTER_PIXELATE, $iBlockSize, $bUseAdvancedPixelation);
+  }
+  
+  public function filterBrightness($iLevel = 50) {
+    imagefilter($this->rImageHandle, IMG_FILTER_BRIGHTNESS, $iLevel);
+  }
+  
+  public function filterContrast($iLevel = 50) {
+    imagefilter($this->rImageHandle, IMG_FILTER_CONTRAST, $iLevel);
+  }
+  
+  public function filterSmooth($iLevel = 20) {
+    imagefilter($this->rImageHandle, IMG_FILTER_SMOOTH, $iLevel);
+  }
+  
+  public function filterBlur($bUseSelectiveBlur = false) {
+    imagefilter($this->rImageHandle, $bUseSelectiveBlur ? IMG_FILTER_SELECTIVE_BLUR : IMG_FILTER_GAUSSIAN_BLUR);
+  }
+  
+  public function filterSepia($iRed = 100, $iGreen = 50, $iBlue = 0) {
+    $this->filterGrayscale();
+    $this->filterColorize($iRed, $iGreen, $iBlue);
+    $this->filterContrast(-10);
+    $this->filterBrightness(-20);
+  }
+  
   /**
   * frees up the image buffer
   * only call this when discarding the image object
