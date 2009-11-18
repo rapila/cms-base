@@ -6,6 +6,7 @@ class DefaultPageTypeModule extends PageTypeModule {
   
   private $oFrontendTemplate;
   private $iModuleId;
+  private $sContainerName;
   
   private static $COMPARISONS = array("eq" => "==",
                                       "ne" => "!==",
@@ -58,7 +59,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       if($this->fillContainerWithModule($oContainer, $oTemplate, $this->iModuleId) === false) {
         continue;
       }
-      // FilterModule::getFilters()->handleDefaultPageTypeFilledContainer($oContainer, $this->oPage, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
+      FilterModule::getFilters()->handleDefaultPageTypeFilledContainer($oContainer, $this->oPage, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
       $this->iModuleId++;
       
       if(isset($aObjectTypes[$oContainer->getObjectType()])) {
@@ -72,7 +73,6 @@ class DefaultPageTypeModule extends PageTypeModule {
     if(count($aObjectTypes) === 0) {
       return null;
     }
-    
     return $oTemplate;
   } // fillOneContainer()
       
@@ -95,6 +95,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     if($sFrontentContents === null) {
       return false;
     }
+    // module_id
     FilterModule::getFilters()->handleDefaultPageTypeFilledContainerWithModule($oContentObject, $oModule, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
     $oTemplate->replaceIdentifierMultiple("container", $sFrontentContents, null, Template::NO_HTML_ESCAPE);
     $this->oFrontendTemplate->replaceIdentifierMultiple("custom_css", $oModule->getCssForFrontend());
@@ -104,7 +105,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       //Print Edit link
       $sEditImage = TagWriter::quickTag("img", array('class' => 'mini_cms_fe_edit_button', 'src' => INT_IMAGES_DIR_FE.'/admin/edit_fe.gif', 'alt'=> StringPeer::getString("edit")));
       
-      $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager", array("content_language" => Session::language())), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit")), $sEditImage);
+      $oTag = TagWriter::quickTag("a", array("href" => LinkUtil::link(array('content', $oContentObject->getPage()->getId(), 'edit', $oContentObject->getId()), "BackendManager", array("content_language" => Session::language())), 'style' => 'z-index:1000;padding:0;margin:-6px 0 0 0;display:block;text-decoration:none;line-height:0;font-size:1px;clear:both;border:none;position:relative;', "title" => StringPeer::getString("content_edit"), 'class' => 'content_edit_link'), $sEditImage);
       $oTemplate->replaceIdentifierMultiple("container", $oTag);
     }
     return true;
@@ -160,8 +161,10 @@ class DefaultPageTypeModule extends PageTypeModule {
   private function executeShow() {
     $bMayEditContents = Session::getSession()->getUser()->mayEditPageContents($this->oPage);
     $oTemplate = $this->constructTemplate("content_show".($bMayEditContents ? "" : "_forbidden"));
+    $oTemplate->replaceIdentifier('id', $this->oPage->getId());
     $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
     
+    $oTemplate->replaceIdentifier("page_edit_link", LinkUtil::link(array('pages', $this->oPage->getId())));
     $oTemplate->replaceIdentifier("title", $this->oPage->getPageTitle(BackendManager::getContentEditLanguage()));
     $this->backendCustomJs = $this->constructTemplate("show.js");
 
@@ -177,7 +180,6 @@ class DefaultPageTypeModule extends PageTypeModule {
         }
         $sContainerName = $oContainer->getValue();
         $oContainerTemplate = $this->constructTemplate("content_container");
-        
         $aObjects = $this->oPage->getObjectsForContainer($sContainerName);
         $bHasNoObjects = count($aObjects) === 0;
         
@@ -225,7 +227,8 @@ class DefaultPageTypeModule extends PageTypeModule {
           }
           $oLanguageObject = $oObject->getActiveLanguageObjectBe();
           $oObjectTemplate->replaceIdentifier("title", $oObject->getContainerName());
-          $oObjectTemplate->replaceIdentifier("type", $oObject->getObjectTypeName());
+          $oObjectTemplate->replaceIdentifier("object_type_name", $oObject->getObjectTypeName());
+          $oObjectTemplate->replaceIdentifier("object_type", $oObject->getObjectType() === 'text' ? 'text' : 'external');
           $oObjectTemplate->replaceIdentifier("edit_link", $this->backendLink(array($this->oPage->getId(), "edit", $oObject->getId())));
           $oObjectTemplate->replaceIdentifier("action", $this->backendLink(array($this->oPage->getId(), "show", $oObject->getId())));
           if($oLanguageObject === null) {
@@ -292,14 +295,22 @@ class DefaultPageTypeModule extends PageTypeModule {
     $this->backendCustomJs = $oModule->getJsForBackend();
     
     $oTemplate = $this->constructTemplate("content_edit");
+    $oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
+    $oTemplate->replaceIdentifier('id', $this->oPage->getId());
+    $oTemplate->replaceIdentifier('page_edit_link', LinkUtil::link(array('pages', $this->oPage->getId())));
+    $oTemplate->replaceIdentifier('content_edit_link', LinkUtil::link(array('content', $this->oPage->getId())));
     $oTemplate->replaceIdentifier('is_new', $this->oCurrentContentObject->isNew());
     if($this->oCurrentContentObject->isNew()) {
       $oTemplate->replaceIdentifier("action", $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getContainerName())));
     } else {
       $oTemplate->replaceIdentifier("action", $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getId())));
       $oTemplate->replaceIdentifier('timestamp', $oLanguageObject->getTimestamp());
-      if($this->bBackupOverride) {
-        $oTemplate->replaceIdentifier("readonly_history_override", true);
+      if($oModule->getModuleName() === 'text') {
+        $oHistoryTempl = $this->constructTemplate('language_revision');
+        if($this->bBackupOverride) {
+          $oHistoryTempl->replaceIdentifier("readonly_history_override", true);
+        }
+        $oTemplate->replaceIdentifier("language_revision", $oHistoryTempl);
       }
     }
     $oTemplate->replaceIdentifier("show_url", $this->backendLink(array($this->oPage->getId(), "show")));
@@ -313,6 +324,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       $oIfIdentifier = $oIfIdentifier[0];
       $oTemplate->replaceIdentifier("comparison_1", $oIfIdentifier->getParameter('1'));
       $oTemplate->replaceIdentifier("comparison_2", $oIfIdentifier->getParameter('2'));
+      $oTemplate->replaceIdentifier("toggler_style", $oIfIdentifier->getParameter('1') == '' ? '' : ' open');
       $sComparatorValue = $oIfIdentifier->getValue();
     }
     $oTemplate->replaceIdentifier("comparator_options", TagWriter::optionsFromArray(self::$COMPARISONS, $sComparatorValue, null, null));

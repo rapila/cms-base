@@ -98,6 +98,14 @@ class User extends BaseUser {
     foreach(SettingsBackendModule::$AVAILABLE_SECTIONS as $sSectionName) {
       $aResult[$sSectionName] = Settings::getSetting('modules', $sSectionName, array(), 'backend');
     }
+    //FIXME: Move to where the function is called (should not be here).
+    if(isset($aResult['direct_links'])) {
+      foreach(SettingsBackendModule::$FIXED_MODULE_NAMES as $sExcludedModule) {
+        if(isset($aResult['direct_links'][$sExcludedModule])) {
+          unset($aResult['direct_links'][$sExcludedModule]);
+        }
+      }      
+    }
     return $aResult;
   }
   

@@ -3,9 +3,9 @@ connection:
   phptype:    'mysqli'
   hostspec:   'localhost'
   database:   'database'
-  username:   'jorgito' &un
+  username:   'myusername' &un
   user:       *un
-  password:   'jorgito1'
+  password:   'mypassword'
   dsn:        'mysql:dbname=database;host=localhost'
 database:
   adapter:  'mysqli'

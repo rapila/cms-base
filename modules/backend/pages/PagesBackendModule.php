@@ -84,7 +84,19 @@ class PagesBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("dummy", 'ja');
     }
     $oTemplate->replaceIdentifier("action", $this->link($this->oPage->getId()));
-    $oTemplate->replaceIdentifier("name", $this->oPage->getName());
+    // $oTemplate->replaceIdentifierMultiple('path_names', TagWriter::quickTag('span', array(), $_SERVER['HTTP_HOST']), null, Template::NO_NEWLINE);
+    
+    foreach(Manager::getCurrentPage()->getFullPathArray() as $sPath) {
+      if($this->oPage->getName() === $sPath) {
+        $oTemplate->replaceIdentifier("name", $this->oPage->getName());
+      } else {
+        // $oTemplate->replaceIdentifierMultiple('path_names', TagWriter::quickTag('span', array(), $sPath), null, Template::NO_NEWLINE);
+      }
+    }
+    $sWeblink = BackendManager::getWebLink(Manager::getCurrentPage()->getFullPathArray());
+    $sDisplayWeblink = str_replace($this->oPage->getName(), '<span>'.$this->oPage->getName().'</span>', $_SERVER['HTTP_HOST'].$sWeblink);
+    $oTemplate->replaceIdentifier("weblink", $sWeblink);
+    $oTemplate->replaceIdentifier("display_weblink", $sDisplayWeblink, null, Template::NO_HTML_ESCAPE);
     $oTemplate->replaceIdentifier("id", $this->oPage->getId());
     $oTemplate->replaceIdentifier("level", $this->oPage->getLevel());
     $oTemplate->replaceIdentifier("hide_if_needed", $this->oPage->isNew() || $this->oPage->isRoot() ? ' style="visibility:hidden;" ' : '', null, Template::NO_HTML_ESCAPE);
@@ -92,7 +104,7 @@ class PagesBackendModule extends BackendModule {
     // if not new and if user mayEditPageDetails
     if(!$this->oPage->isNew() && Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
       $oContentLinkTemplate = $this->constructTemplate("edit_content");
-      $sContentLink = LinkUtil::link(array("content", "show", $this->oPage->getId()));
+      $sContentLink = LinkUtil::link(array("content", $this->oPage->getId()));
       $oContentLinkTemplate->replaceIdentifier("content_link", $sContentLink);
       $oTemplate->replaceIdentifier("edit_content", $oContentLinkTemplate);
     }
@@ -271,7 +283,12 @@ class PagesBackendModule extends BackendModule {
     }
     
     //References
-    $oTemplate->replaceIdentifier('references', $this->getReferenceMessages(ReferencePeer::getReferences($this->oPage)));
+    $aReferences = ReferencePeer::getReferences($this->oPage);
+    if(count($aReferences) > 0) {
+      $oTemplate->replaceIdentifier('references', $this->getReferenceMessages(ReferencePeer::getReferences($this->oPage)));
+    } else {
+      $oTemplate->replaceIdentifier('references', StringPeer::getString('reference.none'));
+    }
     return $oTemplate;
   }
   

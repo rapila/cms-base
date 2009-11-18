@@ -40,6 +40,8 @@ class Template {
   const NO_IDENTIFIER_VALUE_REPLACEMENT = 128;
   const NO_RECODE = 256;
   const STRIP_TAGS = 512;
+  const CONVERT_NEWLINES_TO_BR = 1024;
+  const URL_ENCODE = 2048;
   
   //Holds all of the template's contents as either strings or TemplateIdentifier objects
   private $aTemplateContents;
@@ -112,7 +114,7 @@ class Template {
       }
       
       if(Settings::getSetting('general', 'template_caching', false)) {
-        $oCache = new Cache($oPath->getRelativePath()."_".Session::language(), DIRNAME_TEMPLATES);
+        $oCache = new Cache($oPath->getRelativePath()."_".Session::language()."_".$sTargetEncoding."_".$this->sTemplateName, DIRNAME_TEMPLATES);
         $bCacheIsCurrent = $oCache->cacheFileExists() && !$oCache->isOutdated($oPath->getFullPath());
       }
       
@@ -141,6 +143,8 @@ class Template {
       } else {
         $sTemplateText = StringUtil::encode($sTemplateText, $this->sEncoding, $sTargetEncoding);
         $this->aTemplateContents = self::templateContentsFromText($sTemplateText, $this);
+        $this->renderDirectOutput();
+        $this->replaceConditionals(true);
       }
       $this->replaceSpecialIdentifiersOnStart();
       
@@ -152,6 +156,7 @@ class Template {
     $this->sEncoding = $sTargetEncoding;
     $this->bDirectOutput = $bDirectOutput;
     $this->renderDirectOutput();
+    $this->replaceConditionals(true);
   }
   
   private static function templateContentsFromText($sTemplateText, $oTemplate=null) {
@@ -181,6 +186,13 @@ class Template {
     return $aTemplateContents;
   }
   
+  public function derivativeTemplate($sTemplateName, $mPath = false, $bTemplateIsTextOnly = false) {
+    if($mPath === false) {
+      $mPath = $this->mPath;
+    }
+    return new Template($sTemplateName, $mPath, $bTemplateIsTextOnly, false, $this->sEncoding, $this->getTemplateName(), $this->iDefaultFlags);
+  }
+
   public function hasIdentifier($sName, $sValue=null) {
     return $this->identifiersMatching($sName, $sValue, null, true) !== null;
   }
@@ -226,9 +238,10 @@ class Template {
     $this->replaceAt($iIndex, $mReplacement, 0);
   }
   
-  public function identifiersMatching($sName = null, $sValue = null, $aParameters = null, $bFindFirst = false) {
+  public function identifiersMatching($sName = null, $sValue = null, $aParameters = null, $bFindFirst = false, $iStartPosition = 0) {
     $aResult = array();
-    foreach($this->aTemplateContents as $iKey => $mValue) {
+    for($iKey = $iStartPosition; $iKey < count($this->aTemplateContents) ; $iKey++) {
+      $mValue = $this->aTemplateContents[$iKey];
       if(!($mValue instanceof TemplateIdentifier)) {
         continue;
       }
@@ -389,7 +402,7 @@ class Template {
         continue;
       }
       
-      if(!($mText instanceof Template)  && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
+      if(!($mText instanceof Template) && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
         $aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
       }
       
@@ -397,12 +410,21 @@ class Template {
         $aText[$iKey] = str_replace("\n", "\\n", addslashes($aText[$iKey]));
       }
       
-      if(($iFlags&self::FORCE_HTML_ESCAPE)===self::FORCE_HTML_ESCAPE || (($iFlags&self::NO_HTML_ESCAPE) !== self::NO_HTML_ESCAPE && !($mText instanceof Template))) {
-        $aText[$iKey] = self::htmlEncode($aText[$iKey]);
+      if(($iFlags&self::URL_ENCODE)===self::URL_ENCODE) {
+        $aText[$iKey] = urlencode($aText[$iKey]);
       }
 
       if(($iFlags&self::JAVASCRIPT_CONVERT)===self::JAVASCRIPT_CONVERT) {
         $aText[$iKey] = preg_replace("/\"/", "'", $aText[$iKey]);
+      }
+      
+      if(($iFlags&self::FORCE_HTML_ESCAPE)===self::FORCE_HTML_ESCAPE || (($iFlags&self::NO_HTML_ESCAPE) !== self::NO_HTML_ESCAPE && !($mText instanceof Template))) {
+        $aText[$iKey] = self::htmlEncode($aText[$iKey]);
+      }
+
+
+      if(($iFlags&self::CONVERT_NEWLINES_TO_BR)===self::CONVERT_NEWLINES_TO_BR) {
+        $aText[$iKey] = nl2br($aText[$iKey]);
       }
       
       if(($iFlags&self::LEAVE_IDENTIFIERS)===self::LEAVE_IDENTIFIERS && !($mText instanceof Template)) {
@@ -451,28 +473,34 @@ class Template {
         $aText = &$aOldText;
       }
     }
+    $bHasDoneIdentifierValueReplacement = false;
     if($mFunction === null && ($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === 0) {
       $aIdentifiers = $this->allIdentifiers();
       foreach($aIdentifiers as $oIdentifier) {
         //Identifier replacement in value
         if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
-          $oValueTemplate = new Template($oIdentifier->getValue(), null, true);
+          $oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
           $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
           $oValueTemplate->bKillIdentifiersBeforeRender = false;
           $oIdentifier->setValue($oValueTemplate->render());
+          $bHasDoneIdentifierValueReplacement = true;
         }
         //Identifier replacement in parameter values
         foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
           if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
-            $oValueTemplate = new Template($sIdentifierValue, null, true);
+            $oValueTemplate = $this->derivativeTemplate($sIdentifierValue, false, true);
             $oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
             $oValueTemplate->bKillIdentifiersBeforeRender = false;
             $oIdentifier->setParameter($sKey, $oValueTemplate->render());
+            $bHasDoneIdentifierValueReplacement = true;
           }
         }
       }
     }
     $this->renderDirectOutput();
+    if($bHasDoneIdentifierValueReplacement) {
+      $this->replaceConditionals(true);
+    }
   }
 
   /**
@@ -617,16 +645,16 @@ class Template {
     foreach($aIdentifiers as $oIdentifier) {
       //Identifier replacement in value
       if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
-        $oValueTemplate = new Template($oIdentifier->getValue(), null, true, false, null, null, self::NO_HTML_ESCAPE);
+        $oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
+        $oValueTemplate->iDefaultFlags = self::NO_HTML_ESCAPE;
         $oValueTemplate->bKillIdentifiersBeforeRender = true;
-        if($oIdentifier->getValue() === '{{test}}') {
-        }
         $oIdentifier->setValue($oValueTemplate->render());
       }
       //Identifier replacement in parameter values
       foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
         if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
-          $oValueTemplate = new Template($sIdentifierValue, null, true, false, null, null, self::NO_HTML_ESCAPE);
+          $oValueTemplate = $this->derivativeTemplate($sIdentifierValue, false, true);
+          $oValueTemplate->iDefaultFlags = self::NO_HTML_ESCAPE;
           $oValueTemplate->bKillIdentifiersBeforeRender = true;
           $oIdentifier->setParameter($sKey, $oValueTemplate->render());
         }
@@ -634,9 +662,15 @@ class Template {
     }
   }
   
-  private function replaceConditionals() {
-    $oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true);
+  private function replaceConditionals($bFinalOnly = false) {
+    $iStartPosition = 0;
+    $oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
     while($oIf !== null) {
+      if($bFinalOnly && !$oIf->isFinal()) {
+        $iStartPosition = $this->identifierPosition($oIf)+1;
+        $oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
+        continue;
+      }
       $oEndIf = $this->findEndIfForIf($oIf);
       $sComparison = $oIf->getValue() !== null ? $oIf->getValue() : "=";
       $sFirst = $oIf->getParameter('1');
@@ -729,12 +763,12 @@ class Template {
         $this->replaceAt($oEndIf);
       }
       
-      $oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true);
+      $oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
     }
   }
   
   /**
-   * replaceSpecialIdentifiersOnStart()
+   * Calls $this->replaceSpecialIdentifiers(false);
    * @return void
    */  
   private function replaceSpecialIdentifiersOnStart() {
@@ -742,7 +776,7 @@ class Template {
   }
   
   /**
-   * replaceSpecialIdentifiersOnEnd()
+   * Calls $this->replaceSpecialIdentifiers(true);
    * @return void
    */  
   private function replaceSpecialIdentifiersOnEnd() {

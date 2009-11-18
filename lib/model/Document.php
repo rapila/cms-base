@@ -67,8 +67,13 @@ class Document extends BaseDocument {
 		}
   }
   
+  /**
+  * Shortcut for getDisplayUrl(array(), 'display_document');
+  * @deprecated use Document->getDisplayUrl() instead
+  * @todo remove
+  */
   public function getLink() {
-    return LinkUtil::link(array('display_document', $this->getId()), 'FileManager');
+    return $this->getDisplayUrl(array(), 'display_document');
   }
   
   public function save($oConnection = null) {

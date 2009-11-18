@@ -19,6 +19,7 @@ class ListHelper {
   const SELECTION_TYPE_BEGINS = 'begins';
   const SELECTION_TYPE_CONTAINS = 'contains';
   const SELECTION_TYPE_TAG = 'tag';
+  const SELECTION_TYPE_IS_NULL = 'is_null';
   //Be sure to handle manual selections in the criteria before calling handle()
   const SELECTION_TYPE_MANUAL = 'manual';
   
@@ -138,10 +139,14 @@ class ListHelper {
     return $oSortItemTemplate;
   }
   
-  public function handle($oCriteria) {
+  public function handle($oCriteria = null) {
+    if($oCriteria === null) {
+      $oCriteria = new Criteria();
+    }
     $this->handleListSearching($oCriteria);
     $this->handleListSorting($oCriteria);
     $this->handleListFiltering($oCriteria);
+    return $oCriteria;
   }
   
   private function handleListSearching($oCriteria) {
@@ -181,6 +186,12 @@ class ListHelper {
         $oCriteria->add($sFilterColumn, "$sFilterValue%", Criteria::LIKE);
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_CONTAINS) {
         $oCriteria->add($sFilterColumn, "%$sFilterValue%", Criteria::LIKE);
+      } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_IS_NULL) {
+        if($sFilterValue) {
+          $oCriteria->add($sFilterColumn, null, Criteria::ISNULL);
+        } else {
+          $oCriteria->add($sFilterColumn, null, Criteria::ISNOTNULL);
+        }
       } else if($this->aSelectionTypes[$sFilterColumn] === self::SELECTION_TYPE_TAG) {
         $aTaggedItemIds = array();
         foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {

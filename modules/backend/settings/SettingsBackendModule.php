@@ -4,6 +4,7 @@
 */
 class SettingsBackendModule extends BackendModule {
   public static $AVAILABLE_SECTIONS = array('direct_links', 'site_links', 'admin_links');
+  public static $FIXED_MODULE_NAMES = array('pages', 'content');
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('chooser');
@@ -23,6 +24,9 @@ class SettingsBackendModule extends BackendModule {
     $aBackendModules = BackendModule::listModules();
     foreach($aBackendModules as $sBackendModuleName => $aModuleInfo) {
       if(!$oUser->getIsAdmin() && @$aModuleInfo['module_info']['admin_required']) {
+        continue;
+      }
+      if(in_array($sBackendModuleName, self::$FIXED_MODULE_NAMES)) {
         continue;
       }
       if($sBackendModuleName === $this->getModuleName()) {

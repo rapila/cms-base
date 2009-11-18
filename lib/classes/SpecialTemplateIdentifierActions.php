@@ -103,25 +103,26 @@ class SpecialTemplateIdentifierActions {
   public function writeLink($oTemplateIdentifier) {
     $sDestination = $oTemplateIdentifier->getValue();
     $aParameters = $oTemplateIdentifier->getParameters();
+    $bIsAbsolute = $oTemplateIdentifier->getParameter('is_absolute') === 'true';
+    unset($aParameters['is_absolute']);
     if($sDestination === "to_self") {
       $bIgnoreRequest = $oTemplateIdentifier->getParameter('ignore_request') === 'true';
       unset($aParameters['ignore_request']);
-      return LinkUtil::linkToSelf(null, $aParameters, $bIgnoreRequest);
-    }
-    if($sDestination === "base_href") {
-      return LinkUtil::absoluteLink(MAIN_DIR_FE);
-    }
-    $sManager = null;
-    if($oTemplateIdentifier->hasParameter('manager')) {
-      unset($aParameters['manager']);
-      $sManager = $oTemplateIdentifier->getParameter('manager');
-    }
-    $bIsAbsolute = $oTemplateIdentifier->getParameter('is_absolute') === 'true';
-    unset($aParameters['is_absolute']);
-    if($bIsAbsolute) {
-      return LinkUtil::absoluteLink(LinkUtil::link($sDestination, $sManager, $aParameters));
+      $sDestination = LinkUtil::linkToSelf(null, $aParameters, $bIgnoreRequest);
+    } else if($sDestination === "base_href") {
+      $sDestination = LinkUtil::absoluteLink(MAIN_DIR_FE);
     } else {
-      return LinkUtil::link($sDestination, $sManager, $aParameters);
+      $sManager = null;
+      if($oTemplateIdentifier->hasParameter('manager')) {
+        unset($aParameters['manager']);
+        $sManager = $oTemplateIdentifier->getParameter('manager');
+      }
+      $sDestination = LinkUtil::link($sDestination, $sManager, $aParameters);
+    }
+    if($bIsAbsolute) {
+      return LinkUtil::absoluteLink($sDestination);
+    } else {
+      return $sDestination;
     }
   }
   
@@ -130,7 +131,7 @@ class SpecialTemplateIdentifierActions {
     if($oTemplateIdentifier->hasParameter('fromBase')) {
       $oTemplatePath = null;
     }
-    $oTemplate = new Template($oTemplateIdentifier->getValue(), $oTemplatePath, false, false, null, $this->oTemplate->getTemplateName());
+    $oTemplate = $this->oTemplate->derivativeTemplate($oTemplateIdentifier->getValue(), $oTemplatePath, false);
     $iFlags |= Template::LEAVE_IDENTIFIERS|Template::NO_RECODE;
     if($oTemplateIdentifier->hasParameter('omitIdentifiers')) {
       $iFlags &= ~Template::LEAVE_IDENTIFIERS;

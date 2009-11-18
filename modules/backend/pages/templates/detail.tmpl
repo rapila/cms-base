@@ -1,11 +1,11 @@
-<h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>{{identifierContext=start;name=parent_title}}
+<h1>{{module_info_link}} {{quoteString=\{\{title\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} <span style="font-weight: normal;color:#999;">[id: {{id}}] </span></h1>
 <form action="{{action}}" method="post">
   <div id="pages_detail">
-    <fieldset><legend>{{writeString=page.info}} [id: {{id}}]</legend>
-      {{identifierContext=start;name=dummy}}<label for="parent_id">{{writeString=page.parent}}</label>
-      <select id="parent_id" name="parent_id" class="{{dummy}}"{{parent_id_option_disabled}}>{{parent_id_options}}</select><br />{{identifierContext=end;name=dummy}}
+    {{edit_content}}
+    <fieldset class="divider">
       <label for="name" class="helptext" title="{{writeString=page.path_name_info}}">{{writeString=page.path_name}}</label>
-      <input class="short" type="text" name="name" id="name" value="{{name}}" size="20" />
+      {{identifierContext=start;name=name}}<input class="short" type="text" name="name" id="name" value="{{name}}" size="15" />{{identifierContext=end;name=name}}
+      <a class="page_web_link" href="{{weblink}}">http://{{display_weblink}}</a><br />
       {{writeFlashValue=parent_id_is_self}}
       {{writeFlashValue=parent_id_forbidden}}
       {{writeFlashValue=page_name}}
@@ -25,12 +25,14 @@
         <input type="checkbox" name="is_protected" id="is_protected" value="1" {{is_protected}} />
       </div>
       <div id="selectors_container">
-        <label for="sort"{{hide_if_needed}}>{{writeString=page.sort}}</label>
-        <select {{hide_if_needed}}id="sort" name="sort"{{sort_option_disabled}}>{{sort_options}}</select>
         <label class="helptext" for="page_type" style="float:left;" title="{{writeString=helptext.page_type}}">{{writeString=page.type}}</label>  
         <select id="page_type" name="page_type" style="margin-right:0;">{{page_type_options}}</select>
         <label class="helptext" for="template_name" style="float:left;" title="{{writeString=helptext.template}}">{{writeString=template}}</label>  
         <select id="template_name" name="template_name" style="margin-right:0;">{{template_name_options}}</select>
+{{identifierContext=start;name=dummy}}<label for="parent_id">{{writeString=page.parent}}</label>
+      <select id="parent_id" name="parent_id" class="{{dummy}}"{{parent_id_option_disabled}}>{{parent_id_options}}</select><br />{{identifierContext=end;name=dummy}}      
+        <label for="sort"{{hide_if_needed}}>{{writeString=page.sort}}</label>
+        <select {{hide_if_needed}}id="sort" name="sort"{{sort_option_disabled}}>{{sort_options}}</select>
       </div>
     </fieldset>
     {{writeFlashValue=page_create_forbidden}}
@@ -38,7 +40,7 @@
     {{writeFlashValue=page_delete_has_children}}
     {{writeFlashValue=page_delete_has_references}}
     {{page_properties}}    
-    <fieldset>
+    <fieldset class="nolegend">
       {{identifierContext=start;name=may_edit_page}}
       <label>{{writeString=page.save}}</label><!-- May edit page: {{may_edit_page}} -->
       <button type="submit" title="{{writeString=save}}" class="" name="submit" id="edit_page"></button>

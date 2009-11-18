@@ -6,7 +6,10 @@
     <label for="text">{{writeString=string.language_display}}</label>
     <textarea name="text" id="text" rows="2" cols="20">{{text}}</textarea><br />{{writeFlashValue=string.text_required}}
 </fieldset>  
-<fieldset class="divider nolegend">
+{{identifierContext=start;name=language_change_info;}}<fieldset class="divider nolegend">
+  <div style="margin-left: 159px;" class="{{language_change_info}}">{{writeString=strings.change_content_edit_language_info}}</div>
+</fieldset>{{identifierContext=end;name=language_change_info;}}
+<fieldset class="divider">
   <label>{{writeString=save}}</label><button type="submit" title="{{writeString=save}}"></button>
 </fieldset>
 </form>

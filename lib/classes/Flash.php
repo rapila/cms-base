@@ -40,6 +40,11 @@ class Flash {
     return !empty($this->aMessages);
   }
     
+  public function hasMessage($sMessageName) {
+    $aMessages = $this->getMessages();
+    return in_array($sMessageName, $aMessages);
+  }
+    
   public function hasMessagesLeft() {
     foreach($this->aMessages as $bMessageStatus) {
       if($bMessageStatus !== false) {
@@ -62,7 +67,9 @@ class Flash {
     $this->checkForPattern($sName, "/^.{{$iMin},{$sMax}}$/", $sFlashName);
   }
   
-  //Todo: IDN-Support
+  /**
+  * @todo: IDN-Support
+  */
   public function checkForEmail($sName, $sFlashName = null) {
     $this->checkForPattern($sName, "/^[\w._\-%]+@[\w-]+(\.[\w-]+)*(\.\w+)$/", $sFlashName);
   }

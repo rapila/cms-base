@@ -277,15 +277,14 @@ class Navigation {
   
   
   public static function getLanguageChooser() {
-    $aSettings = Settings::getSetting('meta_navigation', 'language_chooser', array('template' => 'language'));
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier('languages'), null, true);
-    $oLanguageTemplate = new Template($aSettings['template'], array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
-    $sLinkSeparator = Settings::getSetting("meta_navigation", 'meta_link_separator', ' | ');
+    $oLanguageTemplate = new Template(Settings::getSetting("language_chooser", 'template', 'language'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
+    $sLinkSeparator = Settings::getSetting("language_chooser", 'link_separator', ' | ');
     $oLanguageActiveTemplate = $oLanguageTemplate;
-    $bShowActiveLanguage = isset($aSettings['show_active_language']) && $aSettings['show_active_language'];
+    $bShowActiveLanguage = Settings::getSetting("language_chooser", 'show_active_language', false);
     
-    if(isset($aSettings['template_active']) && $bShowActiveLanguage) {
-      $oLanguageActiveTemplate = new Template($aSettings['template_active'], array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
+    if($bShowActiveLanguage && Settings::getSetting("language_chooser", 'template_active', false) !== false) {
+      $oLanguageActiveTemplate = new Template(Settings::getSetting("language_chooser", 'template_active', 'language_active'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
     }
     
     //Find request variables
@@ -299,23 +298,24 @@ class Navigation {
 
     $aLanguages = LanguagePeer::getLanguages(true, true, !$bShowActiveLanguage);
     foreach($aLanguages as $i => $oLanguage) {
-      $oCurrrentTemplate = null;
+      $oLangTemplate = null;
       if($oLanguage->getId() === Session::language()) {
-        $oCurrrentTemplate = clone $oLanguageActiveTemplate;
+        $oLangTemplate = clone $oLanguageActiveTemplate;
+        $oLangTemplate->replaceIdentifier('class', 'active');
       } else {
-        $oCurrrentTemplate = clone $oLanguageTemplate;
+        $oLangTemplate = clone $oLanguageTemplate;
       }
       // if language is included, replace it by oLanguage->getId() and set include_language param to false
       if($bCurrentPathIncludesLanguage) {
         $aRequestPath[0] = $oLanguage->getId();  
-        $oCurrrentTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
+        $oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
       } else {
-        $oCurrrentTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));
+        $oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));
       }
-      $oCurrrentTemplate->replaceIdentifier('language_id', $oLanguage->getId());
-      $oCurrrentTemplate->replaceIdentifier('title', @$aSettings['display_fullname'] ? $oLanguage->getLanguageName($oLanguage->getId()) : $oLanguage->getId());
-      $oCurrrentTemplate->replaceIdentifier('link_title', $oLanguage->getLanguageName($oLanguage->getId()));
-      $oTemplate->replaceIdentifierMultiple('languages', $oCurrrentTemplate, null, Template::NO_NEWLINE);
+      $oLangTemplate->replaceIdentifier('id', $oLanguage->getId());
+      $oLangTemplate->replaceIdentifier('name', $oLanguage->getLanguageName($oLanguage->getId()));
+      $oLangTemplate->replaceIdentifier('name_in_current_lang', $oLanguage->getLanguageName());
+      $oTemplate->replaceIdentifierMultiple('languages', $oLangTemplate, null, Template::NO_NEWLINE);
       if(($i+1) < count($aLanguages)) {
         $oTemplate->replaceIdentifierMultiple('languages', $sLinkSeparator, null, Template::NO_HTML_ESCAPE|Template::NO_NEWLINE);
       }

@@ -11,8 +11,7 @@ class TemplateIdentifier {
 
   public static $PARAMETER_EMPTY_VALUE = null;
 
-  function __construct($sName, $sValue, $sParameters, $oTemplate=null)
-  {
+  function __construct($sName, $sValue, $sParameters, $oTemplate=null) {
     $this->aParameters = array();
     $this->oTemplate = $oTemplate;
 
@@ -20,9 +19,9 @@ class TemplateIdentifier {
 
     $sValue = self::unescapeIdentifier($sValue);
     if(strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
-      $oValueTemplate = new Template($sValue, $this->oTemplate->getTemplatePath(), true, false, null, $this->oTemplate->getTemplateName());
+      $oValueTemplate = $this->oTemplate->derivativeTemplate($sValue, false, true);
       $oValueTemplate->bKillIdentifiersBeforeRender = false;
-      $sValue = $oValueTemplate->render();
+      $sValue = $oValueTemplate->render(true);
     }
     $this->setValue($sValue);
 
@@ -42,7 +41,7 @@ class TemplateIdentifier {
         $sParameterValue = implode(TEMPLATE_KEY_VALUE_SEPARATOR, array_slice($aKeyValuePair, 1));
         $sParameterValue = self::unescapeIdentifier($sParameterValue);
         if(strpos($sParameterValue, TEMPLATE_IDENTIFIER_START) !== false) {
-          $oValueTemplate = new Template($sParameterValue, $this->oTemplate->getTemplatePath(), true, false, null, $this->oTemplate->getTemplateName());
+          $oValueTemplate = $this->oTemplate->derivativeTemplate($sParameterValue, false, true);
           $oValueTemplate->bKillIdentifiersBeforeRender = false;
           $sParameterValue = $oValueTemplate->render(true);
         }
@@ -53,6 +52,21 @@ class TemplateIdentifier {
       }
       $this->aParameters[$aKeyValuePair[0]] = $sParameterValue;
     }
+  }
+  
+  /**
+  * @return true if neither the value nor any parameters contain identifiers
+  */
+  public function isFinal() {
+    if(strpos($this->sValue, TEMPLATE_IDENTIFIER_START) !== false) {
+      return false;
+    }
+    foreach($this->aParameters as $sParameterName => $sParameterValue) {
+      if(strpos($sParameterValue, TEMPLATE_IDENTIFIER_START) !== false) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public function setName($sName) {

@@ -1,14 +1,14 @@
   <head>
   	<title>{{title}}</title>
-  	{{writeResourceIncludes}}{{addResourceInclude=admin/admin.css}}
+  	{{writeResourceIncludes}}{{addResourceInclude=admin/admin.css;include_all=true}}
   </head>
   <body onload="document.getElementById('user_name').select()">
   <div id="admin_navigation">
-    <div id="cms_admin">
-      <a id="mini_cms_admin_logo" href="{{writeConstantValue=MAIN_DIR_FE}}" class="label_area">&nbsp;</a>
-      <div class="link_container">
-        <div id="domain_name">{{domain_name}}</div>
-      </div>    
+    <div id="admin_header"><a id="admin_domain_title">{{domain_name}}&nbsp;</a></div>
+    <div id="toolbar">
+      <div class="inner">
+        <a id="by_minicms" href="http://wiki.mini-cms.ch/w/Introduction" title="wiki.mini-cms.ch">by MiniCMS</a>
+      </div>
     </div>
   </div>
   <div id="bottom_wrapper">
@@ -17,7 +17,7 @@
         {{browser_message}}
 <br /><a href="http://www.mozilla.com/en-US/firefox/all.html">{{firefox_download_linktext}}</a>
       </div>{{identifierContext=end;name=browser_message}}
-      <fieldset><legend>{{login_title}}</legend>
+      <fieldset style="padding-top: 1em;padding-bottom:1em;">
         <form action="{{action}}" method="post">
           {{includeTemplate=login_action_\{\{login_action\}\};position=last}}
         </form>

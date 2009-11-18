@@ -87,6 +87,10 @@ class DocumentsBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("document_types", TagWriter::tableFromArray($aDocumentTypesList));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
+      $bMayEditModule = true;
+      if($bMayEditModule) {
+        $oTemplate->replaceIdentifier("document_types_link", TagWriter::quickTag('a', array('href' => LinkUtil::link(array('document_types')), 'class' => 'edit_related_link'), StringPeer::getString('module.backend.document_types')));
+      }
       
       return $oTemplate;
     }

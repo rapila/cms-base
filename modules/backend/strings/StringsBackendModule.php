@@ -61,6 +61,9 @@ class StringsBackendModule extends BackendModule {
       $oDeleteTemplate->replaceIdentifier("delete_icon", 'delete');
       $oTemplate->replaceIdentifier("delete_button", $oDeleteTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
+    if(LanguagePeer::hasLanguageOptions()) {
+      $oTemplate->replaceIdentifier("language_change_info", 'language_options');
+    }
     
     $oTemplate->replaceIdentifier("id", $this->oString->getStringKey());
     $oTemplate->replaceIdentifier("action", $this->link($this->oString->getStringKey()));

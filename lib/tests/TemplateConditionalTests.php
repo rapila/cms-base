@@ -9,8 +9,8 @@ class TemplateTest extends PHPUnit_Framework_TestCase {
     $sText = <<<EOT
 {{if==;1=1;2=1}}test
 EOT;
-    $oTemplate = new Template($sText, null, true);
     try {
+      $oTemplate = new Template($sText, null, true);
       $oTemplate->render();
     } catch (Exception $e) {
       return;

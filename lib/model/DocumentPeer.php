@@ -17,8 +17,6 @@ class DocumentPeer extends BaseDocumentPeer {
       $oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
     }
     if($sDocumentKind !== null) {
-      // FIXME: Why not this (there is a JOIN already):
-      // $oCriteria->add(DocumentTypePeer::MIMETYPE, "$sDocumentKind/%", Criteria::LIKE);
       $oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
     }
     $oCriteria->addAscendingOrderByColumn(self::NAME);

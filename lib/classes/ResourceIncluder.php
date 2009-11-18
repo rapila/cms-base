@@ -103,16 +103,24 @@ class ResourceIncluder {
     return false;
   }
   
-  public function addResource($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null) {
+  public function addResource($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false) {
+    //Not allowed
+    if($bIncludeAll && $sIdentifier !== null) {
+      $sIdentifier = null;
+    }
     $sResourcePrefix = self::RESOURCE_PREFIX_EXTERNAL;
-    $oFileResource = null;
+    $mFileResource = null;
     $sFinalLocation = null;
     if($mLocation instanceof FileResource) {
       //FileResource given (internal)
-      $oFileResource = $mLocation;
+      $mFileResource = $mLocation;
     } else if(is_array($mLocation)) {
       //Array given, relative -> convert to FileResource (internal)
-      $oFileResource = ResourceFinder::findResourceObject($mLocation);
+      if($bIncludeAll) {
+        $mFileResource = ResourceFinder::findAllResourceObjects($mLocation);
+      } else {
+        $mFileResource = ResourceFinder::findResourceObject($mLocation);
+      }
     } else if(!is_string($mLocation)) {
       //Unknown input type given -> throw Exception
       throw new Exception("Eror in ResourceIncluder->addResource(): given location $mLocation is in unknown format");
@@ -123,7 +131,7 @@ class ResourceIncluder {
       //Absolute location given -> check if it’s a path or a URL
       if(file_exists($mLocation)) {
         //Path given -> convert to FileResource (internal)
-        $oFileResource = new FileResource($mLocation);
+        $mFileResource = new FileResource($mLocation);
       } else {
         //URL given, set Location directly (external)
         $sFinalLocation = $mLocation;
@@ -135,45 +143,50 @@ class ResourceIncluder {
         $sTemplateName = $this->findTemplateNameForLocation($aLocation[count($aLocation)-1]);
       }
       array_unshift($aLocation, DIRNAME_WEB, $sTemplateName);
-      $oFileResource = ResourceFinder::findResourceObject($aLocation);
-      if($oFileResource === null) {
-        //Try with added extension
-        $aLocation[count($aLocation)-1] .= ".$sTemplateName";
-        $oFileResource = ResourceFinder::findResourceObject($aLocation);
+      if($bIncludeAll) {
+        $mFileResource = ResourceFinder::findAllResourceObjects($aLocation);
+      } else {
+        $mFileResource = ResourceFinder::findResourceObject($aLocation);
       }
     }
     
-    if($sFinalLocation === null) {
-      if($oFileResource === null) {
-        throw new Exception("Error in ResourceIncluder->addResource(): Specified internal file $mLocation could not be found.");
-      }
-      $sFinalLocation = $oFileResource->getFrontendPath();
-      $sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
+    if($sFinalLocation === null && $mFileResource === null && !$bIncludeAll) {
+      throw new Exception("Error in ResourceIncluder->addResource(): Specified internal file $mLocation could not be found.");
     }
     
-    if($sTemplateName === null) {
-      $sTemplateName = $this->findTemplateNameForLocation($sFinalLocation);
+    if(!is_array($mFileResource)) {
+      $mFileResource = array($mFileResource);
     }
+    
+    foreach($mFileResource as $oFileResource) {
+      if($sFinalLocation === null) {
+        $sFinalLocation = $oFileResource->getFrontendPath();
+        $sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
+      }
+      
+      if($sTemplateName === null) {
+        $sTemplateName = $this->findTemplateNameForLocation($sFinalLocation);
+      }
 
-    if($sIdentifier === null) {
-      $sIdentifier = $sResourcePrefix.$sFinalLocation;
-    }
-    
-    if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
-      if($iPrevResoucePriority === $iPriority) {
-        return;
+      if($sIdentifier === null) {
+        $sIdentifier = $sResourcePrefix.$sFinalLocation;
       }
-      unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
-    }
     
-    $aExtraInfo['location'] = $sFinalLocation;
-    if(!isset($aExtraInfo['template'])) {
-      $aExtraInfo['template'] = $sTemplateName;
+      if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+        unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
+      }
+    
+      $aExtraInfo['location'] = $sFinalLocation;
+      if(!isset($aExtraInfo['template'])) {
+        $aExtraInfo['template'] = $sTemplateName;
+      }
+      if($sIeCondition !== null && !isset($aExtraInfo['ie_condition'])) {
+        $aExtraInfo['ie_condition'] = $sIeCondition;
+      }
+      $this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfo;
+      $sFinalLocation = null;
+      $sIdentifier = null;
     }
-    if($sIeCondition !== null && !isset($aExtraInfo['ie_condition'])) {
-      $aExtraInfo['ie_condition'] = $sIeCondition;
-    }
-    $this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfo;
   }
   
   public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = true, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL) {

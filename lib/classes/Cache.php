@@ -156,6 +156,7 @@ class Cache {
       $iTimestamp = strtotime($iTimestamp);
     }
     
+    //FIXME: This is not really correct according to specs: ETag should change, when the content changes, not the date…
     $sToken = md5($iTimestamp);
     $sModifyDate = gmdate("D, d M Y H:i:s", $iTimestamp)." GMT";
     header("ETag: $sToken");
@@ -168,6 +169,7 @@ class Cache {
       exit;
     }
     
+    //FIXME: should check if sent value is less than or equal to the stored value
     if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $_SERVER['HTTP_IF_MODIFIED_SINCE'] === $sModifyDate) {
       header("Not Modified", true, 304);
       header('Content-Length: 0');

@@ -56,6 +56,18 @@ class BackendManager extends Manager {
     $this->oUser = Session::getSession()->getUser();
     if(self::hasNextPathItem()) {
       $this->sModuleName = self::usePath();
+      // write last pages or content request to session
+      if($this->sModuleName === 'content' || $this->sModuleName === 'pages') { 
+        if(Manager::peekNextPathItem() == null && !isset($_REQUEST['get_module_info'])) {
+          if($aLastPageEditArray = Session::getSession()->getAttribute('last_page_request_array')) {
+            //
+            if(isset($aLastPageEditArray[1]) && $aLastPageEditArray[1] != null) {
+              LinkUtil::redirect(LinkUtil::link($aLastPageEditArray[0]));
+            }
+          }
+        }
+        Session::getSession()->setAttribute('last_page_request_array', array(Manager::getRequestedPath(), Manager::peekNextPathItem()));
+      }
     } else {
       if($this->oUser->isFirstAdministrator() && $this->oUser->requiresUserName()) {
         Flash::getFlash()->addMessage('backend_first_user_name_required');
@@ -142,12 +154,20 @@ class BackendManager extends Manager {
   */ 
   private function fillBackendNavigation() {
     //Direct links
-    foreach($this->aBackendSettings['direct_links'] as $sModuleName => $mConfig) {
+    $aDirectLinks = $this->aBackendSettings['direct_links'];
+    // add excluded fixed modules for display. They just need to be excluded from configuring settings
+    $aDirectLinks = array_merge(ArrayUtil::arrayWithValuesAsKeys(SettingsBackendModule::$FIXED_MODULE_NAMES), $aDirectLinks);
+    if(isset($aDirectLinks['content'])) {
+      unset($aDirectLinks['content']);
+    }
+    foreach($aDirectLinks as $sModuleName => $mConfig) {
       if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
       $sClassName = '';
       if($this->sModuleName == $sModuleName) {
+        $sClassName = 'active';
+      } else if($this->sModuleName === 'content' && $sModuleName === 'pages') {
         $sClassName = 'active';
       }
       $oTemplate = new Template('admin_navigation', array(DIRNAME_TEMPLATES, DIRNAME_BACKEND));
@@ -165,43 +185,53 @@ class BackendManager extends Manager {
       $oTemplate->replaceIdentifier('title', BackendModule::getDisplayNameByName($sModuleName));
       
       $oTemplate->replaceIdentifier('link', $sUrl);
-      $this->oTemplate->replaceIdentifierMultiple("admin_links", $oTemplate);
+      if(in_array($sModuleName, SettingsBackendModule::$FIXED_MODULE_NAMES)) {
+        $oTemplate->replaceIdentifier('class_pages_link', ' main_pages_link');
+      }
+      $this->oTemplate->replaceIdentifierMultiple("direct_links", $oTemplate);
     }
     
     $aSelectOptions = array();
     $sSelected = $this->sModuleName;
     
     //Site links
+    $iCount=0;
     foreach($this->aBackendSettings['site_links'] as $sModuleName => $mConfig) {
       if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
-      
-      $aSelectOptions[$sModuleName] = BackendModule::getDisplayNameByName($sModuleName);
+      $iCount++;
+      $aSelectOptions[$sModuleName]['first'] = false;
+      $aSelectOptions[$sModuleName]['name'] = BackendModule::getDisplayNameByName($sModuleName);
     }
-    if(count($aSelectOptions) > 0) {
-      $this->oTemplate->replaceIdentifier("site_select_class", $sSelected != '' ? 'active_select' : '');
-      $this->oTemplate->replaceIdentifier("available_site_links", TagWriter::optionsFromArray($aSelectOptions, $sSelected));
-    }
-    
     //Admin links
     $aAdminOptions = array();
+    $iCount=0;
     foreach($this->aBackendSettings['admin_links'] as $sModuleName => $mConfig) {
       if(!$this->oUser->mayUseBackendModule($sModuleName)) {
         continue;
       }
-      $aAdminOptions[$sModuleName] = BackendModule::getDisplayNameByName($sModuleName);
+      $iCount++;
+      $aAdminOptions[$sModuleName]['first'] = $iCount === 1 ? true : false;
+      $aAdminOptions[$sModuleName]['name'] = BackendModule::getDisplayNameByName($sModuleName);
     }
-    if(count($aAdminOptions) > 0) {
-      $this->oTemplate->replaceIdentifier("admin_select_class", $sSelected != '' ? 'active_select' : '');
-      $this->oTemplate->replaceIdentifier("available_admin_links", TagWriter::optionsFromArray($aAdminOptions, $sSelected));
+    $aAllOptions = array_merge($aSelectOptions, $aAdminOptions);
+    if(count($aAllOptions) > 0) {
+      if(!isset($aAllOptions[$sSelected])){
+        $this->oTemplate->replaceIdentifier("site_links_not_selected", ' site_links_not_selected');
+      } else {
+        $this->oTemplate->replaceIdentifier("site_select_class", 'active_select');
+      }
+      $this->setSelectOptionsFromHash($aAllOptions, $sSelected);
     }
-    
     
     $this->oTemplate->replaceIdentifier("page_url", LinkUtil::link(Manager::getUsedPath(), null, array(), false));
-
+    $aAvailableLanguages = LanguagePeer::getLanguagesAssoc();
+    if(count($aAvailableLanguages) > 1) {
+      $this->oTemplate->replaceIdentifier("language_choice_hightlight", 'select_hightlight');
+    }
     if(!Manager::isPost()) {
-      $this->oTemplate->replaceIdentifier("available_language_options", TagWriter::optionsFromArray(LanguagePeer::getLanguagesAssoc(), self::getContentEditLanguage(), '', array()));
+      $this->oTemplate->replaceIdentifier("available_language_options", TagWriter::optionsFromArray($aAvailableLanguages, self::getContentEditLanguage(), '', array()));
       foreach(array_diff_assoc($_REQUEST, $_COOKIE) as $sName=>$sValue) {
         if($sName === 'path' || $sName === 'content_language') {
           continue;
@@ -217,13 +247,27 @@ class BackendManager extends Manager {
       $this->oTemplate->replaceIdentifier("static_language", LanguagePeer::retrieveByPk(self::getContentEditLanguage())->getLanguageName());
     }
     
-    $this->oTemplate->replaceIdentifier("domain_name", Settings::getSetting('domain_holder', 'name', 'Sitename'));
+    $this->oTemplate->replaceIdentifier("domain_name", LinkUtil::getHostName());
     $sUserName = (trim(Session::getSession()->getUser()->getFullName()) != '') ? Session::getSession()->getUser()->getFullName() : Session::getSession()->getUser()->getUsername();
     $sUserName = Session::getSession()->getUser() ? $sUserName: 'Hans Muster';
     $this->oTemplate->replaceIdentifier('user_name', $sUserName);
     $this->oTemplate->replaceIdentifier('user_shortcut', Session::getSession()->getUser()->getUsername());
     $this->oTemplate->replaceIdentifier('link_to_user', LinkUtil::link(array('users', Session::getSession()->getUserId())));
     $this->oTemplate->replaceIdentifier('link_to_settings', LinkUtil::link('settings'));
+  }
+
+  private function setSelectOptionsFromHash($aSelectOptions, $sSelected) {
+    $this->oTemplate->replaceIdentifierMultiple("available_site_links", TagWriter::quickTag('option', array('value' => ''), StringPeer::getString('content.choose_modules')));
+    foreach($aSelectOptions as $sModuleName => $aOptionParams) {
+      $aOptionAttributes = array('value' => $sModuleName);
+      if($sModuleName === $sSelected) {
+        $aOptionAttributes = array_merge($aOptionAttributes, array('selected' => "selected"));
+      }
+      if($aOptionParams['first']) {
+        $aOptionAttributes = array_merge($aOptionAttributes, array('class' => 'separator'));
+      }
+      $this->oTemplate->replaceIdentifierMultiple("available_site_links", TagWriter::quickTag('option', $aOptionAttributes, $aOptionParams['name']));
+    }
   }
 
  /**
@@ -328,18 +372,26 @@ class BackendManager extends Manager {
   * fillAttributes()
   */ 
   private function fillAttributes() {
+    $oLastPage = null;
     if(self::getCurrentPage() instanceof Page) {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink(self::getCurrentPage()->getFullPathArray()));
       $this->oTemplate->replacePstring("preview_title", array("link_title" => self::getCurrentPage()->getLinkText()));
       $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true', 'page_id' => self::getCurrentPage()->getId())));
       $this->oTemplate->replaceIdentifier("current_page_title", self::getCurrentPage()->getLinkText());
+    } elseif($aLastPageRequestArray = Session::getSession()->getAttribute('last_page_request_array')) {
+      if(isset($aLastPageRequestArray[2])) {
+        $oLastPage = PagePeer::retrieveByPK($aLastPageRequestArray[2]);
+      }
+    }
+    if($oLastPage) {
+      $this->oTemplate->replaceIdentifier("web_link", self::getWebLink($oLastPage->getFullPathArray()));
     } else {
       $this->oTemplate->replaceIdentifier("web_link", self::getWebLink());
-      $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true')));
     }
+    $this->oTemplate->replaceIdentifier("logout_link", LinkUtil::linkToSelf(null, array("be_logout" => 'true')));
   }
   
-  private static function getWebLink($aPath = array(), $aParameters = array()) {
+  public static function getWebLink($aPath = array(), $aParameters = array()) {
     $bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
     if(!$bIsMultilingual) {
       return LinkUtil::link($aPath, "FrontendManager", $aParameters);

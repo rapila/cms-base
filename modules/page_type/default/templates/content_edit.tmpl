@@ -1,10 +1,12 @@
-<h1>"{{page_title}}": {{writeString=content_module}} {{module_name}} <span style="font-weight:normal;">[{{writeString=container}}: {{container_name}}]</span></h1>
-<fieldset id="wysiwyg" class="highlight_group">
+<h1>{{module_info_link}}  {{quoteString=\{\{page_title\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} </h1>
+<fieldset class="page_edit_tabs">
+  <a href="{{page_edit_link}}" title="">{{writeString=page.structure}}</a><a class="current edit_detail" href="{{content_edit_link}}" title="">{{writeString=page.contents_detail}}</a>
+</fieldset>
   <form enctype="multipart/form-data" method="post" action="{{action}}">
   <input type="hidden" name="timestamp" value="{{timestamp}}" />
   {{writeFlashValue=page_content_changed_since}}
   {{content}}
-  <fieldset class="divider condition" style="margin-left:0;"><legend class="toggler open">{{writeString=object_visibility_condition}}</legend>
+  <fieldset class="divider condition" style="margin-left:0;"><legend class="toggler{{toggler_style}}">{{writeString=object_visibility_condition}}</legend>
     <div style="display: none;">
       <input type="text" name="comparison_1" class="autowidth" size="50" value="{{comparison_1}}" />
       <select name="comparator" class="autowidth">
@@ -12,33 +14,18 @@
       </select>
       <input type="text" name="comparison_2" class="autowidth" size="50" value="{{comparison_2}}" />
     </div>
-  </fieldset>
-  <fieldset class="divider nolegend">
+  </fieldset>{{identifierContext=start;name=language_revision}}
+  {{language_revision}}{{identifierContext=end;name=language_revision}}
+  <fieldset class="divider">
     <input type="hidden" name="module_name" value="{{module_name}}" />
     <label for="save">{{writeString=content_save}}</label>
-    <div class="grouped_items">
     <button style="width:16px;float:left;" type="submit" name="save" id="save"></button>
-    {{if=;1=\{\{is_new\}\};2=false}}
-      {{if=;1=\{\{readonly_history_override\}\};2=true}}
-        <input type="hidden" name="create_history" value="1" style="display: none;" />
-        <input type="checkbox" id="create_history" value="1" checked="checked" disabled="disabled" />
-      {{endIf}}
-      {{if=ne;1=\{\{readonly_history_override\}\};2=true}}
-        <input type="checkbox" name="create_history" id="create_history" value="1" />
-      {{endIf}}
-      <label for="create_history">{{writeString=content_save_history}}</label>
-    {{endIf}}
-    </div>
-  </fieldset>
-  <fieldset class="divider">
-    <label for="content_show">{{writeString=content_show}}</label><button type="button" class="list" id="content_show" onclick="window.location.href='{{show_url}}';"></button>
   </fieldset>
   </form>
   {{identifierContext=start;name=language_object_revisions}}
-  <fieldset>
+  <fieldset class="divider nolegend" style="padding-top:.5em;">
     <form enctype="multipart/form-data" method="get" action="{{writeLink=to_self;ignore_request=true;position=last}}">
     <label for="revision">{{writeString=load_from_backup}}</label><select id="language_object_revision_id" name="language_object_revision_id" onchange="$(this).up().submit();">{{language_object_revisions}}</select>
     </form>
   </fieldset>
 {{identifierContext=end;name=language_object_revisions}}
-</fieldset>

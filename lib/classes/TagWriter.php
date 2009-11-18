@@ -84,7 +84,6 @@ class TagWriter {
     } else if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
       $sText = str_replace("@", " [at] ", $sText);
     }
-
     if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
       $sLinkUrl = str_replace("@", "^", $sLinkUrl);
       $sLinkUrl = str_replace(".", "!", $sLinkUrl);

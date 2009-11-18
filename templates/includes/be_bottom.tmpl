@@ -3,57 +3,36 @@
   </head>
   <body>
   <div id="admin_navigation">
-    <div id="cms_admin">
-      <a id="mini_cms_admin_logo" class="label_area">&nbsp;</a>
-      <div class="link_container">
-        <div id="domain_name">{{domain_name}}</div>
-        <div id='preview'><a href="{{web_link}}" title="{{writeParameterizedString=preview_title}}" class="vorschau">&nbsp;</a>
+    <div id="admin_header"><a id="admin_domain_title">{{domain_name}}&nbsp;</a></div>
+    <div id="toolbar">
+      <div class="inner">
+        <a id="by_minicms" href="http://wiki.mini-cms.ch/w/Introduction" title="wiki.mini-cms.ch">by MiniCMS</a>
+        <a id="preview" href="{{web_link}}" title="{{writeParameterizedString=preview_title}}">&nbsp;</a>
+        <div class="direct_links">{{direct_links}}</div>
+        <div>
+          <form id="site_link_chooser" method="get" action="{{page_url}}">
+            <select class="{{site_select_class}}{{site_links_not_selected}}" name="select_link" id="site_link" onchange="$('site_link_chooser').submit();">
+              {{available_site_links}}
+            </select>
+          </form>  
+        </div>{{identifierContext=start;name=available_language_options}}
+        <div>
+          <form id="language_chooser" method="{{method}}" action="{{page_url}}">
+            <select class="active_select {{language_choice_hightlight}}" name="content_language" id="content_language" onchange="$('language_chooser').submit();">
+              {{available_language_options}}
+            </select>
+            {{request_values}}
+          </form>
+        </div>{{identifierContext=end;name=available_language_options}}{{identifierContext=start;name=static_language}}
+        <div title="{{writeString=locked_for_action}}">{{static_language}}</div>{{identifierContext=end;name=static_language}}
+        <div id="user">
+          <span class="popup link">{{user_name}}</span><a id="logout_link" href="{{logout_link}}">&nbsp;</a>
+          <div class="popup" style="display:none;">
+            <a class="links" style="padding-bottom:.5em;" href="{{link_to_user}}">{{writeParameterizedString=user.edit_profile;user_name=\{\{user_shortcut\}\}}}</a>
+            <a class="links" style="padding-bottom:.5em;" href="{{link_to_settings}}">{{writeParameterizedString=user.edit_settings;user_name=\{\{user_shortcut\}\}}}</a>
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <label>{{writeString=direct_links}}</label>
-      <div class="link_container links" style="padding-top:1px;">{{admin_links}}</div>
-    </div>{{identifierContext=start;name=available_site_links}} 
-    <div>
-      <label>{{writeString=site_links}}</label>
-      <form id="site_link_chooser" method="get" action="{{page_url}}">
-        <select class="{{site_select_class}}" name="select_link" id="site_link" onchange="$('site_link_chooser').submit();">
-          {{available_site_links}}
-        </select>
-      </form>  
-    </div>{{identifierContext=end;name=available_site_links}}{{identifierContext=start;name=available_admin_links}} 
-    <div>
-      <label>{{writeString=admin_links}}</label>
-      <form id="admin_link_chooser" method="get" action="{{page_url}}">
-        <select class="{{admin_select_class}}" name="select_link" id="admin_select_link" onchange="$('admin_link_chooser').submit();">
-          {{available_admin_links}}
-        </select>
-      </form>  
-    </div>{{identifierContext=end;name=available_admin_links}}    
-    <div>
-      <label>{{writeString=content_language}}</label>
-      {{identifierContext=start;name=available_language_options}}
-      <form id="language_chooser" method="{{method}}" action="{{page_url}}">
-        <select class="active_select" name="content_language" id="content_language" onchange="$('language_chooser').submit();">
-          {{available_language_options}}
-        </select>
-        {{request_values}}
-      </form>
-      {{identifierContext=end;name=available_language_options}}
-      {{identifierContext=start;name=static_language}}
-      <div title="{{writeString=locked_for_action}}">{{static_language}}</div>
-      {{identifierContext=end;name=static_language}}
-    </div>
-    <div id="user">
-      <label id="logout">{{writeString=user}}</label>
-      <div class="link_container links">
-        <span class="popup link">{{user_name}}</span><a id="logout_link" href="{{logout_link}}">&nbsp;</a>
-        <div class="popup" style="display:none;">
-          <a class="links" style="padding-bottom:1em;" href="{{link_to_user}}">{{writeParameterizedString=user.edit_profile;user_name=\{\{user_shortcut\}\}}}</a>
-          <a class="links" style="padding-bottom:1em;" href="{{link_to_settings}}">{{writeParameterizedString=user.edit_settings;user_name=\{\{user_shortcut\}\}}}</a>
-        </div>
-      </div>    
     </div>
   </div>
   <div id="bottom_wrapper">

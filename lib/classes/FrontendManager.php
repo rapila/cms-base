@@ -164,8 +164,8 @@ class FrontendManager extends Manager {
     } else {
       $this->oTemplate = self::getCurrentPage()->getTemplate(true);
     }
-    // FilterModule::getFilters()->handleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
 
+    FilterModule::getFilters()->handleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
     if(!$bIsAjaxRequest) {
       $this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
       $this->fillNavigation();
@@ -206,6 +206,7 @@ class FrontendManager extends Manager {
    * fillAttributes()
    */
   private function fillAttributes() { 
+    FilterModule::getFilters()->handleFillPageAttributes(self::getCurrentPage(), $this->oTemplate);
     $oTopNavigationPage = self::getCurrentPage()->getTopNavigationPage();
     FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage, $this->oTemplate);
     $this->oTemplate->replaceIdentifier("top_navigation", $oTopNavigationPage->getName());
@@ -220,6 +221,7 @@ class FrontendManager extends Manager {
     $this->oTemplate->replaceIdentifier("link_text", self::getCurrentPage()->getLinkText());
     $this->oTemplate->replaceIdentifier("title", self::getCurrentPage()->getPageTitle());
     $this->oTemplate->replaceIdentifier("page_name", self::getCurrentPage()->getName());
+    $this->oTemplate->replaceIdentifier("page_title", self::getCurrentPage()->getPageTitle());
     foreach(self::getCurrentPage()->getPageProperties() as $oPageProperty) {
       $this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
     }
