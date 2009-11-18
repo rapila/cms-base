@@ -24,7 +24,10 @@ class LinkListFrontendModule extends DynamicFrontendModule {
       }
       foreach($aLinks as $i => $oLink) {
         $oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
+        $oItemTemplate->replaceIdentifier('model', 'Link');
         $oItemTemplate->replaceIdentifier('name', $oLink->getName());
+        $oItemTemplate->replaceIdentifier('link_text', $oLink->getName());
+        $oItemTemplate->replaceIdentifier('title', $oLink->getName());
         $oItemTemplate->replaceIdentifier('description', $oLink->getDescription());
         $oItemTemplate->replaceIdentifier('url', $oLink->getUrl());
         $oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
