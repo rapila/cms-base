@@ -8,7 +8,7 @@ require_once 'model/om/BaseLanguageObject.php';
  */	
 class LanguageObject extends BaseLanguageObject {
   /**
-  * Corresponds to the overriding of {@link LanguageObjectPeer::retrieveByPk()}
+  * Corresponds to the overriding of {@link LanguageObjectPeer::retrieveByPK()}
   * Provides a unified way of working with stored references (in the references or tags tables)
   */
   public function getId() {

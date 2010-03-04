@@ -15,7 +15,7 @@ class MediaObjectFrontendModule extends FrontendModule {
     $aOptions = @unserialize($this->getData());
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
     foreach($aOptions as $aDocumentInfo) {
-      $oDocument = DocumentPeer::retrieveByPk($aDocumentInfo['document_id']);
+      $oDocument = DocumentPeer::retrieveByPK($aDocumentInfo['document_id']);
       $sMimeType = null;
       $sSrc = null;
       
@@ -91,7 +91,7 @@ class MediaObjectFrontendModule extends FrontendModule {
       return null;
     }
     $aData = $aData[0];
-    $oDocument = DocumentPeer::retrieveByPk($aData['document_id']);
+    $oDocument = DocumentPeer::retrieveByPK($aData['document_id']);
     return Util::nameForObject($oDocument);
   }
   

@@ -253,7 +253,7 @@ class FrontendManager extends Manager {
     }
     $iId = $oTemplateIdentifier->getParameter('id');
     if($iId !== null) {
-      $oPage = PagePeer::retrieveByPk($iId);
+      $oPage = PagePeer::retrieveByPK($iId);
     }
     if($oPage === null) {
       return null;

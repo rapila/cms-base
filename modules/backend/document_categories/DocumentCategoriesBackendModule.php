@@ -8,7 +8,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oDocumentCategory=DocumentCategoryPeer::retrieveByPk(Manager::usePath()); 
+      $this->oDocumentCategory=DocumentCategoryPeer::retrieveByPK(Manager::usePath()); 
     }
   }
   

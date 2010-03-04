@@ -11,7 +11,7 @@ class StringsBackendModule extends BackendModule {
   public function __construct() { 
     if(Manager::hasNextPathItem()) {
       $this->sPath = Manager::usePath();
-      $this->oString=StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $this->sPath);
+      $this->oString=StringPeer::retrieveByPK(BackendManager::getContentEditLanguage(), $this->sPath);
     }
     $this->sNameSpace = ListUtil::handleBackendChooserListSelection('namespace', false);
   }
@@ -91,7 +91,7 @@ class StringsBackendModule extends BackendModule {
       $oFlash->addMessage('string.key_required');
     }
     if($this->oString === null || $this->oString->isNew() || $_POST['id'] !== $this->sPath) {
-      if(StringPeer::retrieveByPk(BackendManager::getContentEditLanguage(), $_POST['id'])) {
+      if(StringPeer::retrieveByPK(BackendManager::getContentEditLanguage(), $_POST['id'])) {
         $oFlash->addMessage('string.key_exists');
       }
     }

@@ -10,12 +10,12 @@ class Reference extends BaseReference {
   
   public function getFrom() {
     $sClassName = "{$this->getFromModelName()}Peer";
-    return call_user_func(array($sClassName, 'retrieveByPk'), $this->getFromId());
+    return call_user_func(array($sClassName, 'retrieveByPK'), $this->getFromId());
   }
   
   public function getTo() {
     $sClassName = "{$this->getToModelName()}Peer";
-    return call_user_func(array($sClassName, 'retrieveByPk'), $this->getToId());
+    return call_user_func(array($sClassName, 'retrieveByPK'), $this->getToId());
   }
   
 }

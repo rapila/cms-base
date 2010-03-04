@@ -18,7 +18,7 @@ class DocumentsBackendModule extends BackendModule {
     // if there is a key and a document
     if(Manager::hasNextPathItem()) {
       $iId = Manager::peekNextPathItem();
-      $this->oDocument = DocumentPeer::retrieveByPk($iId);
+      $this->oDocument = DocumentPeer::retrieveByPK($iId);
       if($this->oDocument) {
         $this->aReferences = ReferencePeer::getReferences($this->oDocument);
       }

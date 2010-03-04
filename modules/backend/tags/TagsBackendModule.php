@@ -9,7 +9,7 @@ class TagsBackendModule extends BackendModule {
   public function __construct() {
     if(Manager::hasNextPathItem()) {
       $iId = Manager::peekNextPathItem();
-      $this->oTag = TagPeer::retrieveByPk($iId);
+      $this->oTag = TagPeer::retrieveByPK($iId);
     }
   }
   
@@ -62,7 +62,7 @@ class TagsBackendModule extends BackendModule {
     if($oTag === null) {
       return;
     }
-    $oTagInstance = TagInstancePeer::retrieveByPk($oTag->getId(), $_POST['tagged_item_id'], $_POST['model_name']);
+    $oTagInstance = TagInstancePeer::retrieveByPK($oTag->getId(), $_POST['tagged_item_id'], $_POST['model_name']);
     if($oTagInstance === null) {
       return;
     }
@@ -119,7 +119,7 @@ class TagsBackendModule extends BackendModule {
   
   private function saveTags() {
     $oTemplate = $this->constructTemplate("ajax_tag_list");
-    if($_REQUEST['model_name'] === "Page" && !Session::getSession()->getUser()->mayEditPageDetails(PagePeer::retrieveByPk($_REQUEST['tagged_item_id']))) {
+    if($_REQUEST['model_name'] === "Page" && !Session::getSession()->getUser()->mayEditPageDetails(PagePeer::retrieveByPK($_REQUEST['tagged_item_id']))) {
       return print $oTemplate->render();
     }
     try {
@@ -163,7 +163,7 @@ class TagsBackendModule extends BackendModule {
       if($oTag === null) {
         throw new Exception("Tag does not exist");
       }
-      $oTagInstance = TagInstancePeer::retrieveByPk($oTag->getId(), $_REQUEST['tagged_item_id'], $_REQUEST['model_name']);
+      $oTagInstance = TagInstancePeer::retrieveByPK($oTag->getId(), $_REQUEST['tagged_item_id'], $_REQUEST['model_name']);
       if($oTagInstance === null) {
         throw new Exception("There is no instance of the tag for this model/id");
       }
@@ -177,6 +177,6 @@ class TagsBackendModule extends BackendModule {
   }
   
   private static function mayEditTag() {
-    return !($_REQUEST['model_name'] === "Page" && !Session::getSession()->getUser()->mayEditPageDetails(PagePeer::retrieveByPk($_REQUEST['tagged_item_id'])));
+    return !($_REQUEST['model_name'] === "Page" && !Session::getSession()->getUser()->mayEditPageDetails(PagePeer::retrieveByPK($_REQUEST['tagged_item_id'])));
   }
 }

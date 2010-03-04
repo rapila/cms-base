@@ -35,7 +35,7 @@ class SearchResultPageTypeModule extends PageTypeModule {
     
     $iResultCount = 0;
     foreach($aResult as $iPageid => $iCount) {
-      $oPage = PagePeer::retrieveByPk($iPageid);
+      $oPage = PagePeer::retrieveByPK($iPageid);
       if($oPage === null || $oPage->getIsInactive()) {
         continue;
       }

@@ -165,7 +165,7 @@ class UserPeer extends BaseUserPeer {
     } else {
       $iUserId = $mUser;
     }
-    return self::retrieveByPk($iUserId) !== null;
+    return self::retrieveByPK($iUserId) !== null;
   }
   
   public static function getUserByEmail($sEmail) {

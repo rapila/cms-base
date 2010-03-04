@@ -9,7 +9,7 @@ class GroupsBackendModule extends BackendModule {
   
   public function __construct() { 
     if(Manager::hasNextPathItem()) {
-      $this->oGroup = GroupPeer::retrieveByPk(Manager::usePath());
+      $this->oGroup = GroupPeer::retrieveByPK(Manager::usePath());
     }
   }
   
@@ -116,13 +116,13 @@ class GroupsBackendModule extends BackendModule {
       $aRights = array();
       foreach($_POST['right_numbers'] as $iRightId) {
         $iPageId = $_POST['page_id_'.$iRightId];
-        $oRight = RightPeer::retrieveByPk($iRightId);
+        $oRight = RightPeer::retrieveByPK($iRightId);
         if ($oRight === null) {
           $oRight = new Right();
         }
 
         $oRight->setPageId($iPageId);
-        $oPage = PagePeer::retrieveByPk($iPageId);
+        $oPage = PagePeer::retrieveByPK($iPageId);
         $oRight->setGroup($this->oGroup);
         $oRight->setMayCreateChildren(isset($_POST['may_create_children_'.$iRightId]));
         $oRight->setMayEditPageDetails(isset($_POST['may_edit_page_details_'.$iRightId]));

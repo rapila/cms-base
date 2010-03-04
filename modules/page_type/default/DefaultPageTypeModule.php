@@ -143,7 +143,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       $this->sMethod = Manager::usePath();
     }
     if(Manager::hasNextPathItem()) {
-      $this->oCurrentContentObject = ContentObjectPeer::retrieveByPk(Manager::usePath());
+      $this->oCurrentContentObject = ContentObjectPeer::retrieveByPK(Manager::usePath());
     }
   }
   

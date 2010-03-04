@@ -13,7 +13,7 @@ class TagInstance extends BaseTagInstance {
       if(!@class_exists($sModelPeerName)) {
         return null;
       }
-      return call_user_func(array($sModelPeerName, 'retrieveByPk'), $this->getTaggedItemId());
+      return call_user_func(array($sModelPeerName, 'retrieveByPK'), $this->getTaggedItemId());
     }
     return null;
   }

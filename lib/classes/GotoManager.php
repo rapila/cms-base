@@ -9,7 +9,7 @@ class GotoManager extends Manager {
   */
   public function __construct() {
     parent::__construct();
-    $oPage = PagePeer::retrieveByPk(Manager::usePath());
+    $oPage = PagePeer::retrieveByPK(Manager::usePath());
     LinkUtil::redirectToManager($oPage->getFullPathArray(), 'FrontendManager');
   }
   

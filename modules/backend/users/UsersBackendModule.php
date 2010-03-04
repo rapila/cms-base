@@ -10,7 +10,7 @@ class UsersBackendModule extends BackendModule {
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oUser=UserPeer::retrieveByPk(Manager::usePath());
+      $this->oUser=UserPeer::retrieveByPK(Manager::usePath());
     }
     $this->iUserKind = ListUtil::handleBackendChooserListSelection('user_kind', false, UserPeer::BACKEND_USER);
     $this->bIsBackendLoginEnabled = $this->iUserKind !== UserPeer::FRONTEND_USER;

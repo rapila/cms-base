@@ -8,7 +8,6 @@ ALTER TABLE `languages` ADD `sort` TINYINT(1)  NOT NULL AFTER `is_active`;
 #svn r1045
 ALTER TABLE `users` CHANGE `password` `password` VARCHAR(144) NULL DEFAULT NULL;
 
-
 #svn r1115
 ALTER TABLE `page_strings` ADD `keywords` VARCHAR(255)  NOT NULL AFTER `long_title`;
 UPDATE `strings` SET `string_key` = "meta.description" WHERE `string_key` = "meta_description";

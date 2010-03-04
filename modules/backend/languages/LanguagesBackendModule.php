@@ -8,7 +8,7 @@ class LanguagesBackendModule extends BackendModule {
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oLanguage=LanguagePeer::retrieveByPk(Manager::usePath()); 
+      $this->oLanguage=LanguagePeer::retrieveByPK(Manager::usePath()); 
     }
   }
   

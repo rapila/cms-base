@@ -37,7 +37,7 @@ class Session {
       unset($_GET['logout']);
       return;
     }
-    $this->oUser = UserPeer::retrieveByPk($this->iUserId);
+    $this->oUser = UserPeer::retrieveByPK($this->iUserId);
   }
 
   public function isAuthenticated() {

@@ -65,7 +65,7 @@ class StringPeer extends BaseStringPeer {
     if($sLanguageId === null) {
       $sLanguageId = Session::language();
     }
-    $oString = self::retrieveByPk($sLanguageId, $sKey);
+    $oString = self::retrieveByPK($sLanguageId, $sKey);
     $sString = '';
     if($oString === null) {
       $sString = self::getStaticString($sKey, $sLanguageId);

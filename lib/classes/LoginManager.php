@@ -115,7 +115,7 @@ class LoginManager extends Manager {
       } else {
         $sReferrer = LinkUtil::link(array(), 'BackendManager');
       }
-      if($iAdminTest === Session::USER_IS_DEFAULT_USER) { 
+      if(($iAdminTest & Session::USER_IS_DEFAULT_USER) === Session::USER_IS_DEFAULT_USER) { 
         Session::getSession()->setAttribute('change_password', 1);
         $sReferrer = LinkUtil::link(array('users', Session::getSession()->getUserId()), 'BackendManager');
       }

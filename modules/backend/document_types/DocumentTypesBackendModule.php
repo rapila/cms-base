@@ -8,7 +8,7 @@ class DocumentTypesBackendModule extends BackendModule {
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oDocumentType=DocumentTypePeer::retrieveByPk(Manager::usePath());
+      $this->oDocumentType=DocumentTypePeer::retrieveByPK(Manager::usePath());
     }
   }
   

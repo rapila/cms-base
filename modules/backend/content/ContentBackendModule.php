@@ -9,7 +9,7 @@ class ContentBackendModule extends BackendModule {
 
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oCurrentPage = PagePeer::retrieveByPk(Manager::usePath());
+      $this->oCurrentPage = PagePeer::retrieveByPK(Manager::usePath());
       BackendManager::setCurrentPage($this->oCurrentPage);
     }
     if($this->oCurrentPage !== null) {
@@ -116,7 +116,7 @@ class ContentBackendModule extends BackendModule {
   
   public function getAjax($aPath) {
     $iPageId = $_REQUEST['page_id'];
-    $oPage = PagePeer::retrieveByPk($iPageId);
+    $oPage = PagePeer::retrieveByPK($iPageId);
     if(!Session::getSession()->getUser()->mayEditPageContents($oPage)) {
       BackendAjaxFrontendModule::printError(BackendAjaxFrontendModule::ERROR_NOT_PERMITTED);
     }

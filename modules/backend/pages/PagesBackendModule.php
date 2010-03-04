@@ -20,7 +20,7 @@ class PagesBackendModule extends BackendModule {
       if($iPageId === '') {
         $this->oPage = new Page();
       } else {
-        $this->oPage = PagePeer::retrieveByPk($iPageId);
+        $this->oPage = PagePeer::retrieveByPK($iPageId);
       }
       if($this->oPage !== null) {
         BackendManager::setCurrentPage($this->oPage);
@@ -362,7 +362,7 @@ class PagesBackendModule extends BackendModule {
   
   protected function validateForm($oFlash) {
     if($this->oPage === null) {
-      if(!Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk($_POST['parent_id']))){
+      if(!Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK($_POST['parent_id']))){
         $oFlash->addMessage('page_create_forbidden');
       }
       $this->create();
@@ -396,7 +396,7 @@ class PagesBackendModule extends BackendModule {
     
       // if page is moved check if user may do so for the target page
       if($_POST['parent_id'] != $this->oPage->getParentId()) { 
-         if(!Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk($_POST['parent_id']))){
+         if(!Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK($_POST['parent_id']))){
           $oFlash->addMessage('parent_id_forbidden');
           $_POST['parent_id'] = $this->oPage->getParentId();
         }
@@ -631,12 +631,12 @@ class PagesBackendModule extends BackendModule {
     $bShowSelect = true;
     $aOptionsArray = array();
     if($this->oPage !== null && $this->oPage->getId() !== PagePeer::getRootPage()->getId()
-      && Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk($this->oPage->getParentId()))) {
+      && Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK($this->oPage->getParentId()))) {
       $sNameTruncated = StringUtil::truncate($this->oPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
       $iParentId = $this->oPage->getParentId();
       $aOptionsArray[$this->oPage->getParentId()] = StringPeer::getString('page.sibling_of').' '.$sNameTruncated;
       $aOptionsArray[$this->oPage->getId()] = StringPeer::getString('page.child_of').' '.$sNameTruncated;
-    } else if (Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPk(PagePeer::getRootPage()->getId()))) {
+    } else if (Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK(PagePeer::getRootPage()->getId()))) {
       $oRootPage = PagePeer::getRootPage();
       $iParentId = $oRootPage->getId();
       $aOptionsArray[$oRootPage->getId()] = StringPeer::getString('page.child_of').' '.StringUtil::truncate($oRootPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);

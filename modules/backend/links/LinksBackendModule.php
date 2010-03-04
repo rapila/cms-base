@@ -12,7 +12,7 @@ class LinksBackendModule extends BackendModule {
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
-      $this->oLink = LinkPeer::retrieveByPk(Manager::usePath()); 
+      $this->oLink = LinkPeer::retrieveByPK(Manager::usePath()); 
     }
 
     $this->oListHelper = new ListHelper($this);

@@ -102,7 +102,7 @@ class SearchIndex {
     if(count($aAllItems) === 0) {
       return null;
     }
-    return PagePeer::retrieveByPk($aAllItems[0]);
+    return PagePeer::retrieveByPK($aAllItems[0]);
   }
   
   public function findWordsByBeginning($sBeginning) {
@@ -133,7 +133,7 @@ class SearchIndex {
     $aAllItems = $this->find($sSearchString);
     $aResults = array();
     foreach($aAllItems as $iPageId => $iCount) {
-      $aResults[$iPageId] = PagePeer::retrieveByPk($iPageId);
+      $aResults[$iPageId] = PagePeer::retrieveByPK($iPageId);
     }
     return $aResults;
   }

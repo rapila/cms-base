@@ -17,7 +17,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
       $oTag->setName($sTagName);
       $oTag->save();
     }
-    $oTagInstance = self::retrieveByPk($oTag->getId(), $iTaggedItemId, $sModelName);
+    $oTagInstance = self::retrieveByPK($oTag->getId(), $iTaggedItemId, $sModelName);
     if($oTagInstance !== null) {
       throw new Exception("Instance of this tag does already exist");
     }

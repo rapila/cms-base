@@ -35,7 +35,7 @@ class BackendManager extends Manager {
       if($bLogoutBackToLogin) {
         LinkUtil::redirect(LinkUtil::linkToSelf(null, $aLogoutParam));
       } else {
-        $oPage = isset($_REQUEST['page_id']) ? PagePeer::retrieveByPk($_REQUEST['page_id']) : null;
+        $oPage = isset($_REQUEST['page_id']) ? PagePeer::retrieveByPK($_REQUEST['page_id']) : null;
         LinkUtil::redirect(self::getWebLink(($oPage !== null) ? $oPage->getFullPathArray() : array(), $aLogoutParam));
       }
     }
@@ -243,8 +243,8 @@ class BackendManager extends Manager {
       }
       $this->oTemplate->replaceIdentifier("method", strtolower($_SERVER['REQUEST_METHOD']));
     } else {
-      if(LanguagePeer::retrieveByPk(self::getContentEditLanguage()) !== null) 
-      $this->oTemplate->replaceIdentifier("static_language", LanguagePeer::retrieveByPk(self::getContentEditLanguage())->getLanguageName());
+      if(LanguagePeer::retrieveByPK(self::getContentEditLanguage()) !== null) 
+      $this->oTemplate->replaceIdentifier("static_language", LanguagePeer::retrieveByPK(self::getContentEditLanguage())->getLanguageName());
     }
     
     $this->oTemplate->replaceIdentifier("domain_name", LinkUtil::getHostName());
@@ -397,7 +397,7 @@ class BackendManager extends Manager {
       return LinkUtil::link($aPath, "FrontendManager", $aParameters);
     }
     $sLanguageId = self::getContentEditLanguage();
-    $oLanguage = LanguagePeer::retrieveByPk($sLanguageId);
+    $oLanguage = LanguagePeer::retrieveByPK($sLanguageId);
     if($oLanguage === null || $oLanguage->getIsActive() === false) {
       $sLanguageId = Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, null);
     }
