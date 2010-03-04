@@ -232,7 +232,10 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = true, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL) {
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL) {
+		if($bUseCompression === null) {
+			$bUseCompression = ErrorHandler::getEnvironment() !== 'development';
+		}
 		if(!is_string($sLibraryVersion)) {
 			$sLibraryVersion = "$sLibraryVersion";
 		}
