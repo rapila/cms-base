@@ -232,7 +232,10 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL) {
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalUrl = null) {
+		if($bUseLocalUrl === null) {
+			$bUseLocalUrl = ErrorHandler::getEnvironment() === 'development';
+		}
 		if($bUseCompression === null) {
 			$bUseCompression = ErrorHandler::getEnvironment() !== 'development';
 		}
@@ -253,6 +256,7 @@ class ResourceIncluder {
 			throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName not found");
 		}
 		
+		
 		//Handle duplicate includes
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
@@ -272,6 +276,14 @@ class ResourceIncluder {
 			foreach(self::$LIBRARY_DEPENDENCIES[$sLibraryName] as $sDependencyName => $sDependencyVersion) {
 				$this->addJavaScriptLibrary($sDependencyName, $sDependencyVersion, $bUseCompression, true, $bUseSsl, $iPriority);
 			}
+		}
+		
+		if($bUseLocalUrl) {
+			if(count($aIncludes) > 0) {
+				$sLibraryName .= "?load=".implode(',', $aIncludes);
+			}
+			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, false);
+			return;
 		}
 		
 		//Add resource
@@ -310,7 +322,7 @@ class ResourceIncluder {
 			return $this->aIncludedResources;
 	}
 	
-	public function getResourceInfosForIncludedResourcesOfPriority($iPriority) {
+	public function getResourceInfosForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
 		$aResult = array();
 		foreach($this->aIncludedResources[$iPriority] as $aResourceInfo) {
 			$aResult[] = $aResourceInfo;
@@ -318,7 +330,7 @@ class ResourceIncluder {
 		return $aResult;
 	}
 	
-	public function getLocationsForIncludedResourcesOfPriority($iPriority) {
+	public function getLocationsForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
 		$aResult = array();
 		foreach($this->aIncludedResources[$iPriority] as $aResourceInfo) {
 			$aResult[] = $aResourceInfo['location'];

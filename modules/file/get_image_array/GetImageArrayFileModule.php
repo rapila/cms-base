@@ -8,9 +8,9 @@ include_once('propel/util/Criteria.php');
 class GetImageArrayFileModule extends FileModule {
   private $aImages;
   	
-  public function __construct($aRequestPath) {
-    parent::__construct($aRequestPath);
-	  $this->aImages = DocumentPeer::getDocumentsByKindOfImage(!isset($_REQUEST['include_externally_managed']));
+	public function __construct($aRequestPath) {
+		parent::__construct($aRequestPath);
+		$this->aImages = DocumentPeer::getDocumentsByKindOfImage(!isset($_REQUEST['include_externally_managed']));
 	}
 	
 	public function renderFile() {
@@ -25,4 +25,3 @@ class GetImageArrayFileModule extends FileModule {
 	  print $oTemplate->render();
 	}
 }
-?>
