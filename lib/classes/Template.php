@@ -417,7 +417,7 @@ class Template {
 			}
 
 			if(($iFlags&self::JAVASCRIPT_CONVERT)===self::JAVASCRIPT_CONVERT) {
-				$aText[$iKey] = preg_replace("/\"/", "'", $aText[$iKey]);
+				$aText[$iKey] = '"'.$aText[$iKey].'"';
 			}
 			
 			if(($iFlags&self::FORCE_HTML_ESCAPE)===self::FORCE_HTML_ESCAPE || (($iFlags&self::NO_HTML_ESCAPE) !== self::NO_HTML_ESCAPE && !($mText instanceof Template))) {

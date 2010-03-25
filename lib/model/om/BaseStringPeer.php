@@ -734,8 +734,7 @@ abstract class BaseStringPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param string $language_id
-	   @param string $string_key
-	   
+	 * @param string $string_key
 	 * @param      Connection $con
 	 * @return     String
 	 */
