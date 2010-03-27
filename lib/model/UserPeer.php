@@ -121,9 +121,7 @@ class UserPeer extends BaseUserPeer {
                                   $sSortOrder='ASC') {
     $oCriteria = $oCriteria !== null ? $oCriteria : new Criteria();
     if($sSearch !== null) {
-      $oSearchCriterion = $oCriteria->getNewCriterion(UserPeer::FIRST_NAME, 'CONCAT(' . UserPeer::FIRST_NAME . '," ",' . UserPeer::LAST_NAME.') LIKE ("%' . $sSearch. '%")', Criteria::CUSTOM);
-      $oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::USERNAME, "%$sSearch%", Criteria::LIKE));
-      $oCriteria->add($oSearchCriterion);
+			self::addSearchToWidgetCriteria($sSearch, $oCriteria);
     }
     if($bIsBackendUserEnabled !== null) {
       $oCriteria->add(UserPeer::IS_BACKEND_LOGIN_ENABLED, $bIsBackendUserEnabled);
@@ -137,6 +135,13 @@ class UserPeer extends BaseUserPeer {
     }
     return $oCriteria;
   }
+
+	public static function addSearchToWidgetCriteria($sSearch, $oCriteria) {
+     $oSearchCriterion = $oCriteria->getNewCriterion(UserPeer::FIRST_NAME, 'CONCAT(' . UserPeer::FIRST_NAME . '," ",' . UserPeer::LAST_NAME.') LIKE ("%' . $sSearch. '%")', Criteria::CUSTOM);
+     $oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::USERNAME, "%$sSearch%", Criteria::LIKE));
+     $oCriteria->add($oSearchCriterion);
+	}
+
   
   public static function initializeFirstUserIfEmpty($sUsername = null, $sPassword = null) {
     if (self::doCount(new Criteria()) !== 0) {

@@ -33,6 +33,14 @@ class LinkPeer extends BaseLinkPeer {
     $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sSearch%", Criteria::LIKE));
     $oCriteria->add($oSearchCriterion);
   }
+
+	public static function addSearchToWidgetCriteria($sSearch, $oCriteria) {
+    $oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
+    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
+    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sSearch%", Criteria::LIKE));
+    $oCriteria->add($oSearchCriterion);
+	}
+
   
   /** 
    * getLinksByTagName()
