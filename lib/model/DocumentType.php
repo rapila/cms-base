@@ -16,9 +16,12 @@ class DocumentType extends BaseDocumentType {
   }
   
   public function getDocumentKindDetail() {
-    $aResult = explode('/', $this->getMimeType());
-    return $aResult[1];
+    return $this->getDocumentKind();
   }
+
+	public function getDocumentCount() {
+		return $this->countDocuments();
+	}
   
 }
 
