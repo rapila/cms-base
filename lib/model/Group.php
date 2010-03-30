@@ -84,6 +84,10 @@ class Group extends BaseGroup {
     return $aResult;
   }
   
+  public function getUserCount() {
+    return $this->countUserGroups();
+  }
+  
   public function containsUser($oUser) {
     if($oUser instanceof User) {
       $oUser = $oUser->getId();
