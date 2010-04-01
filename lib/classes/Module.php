@@ -217,8 +217,8 @@ abstract class Module {
 		return self::getModuleInfoByTypeAndName($this->getType(), $this->getModuleName());
 	}
 	
-	public function getDisplayName() {
-		return self::getDisplayNameByTypeAndName($this->getType(), $this->getModuleName(get_class($this)));
+	public function getDisplayName($sLanguageId = null) {
+		return self::getDisplayNameByTypeAndName($this->getType(), $this->getModuleName(get_class($this)), $sLanguageId);
 	}
 
 	public static function isSingleton() {

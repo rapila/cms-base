@@ -203,6 +203,6 @@ class SpecialTemplateIdentifierActions {
   }
   
   public static function getAlwaysLastNames() {
-    return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes');
+    return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute');
   }
 }
