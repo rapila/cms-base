@@ -11,7 +11,7 @@
  * @package    model
  */
 class UserGroupPeer extends BaseUserGroupPeer {
-	public function getAllSorted() {
+	public static function getAllSorted() {
 		$oCriteria = new Criteria();
 		$oCriteria->addAscendingOrderByColumn('name');
 		return self::doSelect($oCriteria);
