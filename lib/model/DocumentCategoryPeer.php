@@ -55,4 +55,14 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
     }
     return null;
   }
+  
+  public static function documentCategoryExists($sName) {
+    return self::getCategoryByName($sName) !== null;
+  }
+  
+  public static function getCategoryByName($sName) {
+    $oCriteria = new Criteria();
+    $oCriteria->add(self::NAME, $sName);
+    return self::doSelectOne($oCriteria);
+  }
 }
