@@ -136,10 +136,10 @@ class User extends BaseUser {
 		return $aResult;
 	}
 	
-	public function getActiveUserGroupIds() {
+	public function getActiveUserGroupIds($bAsString=false) {
 		$aResult = array();
 		foreach($this->getUserGroups() as $oUserGroup) {
-			$aResult[] = $oUserGroup->getGroupId();
+			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
 		}
 		return $aResult;
 	}
