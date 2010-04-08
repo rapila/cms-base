@@ -20,6 +20,10 @@ class Document extends BaseDocument {
     return $this->getDocumentType()->getExtension();
   }
   
+  public function getDocumentKind() {
+    return $this->getDocumentType()->getDocumentKind();
+  }
+  
   public function getNameAndExtension() {
     return $this->getName().' ['.$this->getExtension().']';
   }
