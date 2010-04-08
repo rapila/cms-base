@@ -62,7 +62,7 @@ abstract class PageTypeModule extends Module {
   }
   
   //Warning: different than normal
-  public static function getModuleInstance() {
+  public static function getModuleInstance($sModuleName) {
     $sModuleName = func_get_arg(0);
     if(!$sModuleName) {
       $sModuleName = "default";

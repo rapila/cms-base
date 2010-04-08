@@ -110,7 +110,7 @@ abstract class BackendModule extends Module {
     return self::getDisplayNameByTypeAndName(self::getType(), $sModuleName, $sLangugaeId);
   }
   
-  public static function getModuleInstance() {
+  public static function getModuleInstance($sModuleName) {
     $aArgs = func_get_args();
     array_unshift($aArgs, self::getType());
     return call_user_func_array(array("Module", "getModuleInstanceByTypeAndName"), $aArgs);

@@ -41,12 +41,11 @@ abstract class Module {
 		
 		if($sClassName::isSingleton()) {
 			if(!isset(self::$SINGLETONS[$sClassName])) {
-				self::$SINGLETONS[$sClassName] = call_user_func_array(array($oClass, "newInstance"), $aArgs);
+				self::$SINGLETONS[$sClassName] = $oClass->newInstanceArgs($aArgs);
 			}
 			return self::$SINGLETONS[$sClassName];
 		}
-		// return $oClass->newInstanceArgs($aArgs); //Does not work in PHP < 5.1.3
-		return call_user_func_array(array($oClass, "newInstance"), $aArgs);
+		return $oClass->newInstanceArgs($aArgs); //Does not work in PHP < 5.1.3
 	}
 	
 	public static function getClassNameByTypeAndName($sType, $sName = '') {
