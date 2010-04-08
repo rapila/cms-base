@@ -15,7 +15,7 @@ class Language extends BaseLanguage {
     return $this->getLanguageName();
   }
 
-  public static function languagesExist() {
-    return self::doCount(new Criteria()) > 0;
-  }
+	public function getIsDefault() {
+		return Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, null) === $this->getId();
+	}
 }

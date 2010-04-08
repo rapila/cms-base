@@ -20,7 +20,10 @@ class DocumentType extends BaseDocumentType {
   }
 
 	public function getDocumentCount() {
-		return $this->countDocuments();
+		if($this->countDocuments() !== 0) {
+			return $this->countDocuments();
+		}
+		return '-';
 	}
   
 }
