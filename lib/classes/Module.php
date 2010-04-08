@@ -41,11 +41,19 @@ abstract class Module {
 		
 		if($sClassName::isSingleton()) {
 			if(!isset(self::$SINGLETONS[$sClassName])) {
-				self::$SINGLETONS[$sClassName] = $oClass->newInstanceArgs($aArgs);
+				try {
+					self::$SINGLETONS[$sClassName] = $oClass->newInstanceArgs($aArgs);
+				} catch(ReflectionException $ex) {
+					self::$SINGLETONS[$sClassName] = $oClass->newInstance($aArgs);
+				}
 			}
 			return self::$SINGLETONS[$sClassName];
 		}
-		return $oClass->newInstanceArgs($aArgs); //Does not work in PHP < 5.1.3
+		try {
+			return $oClass->newInstanceArgs($aArgs); //Does not work in PHP < 5.1.3
+		} catch(ReflectionException $ex) {
+			return $oClass->newInstance(); //Does not work in PHP < 5.1.3
+		}
 	}
 	
 	public static function getClassNameByTypeAndName($sType, $sName = '') {
