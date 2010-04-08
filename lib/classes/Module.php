@@ -44,7 +44,7 @@ abstract class Module {
 				try {
 					self::$SINGLETONS[$sClassName] = $oClass->newInstanceArgs($aArgs);
 				} catch(ReflectionException $ex) {
-					self::$SINGLETONS[$sClassName] = $oClass->newInstance($aArgs);
+					self::$SINGLETONS[$sClassName] = $oClass->newInstance();
 				}
 			}
 			return self::$SINGLETONS[$sClassName];
