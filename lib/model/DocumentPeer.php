@@ -34,15 +34,11 @@ class DocumentPeer extends BaseDocumentPeer {
 		}
 		return $oCriteria;
 	}
-	
+		
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
-		$oCriteria->add(self::NAME, "%$sSearch%", Criteria::LIKE);
-	}
-	
-	public static function addSearchToWidgetCriteria($sSearch, $oCriteria) {
-    $oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
-    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
-    $oCriteria->add($oSearchCriterion);
+		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
+		$oCriteria->add($oSearchCriterion);
 	}
 		
 	public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
