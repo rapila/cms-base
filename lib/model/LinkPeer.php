@@ -24,7 +24,6 @@ class LinkPeer extends BaseLinkPeer {
 		return self::doSelect($oCriteria);
 	}
 
-
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
@@ -32,7 +31,6 @@ class LinkPeer extends BaseLinkPeer {
 		$oCriteria->add($oSearchCriterion);
 	}
 
-	
 	/** 
 	 * getLinksByTagName()
 	 * @param mixed string|array tagname
