@@ -109,4 +109,9 @@ class Document extends BaseDocument {
 	public function setDocumentCategoryId($mCategoryId) {
 		parent::setDocumentCategoryId(is_numeric($mCategoryId) && $mCategoryId > 0 ? $mCategoryId : null);
 	}
+	
+	public function getUpdatedAtFormatted() {
+		return LocaleUtil::localizeDate($this->getUpdatedAt('c'));
+	}
+
 } // Document
