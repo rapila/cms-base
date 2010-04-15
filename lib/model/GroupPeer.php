@@ -31,4 +31,10 @@ class GroupPeer extends BaseGroupPeer {
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
 	}
+	
+	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
+		$oCriteria->add($oSearchCriterion);
+	}
+
 }

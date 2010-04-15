@@ -97,5 +97,13 @@ class Group extends BaseGroup {
     return $this->countUserGroups($oCriteria) > 0;
   }
 
+	public function getUserLinkData() {
+		$aArray = array();
+		$aArray[] = $this->getUserCount().' '.StringPeer::getString('user');
+		$aArray[] = LinkUtil::link(array('users'), 'AdminManager', array('group_id' => $this->getId()));
+		return $aArray;
+	}
+
+
 }
 
