@@ -22,7 +22,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return $aResult;
 	}
 
-	public static function getDocumentKinds() {
+	public static function getDocumentKindsAssoc() {
 		$oCriteria = new Criteria();
 		$aResult = array();
 		foreach(self::doSelect($oCriteria) as $oDocumentType) {
