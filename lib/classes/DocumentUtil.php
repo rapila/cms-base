@@ -46,7 +46,7 @@ class DocumentUtil {
 		return $oDocument->getId();
 	}
 
-	public static function getDocumentSize($mDocContent = null, $sFormat = 'auto') {
+	public static function getDocumentSize($mDocContent = null, $sFormat = 'auto', $iRoundCount=1) {
 		$iDocLength = 0;
 		if(is_string($mDocContent)) {
 			$iDocLength = strlen($mDocContent); 
@@ -112,6 +112,6 @@ class DocumentUtil {
 				$fOutputDividor = 1024 * 1024 * 1024 * 1024;
 				break;
 		}
-		return round($iDocLength/$fOutputDividor, 2)." ".$sFormat;
+		return round($iDocLength/$fOutputDividor, $iRoundCount)." ".$sFormat;
 	}
 }
