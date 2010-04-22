@@ -1,31 +1,12 @@
 <?php
-/*
- *  $Id: BasePeer.php 431 2006-08-21 14:06:10Z hans $
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information please see
- * <http://propel.phpdb.org>.
- */
 
-include_once 'propel/adapter/DBAdapter.php';
-include_once 'propel/map/ColumnMap.php';
-include_once 'propel/map/DatabaseMap.php';
-include_once 'propel/map/MapBuilder.php';
-include_once 'propel/map/TableMap.php';
-include_once 'propel/map/ValidatorMap.php';
-include_once 'propel/validator/ValidationFailed.php';
+/**
+ * This file is part of the Propel package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license    MIT License
+ */
 
 /**
  * This is a utility class for all generated Peer classes in the system.
@@ -36,14 +17,15 @@ include_once 'propel/validator/ValidationFailed.php';
  * utility methods which ease execution of cross-database queries and
  * the implementation of concrete Peers.
  *
- * @author Hans Lellelid <hans@xmpl.org> (Propel)
- * @author Kaspars Jaudzems <kaspars.jaudzems@inbox.lv> (Propel)
- * @author Frank Y. Kim <frank.kim@clearink.com> (Torque)
- * @author John D. McNally <jmcnally@collab.net> (Torque)
- * @author Brett McLaughlin <bmclaugh@algx.net> (Torque)
- * @author Stephen Haberman <stephenh@chase3000.com> (Torque)
- * @version $Revision: 431 $
- * @package propel.util
+ * @author     Hans Lellelid <hans@xmpl.org> (Propel)
+ * @author     Kaspars Jaudzems <kaspars.jaudzems@inbox.lv> (Propel)
+ * @author     Heltem <heltem@o2php.com> (Propel)
+ * @author     Frank Y. Kim <frank.kim@clearink.com> (Torque)
+ * @author     John D. McNally <jmcnally@collab.net> (Torque)
+ * @author     Brett McLaughlin <bmclaugh@algx.net> (Torque)
+ * @author     Stephen Haberman <stephenh@chase3000.com> (Torque)
+ * @version    $Revision: 1687 $
+ * @package    propel.runtime.util
  */
 class BasePeer
 {
@@ -61,10 +43,22 @@ class BasePeer
 	const TYPE_PHPNAME = 'phpName';
 
 	/**
+	 * studlyphpname type
+	 * e.g. 'authorId'
+	 */
+	const TYPE_STUDLYPHPNAME = 'studlyPhpName';
+
+	/**
 	 * column (peer) name type
 	 * e.g. 'book.AUTHOR_ID'
 	 */
 	const TYPE_COLNAME = 'colName';
+
+	/**
+	 * column part of the column peer name
+	 * e.g. 'AUTHOR_ID'
+	 */
+	const TYPE_RAW_COLNAME = 'rawColName';
 
 	/**
 	 * column fieldname type
@@ -84,9 +78,8 @@ class BasePeer
 
 		$peerclass = 'Base' . $classname . 'Peer'; // TODO is this always true?
 		$callable = array($peerclass, 'getFieldnames');
-		$args = array($type);
 
-		return call_user_func_array($callable, $args);
+		return call_user_func($callable, $type);
 	}
 
 	static public function translateFieldname($classname, $fieldname, $fromType, $toType) {
@@ -104,16 +97,16 @@ class BasePeer
 	 * Method to perform deletes based on values and keys in a
 	 * Criteria.
 	 *
-	 * @param Criteria $criteria The criteria to use.
-	 * @param Connection $con A Connection.
-	 * @return int	The number of rows affected by last statement execution.  For most
+	 * @param      Criteria $criteria The criteria to use.
+	 * @param      PropelPDO $con A PropelPDO connection object.
+	 * @return     int	The number of rows affected by last statement execution.  For most
 	 * 				uses there is only one delete statement executed, so this number
 	 * 				will correspond to the number of rows affected by the call to this
 	 * 				method.  Note that the return value does require that this information
-	 * 				is returned (supported) by the Creole db driver.
-	 * @throws PropelException
+	 * 				is returned (supported) by the PDO driver.
+	 * @throws     PropelException
 	 */
-	public static function doDelete(Criteria $criteria, Connection $con)
+	public static function doDelete(Criteria $criteria, PropelPDO $con)
 	{
 		$db = Propel::getDB($criteria->getDbName());
 		$dbMap = Propel::getDatabaseMap($criteria->getDbName());
@@ -122,8 +115,8 @@ class BasePeer
 		// be executed per table)
 
 		$tables_keys = array();
-		foreach($criteria as $c) {
-			foreach($c->getAllTables() as $tableName) {
+		foreach ($criteria as $c) {
+			foreach ($c->getAllTables() as $tableName) {
 				$tableName2 = $criteria->getTableForAlias($tableName);
 				if ($tableName2 !== null) {
 					$tables_keys[$tableName2 . ' ' . $tableName] = true;
@@ -136,12 +129,16 @@ class BasePeer
 		$affectedRows = 0; // initialize this in case the next loop has no iterations.
 
 		$tables = array_keys($tables_keys);
-
-		foreach($tables as $tableName) {
+		
+		if (empty($tables)) {
+			throw new PropelException("Cannot delete from an empty Criteria");
+		}
+		
+		foreach ($tables as $tableName) {
 
 			$whereClause = array();
 			$selectParams = array();
-			foreach($dbMap->getTable($tableName)->getColumns() as $colMap) {
+			foreach ($dbMap->getTable($tableName)->getColumns() as $colMap) {
 				$key = $tableName . '.' . $colMap->getColumnName();
 				if ($criteria->containsKey($key)) {
 					$sb = "";
@@ -156,27 +153,14 @@ class BasePeer
 
 			// Execute the statement.
 			try {
-
-				$sqlSnippet = implode(" AND ", $whereClause);
-
-				if ($criteria->isSingleRecord()) {
-					$sql = "SELECT COUNT(*) FROM " . $tableName . " WHERE " . $sqlSnippet;
-					$stmt = $con->prepareStatement($sql);
-					self::populateStmtValues($stmt, $selectParams, $dbMap);
-					$rs = $stmt->executeQuery(ResultSet::FETCHMODE_NUM);
-					$rs->next();
-					if ($rs->getInt(1) > 1) {
-						$rs->close();
-						throw new PropelException("Expecting to delete 1 record, but criteria match multiple.");
-					}
-					$rs->close();
+				if ($db->useQuoteIdentifier()) {
+					$tableName = $db->quoteIdentifierTable($tableName); 
 				}
-
-				$sql = "DELETE FROM " . $tableName . " WHERE " .  $sqlSnippet;
-				Propel::log($sql, Propel::LOG_DEBUG);
-				$stmt = $con->prepareStatement($sql);
-				self::populateStmtValues($stmt, $selectParams, $dbMap);
-				$affectedRows = $stmt->executeUpdate();
+				$sql = "DELETE FROM " . $tableName . " WHERE " .  implode(" AND ", $whereClause);
+				$stmt = $con->prepare($sql);
+				self::populateStmtValues($stmt, $selectParams, $dbMap, $db);
+				$stmt->execute();
+				$affectedRows = $stmt->rowCount();
 			} catch (Exception $e) {
 				Propel::log($e->getMessage(), Propel::LOG_ERR);
 				throw new PropelException("Unable to execute DELETE statement.",$e);
@@ -195,24 +179,29 @@ class BasePeer
 	 * public static function doDeleteAll($con = null)
 	 * {
 	 *   if ($con === null) $con = Propel::getConnection(self::DATABASE_NAME);
-	 *   BasePeer::doDeleteAll(self::TABLE_NAME, $con);
+	 *   BasePeer::doDeleteAll(self::TABLE_NAME, $con, self::DATABASE_NAME);
 	 * }
 	 * </code>
 	 *
-	 * @param string $tableName The name of the table to empty.
-	 * @param Connection $con A Connection.
-	 * @return int	The number of rows affected by the statement.  Note
+	 * @param      string $tableName The name of the table to empty.
+	 * @param      PropelPDO $con A PropelPDO connection object.
+	 * @param      string $databaseName the name of the database.
+	 * @return     int	The number of rows affected by the statement.  Note
 	 * 				that the return value does require that this information
-	 * 				is returned (supported) by the Creole db driver.
-	 * @throws PropelException - wrapping SQLException caught from statement execution.
+	 * 				is returned (supported) by the Propel db driver.
+	 * @throws     PropelException - wrapping SQLException caught from statement execution.
 	 */
-	public static function doDeleteAll($tableName, Connection $con)
+	public static function doDeleteAll($tableName, PropelPDO $con, $databaseName = null)
 	{
 		try {
+			$db = Propel::getDB($databaseName);
+			if ($db->useQuoteIdentifier()) {
+				$tableName = $db->quoteIdentifierTable($tableName);
+			}
 			$sql = "DELETE FROM " . $tableName;
-			Propel::log($sql, Propel::LOG_DEBUG);
-			$stmt = $con->prepareStatement($sql);
-			return $stmt->executeUpdate();
+			$stmt = $con->prepare($sql);
+			$stmt->execute();
+			return $stmt->rowCount();
 		} catch (Exception $e) {
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
 			throw new PropelException("Unable to perform DELETE ALL operation.", $e);
@@ -236,16 +225,18 @@ class BasePeer
 	 * If no primary key is defined for the table the values will be
 	 * inserted as specified in Criteria and null will be returned.
 	 *
-	 * @param Criteria $criteria Object containing values to insert.
-	 * @param Connection $con A Connection.
-	 * @return mixed The primary key for the new row if (and only if!) the primary key
+	 * @param      Criteria $criteria Object containing values to insert.
+	 * @param      PropelPDO $con A PropelPDO connection.
+	 * @return     mixed The primary key for the new row if (and only if!) the primary key
 	 *				is auto-generated.  Otherwise will return <code>null</code>.
-	 * @throws PropelException
+	 * @throws     PropelException
 	 */
-	public static function doInsert(Criteria $criteria, Connection $con) {
+	public static function doInsert(Criteria $criteria, PropelPDO $con) {
 
 		// the primary key
 		$id = null;
+
+		$db = Propel::getDB($criteria->getDbName());
 
 		// Get the table name and method for determining the primary
 		// key value.
@@ -260,7 +251,7 @@ class BasePeer
 		$tableMap = $dbMap->getTable($tableName);
 		$keyInfo = $tableMap->getPrimaryKeyMethodInfo();
 		$useIdGen = $tableMap->isUseIdGenerator();
-		$keyGen = $con->getIdGenerator();
+		//$keyGen = $con->getIdGenerator();
 
 		$pk = self::getPrimaryKey($criteria);
 
@@ -272,47 +263,53 @@ class BasePeer
 
 		// pk will be null if there is no primary key defined for the table
 		// we're inserting into.
-		if ($pk !== null && $useIdGen && !$criteria->containsKey($pk->getFullyQualifiedName())) {
-
-			// If the keyMethod is SEQUENCE get the id before the insert.
-			if ($keyGen->isBeforeInsert()) {
-				try {
-					$id = $keyGen->getId($keyInfo);
-				} catch (Exception $e) {
-					throw new PropelException("Unable to get sequence id.", $e);
-				}
-				$criteria->add($pk->getFullyQualifiedName(), $id);
+		if ($pk !== null && $useIdGen && !$criteria->keyContainsValue($pk->getFullyQualifiedName()) && $db->isGetIdBeforeInsert()) {
+			try {
+				$id = $db->getId($con, $keyInfo);
+			} catch (Exception $e) {
+				throw new PropelException("Unable to get sequence id.", $e);
 			}
+			$criteria->add($pk->getFullyQualifiedName(), $id);
 		}
 
 		try {
+			$adapter = Propel::getDB($criteria->getDBName());
 
 			$qualifiedCols = $criteria->keys(); // we need table.column cols when populating values
 			$columns = array(); // but just 'column' cols for the SQL
-			foreach($qualifiedCols as $qualifiedCol) {
-				$columns[] = substr($qualifiedCol, strpos($qualifiedCol, '.') + 1);
+			foreach ($qualifiedCols as $qualifiedCol) {
+				$columns[] = substr($qualifiedCol, strrpos($qualifiedCol, '.') + 1);
 			}
 
-			$sql = "INSERT INTO " . $tableName
-				. " (" . implode(",", $columns) . ")"
-				. " VALUES (" . substr(str_repeat("?,", count($columns)), 0, -1) . ")";
+			// add identifiers
+			if ($adapter->useQuoteIdentifier()) {
+				$columns = array_map(array($adapter, 'quoteIdentifier'), $columns);
+				$tableName = $adapter->quoteIdentifierTable($tableName); 
+			}
 
-			Propel::log($sql, Propel::LOG_DEBUG);
+			$sql = 'INSERT INTO ' . $tableName
+			. ' (' . implode(',', $columns) . ')'
+			. ' VALUES (';
+			// . substr(str_repeat("?,", count($columns)), 0, -1) . 
+			for($p=1, $cnt=count($columns); $p <= $cnt; $p++) {
+				$sql .= ':p'.$p;
+				if ($p !== $cnt) $sql .= ',';
+			}
+			$sql .= ')';
 
-			$stmt = $con->prepareStatement($sql);
-			self::populateStmtValues($stmt, self::buildParams($qualifiedCols, $criteria), $dbMap);
-			$stmt->executeUpdate();
+			$stmt = $con->prepare($sql);
+			self::populateStmtValues($stmt, self::buildParams($qualifiedCols, $criteria), $dbMap, $db);
+			$stmt->execute();
 
 		} catch (Exception $e) {
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
 			throw new PropelException("Unable to execute INSERT statement.", $e);
 		}
 
-		// If the primary key column is auto-incremented, get the id
-		// now.
-		if ($pk !== null && $useIdGen && $keyGen->isAfterInsert()) {
+		// If the primary key column is auto-incremented, get the id now.
+		if ($pk !== null && $useIdGen && $db->isGetIdAfterInsert()) {
 			try {
-				$id = $keyGen->getId($keyInfo);
+				$id = $db->getId($con, $keyInfo);
 			} catch (Exception $e) {
 				throw new PropelException("Unable to get autoincrement id.", $e);
 			}
@@ -330,82 +327,111 @@ class BasePeer
 	 * WHERE some_column = some value AND could_have_another_column =
 	 * another value AND so on.
 	 *
-	 * @param $selectCriteria A Criteria object containing values used in where
+	 * @param      $selectCriteria A Criteria object containing values used in where
 	 *		clause.
-	 * @param $updateValues A Criteria object containing values used in set
+	 * @param      $updateValues A Criteria object containing values used in set
 	 *		clause.
-	 * @param $con 	The Connection to use.
-	 * @return int	The number of rows affected by last update statement.  For most
+	 * @param      PropelPDO $con The PropelPDO connection object to use.
+	 * @return     int	The number of rows affected by last update statement.  For most
 	 * 				uses there is only one update statement executed, so this number
 	 * 				will correspond to the number of rows affected by the call to this
 	 * 				method.  Note that the return value does require that this information
-	 * 				is returned (supported) by the Creole db driver.
-	 * @throws PropelException
+	 * 				is returned (supported) by the Propel db driver.
+	 * @throws     PropelException
 	 */
-	public static function doUpdate(Criteria $selectCriteria, Criteria $updateValues, Connection $con) {
+	public static function doUpdate(Criteria $selectCriteria, Criteria $updateValues, PropelPDO $con) {
 
 		$db = Propel::getDB($selectCriteria->getDbName());
 		$dbMap = Propel::getDatabaseMap($selectCriteria->getDbName());
 
 		// Get list of required tables, containing all columns
 		$tablesColumns = $selectCriteria->getTablesColumns();
+		if (empty($tablesColumns)) {
+			$tablesColumns = array($selectCriteria->getPrimaryTableName() => array());
+		}
 
 		// we also need the columns for the update SQL
 		$updateTablesColumns = $updateValues->getTablesColumns();
 
 		$affectedRows = 0; // initialize this in case the next loop has no iterations.
 
-		foreach($tablesColumns as $tableName => $columns) {
+		foreach ($tablesColumns as $tableName => $columns) {
 
 			$whereClause = array();
+			
+			$params = array();
 
-			$selectParams = array();
-			foreach($columns as $colName) {
-				$sb = "";
-				$selectCriteria->getCriterion($colName)->appendPsTo($sb, $selectParams);
-				$whereClause[] = $sb;
-			}
-
-			$rs = null;
 			$stmt = null;
 			try {
 
-				$sqlSnippet = implode(" AND ", $whereClause);
-
-				if ($selectCriteria->isSingleRecord()) {
-					// Get affected records.
-					$sql = "SELECT COUNT(*) FROM " . $tableName . " WHERE " . $sqlSnippet;
-					$stmt = $con->prepareStatement($sql);
-					self::populateStmtValues($stmt, $selectParams, $dbMap);
-					$rs = $stmt->executeQuery(ResultSet::FETCHMODE_NUM);
-					$rs->next();
-					if ($rs->getInt(1) > 1) {
-						$rs->close();
-						throw new PropelException("Expected to update 1 record, multiple matched.");
+				if ($db->useQuoteIdentifier()) {
+					$sql = "UPDATE " . $db->quoteIdentifierTable($tableName) . " SET "; 
+				} else { 
+					$sql = "UPDATE " . $tableName . " SET ";
+				}
+				$p = 1;
+				foreach ($updateTablesColumns[$tableName] as $col) {
+					$updateColumnName = substr($col, strrpos($col, '.') + 1);
+					// add identifiers for the actual database?
+					if ($db->useQuoteIdentifier()) {
+						$updateColumnName = $db->quoteIdentifier($updateColumnName);
 					}
-					$rs->close();
+					if ($updateValues->getComparison($col) != Criteria::CUSTOM_EQUAL) {
+						$sql .= $updateColumnName . '=:p'.$p++.', ';
+					} else {
+						$param = $updateValues->get($col);
+						$sql .= $updateColumnName . ' = ';
+						if (is_array($param)) {
+							if (isset($param['raw'])) {
+								$raw = $param['raw'];
+								$rawcvt = '';
+								// parse the $params['raw'] for ? chars
+								for($r=0,$len=strlen($raw); $r < $len; $r++) {
+									if ($raw{$r} == '?') {
+										$rawcvt .= ':p'.$p++;
+									} else {
+										$rawcvt .= $raw{$r};
+									}
+								}
+								$sql .= $rawcvt . ', ';
+							} else {
+								$sql .= ':p'.$p++.', ';
+							}
+							if (isset($param['value'])) {
+								$updateValues->put($col, $param['value']);
+							}
+						} else {
+							$updateValues->remove($col);
+							$sql .= $param . ', ';
+						}
+					}
+				}
+				
+				$params = self::buildParams($updateTablesColumns[$tableName], $updateValues);
+
+				$sql = substr($sql, 0, -2);
+				if (!empty($columns)) {
+					foreach ($columns as $colName) {
+						$sb = "";
+						$selectCriteria->getCriterion($colName)->appendPsTo($sb, $params);
+						$whereClause[] = $sb;
+					}
+					$sql .= " WHERE " .  implode(" AND ", $whereClause);
 				}
 
-				$sql = "UPDATE " . $tableName . " SET ";
-				foreach($updateTablesColumns[$tableName] as $col) {
-					$sql .= substr($col, strpos($col, '.') + 1) . " = ?,";
-				}
+				$stmt = $con->prepare($sql);
 
-				$sql = substr($sql, 0, -1) . " WHERE " . $sqlSnippet;
+				// Replace ':p?' with the actual values
+				self::populateStmtValues($stmt, $params, $dbMap, $db);
 
-				Propel::log($sql, Propel::LOG_DEBUG);
+				$stmt->execute();
 
-				$stmt = $con->prepareStatement($sql);
+				$affectedRows = $stmt->rowCount();
 
-				// Replace '?' with the actual values
-				self::populateStmtValues($stmt, array_merge(self::buildParams($updateTablesColumns[$tableName], $updateValues), $selectParams), $dbMap);
-
-				$affectedRows = $stmt->executeUpdate();
-				$stmt->close();
+				$stmt = null; // close
 
 			} catch (Exception $e) {
-				if ($rs) $rs->close();
-				if ($stmt) $stmt->close();
+				if ($stmt) $stmt = null; // close
 				Propel::log($e->getMessage(), Propel::LOG_ERR);
 				throw new PropelException("Unable to execute UPDATE statement.", $e);
 			}
@@ -416,69 +442,219 @@ class BasePeer
 	}
 
 	/**
-	 * Executes query build by createSelectSql() and returns ResultSet.
+	 * Executes query build by createSelectSql() and returns the resultset statement.
 	 *
-	 * @param Criteria $criteria A Criteria.
-	 * @param Connection $con A connection to use.
-	 * @return ResultSet The resultset.
-	 * @throws PropelException
-	 * @see createSelectSql()
+	 * @param      Criteria $criteria A Criteria.
+	 * @param      PropelPDO $con A PropelPDO connection to use.
+	 * @return     PDOStatement The resultset.
+	 * @throws     PropelException
+	 * @see        createSelectSql()
 	 */
-	public static function doSelect(Criteria $criteria, $con = null)
+	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
 		$dbMap = Propel::getDatabaseMap($criteria->getDbName());
-
-		if ($con === null)
-			$con = Propel::getConnection($criteria->getDbName());
-
+		$db = Propel::getDB($criteria->getDbName());
 		$stmt = null;
+		
+		if ($con === null) {
+			$con = Propel::getConnection($criteria->getDbName(), Propel::CONNECTION_READ);
+		}
+
+		if ($criteria->isUseTransaction()) {
+			$con->beginTransaction();
+		} 
 
 		try {
-
-			// Transaction support exists for (only?) Postgres, which must
-			// have SELECT statements that include bytea columns wrapped w/
-			// transactions.
-			if ($criteria->isUseTransaction()) $con->begin();
 
 			$params = array();
 			$sql = self::createSelectSql($criteria, $params);
 
-			$stmt = $con->prepareStatement($sql);
-			$stmt->setLimit($criteria->getLimit());
-			$stmt->setOffset($criteria->getOffset());
+			$stmt = $con->prepare($sql);
 
-			self::populateStmtValues($stmt, $params, $dbMap);
+			self::populateStmtValues($stmt, $params, $dbMap, $db);
 
-			$rs = $stmt->executeQuery(ResultSet::FETCHMODE_NUM);
-			if ($criteria->isUseTransaction()) $con->commit();
+			$stmt->execute();
+
+			if ($criteria->isUseTransaction()) {
+				$con->commit();
+			}
+
 		} catch (Exception $e) {
-			if ($stmt) $stmt->close();
-			if ($criteria->isUseTransaction()) $con->rollback();
+			if ($stmt) {
+				$stmt = null; // close
+			}
+			if ($criteria->isUseTransaction()) {
+				$con->rollBack();
+			}
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
 			throw new PropelException($e);
 		}
 
-		return $rs;
+		return $stmt;
+	}
+
+	/**
+	 * Executes a COUNT query using either a simple SQL rewrite or, for more complex queries, a
+	 * sub-select of the SQL created by createSelectSql() and returns the statement.
+	 *
+	 * @param      Criteria $criteria A Criteria.
+	 * @param      PropelPDO $con A PropelPDO connection to use.
+	 * @return     PDOStatement The resultset statement.
+	 * @throws     PropelException
+	 * @see        createSelectSql()
+	 */
+	public static function doCount(Criteria $criteria, PropelPDO $con = null)
+	{
+		$dbMap = Propel::getDatabaseMap($criteria->getDbName());
+		$db = Propel::getDB($criteria->getDbName());
+
+		if ($con === null) {
+			$con = Propel::getConnection($criteria->getDbName(), Propel::CONNECTION_READ);
+		}
+
+		$stmt = null;
+
+		if ($criteria->isUseTransaction()) {
+			$con->beginTransaction();
+		}
+
+		$needsComplexCount = $criteria->getGroupByColumns() 
+			|| $criteria->getOffset()
+			|| $criteria->getLimit() 
+			|| $criteria->getHaving() 
+			|| in_array(Criteria::DISTINCT, $criteria->getSelectModifiers());
+
+		try {
+
+			$params = array();
+
+			if ($needsComplexCount) {
+				if (self::needsSelectAliases($criteria)) {
+					if ($criteria->getHaving()) {
+						throw new PropelException('Propel cannot create a COUNT query when using HAVING and  duplicate column names in the SELECT part');
+					}
+					self::turnSelectColumnsToAliases($criteria);
+				}
+				$selectSql = self::createSelectSql($criteria, $params);
+				$sql = 'SELECT COUNT(*) FROM (' . $selectSql . ') propelmatch4cnt';
+			} else {
+				// Replace SELECT columns with COUNT(*)
+				$criteria->clearSelectColumns()->addSelectColumn('COUNT(*)');
+				$sql = self::createSelectSql($criteria, $params);
+			}
+
+			$stmt = $con->prepare($sql);
+			self::populateStmtValues($stmt, $params, $dbMap, $db);
+			$stmt->execute();
+
+			if ($criteria->isUseTransaction()) {
+				$con->commit();
+			}
+
+		} catch (Exception $e) {
+			if ($stmt !== null) {
+				$stmt = null;
+			}
+			if ($criteria->isUseTransaction()) {
+				$con->rollBack();
+			}
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException($e);
+		}
+
+		return $stmt;
+	}
+
+	/**
+	 * Populates values in a prepared statement.
+	 *
+	 * This method is designed to work with the createSelectSql() method, which creates
+	 * both the SELECT SQL statement and populates a passed-in array of parameter
+	 * values that should be substituted.
+	 *
+	 * <code>
+	 * $params = array();
+	 * $sql = BasePeer::createSelectSql($criteria, $params);
+	 * BasePeer::populateStmtValues($stmt, $params, Propel::getDatabaseMap($critera->getDbName()), Propel::getDB($criteria->getDbName()));
+	 * </code>
+	 *
+	 * @param      PDOStatement $stmt
+	 * @param      array $params array('column' => ..., 'table' => ..., 'value' => ...)
+	 * @param      DatabaseMap $dbMap
+	 * @return     int The number of params replaced.
+	 * @see        createSelectSql()
+	 * @see        doSelect()
+	 */
+	public static function populateStmtValues(PDOStatement $stmt, array $params, DatabaseMap $dbMap, DBAdapter $db)
+	{
+		$i = 1;
+		foreach ($params as $param) {
+			$tableName = $param['table'];
+			$columnName = $param['column'];
+			$value = $param['value'];
+
+			if (null === $value) {
+
+				$stmt->bindValue(':p'.$i++, null, PDO::PARAM_NULL);
+
+			} elseif (null !== $tableName) {
+
+				$cMap = $dbMap->getTable($tableName)->getColumn($columnName);
+				$type = $cMap->getType();
+				$pdoType = $cMap->getPdoType();
+
+				// FIXME - This is a temporary hack to get around apparent bugs w/ PDO+MYSQL
+				// See http://pecl.php.net/bugs/bug.php?id=9919
+				if ($pdoType == PDO::PARAM_BOOL && $db instanceof DBMySQL) {
+					$value = (int) $value;
+					$pdoType = PDO::PARAM_INT;
+				} elseif (is_numeric($value) && $cMap->isEpochTemporal()) { // it's a timestamp that needs to be formatted
+					if ($type == PropelColumnTypes::TIMESTAMP) {
+						$value = date($db->getTimestampFormatter(), $value);
+					} else if ($type == PropelColumnTypes::DATE) {
+						$value = date($db->getDateFormatter(), $value);
+					} else if ($type == PropelColumnTypes::TIME) {
+						$value = date($db->getTimeFormatter(), $value);
+					}
+				} elseif ($value instanceof DateTime && $cMap->isTemporal()) { // it's a timestamp that needs to be formatted
+					if ($type == PropelColumnTypes::TIMESTAMP || $type == PropelColumnTypes::BU_TIMESTAMP) {
+						$value = $value->format($db->getTimestampFormatter());
+					} else if ($type == PropelColumnTypes::DATE || $type == PropelColumnTypes::BU_DATE) {
+						$value = $value->format($db->getDateFormatter());
+					} else if ($type == PropelColumnTypes::TIME) {
+						$value = $value->format($db->getTimeFormatter());
+					}
+				} elseif (is_resource($value) && $cMap->isLob()) {
+					// we always need to make sure that the stream is rewound, otherwise nothing will
+					// get written to database.
+					rewind($value);
+				}
+
+				$stmt->bindValue(':p'.$i++, $value, $pdoType);
+			} else {
+				$stmt->bindValue(':p'.$i++, $value);
+			}
+		} // foreach
 	}
 
 	/**
 	 * Applies any validators that were defined in the schema to the specified columns.
 	 *
-	 * @param string $dbName The name of the database
-	 * @param string $tableName The name of the table
-	 * @param array $columns Array of column names as key and column values as value.
+	 * @param      string $dbName The name of the database
+	 * @param      string $tableName The name of the table
+	 * @param      array $columns Array of column names as key and column values as value.
 	 */
 	public static function doValidate($dbName, $tableName, $columns)
 	{
 		$dbMap = Propel::getDatabaseMap($dbName);
 		$tableMap = $dbMap->getTable($tableName);
 		$failureMap = array(); // map of ValidationFailed objects
-		foreach($columns as $colName => $colValue) {
+		foreach ($columns as $colName => $colValue) {
 			if ($tableMap->containsColumn($colName)) {
 				$col = $tableMap->getColumn($colName);
-				foreach($col->getValidators() as $validatorMap) {
+				foreach ($col->getValidators() as $validatorMap) {
 					$validator = BasePeer::getValidator($validatorMap->getClass());
-					if($validator && ($col->isNotNull() || $colValue !== null) && $validator->isValid($validatorMap, $colValue) === false) {
+					if ($validator && ($col->isNotNull() || $colValue !== null) && $validator->isValid($validatorMap, $colValue) === false) {
 						if (!isset($failureMap[$colName])) { // for now we do one ValidationFailed per column, not per rule
 							$failureMap[$colName] = new ValidationFailed($colName, $validatorMap->getMessage(), $validator);
 						}
@@ -493,10 +669,10 @@ class BasePeer
 	 * Helper method which returns the primary key contained
 	 * in the given Criteria object.
 	 *
-	 * @param Criteria $criteria A Criteria.
-	 * @return ColumnMap If the Criteria object contains a primary
+	 * @param      Criteria $criteria A Criteria.
+	 * @return     ColumnMap If the Criteria object contains a primary
 	 *		  key, or null if it doesn't.
-	 * @throws PropelException
+	 * @throws     PropelException
 	 */
 	private static function getPrimaryKey(Criteria $criteria)
 	{
@@ -511,118 +687,114 @@ class BasePeer
 
 			$dbMap = Propel::getDatabaseMap($criteria->getDbName());
 
-			if ($dbMap === null) {
-				throw new PropelException("\$dbMap is null");
-			}
-
-			if ($dbMap->getTable($table) === null) {
-				throw new PropelException("\$dbMap->getTable() is null");
-			}
-
-			$columns = $dbMap->getTable($table)->getColumns();
-			foreach(array_keys($columns) as $key) {
-				if ($columns[$key]->isPrimaryKey()) {
-					$pk = $columns[$key];
-					break;
-				}
+			$pks = $dbMap->getTable($table)->getPrimaryKeys();
+			if (!empty($pks)) {
+				$pk = array_shift($pks);
 			}
 		}
 		return $pk;
 	}
 
 	/**
+	 * Checks whether the Criteria needs to use column aliasing
+	 * This is implemented in a service class rather than in Criteria itself
+	 * in order to avoid doing the tests when it's not necessary (e.g. for SELECTs)
+	 */
+	public static function needsSelectAliases(Criteria $criteria)
+	{
+		$columnNames = array();
+		foreach ($criteria->getSelectColumns() as $fullyQualifiedColumnName) {
+			if ($pos = strrpos($fullyQualifiedColumnName, '.')) {
+				$columnName = substr($fullyQualifiedColumnName, $pos);
+				if (isset($columnNames[$columnName])) {
+					// more than one column with the same name, so aliasing is required
+					return true;
+				}
+				$columnNames[$columnName] = true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Ensures uniqueness of select column names by turning them all into aliases
+	 * This is necessary for queries on more than one table when the tables share a column name
+	 * @see http://propel.phpdb.org/trac/ticket/795
+	 *
+	 * @param Criteria $criteria
+	 * 
+	 * @return Criteria The input, with Select columns replaced by aliases
+	 */
+	public static function turnSelectColumnsToAliases(Criteria $criteria)
+	{
+		$selectColumns = $criteria->getSelectColumns();
+		// clearSelectColumns also clears the aliases, so get them too
+		$asColumns = $criteria->getAsColumns();
+		$criteria->clearSelectColumns();
+		$columnAliases = $asColumns;
+		// add the select columns back
+		foreach ($selectColumns as $clause) {
+			// Generate a unique alias
+			$baseAlias = preg_replace('/\W/', '_', $clause);
+			$alias = $baseAlias;
+			// If it already exists, add a unique suffix
+			$i = 0;
+			while (isset($columnAliases[$alias])) {
+				$i++;
+				$alias = $baseAlias . '_' . $i;
+			}
+			// Add it as an alias
+			$criteria->addAsColumn($alias, $clause);
+			$columnAliases[$alias] = $clause;
+		}
+		// Add the aliases back, don't modify them
+		foreach ($asColumns as $name => $clause) {
+			$criteria->addAsColumn($name, $clause);
+		}
+		
+		return $criteria;
+	}
+	
+	/**
 	 * Method to create an SQL query based on values in a Criteria.
 	 *
 	 * This method creates only prepared statement SQL (using ? where values
 	 * will go).  The second parameter ($params) stores the values that need
 	 * to be set before the statement is executed.  The reason we do it this way
-	 * is to let the Creole layer handle all escaping & value formatting.
+	 * is to let the PDO layer handle all escaping & value formatting.
 	 *
-	 * @param Criteria $criteria Criteria for the SELECT query.
-	 * @param array &$params Parameters that are to be replaced in prepared statement.
-	 * @return string
-	 * @throws PropelException Trouble creating the query string.
+	 * @param      Criteria $criteria Criteria for the SELECT query.
+	 * @param      array &$params Parameters that are to be replaced in prepared statement.
+	 * @return     string
+	 * @throws     PropelException Trouble creating the query string.
 	 */
-	public static function createSelectSql(Criteria $criteria, &$params) {
-
+	public static function createSelectSql(Criteria $criteria, &$params)
+	{
 		$db = Propel::getDB($criteria->getDbName());
 		$dbMap = Propel::getDatabaseMap($criteria->getDbName());
 
-		// redundant definition $selectModifiers = array();
-		$selectClause = array();
 		$fromClause = array();
 		$joinClause = array();
 		$joinTables = array();
 		$whereClause = array();
 		$orderByClause = array();
-		// redundant definition $groupByClause = array();
 
 		$orderBy = $criteria->getOrderByColumns();
 		$groupBy = $criteria->getGroupByColumns();
 		$ignoreCase = $criteria->isIgnoreCase();
-		$select = $criteria->getSelectColumns();
-		$aliases = $criteria->getAsColumns();
 
-		// simple copy
-		$selectModifiers = $criteria->getSelectModifiers();
-
-		// get selected columns
-		foreach($select as $columnName) {
-
-			// expect every column to be of "table.column" formation
-			// it could be a function:  e.g. MAX(books.price)
-
-			$tableName = null;
-
-			$selectClause[] = $columnName; // the full column name: e.g. MAX(books.price)
-
-			$parenPos = strpos($columnName, '(');
-			$dotPos = strpos($columnName, '.');
-
-			// [HL] I think we really only want to worry about adding stuff to
-			// the fromClause if this function has a TABLE.COLUMN in it at all.
-			// e.g. COUNT(*) should not need this treatment -- or there needs to
-			// be special treatment for '*'
-			if ($dotPos !== false) {
-
-				if ($parenPos === false) { // table.column
-					$tableName = substr($columnName, 0, $dotPos);
-				} else { // FUNC(table.column)
-					$tableName = substr($columnName, $parenPos + 1, $dotPos - ($parenPos + 1));
-					// functions may contain qualifiers so only take the last
-					// word as the table name.
-					// COUNT(DISTINCT books.price)
-					$lastSpace = strpos($tableName, ' ');
-					if ($lastSpace !== false) { // COUNT(DISTINCT books.price)
-						$tableName = substr($tableName, $lastSpace + 1);
-					}
-				}
-				$tableName2 = $criteria->getTableForAlias($tableName);
-				if ($tableName2 !== null) {
-					$fromClause[] = $tableName2 . ' ' . $tableName;
-				} else {
-					$fromClause[] = $tableName;
-				}
-
-			} // if $dotPost !== null
-		}
-
-		// set the aliases
-		foreach($aliases as $alias => $col) {
-			$selectClause[] = $col . " AS " . $alias;
-		}
+		// get the first part of the SQL statement, the SELECT part
+		$selectSql = self::createSelectSqlPart($criteria, $fromClause);
 
 		// add the criteria to WHERE clause
 		// this will also add the table names to the FROM clause if they are not already
-		// invluded via a LEFT JOIN
-		foreach($criteria->keys() as $key) {
+		// included via a LEFT JOIN
+		foreach ($criteria->keys() as $key) {
 
 			$criterion = $criteria->getCriterion($key);
-			$someCriteria = $criterion->getAttachedCriterion();
-			$someCriteriaLength = count($someCriteria);
 			$table = null;
-			for ($i=0; $i < $someCriteriaLength; $i++) {
-				$tableName = $someCriteria[$i]->getTable();
+			foreach ($criterion->getAttachedCriterion() as $attachedCriterion) {
+				$tableName = $attachedCriterion->getTable();
 
 				$table = $criteria->getTableForAlias($tableName);
 				if ($table !== null) {
@@ -632,46 +804,40 @@ class BasePeer
 					$table = $tableName;
 				}
 
-				$ignoreCase =
-					(($criteria->isIgnoreCase()
-						|| $someCriteria[$i]->isIgnoreCase())
-						&& ($dbMap->getTable($table)->getColumn($someCriteria[$i]->getColumn())->getType() == "string" )
-						 );
-
-				$someCriteria[$i]->setIgnoreCase($ignoreCase);
+				if (($criteria->isIgnoreCase() || $attachedCriterion->isIgnoreCase())
+				&& $dbMap->getTable($table)->getColumn($attachedCriterion->getColumn())->isText()) {
+					$attachedCriterion->setIgnoreCase(true);
+				}
 			}
 
 			$criterion->setDB($db);
 
-			$sb = "";
+			$sb = '';
 			$criterion->appendPsTo($sb, $params);
 			$whereClause[] = $sb;
-
 		}
-		
-		// handle RIGHT (straight) joins
-		// Loop through the joins, 
+
+		// Handle joins
 		// joins with a null join type will be added to the FROM clause and the condition added to the WHERE clause.
-		// joins of a specified type: the LEFT side will be added to the fromClause and the RIGHT to the joinClause 
-		// New Code.
-		foreach ((array) $criteria->getJoins() as $join) { // we'll only loop if there's actually something here
-
+		// joins of a specified type: the LEFT side will be added to the fromClause and the RIGHT to the joinClause
+		foreach ($criteria->getJoins() as $join) { 
 			// The join might have been established using an alias name
-
 			$leftTable = $join->getLeftTableName();
-			$leftTableAlias = '';
 			if ($realTable = $criteria->getTableForAlias($leftTable)) {
-				$leftTableAlias = " $leftTable";
+				$leftTableForFrom = $realTable . ' ' . $leftTable;
 				$leftTable = $realTable;
+			} else {
+				$leftTableForFrom = $leftTable;
 			}
-			
+
 			$rightTable = $join->getRightTableName();
-			$rightTableAlias = '';
 			if ($realTable = $criteria->getTableForAlias($rightTable)) {
-				$rightTableAlias = " $rightTable";
+				$rightTableForFrom =  $realTable . ' ' . $rightTable;
 				$rightTable = $realTable;
+			} else {
+				$rightTableForFrom = $rightTable;
 			}
-					
+
 			// determine if casing is relevant.
 			if ($ignoreCase = $criteria->isIgnoreCase()) {
 				$leftColType = $dbMap->getTable($leftTable)->getColumn($join->getLeftColumnName())->getType();
@@ -680,29 +846,38 @@ class BasePeer
 			}
 
 			// build the condition
-			if ($ignoreCase) {
-				$condition = $db->ignoreCase($join->getLeftColumn()) . '=' . $db->ignoreCase($join->getRightColumn());
-			} else {
-				$condition = $join->getLeftColumn() . '=' . $join->getRightColumn();
-			}
-					
-			// add 'em to the queues..  
-			if ($joinType = $join->getJoinType()) { 
-				if (!$fromClause) {
-					$fromClause[] = $leftTable . $leftTableAlias;
+			$condition = '';
+			foreach ($join->getConditions() as $index => $conditionDesc) {
+				if ($ignoreCase) {
+					$condition .= $db->ignoreCase($conditionDesc['left']) . $conditionDesc['operator'] . $db->ignoreCase($conditionDesc['right']);
+				} else {
+					$condition .= implode($conditionDesc);
 				}
-				$joinTables[] = $rightTable . $rightTableAlias;
-				$joinClause[] = $join->getJoinType() . ' ' . $rightTable . $rightTableAlias . " ON ($condition)";
-			} else { 
-				$fromClause[] = $leftTable . $leftTableAlias;
-				$fromClause[] = $rightTable . $rightTableAlias;
+				if ($index + 1 < $join->countConditions()) {
+					$condition .= ' AND ';
+				}
+			}
+
+			// add 'em to the queues..
+			if ($joinType = $join->getJoinType()) {
+			  // real join
+				if (!$fromClause) {
+					$fromClause[] = $leftTableForFrom;
+				}
+				$joinTables[] = $rightTableForFrom;
+				$joinClause[] = $join->getJoinType() . ' ' . $rightTableForFrom . " ON ($condition)";
+			} else {
+			  // implicit join, translates to a where
+				$fromClause[] = $leftTableForFrom;
+				$fromClause[] = $rightTableForFrom;
 				$whereClause[] = $condition;
 			}
 		}
-		
+
 		// Unique from clause elements
 		$fromClause = array_unique($fromClause);
-				
+		$fromClause = array_diff($fromClause, array(''));
+		
 		// tables should not exist in both the from and join clauses
 		if ($joinTables && $fromClause) {
 			foreach ($fromClause as $fi => $ftable) {
@@ -711,87 +886,37 @@ class BasePeer
 				}
 			}
 		}
-/*
-				// Old Code.
-				$joins =& $criteria->getJoins();
-				if (!empty($joins)) {
-					for ($i=0, $joinSize=count($joins); $i < $joinSize; $i++) {
-						$join =& $joins[$i];
-						$join1 = $join->getLeftColumn();
-						$join2 = $join->getRightColumn();
 
-						$tableName = substr($join1, 0, strpos($join1, '.'));
-						$table = $criteria->getTableForAlias($tableName);
-						if ($table !== null) {
-							$fromClause[] = $table . ' ' . $tableName;
-						} else {
-							$fromClause[] = $tableName;
-						}
-
-						$dot = strpos($join2, '.');
-						$tableName = substr($join2, 0, $dot);
-						$table = $criteria->getTableForAlias($tableName);
-						if ($table !== null) {
-							$fromClause[] = $table . ' ' . $tableName;
-						} else {
-							$fromClause[] = $tableName;
-							$table = $tableName;
-						}
-						$ignoreCase = ($criteria->isIgnoreCase() && ($dbMap->getTable($table)->getColumn(substr($join2, $dot + 1))->getType() == "string"));
-						if ($ignoreCase) {
-							$whereClause[] = $db->ignoreCase($join1) . '=' . $db->ignoreCase($join2);
-						} else {
-							$whereClause[] = $join1 . '=' . $join2;
-						}
-					if ($join->getJoinType()) {
-							$leftTable = $fromClause[count($fromClause) - 2];
-							$rightTable = $fromClause[count($fromClause) - 1];
-							$onClause = $whereClause[count($whereClause) - 1];
-							unset($whereClause[count($whereClause) - 1]);
-							$fromClause [] = $leftTable . ' ' . $join->getJoinType() . ' ' . $rightTable . ' ON ' . $onClause;
-
-							// remove all references to joinTables made by selectColumns, criteriaColumns
-							for ($i = 0, $fromClauseSize=count($fromClause); $i < $fromClauseSize; $i++) {
-								if ($fromClause[$i] == $leftTable || $fromClause[$i] == $rightTable) {
-									unset($fromClause[$i]);
-								}
-							}
-						} // If join type
-					} // Join for loop
-				} // If Joins
-*/
-		
 		// Add the GROUP BY columns
 		$groupByClause = $groupBy;
 
 		$having = $criteria->getHaving();
 		$havingString = null;
 		if ($having !== null) {
-			$sb = "";
+			$sb = '';
 			$having->appendPsTo($sb, $params);
 			$havingString = $sb;
 		}
 
-		 if (!empty($orderBy)) {
+		if (!empty($orderBy)) {
 
-			foreach($orderBy as $orderByColumn) {
-				
+			foreach ($orderBy as $orderByColumn) {
+
 				// Add function expression as-is.
-				
+
 				if (strpos($orderByColumn, '(') !== false) {
 					$orderByClause[] = $orderByColumn;
 					continue;
 				}
-				
+
 				// Split orderByColumn (i.e. "table.column DESC")
 
-				$dotPos = strpos($orderByColumn, '.');
+				$dotPos = strrpos($orderByColumn, '.');
 
 				if ($dotPos !== false) {
 					$tableName = substr($orderByColumn, 0, $dotPos);
-					$columnName = substr($orderByColumn, $dotPos+1);
-				}
-				else {
+					$columnName = substr($orderByColumn, $dotPos + 1);
+				} else {
 					$tableName = '';
 					$columnName = $orderByColumn;
 				}
@@ -801,8 +926,7 @@ class BasePeer
 				if ($spacePos !== false) {
 					$direction = substr($columnName, $spacePos);
 					$columnName = substr($columnName, 0, $spacePos);
-				}
-				else {
+				}	else {
 					$direction = '';
 				}
 
@@ -818,43 +942,127 @@ class BasePeer
 
 				$column = $tableName ? $dbMap->getTable($tableName)->getColumn($columnName) : null;
 
-				if ($column && $column->getType() == 'string') {
-					$orderByClause[] = $db->ignoreCaseInOrderBy("$tableAlias.$columnAlias") . $direction;
-					$selectClause[] = $db->ignoreCaseInOrderBy("$tableAlias.$columnAlias");
-				}
-				else {
+				if ($criteria->isIgnoreCase() && $column && $column->isText()) {
+					$ignoreCaseColumn = $db->ignoreCaseInOrderBy("$tableAlias.$columnAlias");
+					$orderByClause[] =  $ignoreCaseColumn . $direction;
+					$selectSql .= ' ' . $ignoreCaseColumn;
+				} else {
 					$orderByClause[] = $orderByColumn;
 				}
 			}
 		}
 
-		// Build the SQL from the arrays we compiled
-		$sql =  "SELECT "
-				.($selectModifiers ? implode(" ", $selectModifiers) . " " : "")
-				.implode(", ", $selectClause)
-				." FROM ". ( (!empty($joinClause) && count($fromClause) > 1 && (substr(get_class($db), 0, 7) == 'DBMySQL')) ? "(" . implode(", ", $fromClause) . ")" : implode(", ", $fromClause) ) 
-								.($joinClause ? ' ' . implode(' ', $joinClause) : '')
-				.($whereClause ? " WHERE ".implode(" AND ", $whereClause) : "")
-				.($groupByClause ? " GROUP BY ".implode(",", $groupByClause) : "")
-				.($havingString ? " HAVING ".$havingString : "")
-				.($orderByClause ? " ORDER BY ".implode(",", $orderByClause) : "");
+		if (empty($fromClause) && $criteria->getPrimaryTableName()) {
+			$fromClause[] = $criteria->getPrimaryTableName();
+		}
 
-		Propel::log($sql . ' [LIMIT: ' . $criteria->getLimit() . ', OFFSET: ' . $criteria->getOffset() . ']', Propel::LOG_DEBUG);
+		// from / join tables quoted if it is necessary
+		if ($db->useQuoteIdentifier()) {
+			$fromClause = array_map(array($db, 'quoteIdentifierTable'), $fromClause);
+			$joinClause = $joinClause ? $joinClause : array_map(array($db, 'quoteIdentifierTable'), $joinClause);
+		}
+
+		// build from-clause
+		$from = '';
+		if (!empty($joinClause) && count($fromClause) > 1) {
+			$from .= implode(" CROSS JOIN ", $fromClause);
+		} else {
+			$from .= implode(", ", $fromClause);
+		}
+		
+		$from .= $joinClause ? ' ' . implode(' ', $joinClause) : '';
+
+		// Build the SQL from the arrays we compiled
+		$sql =  $selectSql
+		." FROM "  . $from
+		.($whereClause ? " WHERE ".implode(" AND ", $whereClause) : "")
+		.($groupByClause ? " GROUP BY ".implode(",", $groupByClause) : "")
+		.($havingString ? " HAVING ".$havingString : "")
+		.($orderByClause ? " ORDER BY ".implode(",", $orderByClause) : "");
+
+		// APPLY OFFSET & LIMIT to the query.
+		if ($criteria->getLimit() || $criteria->getOffset()) {
+			$db->applyLimit($sql, $criteria->getOffset(), $criteria->getLimit(), $criteria);
+		}
 
 		return $sql;
+	}
 
+	/**
+	 * Builds the SELECT part of a SQL statement based on a Criteria
+	 * taking into account select columns and 'as' columns (i.e. columns aliases)
+	 */
+	public static function createSelectSqlPart(Criteria $criteria, &$fromClause, $aliasAll = false)
+	{
+		$selectClause = array();
+		
+		if ($aliasAll) {
+			self::turnSelectColumnsToAliases($criteria);
+			// no select columns after that, they are all aliases
+		} else {
+			foreach ($criteria->getSelectColumns() as $columnName) {
+
+				// expect every column to be of "table.column" formation
+				// it could be a function:  e.g. MAX(books.price)
+
+				$tableName = null;
+
+				$selectClause[] = $columnName; // the full column name: e.g. MAX(books.price)
+
+				$parenPos = strrpos($columnName, '(');
+				$dotPos = strrpos($columnName, '.', ($parenPos !== false ? $parenPos : 0));
+
+				if ($dotPos !== false) {
+					if ($parenPos === false) { // table.column
+						$tableName = substr($columnName, 0, $dotPos);
+					} else { // FUNC(table.column)
+						// functions may contain qualifiers so only take the last
+						// word as the table name.
+						// COUNT(DISTINCT books.price)
+						$lastSpace = strpos($tableName, ' ');
+						if ($lastSpace !== false) { // COUNT(DISTINCT books.price)
+							$tableName = substr($tableName, $lastSpace + 1);
+						} else {
+							$tableName = substr($columnName, $parenPos + 1, $dotPos - ($parenPos + 1));
+						}
+					}
+					// is it a table alias?
+					$tableName2 = $criteria->getTableForAlias($tableName);
+					if ($tableName2 !== null) {
+						$fromClause[] = $tableName2 . ' ' . $tableName;
+					} else {
+						$fromClause[] = $tableName;
+					}
+				} // if $dotPost !== false
+			}
+		}
+		
+		// set the aliases
+		foreach ($criteria->getAsColumns() as $alias => $col) {
+			$selectClause[] = $col . ' AS ' . $alias;
+		}
+
+		$selectModifiers = $criteria->getSelectModifiers();
+		
+		// Build the SQL from the arrays we compiled
+		$sql =  "SELECT " 
+		. ($selectModifiers ? (implode(' ', $selectModifiers) . ' ') : '')
+		. implode(", ", $selectClause);
+
+		return $sql;
 	}
 
 	/**
 	 * Builds a params array, like the kind populated by Criterion::appendPsTo().
 	 * This is useful for building an array even when it is not using the appendPsTo() method.
-	 * @param array $columns
-	 * @param Criteria $values
-	 * @return array params array('column' => ..., 'table' => ..., 'value' => ...)
+	 * @param      array $columns
+	 * @param      Criteria $values
+	 * @return     array params array('column' => ..., 'table' => ..., 'value' => ...)
 	 */
-	private static function buildParams($columns, Criteria $values) {
+	private static function buildParams($columns, Criteria $values)
+	{
 		$params = array();
-		foreach($columns as $key) {
+		foreach ($columns as $key) {
 			if ($values->containsKey($key)) {
 				$crit = $values->getCriterion($key);
 				$params[] = array('column' => $crit->getColumn(), 'table' => $crit->getTable(), 'value' => $crit->getValue());
@@ -864,81 +1072,24 @@ class BasePeer
 	}
 
 	/**
-	 * Populates values in a prepared statement.
+	 * This function searches for the given validator $name under propel/validator/$name.php,
+	 * imports and caches it.
 	 *
-	 * @param PreparedStatement $stmt
-	 * @param array $params array('column' => ..., 'table' => ..., 'value' => ...)
-	 * @param DatabaseMap $dbMap
-	 * @return int The number of params replaced.
+	 * @param      string $classname The dot-path name of class (e.g. myapp.propel.MyValidator)
+	 * @return     Validator object or null if not able to instantiate validator class (and error will be logged in this case)
 	 */
-	private static function populateStmtValues($stmt, $params, DatabaseMap $dbMap)
-	{
-		$i = 1;
-		foreach($params as $param) {
-			$tableName = $param['table'];
-			$columnName = $param['column'];
-			$value = $param['value'];
-
-			if ($value === null) {
-				$stmt->setNull($i++);
-			} else {
-				$cMap = $dbMap->getTable($tableName)->getColumn($columnName);
-				$setter = 'set' . CreoleTypes::getAffix($cMap->getCreoleType());
-				$stmt->$setter($i++, $value);
-			}
-		} // foreach
-	}
-
-	/**
-	* This function searches for the given validator $name under propel/validator/$name.php,
-	* imports and caches it.
-	*
-	* @param string $classname The dot-path name of class (e.g. myapp.propel.MyValidator)
-	* @return Validator object or null if not able to instantiate validator class (and error will be logged in this case)
-	*/
 	public static function getValidator($classname)
 	{
 		try {
 			$v = isset(self::$validatorMap[$classname]) ? self::$validatorMap[$classname] : null;
 			if ($v === null) {
-				$cls = Propel::import($classname);
+				$cls = Propel::importClass($classname);
 				$v = new $cls();
 				self::$validatorMap[$classname] = $v;
 			}
 			return $v;
 		} catch (Exception $e) {
 			Propel::log("BasePeer::getValidator(): failed trying to instantiate " . $classname . ": ".$e->getMessage(), Propel::LOG_ERR);
-		}
-	}
-
-	/**
-	 * This method returns the MapBuilder specified in the name
-	 * parameter.  You should pass in the full dot-path path to the class, ie:
-	 * myapp.propel.MyMapMapBuilder.  The MapBuilder instances are cached in
-	 * this class for speed.
-	 *
-	 * @param string $classname The dot-path name of class (e.g. myapp.propel.MyMapBuilder)
-	 * @return MapBuilder or null (and logs the error) if the MapBuilder was not found.
-	 * @todo -cBasePeer Consider adding app-level caching support for map builders.
-	 */
-	public static function getMapBuilder($classname)
-	{
-		try {
-			$mb = isset(self::$mapBuilders[$classname]) ? self::$mapBuilders[$classname] : null;
-			if ($mb === null) {
-				$cls = Propel::import($classname);
-				$mb = new $cls();
-				self::$mapBuilders[$classname] = $mb;
-			}
-			if (!$mb->isBuilt()) {
-				$mb->doBuild();
-			}
-			return $mb;
-		} catch (Exception $e) {
-			// Have to catch possible exceptions because method is
-			// used in initialization of Peers.  Log the exception and
-			// return null.
-			Propel::log("BasePeer::getMapBuilder() failed trying to instantiate " . $classname . ": " . $e->getMessage(), Propel::LOG_ERR);
 		}
 	}
 

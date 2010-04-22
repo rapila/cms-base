@@ -1,6 +1,6 @@
 %YAML 1.1
 connection:
-  phptype:    'mysqli'
+  phptype:    'mysql'
   hostspec:   'localhost'
   database:   'database'
   username:   'myusername' &un
@@ -8,4 +8,4 @@ connection:
   password:   'mypassword'
   dsn:        'mysql:dbname=database;host=localhost'
 database:
-  adapter:  'mysqli'
+  adapter:  'mysql'
