@@ -1,23 +1,19 @@
 <?php
 
-require_once 'propel/om/BaseObject.php';
-
-require_once 'propel/om/Persistent.php';
-
-
-include_once 'propel/util/Criteria.php';
-
-include_once 'model/LinkCategoryPeer.php';
-
 /**
  * Base class that represents a row from the 'link_categories' table.
  *
  * 
  *
- * @package    model.om
+ * @package    propel.generator.model.om
  */
-abstract class BaseLinkCategory extends BaseObject  implements Persistent {
+abstract class BaseLinkCategory extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'LinkCategoryPeer';
 
 	/**
 	 * The Peer class.
@@ -27,13 +23,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	protected static $peer;
 
-
 	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
 	protected $id;
-
 
 	/**
 	 * The value for the name field.
@@ -41,6 +35,17 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	protected $name;
 
+	/**
+	 * The value for the created_at field.
+	 * @var        string
+	 */
+	protected $created_at;
+
+	/**
+	 * The value for the updated_at field.
+	 * @var        string
+	 */
+	protected $updated_at;
 
 	/**
 	 * The value for the created_by field.
@@ -48,26 +53,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	protected $created_by;
 
-
 	/**
 	 * The value for the updated_by field.
 	 * @var        int
 	 */
 	protected $updated_by;
-
-
-	/**
-	 * The value for the created_at field.
-	 * @var        int
-	 */
-	protected $created_at;
-
-
-	/**
-	 * The value for the updated_at field.
-	 * @var        int
-	 */
-	protected $updated_at;
 
 	/**
 	 * @var        User
@@ -80,16 +70,9 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	protected $aUserRelatedByUpdatedBy;
 
 	/**
-	 * Collection to store aggregation of collLinks.
-	 * @var        array
+	 * @var        array Link[] Collection to store aggregation of Link objects.
 	 */
 	protected $collLinks;
-
-	/**
-	 * The criteria used to select the current contents of collLinks.
-	 * @var        Criteria
-	 */
-	protected $lastLinkCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -112,7 +95,6 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function getId()
 	{
-
 		return $this->id;
 	}
 
@@ -123,8 +105,83 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function getName()
 	{
-
 		return $this->name;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->created_at === null) {
+			return null;
+		}
+
+
+		if ($this->created_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->updated_at === null) {
+			return null;
+		}
+
+
+		if ($this->updated_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->updated_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -134,7 +191,6 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function getCreatedBy()
 	{
-
 		return $this->created_by;
 	}
 
@@ -145,84 +201,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function getUpdatedBy()
 	{
-
 		return $this->updated_by;
-	}
-
-	/**
-	 * Get the [optionally formatted] [created_at] column value.
-	 * 
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the integer unix timestamp will be returned.
-	 * @return     mixed Formatted date/time value as string or integer unix timestamp (if format is NULL).
-	 * @throws     PropelException - if unable to convert the date/time to timestamp.
-	 */
-	public function getCreatedAt($format = 'Y-m-d H:i:s')
-	{
-
-		if ($this->created_at === null || $this->created_at === '') {
-			return null;
-		} elseif (!is_int($this->created_at)) {
-			// a non-timestamp value was set externally, so we convert it
-			$ts = strtotime($this->created_at);
-			if ($ts === -1 || $ts === false) { // in PHP 5.1 return value changes to FALSE
-				throw new PropelException("Unable to parse value of [created_at] as date/time value: " . var_export($this->created_at, true));
-			}
-		} else {
-			$ts = $this->created_at;
-		}
-		if ($format === null) {
-			return $ts;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $ts);
-		} else {
-			return date($format, $ts);
-		}
-	}
-
-	/**
-	 * Get the [optionally formatted] [updated_at] column value.
-	 * 
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the integer unix timestamp will be returned.
-	 * @return     mixed Formatted date/time value as string or integer unix timestamp (if format is NULL).
-	 * @throws     PropelException - if unable to convert the date/time to timestamp.
-	 */
-	public function getUpdatedAt($format = 'Y-m-d H:i:s')
-	{
-
-		if ($this->updated_at === null || $this->updated_at === '') {
-			return null;
-		} elseif (!is_int($this->updated_at)) {
-			// a non-timestamp value was set externally, so we convert it
-			$ts = strtotime($this->updated_at);
-			if ($ts === -1 || $ts === false) { // in PHP 5.1 return value changes to FALSE
-				throw new PropelException("Unable to parse value of [updated_at] as date/time value: " . var_export($this->updated_at, true));
-			}
-		} else {
-			$ts = $this->updated_at;
-		}
-		if ($format === null) {
-			return $ts;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $ts);
-		} else {
-			return date($format, $ts);
-		}
 	}
 
 	/**
 	 * Set the value of [id] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 */
 	public function setId($v)
 	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
+		if ($v !== null) {
 			$v = (int) $v;
 		}
 
@@ -231,21 +221,19 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			$this->modifiedColumns[] = LinkCategoryPeer::ID;
 		}
 
+		return $this;
 	} // setId()
 
 	/**
 	 * Set the value of [name] column.
 	 * 
 	 * @param      string $v new value
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 */
 	public function setName($v)
 	{
-
-		// Since the native PHP type for this column is string,
-		// we will cast the input to a string (if it is not).
-		if ($v !== null && !is_string($v)) {
-			$v = (string) $v; 
+		if ($v !== null) {
+			$v = (string) $v;
 		}
 
 		if ($this->name !== $v) {
@@ -253,20 +241,116 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			$this->modifiedColumns[] = LinkCategoryPeer::NAME;
 		}
 
+		return $this;
 	} // setName()
+
+	/**
+	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     LinkCategory The current object (for fluent API support)
+	 */
+	public function setCreatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->created_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = LinkCategoryPeer::CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setCreatedAt()
+
+	/**
+	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     LinkCategory The current object (for fluent API support)
+	 */
+	public function setUpdatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->updated_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setUpdatedAt()
 
 	/**
 	 * Set the value of [created_by] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 */
 	public function setCreatedBy($v)
 	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
+		if ($v !== null) {
 			$v = (int) $v;
 		}
 
@@ -279,20 +363,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			$this->aUserRelatedByCreatedBy = null;
 		}
 
+		return $this;
 	} // setCreatedBy()
 
 	/**
 	 * Set the value of [updated_by] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 */
 	public function setUpdatedBy($v)
 	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
+		if ($v !== null) {
 			$v = (int) $v;
 		}
 
@@ -305,90 +387,55 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			$this->aUserRelatedByUpdatedBy = null;
 		}
 
+		return $this;
 	} // setUpdatedBy()
 
 	/**
-	 * Set the value of [created_at] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     void
+	 * Indicates whether the columns in this object are only set to default values.
+	 *
+	 * This method can be used in conjunction with isModified() to indicate whether an object is both
+	 * modified _and_ has some values set which are non-default.
+	 *
+	 * @return     boolean Whether the columns in this object are only been set with default values.
 	 */
-	public function setCreatedAt($v)
+	public function hasOnlyDefaultValues()
 	{
-
-		if ($v !== null && !is_int($v)) {
-			$ts = strtotime($v);
-			if ($ts === -1 || $ts === false) { // in PHP 5.1 return value changes to FALSE
-				throw new PropelException("Unable to parse date/time value for [created_at] from input: " . var_export($v, true));
-			}
-		} else {
-			$ts = $v;
-		}
-		if ($this->created_at !== $ts) {
-			$this->created_at = $ts;
-			$this->modifiedColumns[] = LinkCategoryPeer::CREATED_AT;
-		}
-
-	} // setCreatedAt()
-
-	/**
-	 * Set the value of [updated_at] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     void
-	 */
-	public function setUpdatedAt($v)
-	{
-
-		if ($v !== null && !is_int($v)) {
-			$ts = strtotime($v);
-			if ($ts === -1 || $ts === false) { // in PHP 5.1 return value changes to FALSE
-				throw new PropelException("Unable to parse date/time value for [updated_at] from input: " . var_export($v, true));
-			}
-		} else {
-			$ts = $v;
-		}
-		if ($this->updated_at !== $ts) {
-			$this->updated_at = $ts;
-			$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_AT;
-		}
-
-	} // setUpdatedAt()
+		// otherwise, everything was equal, so return TRUE
+		return true;
+	} // hasOnlyDefaultValues()
 
 	/**
 	 * Hydrates (populates) the object variables with values from the database resultset.
 	 *
-	 * An offset (1-based "start column") is specified so that objects can be hydrated
+	 * An offset (0-based "start column") is specified so that objects can be hydrated
 	 * with a subset of the columns in the resultset rows.  This is needed, for example,
 	 * for results of JOIN queries where the resultset row includes columns from two or
 	 * more tables.
 	 *
-	 * @param      ResultSet $rs The ResultSet class with cursor advanced to desired record pos.
-	 * @param      int $startcol 1-based offset column which indicates which restultset column to start with.
+	 * @param      array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
+	 * @param      int $startcol 0-based offset column which indicates which restultset column to start with.
+	 * @param      boolean $rehydrate Whether this object is being re-hydrated from the database.
 	 * @return     int next starting column
 	 * @throws     PropelException  - Any caught Exception will be rewrapped as a PropelException.
 	 */
-	public function hydrate(ResultSet $rs, $startcol = 1)
+	public function hydrate($row, $startcol = 0, $rehydrate = false)
 	{
 		try {
 
-			$this->id = $rs->getInt($startcol + 0);
-
-			$this->name = $rs->getString($startcol + 1);
-
-			$this->created_by = $rs->getInt($startcol + 2);
-
-			$this->updated_by = $rs->getInt($startcol + 3);
-
-			$this->created_at = $rs->getTimestamp($startcol + 4, null);
-
-			$this->updated_at = $rs->getTimestamp($startcol + 5, null);
-
+			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->created_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->updated_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->created_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+			$this->updated_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
 
-			// FIXME - using NUM_COLUMNS may be clearer.
+			if ($rehydrate) {
+				$this->ensureConsistency();
+			}
+
 			return $startcol + 6; // 6 = LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -397,83 +444,208 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Checks and repairs the internal consistency of the object.
+	 *
+	 * This method is executed after an already-instantiated object is re-hydrated
+	 * from the database.  It exists to check any foreign keys to make sure that
+	 * the objects related to the current object are correct based on foreign key.
+	 *
+	 * You can override this method in the stub class, but you should always invoke
+	 * the base method from the overridden method (i.e. parent::ensureConsistency()),
+	 * in case your model changes.
+	 *
+	 * @throws     PropelException
+	 */
+	public function ensureConsistency()
+	{
+
+		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
+			$this->aUserRelatedByCreatedBy = null;
+		}
+		if ($this->aUserRelatedByUpdatedBy !== null && $this->updated_by !== $this->aUserRelatedByUpdatedBy->getId()) {
+			$this->aUserRelatedByUpdatedBy = null;
+		}
+	} // ensureConsistency
+
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+		if ($this->isDeleted()) {
+			throw new PropelException("Cannot reload a deleted object.");
+		}
+
+		if ($this->isNew()) {
+			throw new PropelException("Cannot reload an unsaved object.");
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		// We don't need to alter the object instance pool; we're just modifying this instance
+		// already in the pool.
+
+		$stmt = LinkCategoryPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$row = $stmt->fetch(PDO::FETCH_NUM);
+		$stmt->closeCursor();
+		if (!$row) {
+			throw new PropelException('Cannot find matching row in the database to reload object values.');
+		}
+		$this->hydrate($row, 0, true); // rehydrate
+
+		if ($deep) {  // also de-associate any related objects?
+
+			$this->aUserRelatedByCreatedBy = null;
+			$this->aUserRelatedByUpdatedBy = null;
+			$this->collLinks = null;
+
+		} // if (deep)
+	}
+
+	/**
 	 * Removes this object from datastore and sets delete attribute.
 	 *
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     void
 	 * @throws     PropelException
 	 * @see        BaseObject::setDeleted()
 	 * @see        BaseObject::isDeleted()
 	 */
-	public function delete($con = null)
+	public function delete(PropelPDO $con = null)
 	{
 		if ($this->isDeleted()) {
 			throw new PropelException("This object has already been deleted.");
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME);
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-
+		
+		$con->beginTransaction();
 		try {
-			$con->begin();
-			LinkCategoryPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				LinkCategoryQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
 
 	/**
-	 * Stores the object in the database.  If the object is new,
-	 * it inserts it; otherwise an update is performed.  This method
-	 * wraps the doSave() worker method in a transaction.
+	 * Persists this object to the database.
 	 *
-	 * @param      Connection $con
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All modified related objects will also be persisted in the doSave()
+	 * method.  This method wraps all precipitate database operations in a
+	 * single transaction.
+	 *
+	 * @param      PropelPDO $con
 	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
 	 * @throws     PropelException
 	 * @see        doSave()
 	 */
-	public function save($con = null)
+	public function save(PropelPDO $con = null)
 	{
 		if ($this->isDeleted()) {
 			throw new PropelException("You cannot save an object that has been deleted.");
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME);
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-
+		
+		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$con->begin();
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+				// timestampable behavior
+				if (!$this->isColumnModified(LinkCategoryPeer::CREATED_AT)) {
+					$this->setCreatedAt(time());
+				}
+				if (!$this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
+				// attributable behavior
+				
+				if(Session::getSession()->isAuthenticated) {
+					if (!$this->isColumnModified(LinkCategoryPeer::CREATED_BY)) {
+						$this->setCreatedBy(Session::getSession()->getUser()->getId());
+					}
+					if (!$this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) {
+						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
+					}
+				}
+
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+				// timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
+				// attributable behavior
+				
+				if(Session::getSession()->isAuthenticated) {
+					if ($this->isModified() && !$this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) {
+						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
+					}
+				}
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				LinkCategoryPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
 
 	/**
-	 * Stores the object in the database.
+	 * Performs the work of inserting or updating the row in the database.
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
 	 * All related objects are also updated in this method.
 	 *
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
 	 * @throws     PropelException
 	 * @see        save()
 	 */
-	protected function doSave($con)
+	protected function doSave(PropelPDO $con)
 	{
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
-
 
 			// We call the save method on the following object(s) if they
 			// were passed to this object by their coresponding set
@@ -481,39 +653,44 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			// foreign key reference.
 
 			if ($this->aUserRelatedByCreatedBy !== null) {
-				if ($this->aUserRelatedByCreatedBy->isModified()) {
+				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
 					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
 				}
 				$this->setUserRelatedByCreatedBy($this->aUserRelatedByCreatedBy);
 			}
 
 			if ($this->aUserRelatedByUpdatedBy !== null) {
-				if ($this->aUserRelatedByUpdatedBy->isModified()) {
+				if ($this->aUserRelatedByUpdatedBy->isModified() || $this->aUserRelatedByUpdatedBy->isNew()) {
 					$affectedRows += $this->aUserRelatedByUpdatedBy->save($con);
 				}
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = LinkCategoryPeer::ID;
+			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = LinkCategoryPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(LinkCategoryPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.LinkCategoryPeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
 					$affectedRows += LinkCategoryPeer::doUpdate($this, $con);
 				}
+
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collLinks !== null) {
-				foreach($this->collLinks as $referrerFK) {
+				foreach ($this->collLinks as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -521,6 +698,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			}
 
 			$this->alreadyInSave = false;
+
 		}
 		return $affectedRows;
 	} // doSave()
@@ -609,7 +787,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 
 
 				if ($this->collLinks !== null) {
-					foreach($this->collLinks as $referrerFK) {
+					foreach ($this->collLinks as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -628,14 +806,15 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 *
 	 * @param      string $name name
 	 * @param      string $type The type of fieldname the $name is of:
-	 *                     one of the class type constants TYPE_PHPNAME,
-	 *                     TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     mixed Value of field.
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
 		$pos = LinkCategoryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
-		return $this->getByPosition($pos);
+		$field = $this->getByPosition($pos);
+		return $field;
 	}
 
 	/**
@@ -655,16 +834,16 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 				return $this->getName();
 				break;
 			case 2:
-				return $this->getCreatedBy();
-				break;
-			case 3:
-				return $this->getUpdatedBy();
-				break;
-			case 4:
 				return $this->getCreatedAt();
 				break;
-			case 5:
+			case 3:
 				return $this->getUpdatedAt();
+				break;
+			case 4:
+				return $this->getCreatedBy();
+				break;
+			case 5:
+				return $this->getUpdatedBy();
 				break;
 			default:
 				return null;
@@ -678,21 +857,33 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType One of the class type constants TYPE_PHPNAME,
-	 *                        TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = LinkCategoryPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
-			$keys[2] => $this->getCreatedBy(),
-			$keys[3] => $this->getUpdatedBy(),
-			$keys[4] => $this->getCreatedAt(),
-			$keys[5] => $this->getUpdatedAt(),
+			$keys[2] => $this->getCreatedAt(),
+			$keys[3] => $this->getUpdatedAt(),
+			$keys[4] => $this->getCreatedBy(),
+			$keys[5] => $this->getUpdatedBy(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aUserRelatedByCreatedBy) {
+				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aUserRelatedByUpdatedBy) {
+				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -702,8 +893,8 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * @param      string $name peer name
 	 * @param      mixed $value field value
 	 * @param      string $type The type of fieldname the $name is of:
-	 *                     one of the class type constants TYPE_PHPNAME,
-	 *                     TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     void
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
@@ -730,16 +921,16 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 				$this->setName($value);
 				break;
 			case 2:
-				$this->setCreatedBy($value);
-				break;
-			case 3:
-				$this->setUpdatedBy($value);
-				break;
-			case 4:
 				$this->setCreatedAt($value);
 				break;
-			case 5:
+			case 3:
 				$this->setUpdatedAt($value);
+				break;
+			case 4:
+				$this->setCreatedBy($value);
+				break;
+			case 5:
+				$this->setUpdatedBy($value);
 				break;
 		} // switch()
 	}
@@ -753,8 +944,9 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * array. If so the setByName() method is called for that column.
 	 *
 	 * You can specify the key type of the array by additionally passing one
-	 * of the class type constants TYPE_PHPNAME, TYPE_COLNAME, TYPE_FIELDNAME,
-	 * TYPE_NUM. The default key type is the column's phpname (e.g. 'authorId')
+	 * of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 * BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
+	 * The default key type is the column's phpname (e.g. 'AuthorId')
 	 *
 	 * @param      array  $arr     An array to populate the object from.
 	 * @param      string $keyType The type of keys the array uses.
@@ -766,10 +958,10 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setCreatedBy($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setUpdatedBy($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+		if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedBy($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedBy($arr[$keys[5]]);
 	}
 
 	/**
@@ -783,10 +975,10 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 
 		if ($this->isColumnModified(LinkCategoryPeer::ID)) $criteria->add(LinkCategoryPeer::ID, $this->id);
 		if ($this->isColumnModified(LinkCategoryPeer::NAME)) $criteria->add(LinkCategoryPeer::NAME, $this->name);
-		if ($this->isColumnModified(LinkCategoryPeer::CREATED_BY)) $criteria->add(LinkCategoryPeer::CREATED_BY, $this->created_by);
-		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) $criteria->add(LinkCategoryPeer::UPDATED_BY, $this->updated_by);
 		if ($this->isColumnModified(LinkCategoryPeer::CREATED_AT)) $criteria->add(LinkCategoryPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) $criteria->add(LinkCategoryPeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(LinkCategoryPeer::CREATED_BY)) $criteria->add(LinkCategoryPeer::CREATED_BY, $this->created_by);
+		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) $criteria->add(LinkCategoryPeer::UPDATED_BY, $this->updated_by);
 
 		return $criteria;
 	}
@@ -802,7 +994,6 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(LinkCategoryPeer::DATABASE_NAME);
-
 		$criteria->add(LinkCategoryPeer::ID, $this->id);
 
 		return $criteria;
@@ -829,6 +1020,15 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -840,34 +1040,28 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setName($this->name);
-
-		$copyObj->setCreatedBy($this->created_by);
-
-		$copyObj->setUpdatedBy($this->updated_by);
-
 		$copyObj->setCreatedAt($this->created_at);
-
 		$copyObj->setUpdatedAt($this->updated_at);
-
+		$copyObj->setCreatedBy($this->created_by);
+		$copyObj->setUpdatedBy($this->updated_by);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
-			foreach($this->getLinks() as $relObj) {
-				$copyObj->addLink($relObj->copy($deepCopy));
+			foreach ($this->getLinks() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLink($relObj->copy($deepCopy));
+				}
 			}
 
 		} // if ($deepCopy)
 
 
 		$copyObj->setNew(true);
-
-		$copyObj->setId(NULL); // this is a pkey column, so set to default value
-
+		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 	}
 
 	/**
@@ -912,48 +1106,46 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * Declares an association between this object and a User object.
 	 *
 	 * @param      User $v
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUserRelatedByCreatedBy($v)
+	public function setUserRelatedByCreatedBy(User $v = null)
 	{
-
-
 		if ($v === null) {
 			$this->setCreatedBy(NULL);
 		} else {
 			$this->setCreatedBy($v->getId());
 		}
 
-
 		$this->aUserRelatedByCreatedBy = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the User object, it will not be re-added.
+		if ($v !== null) {
+			$v->addLinkCategoryRelatedByCreatedBy($this);
+		}
+
+		return $this;
 	}
 
 
 	/**
 	 * Get the associated User object
 	 *
-	 * @param      Connection Optional Connection object.
+	 * @param      PropelPDO Optional Connection object.
 	 * @return     User The associated User object.
 	 * @throws     PropelException
 	 */
-	public function getUserRelatedByCreatedBy($con = null)
+	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
-		// include the related Peer class
-		include_once 'model/om/BaseUserPeer.php';
-
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-
-			$this->aUserRelatedByCreatedBy = UserPeer::retrieveByPK($this->created_by, $con);
-
-			/* The following can be used instead of the line above to
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			/* The following can be used additionally to
 			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = UserPeer::retrieveByPK($this->created_by, $con);
-			   $obj->addUsersRelatedByCreatedBy($this);
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aUserRelatedByCreatedBy->addLinkCategorysRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -963,149 +1155,144 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * Declares an association between this object and a User object.
 	 *
 	 * @param      User $v
-	 * @return     void
+	 * @return     LinkCategory The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUserRelatedByUpdatedBy($v)
+	public function setUserRelatedByUpdatedBy(User $v = null)
 	{
-
-
 		if ($v === null) {
 			$this->setUpdatedBy(NULL);
 		} else {
 			$this->setUpdatedBy($v->getId());
 		}
 
-
 		$this->aUserRelatedByUpdatedBy = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the User object, it will not be re-added.
+		if ($v !== null) {
+			$v->addLinkCategoryRelatedByUpdatedBy($this);
+		}
+
+		return $this;
 	}
 
 
 	/**
 	 * Get the associated User object
 	 *
-	 * @param      Connection Optional Connection object.
+	 * @param      PropelPDO Optional Connection object.
 	 * @return     User The associated User object.
 	 * @throws     PropelException
 	 */
-	public function getUserRelatedByUpdatedBy($con = null)
+	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
-		// include the related Peer class
-		include_once 'model/om/BaseUserPeer.php';
-
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-
-			$this->aUserRelatedByUpdatedBy = UserPeer::retrieveByPK($this->updated_by, $con);
-
-			/* The following can be used instead of the line above to
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			/* The following can be used additionally to
 			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = UserPeer::retrieveByPK($this->updated_by, $con);
-			   $obj->addUsersRelatedByUpdatedBy($this);
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aUserRelatedByUpdatedBy->addLinkCategorysRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
 	}
 
 	/**
-	 * Temporary storage of collLinks to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Clears out the collLinks collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLinks()
+	 */
+	public function clearLinks()
+	{
+		$this->collLinks = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLinks collection.
+	 *
+	 * By default this just sets the collLinks collection to an empty array (like clearcollLinks());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initLinks()
 	{
-		if ($this->collLinks === null) {
-			$this->collLinks = array();
-		}
+		$this->collLinks = new PropelObjectCollection();
+		$this->collLinks->setModel('Link');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this LinkCategory has previously
-	 * been saved, it will retrieve related Links from storage.
-	 * If this LinkCategory is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of Link objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this LinkCategory is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 * @throws     PropelException
 	 */
-	public function getLinks($criteria = null, $con = null)
+	public function getLinks($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-			   $this->collLinks = array();
+		if(null === $this->collLinks || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinks) {
+				// return empty collection
+				$this->initLinks();
 			} else {
-
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-				LinkPeer::addSelectColumns($criteria);
-				$this->collLinks = LinkPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-				LinkPeer::addSelectColumns($criteria);
-				if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-					$this->collLinks = LinkPeer::doSelect($criteria, $con);
+				$collLinks = LinkQuery::create(null, $criteria)
+					->filterByLinkCategory($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLinks;
 				}
+				$this->collLinks = $collLinks;
 			}
 		}
-		$this->lastLinkCriteria = $criteria;
 		return $this->collLinks;
 	}
 
 	/**
-	 * Returns the number of related Links.
+	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Link objects.
 	 * @throws     PropelException
 	 */
-	public function countLinks($criteria = null, $distinct = false, $con = null)
+	public function countLinks(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collLinks || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinks) {
+				return 0;
+			} else {
+				$query = LinkQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLinkCategory($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLinks);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-		return LinkPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a Link object to this object
-	 * through the Link foreign key attribute
+	 * through the Link foreign key attribute.
 	 *
 	 * @param      Link $l Link
 	 * @return     void
@@ -1113,8 +1300,13 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 */
 	public function addLink(Link $l)
 	{
-		$this->collLinks[] = $l;
-		$l->setLinkCategory($this);
+		if ($this->collLinks === null) {
+			$this->initLinks();
+		}
+		if (!$this->collLinks->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLinks[]= $l;
+			$l->setLinkCategory($this);
+		}
 	}
 
 
@@ -1129,41 +1321,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in LinkCategory.
 	 */
-	public function getLinksJoinLanguage($criteria = null, $con = null)
+	public function getLinksJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinLanguage($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinLanguage($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -1178,41 +1341,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in LinkCategory.
 	 */
-	public function getLinksJoinUserRelatedByOwnerId($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByOwnerId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByOwnerId', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -1227,41 +1361,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in LinkCategory.
 	 */
-	public function getLinksJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -1276,41 +1381,91 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in LinkCategory.
 	 */
-	public function getLinksJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
+		return $this->getLinks($query, $con);
+	}
 
-				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->name = null;
+		$this->created_at = null;
+		$this->updated_at = null;
+		$this->created_by = null;
+		$this->updated_by = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
+		$this->clearAllReferences();
+		$this->resetModified();
+		$this->setNew(true);
+	}
 
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
+	/**
+	 * Resets all collections of referencing foreign keys.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect objects
+	 * with circular references.  This is currently necessary when using Propel in certain
+	 * daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 */
+	public function clearAllReferences($deep = false)
+	{
+		if ($deep) {
+			if ($this->collLinks) {
+				foreach ((array) $this->collLinks as $o) {
+					$o->clearAllReferences($deep);
+				}
 			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
+		} // if ($deep)
 
-			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+		$this->collLinks = null;
+		$this->aUserRelatedByCreatedBy = null;
+		$this->aUserRelatedByUpdatedBy = null;
+	}
 
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
+	// timestampable behavior
+	
+	/**
+	 * Mark the current object so that the update date doesn't get updated during next save
+	 *
+	 * @return     LinkCategory The current object (for fluent API support)
+	 */
+	public function keepUpdateDateUnchanged()
+	{
+		$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_AT;
+		return $this;
+	}
+
+	// attributable behavior
+	
+	/**
+	 * Mark the current object so that the updated user doesn't get updated during next save
+	 *
+	 * @return     LinkCategory The current object (for fluent API support)
+	 */
+	public function keepUpdateUserUnchanged()
+	{
+		$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_BY;
+		return $this;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
 		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseLinkCategory

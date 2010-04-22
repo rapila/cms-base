@@ -1,16 +1,11 @@
 <?php
 
-require_once 'propel/util/BasePeer.php';
-// The object class -- needed for instanceof checks in this class.
-// actual class may be a subclass -- as returned by StringPeer::getOMClass()
-include_once 'model/String.php';
-
 /**
  * Base static class for performing query and update operations on the 'strings' table.
  *
  * 
  *
- * @package    model.om
+ * @package    propel.generator.model.om
  */
 abstract class BaseStringPeer {
 
@@ -20,15 +15,20 @@ abstract class BaseStringPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'strings';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'String';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'model.String';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'StringTableMap';
+	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 3;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
-
 
 	/** the column name for the LANGUAGE_ID field */
 	const LANGUAGE_ID = 'strings.LANGUAGE_ID';
@@ -39,8 +39,25 @@ abstract class BaseStringPeer {
 	/** the column name for the TEXT field */
 	const TEXT = 'strings.TEXT';
 
-	/** The PHP to DB Name Mapping */
-	private static $phpNameMap = null;
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'strings.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'strings.UPDATED_AT';
+
+	/** the column name for the CREATED_BY field */
+	const CREATED_BY = 'strings.CREATED_BY';
+
+	/** the column name for the UPDATED_BY field */
+	const UPDATED_BY = 'strings.UPDATED_BY';
+
+	/**
+	 * An identiy map to hold any loaded instances of String objects.
+	 * This must be public so that other peer classes can access this when hydrating from JOIN
+	 * queries.
+	 * @var        array String[]
+	 */
+	public static $instances = array();
 
 
 	/**
@@ -50,10 +67,12 @@ abstract class BaseStringPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('LanguageId', 'StringKey', 'Text', ),
-		BasePeer::TYPE_COLNAME => array (StringPeer::LANGUAGE_ID, StringPeer::STRING_KEY, StringPeer::TEXT, ),
-		BasePeer::TYPE_FIELDNAME => array ('language_id', 'string_key', 'text', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('LanguageId', 'StringKey', 'Text', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('languageId', 'stringKey', 'text', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::LANGUAGE_ID, self::STRING_KEY, self::TEXT, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LANGUAGE_ID', 'STRING_KEY', 'TEXT', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('language_id', 'string_key', 'text', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -63,51 +82,23 @@ abstract class BaseStringPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('LanguageId' => 0, 'StringKey' => 1, 'Text' => 2, ),
-		BasePeer::TYPE_COLNAME => array (StringPeer::LANGUAGE_ID => 0, StringPeer::STRING_KEY => 1, StringPeer::TEXT => 2, ),
-		BasePeer::TYPE_FIELDNAME => array ('language_id' => 0, 'string_key' => 1, 'text' => 2, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('LanguageId' => 0, 'StringKey' => 1, 'Text' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('languageId' => 0, 'stringKey' => 1, 'text' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::LANGUAGE_ID => 0, self::STRING_KEY => 1, self::TEXT => 2, self::CREATED_AT => 3, self::UPDATED_AT => 4, self::CREATED_BY => 5, self::UPDATED_BY => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LANGUAGE_ID' => 0, 'STRING_KEY' => 1, 'TEXT' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'CREATED_BY' => 5, 'UPDATED_BY' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('language_id' => 0, 'string_key' => 1, 'text' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
-	/**
-	 * @return     MapBuilder the map builder for this peer
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function getMapBuilder()
-	{
-		include_once 'model/map/StringMapBuilder.php';
-		return BasePeer::getMapBuilder('model.map.StringMapBuilder');
-	}
-	/**
-	 * Gets a map (hash) of PHP names to DB column names.
-	 *
-	 * @return     array The PHP to DB name map for this peer
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 * @deprecated Use the getFieldNames() and translateFieldName() methods instead of this.
-	 */
-	public static function getPhpNameMap()
-	{
-		if (self::$phpNameMap === null) {
-			$map = StringPeer::getTableMap();
-			$columns = $map->getColumns();
-			$nameMap = array();
-			foreach ($columns as $column) {
-				$nameMap[$column->getPhpName()] = $column->getColumnName();
-			}
-			self::$phpNameMap = $nameMap;
-		}
-		return self::$phpNameMap;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
 	 * @param      string $name field name
-	 * @param      string $fromType One of the class type constants TYPE_PHPNAME,
-	 *                         TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 * @param      string $fromType One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                         BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @param      string $toType   One of the class type constants
 	 * @return     string translated name of the field.
+	 * @throws     PropelException - if the specified name could not be found in the fieldname mappings.
 	 */
 	static public function translateFieldName($name, $fromType, $toType)
 	{
@@ -120,18 +111,18 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Returns an array of of field names.
+	 * Returns an array of field names.
 	 *
 	 * @param      string $type The type of fieldnames to return:
-	 *                      One of the class type constants TYPE_PHPNAME,
-	 *                      TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                      One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                      BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     array A list of field names
 	 */
 
 	static public function getFieldNames($type = BasePeer::TYPE_PHPNAME)
 	{
 		if (!array_key_exists($type, self::$fieldNames)) {
-			throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants TYPE_PHPNAME, TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM. ' . $type . ' was given.');
+			throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
 		}
 		return self::$fieldNames[$type];
 	}
@@ -160,69 +151,85 @@ abstract class BaseStringPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(StringPeer::LANGUAGE_ID);
-
-		$criteria->addSelectColumn(StringPeer::STRING_KEY);
-
-		$criteria->addSelectColumn(StringPeer::TEXT);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(StringPeer::LANGUAGE_ID);
+			$criteria->addSelectColumn(StringPeer::STRING_KEY);
+			$criteria->addSelectColumn(StringPeer::TEXT);
+			$criteria->addSelectColumn(StringPeer::CREATED_AT);
+			$criteria->addSelectColumn(StringPeer::UPDATED_AT);
+			$criteria->addSelectColumn(StringPeer::CREATED_BY);
+			$criteria->addSelectColumn(StringPeer::UPDATED_BY);
+		} else {
+			$criteria->addSelectColumn($alias . '.LANGUAGE_ID');
+			$criteria->addSelectColumn($alias . '.STRING_KEY');
+			$criteria->addSelectColumn($alias . '.TEXT');
+			$criteria->addSelectColumn($alias . '.CREATED_AT');
+			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+			$criteria->addSelectColumn($alias . '.CREATED_BY');
+			$criteria->addSelectColumn($alias . '.UPDATED_BY');
+		}
 	}
-
-	const COUNT = 'COUNT(strings.LANGUAGE_ID)';
-	const COUNT_DISTINCT = 'COUNT(DISTINCT strings.LANGUAGE_ID)';
 
 	/**
 	 * Returns the number of rows matching criteria.
 	 *
 	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCount(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCount(Criteria $criteria, $distinct = false, PropelPDO $con = null)
 	{
-		// we're going to modify criteria, so copy it first
+		// we may modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
-		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
 		}
 
-		$rs = StringPeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
+		// BasePeer returns a PDOStatement
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
 	}
 	/**
 	 * Method to select one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     String
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectOne(Criteria $criteria, $con = null)
+	public static function doSelectOne(Criteria $criteria, PropelPDO $con = null)
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
@@ -236,36 +243,35 @@ abstract class BaseStringPeer {
 	 * Method to do selects.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     array Array of selected Objects
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelect(Criteria $criteria, $con = null)
+	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return StringPeer::populateObjects(StringPeer::doSelectRS($criteria, $con));
+		return StringPeer::populateObjects(StringPeer::doSelectStmt($criteria, $con));
 	}
 	/**
-	 * Prepares the Criteria object and uses the parent doSelect()
-	 * method to get a ResultSet.
+	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
 	 *
-	 * Use this method directly if you want to just get the resultset
-	 * (instead of an array of objects).
+	 * Use this method directly if you want to work with an executed statement durirectly (for example
+	 * to perform your own object hydration).
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con The connection to use
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     ResultSet The resultset object with numerically-indexed fields.
+	 * @return     PDOStatement The executed PDOStatement object.
 	 * @see        BasePeer::doSelect()
 	 */
-	public static function doSelectRS(Criteria $criteria, $con = null)
+	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		if (!$criteria->getSelectColumns()) {
+		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
 			StringPeer::addSelectColumns($criteria);
 		}
@@ -273,10 +279,129 @@ abstract class BaseStringPeer {
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
-		// BasePeer returns a Creole ResultSet, set to return
-		// rows indexed numerically.
+		// BasePeer returns a PDOStatement
 		return BasePeer::doSelect($criteria, $con);
 	}
+	/**
+	 * Adds an object to the instance pool.
+	 *
+	 * Propel keeps cached copies of objects in an instance pool when they are retrieved
+	 * from the database.  In some cases -- especially when you override doSelect*()
+	 * methods in your stub classes -- you may need to explicitly add objects
+	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
+	 * and retrieveByPK*() calls.
+	 *
+	 * @param      String $value A String object.
+	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
+	 */
+	public static function addInstanceToPool(String $obj, $key = null)
+	{
+		if (Propel::isInstancePoolingEnabled()) {
+			if ($key === null) {
+				$key = serialize(array((string) $obj->getLanguageId(), (string) $obj->getStringKey()));
+			} // if key === null
+			self::$instances[$key] = $obj;
+		}
+	}
+
+	/**
+	 * Removes an object from the instance pool.
+	 *
+	 * Propel keeps cached copies of objects in an instance pool when they are retrieved
+	 * from the database.  In some cases -- especially when you override doDelete
+	 * methods in your stub classes -- you may need to explicitly remove objects
+	 * from the cache in order to prevent returning objects that no longer exist.
+	 *
+	 * @param      mixed $value A String object or a primary key value.
+	 */
+	public static function removeInstanceFromPool($value)
+	{
+		if (Propel::isInstancePoolingEnabled() && $value !== null) {
+			if (is_object($value) && $value instanceof String) {
+				$key = serialize(array((string) $value->getLanguageId(), (string) $value->getStringKey()));
+			} elseif (is_array($value) && count($value) === 2) {
+				// assume we've been passed a primary key
+				$key = serialize(array((string) $value[0], (string) $value[1]));
+			} else {
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or String object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				throw $e;
+			}
+
+			unset(self::$instances[$key]);
+		}
+	} // removeInstanceFromPool()
+
+	/**
+	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
+	 *
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
+	 *
+	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
+	 * @return     String Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @see        getPrimaryKeyHash()
+	 */
+	public static function getInstanceFromPool($key)
+	{
+		if (Propel::isInstancePoolingEnabled()) {
+			if (isset(self::$instances[$key])) {
+				return self::$instances[$key];
+			}
+		}
+		return null; // just to be explicit
+	}
+	
+	/**
+	 * Clear the instance pool.
+	 *
+	 * @return     void
+	 */
+	public static function clearInstancePool()
+	{
+		self::$instances = array();
+	}
+	
+	/**
+	 * Method to invalidate the instance pool of all tables related to strings
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
+	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
+	 *
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     string A string version of PK or NULL if the components of primary key in result array are all null.
+	 */
+	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
+	{
+		// If the PK cannot be derived from the row, return NULL.
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
+			return null;
+		}
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
+	}
+
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((string) $row[$startcol], (string) $row[$startcol + 1]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -284,117 +409,400 @@ abstract class BaseStringPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function populateObjects(ResultSet $rs)
+	public static function populateObjects(PDOStatement $stmt)
 	{
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = StringPeer::getOMClass();
-		$cls = Propel::import($cls);
+		$cls = StringPeer::getOMClass(false);
 		// populate the object(s)
-		while($rs->next()) {
-		
-			$obj = new $cls();
-			$obj->hydrate($rs);
-			$results[] = $obj;
-			
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = StringPeer::getInstanceFromPool($key))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj->hydrate($row, 0, true); // rehydrate
+				$results[] = $obj;
+			} else {
+				$obj = new $cls();
+				$obj->hydrate($row);
+				$results[] = $obj;
+				StringPeer::addInstanceToPool($obj, $key);
+			} // if key exists
 		}
+		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (String object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = StringPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = StringPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://www.propelorm.org/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + StringPeer::NUM_COLUMNS;
+		} else {
+			$cls = StringPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			StringPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Language table
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinLanguage(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinLanguage(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
-		$rs = StringPeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
 	}
 
 
 	/**
 	 * Selects a collection of String objects pre-filled with their Language objects.
-	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of String objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinLanguage(Criteria $c, $con = null)
+	public static function doSelectJoinLanguage(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		StringPeer::addSelectColumns($c);
-		$startcol = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
-		LanguagePeer::addSelectColumns($c);
+		StringPeer::addSelectColumns($criteria);
+		$startcol = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+		LanguagePeer::addSelectColumns($criteria);
 
-		$c->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
-		$rs = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
 
-			$omClass = StringPeer::getOMClass();
+				$cls = StringPeer::getOMClass(false);
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
 
-			$omClass = LanguagePeer::getOMClass();
+			$key2 = LanguagePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = LanguagePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
-			$cls = Propel::import($omClass);
-			$obj2 = new $cls();
-			$obj2->hydrate($rs, $startcol);
+					$cls = LanguagePeer::getOMClass(false);
 
-			$newObject = true;
-			foreach($results as $temp_obj1) {
-				$temp_obj2 = $temp_obj1->getLanguage(); //CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					// e.g. $author->addBookRelatedByBookId()
-					$temp_obj2->addString($obj1); //CHECKME
-					break;
-				}
-			}
-			if ($newObject) {
-				$obj2->initStrings();
-				$obj2->addString($obj1); //CHECKME
-			}
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					LanguagePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (String) to $obj2 (Language)
+				$obj2->addString($obj1);
+
+			} // if joined row was not null
+
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of String objects pre-filled with their User objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of String objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinUserRelatedByCreatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		StringPeer::addSelectColumns($criteria);
+		$startcol = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+		UserPeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = StringPeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = UserPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (String) to $obj2 (User)
+				$obj2->addStringRelatedByCreatedBy($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of String objects pre-filled with their User objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of String objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinUserRelatedByUpdatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		StringPeer::addSelectColumns($criteria);
+		$startcol = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+		UserPeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = StringPeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = UserPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (String) to $obj2 (User)
+				$obj2->addStringRelatedByUpdatedBy($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
@@ -402,105 +810,562 @@ abstract class BaseStringPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAll(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
+		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
-
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
-		}
-
-		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
-
-		$rs = StringPeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
-		}
+		$stmt->closeCursor();
+		return $count;
 	}
-
 
 	/**
 	 * Selects a collection of String objects pre-filled with all related objects.
 	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of String objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		StringPeer::addSelectColumns($c);
-		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		StringPeer::addSelectColumns($criteria);
+		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		LanguagePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + LanguagePeer::NUM_COLUMNS;
+		LanguagePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		UserPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$rs = BasePeer::doSelect($c, $con);
+		UserPeer::addSelectColumns($criteria);
+		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = StringPeer::getOMClass(false);
 
-			$omClass = StringPeer::getOMClass();
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
 
+			// Add objects for joined Language rows
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+			$key2 = LanguagePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			if ($key2 !== null) {
+				$obj2 = LanguagePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
+					$cls = LanguagePeer::getOMClass(false);
 
-				// Add objects for joined Language rows
-	
-			$omClass = LanguagePeer::getOMClass();
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					LanguagePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 loaded
 
-
-			$cls = Propel::import($omClass);
-			$obj2 = new $cls();
-			$obj2->hydrate($rs, $startcol2);
-
-			$newObject = true;
-			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
-				$temp_obj1 = $results[$j];
-				$temp_obj2 = $temp_obj1->getLanguage(); // CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					$temp_obj2->addString($obj1); // CHECKME
-					break;
-				}
-			}
-
-			if ($newObject) {
-				$obj2->initStrings();
+				// Add the $obj1 (String) to the collection in $obj2 (Language)
 				$obj2->addString($obj1);
-			}
+			} // if joined row not null
+
+			// Add objects for joined User rows
+
+			$key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			if ($key3 !== null) {
+				$obj3 = UserPeer::getInstanceFromPool($key3);
+				if (!$obj3) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UserPeer::addInstanceToPool($obj3, $key3);
+				} // if obj3 loaded
+
+				// Add the $obj1 (String) to the collection in $obj3 (User)
+				$obj3->addStringRelatedByCreatedBy($obj1);
+			} // if joined row not null
+
+			// Add objects for joined User rows
+
+			$key4 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+			if ($key4 !== null) {
+				$obj4 = UserPeer::getInstanceFromPool($key4);
+				if (!$obj4) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					UserPeer::addInstanceToPool($obj4, $key4);
+				} // if obj4 loaded
+
+				// Add the $obj1 (String) to the collection in $obj4 (User)
+				$obj4->addStringRelatedByUpdatedBy($obj1);
+			} // if joined row not null
 
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related Language table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptLanguage(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			StringPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Selects a collection of String objects pre-filled with all related objects except Language.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of String objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptLanguage(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		StringPeer::addSelectColumns($criteria);
+		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UserPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UserPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(StringPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(StringPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = StringPeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined User rows
+
+				$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = UserPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = UserPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (String) to the collection in $obj2 (User)
+				$obj2->addStringRelatedByCreatedBy($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined User rows
+
+				$key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = UserPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = UserPeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UserPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (String) to the collection in $obj3 (User)
+				$obj3->addStringRelatedByUpdatedBy($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of String objects pre-filled with all related objects except UserRelatedByCreatedBy.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of String objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptUserRelatedByCreatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		StringPeer::addSelectColumns($criteria);
+		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		LanguagePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = StringPeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined Language rows
+
+				$key2 = LanguagePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = LanguagePeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = LanguagePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					LanguagePeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (String) to the collection in $obj2 (Language)
+				$obj2->addString($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of String objects pre-filled with all related objects except UserRelatedByUpdatedBy.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of String objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptUserRelatedByUpdatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		StringPeer::addSelectColumns($criteria);
+		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		LanguagePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = StringPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = StringPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = StringPeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				StringPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined Language rows
+
+				$key2 = LanguagePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = LanguagePeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = LanguagePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					LanguagePeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (String) to the collection in $obj2 (Language)
+				$obj2->addString($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
@@ -517,32 +1382,46 @@ abstract class BaseStringPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseStringPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseStringPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new StringTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return StringPeer::CLASS_DEFAULT;
+		return $withPrefix ? StringPeer::CLASS_DEFAULT : StringPeer::OM_CLASS;
 	}
 
 	/**
 	 * Method perform an INSERT on the database, given a String or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or String object containing data that is used to create the INSERT statement.
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doInsert($values, $con = null)
+	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
@@ -558,11 +1437,11 @@ abstract class BaseStringPeer {
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table (I guess, conceivably)
-			$con->begin();
+			$con->beginTransaction();
 			$pk = BasePeer::doInsert($criteria, $con);
 			$con->commit();
 		} catch(PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 
@@ -573,15 +1452,15 @@ abstract class BaseStringPeer {
 	 * Method perform an UPDATE on the database, given a String or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or String object containing data that is used to create the UPDATE statement.
-	 * @param      Connection $con The connection to use (specify Connection object to exert more control over transactions).
+	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doUpdate($values, $con = null)
+	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -590,10 +1469,20 @@ abstract class BaseStringPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(StringPeer::LANGUAGE_ID);
-			$selectCriteria->add(StringPeer::LANGUAGE_ID, $criteria->remove(StringPeer::LANGUAGE_ID), $comparison);
+			$value = $criteria->remove(StringPeer::LANGUAGE_ID);
+			if ($value) {
+				$selectCriteria->add(StringPeer::LANGUAGE_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(StringPeer::STRING_KEY);
-			$selectCriteria->add(StringPeer::STRING_KEY, $criteria->remove(StringPeer::STRING_KEY), $comparison);
+			$value = $criteria->remove(StringPeer::STRING_KEY);
+			if ($value) {
+				$selectCriteria->add(StringPeer::STRING_KEY, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(StringPeer::TABLE_NAME);
+			}
 
 		} else { // $values is String object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -614,18 +1503,23 @@ abstract class BaseStringPeer {
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
-			$con->begin();
-			$affectedRows += BasePeer::doDeleteAll(StringPeer::TABLE_NAME, $con);
+			$con->beginTransaction();
+			$affectedRows += BasePeer::doDeleteAll(StringPeer::TABLE_NAME, $con, StringPeer::DATABASE_NAME);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			StringPeer::clearInstancePool();
+			StringPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
@@ -635,44 +1529,45 @@ abstract class BaseStringPeer {
 	 *
 	 * @param      mixed $values Criteria or String object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
 	 *				if supported by native driver or if emulated using Propel.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, $con = null)
+	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(StringPeer::DATABASE_NAME);
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
-			$criteria = clone $values; // rename for clarity
-		} elseif ($values instanceof String) {
-
+			// invalidate the cache for all objects of this type, since we have no
+			// way of knowing (without running a query) what objects should be invalidated
+			// from the cache based on this Criteria.
+			StringPeer::clearInstancePool();
+			// rename for clarity
+			$criteria = clone $values;
+		} elseif ($values instanceof String) { // it's a model object
+			// invalidate the cache for this single object
+			StringPeer::removeInstanceFromPool($values);
+			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
-			if(count($values) == count($values, COUNT_RECURSIVE))
-			{
+			// the primary key passed to be an array of pkey values
+			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-			$vals = array();
-			foreach($values as $value)
-			{
-
-				$vals[0][] = $value[0];
-				$vals[1][] = $value[1];
+			foreach ($values as $value) {
+				$criterion = $criteria->getNewCriterion(StringPeer::LANGUAGE_ID, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(StringPeer::STRING_KEY, $value[1]));
+				$criteria->addOr($criterion);
+				// we can invalidate the cache for this single PK
+				StringPeer::removeInstanceFromPool($value);
 			}
-
-			$criteria->add(StringPeer::LANGUAGE_ID, $vals[0], Criteria::IN);
-			$criteria->add(StringPeer::STRING_KEY, $vals[1], Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -683,13 +1578,14 @@ abstract class BaseStringPeer {
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
-			$con->begin();
+			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
+			StringPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
@@ -718,7 +1614,7 @@ abstract class BaseStringPeer {
 				$cols = array($cols);
 			}
 
-			foreach($cols as $colName) {
+			foreach ($cols as $colName) {
 				if ($tableMap->containsColumn($colName)) {
 					$get = 'get' . $tableMap->getColumn($colName)->getPhpName();
 					$columns[$colName] = $obj->$get();
@@ -733,17 +1629,21 @@ abstract class BaseStringPeer {
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param string $language_id
-	   @param string $string_key
-	   
-	 * @param      Connection $con
+	 * @param      string $language_id
+	 * @param      string $string_key
+	 * @param      PropelPDO $con
 	 * @return     String
 	 */
-	public static function retrieveByPK( $language_id, $string_key, $con = null) {
-		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+	public static function retrieveByPK($language_id, $string_key, PropelPDO $con = null) {
+		$key = serialize(array((string) $language_id, (string) $string_key));
+ 		if (null !== ($obj = StringPeer::getInstanceFromPool($key))) {
+ 			return $obj;
 		}
-		$criteria = new Criteria();
+
+		if ($con === null) {
+			$con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$criteria = new Criteria(StringPeer::DATABASE_NAME);
 		$criteria->add(StringPeer::LANGUAGE_ID, $language_id);
 		$criteria->add(StringPeer::STRING_KEY, $string_key);
 		$v = StringPeer::doSelect($criteria, $con);
@@ -752,18 +1652,7 @@ abstract class BaseStringPeer {
 	}
 } // BaseStringPeer
 
-// static code to register the map builder for this Peer with the main Propel class
-if (Propel::isInit()) {
-	// the MapBuilder classes register themselves with Propel during initialization
-	// so we need to load them here.
-	try {
-		BaseStringPeer::getMapBuilder();
-	} catch (Exception $e) {
-		Propel::log('Could not initialize Peer: ' . $e->getMessage(), Propel::LOG_ERR);
-	}
-} else {
-	// even if Propel is not yet initialized, the map builder class can be registered
-	// now and then it will be loaded when Propel initializes.
-	require_once 'model/map/StringMapBuilder.php';
-	Propel::registerMapBuilder('model.map.StringMapBuilder');
-}
+// This is the static code needed to register the TableMap for this table with the main Propel class.
+//
+BaseStringPeer::buildTableMap();
+

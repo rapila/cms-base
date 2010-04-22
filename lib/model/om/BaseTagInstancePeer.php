@@ -1,16 +1,11 @@
 <?php
 
-require_once 'propel/util/BasePeer.php';
-// The object class -- needed for instanceof checks in this class.
-// actual class may be a subclass -- as returned by TagInstancePeer::getOMClass()
-include_once 'model/TagInstance.php';
-
 /**
  * Base static class for performing query and update operations on the 'tag_instances' table.
  *
  * 
  *
- * @package    model.om
+ * @package    propel.generator.model.om
  */
 abstract class BaseTagInstancePeer {
 
@@ -20,15 +15,20 @@ abstract class BaseTagInstancePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'tag_instances';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'TagInstance';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'model.TagInstance';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'TagInstanceTableMap';
+	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 4;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
-
 
 	/** the column name for the TAG_ID field */
 	const TAG_ID = 'tag_instances.TAG_ID';
@@ -39,11 +39,25 @@ abstract class BaseTagInstancePeer {
 	/** the column name for the MODEL_NAME field */
 	const MODEL_NAME = 'tag_instances.MODEL_NAME';
 
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'tag_instances.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'tag_instances.UPDATED_AT';
+
 	/** the column name for the CREATED_BY field */
 	const CREATED_BY = 'tag_instances.CREATED_BY';
 
-	/** The PHP to DB Name Mapping */
-	private static $phpNameMap = null;
+	/** the column name for the UPDATED_BY field */
+	const UPDATED_BY = 'tag_instances.UPDATED_BY';
+
+	/**
+	 * An identiy map to hold any loaded instances of TagInstance objects.
+	 * This must be public so that other peer classes can access this when hydrating from JOIN
+	 * queries.
+	 * @var        array TagInstance[]
+	 */
+	public static $instances = array();
 
 
 	/**
@@ -53,10 +67,12 @@ abstract class BaseTagInstancePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('TagId', 'TaggedItemId', 'ModelName', 'CreatedBy', ),
-		BasePeer::TYPE_COLNAME => array (TagInstancePeer::TAG_ID, TagInstancePeer::TAGGED_ITEM_ID, TagInstancePeer::MODEL_NAME, TagInstancePeer::CREATED_BY, ),
-		BasePeer::TYPE_FIELDNAME => array ('tag_id', 'tagged_item_id', 'model_name', 'created_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('TagId', 'TaggedItemId', 'ModelName', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('tagId', 'taggedItemId', 'modelName', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::TAG_ID, self::TAGGED_ITEM_ID, self::MODEL_NAME, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('TAG_ID', 'TAGGED_ITEM_ID', 'MODEL_NAME', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('tag_id', 'tagged_item_id', 'model_name', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -66,51 +82,23 @@ abstract class BaseTagInstancePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('TagId' => 0, 'TaggedItemId' => 1, 'ModelName' => 2, 'CreatedBy' => 3, ),
-		BasePeer::TYPE_COLNAME => array (TagInstancePeer::TAG_ID => 0, TagInstancePeer::TAGGED_ITEM_ID => 1, TagInstancePeer::MODEL_NAME => 2, TagInstancePeer::CREATED_BY => 3, ),
-		BasePeer::TYPE_FIELDNAME => array ('tag_id' => 0, 'tagged_item_id' => 1, 'model_name' => 2, 'created_by' => 3, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('TagId' => 0, 'TaggedItemId' => 1, 'ModelName' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('tagId' => 0, 'taggedItemId' => 1, 'modelName' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::TAG_ID => 0, self::TAGGED_ITEM_ID => 1, self::MODEL_NAME => 2, self::CREATED_AT => 3, self::UPDATED_AT => 4, self::CREATED_BY => 5, self::UPDATED_BY => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('TAG_ID' => 0, 'TAGGED_ITEM_ID' => 1, 'MODEL_NAME' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'CREATED_BY' => 5, 'UPDATED_BY' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('tag_id' => 0, 'tagged_item_id' => 1, 'model_name' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
-	/**
-	 * @return     MapBuilder the map builder for this peer
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function getMapBuilder()
-	{
-		include_once 'model/map/TagInstanceMapBuilder.php';
-		return BasePeer::getMapBuilder('model.map.TagInstanceMapBuilder');
-	}
-	/**
-	 * Gets a map (hash) of PHP names to DB column names.
-	 *
-	 * @return     array The PHP to DB name map for this peer
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 * @deprecated Use the getFieldNames() and translateFieldName() methods instead of this.
-	 */
-	public static function getPhpNameMap()
-	{
-		if (self::$phpNameMap === null) {
-			$map = TagInstancePeer::getTableMap();
-			$columns = $map->getColumns();
-			$nameMap = array();
-			foreach ($columns as $column) {
-				$nameMap[$column->getPhpName()] = $column->getColumnName();
-			}
-			self::$phpNameMap = $nameMap;
-		}
-		return self::$phpNameMap;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
 	 * @param      string $name field name
-	 * @param      string $fromType One of the class type constants TYPE_PHPNAME,
-	 *                         TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 * @param      string $fromType One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                         BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @param      string $toType   One of the class type constants
 	 * @return     string translated name of the field.
+	 * @throws     PropelException - if the specified name could not be found in the fieldname mappings.
 	 */
 	static public function translateFieldName($name, $fromType, $toType)
 	{
@@ -123,18 +111,18 @@ abstract class BaseTagInstancePeer {
 	}
 
 	/**
-	 * Returns an array of of field names.
+	 * Returns an array of field names.
 	 *
 	 * @param      string $type The type of fieldnames to return:
-	 *                      One of the class type constants TYPE_PHPNAME,
-	 *                      TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                      One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                      BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     array A list of field names
 	 */
 
 	static public function getFieldNames($type = BasePeer::TYPE_PHPNAME)
 	{
 		if (!array_key_exists($type, self::$fieldNames)) {
-			throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants TYPE_PHPNAME, TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM. ' . $type . ' was given.');
+			throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
 		}
 		return self::$fieldNames[$type];
 	}
@@ -163,71 +151,85 @@ abstract class BaseTagInstancePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(TagInstancePeer::TAG_ID);
-
-		$criteria->addSelectColumn(TagInstancePeer::TAGGED_ITEM_ID);
-
-		$criteria->addSelectColumn(TagInstancePeer::MODEL_NAME);
-
-		$criteria->addSelectColumn(TagInstancePeer::CREATED_BY);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(TagInstancePeer::TAG_ID);
+			$criteria->addSelectColumn(TagInstancePeer::TAGGED_ITEM_ID);
+			$criteria->addSelectColumn(TagInstancePeer::MODEL_NAME);
+			$criteria->addSelectColumn(TagInstancePeer::CREATED_AT);
+			$criteria->addSelectColumn(TagInstancePeer::UPDATED_AT);
+			$criteria->addSelectColumn(TagInstancePeer::CREATED_BY);
+			$criteria->addSelectColumn(TagInstancePeer::UPDATED_BY);
+		} else {
+			$criteria->addSelectColumn($alias . '.TAG_ID');
+			$criteria->addSelectColumn($alias . '.TAGGED_ITEM_ID');
+			$criteria->addSelectColumn($alias . '.MODEL_NAME');
+			$criteria->addSelectColumn($alias . '.CREATED_AT');
+			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+			$criteria->addSelectColumn($alias . '.CREATED_BY');
+			$criteria->addSelectColumn($alias . '.UPDATED_BY');
+		}
 	}
-
-	const COUNT = 'COUNT(tag_instances.TAG_ID)';
-	const COUNT_DISTINCT = 'COUNT(DISTINCT tag_instances.TAG_ID)';
 
 	/**
 	 * Returns the number of rows matching criteria.
 	 *
 	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCount(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCount(Criteria $criteria, $distinct = false, PropelPDO $con = null)
 	{
-		// we're going to modify criteria, so copy it first
+		// we may modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
-		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
 		}
 
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
+		// BasePeer returns a PDOStatement
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
 	}
 	/**
 	 * Method to select one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     TagInstance
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectOne(Criteria $criteria, $con = null)
+	public static function doSelectOne(Criteria $criteria, PropelPDO $con = null)
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
@@ -241,36 +243,35 @@ abstract class BaseTagInstancePeer {
 	 * Method to do selects.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     array Array of selected Objects
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelect(Criteria $criteria, $con = null)
+	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return TagInstancePeer::populateObjects(TagInstancePeer::doSelectRS($criteria, $con));
+		return TagInstancePeer::populateObjects(TagInstancePeer::doSelectStmt($criteria, $con));
 	}
 	/**
-	 * Prepares the Criteria object and uses the parent doSelect()
-	 * method to get a ResultSet.
+	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
 	 *
-	 * Use this method directly if you want to just get the resultset
-	 * (instead of an array of objects).
+	 * Use this method directly if you want to work with an executed statement durirectly (for example
+	 * to perform your own object hydration).
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con The connection to use
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     ResultSet The resultset object with numerically-indexed fields.
+	 * @return     PDOStatement The executed PDOStatement object.
 	 * @see        BasePeer::doSelect()
 	 */
-	public static function doSelectRS(Criteria $criteria, $con = null)
+	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		if (!$criteria->getSelectColumns()) {
+		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
 			TagInstancePeer::addSelectColumns($criteria);
 		}
@@ -278,10 +279,129 @@ abstract class BaseTagInstancePeer {
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
-		// BasePeer returns a Creole ResultSet, set to return
-		// rows indexed numerically.
+		// BasePeer returns a PDOStatement
 		return BasePeer::doSelect($criteria, $con);
 	}
+	/**
+	 * Adds an object to the instance pool.
+	 *
+	 * Propel keeps cached copies of objects in an instance pool when they are retrieved
+	 * from the database.  In some cases -- especially when you override doSelect*()
+	 * methods in your stub classes -- you may need to explicitly add objects
+	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
+	 * and retrieveByPK*() calls.
+	 *
+	 * @param      TagInstance $value A TagInstance object.
+	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
+	 */
+	public static function addInstanceToPool(TagInstance $obj, $key = null)
+	{
+		if (Propel::isInstancePoolingEnabled()) {
+			if ($key === null) {
+				$key = serialize(array((string) $obj->getTagId(), (string) $obj->getTaggedItemId(), (string) $obj->getModelName()));
+			} // if key === null
+			self::$instances[$key] = $obj;
+		}
+	}
+
+	/**
+	 * Removes an object from the instance pool.
+	 *
+	 * Propel keeps cached copies of objects in an instance pool when they are retrieved
+	 * from the database.  In some cases -- especially when you override doDelete
+	 * methods in your stub classes -- you may need to explicitly remove objects
+	 * from the cache in order to prevent returning objects that no longer exist.
+	 *
+	 * @param      mixed $value A TagInstance object or a primary key value.
+	 */
+	public static function removeInstanceFromPool($value)
+	{
+		if (Propel::isInstancePoolingEnabled() && $value !== null) {
+			if (is_object($value) && $value instanceof TagInstance) {
+				$key = serialize(array((string) $value->getTagId(), (string) $value->getTaggedItemId(), (string) $value->getModelName()));
+			} elseif (is_array($value) && count($value) === 3) {
+				// assume we've been passed a primary key
+				$key = serialize(array((string) $value[0], (string) $value[1], (string) $value[2]));
+			} else {
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or TagInstance object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				throw $e;
+			}
+
+			unset(self::$instances[$key]);
+		}
+	} // removeInstanceFromPool()
+
+	/**
+	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
+	 *
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
+	 *
+	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
+	 * @return     TagInstance Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @see        getPrimaryKeyHash()
+	 */
+	public static function getInstanceFromPool($key)
+	{
+		if (Propel::isInstancePoolingEnabled()) {
+			if (isset(self::$instances[$key])) {
+				return self::$instances[$key];
+			}
+		}
+		return null; // just to be explicit
+	}
+	
+	/**
+	 * Clear the instance pool.
+	 *
+	 * @return     void
+	 */
+	public static function clearInstancePool()
+	{
+		self::$instances = array();
+	}
+	
+	/**
+	 * Method to invalidate the instance pool of all tables related to tag_instances
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
+	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
+	 *
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     string A string version of PK or NULL if the components of primary key in result array are all null.
+	 */
+	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
+	{
+		// If the PK cannot be derived from the row, return NULL.
+		if ($row[$startcol] === null && $row[$startcol + 1] === null && $row[$startcol + 2] === null) {
+			return null;
+		}
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1], (string) $row[$startcol + 2]));
+	}
+
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((int) $row[$startcol], (int) $row[$startcol + 1], (string) $row[$startcol + 2]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -289,214 +409,400 @@ abstract class BaseTagInstancePeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function populateObjects(ResultSet $rs)
+	public static function populateObjects(PDOStatement $stmt)
 	{
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = TagInstancePeer::getOMClass();
-		$cls = Propel::import($cls);
+		$cls = TagInstancePeer::getOMClass(false);
 		// populate the object(s)
-		while($rs->next()) {
-		
-			$obj = new $cls();
-			$obj->hydrate($rs);
-			$results[] = $obj;
-			
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = TagInstancePeer::getInstanceFromPool($key))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj->hydrate($row, 0, true); // rehydrate
+				$results[] = $obj;
+			} else {
+				$obj = new $cls();
+				$obj->hydrate($row);
+				$results[] = $obj;
+				TagInstancePeer::addInstanceToPool($obj, $key);
+			} // if key exists
 		}
+		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (TagInstance object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = TagInstancePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = TagInstancePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://www.propelorm.org/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + TagInstancePeer::NUM_COLUMNS;
+		} else {
+			$cls = TagInstancePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			TagInstancePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Tag table
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinTag(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinTag(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
-
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
-		}
-
-		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
-
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
-		}
+		$stmt->closeCursor();
+		return $count;
 	}
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related User table
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinUser(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
+		$stmt->closeCursor();
+		return $count;
 	}
 
 
 	/**
 	 * Selects a collection of TagInstance objects pre-filled with their Tag objects.
-	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of TagInstance objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinTag(Criteria $c, $con = null)
+	public static function doSelectJoinTag(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		TagInstancePeer::addSelectColumns($c);
-		$startcol = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS) + 1;
-		TagPeer::addSelectColumns($c);
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
+		TagPeer::addSelectColumns($criteria);
 
-		$c->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
-		$rs = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
 
-			$omClass = TagInstancePeer::getOMClass();
+				$cls = TagInstancePeer::getOMClass(false);
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
 
-			$omClass = TagPeer::getOMClass();
+			$key2 = TagPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = TagPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
-			$cls = Propel::import($omClass);
-			$obj2 = new $cls();
-			$obj2->hydrate($rs, $startcol);
+					$cls = TagPeer::getOMClass(false);
 
-			$newObject = true;
-			foreach($results as $temp_obj1) {
-				$temp_obj2 = $temp_obj1->getTag(); //CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					// e.g. $author->addBookRelatedByBookId()
-					$temp_obj2->addTagInstance($obj1); //CHECKME
-					break;
-				}
-			}
-			if ($newObject) {
-				$obj2->initTagInstances();
-				$obj2->addTagInstance($obj1); //CHECKME
-			}
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					TagPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (TagInstance) to $obj2 (Tag)
+				$obj2->addTagInstance($obj1);
+
+			} // if joined row was not null
+
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
 
 	/**
 	 * Selects a collection of TagInstance objects pre-filled with their User objects.
-	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of TagInstance objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUser(Criteria $c, $con = null)
+	public static function doSelectJoinUserRelatedByCreatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		TagInstancePeer::addSelectColumns($c);
-		$startcol = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS) + 1;
-		UserPeer::addSelectColumns($c);
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
+		UserPeer::addSelectColumns($criteria);
 
-		$c->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
-		$rs = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
 
-			$omClass = TagInstancePeer::getOMClass();
+				$cls = TagInstancePeer::getOMClass(false);
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
 
-			$omClass = UserPeer::getOMClass();
+			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = UserPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
-			$cls = Propel::import($omClass);
-			$obj2 = new $cls();
-			$obj2->hydrate($rs, $startcol);
+					$cls = UserPeer::getOMClass(false);
 
-			$newObject = true;
-			foreach($results as $temp_obj1) {
-				$temp_obj2 = $temp_obj1->getUser(); //CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					// e.g. $author->addBookRelatedByBookId()
-					$temp_obj2->addTagInstance($obj1); //CHECKME
-					break;
-				}
-			}
-			if ($newObject) {
-				$obj2->initTagInstances();
-				$obj2->addTagInstance($obj1); //CHECKME
-			}
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (TagInstance) to $obj2 (User)
+				$obj2->addTagInstanceRelatedByCreatedBy($obj1);
+
+			} // if joined row was not null
+
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of TagInstance objects pre-filled with their User objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of TagInstance objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinUserRelatedByUpdatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
+		UserPeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = TagInstancePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = UserPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (TagInstance) to $obj2 (User)
+				$obj2->addTagInstanceRelatedByUpdatedBy($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
@@ -504,138 +810,167 @@ abstract class BaseTagInstancePeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAll(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
+		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
+
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
-
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
-		}
-
-		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
-
-		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
-
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
-		}
+		$stmt->closeCursor();
+		return $count;
 	}
-
 
 	/**
 	 * Selects a collection of TagInstance objects pre-filled with all related objects.
 	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of TagInstance objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		TagInstancePeer::addSelectColumns($c);
-		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		TagPeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + TagPeer::NUM_COLUMNS;
+		TagPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UserPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + UserPeer::NUM_COLUMNS;
+		UserPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
+		UserPeer::addSelectColumns($criteria);
+		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
 
-		$rs = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = TagInstancePeer::getOMClass(false);
 
-			$omClass = TagInstancePeer::getOMClass();
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
 
+			// Add objects for joined Tag rows
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+			$key2 = TagPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			if ($key2 !== null) {
+				$obj2 = TagPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
+					$cls = TagPeer::getOMClass(false);
 
-				// Add objects for joined Tag rows
-	
-			$omClass = TagPeer::getOMClass();
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					TagPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 loaded
 
-
-			$cls = Propel::import($omClass);
-			$obj2 = new $cls();
-			$obj2->hydrate($rs, $startcol2);
-
-			$newObject = true;
-			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
-				$temp_obj1 = $results[$j];
-				$temp_obj2 = $temp_obj1->getTag(); // CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					$temp_obj2->addTagInstance($obj1); // CHECKME
-					break;
-				}
-			}
-
-			if ($newObject) {
-				$obj2->initTagInstances();
+				// Add the $obj1 (TagInstance) to the collection in $obj2 (Tag)
 				$obj2->addTagInstance($obj1);
-			}
+			} // if joined row not null
 
+			// Add objects for joined User rows
 
-				// Add objects for joined User rows
-	
-			$omClass = UserPeer::getOMClass();
+			$key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			if ($key3 !== null) {
+				$obj3 = UserPeer::getInstanceFromPool($key3);
+				if (!$obj3) {
 
+					$cls = UserPeer::getOMClass(false);
 
-			$cls = Propel::import($omClass);
-			$obj3 = new $cls();
-			$obj3->hydrate($rs, $startcol3);
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UserPeer::addInstanceToPool($obj3, $key3);
+				} // if obj3 loaded
 
-			$newObject = true;
-			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
-				$temp_obj1 = $results[$j];
-				$temp_obj3 = $temp_obj1->getUser(); // CHECKME
-				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
-					$newObject = false;
-					$temp_obj3->addTagInstance($obj1); // CHECKME
-					break;
-				}
-			}
+				// Add the $obj1 (TagInstance) to the collection in $obj3 (User)
+				$obj3->addTagInstanceRelatedByCreatedBy($obj1);
+			} // if joined row not null
 
-			if ($newObject) {
-				$obj3->initTagInstances();
-				$obj3->addTagInstance($obj1);
-			}
+			// Add objects for joined User rows
+
+			$key4 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+			if ($key4 !== null) {
+				$obj4 = UserPeer::getInstanceFromPool($key4);
+				if (!$obj4) {
+
+					$cls = UserPeer::getOMClass(false);
+
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					UserPeer::addInstanceToPool($obj4, $key4);
+				} // if obj4 loaded
+
+				// Add the $obj1 (TagInstance) to the collection in $obj4 (User)
+				$obj4->addTagInstanceRelatedByUpdatedBy($obj1);
+			} // if joined row not null
 
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
@@ -643,211 +978,394 @@ abstract class BaseTagInstancePeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Tag table
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptTag(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinAllExceptTag(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
-
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
-		}
-
-		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
-
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
-		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
-		}
+		$stmt->closeCursor();
+		return $count;
 	}
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related User table
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
 	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
-	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptUser(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinAllExceptUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
 
-		// clear out anything that might confuse the ORDER BY clause
-		$criteria->clearSelectColumns()->clearOrderByColumns();
-		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT_DISTINCT);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			$criteria->addSelectColumn(TagInstancePeer::COUNT);
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		// just in case we're grouping: add those columns to the select statement
-		foreach($criteria->getGroupByColumns() as $column)
-		{
-			$criteria->addSelectColumn($column);
+		if (!$criteria->hasSelectClause()) {
+			TagInstancePeer::addSelectColumns($criteria);
 		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
 
-		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
 
-		$rs = TagInstancePeer::doSelectRS($criteria, $con);
-		if ($rs->next()) {
-			return $rs->getInt(1);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
 		} else {
-			// no rows returned; we infer that means 0 matches.
-			return 0;
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
+		$stmt->closeCursor();
+		return $count;
 	}
 
 
 	/**
 	 * Selects a collection of TagInstance objects pre-filled with all related objects except Tag.
 	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of TagInstance objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptTag(Criteria $c, $con = null)
+	public static function doSelectJoinAllExceptTag(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		TagInstancePeer::addSelectColumns($c);
-		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UserPeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + UserPeer::NUM_COLUMNS;
+		UserPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID);
+		UserPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(TagInstancePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(TagInstancePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
 
-		$rs = BasePeer::doSelect($c, $con);
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = TagInstancePeer::getOMClass(false);
 
-			$omClass = TagInstancePeer::getOMClass();
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+				// Add objects for joined User rows
 
-			$omClass = UserPeer::getOMClass();
+				$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = UserPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = UserPeer::getOMClass(false);
 
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
 
-			$cls = Propel::import($omClass);
-			$obj2  = new $cls();
-			$obj2->hydrate($rs, $startcol2);
+				// Add the $obj1 (TagInstance) to the collection in $obj2 (User)
+				$obj2->addTagInstanceRelatedByCreatedBy($obj1);
 
-			$newObject = true;
-			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
-				$temp_obj1 = $results[$j];
-				$temp_obj2 = $temp_obj1->getUser(); //CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					$temp_obj2->addTagInstance($obj1);
-					break;
-				}
-			}
+			} // if joined row is not null
 
-			if ($newObject) {
-				$obj2->initTagInstances();
-				$obj2->addTagInstance($obj1);
-			}
+				// Add objects for joined User rows
+
+				$key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = UserPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = UserPeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UserPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (TagInstance) to the collection in $obj3 (User)
+				$obj3->addTagInstanceRelatedByUpdatedBy($obj1);
+
+			} // if joined row is not null
 
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
 
 	/**
-	 * Selects a collection of TagInstance objects pre-filled with all related objects except User.
+	 * Selects a collection of TagInstance objects pre-filled with all related objects except UserRelatedByCreatedBy.
 	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of TagInstance objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUser(Criteria $c, $con = null)
+	public static function doSelectJoinAllExceptUserRelatedByCreatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		TagInstancePeer::addSelectColumns($c);
-		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		TagPeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + TagPeer::NUM_COLUMNS;
+		TagPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID);
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
 
 
-		$rs = BasePeer::doSelect($c, $con);
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
-		while($rs->next()) {
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = TagInstancePeer::getOMClass(false);
 
-			$omClass = TagInstancePeer::getOMClass();
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
 
-			$cls = Propel::import($omClass);
-			$obj1 = new $cls();
-			$obj1->hydrate($rs);
+				// Add objects for joined Tag rows
 
-			$omClass = TagPeer::getOMClass();
+				$key2 = TagPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = TagPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = TagPeer::getOMClass(false);
 
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					TagPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
 
-			$cls = Propel::import($omClass);
-			$obj2  = new $cls();
-			$obj2->hydrate($rs, $startcol2);
-
-			$newObject = true;
-			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
-				$temp_obj1 = $results[$j];
-				$temp_obj2 = $temp_obj1->getTag(); //CHECKME
-				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
-					$newObject = false;
-					$temp_obj2->addTagInstance($obj1);
-					break;
-				}
-			}
-
-			if ($newObject) {
-				$obj2->initTagInstances();
+				// Add the $obj1 (TagInstance) to the collection in $obj2 (Tag)
 				$obj2->addTagInstance($obj1);
-			}
+
+			} // if joined row is not null
 
 			$results[] = $obj1;
 		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of TagInstance objects pre-filled with all related objects except UserRelatedByUpdatedBy.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of TagInstance objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptUserRelatedByUpdatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		TagInstancePeer::addSelectColumns($criteria);
+		$startcol2 = (TagInstancePeer::NUM_COLUMNS - TagInstancePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		TagPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TagInstancePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TagInstancePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = TagInstancePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TagInstancePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined Tag rows
+
+				$key2 = TagPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = TagPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = TagPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					TagPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (TagInstance) to the collection in $obj2 (Tag)
+				$obj2->addTagInstance($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
 		return $results;
 	}
 
@@ -864,32 +1382,46 @@ abstract class BaseTagInstancePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseTagInstancePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseTagInstancePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new TagInstanceTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return TagInstancePeer::CLASS_DEFAULT;
+		return $withPrefix ? TagInstancePeer::CLASS_DEFAULT : TagInstancePeer::OM_CLASS;
 	}
 
 	/**
 	 * Method perform an INSERT on the database, given a TagInstance or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or TagInstance object containing data that is used to create the INSERT statement.
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doInsert($values, $con = null)
+	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
@@ -905,11 +1437,11 @@ abstract class BaseTagInstancePeer {
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table (I guess, conceivably)
-			$con->begin();
+			$con->beginTransaction();
 			$pk = BasePeer::doInsert($criteria, $con);
 			$con->commit();
 		} catch(PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 
@@ -920,15 +1452,15 @@ abstract class BaseTagInstancePeer {
 	 * Method perform an UPDATE on the database, given a TagInstance or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or TagInstance object containing data that is used to create the UPDATE statement.
-	 * @param      Connection $con The connection to use (specify Connection object to exert more control over transactions).
+	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doUpdate($values, $con = null)
+	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -937,13 +1469,28 @@ abstract class BaseTagInstancePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(TagInstancePeer::TAG_ID);
-			$selectCriteria->add(TagInstancePeer::TAG_ID, $criteria->remove(TagInstancePeer::TAG_ID), $comparison);
+			$value = $criteria->remove(TagInstancePeer::TAG_ID);
+			if ($value) {
+				$selectCriteria->add(TagInstancePeer::TAG_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(TagInstancePeer::TAGGED_ITEM_ID);
-			$selectCriteria->add(TagInstancePeer::TAGGED_ITEM_ID, $criteria->remove(TagInstancePeer::TAGGED_ITEM_ID), $comparison);
+			$value = $criteria->remove(TagInstancePeer::TAGGED_ITEM_ID);
+			if ($value) {
+				$selectCriteria->add(TagInstancePeer::TAGGED_ITEM_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(TagInstancePeer::MODEL_NAME);
-			$selectCriteria->add(TagInstancePeer::MODEL_NAME, $criteria->remove(TagInstancePeer::MODEL_NAME), $comparison);
+			$value = $criteria->remove(TagInstancePeer::MODEL_NAME);
+			if ($value) {
+				$selectCriteria->add(TagInstancePeer::MODEL_NAME, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(TagInstancePeer::TABLE_NAME);
+			}
 
 		} else { // $values is TagInstance object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -964,18 +1511,23 @@ abstract class BaseTagInstancePeer {
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
-			$con->begin();
-			$affectedRows += BasePeer::doDeleteAll(TagInstancePeer::TABLE_NAME, $con);
+			$con->beginTransaction();
+			$affectedRows += BasePeer::doDeleteAll(TagInstancePeer::TABLE_NAME, $con, TagInstancePeer::DATABASE_NAME);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			TagInstancePeer::clearInstancePool();
+			TagInstancePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
@@ -985,46 +1537,46 @@ abstract class BaseTagInstancePeer {
 	 *
 	 * @param      mixed $values Criteria or TagInstance object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
-	 * @param      Connection $con the connection to use
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
 	 *				if supported by native driver or if emulated using Propel.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, $con = null)
+	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME);
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
-			$criteria = clone $values; // rename for clarity
-		} elseif ($values instanceof TagInstance) {
-
+			// invalidate the cache for all objects of this type, since we have no
+			// way of knowing (without running a query) what objects should be invalidated
+			// from the cache based on this Criteria.
+			TagInstancePeer::clearInstancePool();
+			// rename for clarity
+			$criteria = clone $values;
+		} elseif ($values instanceof TagInstance) { // it's a model object
+			// invalidate the cache for this single object
+			TagInstancePeer::removeInstanceFromPool($values);
+			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
-			if(count($values) == count($values, COUNT_RECURSIVE))
-			{
+			// the primary key passed to be an array of pkey values
+			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-			$vals = array();
-			foreach($values as $value)
-			{
-
-				$vals[0][] = $value[0];
-				$vals[1][] = $value[1];
-				$vals[2][] = $value[2];
+			foreach ($values as $value) {
+				$criterion = $criteria->getNewCriterion(TagInstancePeer::TAG_ID, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(TagInstancePeer::TAGGED_ITEM_ID, $value[1]));
+				$criterion->addAnd($criteria->getNewCriterion(TagInstancePeer::MODEL_NAME, $value[2]));
+				$criteria->addOr($criterion);
+				// we can invalidate the cache for this single PK
+				TagInstancePeer::removeInstanceFromPool($value);
 			}
-
-			$criteria->add(TagInstancePeer::TAG_ID, $vals[0], Criteria::IN);
-			$criteria->add(TagInstancePeer::TAGGED_ITEM_ID, $vals[1], Criteria::IN);
-			$criteria->add(TagInstancePeer::MODEL_NAME, $vals[2], Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -1035,13 +1587,14 @@ abstract class BaseTagInstancePeer {
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
-			$con->begin();
+			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
+			TagInstancePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
@@ -1070,7 +1623,7 @@ abstract class BaseTagInstancePeer {
 				$cols = array($cols);
 			}
 
-			foreach($cols as $colName) {
+			foreach ($cols as $colName) {
 				if ($tableMap->containsColumn($colName)) {
 					$get = 'get' . $tableMap->getColumn($colName)->getPhpName();
 					$columns[$colName] = $obj->$get();
@@ -1085,18 +1638,22 @@ abstract class BaseTagInstancePeer {
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param int $tag_id
-	   @param int $tagged_item_id
-	   @param string $model_name
-	   
-	 * @param      Connection $con
+	 * @param      int $tag_id
+	 * @param      int $tagged_item_id
+	 * @param      string $model_name
+	 * @param      PropelPDO $con
 	 * @return     TagInstance
 	 */
-	public static function retrieveByPK( $tag_id, $tagged_item_id, $model_name, $con = null) {
-		if ($con === null) {
-			$con = Propel::getConnection(self::DATABASE_NAME);
+	public static function retrieveByPK($tag_id, $tagged_item_id, $model_name, PropelPDO $con = null) {
+		$key = serialize(array((string) $tag_id, (string) $tagged_item_id, (string) $model_name));
+ 		if (null !== ($obj = TagInstancePeer::getInstanceFromPool($key))) {
+ 			return $obj;
 		}
-		$criteria = new Criteria();
+
+		if ($con === null) {
+			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$criteria = new Criteria(TagInstancePeer::DATABASE_NAME);
 		$criteria->add(TagInstancePeer::TAG_ID, $tag_id);
 		$criteria->add(TagInstancePeer::TAGGED_ITEM_ID, $tagged_item_id);
 		$criteria->add(TagInstancePeer::MODEL_NAME, $model_name);
@@ -1106,18 +1663,7 @@ abstract class BaseTagInstancePeer {
 	}
 } // BaseTagInstancePeer
 
-// static code to register the map builder for this Peer with the main Propel class
-if (Propel::isInit()) {
-	// the MapBuilder classes register themselves with Propel during initialization
-	// so we need to load them here.
-	try {
-		BaseTagInstancePeer::getMapBuilder();
-	} catch (Exception $e) {
-		Propel::log('Could not initialize Peer: ' . $e->getMessage(), Propel::LOG_ERR);
-	}
-} else {
-	// even if Propel is not yet initialized, the map builder class can be registered
-	// now and then it will be loaded when Propel initializes.
-	require_once 'model/map/TagInstanceMapBuilder.php';
-	Propel::registerMapBuilder('model.map.TagInstanceMapBuilder');
-}
+// This is the static code needed to register the TableMap for this table with the main Propel class.
+//
+BaseTagInstancePeer::buildTableMap();
+

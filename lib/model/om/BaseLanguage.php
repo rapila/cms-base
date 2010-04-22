@@ -1,23 +1,19 @@
 <?php
 
-require_once 'propel/om/BaseObject.php';
-
-require_once 'propel/om/Persistent.php';
-
-
-include_once 'propel/util/Criteria.php';
-
-include_once 'model/LanguagePeer.php';
-
 /**
  * Base class that represents a row from the 'languages' table.
  *
  * 
  *
- * @package    model.om
+ * @package    propel.generator.model.om
  */
-abstract class BaseLanguage extends BaseObject  implements Persistent {
+abstract class BaseLanguage extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'LanguagePeer';
 
 	/**
 	 * The Peer class.
@@ -27,20 +23,17 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	protected static $peer;
 
-
 	/**
 	 * The value for the id field.
 	 * @var        string
 	 */
 	protected $id;
 
-
 	/**
 	 * The value for the is_active field.
 	 * @var        boolean
 	 */
 	protected $is_active;
-
 
 	/**
 	 * The value for the sort field.
@@ -49,88 +42,73 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	protected $sort;
 
 	/**
-	 * Collection to store aggregation of collPageStrings.
-	 * @var        array
+	 * The value for the created_at field.
+	 * @var        string
+	 */
+	protected $created_at;
+
+	/**
+	 * The value for the updated_at field.
+	 * @var        string
+	 */
+	protected $updated_at;
+
+	/**
+	 * The value for the created_by field.
+	 * @var        int
+	 */
+	protected $created_by;
+
+	/**
+	 * The value for the updated_by field.
+	 * @var        int
+	 */
+	protected $updated_by;
+
+	/**
+	 * @var        User
+	 */
+	protected $aUserRelatedByCreatedBy;
+
+	/**
+	 * @var        User
+	 */
+	protected $aUserRelatedByUpdatedBy;
+
+	/**
+	 * @var        array PageString[] Collection to store aggregation of PageString objects.
 	 */
 	protected $collPageStrings;
 
 	/**
-	 * The criteria used to select the current contents of collPageStrings.
-	 * @var        Criteria
-	 */
-	protected $lastPageStringCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collLanguageObjects.
-	 * @var        array
+	 * @var        array LanguageObject[] Collection to store aggregation of LanguageObject objects.
 	 */
 	protected $collLanguageObjects;
 
 	/**
-	 * The criteria used to select the current contents of collLanguageObjects.
-	 * @var        Criteria
-	 */
-	protected $lastLanguageObjectCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collLanguageObjectHistorys.
-	 * @var        array
+	 * @var        array LanguageObjectHistory[] Collection to store aggregation of LanguageObjectHistory objects.
 	 */
 	protected $collLanguageObjectHistorys;
 
 	/**
-	 * The criteria used to select the current contents of collLanguageObjectHistorys.
-	 * @var        Criteria
-	 */
-	protected $lastLanguageObjectHistoryCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collStrings.
-	 * @var        array
+	 * @var        array String[] Collection to store aggregation of String objects.
 	 */
 	protected $collStrings;
 
 	/**
-	 * The criteria used to select the current contents of collStrings.
-	 * @var        Criteria
-	 */
-	protected $lastStringCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collUsers.
-	 * @var        array
+	 * @var        array User[] Collection to store aggregation of User objects.
 	 */
 	protected $collUsers;
 
 	/**
-	 * The criteria used to select the current contents of collUsers.
-	 * @var        Criteria
-	 */
-	protected $lastUserCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collDocuments.
-	 * @var        array
+	 * @var        array Document[] Collection to store aggregation of Document objects.
 	 */
 	protected $collDocuments;
 
 	/**
-	 * The criteria used to select the current contents of collDocuments.
-	 * @var        Criteria
-	 */
-	protected $lastDocumentCriteria = null;
-
-	/**
-	 * Collection to store aggregation of collLinks.
-	 * @var        array
+	 * @var        array Link[] Collection to store aggregation of Link objects.
 	 */
 	protected $collLinks;
-
-	/**
-	 * The criteria used to select the current contents of collLinks.
-	 * @var        Criteria
-	 */
-	protected $lastLinkCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -153,7 +131,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function getId()
 	{
-
 		return $this->id;
 	}
 
@@ -164,7 +141,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function getIsActive()
 	{
-
 		return $this->is_active;
 	}
 
@@ -175,23 +151,115 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function getSort()
 	{
-
 		return $this->sort;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->created_at === null) {
+			return null;
+		}
+
+
+		if ($this->created_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->updated_at === null) {
+			return null;
+		}
+
+
+		if ($this->updated_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->updated_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [created_by] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getCreatedBy()
+	{
+		return $this->created_by;
+	}
+
+	/**
+	 * Get the [updated_by] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getUpdatedBy()
+	{
+		return $this->updated_by;
 	}
 
 	/**
 	 * Set the value of [id] column.
 	 * 
 	 * @param      string $v new value
-	 * @return     void
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setId($v)
 	{
-
-		// Since the native PHP type for this column is string,
-		// we will cast the input to a string (if it is not).
-		if ($v !== null && !is_string($v)) {
-			$v = (string) $v; 
+		if ($v !== null) {
+			$v = (string) $v;
 		}
 
 		if ($this->id !== $v) {
@@ -199,36 +267,38 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			$this->modifiedColumns[] = LanguagePeer::ID;
 		}
 
+		return $this;
 	} // setId()
 
 	/**
 	 * Set the value of [is_active] column.
 	 * 
 	 * @param      boolean $v new value
-	 * @return     void
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setIsActive($v)
 	{
+		if ($v !== null) {
+			$v = (boolean) $v;
+		}
 
 		if ($this->is_active !== $v) {
 			$this->is_active = $v;
 			$this->modifiedColumns[] = LanguagePeer::IS_ACTIVE;
 		}
 
+		return $this;
 	} // setIsActive()
 
 	/**
 	 * Set the value of [sort] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     void
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setSort($v)
 	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
+		if ($v !== null) {
 			$v = (int) $v;
 		}
 
@@ -237,37 +307,203 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			$this->modifiedColumns[] = LanguagePeer::SORT;
 		}
 
+		return $this;
 	} // setSort()
+
+	/**
+	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setCreatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->created_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = LanguagePeer::CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setCreatedAt()
+
+	/**
+	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setUpdatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->updated_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = LanguagePeer::UPDATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setUpdatedAt()
+
+	/**
+	 * Set the value of [created_by] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setCreatedBy($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->created_by !== $v) {
+			$this->created_by = $v;
+			$this->modifiedColumns[] = LanguagePeer::CREATED_BY;
+		}
+
+		if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
+			$this->aUserRelatedByCreatedBy = null;
+		}
+
+		return $this;
+	} // setCreatedBy()
+
+	/**
+	 * Set the value of [updated_by] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setUpdatedBy($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->updated_by !== $v) {
+			$this->updated_by = $v;
+			$this->modifiedColumns[] = LanguagePeer::UPDATED_BY;
+		}
+
+		if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
+			$this->aUserRelatedByUpdatedBy = null;
+		}
+
+		return $this;
+	} // setUpdatedBy()
+
+	/**
+	 * Indicates whether the columns in this object are only set to default values.
+	 *
+	 * This method can be used in conjunction with isModified() to indicate whether an object is both
+	 * modified _and_ has some values set which are non-default.
+	 *
+	 * @return     boolean Whether the columns in this object are only been set with default values.
+	 */
+	public function hasOnlyDefaultValues()
+	{
+		// otherwise, everything was equal, so return TRUE
+		return true;
+	} // hasOnlyDefaultValues()
 
 	/**
 	 * Hydrates (populates) the object variables with values from the database resultset.
 	 *
-	 * An offset (1-based "start column") is specified so that objects can be hydrated
+	 * An offset (0-based "start column") is specified so that objects can be hydrated
 	 * with a subset of the columns in the resultset rows.  This is needed, for example,
 	 * for results of JOIN queries where the resultset row includes columns from two or
 	 * more tables.
 	 *
-	 * @param      ResultSet $rs The ResultSet class with cursor advanced to desired record pos.
-	 * @param      int $startcol 1-based offset column which indicates which restultset column to start with.
+	 * @param      array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
+	 * @param      int $startcol 0-based offset column which indicates which restultset column to start with.
+	 * @param      boolean $rehydrate Whether this object is being re-hydrated from the database.
 	 * @return     int next starting column
 	 * @throws     PropelException  - Any caught Exception will be rewrapped as a PropelException.
 	 */
-	public function hydrate(ResultSet $rs, $startcol = 1)
+	public function hydrate($row, $startcol = 0, $rehydrate = false)
 	{
 		try {
 
-			$this->id = $rs->getString($startcol + 0);
-
-			$this->is_active = $rs->getBoolean($startcol + 1);
-
-			$this->sort = $rs->getInt($startcol + 2);
-
+			$this->id = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+			$this->is_active = ($row[$startcol + 1] !== null) ? (boolean) $row[$startcol + 1] : null;
+			$this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+			$this->created_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->updated_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->created_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->updated_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
 
-			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 3; // 3 = LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
+			if ($rehydrate) {
+				$this->ensureConsistency();
+			}
+
+			return $startcol + 7; // 7 = LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Language object", $e);
@@ -275,101 +511,257 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Checks and repairs the internal consistency of the object.
+	 *
+	 * This method is executed after an already-instantiated object is re-hydrated
+	 * from the database.  It exists to check any foreign keys to make sure that
+	 * the objects related to the current object are correct based on foreign key.
+	 *
+	 * You can override this method in the stub class, but you should always invoke
+	 * the base method from the overridden method (i.e. parent::ensureConsistency()),
+	 * in case your model changes.
+	 *
+	 * @throws     PropelException
+	 */
+	public function ensureConsistency()
+	{
+
+		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
+			$this->aUserRelatedByCreatedBy = null;
+		}
+		if ($this->aUserRelatedByUpdatedBy !== null && $this->updated_by !== $this->aUserRelatedByUpdatedBy->getId()) {
+			$this->aUserRelatedByUpdatedBy = null;
+		}
+	} // ensureConsistency
+
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+		if ($this->isDeleted()) {
+			throw new PropelException("Cannot reload a deleted object.");
+		}
+
+		if ($this->isNew()) {
+			throw new PropelException("Cannot reload an unsaved object.");
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		// We don't need to alter the object instance pool; we're just modifying this instance
+		// already in the pool.
+
+		$stmt = LanguagePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$row = $stmt->fetch(PDO::FETCH_NUM);
+		$stmt->closeCursor();
+		if (!$row) {
+			throw new PropelException('Cannot find matching row in the database to reload object values.');
+		}
+		$this->hydrate($row, 0, true); // rehydrate
+
+		if ($deep) {  // also de-associate any related objects?
+
+			$this->aUserRelatedByCreatedBy = null;
+			$this->aUserRelatedByUpdatedBy = null;
+			$this->collPageStrings = null;
+
+			$this->collLanguageObjects = null;
+
+			$this->collLanguageObjectHistorys = null;
+
+			$this->collStrings = null;
+
+			$this->collUsers = null;
+
+			$this->collDocuments = null;
+
+			$this->collLinks = null;
+
+		} // if (deep)
+	}
+
+	/**
 	 * Removes this object from datastore and sets delete attribute.
 	 *
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     void
 	 * @throws     PropelException
 	 * @see        BaseObject::setDeleted()
 	 * @see        BaseObject::isDeleted()
 	 */
-	public function delete($con = null)
+	public function delete(PropelPDO $con = null)
 	{
 		if ($this->isDeleted()) {
 			throw new PropelException("This object has already been deleted.");
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME);
+			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-
+		
+		$con->beginTransaction();
 		try {
-			$con->begin();
-			LanguagePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				LanguageQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
 
 	/**
-	 * Stores the object in the database.  If the object is new,
-	 * it inserts it; otherwise an update is performed.  This method
-	 * wraps the doSave() worker method in a transaction.
+	 * Persists this object to the database.
 	 *
-	 * @param      Connection $con
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All modified related objects will also be persisted in the doSave()
+	 * method.  This method wraps all precipitate database operations in a
+	 * single transaction.
+	 *
+	 * @param      PropelPDO $con
 	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
 	 * @throws     PropelException
 	 * @see        doSave()
 	 */
-	public function save($con = null)
+	public function save(PropelPDO $con = null)
 	{
 		if ($this->isDeleted()) {
 			throw new PropelException("You cannot save an object that has been deleted.");
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME);
+			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-
+		
+		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$con->begin();
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+				// timestampable behavior
+				if (!$this->isColumnModified(LanguagePeer::CREATED_AT)) {
+					$this->setCreatedAt(time());
+				}
+				if (!$this->isColumnModified(LanguagePeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
+				// attributable behavior
+				
+				if(Session::getSession()->isAuthenticated) {
+					if (!$this->isColumnModified(LanguagePeer::CREATED_BY)) {
+						$this->setCreatedBy(Session::getSession()->getUser()->getId());
+					}
+					if (!$this->isColumnModified(LanguagePeer::UPDATED_BY)) {
+						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
+					}
+				}
+
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+				// timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(LanguagePeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
+				// attributable behavior
+				
+				if(Session::getSession()->isAuthenticated) {
+					if ($this->isModified() && !$this->isColumnModified(LanguagePeer::UPDATED_BY)) {
+						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
+					}
+				}
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				LanguagePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
-			$con->rollback();
+			$con->rollBack();
 			throw $e;
 		}
 	}
 
 	/**
-	 * Stores the object in the database.
+	 * Performs the work of inserting or updating the row in the database.
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
 	 * All related objects are also updated in this method.
 	 *
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
 	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
 	 * @throws     PropelException
 	 * @see        save()
 	 */
-	protected function doSave($con)
+	protected function doSave(PropelPDO $con)
 	{
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
+			// We call the save method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aUserRelatedByCreatedBy !== null) {
+				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
+					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
+				}
+				$this->setUserRelatedByCreatedBy($this->aUserRelatedByCreatedBy);
+			}
+
+			if ($this->aUserRelatedByUpdatedBy !== null) {
+				if ($this->aUserRelatedByUpdatedBy->isModified() || $this->aUserRelatedByUpdatedBy->isNew()) {
+					$affectedRows += $this->aUserRelatedByUpdatedBy->save($con);
+				}
+				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
+			}
+
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = LanguagePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += LanguagePeer::doUpdate($this, $con);
 				}
+
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collPageStrings !== null) {
-				foreach($this->collPageStrings as $referrerFK) {
+				foreach ($this->collPageStrings as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -377,7 +769,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collLanguageObjects !== null) {
-				foreach($this->collLanguageObjects as $referrerFK) {
+				foreach ($this->collLanguageObjects as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -385,7 +777,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collLanguageObjectHistorys !== null) {
-				foreach($this->collLanguageObjectHistorys as $referrerFK) {
+				foreach ($this->collLanguageObjectHistorys as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -393,7 +785,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collStrings !== null) {
-				foreach($this->collStrings as $referrerFK) {
+				foreach ($this->collStrings as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -401,7 +793,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collUsers !== null) {
-				foreach($this->collUsers as $referrerFK) {
+				foreach ($this->collUsers as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -409,7 +801,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collDocuments !== null) {
-				foreach($this->collDocuments as $referrerFK) {
+				foreach ($this->collDocuments as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -417,7 +809,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			if ($this->collLinks !== null) {
-				foreach($this->collLinks as $referrerFK) {
+				foreach ($this->collLinks as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -425,6 +817,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			}
 
 			$this->alreadyInSave = false;
+
 		}
 		return $affectedRows;
 	} // doSave()
@@ -489,13 +882,31 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			$failureMap = array();
 
 
+			// We call the validate method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aUserRelatedByCreatedBy !== null) {
+				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
+				}
+			}
+
+			if ($this->aUserRelatedByUpdatedBy !== null) {
+				if (!$this->aUserRelatedByUpdatedBy->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aUserRelatedByUpdatedBy->getValidationFailures());
+				}
+			}
+
+
 			if (($retval = LanguagePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
 
 				if ($this->collPageStrings !== null) {
-					foreach($this->collPageStrings as $referrerFK) {
+					foreach ($this->collPageStrings as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -503,7 +914,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collLanguageObjects !== null) {
-					foreach($this->collLanguageObjects as $referrerFK) {
+					foreach ($this->collLanguageObjects as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -511,7 +922,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collLanguageObjectHistorys !== null) {
-					foreach($this->collLanguageObjectHistorys as $referrerFK) {
+					foreach ($this->collLanguageObjectHistorys as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -519,7 +930,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collStrings !== null) {
-					foreach($this->collStrings as $referrerFK) {
+					foreach ($this->collStrings as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -527,7 +938,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collUsers !== null) {
-					foreach($this->collUsers as $referrerFK) {
+					foreach ($this->collUsers as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -535,7 +946,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collDocuments !== null) {
-					foreach($this->collDocuments as $referrerFK) {
+					foreach ($this->collDocuments as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -543,7 +954,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 				}
 
 				if ($this->collLinks !== null) {
-					foreach($this->collLinks as $referrerFK) {
+					foreach ($this->collLinks as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -562,14 +973,15 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 *
 	 * @param      string $name name
 	 * @param      string $type The type of fieldname the $name is of:
-	 *                     one of the class type constants TYPE_PHPNAME,
-	 *                     TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     mixed Value of field.
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
 		$pos = LanguagePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
-		return $this->getByPosition($pos);
+		$field = $this->getByPosition($pos);
+		return $field;
 	}
 
 	/**
@@ -591,6 +1003,18 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			case 2:
 				return $this->getSort();
 				break;
+			case 3:
+				return $this->getCreatedAt();
+				break;
+			case 4:
+				return $this->getUpdatedAt();
+				break;
+			case 5:
+				return $this->getCreatedBy();
+				break;
+			case 6:
+				return $this->getUpdatedBy();
+				break;
 			default:
 				return null;
 				break;
@@ -603,18 +1027,34 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType One of the class type constants TYPE_PHPNAME,
-	 *                        TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = LanguagePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getIsActive(),
 			$keys[2] => $this->getSort(),
+			$keys[3] => $this->getCreatedAt(),
+			$keys[4] => $this->getUpdatedAt(),
+			$keys[5] => $this->getCreatedBy(),
+			$keys[6] => $this->getUpdatedBy(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aUserRelatedByCreatedBy) {
+				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aUserRelatedByUpdatedBy) {
+				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -624,8 +1064,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * @param      string $name peer name
 	 * @param      mixed $value field value
 	 * @param      string $type The type of fieldname the $name is of:
-	 *                     one of the class type constants TYPE_PHPNAME,
-	 *                     TYPE_COLNAME, TYPE_FIELDNAME, TYPE_NUM
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
 	 * @return     void
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
@@ -654,6 +1094,18 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			case 2:
 				$this->setSort($value);
 				break;
+			case 3:
+				$this->setCreatedAt($value);
+				break;
+			case 4:
+				$this->setUpdatedAt($value);
+				break;
+			case 5:
+				$this->setCreatedBy($value);
+				break;
+			case 6:
+				$this->setUpdatedBy($value);
+				break;
 		} // switch()
 	}
 
@@ -666,8 +1118,9 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * array. If so the setByName() method is called for that column.
 	 *
 	 * You can specify the key type of the array by additionally passing one
-	 * of the class type constants TYPE_PHPNAME, TYPE_COLNAME, TYPE_FIELDNAME,
-	 * TYPE_NUM. The default key type is the column's phpname (e.g. 'authorId')
+	 * of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 * BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
+	 * The default key type is the column's phpname (e.g. 'AuthorId')
 	 *
 	 * @param      array  $arr     An array to populate the object from.
 	 * @param      string $keyType The type of keys the array uses.
@@ -680,6 +1133,10 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setIsActive($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
 	}
 
 	/**
@@ -694,6 +1151,10 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(LanguagePeer::ID)) $criteria->add(LanguagePeer::ID, $this->id);
 		if ($this->isColumnModified(LanguagePeer::IS_ACTIVE)) $criteria->add(LanguagePeer::IS_ACTIVE, $this->is_active);
 		if ($this->isColumnModified(LanguagePeer::SORT)) $criteria->add(LanguagePeer::SORT, $this->sort);
+		if ($this->isColumnModified(LanguagePeer::CREATED_AT)) $criteria->add(LanguagePeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(LanguagePeer::UPDATED_AT)) $criteria->add(LanguagePeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(LanguagePeer::CREATED_BY)) $criteria->add(LanguagePeer::CREATED_BY, $this->created_by);
+		if ($this->isColumnModified(LanguagePeer::UPDATED_BY)) $criteria->add(LanguagePeer::UPDATED_BY, $this->updated_by);
 
 		return $criteria;
 	}
@@ -709,7 +1170,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(LanguagePeer::DATABASE_NAME);
-
 		$criteria->add(LanguagePeer::ID, $this->id);
 
 		return $criteria;
@@ -736,6 +1196,15 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -747,52 +1216,65 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
+		$copyObj->setId($this->id);
 		$copyObj->setIsActive($this->is_active);
-
 		$copyObj->setSort($this->sort);
-
+		$copyObj->setCreatedAt($this->created_at);
+		$copyObj->setUpdatedAt($this->updated_at);
+		$copyObj->setCreatedBy($this->created_by);
+		$copyObj->setUpdatedBy($this->updated_by);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
-			foreach($this->getPageStrings() as $relObj) {
-				$copyObj->addPageString($relObj->copy($deepCopy));
+			foreach ($this->getPageStrings() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addPageString($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getLanguageObjects() as $relObj) {
-				$copyObj->addLanguageObject($relObj->copy($deepCopy));
+			foreach ($this->getLanguageObjects() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLanguageObject($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getLanguageObjectHistorys() as $relObj) {
-				$copyObj->addLanguageObjectHistory($relObj->copy($deepCopy));
+			foreach ($this->getLanguageObjectHistorys() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLanguageObjectHistory($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getStrings() as $relObj) {
-				$copyObj->addString($relObj->copy($deepCopy));
+			foreach ($this->getStrings() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addString($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getUsers() as $relObj) {
-				$copyObj->addUser($relObj->copy($deepCopy));
+			foreach ($this->getUsers() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUser($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getDocuments() as $relObj) {
-				$copyObj->addDocument($relObj->copy($deepCopy));
+			foreach ($this->getDocuments() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addDocument($relObj->copy($deepCopy));
+				}
 			}
 
-			foreach($this->getLinks() as $relObj) {
-				$copyObj->addLink($relObj->copy($deepCopy));
+			foreach ($this->getLinks() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLink($relObj->copy($deepCopy));
+				}
 			}
 
 		} // if ($deepCopy)
 
 
 		$copyObj->setNew(true);
-
-		$copyObj->setId(NULL); // this is a pkey column, so set to default value
-
 	}
 
 	/**
@@ -834,101 +1316,196 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Temporary storage of collPageStrings to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Declares an association between this object and a User object.
+	 *
+	 * @param      User $v
+	 * @return     Language The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setUserRelatedByCreatedBy(User $v = null)
+	{
+		if ($v === null) {
+			$this->setCreatedBy(NULL);
+		} else {
+			$this->setCreatedBy($v->getId());
+		}
+
+		$this->aUserRelatedByCreatedBy = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the User object, it will not be re-added.
+		if ($v !== null) {
+			$v->addLanguageRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated User object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     User The associated User object.
+	 * @throws     PropelException
+	 */
+	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
+	{
+		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aUserRelatedByCreatedBy->addLanguagesRelatedByCreatedBy($this);
+			 */
+		}
+		return $this->aUserRelatedByCreatedBy;
+	}
+
+	/**
+	 * Declares an association between this object and a User object.
+	 *
+	 * @param      User $v
+	 * @return     Language The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setUserRelatedByUpdatedBy(User $v = null)
+	{
+		if ($v === null) {
+			$this->setUpdatedBy(NULL);
+		} else {
+			$this->setUpdatedBy($v->getId());
+		}
+
+		$this->aUserRelatedByUpdatedBy = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the User object, it will not be re-added.
+		if ($v !== null) {
+			$v->addLanguageRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated User object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     User The associated User object.
+	 * @throws     PropelException
+	 */
+	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
+	{
+		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aUserRelatedByUpdatedBy->addLanguagesRelatedByUpdatedBy($this);
+			 */
+		}
+		return $this->aUserRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Clears out the collPageStrings collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPageStrings()
+	 */
+	public function clearPageStrings()
+	{
+		$this->collPageStrings = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPageStrings collection.
+	 *
+	 * By default this just sets the collPageStrings collection to an empty array (like clearcollPageStrings());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initPageStrings()
 	{
-		if ($this->collPageStrings === null) {
-			$this->collPageStrings = array();
-		}
+		$this->collPageStrings = new PropelObjectCollection();
+		$this->collPageStrings->setModel('PageString');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related PageStrings from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of PageString objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 * @throws     PropelException
 	 */
-	public function getPageStrings($criteria = null, $con = null)
+	public function getPageStrings($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BasePageStringPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collPageStrings === null) {
-			if ($this->isNew()) {
-			   $this->collPageStrings = array();
+		if(null === $this->collPageStrings || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStrings) {
+				// return empty collection
+				$this->initPageStrings();
 			} else {
-
-				$criteria->add(PageStringPeer::LANGUAGE_ID, $this->getId());
-
-				PageStringPeer::addSelectColumns($criteria);
-				$this->collPageStrings = PageStringPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(PageStringPeer::LANGUAGE_ID, $this->getId());
-
-				PageStringPeer::addSelectColumns($criteria);
-				if (!isset($this->lastPageStringCriteria) || !$this->lastPageStringCriteria->equals($criteria)) {
-					$this->collPageStrings = PageStringPeer::doSelect($criteria, $con);
+				$collPageStrings = PageStringQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPageStrings;
 				}
+				$this->collPageStrings = $collPageStrings;
 			}
 		}
-		$this->lastPageStringCriteria = $criteria;
 		return $this->collPageStrings;
 	}
 
 	/**
-	 * Returns the number of related PageStrings.
+	 * Returns the number of related PageString objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PageString objects.
 	 * @throws     PropelException
 	 */
-	public function countPageStrings($criteria = null, $distinct = false, $con = null)
+	public function countPageStrings(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BasePageStringPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collPageStrings || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStrings) {
+				return 0;
+			} else {
+				$query = PageStringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPageStrings);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(PageStringPeer::LANGUAGE_ID, $this->getId());
-
-		return PageStringPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a PageString object to this object
-	 * through the PageString foreign key attribute
+	 * through the PageString foreign key attribute.
 	 *
 	 * @param      PageString $l PageString
 	 * @return     void
@@ -936,8 +1513,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addPageString(PageString $l)
 	{
-		$this->collPageStrings[] = $l;
-		$l->setLanguage($this);
+		if ($this->collPageStrings === null) {
+			$this->initPageStrings();
+		}
+		if (!$this->collPageStrings->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPageStrings[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -952,139 +1534,147 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getPageStringsJoinPage($criteria = null, $con = null)
+	public function getPageStringsJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BasePageStringPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
 
-		if ($this->collPageStrings === null) {
-			if ($this->isNew()) {
-				$this->collPageStrings = array();
-			} else {
-
-				$criteria->add(PageStringPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collPageStrings = PageStringPeer::doSelectJoinPage($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(PageStringPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastPageStringCriteria) || !$this->lastPageStringCriteria->equals($criteria)) {
-				$this->collPageStrings = PageStringPeer::doSelectJoinPage($criteria, $con);
-			}
-		}
-		$this->lastPageStringCriteria = $criteria;
-
-		return $this->collPageStrings;
+		return $this->getPageStrings($query, $con);
 	}
 
-	/**
-	 * Temporary storage of collLanguageObjects to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
-	 * @return     void
-	 */
-	public function initLanguageObjects()
-	{
-		if ($this->collLanguageObjects === null) {
-			$this->collLanguageObjects = array();
-		}
-	}
 
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related LanguageObjects from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Otherwise if this Language is new, it will return
+	 * an empty collection; or if this Language has previously
+	 * been saved, it will retrieve related PageStrings from storage.
 	 *
-	 * @param      Connection $con
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Language.
+	 */
+	public function getPageStringsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getPageStrings($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Language is new, it will return
+	 * an empty collection; or if this Language has previously
+	 * been saved, it will retrieve related PageStrings from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Language.
+	 */
+	public function getPageStringsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getPageStrings($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguageObjects collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjects()
+	 */
+	public function clearLanguageObjects()
+	{
+		$this->collLanguageObjects = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjects collection.
+	 *
+	 * By default this just sets the collLanguageObjects collection to an empty array (like clearcollLanguageObjects());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initLanguageObjects()
+	{
+		$this->collLanguageObjects = new PropelObjectCollection();
+		$this->collLanguageObjects->setModel('LanguageObject');
+	}
+
+	/**
+	 * Gets an array of LanguageObject objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 * @throws     PropelException
 	 */
-	public function getLanguageObjects($criteria = null, $con = null)
+	public function getLanguageObjects($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collLanguageObjects === null) {
-			if ($this->isNew()) {
-			   $this->collLanguageObjects = array();
+		if(null === $this->collLanguageObjects || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjects) {
+				// return empty collection
+				$this->initLanguageObjects();
 			} else {
-
-				$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-				LanguageObjectPeer::addSelectColumns($criteria);
-				$this->collLanguageObjects = LanguageObjectPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-				LanguageObjectPeer::addSelectColumns($criteria);
-				if (!isset($this->lastLanguageObjectCriteria) || !$this->lastLanguageObjectCriteria->equals($criteria)) {
-					$this->collLanguageObjects = LanguageObjectPeer::doSelect($criteria, $con);
+				$collLanguageObjects = LanguageObjectQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjects;
 				}
+				$this->collLanguageObjects = $collLanguageObjects;
 			}
 		}
-		$this->lastLanguageObjectCriteria = $criteria;
 		return $this->collLanguageObjects;
 	}
 
 	/**
-	 * Returns the number of related LanguageObjects.
+	 * Returns the number of related LanguageObject objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObject objects.
 	 * @throws     PropelException
 	 */
-	public function countLanguageObjects($criteria = null, $distinct = false, $con = null)
+	public function countLanguageObjects(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collLanguageObjects || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjects) {
+				return 0;
+			} else {
+				$query = LanguageObjectQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjects);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-		return LanguageObjectPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a LanguageObject object to this object
-	 * through the LanguageObject foreign key attribute
+	 * through the LanguageObject foreign key attribute.
 	 *
 	 * @param      LanguageObject $l LanguageObject
 	 * @return     void
@@ -1092,8 +1682,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addLanguageObject(LanguageObject $l)
 	{
-		$this->collLanguageObjects[] = $l;
-		$l->setLanguage($this);
+		if ($this->collLanguageObjects === null) {
+			$this->initLanguageObjects();
+		}
+		if (!$this->collLanguageObjects->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjects[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -1108,41 +1703,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLanguageObjectsJoinContentObject($criteria = null, $con = null)
+	public function getLanguageObjectsJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
 
-		if ($this->collLanguageObjects === null) {
-			if ($this->isNew()) {
-				$this->collLanguageObjects = array();
-			} else {
-
-				$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinContentObject($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLanguageObjectCriteria) || !$this->lastLanguageObjectCriteria->equals($criteria)) {
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinContentObject($criteria, $con);
-			}
-		}
-		$this->lastLanguageObjectCriteria = $criteria;
-
-		return $this->collLanguageObjects;
+		return $this->getLanguageObjects($query, $con);
 	}
 
 
@@ -1157,41 +1723,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLanguageObjectsJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	public function getLanguageObjectsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collLanguageObjects === null) {
-			if ($this->isNew()) {
-				$this->collLanguageObjects = array();
-			} else {
-
-				$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLanguageObjectCriteria) || !$this->lastLanguageObjectCriteria->equals($criteria)) {
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		}
-		$this->lastLanguageObjectCriteria = $criteria;
-
-		return $this->collLanguageObjects;
+		return $this->getLanguageObjects($query, $con);
 	}
 
 
@@ -1206,139 +1743,107 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLanguageObjectsJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	public function getLanguageObjectsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		if ($this->collLanguageObjects === null) {
-			if ($this->isNew()) {
-				$this->collLanguageObjects = array();
-			} else {
-
-				$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLanguageObjectCriteria) || !$this->lastLanguageObjectCriteria->equals($criteria)) {
-				$this->collLanguageObjects = LanguageObjectPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		}
-		$this->lastLanguageObjectCriteria = $criteria;
-
-		return $this->collLanguageObjects;
+		return $this->getLanguageObjects($query, $con);
 	}
 
 	/**
-	 * Temporary storage of collLanguageObjectHistorys to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Clears out the collLanguageObjectHistorys collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjectHistorys()
+	 */
+	public function clearLanguageObjectHistorys()
+	{
+		$this->collLanguageObjectHistorys = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjectHistorys collection.
+	 *
+	 * By default this just sets the collLanguageObjectHistorys collection to an empty array (like clearcollLanguageObjectHistorys());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initLanguageObjectHistorys()
 	{
-		if ($this->collLanguageObjectHistorys === null) {
-			$this->collLanguageObjectHistorys = array();
-		}
+		$this->collLanguageObjectHistorys = new PropelObjectCollection();
+		$this->collLanguageObjectHistorys->setModel('LanguageObjectHistory');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related LanguageObjectHistorys from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of LanguageObjectHistory objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 * @throws     PropelException
 	 */
-	public function getLanguageObjectHistorys($criteria = null, $con = null)
+	public function getLanguageObjectHistorys($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectHistoryPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collLanguageObjectHistorys === null) {
-			if ($this->isNew()) {
-			   $this->collLanguageObjectHistorys = array();
+		if(null === $this->collLanguageObjectHistorys || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorys) {
+				// return empty collection
+				$this->initLanguageObjectHistorys();
 			} else {
-
-				$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-				LanguageObjectHistoryPeer::addSelectColumns($criteria);
-				$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-				LanguageObjectHistoryPeer::addSelectColumns($criteria);
-				if (!isset($this->lastLanguageObjectHistoryCriteria) || !$this->lastLanguageObjectHistoryCriteria->equals($criteria)) {
-					$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelect($criteria, $con);
+				$collLanguageObjectHistorys = LanguageObjectHistoryQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjectHistorys;
 				}
+				$this->collLanguageObjectHistorys = $collLanguageObjectHistorys;
 			}
 		}
-		$this->lastLanguageObjectHistoryCriteria = $criteria;
 		return $this->collLanguageObjectHistorys;
 	}
 
 	/**
-	 * Returns the number of related LanguageObjectHistorys.
+	 * Returns the number of related LanguageObjectHistory objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObjectHistory objects.
 	 * @throws     PropelException
 	 */
-	public function countLanguageObjectHistorys($criteria = null, $distinct = false, $con = null)
+	public function countLanguageObjectHistorys(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectHistoryPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collLanguageObjectHistorys || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorys) {
+				return 0;
+			} else {
+				$query = LanguageObjectHistoryQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjectHistorys);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-		return LanguageObjectHistoryPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a LanguageObjectHistory object to this object
-	 * through the LanguageObjectHistory foreign key attribute
+	 * through the LanguageObjectHistory foreign key attribute.
 	 *
 	 * @param      LanguageObjectHistory $l LanguageObjectHistory
 	 * @return     void
@@ -1346,8 +1851,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addLanguageObjectHistory(LanguageObjectHistory $l)
 	{
-		$this->collLanguageObjectHistorys[] = $l;
-		$l->setLanguage($this);
+		if ($this->collLanguageObjectHistorys === null) {
+			$this->initLanguageObjectHistorys();
+		}
+		if (!$this->collLanguageObjectHistorys->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjectHistorys[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -1362,41 +1872,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLanguageObjectHistorysJoinContentObject($criteria = null, $con = null)
+	public function getLanguageObjectHistorysJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectHistoryPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
 
-		if ($this->collLanguageObjectHistorys === null) {
-			if ($this->isNew()) {
-				$this->collLanguageObjectHistorys = array();
-			} else {
-
-				$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelectJoinContentObject($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLanguageObjectHistoryCriteria) || !$this->lastLanguageObjectHistoryCriteria->equals($criteria)) {
-				$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelectJoinContentObject($criteria, $con);
-			}
-		}
-		$this->lastLanguageObjectHistoryCriteria = $criteria;
-
-		return $this->collLanguageObjectHistorys;
+		return $this->getLanguageObjectHistorys($query, $con);
 	}
 
 
@@ -1411,139 +1892,127 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLanguageObjectHistorysJoinUser($criteria = null, $con = null)
+	public function getLanguageObjectHistorysJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLanguageObjectHistoryPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collLanguageObjectHistorys === null) {
-			if ($this->isNew()) {
-				$this->collLanguageObjectHistorys = array();
-			} else {
+		return $this->getLanguageObjectHistorys($query, $con);
+	}
 
-				$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
 
-				$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelectJoinUser($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Language is new, it will return
+	 * an empty collection; or if this Language has previously
+	 * been saved, it will retrieve related LanguageObjectHistorys from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Language.
+	 */
+	public function getLanguageObjectHistorysJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-			$criteria->add(LanguageObjectHistoryPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLanguageObjectHistoryCriteria) || !$this->lastLanguageObjectHistoryCriteria->equals($criteria)) {
-				$this->collLanguageObjectHistorys = LanguageObjectHistoryPeer::doSelectJoinUser($criteria, $con);
-			}
-		}
-		$this->lastLanguageObjectHistoryCriteria = $criteria;
-
-		return $this->collLanguageObjectHistorys;
+		return $this->getLanguageObjectHistorys($query, $con);
 	}
 
 	/**
-	 * Temporary storage of collStrings to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Clears out the collStrings collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addStrings()
+	 */
+	public function clearStrings()
+	{
+		$this->collStrings = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collStrings collection.
+	 *
+	 * By default this just sets the collStrings collection to an empty array (like clearcollStrings());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initStrings()
 	{
-		if ($this->collStrings === null) {
-			$this->collStrings = array();
-		}
+		$this->collStrings = new PropelObjectCollection();
+		$this->collStrings->setModel('String');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related Strings from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of String objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array String[] List of String objects
 	 * @throws     PropelException
 	 */
-	public function getStrings($criteria = null, $con = null)
+	public function getStrings($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseStringPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collStrings === null) {
-			if ($this->isNew()) {
-			   $this->collStrings = array();
+		if(null === $this->collStrings || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStrings) {
+				// return empty collection
+				$this->initStrings();
 			} else {
-
-				$criteria->add(StringPeer::LANGUAGE_ID, $this->getId());
-
-				StringPeer::addSelectColumns($criteria);
-				$this->collStrings = StringPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(StringPeer::LANGUAGE_ID, $this->getId());
-
-				StringPeer::addSelectColumns($criteria);
-				if (!isset($this->lastStringCriteria) || !$this->lastStringCriteria->equals($criteria)) {
-					$this->collStrings = StringPeer::doSelect($criteria, $con);
+				$collStrings = StringQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collStrings;
 				}
+				$this->collStrings = $collStrings;
 			}
 		}
-		$this->lastStringCriteria = $criteria;
 		return $this->collStrings;
 	}
 
 	/**
-	 * Returns the number of related Strings.
+	 * Returns the number of related String objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related String objects.
 	 * @throws     PropelException
 	 */
-	public function countStrings($criteria = null, $distinct = false, $con = null)
+	public function countStrings(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseStringPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collStrings || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStrings) {
+				return 0;
+			} else {
+				$query = StringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collStrings);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(StringPeer::LANGUAGE_ID, $this->getId());
-
-		return StringPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a String object to this object
-	 * through the String foreign key attribute
+	 * through the String foreign key attribute.
 	 *
 	 * @param      String $l String
 	 * @return     void
@@ -1551,106 +2020,148 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addString(String $l)
 	{
-		$this->collStrings[] = $l;
-		$l->setLanguage($this);
-	}
-
-	/**
-	 * Temporary storage of collUsers to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
-	 * @return     void
-	 */
-	public function initUsers()
-	{
-		if ($this->collUsers === null) {
-			$this->collUsers = array();
+		if ($this->collStrings === null) {
+			$this->initStrings();
+		}
+		if (!$this->collStrings->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collStrings[]= $l;
+			$l->setLanguage($this);
 		}
 	}
+
 
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related Users from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Otherwise if this Language is new, it will return
+	 * an empty collection; or if this Language has previously
+	 * been saved, it will retrieve related Strings from storage.
 	 *
-	 * @param      Connection $con
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Language.
+	 */
+	public function getStringsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = StringQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getStrings($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Language is new, it will return
+	 * an empty collection; or if this Language has previously
+	 * been saved, it will retrieve related Strings from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Language.
+	 */
+	public function getStringsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = StringQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getStrings($query, $con);
+	}
+
+	/**
+	 * Clears out the collUsers collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUsers()
+	 */
+	public function clearUsers()
+	{
+		$this->collUsers = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUsers collection.
+	 *
+	 * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUsers()
+	{
+		$this->collUsers = new PropelObjectCollection();
+		$this->collUsers->setModel('User');
+	}
+
+	/**
+	 * Gets an array of User objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array User[] List of User objects
 	 * @throws     PropelException
 	 */
-	public function getUsers($criteria = null, $con = null)
+	public function getUsers($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseUserPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collUsers === null) {
-			if ($this->isNew()) {
-			   $this->collUsers = array();
+		if(null === $this->collUsers || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUsers) {
+				// return empty collection
+				$this->initUsers();
 			} else {
-
-				$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-				UserPeer::addSelectColumns($criteria);
-				$this->collUsers = UserPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-				UserPeer::addSelectColumns($criteria);
-				if (!isset($this->lastUserCriteria) || !$this->lastUserCriteria->equals($criteria)) {
-					$this->collUsers = UserPeer::doSelect($criteria, $con);
+				$collUsers = UserQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUsers;
 				}
+				$this->collUsers = $collUsers;
 			}
 		}
-		$this->lastUserCriteria = $criteria;
 		return $this->collUsers;
 	}
 
 	/**
-	 * Returns the number of related Users.
+	 * Returns the number of related User objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related User objects.
 	 * @throws     PropelException
 	 */
-	public function countUsers($criteria = null, $distinct = false, $con = null)
+	public function countUsers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseUserPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collUsers || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUsers) {
+				return 0;
+			} else {
+				$query = UserQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUsers);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-		return UserPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a User object to this object
-	 * through the User foreign key attribute
+	 * through the User foreign key attribute.
 	 *
 	 * @param      User $l User
 	 * @return     void
@@ -1658,8 +2169,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addUser(User $l)
 	{
-		$this->collUsers[] = $l;
-		$l->setLanguage($this);
+		if ($this->collUsers === null) {
+			$this->initUsers();
+		}
+		if (!$this->collUsers->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUsers[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -1674,41 +2190,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getUsersJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	public function getUsersJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseUserPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = UserQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collUsers === null) {
-			if ($this->isNew()) {
-				$this->collUsers = array();
-			} else {
-
-				$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collUsers = UserPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastUserCriteria) || !$this->lastUserCriteria->equals($criteria)) {
-				$this->collUsers = UserPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		}
-		$this->lastUserCriteria = $criteria;
-
-		return $this->collUsers;
+		return $this->getUsers($query, $con);
 	}
 
 
@@ -1723,139 +2210,107 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getUsersJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	public function getUsersJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseUserPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = UserQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		if ($this->collUsers === null) {
-			if ($this->isNew()) {
-				$this->collUsers = array();
-			} else {
-
-				$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collUsers = UserPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(UserPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastUserCriteria) || !$this->lastUserCriteria->equals($criteria)) {
-				$this->collUsers = UserPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		}
-		$this->lastUserCriteria = $criteria;
-
-		return $this->collUsers;
+		return $this->getUsers($query, $con);
 	}
 
 	/**
-	 * Temporary storage of collDocuments to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Clears out the collDocuments collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addDocuments()
+	 */
+	public function clearDocuments()
+	{
+		$this->collDocuments = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collDocuments collection.
+	 *
+	 * By default this just sets the collDocuments collection to an empty array (like clearcollDocuments());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initDocuments()
 	{
-		if ($this->collDocuments === null) {
-			$this->collDocuments = array();
-		}
+		$this->collDocuments = new PropelObjectCollection();
+		$this->collDocuments->setModel('Document');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related Documents from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of Document objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 * @throws     PropelException
 	 */
-	public function getDocuments($criteria = null, $con = null)
+	public function getDocuments($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-			   $this->collDocuments = array();
+		if(null === $this->collDocuments || null !== $criteria) {
+			if ($this->isNew() && null === $this->collDocuments) {
+				// return empty collection
+				$this->initDocuments();
 			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				DocumentPeer::addSelectColumns($criteria);
-				$this->collDocuments = DocumentPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				DocumentPeer::addSelectColumns($criteria);
-				if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-					$this->collDocuments = DocumentPeer::doSelect($criteria, $con);
+				$collDocuments = DocumentQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collDocuments;
 				}
+				$this->collDocuments = $collDocuments;
 			}
 		}
-		$this->lastDocumentCriteria = $criteria;
 		return $this->collDocuments;
 	}
 
 	/**
-	 * Returns the number of related Documents.
+	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Document objects.
 	 * @throws     PropelException
 	 */
-	public function countDocuments($criteria = null, $distinct = false, $con = null)
+	public function countDocuments(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collDocuments || null !== $criteria) {
+			if ($this->isNew() && null === $this->collDocuments) {
+				return 0;
+			} else {
+				$query = DocumentQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collDocuments);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-		return DocumentPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a Document object to this object
-	 * through the Document foreign key attribute
+	 * through the Document foreign key attribute.
 	 *
 	 * @param      Document $l Document
 	 * @return     void
@@ -1863,8 +2318,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addDocument(Document $l)
 	{
-		$this->collDocuments[] = $l;
-		$l->setLanguage($this);
+		if ($this->collDocuments === null) {
+			$this->initDocuments();
+		}
+		if (!$this->collDocuments->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collDocuments[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -1879,41 +2339,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getDocumentsJoinUserRelatedByOwnerId($criteria = null, $con = null)
+	public function getDocumentsJoinUserRelatedByOwnerId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = DocumentQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByOwnerId', $join_behavior);
 
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-				$this->collDocuments = array();
-			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		}
-		$this->lastDocumentCriteria = $criteria;
-
-		return $this->collDocuments;
+		return $this->getDocuments($query, $con);
 	}
 
 
@@ -1928,41 +2359,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getDocumentsJoinDocumentType($criteria = null, $con = null)
+	public function getDocumentsJoinDocumentType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = DocumentQuery::create(null, $criteria);
+		$query->joinWith('DocumentType', $join_behavior);
 
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-				$this->collDocuments = array();
-			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collDocuments = DocumentPeer::doSelectJoinDocumentType($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-				$this->collDocuments = DocumentPeer::doSelectJoinDocumentType($criteria, $con);
-			}
-		}
-		$this->lastDocumentCriteria = $criteria;
-
-		return $this->collDocuments;
+		return $this->getDocuments($query, $con);
 	}
 
 
@@ -1977,41 +2379,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getDocumentsJoinDocumentCategory($criteria = null, $con = null)
+	public function getDocumentsJoinDocumentCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = DocumentQuery::create(null, $criteria);
+		$query->joinWith('DocumentCategory', $join_behavior);
 
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-				$this->collDocuments = array();
-			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collDocuments = DocumentPeer::doSelectJoinDocumentCategory($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-				$this->collDocuments = DocumentPeer::doSelectJoinDocumentCategory($criteria, $con);
-			}
-		}
-		$this->lastDocumentCriteria = $criteria;
-
-		return $this->collDocuments;
+		return $this->getDocuments($query, $con);
 	}
 
 
@@ -2026,41 +2399,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getDocumentsJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	public function getDocumentsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = DocumentQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-				$this->collDocuments = array();
-			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		}
-		$this->lastDocumentCriteria = $criteria;
-
-		return $this->collDocuments;
+		return $this->getDocuments($query, $con);
 	}
 
 
@@ -2075,139 +2419,107 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getDocumentsJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	public function getDocumentsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseDocumentPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = DocumentQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		if ($this->collDocuments === null) {
-			if ($this->isNew()) {
-				$this->collDocuments = array();
-			} else {
-
-				$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(DocumentPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastDocumentCriteria) || !$this->lastDocumentCriteria->equals($criteria)) {
-				$this->collDocuments = DocumentPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
-			}
-		}
-		$this->lastDocumentCriteria = $criteria;
-
-		return $this->collDocuments;
+		return $this->getDocuments($query, $con);
 	}
 
 	/**
-	 * Temporary storage of collLinks to save a possible db hit in
-	 * the event objects are add to the collection, but the
-	 * complete collection is never requested.
+	 * Clears out the collLinks collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLinks()
+	 */
+	public function clearLinks()
+	{
+		$this->collLinks = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLinks collection.
+	 *
+	 * By default this just sets the collLinks collection to an empty array (like clearcollLinks());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
 	 * @return     void
 	 */
 	public function initLinks()
 	{
-		if ($this->collLinks === null) {
-			$this->collLinks = array();
-		}
+		$this->collLinks = new PropelObjectCollection();
+		$this->collLinks->setModel('Link');
 	}
 
 	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language has previously
-	 * been saved, it will retrieve related Links from storage.
-	 * If this Language is new, it will return
-	 * an empty collection or the current collection, the criteria
-	 * is ignored on a new object.
+	 * Gets an array of Link objects which contain a foreign key that references this object.
 	 *
-	 * @param      Connection $con
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Language is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
 	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 * @throws     PropelException
 	 */
-	public function getLinks($criteria = null, $con = null)
+	public function getLinks($criteria = null, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-			   $this->collLinks = array();
+		if(null === $this->collLinks || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinks) {
+				// return empty collection
+				$this->initLinks();
 			} else {
-
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-				LinkPeer::addSelectColumns($criteria);
-				$this->collLinks = LinkPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-				LinkPeer::addSelectColumns($criteria);
-				if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-					$this->collLinks = LinkPeer::doSelect($criteria, $con);
+				$collLinks = LinkQuery::create(null, $criteria)
+					->filterByLanguage($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLinks;
 				}
+				$this->collLinks = $collLinks;
 			}
 		}
-		$this->lastLinkCriteria = $criteria;
 		return $this->collLinks;
 	}
 
 	/**
-	 * Returns the number of related Links.
+	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
-	 * @param      Connection $con
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Link objects.
 	 * @throws     PropelException
 	 */
-	public function countLinks($criteria = null, $distinct = false, $con = null)
+	public function countLinks(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
+		if(null === $this->collLinks || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinks) {
+				return 0;
+			} else {
+				$query = LinkQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByLanguage($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLinks);
 		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-		return LinkPeer::doCount($criteria, $distinct, $con);
 	}
 
 	/**
 	 * Method called to associate a Link object to this object
-	 * through the Link foreign key attribute
+	 * through the Link foreign key attribute.
 	 *
 	 * @param      Link $l Link
 	 * @return     void
@@ -2215,8 +2527,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 */
 	public function addLink(Link $l)
 	{
-		$this->collLinks[] = $l;
-		$l->setLanguage($this);
+		if ($this->collLinks === null) {
+			$this->initLinks();
+		}
+		if (!$this->collLinks->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLinks[]= $l;
+			$l->setLanguage($this);
+		}
 	}
 
 
@@ -2231,41 +2548,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLinksJoinUserRelatedByOwnerId($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByOwnerId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByOwnerId', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -2280,41 +2568,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLinksJoinLinkCategory($criteria = null, $con = null)
+	public function getLinksJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('LinkCategory', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinLinkCategory($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinLinkCategory($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -2329,41 +2588,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLinksJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
-
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
-			}
-		}
-		$this->lastLinkCriteria = $criteria;
-
-		return $this->collLinks;
+		return $this->getLinks($query, $con);
 	}
 
 
@@ -2378,41 +2608,128 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLinksJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	public function getLinksJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		// include the Peer class
-		include_once 'model/om/BaseLinkPeer.php';
-		if ($criteria === null) {
-			$criteria = new Criteria();
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		if ($this->collLinks === null) {
-			if ($this->isNew()) {
-				$this->collLinks = array();
-			} else {
+		return $this->getLinks($query, $con);
+	}
 
-				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->is_active = null;
+		$this->sort = null;
+		$this->created_at = null;
+		$this->updated_at = null;
+		$this->created_by = null;
+		$this->updated_by = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
+		$this->clearAllReferences();
+		$this->resetModified();
+		$this->setNew(true);
+	}
 
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
+	/**
+	 * Resets all collections of referencing foreign keys.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect objects
+	 * with circular references.  This is currently necessary when using Propel in certain
+	 * daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 */
+	public function clearAllReferences($deep = false)
+	{
+		if ($deep) {
+			if ($this->collPageStrings) {
+				foreach ((array) $this->collPageStrings as $o) {
+					$o->clearAllReferences($deep);
+				}
 			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
-
-			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
+			if ($this->collLanguageObjects) {
+				foreach ((array) $this->collLanguageObjects as $o) {
+					$o->clearAllReferences($deep);
+				}
 			}
-		}
-		$this->lastLinkCriteria = $criteria;
+			if ($this->collLanguageObjectHistorys) {
+				foreach ((array) $this->collLanguageObjectHistorys as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collStrings) {
+				foreach ((array) $this->collStrings as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUsers) {
+				foreach ((array) $this->collUsers as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocuments) {
+				foreach ((array) $this->collDocuments as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLinks) {
+				foreach ((array) $this->collLinks as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+		} // if ($deep)
 
-		return $this->collLinks;
+		$this->collPageStrings = null;
+		$this->collLanguageObjects = null;
+		$this->collLanguageObjectHistorys = null;
+		$this->collStrings = null;
+		$this->collUsers = null;
+		$this->collDocuments = null;
+		$this->collLinks = null;
+		$this->aUserRelatedByCreatedBy = null;
+		$this->aUserRelatedByUpdatedBy = null;
+	}
+
+	// timestampable behavior
+	
+	/**
+	 * Mark the current object so that the update date doesn't get updated during next save
+	 *
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function keepUpdateDateUnchanged()
+	{
+		$this->modifiedColumns[] = LanguagePeer::UPDATED_AT;
+		return $this;
+	}
+
+	// attributable behavior
+	
+	/**
+	 * Mark the current object so that the updated user doesn't get updated during next save
+	 *
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function keepUpdateUserUnchanged()
+	{
+		$this->modifiedColumns[] = LanguagePeer::UPDATED_BY;
+		return $this;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseLanguage
