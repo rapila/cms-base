@@ -4,29 +4,26 @@ require_once 'propel/om/BaseObject.php';
 
 require_once 'propel/om/Persistent.php';
 
-include_once 'creole/util/Clob.php';
-include_once 'creole/util/Blob.php';
-
 
 include_once 'propel/util/Criteria.php';
 
-include_once 'model/DocumentPeer.php';
+include_once 'model/LinkCategoryPeer.php';
 
 /**
- * Base class that represents a row from the 'documents' table.
+ * Base class that represents a row from the 'link_categories' table.
  *
  * 
  *
  * @package    model.om
  */
-abstract class BaseDocument extends BaseObject  implements Persistent {
+abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        DocumentPeer
+	 * @var        LinkCategoryPeer
 	 */
 	protected static $peer;
 
@@ -43,76 +40,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * @var        string
 	 */
 	protected $name;
-
-
-	/**
-	 * The value for the description field.
-	 * @var        string
-	 */
-	protected $description;
-
-
-	/**
-	 * The value for the language_id field.
-	 * @var        string
-	 */
-	protected $language_id;
-
-
-	/**
-	 * The value for the owner_id field.
-	 * @var        int
-	 */
-	protected $owner_id;
-
-
-	/**
-	 * The value for the document_type_id field.
-	 * @var        int
-	 */
-	protected $document_type_id;
-
-
-	/**
-	 * The value for the document_category_id field.
-	 * @var        int
-	 */
-	protected $document_category_id = 0;
-
-
-	/**
-	 * The value for the is_private field.
-	 * @var        boolean
-	 */
-	protected $is_private = false;
-
-
-	/**
-	 * The value for the is_inactive field.
-	 * @var        boolean
-	 */
-	protected $is_inactive = false;
-
-
-	/**
-	 * The value for the is_protected field.
-	 * @var        boolean
-	 */
-	protected $is_protected = false;
-
-
-	/**
-	 * The value for the data field.
-	 * @var        string
-	 */
-	protected $data;
-
-	/**
-	 * Whether the lazy-loaded data value has been loaded from database.
-	 * This is necessary to avoid repeated lookups if data column is NULL in the db.
-	 * @var        boolean
-	 */
-	protected $data_isLoaded = false;
 
 
 	/**
@@ -141,26 +68,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * @var        int
 	 */
 	protected $updated_at;
-
-	/**
-	 * @var        Language
-	 */
-	protected $aLanguage;
-
-	/**
-	 * @var        User
-	 */
-	protected $aUserRelatedByOwnerId;
-
-	/**
-	 * @var        DocumentType
-	 */
-	protected $aDocumentType;
-
-	/**
-	 * @var        DocumentCategory
-	 */
-	protected $aDocumentCategory;
 
 	/**
 	 * @var        User
@@ -206,136 +113,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	{
 
 		return $this->name;
-	}
-
-	/**
-	 * Get the [description] column value.
-	 * 
-	 * @return     string
-	 */
-	public function getDescription()
-	{
-
-		return $this->description;
-	}
-
-	/**
-	 * Get the [language_id] column value.
-	 * 
-	 * @return     string
-	 */
-	public function getLanguageId()
-	{
-
-		return $this->language_id;
-	}
-
-	/**
-	 * Get the [owner_id] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getOwnerId()
-	{
-
-		return $this->owner_id;
-	}
-
-	/**
-	 * Get the [document_type_id] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getDocumentTypeId()
-	{
-
-		return $this->document_type_id;
-	}
-
-	/**
-	 * Get the [document_category_id] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getDocumentCategoryId()
-	{
-
-		return $this->document_category_id;
-	}
-
-	/**
-	 * Get the [is_private] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getIsPrivate()
-	{
-
-		return $this->is_private;
-	}
-
-	/**
-	 * Get the [is_inactive] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getIsInactive()
-	{
-
-		return $this->is_inactive;
-	}
-
-	/**
-	 * Get the [is_protected] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getIsProtected()
-	{
-
-		return $this->is_protected;
-	}
-
-	/**
-	 * Get the [data] column value.
-	 * 
-	 * @return     string
-	 */
-	public function getData($con = null)
-	{
-
-		if (!$this->data_isLoaded && $this->data === null && !$this->isNew()) {
-			$this->loadData($con);
-		}
-
-		return $this->data;
-	}
-
-	/**
-	 * Load the value for the lazy-loaded [data] column.
-	 *
-	 * This method performs an additional query to return the value for
-	 * the [data] column, since it is not populated by
-	 * the hydrate() method.
-	 *
-	 * @param      $con Connection
-	 * @return     void
-	 * @throws     PropelException - any underlying error will be wrapped and re-thrown.
-	 */
-	protected function loadData($con = null)
-	{
-		$c = $this->buildPkeyCriteria();
-		$c->addSelectColumn(DocumentPeer::DATA);
-		try {
-			$rs = DocumentPeer::doSelectRS($c, $con);
-			$rs->next();
-
-			$this->data = $rs->getBlob(1);
-
-			$this->data_isLoaded = true;
-		} catch (Exception $e) {
-			throw new PropelException("Error loading value for [data] column on demand.", $e);
-		}
 	}
 
 	/**
@@ -439,7 +216,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 		if ($this->id !== $v) {
 			$this->id = $v;
-			$this->modifiedColumns[] = DocumentPeer::ID;
+			$this->modifiedColumns[] = LinkCategoryPeer::ID;
 		}
 
 	} // setId()
@@ -461,220 +238,10 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 		if ($this->name !== $v) {
 			$this->name = $v;
-			$this->modifiedColumns[] = DocumentPeer::NAME;
+			$this->modifiedColumns[] = LinkCategoryPeer::NAME;
 		}
 
 	} // setName()
-
-	/**
-	 * Set the value of [description] column.
-	 * 
-	 * @param      string $v new value
-	 * @return     void
-	 */
-	public function setDescription($v)
-	{
-
-		// Since the native PHP type for this column is string,
-		// we will cast the input to a string (if it is not).
-		if ($v !== null && !is_string($v)) {
-			$v = (string) $v; 
-		}
-
-		if ($this->description !== $v) {
-			$this->description = $v;
-			$this->modifiedColumns[] = DocumentPeer::DESCRIPTION;
-		}
-
-	} // setDescription()
-
-	/**
-	 * Set the value of [language_id] column.
-	 * 
-	 * @param      string $v new value
-	 * @return     void
-	 */
-	public function setLanguageId($v)
-	{
-
-		// Since the native PHP type for this column is string,
-		// we will cast the input to a string (if it is not).
-		if ($v !== null && !is_string($v)) {
-			$v = (string) $v; 
-		}
-
-		if ($this->language_id !== $v) {
-			$this->language_id = $v;
-			$this->modifiedColumns[] = DocumentPeer::LANGUAGE_ID;
-		}
-
-		if ($this->aLanguage !== null && $this->aLanguage->getId() !== $v) {
-			$this->aLanguage = null;
-		}
-
-	} // setLanguageId()
-
-	/**
-	 * Set the value of [owner_id] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     void
-	 */
-	public function setOwnerId($v)
-	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
-		if ($this->owner_id !== $v) {
-			$this->owner_id = $v;
-			$this->modifiedColumns[] = DocumentPeer::OWNER_ID;
-		}
-
-		if ($this->aUserRelatedByOwnerId !== null && $this->aUserRelatedByOwnerId->getId() !== $v) {
-			$this->aUserRelatedByOwnerId = null;
-		}
-
-	} // setOwnerId()
-
-	/**
-	 * Set the value of [document_type_id] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     void
-	 */
-	public function setDocumentTypeId($v)
-	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
-		if ($this->document_type_id !== $v) {
-			$this->document_type_id = $v;
-			$this->modifiedColumns[] = DocumentPeer::DOCUMENT_TYPE_ID;
-		}
-
-		if ($this->aDocumentType !== null && $this->aDocumentType->getId() !== $v) {
-			$this->aDocumentType = null;
-		}
-
-	} // setDocumentTypeId()
-
-	/**
-	 * Set the value of [document_category_id] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     void
-	 */
-	public function setDocumentCategoryId($v)
-	{
-
-		// Since the native PHP type for this column is integer,
-		// we will cast the input value to an int (if it is not).
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
-		if ($this->document_category_id !== $v || $v === 0) {
-			$this->document_category_id = $v;
-			$this->modifiedColumns[] = DocumentPeer::DOCUMENT_CATEGORY_ID;
-		}
-
-		if ($this->aDocumentCategory !== null && $this->aDocumentCategory->getId() !== $v) {
-			$this->aDocumentCategory = null;
-		}
-
-	} // setDocumentCategoryId()
-
-	/**
-	 * Set the value of [is_private] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     void
-	 */
-	public function setIsPrivate($v)
-	{
-
-		if ($this->is_private !== $v || $v === false) {
-			$this->is_private = $v;
-			$this->modifiedColumns[] = DocumentPeer::IS_PRIVATE;
-		}
-
-	} // setIsPrivate()
-
-	/**
-	 * Set the value of [is_inactive] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     void
-	 */
-	public function setIsInactive($v)
-	{
-
-		if ($this->is_inactive !== $v || $v === false) {
-			$this->is_inactive = $v;
-			$this->modifiedColumns[] = DocumentPeer::IS_INACTIVE;
-		}
-
-	} // setIsInactive()
-
-	/**
-	 * Set the value of [is_protected] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     void
-	 */
-	public function setIsProtected($v)
-	{
-
-		if ($this->is_protected !== $v || $v === false) {
-			$this->is_protected = $v;
-			$this->modifiedColumns[] = DocumentPeer::IS_PROTECTED;
-		}
-
-	} // setIsProtected()
-
-	/**
-	 * Set the value of [data] column.
-	 * 
-	 * @param      string $v new value
-	 * @return     void
-	 */
-	public function setData($v)
-	{
-
-		// explicitly set the is-loaded flag to true for this lazy load col;
-		// it doesn't matter if the value is actually set or not (logic below) as
-		// any attempt to set the value means that no db lookup should be performed
-		// when the getData() method is called.
-		$this->data_isLoaded = true;
-
-		// if the passed in parameter is the *same* object that
-		// is stored internally then we use the Lob->isModified()
-		// method to know whether contents changed.
-		if ($v instanceof Lob && $v === $this->data) {
-			$changed = $v->isModified();
-		} else {
-			$changed = ($this->data !== $v);
-		}
-		if ($changed) {
-			if ( !($v instanceof Lob) ) {
-				$obj = new Blob();
-				$obj->setContents($v);
-			} else {
-				$obj = $v;
-			}
-			$this->data = $obj;
-			$this->modifiedColumns[] = DocumentPeer::DATA;
-		}
-
-	} // setData()
 
 	/**
 	 * Set the value of [created_by] column.
@@ -693,7 +260,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 		if ($this->created_by !== $v) {
 			$this->created_by = $v;
-			$this->modifiedColumns[] = DocumentPeer::CREATED_BY;
+			$this->modifiedColumns[] = LinkCategoryPeer::CREATED_BY;
 		}
 
 		if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
@@ -719,7 +286,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 		if ($this->updated_by !== $v) {
 			$this->updated_by = $v;
-			$this->modifiedColumns[] = DocumentPeer::UPDATED_BY;
+			$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_BY;
 		}
 
 		if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
@@ -747,7 +314,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 		}
 		if ($this->created_at !== $ts) {
 			$this->created_at = $ts;
-			$this->modifiedColumns[] = DocumentPeer::CREATED_AT;
+			$this->modifiedColumns[] = LinkCategoryPeer::CREATED_AT;
 		}
 
 	} // setCreatedAt()
@@ -771,7 +338,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 		}
 		if ($this->updated_at !== $ts) {
 			$this->updated_at = $ts;
-			$this->modifiedColumns[] = DocumentPeer::UPDATED_AT;
+			$this->modifiedColumns[] = LinkCategoryPeer::UPDATED_AT;
 		}
 
 	} // setUpdatedAt()
@@ -797,39 +364,23 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 			$this->name = $rs->getString($startcol + 1);
 
-			$this->description = $rs->getString($startcol + 2);
+			$this->created_by = $rs->getInt($startcol + 2);
 
-			$this->language_id = $rs->getString($startcol + 3);
+			$this->updated_by = $rs->getInt($startcol + 3);
 
-			$this->owner_id = $rs->getInt($startcol + 4);
+			$this->created_at = $rs->getTimestamp($startcol + 4, null);
 
-			$this->document_type_id = $rs->getInt($startcol + 5);
-
-			$this->document_category_id = $rs->getInt($startcol + 6);
-
-			$this->is_private = $rs->getBoolean($startcol + 7);
-
-			$this->is_inactive = $rs->getBoolean($startcol + 8);
-
-			$this->is_protected = $rs->getBoolean($startcol + 9);
-
-			$this->created_by = $rs->getInt($startcol + 10);
-
-			$this->updated_by = $rs->getInt($startcol + 11);
-
-			$this->created_at = $rs->getTimestamp($startcol + 12, null);
-
-			$this->updated_at = $rs->getTimestamp($startcol + 13, null);
+			$this->updated_at = $rs->getTimestamp($startcol + 5, null);
 
 			$this->resetModified();
 
 			$this->setNew(false);
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 14; // 14 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating Document object", $e);
+			throw new PropelException("Error populating LinkCategory object", $e);
 		}
 	}
 
@@ -849,12 +400,12 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(DocumentPeer::DATABASE_NAME);
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME);
 		}
 
 		try {
 			$con->begin();
-			DocumentPeer::doDelete($this, $con);
+			LinkCategoryPeer::doDelete($this, $con);
 			$this->setDeleted(true);
 			$con->commit();
 		} catch (PropelException $e) {
@@ -880,7 +431,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(DocumentPeer::DATABASE_NAME);
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME);
 		}
 
 		try {
@@ -917,34 +468,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aLanguage !== null) {
-				if ($this->aLanguage->isModified()) {
-					$affectedRows += $this->aLanguage->save($con);
-				}
-				$this->setLanguage($this->aLanguage);
-			}
-
-			if ($this->aUserRelatedByOwnerId !== null) {
-				if ($this->aUserRelatedByOwnerId->isModified()) {
-					$affectedRows += $this->aUserRelatedByOwnerId->save($con);
-				}
-				$this->setUserRelatedByOwnerId($this->aUserRelatedByOwnerId);
-			}
-
-			if ($this->aDocumentType !== null) {
-				if ($this->aDocumentType->isModified()) {
-					$affectedRows += $this->aDocumentType->save($con);
-				}
-				$this->setDocumentType($this->aDocumentType);
-			}
-
-			if ($this->aDocumentCategory !== null) {
-				if ($this->aDocumentCategory->isModified()) {
-					$affectedRows += $this->aDocumentCategory->save($con);
-				}
-				$this->setDocumentCategory($this->aDocumentCategory);
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if ($this->aUserRelatedByCreatedBy->isModified()) {
 					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
@@ -963,7 +486,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = DocumentPeer::doInsert($this, $con);
+					$pk = LinkCategoryPeer::doInsert($this, $con);
 					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
 										 // should always be true here (even though technically
 										 // BasePeer::doInsert() can insert multiple rows).
@@ -972,7 +495,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 
 					$this->setNew(false);
 				} else {
-					$affectedRows += DocumentPeer::doUpdate($this, $con);
+					$affectedRows += LinkCategoryPeer::doUpdate($this, $con);
 				}
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
@@ -1047,30 +570,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aLanguage !== null) {
-				if (!$this->aLanguage->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aLanguage->getValidationFailures());
-				}
-			}
-
-			if ($this->aUserRelatedByOwnerId !== null) {
-				if (!$this->aUserRelatedByOwnerId->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aUserRelatedByOwnerId->getValidationFailures());
-				}
-			}
-
-			if ($this->aDocumentType !== null) {
-				if (!$this->aDocumentType->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aDocumentType->getValidationFailures());
-				}
-			}
-
-			if ($this->aDocumentCategory !== null) {
-				if (!$this->aDocumentCategory->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aDocumentCategory->getValidationFailures());
-				}
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
@@ -1084,7 +583,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 			}
 
 
-			if (($retval = DocumentPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = LinkCategoryPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -1107,7 +606,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = DocumentPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = LinkCategoryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->getByPosition($pos);
 	}
 
@@ -1128,42 +627,15 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 				return $this->getName();
 				break;
 			case 2:
-				return $this->getDescription();
-				break;
-			case 3:
-				return $this->getLanguageId();
-				break;
-			case 4:
-				return $this->getOwnerId();
-				break;
-			case 5:
-				return $this->getDocumentTypeId();
-				break;
-			case 6:
-				return $this->getDocumentCategoryId();
-				break;
-			case 7:
-				return $this->getIsPrivate();
-				break;
-			case 8:
-				return $this->getIsInactive();
-				break;
-			case 9:
-				return $this->getIsProtected();
-				break;
-			case 10:
-				return $this->getData();
-				break;
-			case 11:
 				return $this->getCreatedBy();
 				break;
-			case 12:
+			case 3:
 				return $this->getUpdatedBy();
 				break;
-			case 13:
+			case 4:
 				return $this->getCreatedAt();
 				break;
-			case 14:
+			case 5:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1184,23 +656,14 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = DocumentPeer::getFieldNames($keyType);
+		$keys = LinkCategoryPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
-			$keys[2] => $this->getDescription(),
-			$keys[3] => $this->getLanguageId(),
-			$keys[4] => $this->getOwnerId(),
-			$keys[5] => $this->getDocumentTypeId(),
-			$keys[6] => $this->getDocumentCategoryId(),
-			$keys[7] => $this->getIsPrivate(),
-			$keys[8] => $this->getIsInactive(),
-			$keys[9] => $this->getIsProtected(),
-			$keys[10] => $this->getData(),
-			$keys[11] => $this->getCreatedBy(),
-			$keys[12] => $this->getUpdatedBy(),
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
+			$keys[2] => $this->getCreatedBy(),
+			$keys[3] => $this->getUpdatedBy(),
+			$keys[4] => $this->getCreatedAt(),
+			$keys[5] => $this->getUpdatedAt(),
 		);
 		return $result;
 	}
@@ -1217,7 +680,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = DocumentPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = LinkCategoryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -1239,42 +702,15 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 				$this->setName($value);
 				break;
 			case 2:
-				$this->setDescription($value);
-				break;
-			case 3:
-				$this->setLanguageId($value);
-				break;
-			case 4:
-				$this->setOwnerId($value);
-				break;
-			case 5:
-				$this->setDocumentTypeId($value);
-				break;
-			case 6:
-				$this->setDocumentCategoryId($value);
-				break;
-			case 7:
-				$this->setIsPrivate($value);
-				break;
-			case 8:
-				$this->setIsInactive($value);
-				break;
-			case 9:
-				$this->setIsProtected($value);
-				break;
-			case 10:
-				$this->setData($value);
-				break;
-			case 11:
 				$this->setCreatedBy($value);
 				break;
-			case 12:
+			case 3:
 				$this->setUpdatedBy($value);
 				break;
-			case 13:
+			case 4:
 				$this->setCreatedAt($value);
 				break;
-			case 14:
+			case 5:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1298,23 +734,14 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = DocumentPeer::getFieldNames($keyType);
+		$keys = LinkCategoryPeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setDescription($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setLanguageId($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setOwnerId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setDocumentTypeId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDocumentCategoryId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIsPrivate($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsInactive($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsProtected($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setData($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setCreatedBy($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setUpdatedBy($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[2], $arr)) $this->setCreatedBy($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setUpdatedBy($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
 	}
 
 	/**
@@ -1324,23 +751,14 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(DocumentPeer::DATABASE_NAME);
+		$criteria = new Criteria(LinkCategoryPeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(DocumentPeer::ID)) $criteria->add(DocumentPeer::ID, $this->id);
-		if ($this->isColumnModified(DocumentPeer::NAME)) $criteria->add(DocumentPeer::NAME, $this->name);
-		if ($this->isColumnModified(DocumentPeer::DESCRIPTION)) $criteria->add(DocumentPeer::DESCRIPTION, $this->description);
-		if ($this->isColumnModified(DocumentPeer::LANGUAGE_ID)) $criteria->add(DocumentPeer::LANGUAGE_ID, $this->language_id);
-		if ($this->isColumnModified(DocumentPeer::OWNER_ID)) $criteria->add(DocumentPeer::OWNER_ID, $this->owner_id);
-		if ($this->isColumnModified(DocumentPeer::DOCUMENT_TYPE_ID)) $criteria->add(DocumentPeer::DOCUMENT_TYPE_ID, $this->document_type_id);
-		if ($this->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) $criteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->document_category_id);
-		if ($this->isColumnModified(DocumentPeer::IS_PRIVATE)) $criteria->add(DocumentPeer::IS_PRIVATE, $this->is_private);
-		if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) $criteria->add(DocumentPeer::IS_INACTIVE, $this->is_inactive);
-		if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) $criteria->add(DocumentPeer::IS_PROTECTED, $this->is_protected);
-		if ($this->isColumnModified(DocumentPeer::DATA)) $criteria->add(DocumentPeer::DATA, $this->data);
-		if ($this->isColumnModified(DocumentPeer::CREATED_BY)) $criteria->add(DocumentPeer::CREATED_BY, $this->created_by);
-		if ($this->isColumnModified(DocumentPeer::UPDATED_BY)) $criteria->add(DocumentPeer::UPDATED_BY, $this->updated_by);
-		if ($this->isColumnModified(DocumentPeer::CREATED_AT)) $criteria->add(DocumentPeer::CREATED_AT, $this->created_at);
-		if ($this->isColumnModified(DocumentPeer::UPDATED_AT)) $criteria->add(DocumentPeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(LinkCategoryPeer::ID)) $criteria->add(LinkCategoryPeer::ID, $this->id);
+		if ($this->isColumnModified(LinkCategoryPeer::NAME)) $criteria->add(LinkCategoryPeer::NAME, $this->name);
+		if ($this->isColumnModified(LinkCategoryPeer::CREATED_BY)) $criteria->add(LinkCategoryPeer::CREATED_BY, $this->created_by);
+		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) $criteria->add(LinkCategoryPeer::UPDATED_BY, $this->updated_by);
+		if ($this->isColumnModified(LinkCategoryPeer::CREATED_AT)) $criteria->add(LinkCategoryPeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) $criteria->add(LinkCategoryPeer::UPDATED_AT, $this->updated_at);
 
 		return $criteria;
 	}
@@ -1355,9 +773,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(DocumentPeer::DATABASE_NAME);
+		$criteria = new Criteria(LinkCategoryPeer::DATABASE_NAME);
 
-		$criteria->add(DocumentPeer::ID, $this->id);
+		$criteria->add(LinkCategoryPeer::ID, $this->id);
 
 		return $criteria;
 	}
@@ -1388,7 +806,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of Document (or compatible) type.
+	 * @param      object $copyObj An object of LinkCategory (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
@@ -1396,24 +814,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	{
 
 		$copyObj->setName($this->name);
-
-		$copyObj->setDescription($this->description);
-
-		$copyObj->setLanguageId($this->language_id);
-
-		$copyObj->setOwnerId($this->owner_id);
-
-		$copyObj->setDocumentTypeId($this->document_type_id);
-
-		$copyObj->setDocumentCategoryId($this->document_category_id);
-
-		$copyObj->setIsPrivate($this->is_private);
-
-		$copyObj->setIsInactive($this->is_inactive);
-
-		$copyObj->setIsProtected($this->is_protected);
-
-		$copyObj->setData($this->data);
 
 		$copyObj->setCreatedBy($this->created_by);
 
@@ -1439,7 +839,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     Document Clone of current object.
+	 * @return     LinkCategory Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -1458,218 +858,14 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     DocumentPeer
+	 * @return     LinkCategoryPeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new DocumentPeer();
+			self::$peer = new LinkCategoryPeer();
 		}
 		return self::$peer;
-	}
-
-	/**
-	 * Declares an association between this object and a Language object.
-	 *
-	 * @param      Language $v
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function setLanguage($v)
-	{
-
-
-		if ($v === null) {
-			$this->setLanguageId(NULL);
-		} else {
-			$this->setLanguageId($v->getId());
-		}
-
-
-		$this->aLanguage = $v;
-	}
-
-
-	/**
-	 * Get the associated Language object
-	 *
-	 * @param      Connection Optional Connection object.
-	 * @return     Language The associated Language object.
-	 * @throws     PropelException
-	 */
-	public function getLanguage($con = null)
-	{
-		// include the related Peer class
-		include_once 'model/om/BaseLanguagePeer.php';
-
-		if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null))) {
-
-			$this->aLanguage = LanguagePeer::retrieveByPK($this->language_id, $con);
-
-			/* The following can be used instead of the line above to
-			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = LanguagePeer::retrieveByPK($this->language_id, $con);
-			   $obj->addLanguages($this);
-			 */
-		}
-		return $this->aLanguage;
-	}
-
-	/**
-	 * Declares an association between this object and a User object.
-	 *
-	 * @param      User $v
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function setUserRelatedByOwnerId($v)
-	{
-
-
-		if ($v === null) {
-			$this->setOwnerId(NULL);
-		} else {
-			$this->setOwnerId($v->getId());
-		}
-
-
-		$this->aUserRelatedByOwnerId = $v;
-	}
-
-
-	/**
-	 * Get the associated User object
-	 *
-	 * @param      Connection Optional Connection object.
-	 * @return     User The associated User object.
-	 * @throws     PropelException
-	 */
-	public function getUserRelatedByOwnerId($con = null)
-	{
-		// include the related Peer class
-		include_once 'model/om/BaseUserPeer.php';
-
-		if ($this->aUserRelatedByOwnerId === null && ($this->owner_id !== null)) {
-
-			$this->aUserRelatedByOwnerId = UserPeer::retrieveByPK($this->owner_id, $con);
-
-			/* The following can be used instead of the line above to
-			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = UserPeer::retrieveByPK($this->owner_id, $con);
-			   $obj->addUsersRelatedByOwnerId($this);
-			 */
-		}
-		return $this->aUserRelatedByOwnerId;
-	}
-
-	/**
-	 * Declares an association between this object and a DocumentType object.
-	 *
-	 * @param      DocumentType $v
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function setDocumentType($v)
-	{
-
-
-		if ($v === null) {
-			$this->setDocumentTypeId(NULL);
-		} else {
-			$this->setDocumentTypeId($v->getId());
-		}
-
-
-		$this->aDocumentType = $v;
-	}
-
-
-	/**
-	 * Get the associated DocumentType object
-	 *
-	 * @param      Connection Optional Connection object.
-	 * @return     DocumentType The associated DocumentType object.
-	 * @throws     PropelException
-	 */
-	public function getDocumentType($con = null)
-	{
-		// include the related Peer class
-		include_once 'model/om/BaseDocumentTypePeer.php';
-
-		if ($this->aDocumentType === null && ($this->document_type_id !== null)) {
-
-			$this->aDocumentType = DocumentTypePeer::retrieveByPK($this->document_type_id, $con);
-
-			/* The following can be used instead of the line above to
-			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = DocumentTypePeer::retrieveByPK($this->document_type_id, $con);
-			   $obj->addDocumentTypes($this);
-			 */
-		}
-		return $this->aDocumentType;
-	}
-
-	/**
-	 * Declares an association between this object and a DocumentCategory object.
-	 *
-	 * @param      DocumentCategory $v
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function setDocumentCategory($v)
-	{
-
-
-		if ($v === null) {
-			$this->setDocumentCategoryId('null');
-		} else {
-			$this->setDocumentCategoryId($v->getId());
-		}
-
-
-		$this->aDocumentCategory = $v;
-	}
-
-
-	/**
-	 * Get the associated DocumentCategory object
-	 *
-	 * @param      Connection Optional Connection object.
-	 * @return     DocumentCategory The associated DocumentCategory object.
-	 * @throws     PropelException
-	 */
-	public function getDocumentCategory($con = null)
-	{
-		// include the related Peer class
-		include_once 'model/om/BaseDocumentCategoryPeer.php';
-
-		if ($this->aDocumentCategory === null && ($this->document_category_id !== null)) {
-
-			$this->aDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->document_category_id, $con);
-
-			/* The following can be used instead of the line above to
-			   guarantee the related object contains a reference
-			   to this object, but this level of coupling
-			   may be undesirable in many circumstances.
-			   As it can lead to a db query with many results that may
-			   never be used.
-			   $obj = DocumentCategoryPeer::retrieveByPK($this->document_category_id, $con);
-			   $obj->addDocumentCategorys($this);
-			 */
-		}
-		return $this->aDocumentCategory;
 	}
 
 	/**
@@ -1774,4 +970,4 @@ abstract class BaseDocument extends BaseObject  implements Persistent {
 		return $this->aUserRelatedByUpdatedBy;
 	}
 
-} // BaseDocument
+} // BaseLinkCategory

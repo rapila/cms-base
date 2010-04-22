@@ -311,6 +311,30 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 	protected $lastDocumentRelatedByUpdatedByCriteria = null;
 
 	/**
+	 * Collection to store aggregation of collLinkCategorysRelatedByCreatedBy.
+	 * @var        array
+	 */
+	protected $collLinkCategorysRelatedByCreatedBy;
+
+	/**
+	 * The criteria used to select the current contents of collLinkCategorysRelatedByCreatedBy.
+	 * @var        Criteria
+	 */
+	protected $lastLinkCategoryRelatedByCreatedByCriteria = null;
+
+	/**
+	 * Collection to store aggregation of collLinkCategorysRelatedByUpdatedBy.
+	 * @var        array
+	 */
+	protected $collLinkCategorysRelatedByUpdatedBy;
+
+	/**
+	 * The criteria used to select the current contents of collLinkCategorysRelatedByUpdatedBy.
+	 * @var        Criteria
+	 */
+	protected $lastLinkCategoryRelatedByUpdatedByCriteria = null;
+
+	/**
 	 * Collection to store aggregation of collTagInstances.
 	 * @var        array
 	 */
@@ -1226,6 +1250,22 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collLinkCategorysRelatedByCreatedBy !== null) {
+				foreach($this->collLinkCategorysRelatedByCreatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collLinkCategorysRelatedByUpdatedBy !== null) {
+				foreach($this->collLinkCategorysRelatedByUpdatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collTagInstances !== null) {
 				foreach($this->collTagInstances as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1434,6 +1474,22 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 
 				if ($this->collDocumentsRelatedByUpdatedBy !== null) {
 					foreach($this->collDocumentsRelatedByUpdatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collLinkCategorysRelatedByCreatedBy !== null) {
+					foreach($this->collLinkCategorysRelatedByCreatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collLinkCategorysRelatedByUpdatedBy !== null) {
+					foreach($this->collLinkCategorysRelatedByUpdatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1881,6 +1937,14 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 
 			foreach($this->getDocumentsRelatedByUpdatedBy() as $relObj) {
 				$copyObj->addDocumentRelatedByUpdatedBy($relObj->copy($deepCopy));
+			}
+
+			foreach($this->getLinkCategorysRelatedByCreatedBy() as $relObj) {
+				$copyObj->addLinkCategoryRelatedByCreatedBy($relObj->copy($deepCopy));
+			}
+
+			foreach($this->getLinkCategorysRelatedByUpdatedBy() as $relObj) {
+				$copyObj->addLinkCategoryRelatedByUpdatedBy($relObj->copy($deepCopy));
 			}
 
 			foreach($this->getTagInstances() as $relObj) {
@@ -4468,6 +4532,220 @@ abstract class BaseUser extends BaseObject  implements Persistent {
 		$this->lastDocumentRelatedByUpdatedByCriteria = $criteria;
 
 		return $this->collDocumentsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Temporary storage of collLinkCategorysRelatedByCreatedBy to save a possible db hit in
+	 * the event objects are add to the collection, but the
+	 * complete collection is never requested.
+	 * @return     void
+	 */
+	public function initLinkCategorysRelatedByCreatedBy()
+	{
+		if ($this->collLinkCategorysRelatedByCreatedBy === null) {
+			$this->collLinkCategorysRelatedByCreatedBy = array();
+		}
+	}
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User has previously
+	 * been saved, it will retrieve related LinkCategorysRelatedByCreatedBy from storage.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection, the criteria
+	 * is ignored on a new object.
+	 *
+	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @throws     PropelException
+	 */
+	public function getLinkCategorysRelatedByCreatedBy($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkCategoryPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinkCategorysRelatedByCreatedBy === null) {
+			if ($this->isNew()) {
+			   $this->collLinkCategorysRelatedByCreatedBy = array();
+			} else {
+
+				$criteria->add(LinkCategoryPeer::CREATED_BY, $this->getId());
+
+				LinkCategoryPeer::addSelectColumns($criteria);
+				$this->collLinkCategorysRelatedByCreatedBy = LinkCategoryPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(LinkCategoryPeer::CREATED_BY, $this->getId());
+
+				LinkCategoryPeer::addSelectColumns($criteria);
+				if (!isset($this->lastLinkCategoryRelatedByCreatedByCriteria) || !$this->lastLinkCategoryRelatedByCreatedByCriteria->equals($criteria)) {
+					$this->collLinkCategorysRelatedByCreatedBy = LinkCategoryPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastLinkCategoryRelatedByCreatedByCriteria = $criteria;
+		return $this->collLinkCategorysRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related LinkCategorysRelatedByCreatedBy.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      Connection $con
+	 * @throws     PropelException
+	 */
+	public function countLinkCategorysRelatedByCreatedBy($criteria = null, $distinct = false, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkCategoryPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		$criteria->add(LinkCategoryPeer::CREATED_BY, $this->getId());
+
+		return LinkCategoryPeer::doCount($criteria, $distinct, $con);
+	}
+
+	/**
+	 * Method called to associate a LinkCategory object to this object
+	 * through the LinkCategory foreign key attribute
+	 *
+	 * @param      LinkCategory $l LinkCategory
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addLinkCategoryRelatedByCreatedBy(LinkCategory $l)
+	{
+		$this->collLinkCategorysRelatedByCreatedBy[] = $l;
+		$l->setUserRelatedByCreatedBy($this);
+	}
+
+	/**
+	 * Temporary storage of collLinkCategorysRelatedByUpdatedBy to save a possible db hit in
+	 * the event objects are add to the collection, but the
+	 * complete collection is never requested.
+	 * @return     void
+	 */
+	public function initLinkCategorysRelatedByUpdatedBy()
+	{
+		if ($this->collLinkCategorysRelatedByUpdatedBy === null) {
+			$this->collLinkCategorysRelatedByUpdatedBy = array();
+		}
+	}
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User has previously
+	 * been saved, it will retrieve related LinkCategorysRelatedByUpdatedBy from storage.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection, the criteria
+	 * is ignored on a new object.
+	 *
+	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @throws     PropelException
+	 */
+	public function getLinkCategorysRelatedByUpdatedBy($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkCategoryPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinkCategorysRelatedByUpdatedBy === null) {
+			if ($this->isNew()) {
+			   $this->collLinkCategorysRelatedByUpdatedBy = array();
+			} else {
+
+				$criteria->add(LinkCategoryPeer::UPDATED_BY, $this->getId());
+
+				LinkCategoryPeer::addSelectColumns($criteria);
+				$this->collLinkCategorysRelatedByUpdatedBy = LinkCategoryPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(LinkCategoryPeer::UPDATED_BY, $this->getId());
+
+				LinkCategoryPeer::addSelectColumns($criteria);
+				if (!isset($this->lastLinkCategoryRelatedByUpdatedByCriteria) || !$this->lastLinkCategoryRelatedByUpdatedByCriteria->equals($criteria)) {
+					$this->collLinkCategorysRelatedByUpdatedBy = LinkCategoryPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastLinkCategoryRelatedByUpdatedByCriteria = $criteria;
+		return $this->collLinkCategorysRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related LinkCategorysRelatedByUpdatedBy.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      Connection $con
+	 * @throws     PropelException
+	 */
+	public function countLinkCategorysRelatedByUpdatedBy($criteria = null, $distinct = false, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkCategoryPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		$criteria->add(LinkCategoryPeer::UPDATED_BY, $this->getId());
+
+		return LinkCategoryPeer::doCount($criteria, $distinct, $con);
+	}
+
+	/**
+	 * Method called to associate a LinkCategory object to this object
+	 * through the LinkCategory foreign key attribute
+	 *
+	 * @param      LinkCategory $l LinkCategory
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addLinkCategoryRelatedByUpdatedBy(LinkCategory $l)
+	{
+		$this->collLinkCategorysRelatedByUpdatedBy[] = $l;
+		$l->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**

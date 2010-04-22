@@ -2,42 +2,51 @@
 
 require_once 'propel/util/BasePeer.php';
 // The object class -- needed for instanceof checks in this class.
-// actual class may be a subclass -- as returned by StringPeer::getOMClass()
-include_once 'model/String.php';
+// actual class may be a subclass -- as returned by LinkCategoryPeer::getOMClass()
+include_once 'model/LinkCategory.php';
 
 /**
- * Base static class for performing query and update operations on the 'strings' table.
+ * Base static class for performing query and update operations on the 'link_categories' table.
  *
  * 
  *
  * @package    model.om
  */
-abstract class BaseStringPeer {
+abstract class BaseLinkCategoryPeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'mini_cms';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'strings';
+	const TABLE_NAME = 'link_categories';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'model.String';
+	const CLASS_DEFAULT = 'model.LinkCategory';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 3;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 
-	/** the column name for the LANGUAGE_ID field */
-	const LANGUAGE_ID = 'strings.LANGUAGE_ID';
+	/** the column name for the ID field */
+	const ID = 'link_categories.ID';
 
-	/** the column name for the STRING_KEY field */
-	const STRING_KEY = 'strings.STRING_KEY';
+	/** the column name for the NAME field */
+	const NAME = 'link_categories.NAME';
 
-	/** the column name for the TEXT field */
-	const TEXT = 'strings.TEXT';
+	/** the column name for the CREATED_BY field */
+	const CREATED_BY = 'link_categories.CREATED_BY';
+
+	/** the column name for the UPDATED_BY field */
+	const UPDATED_BY = 'link_categories.UPDATED_BY';
+
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'link_categories.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'link_categories.UPDATED_AT';
 
 	/** The PHP to DB Name Mapping */
 	private static $phpNameMap = null;
@@ -50,10 +59,10 @@ abstract class BaseStringPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('LanguageId', 'StringKey', 'Text', ),
-		BasePeer::TYPE_COLNAME => array (StringPeer::LANGUAGE_ID, StringPeer::STRING_KEY, StringPeer::TEXT, ),
-		BasePeer::TYPE_FIELDNAME => array ('language_id', 'string_key', 'text', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'CreatedBy', 'UpdatedBy', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_COLNAME => array (LinkCategoryPeer::ID, LinkCategoryPeer::NAME, LinkCategoryPeer::CREATED_BY, LinkCategoryPeer::UPDATED_BY, LinkCategoryPeer::CREATED_AT, LinkCategoryPeer::UPDATED_AT, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'created_by', 'updated_by', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -63,10 +72,10 @@ abstract class BaseStringPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('LanguageId' => 0, 'StringKey' => 1, 'Text' => 2, ),
-		BasePeer::TYPE_COLNAME => array (StringPeer::LANGUAGE_ID => 0, StringPeer::STRING_KEY => 1, StringPeer::TEXT => 2, ),
-		BasePeer::TYPE_FIELDNAME => array ('language_id' => 0, 'string_key' => 1, 'text' => 2, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'CreatedBy' => 2, 'UpdatedBy' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+		BasePeer::TYPE_COLNAME => array (LinkCategoryPeer::ID => 0, LinkCategoryPeer::NAME => 1, LinkCategoryPeer::CREATED_BY => 2, LinkCategoryPeer::UPDATED_BY => 3, LinkCategoryPeer::CREATED_AT => 4, LinkCategoryPeer::UPDATED_AT => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'created_by' => 2, 'updated_by' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -76,8 +85,8 @@ abstract class BaseStringPeer {
 	 */
 	public static function getMapBuilder()
 	{
-		include_once 'model/map/StringMapBuilder.php';
-		return BasePeer::getMapBuilder('model.map.StringMapBuilder');
+		include_once 'model/map/LinkCategoryMapBuilder.php';
+		return BasePeer::getMapBuilder('model.map.LinkCategoryMapBuilder');
 	}
 	/**
 	 * Gets a map (hash) of PHP names to DB column names.
@@ -90,7 +99,7 @@ abstract class BaseStringPeer {
 	public static function getPhpNameMap()
 	{
 		if (self::$phpNameMap === null) {
-			$map = StringPeer::getTableMap();
+			$map = LinkCategoryPeer::getTableMap();
 			$columns = $map->getColumns();
 			$nameMap = array();
 			foreach ($columns as $column) {
@@ -145,12 +154,12 @@ abstract class BaseStringPeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. StringPeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. LinkCategoryPeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(StringPeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(LinkCategoryPeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -167,16 +176,22 @@ abstract class BaseStringPeer {
 	public static function addSelectColumns(Criteria $criteria)
 	{
 
-		$criteria->addSelectColumn(StringPeer::LANGUAGE_ID);
+		$criteria->addSelectColumn(LinkCategoryPeer::ID);
 
-		$criteria->addSelectColumn(StringPeer::STRING_KEY);
+		$criteria->addSelectColumn(LinkCategoryPeer::NAME);
 
-		$criteria->addSelectColumn(StringPeer::TEXT);
+		$criteria->addSelectColumn(LinkCategoryPeer::CREATED_BY);
+
+		$criteria->addSelectColumn(LinkCategoryPeer::UPDATED_BY);
+
+		$criteria->addSelectColumn(LinkCategoryPeer::CREATED_AT);
+
+		$criteria->addSelectColumn(LinkCategoryPeer::UPDATED_AT);
 
 	}
 
-	const COUNT = 'COUNT(strings.LANGUAGE_ID)';
-	const COUNT_DISTINCT = 'COUNT(DISTINCT strings.LANGUAGE_ID)';
+	const COUNT = 'COUNT(link_categories.ID)';
+	const COUNT_DISTINCT = 'COUNT(DISTINCT link_categories.ID)';
 
 	/**
 	 * Returns the number of rows matching criteria.
@@ -194,9 +209,9 @@ abstract class BaseStringPeer {
 		// clear out anything that might confuse the ORDER BY clause
 		$criteria->clearSelectColumns()->clearOrderByColumns();
 		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
 		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
 		}
 
 		// just in case we're grouping: add those columns to the select statement
@@ -205,7 +220,7 @@ abstract class BaseStringPeer {
 			$criteria->addSelectColumn($column);
 		}
 
-		$rs = StringPeer::doSelectRS($criteria, $con);
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
 			return $rs->getInt(1);
 		} else {
@@ -218,7 +233,7 @@ abstract class BaseStringPeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      Connection $con
-	 * @return     String
+	 * @return     LinkCategory
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -226,7 +241,7 @@ abstract class BaseStringPeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = StringPeer::doSelect($critcopy, $con);
+		$objects = LinkCategoryPeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -243,7 +258,7 @@ abstract class BaseStringPeer {
 	 */
 	public static function doSelect(Criteria $criteria, $con = null)
 	{
-		return StringPeer::populateObjects(StringPeer::doSelectRS($criteria, $con));
+		return LinkCategoryPeer::populateObjects(LinkCategoryPeer::doSelectRS($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect()
@@ -267,7 +282,7 @@ abstract class BaseStringPeer {
 
 		if (!$criteria->getSelectColumns()) {
 			$criteria = clone $criteria;
-			StringPeer::addSelectColumns($criteria);
+			LinkCategoryPeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -289,7 +304,7 @@ abstract class BaseStringPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = StringPeer::getOMClass();
+		$cls = LinkCategoryPeer::getOMClass();
 		$cls = Propel::import($cls);
 		// populate the object(s)
 		while($rs->next()) {
@@ -303,14 +318,14 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related Language table
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
 	 * @param      Connection $con
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinLanguage(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, $con = null)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -318,9 +333,9 @@ abstract class BaseStringPeer {
 		// clear out anything that might confuse the ORDER BY clause
 		$criteria->clearSelectColumns()->clearOrderByColumns();
 		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
 		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
 		}
 
 		// just in case we're grouping: add those columns to the select statement
@@ -329,9 +344,9 @@ abstract class BaseStringPeer {
 			$criteria->addSelectColumn($column);
 		}
 
-		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		$criteria->addJoin(LinkCategoryPeer::CREATED_BY, UserPeer::ID);
 
-		$rs = StringPeer::doSelectRS($criteria, $con);
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
 			return $rs->getInt(1);
 		} else {
@@ -342,13 +357,52 @@ abstract class BaseStringPeer {
 
 
 	/**
-	 * Selects a collection of String objects pre-filled with their Language objects.
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
 	 *
-	 * @return     array Array of String objects.
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
+	 * @param      Connection $con
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, $con = null)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// clear out anything that might confuse the ORDER BY clause
+		$criteria->clearSelectColumns()->clearOrderByColumns();
+		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
+		} else {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
+		}
+
+		// just in case we're grouping: add those columns to the select statement
+		foreach($criteria->getGroupByColumns() as $column)
+		{
+			$criteria->addSelectColumn($column);
+		}
+
+		$criteria->addJoin(LinkCategoryPeer::UPDATED_BY, UserPeer::ID);
+
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
+		if ($rs->next()) {
+			return $rs->getInt(1);
+		} else {
+			// no rows returned; we infer that means 0 matches.
+			return 0;
+		}
+	}
+
+
+	/**
+	 * Selects a collection of LinkCategory objects pre-filled with their User objects.
+	 *
+	 * @return     array Array of LinkCategory objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinLanguage(Criteria $c, $con = null)
+	public static function doSelectJoinUserRelatedByCreatedBy(Criteria $c, $con = null)
 	{
 		$c = clone $c;
 
@@ -357,23 +411,23 @@ abstract class BaseStringPeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		StringPeer::addSelectColumns($c);
-		$startcol = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
-		LanguagePeer::addSelectColumns($c);
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol = (LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		UserPeer::addSelectColumns($c);
 
-		$c->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		$c->addJoin(LinkCategoryPeer::CREATED_BY, UserPeer::ID);
 		$rs = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while($rs->next()) {
 
-			$omClass = StringPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 			$cls = Propel::import($omClass);
 			$obj1 = new $cls();
 			$obj1->hydrate($rs);
 
-			$omClass = LanguagePeer::getOMClass();
+			$omClass = UserPeer::getOMClass();
 
 			$cls = Propel::import($omClass);
 			$obj2 = new $cls();
@@ -381,17 +435,75 @@ abstract class BaseStringPeer {
 
 			$newObject = true;
 			foreach($results as $temp_obj1) {
-				$temp_obj2 = $temp_obj1->getLanguage(); //CHECKME
+				$temp_obj2 = $temp_obj1->getUserRelatedByCreatedBy(); //CHECKME
 				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
 					$newObject = false;
 					// e.g. $author->addBookRelatedByBookId()
-					$temp_obj2->addString($obj1); //CHECKME
+					$temp_obj2->addLinkCategoryRelatedByCreatedBy($obj1); //CHECKME
 					break;
 				}
 			}
 			if ($newObject) {
-				$obj2->initStrings();
-				$obj2->addString($obj1); //CHECKME
+				$obj2->initLinkCategorysRelatedByCreatedBy();
+				$obj2->addLinkCategoryRelatedByCreatedBy($obj1); //CHECKME
+			}
+			$results[] = $obj1;
+		}
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of LinkCategory objects pre-filled with their User objects.
+	 *
+	 * @return     array Array of LinkCategory objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinUserRelatedByUpdatedBy(Criteria $c, $con = null)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol = (LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		UserPeer::addSelectColumns($c);
+
+		$c->addJoin(LinkCategoryPeer::UPDATED_BY, UserPeer::ID);
+		$rs = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while($rs->next()) {
+
+			$omClass = LinkCategoryPeer::getOMClass();
+
+			$cls = Propel::import($omClass);
+			$obj1 = new $cls();
+			$obj1->hydrate($rs);
+
+			$omClass = UserPeer::getOMClass();
+
+			$cls = Propel::import($omClass);
+			$obj2 = new $cls();
+			$obj2->hydrate($rs, $startcol);
+
+			$newObject = true;
+			foreach($results as $temp_obj1) {
+				$temp_obj2 = $temp_obj1->getUserRelatedByUpdatedBy(); //CHECKME
+				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
+					$newObject = false;
+					// e.g. $author->addBookRelatedByBookId()
+					$temp_obj2->addLinkCategoryRelatedByUpdatedBy($obj1); //CHECKME
+					break;
+				}
+			}
+			if ($newObject) {
+				$obj2->initLinkCategorysRelatedByUpdatedBy();
+				$obj2->addLinkCategoryRelatedByUpdatedBy($obj1); //CHECKME
 			}
 			$results[] = $obj1;
 		}
@@ -414,9 +526,9 @@ abstract class BaseStringPeer {
 		// clear out anything that might confuse the ORDER BY clause
 		$criteria->clearSelectColumns()->clearOrderByColumns();
 		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->addSelectColumn(StringPeer::COUNT_DISTINCT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
 		} else {
-			$criteria->addSelectColumn(StringPeer::COUNT);
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
 		}
 
 		// just in case we're grouping: add those columns to the select statement
@@ -425,9 +537,11 @@ abstract class BaseStringPeer {
 			$criteria->addSelectColumn($column);
 		}
 
-		$criteria->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		$criteria->addJoin(LinkCategoryPeer::CREATED_BY, UserPeer::ID);
 
-		$rs = StringPeer::doSelectRS($criteria, $con);
+		$criteria->addJoin(LinkCategoryPeer::UPDATED_BY, UserPeer::ID);
+
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
 			return $rs->getInt(1);
 		} else {
@@ -438,9 +552,9 @@ abstract class BaseStringPeer {
 
 
 	/**
-	 * Selects a collection of String objects pre-filled with all related objects.
+	 * Selects a collection of LinkCategory objects pre-filled with all related objects.
 	 *
-	 * @return     array Array of String objects.
+	 * @return     array Array of LinkCategory objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -453,20 +567,25 @@ abstract class BaseStringPeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		StringPeer::addSelectColumns($c);
-		$startcol2 = (StringPeer::NUM_COLUMNS - StringPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol2 = (LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
 
-		LanguagePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + LanguagePeer::NUM_COLUMNS;
+		UserPeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + UserPeer::NUM_COLUMNS;
 
-		$c->addJoin(StringPeer::LANGUAGE_ID, LanguagePeer::ID);
+		UserPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + UserPeer::NUM_COLUMNS;
+
+		$c->addJoin(LinkCategoryPeer::CREATED_BY, UserPeer::ID);
+
+		$c->addJoin(LinkCategoryPeer::UPDATED_BY, UserPeer::ID);
 
 		$rs = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while($rs->next()) {
 
-			$omClass = StringPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -474,9 +593,9 @@ abstract class BaseStringPeer {
 			$obj1->hydrate($rs);
 
 
-				// Add objects for joined Language rows
+				// Add objects for joined User rows
 	
-			$omClass = LanguagePeer::getOMClass();
+			$omClass = UserPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -486,18 +605,196 @@ abstract class BaseStringPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj2 = $temp_obj1->getLanguage(); // CHECKME
+				$temp_obj2 = $temp_obj1->getUserRelatedByCreatedBy(); // CHECKME
 				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
 					$newObject = false;
-					$temp_obj2->addString($obj1); // CHECKME
+					$temp_obj2->addLinkCategoryRelatedByCreatedBy($obj1); // CHECKME
 					break;
 				}
 			}
 
 			if ($newObject) {
-				$obj2->initStrings();
-				$obj2->addString($obj1);
+				$obj2->initLinkCategorysRelatedByCreatedBy();
+				$obj2->addLinkCategoryRelatedByCreatedBy($obj1);
 			}
+
+
+				// Add objects for joined User rows
+	
+			$omClass = UserPeer::getOMClass();
+
+
+			$cls = Propel::import($omClass);
+			$obj3 = new $cls();
+			$obj3->hydrate($rs, $startcol3);
+
+			$newObject = true;
+			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
+				$temp_obj1 = $results[$j];
+				$temp_obj3 = $temp_obj1->getUserRelatedByUpdatedBy(); // CHECKME
+				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
+					$newObject = false;
+					$temp_obj3->addLinkCategoryRelatedByUpdatedBy($obj1); // CHECKME
+					break;
+				}
+			}
+
+			if ($newObject) {
+				$obj3->initLinkCategorysRelatedByUpdatedBy();
+				$obj3->addLinkCategoryRelatedByUpdatedBy($obj1);
+			}
+
+			$results[] = $obj1;
+		}
+		return $results;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
+	 * @param      Connection $con
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, $con = null)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// clear out anything that might confuse the ORDER BY clause
+		$criteria->clearSelectColumns()->clearOrderByColumns();
+		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
+		} else {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
+		}
+
+		// just in case we're grouping: add those columns to the select statement
+		foreach($criteria->getGroupByColumns() as $column)
+		{
+			$criteria->addSelectColumn($column);
+		}
+
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
+		if ($rs->next()) {
+			return $rs->getInt(1);
+		} else {
+			// no rows returned; we infer that means 0 matches.
+			return 0;
+		}
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
+	 * @param      Connection $con
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, $con = null)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// clear out anything that might confuse the ORDER BY clause
+		$criteria->clearSelectColumns()->clearOrderByColumns();
+		if ($distinct || in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT_DISTINCT);
+		} else {
+			$criteria->addSelectColumn(LinkCategoryPeer::COUNT);
+		}
+
+		// just in case we're grouping: add those columns to the select statement
+		foreach($criteria->getGroupByColumns() as $column)
+		{
+			$criteria->addSelectColumn($column);
+		}
+
+		$rs = LinkCategoryPeer::doSelectRS($criteria, $con);
+		if ($rs->next()) {
+			return $rs->getInt(1);
+		} else {
+			// no rows returned; we infer that means 0 matches.
+			return 0;
+		}
+	}
+
+
+	/**
+	 * Selects a collection of LinkCategory objects pre-filled with all related objects except UserRelatedByCreatedBy.
+	 *
+	 * @return     array Array of LinkCategory objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptUserRelatedByCreatedBy(Criteria $c, $con = null)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		// $c->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol2 = (LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+
+
+		$rs = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while($rs->next()) {
+
+			$omClass = LinkCategoryPeer::getOMClass();
+
+			$cls = Propel::import($omClass);
+			$obj1 = new $cls();
+			$obj1->hydrate($rs);
+
+			$results[] = $obj1;
+		}
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of LinkCategory objects pre-filled with all related objects except UserRelatedByUpdatedBy.
+	 *
+	 * @return     array Array of LinkCategory objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptUserRelatedByUpdatedBy(Criteria $c, $con = null)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		// $c->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol2 = (LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
+
+
+		$rs = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while($rs->next()) {
+
+			$omClass = LinkCategoryPeer::getOMClass();
+
+			$cls = Propel::import($omClass);
+			$obj1 = new $cls();
+			$obj1->hydrate($rs);
 
 			$results[] = $obj1;
 		}
@@ -527,13 +824,13 @@ abstract class BaseStringPeer {
 	 */
 	public static function getOMClass()
 	{
-		return StringPeer::CLASS_DEFAULT;
+		return LinkCategoryPeer::CLASS_DEFAULT;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a String or Criteria object.
+	 * Method perform an INSERT on the database, given a LinkCategory or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or String object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or LinkCategory object containing data that is used to create the INSERT statement.
 	 * @param      Connection $con the connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -548,8 +845,10 @@ abstract class BaseStringPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from String object
+			$criteria = $values->buildCriteria(); // build Criteria from LinkCategory object
 		}
+
+		$criteria->remove(LinkCategoryPeer::ID); // remove pkey col since this table uses auto-increment
 
 
 		// Set the correct dbName
@@ -570,9 +869,9 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a String or Criteria object.
+	 * Method perform an UPDATE on the database, given a LinkCategory or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or String object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or LinkCategory object containing data that is used to create the UPDATE statement.
 	 * @param      Connection $con The connection to use (specify Connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -589,13 +888,10 @@ abstract class BaseStringPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(StringPeer::LANGUAGE_ID);
-			$selectCriteria->add(StringPeer::LANGUAGE_ID, $criteria->remove(StringPeer::LANGUAGE_ID), $comparison);
+			$comparison = $criteria->getComparison(LinkCategoryPeer::ID);
+			$selectCriteria->add(LinkCategoryPeer::ID, $criteria->remove(LinkCategoryPeer::ID), $comparison);
 
-			$comparison = $criteria->getComparison(StringPeer::STRING_KEY);
-			$selectCriteria->add(StringPeer::STRING_KEY, $criteria->remove(StringPeer::STRING_KEY), $comparison);
-
-		} else { // $values is String object
+		} else { // $values is LinkCategory object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -607,7 +903,7 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the strings table.
+	 * Method to DELETE all rows from the link_categories table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
@@ -621,7 +917,7 @@ abstract class BaseStringPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->begin();
-			$affectedRows += BasePeer::doDeleteAll(StringPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(LinkCategoryPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -631,9 +927,9 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a String or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a LinkCategory or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or String object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or LinkCategory object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      Connection $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -644,35 +940,18 @@ abstract class BaseStringPeer {
 	 public static function doDelete($values, $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(StringPeer::DATABASE_NAME);
+			$con = Propel::getConnection(LinkCategoryPeer::DATABASE_NAME);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
-		} elseif ($values instanceof String) {
+		} elseif ($values instanceof LinkCategory) {
 
 			$criteria = $values->buildPkeyCriteria();
 		} else {
 			// it must be the primary key
 			$criteria = new Criteria(self::DATABASE_NAME);
-			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
-			if(count($values) == count($values, COUNT_RECURSIVE))
-			{
-				// array is not multi-dimensional
-				$values = array($values);
-			}
-			$vals = array();
-			foreach($values as $value)
-			{
-
-				$vals[0][] = $value[0];
-				$vals[1][] = $value[1];
-			}
-
-			$criteria->add(StringPeer::LANGUAGE_ID, $vals[0], Criteria::IN);
-			$criteria->add(StringPeer::STRING_KEY, $vals[1], Criteria::IN);
+			$criteria->add(LinkCategoryPeer::ID, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -695,24 +974,24 @@ abstract class BaseStringPeer {
 	}
 
 	/**
-	 * Validates all modified columns of given String object.
+	 * Validates all modified columns of given LinkCategory object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      String $obj The object to validate.
+	 * @param      LinkCategory $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(String $obj, $cols = null)
+	public static function doValidate(LinkCategory $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(StringPeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(StringPeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(LinkCategoryPeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(LinkCategoryPeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -728,42 +1007,71 @@ abstract class BaseStringPeer {
 
 		}
 
-		return BasePeer::doValidate(StringPeer::DATABASE_NAME, StringPeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(LinkCategoryPeer::DATABASE_NAME, LinkCategoryPeer::TABLE_NAME, $columns);
 	}
 
 	/**
-	 * Retrieve object using using composite pkey values.
-	 * @param string $language_id
-	   @param string $string_key
-	   
-	 * @param      Connection $con
-	 * @return     String
+	 * Retrieve a single object by pkey.
+	 *
+	 * @param      mixed $pk the primary key.
+	 * @param      Connection $con the connection to use
+	 * @return     LinkCategory
 	 */
-	public static function retrieveByPK( $language_id, $string_key, $con = null) {
+	public static function retrieveByPK($pk, $con = null)
+	{
 		if ($con === null) {
 			$con = Propel::getConnection(self::DATABASE_NAME);
 		}
-		$criteria = new Criteria();
-		$criteria->add(StringPeer::LANGUAGE_ID, $language_id);
-		$criteria->add(StringPeer::STRING_KEY, $string_key);
-		$v = StringPeer::doSelect($criteria, $con);
 
-		return !empty($v) ? $v[0] : null;
+		$criteria = new Criteria(LinkCategoryPeer::DATABASE_NAME);
+
+		$criteria->add(LinkCategoryPeer::ID, $pk);
+
+
+		$v = LinkCategoryPeer::doSelect($criteria, $con);
+
+		return !empty($v) > 0 ? $v[0] : null;
 	}
-} // BaseStringPeer
+
+	/**
+	 * Retrieve multiple objects by pkey.
+	 *
+	 * @param      array $pks List of primary keys
+	 * @param      Connection $con the connection to use
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function retrieveByPKs($pks, $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(self::DATABASE_NAME);
+		}
+
+		$objs = null;
+		if (empty($pks)) {
+			$objs = array();
+		} else {
+			$criteria = new Criteria();
+			$criteria->add(LinkCategoryPeer::ID, $pks, Criteria::IN);
+			$objs = LinkCategoryPeer::doSelect($criteria, $con);
+		}
+		return $objs;
+	}
+
+} // BaseLinkCategoryPeer
 
 // static code to register the map builder for this Peer with the main Propel class
 if (Propel::isInit()) {
 	// the MapBuilder classes register themselves with Propel during initialization
 	// so we need to load them here.
 	try {
-		BaseStringPeer::getMapBuilder();
+		BaseLinkCategoryPeer::getMapBuilder();
 	} catch (Exception $e) {
 		Propel::log('Could not initialize Peer: ' . $e->getMessage(), Propel::LOG_ERR);
 	}
 } else {
 	// even if Propel is not yet initialized, the map builder class can be registered
 	// now and then it will be loaded when Propel initializes.
-	require_once 'model/map/StringMapBuilder.php';
-	Propel::registerMapBuilder('model.map.StringMapBuilder');
+	require_once 'model/map/LinkCategoryMapBuilder.php';
+	Propel::registerMapBuilder('model.map.LinkCategoryMapBuilder');
 }
