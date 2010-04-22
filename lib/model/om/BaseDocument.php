@@ -1058,7 +1058,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if (!$this->isColumnModified(DocumentPeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -1075,7 +1075,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if ($this->isModified() && !$this->isColumnModified(DocumentPeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}

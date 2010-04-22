@@ -2,6 +2,7 @@
 
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ErrorHandler.php");
 
 class Autoloader {
 	const CACHE_KEY = 'AUTOLOAD_CLASS_MAPPING';
@@ -58,10 +59,18 @@ class Autoloader {
 		if($sPath) {
 			return $sPath;
 		}
+		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
+		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
+			return $sPath;
+		}
 	
 		//Model classes
 		$sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName));
 		if($sPath) {
+			return $sPath;
+		}
+		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName));
+		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
 	

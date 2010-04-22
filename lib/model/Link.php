@@ -7,7 +7,7 @@ require_once 'model/om/BaseLink.php';
  */ 
 class Link extends BaseLink {
 	
-	public function delete($con = null) {
+	public function delete(PropelPDO $con = null) {
 		if(ReferencePeer::hasReference($this)) {
 			throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 		}

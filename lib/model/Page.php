@@ -366,10 +366,6 @@ class Page extends BasePage {
     return $iResult;
   }
 
-  public function getTimestamp() {
-    return $this->updated_at;
-  }
-
   public function getLongTitle($sLanguageId=null) {
     throw new Exception("Warning: used deprecated method Page->getLongTitle()");
   }
@@ -552,7 +548,7 @@ class Page extends BasePage {
     return $aResults;
   }
 
-  public function delete($con = null) {
+  public function delete(PropelPDO $con = null) {
     if($this->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
       throw new Exception('Pages with children are not allowed to be deleted', self::DELETE_NOT_ALLOWED_CODE);
     } else {
@@ -572,20 +568,5 @@ class Page extends BasePage {
       }
     }
     $this->delete();
-  }
-
-  public function save($oConnection = null) {
-    if(Session::getSession()->isAuthenticated()) {
-      $this->setUpdatedBy(Session::getSession()->getUserId());
-    }
-    $this->setUpdatedAt(date('c'));
-
-    if($this->isNew()) {
-      if(Session::getSession()->isAuthenticated()) {
-        $this->setCreatedBy(Session::getSession()->getUserId());
-      }
-      $this->setCreatedAt(date('c'));
-    }
-    return parent::save($oConnection);
   }
 }

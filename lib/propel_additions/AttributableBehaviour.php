@@ -19,21 +19,13 @@ class AttributableBehaviour extends Behavior
 	 */
 	public function modifyTable()
 	{
-		$oUsersTable = $this->getDatabase()->getTable('users');
-		$oUsersId = $oUsersTable->getColumn('id');
 		
 		if(!$this->getTable()->containsColumn($this->getParameter('create_column'))) {
 			$oCreateColumn = $this->getTable()->addColumn(array(
 				'name' => $this->getParameter('create_column'),
 				'type' => 'integer'
 			));
-		
-			$oFk = new ForeignKey();
-			$oFk->setForeignTableName($oUsersTable->getName());
-			$oFk->setOnDelete(ForeignKey::SETNULL);
-			$oFk->setOnUpdate(null);
-			$oFk->addReference($oCreateColumn, $oUsersId);
-			$this->getTable()->addForeignKey($oFk);
+			$this->addRelation($oCreateColumn);
 		}
 		
 		if(!$this->getTable()->containsColumn($this->getParameter('update_column'))) {
@@ -41,13 +33,21 @@ class AttributableBehaviour extends Behavior
 				'name' => $this->getParameter('update_column'),
 				'type' => 'integer'
 			));
-		
-			$oFk = new ForeignKey();
-			$oFk->setForeignTableName($oUsersTable->getName());
+			$this->addRelation($oUpdateColumn);
+		}
+	}
+	
+	private function addRelation($oLocalColumn) {
+		$oUsersTable = $this->getDatabase()->getTable('users');
+		$oUsersId = $oUsersTable->getColumn('id');
+		$oFk = new ForeignKey();
+		$oFk->setTable($this->getTable());
+		$oFk->setForeignTableName($oUsersTable->getName());
+		if(!$oFk->isMatchedByInverseFK() && $oUsersTable !== $this->getTable()) {
 			$oFk->setOnDelete(ForeignKey::SETNULL);
 			$oFk->setOnUpdate(null);
-			$oFk->addReference($oUpdateColumn, $oUsersId);
-			$this->getTable()->addForeignKey($oFk);
+			$oFk->addReference($oLocalColumn, $oUsersId);
+			$this->getTable()->addForeignKey($oFk);				
 		}
 	}
 	
@@ -70,7 +70,7 @@ class AttributableBehaviour extends Behavior
 	public function preUpdate()
 	{
 		return "
-if(Session::getSession()->isAuthenticated) {
+if(Session::getSession()->isAuthenticated()) {
 	if (\$this->isModified() && !\$this->isColumnModified(" . $this->getColumnForParameter('update_column')->getConstantName() . ")) {
 		\$this->" . $this->getColumnSetter('update_column') . "(Session::getSession()->getUser()->getId());
 	}
@@ -85,7 +85,7 @@ if(Session::getSession()->isAuthenticated) {
 	public function preInsert()
 	{
 		return "
-if(Session::getSession()->isAuthenticated) {
+if(Session::getSession()->isAuthenticated()) {
 	if (!\$this->isColumnModified(" . $this->getColumnForParameter('create_column')->getConstantName() . ")) {
 		\$this->" . $this->getColumnSetter('create_column') . "(Session::getSession()->getUser()->getId());
 	}
@@ -110,13 +110,5 @@ public function keepUpdateUserUnchanged()
 	return \$this;
 }
 ";
-	}
-	
-	public function queryMethods($builder)
-	{
-		$queryClassName = $builder->getStubQueryBuilder()->getClassname();
-		$updateColumnConstant = $this->getColumnForParameter('update_column')->getConstantName();
-		$createColumnConstant = $this->getColumnForParameter('create_column')->getConstantName();
-		return "";
 	}
 }

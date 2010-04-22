@@ -3,7 +3,7 @@
  * @package utils
  */
 class BuildHelper {
-	const CLASSNAME_PATTERN = "/phpName=\"(\w+)\"/";
+	const CLASSNAME_PATTERN = "/<table[^>]*phpName=\"(\w+)\"/";
 	
 	public static $PEER_SUFFIX = "Peer";
 	public static $MAP_SUFFIX;
@@ -33,7 +33,7 @@ class BuildHelper {
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- {{comment}} -->
 <database name="mini_cms" defaultIdMethod="native">
-	<behavior name="timestampable" />
+	<behavior name="extended_timestampable" />
 	<behavior name="attributable" />
 	{{schema_content}}
 </database>

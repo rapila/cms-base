@@ -1,5 +1,5 @@
 <?php
-require_once('propel/util/Criteria.php');
+require_once('propel/query/Criteria.php');
 /**
  * class Session
  */

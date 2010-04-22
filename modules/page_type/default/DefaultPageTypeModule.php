@@ -304,7 +304,7 @@ class DefaultPageTypeModule extends PageTypeModule {
       $oTemplate->replaceIdentifier("action", $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getContainerName())));
     } else {
       $oTemplate->replaceIdentifier("action", $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getId())));
-      $oTemplate->replaceIdentifier('timestamp', $oLanguageObject->getTimestamp());
+      $oTemplate->replaceIdentifier('timestamp', $oLanguageObject->getUpdatedAtTimestamp());
       if($oModule->getModuleName() === 'text') {
         $oHistoryTempl = $this->constructTemplate('language_revision');
         if($this->bBackupOverride) {
@@ -392,7 +392,7 @@ class DefaultPageTypeModule extends PageTypeModule {
     unset($_POST['timestamp']);
     
     //Look at the timestamp
-    if(!$oLanguageObject->isNew() && $iTimestamp !== $oLanguageObject->getTimestamp()) {
+    if(!$oLanguageObject->isNew() && $iTimestamp !== $oLanguageObject->getUpdatedAtTimestamp()) {
       $oFlash = Flash::getFlash();
       $oFlash->unfinishReporting();
       $oFlash->addMessage('page_content_changed_since');

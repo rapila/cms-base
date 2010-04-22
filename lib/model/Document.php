@@ -32,7 +32,7 @@ class Document extends BaseDocument {
 		return $this->getName().'.'.$this->getExtension();
 	}
 	
-	public function delete($con = null) {
+	public function delete(PropelPDO $con = null) {
 		if(ReferencePeer::hasReference($this)) {
 			throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 		}
@@ -56,19 +56,14 @@ class Document extends BaseDocument {
 		return null;
 	}
 	
-	public function getDataSize($oConnection = null) {
-		if($this->iDataSize !== null) {
-			return $this->iDataSize;
+	public function getDataSize(PropelPDO $oConnection = null) {
+		if($this->iDataSize === null) {
+			$oCriteria = $this->buildPkeyCriteria();
+			$oCriteria->addSelectColumn('OCTET_LENGTH(data)');
+			$rs = DocumentPeer::doSelectStmt($oCriteria, $oConnection);
+			$this->iDataSize = (int)$rs->fetchColumn(0);
 		}
-		$oCriteria = $this->buildPkeyCriteria();
-		$oCriteria->addSelectColumn('OCTET_LENGTH(data)');
-		try {
-			$rs = DocumentPeer::doSelectRS($oCriteria, $oConnection);
-			$rs->next();
-			return $this->iDataSize = $rs->getInt(1);
-		} catch (Exception $e) {
-			throw new PropelException("Error loading value for [size] column on demand.", $e);
-		}
+		return $this->iDataSize;
 	}
 
 	public function getFileInfo($sFilesizeFormat = 'auto_iso') {
@@ -84,22 +79,7 @@ class Document extends BaseDocument {
 		return $this->getDisplayUrl(array(), 'display_document');
 	}
 	
-	public function save($oConnection = null) {
-		if(Session::getSession()->isAuthenticated()) {
-			$this->setUpdatedBy(Session::getSession()->getUserId());
-		}
-		$this->setUpdatedAt(date('c'));
-
-		if($this->isNew()) {
-			if(Session::getSession()->isAuthenticated()) {
-				$this->setCreatedBy(Session::getSession()->getUserId());
-			}
-			$this->setCreatedAt(date('c'));
-		}
-		return parent::save($oConnection);
-	}
-	
-	public function getDocumentCategory($con=null) {
+	public function getDocumentCategory(PropelPDO $con = null) {
 		if(!isset(self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()])) {
 			self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()] = parent::getDocumentCategory($con);
 		}

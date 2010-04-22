@@ -15,7 +15,7 @@ class LanguageObject extends BaseLanguageObject {
     return $this->getObjectId().'_'.$this->getLanguageId();
   }
   
-  public function delete($con = null) {
+  public function delete(PropelPDO $con = null) {
     if(ReferencePeer::hasReference($this)) {
       throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
     }
@@ -24,19 +24,7 @@ class LanguageObject extends BaseLanguageObject {
     return parent::delete($con);
   }
   
-  public function save($oConnection = null) {
-    if(Session::getSession()->isAuthenticated()) {
-      $this->setUpdatedBy(Session::getSession()->getUserId());
-    }
-    $this->setUpdatedAt(date('c'));
-    
-    if($this->isNew()) {
-      if(Session::getSession()->isAuthenticated()) {
-        $this->setCreatedBy(Session::getSession()->getUserId());
-      }
-      $this->setCreatedAt(date('c'));
-    }
-    
+  public function save(PropelPDO $oConnection = null) {
     $this->getContentObject()->getPage()->save();
     return parent::save($oConnection);
   }
@@ -49,9 +37,5 @@ class LanguageObject extends BaseLanguageObject {
     if($oLanguageObjectHistory !== null) {
       $this->setData($oLanguageObjectHistory->getData());
     }
-  }
-  
-  public function getTimestamp() {
-    return (int)$this->getUpdatedAt('U');
   }
 } // LanguageObject

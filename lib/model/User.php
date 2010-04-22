@@ -152,17 +152,6 @@ class User extends BaseUser {
 		}
 		return false;
 	}
-
-	public function save($oConnection=null) {
-    $this->setUpdatedAt(date('c'));
-    if($this->isNew()) {
-      if(Session::getSession()->isAuthenticated()) {
-        $this->setCreatedBy(Session::getSession()->getUserId());
-      }
-      $this->setCreatedAt(date('c'));
-    }
-		parent::save($oConnection);
-	}
 	
 }
 

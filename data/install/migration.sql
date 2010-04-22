@@ -113,3 +113,82 @@ UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id
 
 #svn r2079
 ALTER TABLE `users` ADD `backend_settings` TEXT NULL DEFAULT NULL AFTER `password_recover_hint`;
+
+#svn r2335
+ALTER TABLE `documents` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `documents` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `document_categories` ADD `created_at` DATETIME;
+ALTER TABLE `document_categories` ADD `updated_at` DATETIME;
+ALTER TABLE `document_categories` ADD `created_by` INTEGER;
+ALTER TABLE `document_categories` ADD `updated_by` INTEGER;
+
+ALTER TABLE `document_types` ADD `created_at` DATETIME;
+ALTER TABLE `document_types` ADD `updated_at` DATETIME;
+ALTER TABLE `document_types` ADD `created_by` INTEGER;
+ALTER TABLE `document_types` ADD `updated_by` INTEGER;
+
+ALTER TABLE `groups` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `groups` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `indirect_references` ADD `created_at` DATETIME;
+ALTER TABLE `indirect_references` ADD `updated_at` DATETIME;
+ALTER TABLE `indirect_references` ADD `created_by` INTEGER;
+ALTER TABLE `indirect_references` ADD `updated_by` INTEGER;
+
+ALTER TABLE `languages` ADD `created_at` DATETIME;
+ALTER TABLE `languages` ADD `updated_at` DATETIME;
+ALTER TABLE `languages` ADD `created_by` INTEGER;
+ALTER TABLE `languages` ADD `updated_by` INTEGER;
+
+ALTER TABLE `language_objects` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `language_objects` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `language_object_history` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `language_object_history` ADD `updated_at` DATETIME;
+ALTER TABLE `language_object_history` ADD `updated_by` INTEGER;
+
+ALTER TABLE `links` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `links` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `objects` ADD `created_at` DATETIME;
+ALTER TABLE `objects` ADD `updated_at` DATETIME;
+ALTER TABLE `objects` ADD `created_by` INTEGER;
+ALTER TABLE `objects` ADD `updated_by` INTEGER;
+
+ALTER TABLE `pages` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `pages` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `page_properties` ADD `created_at` DATETIME;
+ALTER TABLE `page_properties` ADD `updated_at` DATETIME;
+ALTER TABLE `page_properties` ADD `created_by` INTEGER;
+ALTER TABLE `page_properties` ADD `updated_by` INTEGER;
+
+ALTER TABLE `page_strings` ADD `created_at` DATETIME;
+ALTER TABLE `page_strings` ADD `updated_at` DATETIME;
+ALTER TABLE `page_strings` ADD `created_by` INTEGER;
+ALTER TABLE `page_strings` ADD `updated_by` INTEGER;
+
+ALTER TABLE `rights` ADD `created_at` DATETIME;
+ALTER TABLE `rights` ADD `updated_at` DATETIME;
+ALTER TABLE `rights` ADD `created_by` INTEGER;
+ALTER TABLE `rights` ADD `updated_by` INTEGER;
+
+ALTER TABLE `strings` ADD `created_at` DATETIME;
+ALTER TABLE `strings` ADD `updated_at` DATETIME;
+ALTER TABLE `strings` ADD `created_by` INTEGER;
+ALTER TABLE `strings` ADD `updated_by` INTEGER;
+
+ALTER TABLE `tags` ADD `created_at` DATETIME;
+ALTER TABLE `tags` ADD `updated_at` DATETIME;
+ALTER TABLE `tags` ADD `created_by` INTEGER;
+ALTER TABLE `tags` ADD `updated_by` INTEGER;
+
+ALTER TABLE `tag_instances` ADD `created_at` DATETIME;
+ALTER TABLE `tag_instances` ADD `updated_at` DATETIME;
+ALTER TABLE `tag_instances` ADD `updated_by` INTEGER;
+
+ALTER TABLE `users_groups` ADD `created_at` DATETIME;
+ALTER TABLE `users_groups` ADD `updated_at` DATETIME;
+ALTER TABLE `users_groups` ADD `created_by` INTEGER;
+ALTER TABLE `users_groups` ADD `updated_by` INTEGER;

@@ -77,7 +77,7 @@ class PagePeer extends BasePagePeer {
 		$oCriteria->addDescendingOrderByColumn(self::UPDATED_AT);
 		$oPage = self::doSelectOne($oCriteria);
 		if($oPage) {
-			return $oPage->getTimestamp();
+			return $oPage->getUpdatedAtTimestamp();
 		}
 		return 0;
 	}

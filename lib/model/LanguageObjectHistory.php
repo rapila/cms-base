@@ -20,17 +20,5 @@ class LanguageObjectHistory extends BaseLanguageObjectHistory {
     return 1;
   }
   
-  public function save($oConnection = null) {
-    if($this->isNew()) {
-      if(Session::getSession()->isAuthenticated()) {
-        $this->setCreatedBy(Session::getSession()->getUserId());
-      }
-      $this->setCreatedAt(date('c'));
-      $this->setRevision($this->getNextRevision());
-    }
-    
-    return parent::save($oConnection);
-  }
-
 }
 

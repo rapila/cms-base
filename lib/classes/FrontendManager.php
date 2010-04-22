@@ -151,7 +151,7 @@ class FrontendManager extends Manager {
       $bIsOutdated = false;
     
       if($bIsCached) {
-        $bIsOutdated = $oCache->isOlderThan(self::getCurrentPage()->getTimestamp());
+        $bIsOutdated = $oCache->isOlderThan(self::getCurrentPage()->getUpdatedAtTimestamp());
       }
       if($bIsCached && !$bIsOutdated) {
         return print $oCache->getContentsAsString();
