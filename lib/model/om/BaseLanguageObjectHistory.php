@@ -680,7 +680,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if (!$this->isColumnModified(LanguageObjectHistoryPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
@@ -689,7 +689,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if (!$this->isColumnModified(LanguageObjectHistoryPeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -700,13 +700,13 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(LanguageObjectHistoryPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if ($this->isModified() && !$this->isColumnModified(LanguageObjectHistoryPeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -1469,7 +1469,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Mark the current object so that the update date doesn't get updated during next save
@@ -1480,6 +1480,22 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	{
 		$this->modifiedColumns[] = LanguageObjectHistoryPeer::UPDATED_AT;
 		return $this;
+	}
+	
+	/**
+	 * @return created_at as int (timestamp)
+	 */
+	public function getCreatedAtTimestamp()
+	{
+		return $this->created_at;
+	}
+	
+	/**
+	 * @return updated_at as int (timestamp)
+	 */
+	public function getUpdatedAtTimestamp()
+	{
+		return $this->updated_at;
 	}
 
 	// attributable behavior

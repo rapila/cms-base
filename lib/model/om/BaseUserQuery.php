@@ -48,14 +48,6 @@
  * @method     UserQuery rightJoinLanguage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Language relation
  * @method     UserQuery innerJoinLanguage($relationAlias = '') Adds a INNER JOIN clause to the query using the Language relation
  *
- * @method     UserQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
- *
- * @method     UserQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
- *
  * @method     UserQuery leftJoinPageRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageRelatedByCreatedBy relation
  * @method     UserQuery rightJoinPageRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageRelatedByCreatedBy relation
  * @method     UserQuery innerJoinPageRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PageRelatedByCreatedBy relation
@@ -119,14 +111,6 @@
  * @method     UserQuery leftJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the StringRelatedByUpdatedBy relation
  * @method     UserQuery rightJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the StringRelatedByUpdatedBy relation
  * @method     UserQuery innerJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the StringRelatedByUpdatedBy relation
- *
- * @method     UserQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
- *
- * @method     UserQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     UserQuery leftJoinGroupRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRelatedByCreatedBy relation
  * @method     UserQuery rightJoinGroupRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRelatedByCreatedBy relation
@@ -812,128 +796,6 @@ abstract class BaseUserQuery extends ModelCriteria
 		return $this
 			->joinLanguage($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'Language', 'LanguageQuery');
-	}
-
-	/**
-	 * Filter the query by a related User object
-	 *
-	 * @param     User $user  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(UserPeer::CREATED_BY, $user->getId(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the UserRelatedByCreatedBy relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'UserRelatedByCreatedBy');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the UserRelatedByCreatedBy relation User object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery A secondary query class using the current class as primary query
-	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByCreatedBy', 'UserQuery');
-	}
-
-	/**
-	 * Filter the query by a related User object
-	 *
-	 * @param     User $user  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(UserPeer::UPDATED_BY, $user->getId(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the UserRelatedByUpdatedBy relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'UserRelatedByUpdatedBy');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the UserRelatedByUpdatedBy relation User object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery A secondary query class using the current class as primary query
-	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByUpdatedBy', 'UserQuery');
 	}
 
 	/**
@@ -1910,128 +1772,6 @@ abstract class BaseUserQuery extends ModelCriteria
 		return $this
 			->joinStringRelatedByUpdatedBy($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'StringRelatedByUpdatedBy', 'StringQuery');
-	}
-
-	/**
-	 * Filter the query by a related User object
-	 *
-	 * @param     User $user  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(UserPeer::ID, $user->getCreatedBy(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the UserRelatedByCreatedBy relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'UserRelatedByCreatedBy');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the UserRelatedByCreatedBy relation User object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery A secondary query class using the current class as primary query
-	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByCreatedBy', 'UserQuery');
-	}
-
-	/**
-	 * Filter the query by a related User object
-	 *
-	 * @param     User $user  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(UserPeer::ID, $user->getUpdatedBy(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the UserRelatedByUpdatedBy relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery The current query, for fluid interface
-	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'UserRelatedByUpdatedBy');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the UserRelatedByUpdatedBy relation User object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UserQuery A secondary query class using the current class as primary query
-	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByUpdatedBy', 'UserQuery');
 	}
 
 	/**
@@ -3606,7 +3346,7 @@ abstract class BaseUserQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -3672,6 +3412,4 @@ abstract class BaseUserQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(UserPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseUserQuery

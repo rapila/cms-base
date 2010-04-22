@@ -617,7 +617,7 @@ abstract class BaseGroupQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -683,6 +683,4 @@ abstract class BaseGroupQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(GroupPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseGroupQuery

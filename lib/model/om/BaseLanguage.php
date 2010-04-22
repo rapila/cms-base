@@ -657,7 +657,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if (!$this->isColumnModified(LanguagePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
@@ -666,7 +666,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if (!$this->isColumnModified(LanguagePeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -677,13 +677,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(LanguagePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if ($this->isModified() && !$this->isColumnModified(LanguagePeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -2178,46 +2178,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		}
 	}
 
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language is new, it will return
-	 * an empty collection; or if this Language has previously
-	 * been saved, it will retrieve related Users from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Language.
-	 */
-	public function getUsersJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserQuery::create(null, $criteria);
-		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
-
-		return $this->getUsers($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Language is new, it will return
-	 * an empty collection; or if this Language has previously
-	 * been saved, it will retrieve related Users from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Language.
-	 */
-	public function getUsersJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserQuery::create(null, $criteria);
-		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
-
-		return $this->getUsers($query, $con);
-	}
-
 	/**
 	 * Clears out the collDocuments collection
 	 *
@@ -2695,7 +2655,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Mark the current object so that the update date doesn't get updated during next save
@@ -2706,6 +2666,22 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = LanguagePeer::UPDATED_AT;
 		return $this;
+	}
+	
+	/**
+	 * @return created_at as int (timestamp)
+	 */
+	public function getCreatedAtTimestamp()
+	{
+		return $this->created_at;
+	}
+	
+	/**
+	 * @return updated_at as int (timestamp)
+	 */
+	public function getUpdatedAtTimestamp()
+	{
+		return $this->updated_at;
 	}
 
 	// attributable behavior

@@ -601,7 +601,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -667,6 +667,4 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(DocumentTypePeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseDocumentTypeQuery

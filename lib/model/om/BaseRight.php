@@ -912,7 +912,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if (!$this->isColumnModified(RightPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
@@ -921,7 +921,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if (!$this->isColumnModified(RightPeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -932,13 +932,13 @@ abstract class BaseRight extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(RightPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if ($this->isModified() && !$this->isColumnModified(RightPeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -1750,7 +1750,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Mark the current object so that the update date doesn't get updated during next save
@@ -1761,6 +1761,22 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = RightPeer::UPDATED_AT;
 		return $this;
+	}
+	
+	/**
+	 * @return created_at as int (timestamp)
+	 */
+	public function getCreatedAtTimestamp()
+	{
+		return $this->created_at;
+	}
+	
+	/**
+	 * @return updated_at as int (timestamp)
+	 */
+	public function getUpdatedAtTimestamp()
+	{
+		return $this->updated_at;
 	}
 
 	// attributable behavior

@@ -670,7 +670,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -736,6 +736,4 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(LanguageObjectHistoryPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseLanguageObjectHistoryQuery

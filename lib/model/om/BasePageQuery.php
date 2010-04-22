@@ -1087,7 +1087,7 @@ abstract class BasePageQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -1153,6 +1153,4 @@ abstract class BasePageQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(PagePeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BasePageQuery

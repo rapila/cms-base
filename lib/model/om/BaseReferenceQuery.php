@@ -571,7 +571,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -637,6 +637,4 @@ abstract class BaseReferenceQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(ReferencePeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseReferenceQuery

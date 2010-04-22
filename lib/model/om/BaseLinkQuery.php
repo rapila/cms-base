@@ -878,7 +878,7 @@ abstract class BaseLinkQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -944,6 +944,4 @@ abstract class BaseLinkQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(LinkPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseLinkQuery

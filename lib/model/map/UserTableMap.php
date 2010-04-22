@@ -50,8 +50,8 @@ class UserTableMap extends TableMap {
 		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-		$this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-		$this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+		$this->addColumn('CREATED_BY', 'CreatedBy', 'INTEGER', false, null, null);
+		$this->addColumn('UPDATED_BY', 'UpdatedBy', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
 
@@ -61,8 +61,6 @@ class UserTableMap extends TableMap {
 	public function buildRelations()
 	{
     $this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
     $this->addRelation('PageRelatedByCreatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
     $this->addRelation('PageRelatedByUpdatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
     $this->addRelation('PagePropertyRelatedByCreatedBy', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
@@ -79,8 +77,6 @@ class UserTableMap extends TableMap {
     $this->addRelation('LanguageRelatedByUpdatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
     $this->addRelation('StringRelatedByCreatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
     $this->addRelation('StringRelatedByUpdatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
     $this->addRelation('GroupRelatedByCreatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
     $this->addRelation('GroupRelatedByUpdatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
     $this->addRelation('UserGroupRelatedByUserId', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), 'CASCADE', null);
@@ -117,7 +113,7 @@ class UserTableMap extends TableMap {
 	public function getBehaviors()
 	{
 		return array(
-			'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
 	} // getBehaviors()

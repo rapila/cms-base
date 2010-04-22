@@ -71,7 +71,7 @@ class LanguageTableMap extends TableMap {
 	public function getBehaviors()
 	{
 		return array(
-			'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
 	} // getBehaviors()

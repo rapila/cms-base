@@ -322,17 +322,7 @@ CREATE TABLE `users`
 	INDEX `users_FI_1` (`language_id`),
 	CONSTRAINT `users_FK_1`
 		FOREIGN KEY (`language_id`)
-		REFERENCES `languages` (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
-		FOREIGN KEY (`created_by`)
-		REFERENCES `users` (`id`)
-		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
-		FOREIGN KEY (`updated_by`)
-		REFERENCES `users` (`id`)
-		ON DELETE SET NULL
+		REFERENCES `languages` (`id`)
 )Type=MyISAM;
 
 #-----------------------------------------------------------------------------

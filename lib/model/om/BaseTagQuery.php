@@ -552,7 +552,7 @@ abstract class BaseTagQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -618,6 +618,4 @@ abstract class BaseTagQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(TagPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseTagQuery

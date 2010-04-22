@@ -785,7 +785,7 @@ abstract class BaseRightQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Filter by the latest updated
@@ -851,6 +851,4 @@ abstract class BaseRightQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(RightPeer::CREATED_AT);
 	}
 
-	// attributable behavior
-	
 } // BaseRightQuery

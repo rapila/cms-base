@@ -128,16 +128,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected $aLanguage;
 
 	/**
-	 * @var        User
-	 */
-	protected $aUserRelatedByCreatedBy;
-
-	/**
-	 * @var        User
-	 */
-	protected $aUserRelatedByUpdatedBy;
-
-	/**
 	 * @var        array Page[] Collection to store aggregation of Page objects.
 	 */
 	protected $collPagesRelatedByCreatedBy;
@@ -216,16 +206,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @var        array String[] Collection to store aggregation of String objects.
 	 */
 	protected $collStringsRelatedByUpdatedBy;
-
-	/**
-	 * @var        array User[] Collection to store aggregation of User objects.
-	 */
-	protected $collUsersRelatedByCreatedBy;
-
-	/**
-	 * @var        array User[] Collection to store aggregation of User objects.
-	 */
-	protected $collUsersRelatedByUpdatedBy;
 
 	/**
 	 * @var        array Group[] Collection to store aggregation of Group objects.
@@ -964,10 +944,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = UserPeer::CREATED_BY;
 		}
 
-		if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
-			$this->aUserRelatedByCreatedBy = null;
-		}
-
 		return $this;
 	} // setCreatedBy()
 
@@ -986,10 +962,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($this->updated_by !== $v) {
 			$this->updated_by = $v;
 			$this->modifiedColumns[] = UserPeer::UPDATED_BY;
-		}
-
-		if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
-			$this->aUserRelatedByUpdatedBy = null;
 		}
 
 		return $this;
@@ -1089,12 +1061,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($this->aLanguage !== null && $this->language_id !== $this->aLanguage->getId()) {
 			$this->aLanguage = null;
 		}
-		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
-			$this->aUserRelatedByCreatedBy = null;
-		}
-		if ($this->aUserRelatedByUpdatedBy !== null && $this->updated_by !== $this->aUserRelatedByUpdatedBy->getId()) {
-			$this->aUserRelatedByUpdatedBy = null;
-		}
 	} // ensureConsistency
 
 	/**
@@ -1135,8 +1101,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->aLanguage = null;
-			$this->aUserRelatedByCreatedBy = null;
-			$this->aUserRelatedByUpdatedBy = null;
 			$this->collPagesRelatedByCreatedBy = null;
 
 			$this->collPagesRelatedByUpdatedBy = null;
@@ -1168,10 +1132,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collStringsRelatedByCreatedBy = null;
 
 			$this->collStringsRelatedByUpdatedBy = null;
-
-			$this->collUsersRelatedByCreatedBy = null;
-
-			$this->collUsersRelatedByUpdatedBy = null;
 
 			$this->collGroupsRelatedByCreatedBy = null;
 
@@ -1293,7 +1253,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if (!$this->isColumnModified(UserPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
@@ -1302,7 +1262,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if (!$this->isColumnModified(UserPeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -1313,13 +1273,13 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// timestampable behavior
+				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(UserPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
-				if(Session::getSession()->isAuthenticated) {
+				if(Session::getSession()->isAuthenticated()) {
 					if ($this->isModified() && !$this->isColumnModified(UserPeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
@@ -1372,20 +1332,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					$affectedRows += $this->aLanguage->save($con);
 				}
 				$this->setLanguage($this->aLanguage);
-			}
-
-			if ($this->aUserRelatedByCreatedBy !== null) {
-				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
-					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
-				}
-				$this->setUserRelatedByCreatedBy($this->aUserRelatedByCreatedBy);
-			}
-
-			if ($this->aUserRelatedByUpdatedBy !== null) {
-				if ($this->aUserRelatedByUpdatedBy->isModified() || $this->aUserRelatedByUpdatedBy->isNew()) {
-					$affectedRows += $this->aUserRelatedByUpdatedBy->save($con);
-				}
-				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
 			if ($this->isNew() ) {
@@ -1533,22 +1479,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			if ($this->collStringsRelatedByUpdatedBy !== null) {
 				foreach ($this->collStringsRelatedByUpdatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collUsersRelatedByCreatedBy !== null) {
-				foreach ($this->collUsersRelatedByCreatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collUsersRelatedByUpdatedBy !== null) {
-				foreach ($this->collUsersRelatedByUpdatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1832,18 +1762,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->aUserRelatedByCreatedBy !== null) {
-				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
-				}
-			}
-
-			if ($this->aUserRelatedByUpdatedBy !== null) {
-				if (!$this->aUserRelatedByUpdatedBy->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aUserRelatedByUpdatedBy->getValidationFailures());
-				}
-			}
-
 
 			if (($retval = UserPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -1972,22 +1890,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 				if ($this->collStringsRelatedByUpdatedBy !== null) {
 					foreach ($this->collStringsRelatedByUpdatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collUsersRelatedByCreatedBy !== null) {
-					foreach ($this->collUsersRelatedByCreatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collUsersRelatedByUpdatedBy !== null) {
-					foreach ($this->collUsersRelatedByUpdatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2320,12 +2222,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			if (null !== $this->aLanguage) {
 				$result['Language'] = $this->aLanguage->toArray($keyType, $includeLazyLoadColumns, true);
 			}
-			if (null !== $this->aUserRelatedByCreatedBy) {
-				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-			if (null !== $this->aUserRelatedByUpdatedBy) {
-				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
-			}
 		}
 		return $result;
 	}
@@ -2650,18 +2546,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getUsersRelatedByCreatedBy() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addUserRelatedByCreatedBy($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getUsersRelatedByUpdatedBy() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addUserRelatedByUpdatedBy($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getGroupsRelatedByCreatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addGroupRelatedByCreatedBy($relObj->copy($deepCopy));
@@ -2904,104 +2788,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			 */
 		}
 		return $this->aLanguage;
-	}
-
-	/**
-	 * Declares an association between this object and a User object.
-	 *
-	 * @param      User $v
-	 * @return     User The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setUserRelatedByCreatedBy(User $v = null)
-	{
-		if ($v === null) {
-			$this->setCreatedBy(NULL);
-		} else {
-			$this->setCreatedBy($v->getId());
-		}
-
-		$this->aUserRelatedByCreatedBy = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the User object, it will not be re-added.
-		if ($v !== null) {
-			$v->addUserRelatedByCreatedBy($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated User object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     User The associated User object.
-	 * @throws     PropelException
-	 */
-	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
-	{
-		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addUsersRelatedByCreatedBy($this);
-			 */
-		}
-		return $this->aUserRelatedByCreatedBy;
-	}
-
-	/**
-	 * Declares an association between this object and a User object.
-	 *
-	 * @param      User $v
-	 * @return     User The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setUserRelatedByUpdatedBy(User $v = null)
-	{
-		if ($v === null) {
-			$this->setUpdatedBy(NULL);
-		} else {
-			$this->setUpdatedBy($v->getId());
-		}
-
-		$this->aUserRelatedByUpdatedBy = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the User object, it will not be re-added.
-		if ($v !== null) {
-			$v->addUserRelatedByUpdatedBy($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated User object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     User The associated User object.
-	 * @throws     PropelException
-	 */
-	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
-	{
-		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addUsersRelatedByUpdatedBy($this);
-			 */
-		}
-		return $this->aUserRelatedByUpdatedBy;
 	}
 
 	/**
@@ -5146,264 +4932,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$query->joinWith('Language', $join_behavior);
 
 		return $this->getStringsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collUsersRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUsersRelatedByCreatedBy()
-	 */
-	public function clearUsersRelatedByCreatedBy()
-	{
-		$this->collUsersRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUsersRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collUsersRelatedByCreatedBy collection to an empty array (like clearcollUsersRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUsersRelatedByCreatedBy()
-	{
-		$this->collUsersRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collUsersRelatedByCreatedBy->setModel('User');
-	}
-
-	/**
-	 * Gets an array of User objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array User[] List of User objects
-	 * @throws     PropelException
-	 */
-	public function getUsersRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUsersRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsersRelatedByCreatedBy) {
-				// return empty collection
-				$this->initUsersRelatedByCreatedBy();
-			} else {
-				$collUsersRelatedByCreatedBy = UserQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUsersRelatedByCreatedBy;
-				}
-				$this->collUsersRelatedByCreatedBy = $collUsersRelatedByCreatedBy;
-			}
-		}
-		return $this->collUsersRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related User objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related User objects.
-	 * @throws     PropelException
-	 */
-	public function countUsersRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUsersRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsersRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = UserQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUsersRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a User object to this object
-	 * through the User foreign key attribute.
-	 *
-	 * @param      User $l User
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserRelatedByCreatedBy(User $l)
-	{
-		if ($this->collUsersRelatedByCreatedBy === null) {
-			$this->initUsersRelatedByCreatedBy();
-		}
-		if (!$this->collUsersRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUsersRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UsersRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 */
-	public function getUsersRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getUsersRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collUsersRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUsersRelatedByUpdatedBy()
-	 */
-	public function clearUsersRelatedByUpdatedBy()
-	{
-		$this->collUsersRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUsersRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collUsersRelatedByUpdatedBy collection to an empty array (like clearcollUsersRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUsersRelatedByUpdatedBy()
-	{
-		$this->collUsersRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collUsersRelatedByUpdatedBy->setModel('User');
-	}
-
-	/**
-	 * Gets an array of User objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array User[] List of User objects
-	 * @throws     PropelException
-	 */
-	public function getUsersRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUsersRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsersRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initUsersRelatedByUpdatedBy();
-			} else {
-				$collUsersRelatedByUpdatedBy = UserQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUsersRelatedByUpdatedBy;
-				}
-				$this->collUsersRelatedByUpdatedBy = $collUsersRelatedByUpdatedBy;
-			}
-		}
-		return $this->collUsersRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related User objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related User objects.
-	 * @throws     PropelException
-	 */
-	public function countUsersRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUsersRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsersRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = UserQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUsersRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a User object to this object
-	 * through the User foreign key attribute.
-	 *
-	 * @param      User $l User
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserRelatedByUpdatedBy(User $l)
-	{
-		if ($this->collUsersRelatedByUpdatedBy === null) {
-			$this->initUsersRelatedByUpdatedBy();
-		}
-		if (!$this->collUsersRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUsersRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UsersRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 */
-	public function getUsersRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getUsersRelatedByUpdatedBy($query, $con);
 	}
 
 	/**
@@ -8732,16 +8260,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collUsersRelatedByCreatedBy) {
-				foreach ((array) $this->collUsersRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collUsersRelatedByUpdatedBy) {
-				foreach ((array) $this->collUsersRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collGroupsRelatedByCreatedBy) {
 				foreach ((array) $this->collGroupsRelatedByCreatedBy as $o) {
 					$o->clearAllReferences($deep);
@@ -8885,8 +8403,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->collLanguagesRelatedByUpdatedBy = null;
 		$this->collStringsRelatedByCreatedBy = null;
 		$this->collStringsRelatedByUpdatedBy = null;
-		$this->collUsersRelatedByCreatedBy = null;
-		$this->collUsersRelatedByUpdatedBy = null;
 		$this->collGroupsRelatedByCreatedBy = null;
 		$this->collGroupsRelatedByUpdatedBy = null;
 		$this->collUserGroupsRelatedByUserId = null;
@@ -8913,11 +8429,9 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->collReferencesRelatedByCreatedBy = null;
 		$this->collReferencesRelatedByUpdatedBy = null;
 		$this->aLanguage = null;
-		$this->aUserRelatedByCreatedBy = null;
-		$this->aUserRelatedByUpdatedBy = null;
 	}
 
-	// timestampable behavior
+	// extended_timestampable behavior
 	
 	/**
 	 * Mark the current object so that the update date doesn't get updated during next save
@@ -8928,6 +8442,22 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = UserPeer::UPDATED_AT;
 		return $this;
+	}
+	
+	/**
+	 * @return created_at as int (timestamp)
+	 */
+	public function getCreatedAtTimestamp()
+	{
+		return $this->created_at;
+	}
+	
+	/**
+	 * @return updated_at as int (timestamp)
+	 */
+	public function getUpdatedAtTimestamp()
+	{
+		return $this->updated_at;
 	}
 
 	// attributable behavior
