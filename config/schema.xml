@@ -258,6 +258,21 @@
   <column name="is_inactive" type="boolean" size="1" default="0" />
 </table>
 
+<table name="link_categories" phpName="LinkCategory">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="80" required="true" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
+  <column name="updated_at" type="timestamp" />
+</table>
+
 <table name="tags" phpName="Tag">
   <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
   <column name="name" type="varchar" size="80" required="true" />

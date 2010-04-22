@@ -72,7 +72,7 @@ class Document extends BaseDocument {
 	}
 
 	public function getFileInfo($sFilesizeFormat = 'auto_iso') {
-		return $this->getExtension().' / '.DocumentUtil::getDocumentSize($this->getDataSize(), $sFilesizeFormat);
+		return DocumentUtil::getDocumentSize($this->getDataSize(), $sFilesizeFormat).' | '.$this->getExtension();
 	}
 	
 	/**
