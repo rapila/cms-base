@@ -163,8 +163,8 @@ class Page extends BasePage {
 
   public function getChildren($sLanguageId=null) {
     $aChildren;
-    if($this->collPagesRelatedByParentId !== null) {
-      $aChildren = $this->collPagesRelatedByParentId;
+    if($this->collPagesRelatedById !== null) {
+      $aChildren = $this->collPagesRelatedById;
     } else {
       $aChildren = $this->getChildrenSortedBySort();
     }
@@ -182,7 +182,7 @@ class Page extends BasePage {
   private function getChildrenSortedBySort() {
     $oCriteria = new Criteria();
     $oCriteria->addAscendingOrderByColumn(PagePeer::SORT);
-    $aResult = $this->getPagesRelatedByParentId($oCriteria);
+    $aResult = $this->getPagesRelatedById($oCriteria);
     foreach($aResult as $oPage) {
       $oPage->aPageRelatedByParentId = $this;
     }

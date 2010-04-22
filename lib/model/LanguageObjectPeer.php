@@ -15,7 +15,7 @@ class LanguageObjectPeer extends BaseLanguageObjectPeer {
   * Corresponds to the overriding of {@link LanguageObject->getId()}
   * Provides a unified way of working with stored references (in the references or tags tables)
   */
-  public static function retrieveByPK($object_id, $language_id = null, $con = null) {
+  public static function retrieveByPK($object_id, $language_id = null, PropelPDO $con = null) {
     if($language_id === null && strpos($object_id, '_') !== false) {
       $object_id = explode('_', $object_id);
       $language_id = $object_id[1];

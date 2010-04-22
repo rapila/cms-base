@@ -31,7 +31,7 @@ class TagInstance extends BaseTagInstance {
     return Util::nameForObject($oDataEntry);
   }
   
-  public function delete($oConnection = null) {
+  public function delete(PropelPDO $oConnection = null) {
     $oTag = $this->getTag();
     if(count($oTag->getTagInstances()) === 1) {
       $oTag->delete();
