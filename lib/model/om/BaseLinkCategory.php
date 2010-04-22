@@ -80,6 +80,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 	protected $aUserRelatedByUpdatedBy;
 
 	/**
+	 * Collection to store aggregation of collLinks.
+	 * @var        array
+	 */
+	protected $collLinks;
+
+	/**
+	 * The criteria used to select the current contents of collLinks.
+	 * @var        Criteria
+	 */
+	protected $lastLinkCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -500,6 +512,14 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
+			if ($this->collLinks !== null) {
+				foreach($this->collLinks as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 		}
 		return $affectedRows;
@@ -587,6 +607,14 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collLinks !== null) {
+					foreach($this->collLinks as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 
 			$this->alreadyInValidation = false;
@@ -824,6 +852,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 		$copyObj->setUpdatedAt($this->updated_at);
 
 
+		if ($deepCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+
+			foreach($this->getLinks() as $relObj) {
+				$copyObj->addLink($relObj->copy($deepCopy));
+			}
+
+		} // if ($deepCopy)
+
+
 		$copyObj->setNew(true);
 
 		$copyObj->setId(NULL); // this is a pkey column, so set to default value
@@ -968,6 +1008,309 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent {
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Temporary storage of collLinks to save a possible db hit in
+	 * the event objects are add to the collection, but the
+	 * complete collection is never requested.
+	 * @return     void
+	 */
+	public function initLinks()
+	{
+		if ($this->collLinks === null) {
+			$this->collLinks = array();
+		}
+	}
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this LinkCategory has previously
+	 * been saved, it will retrieve related Links from storage.
+	 * If this LinkCategory is new, it will return
+	 * an empty collection or the current collection, the criteria
+	 * is ignored on a new object.
+	 *
+	 * @param      Connection $con
+	 * @param      Criteria $criteria
+	 * @throws     PropelException
+	 */
+	public function getLinks($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinks === null) {
+			if ($this->isNew()) {
+			   $this->collLinks = array();
+			} else {
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				LinkPeer::addSelectColumns($criteria);
+				$this->collLinks = LinkPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				LinkPeer::addSelectColumns($criteria);
+				if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
+					$this->collLinks = LinkPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastLinkCriteria = $criteria;
+		return $this->collLinks;
+	}
+
+	/**
+	 * Returns the number of related Links.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      Connection $con
+	 * @throws     PropelException
+	 */
+	public function countLinks($criteria = null, $distinct = false, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+		return LinkPeer::doCount($criteria, $distinct, $con);
+	}
+
+	/**
+	 * Method called to associate a Link object to this object
+	 * through the Link foreign key attribute
+	 *
+	 * @param      Link $l Link
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addLink(Link $l)
+	{
+		$this->collLinks[] = $l;
+		$l->setLinkCategory($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this LinkCategory is new, it will return
+	 * an empty collection; or if this LinkCategory has previously
+	 * been saved, it will retrieve related Links from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in LinkCategory.
+	 */
+	public function getLinksJoinLanguage($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinks === null) {
+			if ($this->isNew()) {
+				$this->collLinks = array();
+			} else {
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				$this->collLinks = LinkPeer::doSelectJoinLanguage($criteria, $con);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
+				$this->collLinks = LinkPeer::doSelectJoinLanguage($criteria, $con);
+			}
+		}
+		$this->lastLinkCriteria = $criteria;
+
+		return $this->collLinks;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this LinkCategory is new, it will return
+	 * an empty collection; or if this LinkCategory has previously
+	 * been saved, it will retrieve related Links from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in LinkCategory.
+	 */
+	public function getLinksJoinUserRelatedByOwnerId($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinks === null) {
+			if ($this->isNew()) {
+				$this->collLinks = array();
+			} else {
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByOwnerId($criteria, $con);
+			}
+		}
+		$this->lastLinkCriteria = $criteria;
+
+		return $this->collLinks;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this LinkCategory is new, it will return
+	 * an empty collection; or if this LinkCategory has previously
+	 * been saved, it will retrieve related Links from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in LinkCategory.
+	 */
+	public function getLinksJoinUserRelatedByCreatedBy($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinks === null) {
+			if ($this->isNew()) {
+				$this->collLinks = array();
+			} else {
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByCreatedBy($criteria, $con);
+			}
+		}
+		$this->lastLinkCriteria = $criteria;
+
+		return $this->collLinks;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this LinkCategory is new, it will return
+	 * an empty collection; or if this LinkCategory has previously
+	 * been saved, it will retrieve related Links from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in LinkCategory.
+	 */
+	public function getLinksJoinUserRelatedByUpdatedBy($criteria = null, $con = null)
+	{
+		// include the Peer class
+		include_once 'model/om/BaseLinkPeer.php';
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLinks === null) {
+			if ($this->isNew()) {
+				$this->collLinks = array();
+			} else {
+
+				$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->getId());
+
+			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
+				$this->collLinks = LinkPeer::doSelectJoinUserRelatedByUpdatedBy($criteria, $con);
+			}
+		}
+		$this->lastLinkCriteria = $criteria;
+
+		return $this->collLinks;
 	}
 
 } // BaseLinkCategory

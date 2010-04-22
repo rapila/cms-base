@@ -76,7 +76,7 @@ class LinkMapBuilder {
 
 		$tMap->addForeignKey('OWNER_ID', 'OwnerId', 'int', CreoleTypes::INTEGER, 'users', 'ID', true, null);
 
-		$tMap->addForeignKey('DOCUMENT_CATEGORY_ID', 'DocumentCategoryId', 'int', CreoleTypes::INTEGER, 'document_categories', 'ID', true, null);
+		$tMap->addForeignKey('LINK_CATEGORY_ID', 'LinkCategoryId', 'int', CreoleTypes::INTEGER, 'link_categories', 'ID', true, null);
 
 		$tMap->addColumn('IS_PRIVATE', 'IsPrivate', 'boolean', CreoleTypes::BOOLEAN, false, 1);
 

@@ -372,7 +372,8 @@ CREATE TABLE `documents`
 	INDEX `documents_FI_4` (`document_category_id`),
 	CONSTRAINT `documents_FK_4`
 		FOREIGN KEY (`document_category_id`)
-		REFERENCES `document_categories` (`id`),
+		REFERENCES `document_categories` (`id`)
+		ON DELETE SET NULL,
 	INDEX `documents_FI_5` (`created_by`),
 	CONSTRAINT `documents_FK_5`
 		FOREIGN KEY (`created_by`)
@@ -471,7 +472,7 @@ CREATE TABLE `links`
 	`description` VARCHAR(255),
 	`language_id` VARCHAR(3),
 	`owner_id` INTEGER  NOT NULL,
-	`document_category_id` INTEGER  NOT NULL,
+	`link_category_id` INTEGER  NOT NULL,
 	`is_private` INTEGER(1) default 0,
 	`is_inactive` INTEGER(1) default 0,
 	`created_by` INTEGER  NOT NULL,
@@ -487,16 +488,43 @@ CREATE TABLE `links`
 	CONSTRAINT `links_FK_2`
 		FOREIGN KEY (`owner_id`)
 		REFERENCES `users` (`id`),
-	INDEX `links_FI_3` (`document_category_id`),
+	INDEX `links_FI_3` (`link_category_id`),
 	CONSTRAINT `links_FK_3`
-		FOREIGN KEY (`document_category_id`)
-		REFERENCES `document_categories` (`id`),
+		FOREIGN KEY (`link_category_id`)
+		REFERENCES `link_categories` (`id`)
+		ON DELETE SET NULL,
 	INDEX `links_FI_4` (`created_by`),
 	CONSTRAINT `links_FK_4`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`),
 	INDEX `links_FI_5` (`updated_by`),
 	CONSTRAINT `links_FK_5`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+)Type=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- link_categories
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `link_categories`;
+
+
+CREATE TABLE `link_categories`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(80)  NOT NULL,
+	`created_by` INTEGER  NOT NULL,
+	`updated_by` INTEGER  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	PRIMARY KEY (`id`),
+	INDEX `link_categories_FI_1` (`created_by`),
+	CONSTRAINT `link_categories_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`),
+	INDEX `link_categories_FI_2` (`updated_by`),
+	CONSTRAINT `link_categories_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 )Type=MyISAM;

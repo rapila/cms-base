@@ -29,7 +29,7 @@ class Settings {
     
   /**
    * getConfigurationSetting()
-   * @param string cms.yml section name
+   * @param string config.yml section name
    * @param string section var key
    * @param mixed default value
    * @return mixed value

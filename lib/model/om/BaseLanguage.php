@@ -2280,7 +2280,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Language.
 	 */
-	public function getLinksJoinDocumentCategory($criteria = null, $con = null)
+	public function getLinksJoinLinkCategory($criteria = null, $con = null)
 	{
 		// include the Peer class
 		include_once 'model/om/BaseLinkPeer.php';
@@ -2299,7 +2299,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 
 				$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
 
-				$this->collLinks = LinkPeer::doSelectJoinDocumentCategory($criteria, $con);
+				$this->collLinks = LinkPeer::doSelectJoinLinkCategory($criteria, $con);
 			}
 		} else {
 			// the following code is to determine if a new query is
@@ -2309,7 +2309,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent {
 			$criteria->add(LinkPeer::LANGUAGE_ID, $this->getId());
 
 			if (!isset($this->lastLinkCriteria) || !$this->lastLinkCriteria->equals($criteria)) {
-				$this->collLinks = LinkPeer::doSelectJoinDocumentCategory($criteria, $con);
+				$this->collLinks = LinkPeer::doSelectJoinLinkCategory($criteria, $con);
 			}
 		}
 		$this->lastLinkCriteria = $criteria;

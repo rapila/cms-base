@@ -223,7 +223,7 @@
     <reference local="document_type_id" foreign="id" />
   </foreign-key>
   <column name="document_category_id" type="integer" required="false" default="null" />
-  <foreign-key foreignTable="document_categories">
+  <foreign-key foreignTable="document_categories" onDelete="setnull">
     <reference local="document_category_id" foreign="id" />
   </foreign-key>
   <column name="is_private" type="boolean" size="1" default="0" />
@@ -256,21 +256,6 @@
   <column name="max_width" type="integer" />
   <column name="is_externally_managed" type="boolean" size="1" default="0" />
   <column name="is_inactive" type="boolean" size="1" default="0" />
-</table>
-
-<table name="link_categories" phpName="LinkCategory">
-  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-  <column name="name" type="varchar" size="80" required="true" />
-  <column name="created_by" type="integer" required="true" />
-  <foreign-key foreignTable="users">
-    <reference local="created_by" foreign="id" />
-  </foreign-key>
-  <column name="updated_by" type="integer" required="true" />
-  <foreign-key foreignTable="users">
-    <reference local="updated_by" foreign="id" />
-  </foreign-key>
-  <column name="created_at" type="timestamp" />
-  <column name="updated_at" type="timestamp" />
 </table>
 
 <table name="tags" phpName="Tag">
@@ -307,9 +292,9 @@
   <foreign-key foreignTable="users">
     <reference local="owner_id" foreign="id" />
   </foreign-key>
-  <column name="document_category_id" type="integer" required="true" />
-  <foreign-key foreignTable="document_categories">
-    <reference local="document_category_id" foreign="id" />
+  <column name="link_category_id" type="integer" required="true" />
+  <foreign-key foreignTable="link_categories" onDelete="setnull">
+    <reference local="link_category_id" foreign="id" />
   </foreign-key>
   <column name="is_private" type="boolean" size="1" default="0" />
   <column name="is_inactive" type="boolean" size="1" default="0" />
@@ -322,6 +307,21 @@
   <foreign-key foreignTable="users">
     <reference local="updated_by" foreign="id" />
   </foreign-key>
+  <column name="updated_at" type="timestamp" />
+</table>
+
+<table name="link_categories" phpName="LinkCategory">
+  <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+  <column name="name" type="varchar" size="80" required="true" />
+  <column name="created_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="created_by" foreign="id" />
+  </foreign-key>
+  <column name="updated_by" type="integer" required="true" />
+  <foreign-key foreignTable="users">
+    <reference local="updated_by" foreign="id" />
+  </foreign-key>
+  <column name="created_at" type="timestamp" />
   <column name="updated_at" type="timestamp" />
 </table>
 

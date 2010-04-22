@@ -71,10 +71,10 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 
 
 	/**
-	 * The value for the document_category_id field.
+	 * The value for the link_category_id field.
 	 * @var        int
 	 */
-	protected $document_category_id;
+	protected $link_category_id;
 
 
 	/**
@@ -129,9 +129,9 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 	protected $aUserRelatedByOwnerId;
 
 	/**
-	 * @var        DocumentCategory
+	 * @var        LinkCategory
 	 */
-	protected $aDocumentCategory;
+	protected $aLinkCategory;
 
 	/**
 	 * @var        User
@@ -224,14 +224,14 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Get the [document_category_id] column value.
+	 * Get the [link_category_id] column value.
 	 * 
 	 * @return     int
 	 */
-	public function getDocumentCategoryId()
+	public function getLinkCategoryId()
 	{
 
-		return $this->document_category_id;
+		return $this->link_category_id;
 	}
 
 	/**
@@ -481,12 +481,12 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 	} // setOwnerId()
 
 	/**
-	 * Set the value of [document_category_id] column.
+	 * Set the value of [link_category_id] column.
 	 * 
 	 * @param      int $v new value
 	 * @return     void
 	 */
-	public function setDocumentCategoryId($v)
+	public function setLinkCategoryId($v)
 	{
 
 		// Since the native PHP type for this column is integer,
@@ -495,16 +495,16 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->document_category_id !== $v) {
-			$this->document_category_id = $v;
-			$this->modifiedColumns[] = LinkPeer::DOCUMENT_CATEGORY_ID;
+		if ($this->link_category_id !== $v) {
+			$this->link_category_id = $v;
+			$this->modifiedColumns[] = LinkPeer::LINK_CATEGORY_ID;
 		}
 
-		if ($this->aDocumentCategory !== null && $this->aDocumentCategory->getId() !== $v) {
-			$this->aDocumentCategory = null;
+		if ($this->aLinkCategory !== null && $this->aLinkCategory->getId() !== $v) {
+			$this->aLinkCategory = null;
 		}
 
-	} // setDocumentCategoryId()
+	} // setLinkCategoryId()
 
 	/**
 	 * Set the value of [is_private] column.
@@ -667,7 +667,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 
 			$this->owner_id = $rs->getInt($startcol + 5);
 
-			$this->document_category_id = $rs->getInt($startcol + 6);
+			$this->link_category_id = $rs->getInt($startcol + 6);
 
 			$this->is_private = $rs->getBoolean($startcol + 7);
 
@@ -791,11 +791,11 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 				$this->setUserRelatedByOwnerId($this->aUserRelatedByOwnerId);
 			}
 
-			if ($this->aDocumentCategory !== null) {
-				if ($this->aDocumentCategory->isModified()) {
-					$affectedRows += $this->aDocumentCategory->save($con);
+			if ($this->aLinkCategory !== null) {
+				if ($this->aLinkCategory->isModified()) {
+					$affectedRows += $this->aLinkCategory->save($con);
 				}
-				$this->setDocumentCategory($this->aDocumentCategory);
+				$this->setLinkCategory($this->aLinkCategory);
 			}
 
 			if ($this->aUserRelatedByCreatedBy !== null) {
@@ -912,9 +912,9 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 				}
 			}
 
-			if ($this->aDocumentCategory !== null) {
-				if (!$this->aDocumentCategory->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aDocumentCategory->getValidationFailures());
+			if ($this->aLinkCategory !== null) {
+				if (!$this->aLinkCategory->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aLinkCategory->getValidationFailures());
 				}
 			}
 
@@ -987,7 +987,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 				return $this->getOwnerId();
 				break;
 			case 6:
-				return $this->getDocumentCategoryId();
+				return $this->getLinkCategoryId();
 				break;
 			case 7:
 				return $this->getIsPrivate();
@@ -1033,7 +1033,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 			$keys[3] => $this->getDescription(),
 			$keys[4] => $this->getLanguageId(),
 			$keys[5] => $this->getOwnerId(),
-			$keys[6] => $this->getDocumentCategoryId(),
+			$keys[6] => $this->getLinkCategoryId(),
 			$keys[7] => $this->getIsPrivate(),
 			$keys[8] => $this->getIsInactive(),
 			$keys[9] => $this->getCreatedBy(),
@@ -1090,7 +1090,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 				$this->setOwnerId($value);
 				break;
 			case 6:
-				$this->setDocumentCategoryId($value);
+				$this->setLinkCategoryId($value);
 				break;
 			case 7:
 				$this->setIsPrivate($value);
@@ -1139,7 +1139,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setLanguageId($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setOwnerId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDocumentCategoryId($arr[$keys[6]]);
+		if (array_key_exists($keys[6], $arr)) $this->setLinkCategoryId($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setIsPrivate($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setIsInactive($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setCreatedBy($arr[$keys[9]]);
@@ -1163,7 +1163,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(LinkPeer::DESCRIPTION)) $criteria->add(LinkPeer::DESCRIPTION, $this->description);
 		if ($this->isColumnModified(LinkPeer::LANGUAGE_ID)) $criteria->add(LinkPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(LinkPeer::OWNER_ID)) $criteria->add(LinkPeer::OWNER_ID, $this->owner_id);
-		if ($this->isColumnModified(LinkPeer::DOCUMENT_CATEGORY_ID)) $criteria->add(LinkPeer::DOCUMENT_CATEGORY_ID, $this->document_category_id);
+		if ($this->isColumnModified(LinkPeer::LINK_CATEGORY_ID)) $criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->link_category_id);
 		if ($this->isColumnModified(LinkPeer::IS_PRIVATE)) $criteria->add(LinkPeer::IS_PRIVATE, $this->is_private);
 		if ($this->isColumnModified(LinkPeer::IS_INACTIVE)) $criteria->add(LinkPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(LinkPeer::CREATED_BY)) $criteria->add(LinkPeer::CREATED_BY, $this->created_by);
@@ -1234,7 +1234,7 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 
 		$copyObj->setOwnerId($this->owner_id);
 
-		$copyObj->setDocumentCategoryId($this->document_category_id);
+		$copyObj->setLinkCategoryId($this->link_category_id);
 
 		$copyObj->setIsPrivate($this->is_private);
 
@@ -1396,42 +1396,42 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Declares an association between this object and a DocumentCategory object.
+	 * Declares an association between this object and a LinkCategory object.
 	 *
-	 * @param      DocumentCategory $v
+	 * @param      LinkCategory $v
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function setDocumentCategory($v)
+	public function setLinkCategory($v)
 	{
 
 
 		if ($v === null) {
-			$this->setDocumentCategoryId(NULL);
+			$this->setLinkCategoryId(NULL);
 		} else {
-			$this->setDocumentCategoryId($v->getId());
+			$this->setLinkCategoryId($v->getId());
 		}
 
 
-		$this->aDocumentCategory = $v;
+		$this->aLinkCategory = $v;
 	}
 
 
 	/**
-	 * Get the associated DocumentCategory object
+	 * Get the associated LinkCategory object
 	 *
 	 * @param      Connection Optional Connection object.
-	 * @return     DocumentCategory The associated DocumentCategory object.
+	 * @return     LinkCategory The associated LinkCategory object.
 	 * @throws     PropelException
 	 */
-	public function getDocumentCategory($con = null)
+	public function getLinkCategory($con = null)
 	{
 		// include the related Peer class
-		include_once 'model/om/BaseDocumentCategoryPeer.php';
+		include_once 'model/om/BaseLinkCategoryPeer.php';
 
-		if ($this->aDocumentCategory === null && ($this->document_category_id !== null)) {
+		if ($this->aLinkCategory === null && ($this->link_category_id !== null)) {
 
-			$this->aDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->document_category_id, $con);
+			$this->aLinkCategory = LinkCategoryPeer::retrieveByPK($this->link_category_id, $con);
 
 			/* The following can be used instead of the line above to
 			   guarantee the related object contains a reference
@@ -1439,11 +1439,11 @@ abstract class BaseLink extends BaseObject  implements Persistent {
 			   may be undesirable in many circumstances.
 			   As it can lead to a db query with many results that may
 			   never be used.
-			   $obj = DocumentCategoryPeer::retrieveByPK($this->document_category_id, $con);
-			   $obj->addDocumentCategorys($this);
+			   $obj = LinkCategoryPeer::retrieveByPK($this->link_category_id, $con);
+			   $obj->addLinkCategorys($this);
 			 */
 		}
-		return $this->aDocumentCategory;
+		return $this->aLinkCategory;
 	}
 
 	/**

@@ -48,8 +48,8 @@ abstract class BaseLinkPeer {
 	/** the column name for the OWNER_ID field */
 	const OWNER_ID = 'links.OWNER_ID';
 
-	/** the column name for the DOCUMENT_CATEGORY_ID field */
-	const DOCUMENT_CATEGORY_ID = 'links.DOCUMENT_CATEGORY_ID';
+	/** the column name for the LINK_CATEGORY_ID field */
+	const LINK_CATEGORY_ID = 'links.LINK_CATEGORY_ID';
 
 	/** the column name for the IS_PRIVATE field */
 	const IS_PRIVATE = 'links.IS_PRIVATE';
@@ -80,9 +80,9 @@ abstract class BaseLinkPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Url', 'Description', 'LanguageId', 'OwnerId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'CreatedBy', 'CreatedAt', 'UpdatedBy', 'UpdatedAt', ),
-		BasePeer::TYPE_COLNAME => array (LinkPeer::ID, LinkPeer::NAME, LinkPeer::URL, LinkPeer::DESCRIPTION, LinkPeer::LANGUAGE_ID, LinkPeer::OWNER_ID, LinkPeer::DOCUMENT_CATEGORY_ID, LinkPeer::IS_PRIVATE, LinkPeer::IS_INACTIVE, LinkPeer::CREATED_BY, LinkPeer::CREATED_AT, LinkPeer::UPDATED_BY, LinkPeer::UPDATED_AT, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'url', 'description', 'language_id', 'owner_id', 'document_category_id', 'is_private', 'is_inactive', 'created_by', 'created_at', 'updated_by', 'updated_at', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Url', 'Description', 'LanguageId', 'OwnerId', 'LinkCategoryId', 'IsPrivate', 'IsInactive', 'CreatedBy', 'CreatedAt', 'UpdatedBy', 'UpdatedAt', ),
+		BasePeer::TYPE_COLNAME => array (LinkPeer::ID, LinkPeer::NAME, LinkPeer::URL, LinkPeer::DESCRIPTION, LinkPeer::LANGUAGE_ID, LinkPeer::OWNER_ID, LinkPeer::LINK_CATEGORY_ID, LinkPeer::IS_PRIVATE, LinkPeer::IS_INACTIVE, LinkPeer::CREATED_BY, LinkPeer::CREATED_AT, LinkPeer::UPDATED_BY, LinkPeer::UPDATED_AT, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'url', 'description', 'language_id', 'owner_id', 'link_category_id', 'is_private', 'is_inactive', 'created_by', 'created_at', 'updated_by', 'updated_at', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
 	);
 
@@ -93,9 +93,9 @@ abstract class BaseLinkPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'DocumentCategoryId' => 6, 'IsPrivate' => 7, 'IsInactive' => 8, 'CreatedBy' => 9, 'CreatedAt' => 10, 'UpdatedBy' => 11, 'UpdatedAt' => 12, ),
-		BasePeer::TYPE_COLNAME => array (LinkPeer::ID => 0, LinkPeer::NAME => 1, LinkPeer::URL => 2, LinkPeer::DESCRIPTION => 3, LinkPeer::LANGUAGE_ID => 4, LinkPeer::OWNER_ID => 5, LinkPeer::DOCUMENT_CATEGORY_ID => 6, LinkPeer::IS_PRIVATE => 7, LinkPeer::IS_INACTIVE => 8, LinkPeer::CREATED_BY => 9, LinkPeer::CREATED_AT => 10, LinkPeer::UPDATED_BY => 11, LinkPeer::UPDATED_AT => 12, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'document_category_id' => 6, 'is_private' => 7, 'is_inactive' => 8, 'created_by' => 9, 'created_at' => 10, 'updated_by' => 11, 'updated_at' => 12, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'LinkCategoryId' => 6, 'IsPrivate' => 7, 'IsInactive' => 8, 'CreatedBy' => 9, 'CreatedAt' => 10, 'UpdatedBy' => 11, 'UpdatedAt' => 12, ),
+		BasePeer::TYPE_COLNAME => array (LinkPeer::ID => 0, LinkPeer::NAME => 1, LinkPeer::URL => 2, LinkPeer::DESCRIPTION => 3, LinkPeer::LANGUAGE_ID => 4, LinkPeer::OWNER_ID => 5, LinkPeer::LINK_CATEGORY_ID => 6, LinkPeer::IS_PRIVATE => 7, LinkPeer::IS_INACTIVE => 8, LinkPeer::CREATED_BY => 9, LinkPeer::CREATED_AT => 10, LinkPeer::UPDATED_BY => 11, LinkPeer::UPDATED_AT => 12, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'link_category_id' => 6, 'is_private' => 7, 'is_inactive' => 8, 'created_by' => 9, 'created_at' => 10, 'updated_by' => 11, 'updated_at' => 12, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
 	);
 
@@ -209,7 +209,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addSelectColumn(LinkPeer::OWNER_ID);
 
-		$criteria->addSelectColumn(LinkPeer::DOCUMENT_CATEGORY_ID);
+		$criteria->addSelectColumn(LinkPeer::LINK_CATEGORY_ID);
 
 		$criteria->addSelectColumn(LinkPeer::IS_PRIVATE);
 
@@ -431,14 +431,14 @@ abstract class BaseLinkPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related DocumentCategory table
+	 * Returns the number of rows matching criteria, joining the related LinkCategory table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
 	 * @param      Connection $con
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinDocumentCategory(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinLinkCategory(Criteria $criteria, $distinct = false, $con = null)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -457,7 +457,7 @@ abstract class BaseLinkPeer {
 			$criteria->addSelectColumn($column);
 		}
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$rs = LinkPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
@@ -664,13 +664,13 @@ abstract class BaseLinkPeer {
 
 
 	/**
-	 * Selects a collection of Link objects pre-filled with their DocumentCategory objects.
+	 * Selects a collection of Link objects pre-filled with their LinkCategory objects.
 	 *
 	 * @return     array Array of Link objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinDocumentCategory(Criteria $c, $con = null)
+	public static function doSelectJoinLinkCategory(Criteria $c, $con = null)
 	{
 		$c = clone $c;
 
@@ -681,9 +681,9 @@ abstract class BaseLinkPeer {
 
 		LinkPeer::addSelectColumns($c);
 		$startcol = (LinkPeer::NUM_COLUMNS - LinkPeer::NUM_LAZY_LOAD_COLUMNS) + 1;
-		DocumentCategoryPeer::addSelectColumns($c);
+		LinkCategoryPeer::addSelectColumns($c);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 		$rs = BasePeer::doSelect($c, $con);
 		$results = array();
 
@@ -695,7 +695,7 @@ abstract class BaseLinkPeer {
 			$obj1 = new $cls();
 			$obj1->hydrate($rs);
 
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 			$cls = Propel::import($omClass);
 			$obj2 = new $cls();
@@ -703,7 +703,7 @@ abstract class BaseLinkPeer {
 
 			$newObject = true;
 			foreach($results as $temp_obj1) {
-				$temp_obj2 = $temp_obj1->getDocumentCategory(); //CHECKME
+				$temp_obj2 = $temp_obj1->getLinkCategory(); //CHECKME
 				if ($temp_obj2->getPrimaryKey() === $obj2->getPrimaryKey()) {
 					$newObject = false;
 					// e.g. $author->addBookRelatedByBookId()
@@ -867,7 +867,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addJoin(LinkPeer::OWNER_ID, UserPeer::ID);
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$criteria->addJoin(LinkPeer::CREATED_BY, UserPeer::ID);
 
@@ -908,8 +908,8 @@ abstract class BaseLinkPeer {
 		UserPeer::addSelectColumns($c);
 		$startcol4 = $startcol3 + UserPeer::NUM_COLUMNS;
 
-		DocumentCategoryPeer::addSelectColumns($c);
-		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_COLUMNS;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol5 = $startcol4 + LinkCategoryPeer::NUM_COLUMNS;
 
 		UserPeer::addSelectColumns($c);
 		$startcol6 = $startcol5 + UserPeer::NUM_COLUMNS;
@@ -921,7 +921,7 @@ abstract class BaseLinkPeer {
 
 		$c->addJoin(LinkPeer::OWNER_ID, UserPeer::ID);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$c->addJoin(LinkPeer::CREATED_BY, UserPeer::ID);
 
@@ -992,9 +992,9 @@ abstract class BaseLinkPeer {
 			}
 
 
-				// Add objects for joined DocumentCategory rows
+				// Add objects for joined LinkCategory rows
 	
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -1004,7 +1004,7 @@ abstract class BaseLinkPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj4 = $temp_obj1->getDocumentCategory(); // CHECKME
+				$temp_obj4 = $temp_obj1->getLinkCategory(); // CHECKME
 				if ($temp_obj4->getPrimaryKey() === $obj4->getPrimaryKey()) {
 					$newObject = false;
 					$temp_obj4->addLink($obj1); // CHECKME
@@ -1104,7 +1104,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addJoin(LinkPeer::OWNER_ID, UserPeer::ID);
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$criteria->addJoin(LinkPeer::CREATED_BY, UserPeer::ID);
 
@@ -1149,7 +1149,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$rs = LinkPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
@@ -1162,14 +1162,14 @@ abstract class BaseLinkPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related DocumentCategory table
+	 * Returns the number of rows matching criteria, joining the related LinkCategory table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns (You can also set DISTINCT modifier in Criteria).
 	 * @param      Connection $con
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptDocumentCategory(Criteria $criteria, $distinct = false, $con = null)
+	public static function doCountJoinAllExceptLinkCategory(Criteria $criteria, $distinct = false, $con = null)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -1235,7 +1235,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$rs = LinkPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
@@ -1276,7 +1276,7 @@ abstract class BaseLinkPeer {
 
 		$criteria->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$criteria->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$criteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$rs = LinkPeer::doSelectRS($criteria, $con);
 		if ($rs->next()) {
@@ -1312,8 +1312,8 @@ abstract class BaseLinkPeer {
 		UserPeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + UserPeer::NUM_COLUMNS;
 
-		DocumentCategoryPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + DocumentCategoryPeer::NUM_COLUMNS;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + LinkCategoryPeer::NUM_COLUMNS;
 
 		UserPeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + UserPeer::NUM_COLUMNS;
@@ -1323,7 +1323,7 @@ abstract class BaseLinkPeer {
 
 		$c->addJoin(LinkPeer::OWNER_ID, UserPeer::ID);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 		$c->addJoin(LinkPeer::CREATED_BY, UserPeer::ID);
 
@@ -1364,7 +1364,7 @@ abstract class BaseLinkPeer {
 				$obj2->addLinkRelatedByOwnerId($obj1);
 			}
 
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -1374,7 +1374,7 @@ abstract class BaseLinkPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj3 = $temp_obj1->getDocumentCategory(); //CHECKME
+				$temp_obj3 = $temp_obj1->getLinkCategory(); //CHECKME
 				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
 					$newObject = false;
 					$temp_obj3->addLink($obj1);
@@ -1463,12 +1463,12 @@ abstract class BaseLinkPeer {
 		LanguagePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + LanguagePeer::NUM_COLUMNS;
 
-		DocumentCategoryPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + DocumentCategoryPeer::NUM_COLUMNS;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + LinkCategoryPeer::NUM_COLUMNS;
 
 		$c->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 
 		$rs = BasePeer::doSelect($c, $con);
@@ -1505,7 +1505,7 @@ abstract class BaseLinkPeer {
 				$obj2->addLink($obj1);
 			}
 
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -1515,7 +1515,7 @@ abstract class BaseLinkPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj3 = $temp_obj1->getDocumentCategory(); //CHECKME
+				$temp_obj3 = $temp_obj1->getLinkCategory(); //CHECKME
 				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
 					$newObject = false;
 					$temp_obj3->addLink($obj1);
@@ -1535,13 +1535,13 @@ abstract class BaseLinkPeer {
 
 
 	/**
-	 * Selects a collection of Link objects pre-filled with all related objects except DocumentCategory.
+	 * Selects a collection of Link objects pre-filled with all related objects except LinkCategory.
 	 *
 	 * @return     array Array of Link objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptDocumentCategory(Criteria $c, $con = null)
+	public static function doSelectJoinAllExceptLinkCategory(Criteria $c, $con = null)
 	{
 		$c = clone $c;
 
@@ -1709,12 +1709,12 @@ abstract class BaseLinkPeer {
 		LanguagePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + LanguagePeer::NUM_COLUMNS;
 
-		DocumentCategoryPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + DocumentCategoryPeer::NUM_COLUMNS;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + LinkCategoryPeer::NUM_COLUMNS;
 
 		$c->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 
 		$rs = BasePeer::doSelect($c, $con);
@@ -1751,7 +1751,7 @@ abstract class BaseLinkPeer {
 				$obj2->addLink($obj1);
 			}
 
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -1761,7 +1761,7 @@ abstract class BaseLinkPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj3 = $temp_obj1->getDocumentCategory(); //CHECKME
+				$temp_obj3 = $temp_obj1->getLinkCategory(); //CHECKME
 				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
 					$newObject = false;
 					$temp_obj3->addLink($obj1);
@@ -1804,12 +1804,12 @@ abstract class BaseLinkPeer {
 		LanguagePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + LanguagePeer::NUM_COLUMNS;
 
-		DocumentCategoryPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + DocumentCategoryPeer::NUM_COLUMNS;
+		LinkCategoryPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + LinkCategoryPeer::NUM_COLUMNS;
 
 		$c->addJoin(LinkPeer::LANGUAGE_ID, LanguagePeer::ID);
 
-		$c->addJoin(LinkPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$c->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID);
 
 
 		$rs = BasePeer::doSelect($c, $con);
@@ -1846,7 +1846,7 @@ abstract class BaseLinkPeer {
 				$obj2->addLink($obj1);
 			}
 
-			$omClass = DocumentCategoryPeer::getOMClass();
+			$omClass = LinkCategoryPeer::getOMClass();
 
 
 			$cls = Propel::import($omClass);
@@ -1856,7 +1856,7 @@ abstract class BaseLinkPeer {
 			$newObject = true;
 			for ($j=0, $resCount=count($results); $j < $resCount; $j++) {
 				$temp_obj1 = $results[$j];
-				$temp_obj3 = $temp_obj1->getDocumentCategory(); //CHECKME
+				$temp_obj3 = $temp_obj1->getLinkCategory(); //CHECKME
 				if ($temp_obj3->getPrimaryKey() === $obj3->getPrimaryKey()) {
 					$newObject = false;
 					$temp_obj3->addLink($obj1);

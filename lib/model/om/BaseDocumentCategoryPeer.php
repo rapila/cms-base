@@ -432,6 +432,7 @@ abstract class BaseDocumentCategoryPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->begin();
+			DocumentCategoryPeer::doOnDeleteSetNull(new Criteria(), $con);
 			$affectedRows += BasePeer::doDeleteAll(DocumentCategoryPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -478,13 +479,44 @@ abstract class BaseDocumentCategoryPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->begin();
-			
+			DocumentCategoryPeer::doOnDeleteSetNull($criteria, $con);
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollback();
 			throw $e;
+		}
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      Connection $con
+	 * @return     void
+	 */
+	protected static function doOnDeleteSetNull(Criteria $criteria, Connection $con)
+	{
+
+		// first find the objects that are implicated by the $criteria
+		$objects = DocumentCategoryPeer::doSelect($criteria, $con);
+		foreach($objects as $obj) {
+
+			// set fkey col in related Document rows to NULL
+			$selectCriteria = new Criteria(DocumentCategoryPeer::DATABASE_NAME);
+			$updateValues = new Criteria(DocumentCategoryPeer::DATABASE_NAME);
+			$selectCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $obj->getId());
+			$updateValues->add(DocumentPeer::DOCUMENT_CATEGORY_ID, null);
+
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
 		}
 	}
 
