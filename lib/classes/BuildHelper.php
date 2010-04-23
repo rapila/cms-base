@@ -168,6 +168,10 @@ EOT;
 	private static function deleteUnusedFiles($bIsDevVersion = false) {
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.xml');
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/build.properties');
+		$aAdditions = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_GENERATED, 'propel_additions', '/^[\\w_]+\.php$/'), ResourceFinder::SEARCH_MAIN_ONLY);
+		foreach($aAdditions as $oAddition) {
+			$oAddition->unlink();
+		}
 		if($bIsDevVersion) {
 			rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map', BASE_DIR.'/'.DIRNAME_DATA.'/sql/sqldb.map');
 			rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql', BASE_DIR.'/'.DIRNAME_DATA.'/sql/schema.sql');
