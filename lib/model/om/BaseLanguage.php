@@ -2677,11 +2677,27 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 	
 	/**
+	 * @return created_at formatted to the current locale
+	 */
+	public function getCreatedAtFormatted()
+	{
+		return LocaleUtil::localizeDate($this->created_at);
+	}
+	
+	/**
 	 * @return updated_at as int (timestamp)
 	 */
 	public function getUpdatedAtTimestamp()
 	{
 		return $this->updated_at;
+	}
+	
+	/**
+	 * @return updated_at formatted to the current locale
+	 */
+	public function getUpdatedAtFormatted()
+	{
+		return LocaleUtil::localizeDate($this->updated_at);
 	}
 
 	// attributable behavior
