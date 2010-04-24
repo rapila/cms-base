@@ -1,8 +1,6 @@
 <?php
-
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
-require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ErrorHandler.php");
 
 class Autoloader {
 	const CACHE_KEY = 'AUTOLOAD_CLASS_MAPPING';
@@ -30,7 +28,7 @@ class Autoloader {
 		$sIncludeFilePath = self::findIncludePath($sClassName);
 	
 		if($sIncludeFilePath === null) {
-			return false;
+			throw new ClassNotFoundException("Could not find file for loading of class $sClassName", $sClassName);	
 		}
 		
 		self::$CLASS_MAPPING[$sClassName] = $sIncludeFilePath;
@@ -59,18 +57,10 @@ class Autoloader {
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
-		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
-			return $sPath;
-		}
 	
 		//Model classes
 		$sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName));
 		if($sPath) {
-			return $sPath;
-		}
-		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName));
-		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
 	
@@ -89,7 +79,23 @@ class Autoloader {
 				}
 			}
 		}
-		
 		return null;
+	}
+}
+
+class ClassNotFoundException extends Exception {
+	private $sClassName;
+	
+	public function __construct($sMessage, $sClassName) {
+		$this->sClassName = $sClassName;
+		parent::__construct($sMessage);
+	}
+	
+	public function setClassName($sClassName) {
+			$this->sClassName = $sClassName;
+	}
+
+	public function getClassName() {
+			return $this->sClassName;
 	}
 }

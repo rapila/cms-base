@@ -4,10 +4,10 @@
 	require_once 'model/om/BaseStringPeer.php';
 	
 	// include object class
-	include_once 'model/String.php';
+	require_once 'model/String.php';
 	
 	// include template class
-	include_once 'classes/Template.php';
+	require_once 'classes/Template.php';
 
 
 /**

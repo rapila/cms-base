@@ -10,7 +10,7 @@ abstract class Manager {
   private static $CURRENT_PAGE = null;
   private static $CURRENT_MANAGER = null;
   
-  protected function __construct() {
+  protected function __construct() { 
     if(strrpos(self::getRequestedPath(), "/") === (strlen(self::getRequestedPath())-1)) {
       self::setRequestedPath(substr(self::getRequestedPath(), 0, -1));
     }

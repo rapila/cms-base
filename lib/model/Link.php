@@ -19,5 +19,13 @@ class Link extends BaseLink {
 	public function getUpdatedAtFormatted() {
 		return LocaleUtil::localizeDate($this->getUpdatedAt('c'));
 	}
+	
+	public function getCategoryName() {
+		if($this->getLinkCategory()) {
+			return $this->getLinkCategory()->getName();
+		}
+		return null;
+	}
+
 }
 

@@ -33,8 +33,8 @@ Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
 // include path for all classes
-$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR, ResourceFinder::SEARCH_SITE_FIRST);
-$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB, ResourceFinder::SEARCH_SITE_FIRST);
+$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR);
+$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB);
 
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
 
@@ -80,7 +80,7 @@ Propel::initialize();
 //Set MySQL connection charset
 if(StringUtil::startsWith($sAdapter, 'mysql')) {
   $con = Propel::getConnection();
-  $con->exec('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
-  $con->exec('SET character_set_connection="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
-  $con->exec('SET character_set_results="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
+  $con->executeQuery('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
+  $con->executeQuery('SET character_set_connection="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
+  $con->executeQuery('SET character_set_results="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
 }
