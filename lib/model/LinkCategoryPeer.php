@@ -17,4 +17,3 @@ class LinkCategoryPeer extends BaseLinkCategoryPeer {
 		return self::doSelect($oCriteria);
 	}
 }
-
