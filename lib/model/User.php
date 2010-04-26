@@ -81,7 +81,7 @@ class User extends BaseUser {
 			return !(@$aModuleInfo['admin_required']);
 		}
 		//Case 5: Access is restricted to certain groups: allow if in group
-		foreach($this->getUserGroups() as $oUserGroup) {
+		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
 			if(in_array($oUserGroup->getGroupId(), $aGroupIds)) {
 				return true;
 			}
@@ -111,7 +111,7 @@ class User extends BaseUser {
 	
 	public function getGroups() {
 		$aResult = array();
-		foreach($this->getUserGroupsJoinGroup() as $oGroupUser) {
+		foreach($this->getUserGroupsRelatedByUserIdJoinGroup() as $oGroupUser) {
 			$aResult[] = $oGroupUser->getGroup();
 		}
 		return $aResult;
@@ -138,7 +138,7 @@ class User extends BaseUser {
 	
 	public function getActiveUserGroupIds($bAsString=false) {
 		$aResult = array();
-		foreach($this->getUserGroups() as $oUserGroup) {
+		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
 			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
 		}
 		return $aResult;
