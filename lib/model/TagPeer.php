@@ -48,14 +48,6 @@ class TagPeer extends BaseTagPeer {
 		return TagInstancePeer::doSelect($oCriteria);
 	}
 	
-	public static function getTagsUsedInModel($sModelName, $bDoSelect=true) {
-		$oCriteria = self::getTagsUsedInModelCriteria($sModelName);
-		if($bDoSelect) {
-			return self::doSelect($oCriteria);
-		}
-		return self::doCount($oCriteria);
-	}
-	
 	public static function getTagsUsedInModelCriteria($sModelName) {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(self::ID, TagInstancePeer::TAG_ID, Criteria::INNER_JOIN);

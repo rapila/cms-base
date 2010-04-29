@@ -36,7 +36,7 @@ class User extends BaseUser {
 	}
 	
 	public function requiresUserName() {
-		return trim($this->getFullName()) !== null;
+		return trim($this->getFullName()) === '';
 	}
 	
 	public function isSessionUser() {
@@ -68,7 +68,7 @@ class User extends BaseUser {
 		if($bCheckEnabled && !Module::isModuleEnabled('backend', $sBackendModuleName)) {
 			return false;
 		}
-		//Case 2: User is allowed: allow
+		//Case 2: User is admin: allow
 		if($this->getIsAdmin()) {
 			return true;
 		}
@@ -109,10 +109,14 @@ class User extends BaseUser {
 		return $aResult;
 	}
 	
-	public function getGroups() {
+	public function getGroups($bReturnNamesOnly = false) {
 		$aResult = array();
 		foreach($this->getUserGroupsRelatedByUserIdJoinGroup() as $oGroupUser) {
-			$aResult[] = $oGroupUser->getGroup();
+			if(!$bReturnNamesOnly) {
+				$aResult[] = $oGroupUser->getGroup();
+			} else {
+				$aResult[] = $oGroupUser->getGroup()->getName();
+			}
 		}
 		return $aResult;
 	}
@@ -136,7 +140,7 @@ class User extends BaseUser {
 		return $aResult;
 	}
 	
-	public function getActiveUserGroupIds($bAsString=false) {
+	public function getActiveUserGroupIds($bAsString = false) {
 		$aResult = array();
 		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
 			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
@@ -144,14 +148,30 @@ class User extends BaseUser {
 		return $aResult;
 	}
 	
-	public function hasGroup($iGroupId) {
+	public function hasGroup($mGroup) {
+		if($mGroup instanceof Group) {
+			$mGroup = $mGroup->getId();
+		}
 		foreach($this->getGroups() as $oGroup) {
-			if($oGroup->getId() === $iGroupId) {
+			if($oGroup->getId() === $mGroup) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	public function setPassword($sPassword, $cPasswordHashMethod = null) {
+		if(Settings::getSetting('security', 'generate_digest_secrets', false) === true) {
+			$this->setDigestHA1(md5($this->getUsername().':'.Session::getRealm().':'.$sPassword));
+		} else {
+			$this->setDigestHA1(null);
+		}
+		if($cPasswordHashMethod === null) {
+			$cPasswordHashMethod = array('PasswordHash', 'hashPassword');
+		}
+		if($cPasswordHashMethod !== false) {
+			$sPassword = call_user_func($cPasswordHashMethod, $sPassword);
+		}
+		return parent::setPassword($sPassword);
+	}
 }
-

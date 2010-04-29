@@ -91,6 +91,17 @@ class UserPeer extends BaseUserPeer {
 		return self::doSelect($oCriteria);
 	}
 	
+	public static function getUsersWithRights($mRightIds) {
+		if(!is_array($mRightIds)) {
+			$mRightIds = array($mRightIds);
+		}
+		$oCriteria = new Criteria();
+		$oCriteria->add(UserPeer::IS_INACTIVE, false);
+		$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::INNER_JOIN);
+		$oCriteria->add(UserGroupPeer::GROUP_ID, $mRightIds, Criteria::IN);
+		return self::doSelect($oCriteria);
+	}
+	
 	public static function getBackendUsersOther($sSearch=null, $iUserId=null, $bCountOnly=false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::IS_ADMIN, false);
@@ -150,7 +161,7 @@ class UserPeer extends BaseUserPeer {
 		$sUsername = $sUsername !== null ? $sUsername : ADMIN_USERNAME;
 		$sPassword = $sPassword !== null ? $sPassword : ADMIN_PASSWORD;
 		$oFirstUser = new User();
-		$oFirstUser->setPassword(PasswordHash::hashPassword($sPassword));
+		$oFirstUser->setPassword($sPassword);
 		$oFirstUser->setUsername($sUsername);
 		$oFirstUser->setIsAdmin(true);
 		$oFirstUser->save();

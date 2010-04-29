@@ -24,6 +24,10 @@ class LinkPeer extends BaseLinkPeer {
 		return self::doSelect($oCriteria);
 	}
 
+	/** 
+	 * getLinksByTagNameBackend()
+	 * for backend admin, also untagged links can be retrieved
+	 */ 
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));

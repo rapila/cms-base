@@ -81,11 +81,4 @@ class PagePeer extends BasePagePeer {
 		}
 		return 0;
 	}
-	
-	public static function getPagesRecursiveCriteria() {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::PARENT_ID, 1);
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return $oCriteria;
-	}
 }

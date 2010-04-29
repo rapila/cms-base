@@ -12,6 +12,12 @@
 class DocumentPeer extends BaseDocumentPeer {
 	
 	public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
+		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, $iDocumentCategory, $bDocumentKindIsNotInverted, $bExcludeExternallyManaged);
+		$oCriteria->addAscendingOrderByColumn(self::NAME);
+		return self::doSelect($oCriteria);
+	}
+
+	public static function getDocumentsByKindAndCategoryCriteria($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
 		$oCriteria = self::getDocumentsCriteria($bExcludeExternallyManaged);
 		if($iDocumentCategory !== null) {
 			$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
@@ -19,6 +25,12 @@ class DocumentPeer extends BaseDocumentPeer {
 		if($sDocumentKind !== null) {
 			$oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
 		}
+		return $oCriteria;
+	}
+	
+	public static function getDocumentsByKind($sDocumentKind=null) {
+		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, null, true, true);
+		$oCriteria->addAscendingOrderByColumn(self::DOCUMENT_CATEGORY_ID);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
 	}
@@ -49,6 +61,7 @@ class DocumentPeer extends BaseDocumentPeer {
 		return self::getDocumentsByKindAndCategory('image', null, false, $bExcludeExternallyManaged);
 	}
 	
+	// changed this for use in get_link_array, ordered by category for easier access in tinymce
 	public static function getDocumentsByKindOfImage($bExcludeExternallyManaged = true) {
 		return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
 	}
@@ -77,5 +90,7 @@ class DocumentPeer extends BaseDocumentPeer {
 		return self::doSelectOne($oCriteria);
 	}
 
-	
+	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
+		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
+	}
 }

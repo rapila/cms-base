@@ -4,7 +4,7 @@ require_once 'model/om/BaseUserGroup.php';
 
 
 /**
- * @package    model
+ * @package		 model
  */
 class UserGroup extends BaseUserGroup {
 

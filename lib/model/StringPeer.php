@@ -115,7 +115,7 @@ EOT;
 	public static function getStringsByLanguageId($sLanguageId, $sSearch = null, $sNameSpace = null) {
 		$oCriteria = self::getStringsByLanguageIdAndNameSpaceCriteria($sLanguageId, $sNameSpace);
 		if($sSearch !== null) {
-			$oCriteria->add(self::STRING_KEY, "%$sSearch%", Criteria::LIKE);
+			self::addSearchToCriteria($oCriteria, $sSearch);
 		}
 		$oCriteria->addAscendingOrderByColumn(self::STRING_KEY);
 		return self::doSelect($oCriteria);
@@ -135,9 +135,9 @@ EOT;
 	}
 	
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
-    $oSearchCriterion = $oCriteria->getNewCriterion(self::STRING_KEY, "%$sSearch%", Criteria::LIKE);
-    $oSearchCriterion->addOr($oCriteria->getNewCriterion(self::TEXT, "%$sSearch%", Criteria::LIKE));
-    $oCriteria->add($oSearchCriterion);
+		$oSearchCriterion = $oCriteria->getNewCriterion(self::STRING_KEY, "%$sSearch%", Criteria::LIKE);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::TEXT, "%$sSearch%", Criteria::LIKE));
+		$oCriteria->add($oSearchCriterion);
 	}
 
 }

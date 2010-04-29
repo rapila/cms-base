@@ -39,6 +39,21 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return self::doCount($oCriteria) > 0;
 	}
 	
+	public static function getMimeTypes() {
+		$oCriteria = new Criteria();
+		$oCriteria->setDistinct();
+		$oCriteria->addAscendingOrderByColumn(self::MIMETYPE);
+		return self::doSelect($oCriteria);
+	}
+	
+	public static function getMimeTypesAssoc() {
+		$aResult = array();
+		foreach(self::getMimeTypes() as $oMimeType) {
+			$aResult[$oMimeType->getDocumentKind()] = ucfirst($oMimeType->getDocumentKind());
+		}
+		return $aResult;
+	}
+	
 	public static function getDocumentTypeByMimetype($sMimetype=null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MIMETYPE, $sMimetype);
@@ -61,24 +76,22 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return $aResult;
 	}
 	
-	public static function getDocumentTypeForUpload($sFilesName) {
-		if(!isset($_FILES[$sFilesName])) {
-			throw new Exception("Exception in DocumentTypePeer::getDocumentTypeForUpload(): Invalid file upload specified, '$sFilesName'", UPLOAD_ERR_NO_FILE);
-		}
-		if($_FILES[$sFilesName]["error"] !== 0) {
-			throw new Exception("Exception in DocumentTypePeer::getDocumentTypeForUpload(): File upload has Errors, '$sFilesName'", $_FILES[$sFilesName]["error"]);
+	public static function getMostAgreedMimetypes($sFileName, $aDocTypeCompare = array(), $sBaseName = null) {
+		if($sBaseName === null) {
+			$sBaseName = basename($sFileName);
 		}
 		
-		$aDocTypeCompare = array();
+		if(is_dir($sFileName)) {
+			return 'application/x-directory';
+		}
+		
 		if(function_exists("finfo_open")) {
 			$rFinfo = finfo_open(FILEINFO_MIME);
-			$aDocTypeCompare['finfo'] = finfo_file($rFinfo, $_FILES[$sFilesName]['tmp_name']);
+			$aDocTypeCompare['finfo'] = finfo_file($rFinfo, $sFileName);
 			finfo_close($rFinfo);
 		}
 		
-		$aDocTypeCompare['uploaded'] = $_FILES[$sFilesName]['type'];
-		
-		$aName = explode(".", $_FILES[$sFilesName]['name']);
+		$aName = explode(".", $sBaseName);
 		if(count($aName) > 0) {
 			$oExtensionDocType = self::getDocumentTypeByExtension($aName[count($aName)-1]);
 			if($oExtensionDocType !== null) {
@@ -87,32 +100,62 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		}
 		
 		if(function_exists("mime_content_type")) {
-			$aDocTypeCompare['mime_content_type'] = mime_content_type($_FILES[$sFilesName]['tmp_name']);
+			$aDocTypeCompare['mime_content_type'] = mime_content_type($sFileName);
+		}
+		
+		if(($rFileUtility = popen("file --mime-type ".escapeshellarg($sFileName)." 2>/dev/null", "r")) !== false) {
+			$sReply = fgets($rFileUtility);
+			pclose($rFileUtility);
+			
+			// the reply begins with the requested filename
+			if (!strncmp($sReply, "$sFileName: ", strlen($sFileName)+2)) {					 
+				$sReply = substr($sReply, strlen($sFileName)+2);
+				// followed by the mime type (maybe including options)
+				if (preg_match('|^[[:alnum:]_-]+/[[:alnum:]_-]+;?.*|', $sReply, $matches)) {
+					$aDocTypeCompare['file_utility'] = $matches[0];
+				}
+			}
 		}
 		
 		$aSortedMimeTypes = array_count_values($aDocTypeCompare);
 		arsort($aSortedMimeTypes);
 		
 		$iCount = null;
+		$aResult = array();
 		foreach($aSortedMimeTypes as $sKey => $iTimes) {
 			if($iCount === null) {
 				$iCount = $iTimes;
 			}
-			if($iCount !== $iTimes) {
-				unset($aSortedMimeTypes[$sKey]);
-			}
-		}
-		foreach($aDocTypeCompare as $sKey => $sDocType) {
-			if(isset($aSortedMimeTypes[$sDocType])) {
-				$oDocType = self::getDocumentTypeByMimetype($sDocType);
-				if($oDocType !== null) {
-					return $oDocType;
-				}
+			if($iCount === $iTimes) {
+				$aResult[] = $sKey;
 			}
 		}
 		
-		//Try setting application/octet-stream
-		return self::getDocumentTypeByMimetype('application/octet-stream');
+		if(count($aResult) === 0) {
+			$aResult[] = 'application/octet-stream';
+		}
+		
+		return $aResult;
+	}
+	
+	public static function getDocumentTypeForUpload($sFilesName) {
+		if(!isset($_FILES[$sFilesName])) {
+			throw new Exception("Exception in DocumentTypePeer::getDocumentTypeForUpload(): Invalid file upload specified, '$sFilesName'", UPLOAD_ERR_NO_FILE);
+		}
+		if($_FILES[$sFilesName]["error"] !== 0) {
+			throw new Exception("Exception in DocumentTypePeer::getDocumentTypeForUpload(): File upload has Errors, '$sFilesName'", $_FILES[$sFilesName]["error"]);
+		}
+		
+		$aSortedMimeTypes = self::getMostAgreedMimetypes($_FILES[$sFilesName]['tmp_name'], array('uploaded' => $_FILES[$sFilesName]['type']), $_FILES[$sFilesName]['name']);
+		
+		foreach($aSortedMimeTypes as $sDocType) {
+			$oDocType = self::getDocumentTypeByMimetype($sDocType);
+			if($oDocType !== null) {
+				return $oDocType;
+			}
+		}
+		
+		return null;
 	}
 	
 	public static function hasDocTypesPreset($iMinEntries = 0) {
