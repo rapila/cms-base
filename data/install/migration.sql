@@ -114,6 +114,9 @@ UPDATE `documents` SET `document_category_id` = NULL WHERE `document_category_id
 #svn r2079
 ALTER TABLE `users` ADD `backend_settings` TEXT NULL DEFAULT NULL AFTER `password_recover_hint`;
 
+#svn r2294
+ALTER TABLE `users` ADD `digest_ha1` VARCHAR(32) NULL DEFAULT NULL AFTER `password_recover_hint`;
+
 #svn r2335
 ALTER TABLE `documents` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
 ALTER TABLE `documents` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;

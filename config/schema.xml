@@ -105,6 +105,7 @@
 		<unique-column name="username" />
 	</unique>
 	<column name="password" type="varchar" size="144" />
+  <column name="digest_ha1" type="varchar" size="32" phpName="DigestHA1" />
 	<column name="first_name" type="varchar" size="40" />
 	<column name="last_name" type="varchar" size="60" />
 	<column name="email" type="varchar" size="80" />		
