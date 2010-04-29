@@ -256,7 +256,6 @@ class ResourceIncluder {
 			throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName not found");
 		}
 		
-		
 		//Handle duplicate includes
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];

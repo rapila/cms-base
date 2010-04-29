@@ -56,11 +56,11 @@ class ErrorHandler {
 	}
 	
 	public static function shouldPrintErrors() {
-		return self::getEnvironment() === "development";
+		return self::getEnvironment() === "development" || self::getEnvironment() === "test";
 	}
 	
 	public static function shouldLogErrors() {
-		return self::getEnvironment() === "test";
+		return self::getEnvironment() === "test" || self::getEnvironment() === "development" || self::getEnvironment() === "production";
 	}
 	
 	public static function shouldMailErrors() {
@@ -115,7 +115,8 @@ class ErrorHandler {
 				$sResult .= $sVariableSeparationString;
 			}
 			if($bHasLooped)
-				$sResult = substr($sResult, 0, -strlen($sVariableSeparationString)).")";
+				$sResult = substr($sResult, 0, -strlen($sVariableSeparationString));
+			$sResult .= ")";
 		} else {
 			$sResult .= var_export($mToDump, true);
 		}
@@ -129,18 +130,6 @@ class ErrorHandler {
 		$aError['path'] = @$_REQUEST['path'];
 		
 		FilterModule::getFilters()->handleAnyError(array(&$aError));
-		if(self::shouldPrintErrors()) {
-			FilterModule::getFilters()->handleErrorPrint(array(&$aError));
-			Util::dumpAll($aError);
-		}
-		if(self::shouldLogErrors()) {
-			$sLogFilePath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/error.log';
-			$sErrorMessage = "[".date(DATE_RFC822)."] ".self::readableDump($aError)."\n";
-			FilterModule::getFilters()->handleErrorLog(array(&$sLogFilePath, &$aError, &$sErrorMessage));
-			if(file_put_contents($sLogFilePath, $sErrorMessage, FILE_APPEND) === false) {
-				die("Error could not be logged, ".$sLogFilePath.' is not writable');
-			}
-		}
 		if(self::shouldMailErrors()) {
 			$sAddress = Settings::getSetting('developer', 'email', false);
 			if(!$sAddress) {
@@ -148,8 +137,20 @@ class ErrorHandler {
 			}
 			if($sAddress) {
 				FilterModule::getFilters()->handleErrorEmailSend(array(&$sAddress, &$aError));
-				mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'].MAIN_DIR_FE.$aError['path'], print_r($aError, true));
+				mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'], MAIN_DIR_FE.$aError['path'].print_r($aError, true));
 			}
+		}
+		if(self::shouldLogErrors()) {
+			$sLogFilePath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/error.log';
+			$sErrorMessage = self::readableDump($aError);
+			$iMode = 0;
+			$sDestination = null;
+			FilterModule::getFilters()->handleErrorLog(array(&$sLogFilePath, &$aError, &$sErrorMessage, &$iMode, &$sDestination));
+			error_log($sErrorMessage, $iMode, $sDestination);
+		}
+		if(self::shouldPrintErrors()) {
+			FilterModule::getFilters()->handleErrorPrint(array(&$aError));
+			Util::dumpAll($aError);
 		}
 	}
 }

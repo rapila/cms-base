@@ -117,6 +117,7 @@ class ResourceFinder {
 		return self::findResource($mRelativePath, $iFlag, false, true, false);
 	}
 	
+	
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions set.
 	*/
@@ -276,7 +277,7 @@ class ResourceFinder {
 		return $mPath;
 	}
 	
-	public static function getFolderContents($sPath) {
+	public static function getFolderContents($sPath, $bIncludeInvisibles = false) {
 		if(!is_dir($sPath)){
 			return array();
 		}
@@ -287,7 +288,7 @@ class ResourceFinder {
 		$aResult = array();
 		while (false !== ($sFileName = readdir($rFolderHandle)))
 		{
-			if(strpos($sFileName, ".")!==0) {
+			if(!StringUtil::startsWith($sFileName, ".") || ($bIncludeInvisibles && $sFileName !== '.' && $sFileName !== '..')) {
 				$aResult[$sFileName] = "$sPath/$sFileName";
 			}
 		}
@@ -296,27 +297,19 @@ class ResourceFinder {
 	}
 	
 	public static function mimeTypeOfFile($sFile) {
-		$sMimeType = null;
-		if(function_exists("finfo_open")) {
-			$rFinfo = finfo_open(FILEINFO_MIME);
-			$sMimeType = finfo_file($rFinfo, $sFile);
-			finfo_close($rFinfo);
-		} else if(function_exists("mime_content_type")) {
-			$sMimeType = mime_content_type($sFile);
-		} else {
-			$aName = explode(".", $sFile);
-			if(count($aName) > 0) {
-				$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($aName[count($aName)-1]);
-			}
-			if($oDocumentType) {
-				$sMimeType = $oDocumentType->getMimetype();
-			}
-		}
-		if($sMimeType === null) {
-			$sMimeType = 'application/octet-stream';
-		}
-		return $sMimeType;
+		$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes($sFile);
+		return $aMimeTypes[0];
 	}
 	
-
+	public static function recursiveUnlink($sFileName) {
+		if(is_dir($sFileName)) {
+			foreach(self::getFolderContents($sFileName, true) as $sSubFilePath) {
+				self::recursiveUnlink($sSubFilePath);
+			}
+			rmdir($sFileName);
+		} else {
+			unlink($sFileName);
+		}
+	}
+	
 }

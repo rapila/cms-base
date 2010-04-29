@@ -142,6 +142,11 @@ abstract class Module {
 		return $aModuleMetadata;
 	}
 	
+	public static function moduleExists($sModuleName, $sType=null) {
+		$aModules = self::listModulesByType($sType);
+		return isset($aModules[$sModuleName]);
+	}
+	
 	public static function listModulesByType($sType, $bListEnabledOnly = true) {
 		if($sType === null) {
 			$sType = ResourceFinder::ANY_NAME_OR_TYPE_PATTERN;

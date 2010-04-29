@@ -5,163 +5,218 @@ require_once('propel/query/Criteria.php');
  */
 class Session {
 
-  private $oUser;
-  private $iUserId;
-  private $aAttributes;
+	private $oUser;
+	private $iUserId;
+	private $aAttributes;
 
-  const SESSION_LANGUAGE_KEY = "language";
-  const SESSION_OBJECT_KEY = "session_object_key";
-  const SESSION_LAST_EDIT_MODULE  = 'last_edit_module';
-  const SESSION_LAST_EDIT_ID      = 'last_edit_id';
+	const SESSION_LANGUAGE_KEY = "language";
+	const SESSION_OBJECT_KEY = "session_object_key";
+	const SESSION_LAST_EDIT_MODULE	= 'last_edit_module';
+	const SESSION_LAST_EDIT_ID			= 'last_edit_id';
 
-  const USER_IS_VALID = 1;
-  const USER_IS_DEFAULT_USER = 2;
-  const USER_IS_INACTIVE = 4;
-  const USER_IS_FRONTEND_ONLY = 8;
+	const USER_IS_VALID = 1;
+	const USER_IS_DEFAULT_USER = 2;
+	const USER_IS_INACTIVE = 4;
+	const USER_IS_FRONTEND_ONLY = 8;
 
-  public function __construct() {
-    $_SESSION[self::SESSION_OBJECT_KEY] = $this;
-    $this->aAttributes = array();
-  }
+	public function __construct() {
+		$_SESSION[self::SESSION_OBJECT_KEY] = $this;
+		$this->aAttributes = array();
+	}
 
-  public function __sleep() {
-    $this->oUser = null;
-    return array_keys(get_object_vars($this));
-  }
+	public function __sleep() {
+		$this->oUser = null;
+		return array_keys(get_object_vars($this));
+	}
 
-  public function __wakeup() {
-    if($this->iUserId === null || @$_REQUEST['logout'] === "true") {
-      $this->iUserId = null;
-      unset($_REQUEST['logout']);
-      unset($_POST['logout']);
-      unset($_GET['logout']);
-      return;
-    }
-    $this->oUser = UserPeer::retrieveByPK($this->iUserId);
-  }
+	public function __wakeup() {
+		if($this->iUserId === null || @$_REQUEST['logout'] === "true") {
+			$this->iUserId = null;
+			unset($_REQUEST['logout']);
+			unset($_POST['logout']);
+			unset($_GET['logout']);
+			return;
+		}
+		$this->oUser = UserPeer::retrieveByPK($this->iUserId);
+	}
 
-  public function isAuthenticated() {
-    return ($this->oUser !== null);
-  }
+	public function isAuthenticated() {
+		return ($this->oUser !== null);
+	}
 
-  public function login($sUsername, $sPassword) {
-    $oCriteria = new Criteria();
-    $oCriteria->add(UserPeer::USERNAME, $sUsername, Criteria::EQUAL);
-    $oUser = UserPeer::doSelectOne($oCriteria);
-    if($oUser === null) {
-      return 0;
-    }
-    if(!PasswordHash::comparePassword($sPassword, $oUser->getPassword())) {
-      if(PasswordHash::comparePasswordFallback($sPassword, $oUser->getPassword())) {
-        $oUser->setPassword(PasswordHash::hashPassword($sPassword));
-        $oUser->save();
-        return $this->login($sUsername, $sPassword);
-      }
-      return 0;
-    }
-    $iReturnValue = self::USER_IS_VALID;
-    if(!$oUser->getIsBackendLoginEnabled()) {
-      $iReturnValue |= self::USER_IS_FRONTEND_ONLY;
-    }
-    if($oUser->getIsInactive()) {
-      $iReturnValue |= self::USER_IS_INACTIVE;
-      $iReturnValue &= ~self::USER_IS_VALID;
-    }
-    //Actual login
-    if(($iReturnValue & self::USER_IS_VALID) === self::USER_IS_VALID) {
-      $this->oUser = $oUser;
-      $this->iUserId = $oUser->getId();
-      if ($this->oUser->getFirstName() == '') {
-        // user firstname can only (should only) be empty if it is the default user
-        $iReturnValue |= self::USER_IS_DEFAULT_USER;
-      }
-    }
-    return $iReturnValue;
-  }
+	public function login($sUsername, $sPassword) {
+		$oUser = UserPeer::getUserByUserName($sUsername);
+		if($oUser === null) {
+			return 0;
+		}
+		if(!PasswordHash::comparePassword($sPassword, $oUser->getPassword())) {
+			if(PasswordHash::comparePasswordFallback($sPassword, $oUser->getPassword())) {
+				$oUser->setPassword($sPassword);
+				$oUser->save();
+				return $this->login($sUsername, $sPassword);
+			}
+			return 0;
+		}
+		if($oUser->getDigestHA1() === null && Settings::getSetting('security', 'generate_digest_secrets', false) === true) {
+			$oUser->setPassword($sPassword);
+			$oUser->save();
+		}
+		return $this->loginUser($oUser);
+	}
+	
+	public static function startDigest() {
+		header('HTTP/1.1 401 Unauthorized');
+		header('WWW-Authenticate: Digest realm="'.self::getRealm().'",qop="auth",nonce="'.Util::uuid().'",opaque="'.self::getRealm().'"');
+	}
+	
+	public function loginUsingDigest() {
+		if(empty($_SERVER['PHP_AUTH_DIGEST'])) {
+			return 0;
+		}
+		
+		// analyze the PHP_AUTH_DIGEST variable
+		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUserName($aDigestContent['username'])) === null) {
+			return 0;
+		}
+		
+		// generate the valid response
+		$sHA1 = $oUser->getDigestHA1();
+		if($sHA1 === null) {
+			return 0;
+		}
+		$sHA2 = md5($_SERVER['REQUEST_METHOD'].':'.$aDigestContent['uri']);
+		$sCorrectResponse = md5($sHA1.':'.$aDigestContent['nonce'].':'.$aDigestContent['nc'].':'.$aDigestContent['cnonce'].':'.$aDigestContent['qop'].':'.$sHA2);
 
-  public function logout() {
-    $this->oUser = null;
-    $this->iUserId = null;
-  }
+		if($aDigestContent['response'] !== $sCorrectResponse) {
+			return 0;
+		}
+		
+		return $this->loginUser($oUser);
+	}
+	
+	private function loginUser($oUser) {
+		$iReturnValue = self::USER_IS_VALID;
+		if(!$oUser->getIsBackendLoginEnabled()) {
+			$iReturnValue |= self::USER_IS_FRONTEND_ONLY;
+		}
+		if($oUser->getIsInactive()) {
+			$iReturnValue |= self::USER_IS_INACTIVE;
+			$iReturnValue &= ~self::USER_IS_VALID;
+		}
+		//Actual login
+		if(($iReturnValue & self::USER_IS_VALID) === self::USER_IS_VALID) {
+			$this->oUser = $oUser;
+			$this->iUserId = $oUser->getId();
+			if ($this->oUser->getFirstName() == '') {
+				// user firstname can only (should only) be empty if it is the default user
+				$iReturnValue |= self::USER_IS_DEFAULT_USER;
+			}
+		}
+		return $iReturnValue;
+	}
 
-  public function getLanguage() {
-    return $this->getAttribute(self::SESSION_LANGUAGE_KEY);
-  }
+	private static function parseDigestHeader() {
+		// protect against missing data
+		$aNeededParts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
+		$aResult = array();
+		$sKeys = implode('|', array_keys($aNeededParts));
+		
+		preg_match_all('@(' . $sKeys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $_SERVER['PHP_AUTH_DIGEST'], $aMatches, PREG_SET_ORDER);
+		
+		foreach ($aMatches as $aMatch) {
+				$aResult[$aMatch[1]] = $aMatch[3] ? $aMatch[3] : $aMatch[4];
+				unset($aNeededParts[$aMatch[1]]);
+		}
+		return $aNeededParts ? false : $aResult;
+	}
 
-  public function setLanguage($sLanguage) {
-    return $this->setAttribute(self::SESSION_LANGUAGE_KEY, $sLanguage);
-  }
+	public function logout() {
+		$this->oUser = null;
+		$this->iUserId = null;
+	}
 
-  public function setAttribute($sAttribute, $mValue) {
-    if($mValue === null) {
-      unset($this->aAttributes[$sAttribute]);
-      return;
-    }
-    $this->aAttributes[$sAttribute] = $mValue;
-  }
-  
-  public function setArrayAttributeValueForKey($sAttribute, $sKey, $mValue) {
-    if(!$this->hasAttribute($sAttribute)) {
-      $this->aAttributes[$sAttribute] = array();
-    } else if(!is_array($this->aAttributes[$sAttribute])) {
-      throw new Exception("Error in Session->setArrayAttributeValueForKey: Attribute $sAttribute is not an array");
-    }
-    $this->aAttributes[$sAttribute][$sKey] = $mValue;
-  }
+	public function getLanguage() {
+		return $this->getAttribute(self::SESSION_LANGUAGE_KEY);
+	}
 
-  public function getAttribute($sAttribute) {
-    if(in_array($sAttribute, array('isAuthenticated', 'getUserId'))) {
-      return $this->$sAttribute();
-    }
-    if($this->hasAttribute($sAttribute)) {
-      return $this->aAttributes[$sAttribute];
-    }
-    return Settings::getSetting("session_default", $sAttribute, null);
-  }
-  
-  public function getArrayAttributeValueForKey($sAttribute, $sKey) {
-    if(!$this->hasAttribute($sAttribute)) {
-      return null;
-    } else if(!is_array($this->aAttributes[$sAttribute])) {
-      throw new Exception("Error in Session->getArrayAttributeValueForKey: Attribute $sAttribute is not an array");
-    }
-    return @$this->aAttributes[$sAttribute][$sKey];
-  }
+	public function setLanguage($sLanguage) {
+		return $this->setAttribute(self::SESSION_LANGUAGE_KEY, $sLanguage);
+	}
 
-  public function resetAttribute($sAttribute) {
-    $this->setAttribute($sAttribute, null);
-  }
+	public function setAttribute($sAttribute, $mValue) {
+		if($mValue === null) {
+			unset($this->aAttributes[$sAttribute]);
+			return;
+		}
+		$this->aAttributes[$sAttribute] = $mValue;
+	}
+	
+	public function setArrayAttributeValueForKey($sAttribute, $sKey, $mValue) {
+		if(!$this->hasAttribute($sAttribute)) {
+			$this->aAttributes[$sAttribute] = array();
+		} else if(!is_array($this->aAttributes[$sAttribute])) {
+			throw new Exception("Error in Session->setArrayAttributeValueForKey: Attribute $sAttribute is not an array");
+		}
+		$this->aAttributes[$sAttribute][$sKey] = $mValue;
+	}
 
-  public function hasAttribute($sAttribute) {
-    return isset($this->aAttributes[$sAttribute]);
-  }
+	public function getAttribute($sAttribute) {
+		if(in_array($sAttribute, array('isAuthenticated', 'getUserId'))) {
+			return $this->$sAttribute();
+		}
+		if($this->hasAttribute($sAttribute)) {
+			return $this->aAttributes[$sAttribute];
+		}
+		return Settings::getSetting("session_default", $sAttribute, null);
+	}
+	
+	public function getArrayAttributeValueForKey($sAttribute, $sKey) {
+		if(!$this->hasAttribute($sAttribute)) {
+			return null;
+		} else if(!is_array($this->aAttributes[$sAttribute])) {
+			throw new Exception("Error in Session->getArrayAttributeValueForKey: Attribute $sAttribute is not an array");
+		}
+		return @$this->aAttributes[$sAttribute][$sKey];
+	}
 
-  public static function language() {
-    return self::getSession()->getLanguage();
-  }
+	public function resetAttribute($sAttribute) {
+		$this->setAttribute($sAttribute, null);
+	}
 
-  public static function getSession() {
-    if(isset($_SESSION[self::SESSION_OBJECT_KEY])) {
-      return $_SESSION[self::SESSION_OBJECT_KEY];
-    }
-    return new Session();
-  }
+	public function hasAttribute($sAttribute) {
+		return isset($this->aAttributes[$sAttribute]);
+	}
 
-  public function getUser() {
-    return $this->oUser;
-  }
+	public static function language() {
+		return self::getSession()->getLanguage();
+	}
 
-  public function getUserId() {
-    return $this->iUserId;
-  }
+	public static function getSession() {
+		if(isset($_SESSION[self::SESSION_OBJECT_KEY])) {
+			return $_SESSION[self::SESSION_OBJECT_KEY];
+		}
+		return new Session();
+	}
+
+	public static function getRealm() {
+		str_replace(array('/', '.'), '_', StringUtil::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE);
+	}
+
+	public function getUser() {
+		return $this->oUser;
+	}
+
+	public function getUserId() {
+		return $this->iUserId;
+	}
 }
 
 try {
-  session_name("Session".str_replace(array('/', '.'), '_', StringUtil::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE));
-  @session_start();
+	session_name("Session".Session::getRealm());
+	@session_start();
 } catch (ClassNotFoundException $e) {
-  //Tried to load class that does not exist (may be because the user’s session contains old data, clearing the session)
-  foreach($_SESSION as $sSessionKey => $mSessionValue) {
-    unset($_SESSION[$sSessionKey]);
-  }
+	//Tried to load class that does not exist (may be because the user’s session contains old data, clearing the session)
+	foreach($_SESSION as $sSessionKey => $mSessionValue) {
+		unset($_SESSION[$sSessionKey]);
+	}
 }

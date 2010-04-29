@@ -42,6 +42,21 @@ class DocumentUtil {
 		$oDocument->setData($oDocument->getData());
 		$oDocumentType = DocumentTypePeer::getDocumentTypeForUpload($sUploadFileName);
 		$oDocument->setDocumentType($oDocumentType);
+		
+		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null 
+			&& $oDocument->getDocumentCategory()->getMaxWidth() != null) {
+			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
+			$oImage = Image::imageFromData($oDocument->getData()->getContents());
+			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
+				$oImage->setSize((int)$oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
+				ob_start();
+				$oImage->render();
+				$oDocument->getData()->setContents(ob_get_contents());
+				ob_end_clean();
+				$oDocument->setData($oDocument->getData());
+			}
+		}
+
 		$oDocument->save();
 		return $oDocument->getId();
 	}
