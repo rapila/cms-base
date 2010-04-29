@@ -1,15 +1,21 @@
-<h1>SQL Dump</h1>
-<fieldset>
-  <form action="{{writeLink=to_self}}" method="post">
-  <label for="choose_file">
-  {{writeString=path_to_export_file}}
-  </label>
-  <input id="choose_file" name="choose_file" type="text" value="{{dump_name}}" />{{writeString=path_dump_dir}}: {{save_dir}}<br />
-  <label for="dump_tool">
-  {{writeString=path_to_mysqldump}}
-  </label>
-  <input id="dump_tool" name="dump_tool" type="text" value="{{dump_tool}}" />
-  <label>&nbsp;
-  </label><button type="submit" class="go" title="{{writeString=go}}"></button>
-  </form>
-</fieldset>
+<h1>{{module_info_link}} {{quoteString=\{\{title\}\};alternate=true;}}</h1>
+<form action="{{writeLink=to_self}}" method="post">
+  <fieldset>
+    <label for="choose_file">
+    {{writeString=path_to_export_file}}
+    </label>
+    <input id="choose_file" name="choose_file" type="text" value="{{dump_name}}" /><br />
+    <label>{{writeString=path_dump_dir}}</label>
+    <div style="display:inline-block;padding:.2em 0;">{{save_dir}}</div>
+  </fieldset>  
+  <fieldset class="divider">
+    <label for="dump_tool">
+    {{writeString=path_to_mysqldump}}
+    </label>
+    <input id="dump_tool"{{no_dump_style}} name="dump_tool" type="text" value="{{dump_tool}}" />
+  </fieldset>  
+  <fieldset class="divider nolegend">
+    <label>&nbsp;
+    </label><button type="submit" class="go" title="{{writeString=go}}"></button>
+</fieldset>  
+</form>

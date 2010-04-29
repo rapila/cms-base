@@ -22,7 +22,7 @@ class LanguagesBackendModule extends BackendModule {
   public function getDetail() {
     if($this->oLanguage === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('languages', null, array('action' => 'create'))), StringPeer::getString('language.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('languages', null, array('action' => 'create'))), StringPeer::getString('language.create')));
       return $oTemplate;
     }
     

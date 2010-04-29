@@ -46,7 +46,7 @@ class StringsBackendModule extends BackendModule {
   public function getDetail() {
     if($this->oString === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('strings', null, array('action' => 'create'))), StringPeer::getString('strings.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('strings', null, array('action' => 'create'))), StringPeer::getString('strings.create')));
       return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("detail");

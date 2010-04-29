@@ -4,7 +4,7 @@
 */
 class SettingsBackendModule extends BackendModule {
   public static $AVAILABLE_SECTIONS = array('direct_links', 'site_links', 'admin_links');
-  public static $FIXED_MODULE_NAMES = array('pages', 'content');
+  public static $FIXED_MODULE_NAMES = array('pages', 'content', 'my_dashboard');
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('chooser');

@@ -271,7 +271,7 @@ class FormObject {
     $sTagName = 'p';
     if($this->isVisibleFormElement()) {
       if($this->sLabel === '') {
-        $this->sLabel = new Template('&nbsp;', null, true);
+        $this->sLabel = new Template(' ', null, true); //nbsp
       }
       $oKeyValueTemplate->replaceIdentifier("label", TagWriter::quickTag("label", array('for' => $this->getFormObjectId($iFormId), 'class' => $this->sClassName), $this->sLabel));
     } else {

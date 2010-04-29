@@ -12,6 +12,11 @@ class UsersBackendModule extends BackendModule {
     if(Manager::hasNextPathItem()) {
       $this->oUser=UserPeer::retrieveByPK(Manager::usePath());
     }
+    if(isset($_REQUEST['check_userkind'])) {
+      if($this->oUser === null || $this->oUser->getIsBackendLoginEnabled() === false) {
+        $_REQUEST['user_kind'] = UserPeer::FRONTEND_USER;
+      }
+    }
     $this->iUserKind = ListUtil::handleBackendChooserListSelection('user_kind', false, UserPeer::BACKEND_USER);
     $this->bIsBackendLoginEnabled = $this->iUserKind !== UserPeer::FRONTEND_USER;
   }
@@ -51,7 +56,7 @@ class UsersBackendModule extends BackendModule {
         return;
       }
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('users', null, array('action' => 'create'))), StringPeer::getString('user.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('users', null, array('action' => 'create'))), StringPeer::getString('user.create')));
       return $oTemplate;
     }
     // detail
@@ -93,7 +98,7 @@ class UsersBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('password'));
       $oTemplate->replaceIdentifier("display_style", ' block');
     } else {
-      $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('login.password_reset'));
+      $oTemplate->replaceIdentifier("password_legend", StringPeer::getString('user.password_change'));
       $oTemplate->replaceIdentifier("display_class", '');
       $oTemplate->replaceIdentifier("full_name", $this->oUser->getFullName());
       $oTemplate->replaceIdentifier("display_style", ' none');
@@ -108,15 +113,13 @@ class UsersBackendModule extends BackendModule {
     
     //Groups
     if(!$this->oUser->isSessionUser()) { 
+      $oTemplate->replaceIdentifier("has_groups", 'true');
       $aGroups = GroupPeer::doSelect(new Criteria());
-      $oTemplate->replaceIdentifier("has_groups", count($aGroups) > 0 ? 'yes' : 'no');
       if(count($aGroups) > 0) {
         $aGroupOptions = TagWriter::optionsFromObjects($aGroups, 'getId', 'getName', $this->oUser->getGroups(), false);
         $oTemplate->replaceIdentifier("group_options", $aGroupOptions);
-      } else {
-        $oTemplate->replaceIdentifier("user.no_groups_message", StringPeer::getString('user.no_groups_message'));
-        $oTemplate->replaceIdentifier("edit_groups_link", TagWriter::quickTag('a', array('href' => LinkUtil::link(array('groups'), "BackendManager", array('action' => "create"))), StringPeer::getString('group.create')));
       }
+      $oTemplate->replaceIdentifier("create_group_link", TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('groups', null, array('action' => 'create'))), StringPeer::getString('group.create')));
     }
     return $oTemplate;
   }
@@ -127,7 +130,7 @@ class UsersBackendModule extends BackendModule {
     }    
     $this->oUser = new User();
     $this->oUser->setCreatedBy(Session::getSession()->getUserId());
-    $this->oUser->setIsBackendLoginEnabled(true);
+    $this->oUser->setIsBackendLoginEnabled(false);
   }
   
   public function delete() {
@@ -171,12 +174,12 @@ class UsersBackendModule extends BackendModule {
     $this->oUser->setEmail($_POST['email']);
     $this->oUser->setLanguageId($_POST['language_id']); 
     if(!$this->oUser->isSessionUser()) { 
-      $this->oUser->setIsBackendLoginEnabled(isset($_POST['is_backend_login_enabled'])); 
+      $this->oUser->setIsBackendLoginEnabled(isset($_POST['is_admin']) || isset($_POST['is_backend_login_enabled'])); 
     }
     
     //Password
     if($_POST['be_password'] !== '') {
-      $this->oUser->setPassword(PasswordHash::hashPassword($_POST['be_password']));
+      $this->oUser->setPassword($_POST['be_password']);
       $this->oUser->setPasswordRecoverHint(null);
     }
     

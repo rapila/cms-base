@@ -1,0 +1,10 @@
+  <fieldset class="divider nolegend">
+    <label for="create_history">{{writeString=content_save_history}}</label>
+    {{if=;1=\{\{readonly_history_override\}\};2=true}}
+      <input type="hidden" name="create_history" value="1" style="display: none;" />
+      <input type="checkbox" id="create_history" value="1" checked="checked" disabled="disabled" />
+    {{endIf}}
+    {{if=ne;1=\{\{readonly_history_override\}\};2=true}}
+      <input type="checkbox" name="create_history" id="create_history" value="1" />
+    {{endIf}}
+  </fieldset>

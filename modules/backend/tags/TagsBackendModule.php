@@ -114,7 +114,7 @@ class TagsBackendModule extends BackendModule {
       $oTagTemplate->replaceIdentifier("quantity", $oTag->countTagInstances());
       $oTemplate->replaceIdentifierMultiple("tags", $oTagTemplate);
     }
-    print $oTemplate->render();
+    return $oTemplate->render();
   }
   
   private function saveTags() {

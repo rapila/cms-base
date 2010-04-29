@@ -4,8 +4,8 @@
     {{edit_content}}
     <fieldset class="divider">
       <label for="name" class="helptext" title="{{writeString=page.path_name_info}}">{{writeString=page.path_name}}</label>
-      {{identifierContext=start;name=name}}<input class="short" type="text" name="name" id="name" value="{{name}}" size="15" />{{identifierContext=end;name=name}}
-      <a class="page_web_link" href="{{weblink}}">http://{{display_weblink}}</a><br />
+      {{identifierContext=start;name=name}}<input class="short" type="text" name="name" id="name" style="background-color:transparent;border-color:#CDCDCD;" value="{{name}}" size="15" />{{identifierContext=end;name=name}}
+      {{identifierContext=start;name=display_weblink}}<a class="page_web_link" href="{{weblink}}">http://{{display_weblink}}</a><br />{{identifierContext=end;name=display_weblink}}{{identifierContext=start;name=display_weblink_info}}<span class="page_web_link">http://{{display_weblink_info}}</span><br />{{identifierContext=end;name=display_weblink_info}}
       {{writeFlashValue=parent_id_is_self}}
       {{writeFlashValue=parent_id_forbidden}}
       {{writeFlashValue=page_name}}
@@ -13,7 +13,7 @@
     </fieldset>     
     {{titles}}
     {{writeFlashValue=page_title}}
-    <fieldset><legend>{{writeString=page.status}}</legend>
+    <fieldset class="divider"><legend>{{writeString=page.status}}</legend>
       <div id="check_boxes_container">
         <label class="{{status_is_inactive}}" for="is_inactive">{{writeString=is_inactive}}</label>
         <input type="checkbox" name="is_inactive" id="is_inactive" value="1" {{is_inactive}} /><br />

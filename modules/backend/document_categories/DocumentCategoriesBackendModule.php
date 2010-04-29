@@ -7,6 +7,9 @@ class DocumentCategoriesBackendModule extends BackendModule {
   private $oDocumentCategory = null;
   
   public function __construct() {
+    if(isset($_REQUEST['selected_document_cateogory_id'])) {
+      $this->oDocumentCategory=DocumentCategoryPeer::retrieveByPk($_REQUEST['selected_document_cateogory_id']); 
+    }
     if(Manager::hasNextPathItem()) {
       $this->oDocumentCategory=DocumentCategoryPeer::retrieveByPK(Manager::usePath()); 
     }
@@ -21,6 +24,10 @@ class DocumentCategoriesBackendModule extends BackendModule {
       if($oDocumentCategory->getIsExternallyManaged()) {
         $sExternallyManaged = ' [EM]';
       }
+      if($oDocumentCategory->getMaxWidth() != null) {
+        $oItemTemplate->replaceIdentifier('max_width', '['.$oDocumentCategory->getMaxWidth().'px]');
+      }
+      $oItemTemplate->replaceIdentifier('externally_managed', $oDocumentCategory->getIsExternallyManaged() ? '[e]' : '[i]');
       $oItemTemplate->replaceIdentifier('title', $oDocumentCategory->getName().$sExternallyManaged);
       $oItemTemplate->replaceIdentifier('link', LinkUtil::link('document_categories/'.$oDocumentCategory->getId()));
       if($this->oDocumentCategory && ($this->oDocumentCategory->getId() == $oDocumentCategory->getId())) {
@@ -37,7 +44,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
   public function getDetail() {
     if($this->oDocumentCategory === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('document_categories', null, array('action' => 'create'))), StringPeer::getString('document_categories.create')));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       return $oTemplate;
@@ -62,6 +69,8 @@ class DocumentCategoriesBackendModule extends BackendModule {
     if(Session::getSession()->getUser()->getIsAdmin()) {
       $oTemplate->replaceIdentifier("is_externally_managed_checked", $this->oDocumentCategory->getIsExternallyManaged() ? $sChecked : '', null, Template::NO_HTML_ESCAPE);
     }
+    $oTemplate->replaceIdentifier("documents_count", ' ['.$this->oDocumentCategory->countDocuments().']');
+    $oTemplate->replaceIdentifier("documents_link", TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('documents', null, array('selected_document_category_id' => $this->oDocumentCategory->getId()))), StringPeer::getString('documents.edit')));
     $oTemplate->replaceIdentifier("action", $this->link($this->oDocumentCategory->getId()));
     
     return $oTemplate;
@@ -83,8 +92,7 @@ class DocumentCategoriesBackendModule extends BackendModule {
       $this->create();
     }
     $this->oDocumentCategory->setName($_POST['name']);
-    // $this->oDocumentCategory->setSort($_POST['sort']);
-    if($_POST['max_width'] === '') {
+    if($_POST['max_width'] == null) {
       $this->oDocumentCategory->setMaxWidth(null);
     } else {
       $this->oDocumentCategory->setMaxWidth($_POST['max_width']);

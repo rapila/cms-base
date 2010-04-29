@@ -121,6 +121,6 @@ class ContentBackendModule extends BackendModule {
       BackendAjaxFrontendModule::printError(BackendAjaxFrontendModule::ERROR_NOT_PERMITTED);
     }
     $oPageTypeModule = PageTypeModule::getModuleInstance($oPage->getPageType(), $oPage);
-    $oPageTypeModule->getAjax($aPath);
+    return $oPageTypeModule->getAjax($aPath);
   }
 }

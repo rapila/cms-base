@@ -48,7 +48,6 @@ class ModuleManagerBackendModule extends BackendModule {
       $oTemplate->replaceIdentifier($sModuleInfoKey, $sModuleInfoValue);
     }
     
-    
     return $oTemplate;
   }
   

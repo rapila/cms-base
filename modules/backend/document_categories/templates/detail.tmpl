@@ -1,18 +1,21 @@
-<h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
+<h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} <span class="id_info">[id: {{id}}] </span></h1>
 <form action="{{action}}"  method="post">
-  <fieldset><legend>{{writeString=document_category}} [id:{{id}}]</legend>
+  <fieldset class="divider">
     <input type="hidden" name="id" value="{{id}}" />
     <label for="name">{{writeString=name}}</label>
-    <input type="text" name="name" value="{{name}}" /><br />
-    <label for="max_width">{{writeString=max_width}}</label>
-    <input class="autowidth" type="text" name="max_width" value="{{max_width}}" /><br />
-    <label for="is_inactive">{{writeString=is_inactive}}</label>
-    <div class="grouped_items">
-      <input type="checkbox" name="is_inactive" id="is_inactive" value="1"{{is_inactive}} />
-      {{identifierContext=start;name=is_externally_managed_checked}}<label for="is_externally_managed">{{writeString=document_category.is_externally_managed}}</label><input type="checkbox" name="is_externally_managed" id="is_externally_managed" value="1"{{is_externally_managed_checked}} />
-{{identifierContext=end;name=is_externally_managed_checked}}
-    </div>
+    <input type="text" name="name" value="{{name}}" />
   </fieldset>
+  <fieldset class="divider">
+    <label for="is_inactive">{{writeString=is_inactive}}</label>
+      <div class="grouped_items">
+        <input type="checkbox" name="is_inactive" id="is_inactive" value="1"{{is_inactive}} />
+          <label for="is_externally_managed"> {{writeString=document_category.is_externally_managed}}</label><input type="checkbox" name="is_externally_managed" id="is_externally_managed" value="1"{{is_externally_managed_checked}} />
+    </div>
+  </fieldset>{{identifierContext=start;name=is_externally_managed_checked}}
+  <fieldset class="divider">
+      <label for="max_width">{{writeString=max_width}}</label>
+      <input type="text" class="autowidth" name="max_width" value="{{max_width}}" size="5" />
+  </fieldset>{{identifierContext=end;name=is_externally_managed_checked}}
   <fieldset class="divider nolegend">
     <label for="save">{{writeString=save}}</label><button id="save" type="submit" title="{{writeString=save}}"></button>
   </fieldset>
@@ -20,3 +23,8 @@
 {{identifierContext=start;name=delete_button}}<fieldset class="divider">
   {{delete_button}}
 </fieldset>{{identifierContext=end;name=delete_button}}
+<fieldset class="divider"><legend>{{writeString=document_category.related_documents}}</legend>
+  <div class="form_message">
+    {{documents_link}} {{documents_count}}
+  </div>
+</fieldset>

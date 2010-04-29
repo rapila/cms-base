@@ -1,10 +1,12 @@
-<h1>{{quoteString=\{\{extension\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
+<h1>{{quoteString=\{\{extension\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} <span class="id_info">[id: {{id}}] </span></h1>
 <form action="{{action}}" method="post">
-<fieldset><legend>{{writeString=document.type}} [id:{{id}}]</legend>
+<fieldset class="divider">
   <label for="extension">{{writeString=document.extension}}</label>
   <input type="text" id="extension" name="extension" value="{{extension}}" /><br />
   <label for="mimetype">{{writeString=document.mimetype}}</label>
   <input type="text" id="mimetype" name="mimetype" value="{{mimetype}}" /><br />
+</fieldset>
+<fieldset class="divider">
   <label for="is_office_doc">{{writeString=document.is_of_office_use}}</label>
   <input type="checkbox" name="is_office_doc" id="is_office_doc" value="1" {{is_office_doc}}/><br />
 </fieldset>

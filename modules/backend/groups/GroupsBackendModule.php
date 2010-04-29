@@ -35,7 +35,7 @@ class GroupsBackendModule extends BackendModule {
   public function getDetail() {
     if($this->oGroup === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('groups', null, array('action' => 'create'))), StringPeer::getString('group.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('groups', null, array('action' => 'create'))), StringPeer::getString('group.create')));
       return $oTemplate;
     }
     $oTemplate = $this->constructTemplate("detail");
@@ -76,6 +76,19 @@ class GroupsBackendModule extends BackendModule {
     $oRightTemplate->replaceIdentifier("options_pages", TagWriter::optionsFromArray($aPages));
     $oRightTemplate->replaceIdentifier("right_id", "new_");
     $oTemplate->replaceIdentifierMultiple("group_right", $oRightTemplate);
+
+    // show users with this usergroup
+    if(!$this->oGroup->isNew()) {
+      $oUsersWithGroups = UserPeer::getUsersWithRights($this->oGroup->getId());
+      if(count($oUsersWithGroups) > 0) {
+        $oUsersTemplate = $this->constructTemplate('detail_users');
+        foreach($oUsersWithGroups as $oUser) {
+          $oUsersTemplate->replaceIdentifierMultiple('users', TagWriter::quickTag('a', array('title' => StringPeer::getString('user.edit'), 'class' => 'entries_list', 'href' => LinkUtil::link(array('users', $oUser->getId()), null, array('check_userkind' => true))), $oUser->getFullName()));
+        }
+        $oTemplate->replaceIdentifier("users_with_group", $oUsersTemplate);
+      }
+    }
+
 
     return $oTemplate;
   }

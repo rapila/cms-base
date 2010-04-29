@@ -313,6 +313,9 @@ class DefaultPageTypeModule extends PageTypeModule {
         $oTemplate->replaceIdentifier("language_revision", $oHistoryTempl);
       }
     }
+    if($oLanguageObject->getContentObject()->getObjectType() === 'text') {
+      $oTemplate->replaceIdentifier("document_upload_link", LinkUtil::link('documents', 'BackendManager', array('action' => 'create')));
+    }
     $oTemplate->replaceIdentifier("show_url", $this->backendLink(array($this->oPage->getId(), "show")));
     $oTemplate->replaceIdentifier("content", $oModule->renderBackend(), null, Template::NO_HTML_ESCAPE);
     
@@ -352,6 +355,9 @@ class DefaultPageTypeModule extends PageTypeModule {
     }
     if($this->oCurrentContentObject !== null && $this->oCurrentContentObject->getActiveLanguageObjectBe() !== null) {
       $this->oCurrentContentObject->getActiveLanguageObjectBe()->delete();
+      foreach(ReferencePeer::getReferencesFromObject($this->oCurrentContentObject->getActiveLanguageObjectBe()) as $oReference) {
+        $oReference->delete();
+      }
     }
     $oLanguageObjects = $this->oCurrentContentObject->getLanguageObjects();
     // should LanguageObjectHistory be deleted too?
@@ -443,8 +449,9 @@ class DefaultPageTypeModule extends PageTypeModule {
       $oContentObject->setSort($iCount);
       $oContentObject->save();
     }
-    print <<<EOD
-<success/>
-EOD;
+    $oDocument = new DOMDocument();
+    $oRoot = $oDocument->createElement("success");
+    $oDocument->appendChild($oRoot);
+    return $oDocument;
   }
 }

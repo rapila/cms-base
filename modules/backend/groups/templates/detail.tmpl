@@ -1,6 +1,6 @@
-<h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
+<h1>{{module_info_link}} {{quoteString=\{\{name\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} <span class="id_info">[id: {{id}}] </span></h1>
 <form action="{{action}}" method="post">
-<fieldset><legend>{{writeString=user.group}} [id:{{id}}]</legend>
+<fieldset class="divider">
   <label for="name">{{writeString=name}}</label>
   <input type="text" id="name" name="name" value="{{name}}" /><br />{{writeFlashValue=name}}
 </fieldset>
@@ -13,3 +13,4 @@
   {{delete_button}}
 </fieldset>{{identifierContext=end;name=delete_button}}
 <div id="clone_area">{{group_right}}</div>
+{{users_with_group}}

@@ -31,6 +31,9 @@ class LinksBackendModule extends BackendModule {
     $oCriteria = new Criteria();
     $this->oListHelper->handle($oCriteria);
     $aLinks = LinkPeer::doSelect($oCriteria);
+    if(count($aLinks) === 0) {
+      $oTemplate->replaceIdentifier("has_no_entries", StringPeer::getString('has_no_entries'));
+    }
 
     $this->parseTree($oTemplate, $aLinks, $this->oLink);
     return $oTemplate;
@@ -39,7 +42,7 @@ class LinksBackendModule extends BackendModule {
   public function getDetail() {
     if(!$this->oLink) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('links', null, array('action' => 'create'))), StringPeer::getString('links.create')));
       $oTemplate->replaceIdentifier("display_style", isset($_REQUEST['get_module_info']) ? 'block' : 'none');
       $oTemplate->replaceIdentifier("toggler_style", isset($_REQUEST['get_module_info']) ? ' open' : '');
       return $oTemplate;

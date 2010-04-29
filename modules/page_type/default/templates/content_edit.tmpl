@@ -1,6 +1,6 @@
 <h1>{{module_info_link}}  {{quoteString=\{\{page_title\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} </h1>
 <fieldset class="page_edit_tabs">
-  <a href="{{page_edit_link}}" title="">{{writeString=page.structure}}</a><a class="current edit_detail" href="{{content_edit_link}}" title="">{{writeString=page.contents_detail}}</a>
+  <a class="page_structure" href="{{page_edit_link}}" title="">{{writeString=page.structure}}</a><a class="page_content edit_detail" href="{{content_edit_link}}" title="">{{writeString=page.backto_contents_detail}}</a>
 </fieldset>
   <form enctype="multipart/form-data" method="post" action="{{action}}">
   <input type="hidden" name="timestamp" value="{{timestamp}}" />
@@ -28,4 +28,7 @@
     <label for="revision">{{writeString=load_from_backup}}</label><select id="language_object_revision_id" name="language_object_revision_id" onchange="$(this).up().submit();">{{language_object_revisions}}</select>
     </form>
   </fieldset>
-{{identifierContext=end;name=language_object_revisions}}
+{{identifierContext=end;name=language_object_revisions}}{{identifierContext=start;name=document_upload_link}}
+  <fieldset class="divider nolegend" style="padding-top:.5em;">
+    <div class="form_message"><a class="edit_related_link highlight" href="{{document_upload_link}}" title="{{writeString=documents.create}}">{{writeString=documents.create}}</a></div>
+  </fieldset>{{identifierContext=end;name=document_upload_link}}

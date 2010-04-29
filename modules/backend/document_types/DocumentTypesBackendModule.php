@@ -5,24 +5,41 @@
 class DocumentTypesBackendModule extends BackendModule {
   
   private $oDocumentType = null;
+  private $oListHelper;
   
   public function __construct() {
     if(Manager::hasNextPathItem()) {
       $this->oDocumentType=DocumentTypePeer::retrieveByPK(Manager::usePath());
     }
+    $this->oListHelper = new ListHelper($this);
   }
   
   public function getChooser() {
     $oTemplate = $this->constructTemplate('list');
-    $aStrings = DocumentTypePeer::doSelect(new Criteria());
-    $this->parseTree($oTemplate, $aStrings, $this->oDocumentType);
+    $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(DocumentTypePeer::MIMETYPE, DocumentTypePeer::getMimeTypesAssoc(), StringPeer::getString('document_types.all'), null, ListHelper::SELECTION_TYPE_BEGINS));
+    $oCriteria = new Criteria();
+    $oCriteria->addAscendingOrderByColumn(DocumentTypePeer::MIMETYPE);
+    $this->oListHelper->handle($oCriteria);
+    $aDocumentTypes = DocumentTypePeer::doSelect($oCriteria);
+
+    foreach($aDocumentTypes as $oDocumentType) {
+      $oDocTypeTemplate = $this->constructTemplate('list_item');
+      if($this->oDocumentType && $oDocumentType->getId() === $this->oDocumentType->getId()) {
+        $oDocTypeTemplate->replaceIdentifier('class_active', ' active');
+      }
+      $oDocTypeTemplate->replaceIdentifier('count', $oDocumentType->countDocuments() === 0 ? '-' : $oDocumentType->countDocuments());
+      $oDocTypeTemplate->replaceIdentifier('link', $this->link($oDocumentType->getId()));
+      $oDocTypeTemplate->replaceIdentifier('document_kind', $oDocumentType->getDocumentKind());
+      $oDocTypeTemplate->replaceIdentifier('extension', $oDocumentType->getExtension());
+      $oTemplate->replaceIdentifierMultiple('tree', $oDocTypeTemplate);
+    }
     return $oTemplate;
   }
   
 	public function getDetail() {
 	  if($this->oDocumentType === null) {
       $oTemplate = $this->constructTemplate("module_info");
-      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('href' => LinkUtil::link('document_types', null, array('action' => 'create'))), StringPeer::getString('document_types.create')));
+      $oTemplate->replaceIdentifier('create_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link('document_types', null, array('action' => 'create'))), StringPeer::getString('document_types.create')));
       return $oTemplate;
 	  }
     $oTemplate = $this->constructTemplate("detail");

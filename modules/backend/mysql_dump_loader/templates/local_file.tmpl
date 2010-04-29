@@ -1,12 +1,16 @@
-<h1>SQL Upload</h1>
-<fieldset>
-  <form action="{{writeLink=to_self}}" method="post">
-  <label for="choose_file">
-  {{writeString=mysql_dump_loader.choose}}
-  </label>
-  <select id="choose_file" name="choose_file">
-  	{{sql_file_select}}
-  </select>
-  <button type="submit" class="go" title="{{writeString=go}}"></button>
-  </form>
-</fieldset>
+<h1>{{module_info_link}} {{quoteString=\{\{title\}\};alternate=true;}}</h1>
+<form action="{{writeLink=to_self}}" method="post" enctype="multipart/form-data">
+  <fieldset class="divider">
+  	<label for="choose_file">
+  		{{writeString=mysql_dump_loader.choose}}
+  	</label>
+    <select id="choose_file" name="choose_file">
+    	{{sql_file_select}}
+    </select>{{identifierContext=start;name=error_message;}}<div class="error_display">{{error_message}}</div>
+    {{identifierContext=end;name=error_message;}}
+  </fieldset>  	
+  <fieldset class="divider nolegend">
+  	<label for="mysql_upload"> </label>
+    <button type="submit" class="go" name="mysql_upload" title="{{writeString=go}}"></button>
+  </fieldset>
+</form>

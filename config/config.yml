@@ -53,6 +53,9 @@ backend:
   #possible values: images, internal_links, external_links, documents
   link_array_disabled: []
   
+security:
+  generate_digest_secrets: false
+  
 frontend:
   title: 'Mini-CMS | Frontend Title'
   main_template: general
@@ -71,3 +74,10 @@ encoding:
 
 session_default:
   language: de
+  
+#language_chooser default
+language_chooser:
+  link_separator: ""
+  template: 'language'
+  template_active: 'language_active'
+  show_active_language: true

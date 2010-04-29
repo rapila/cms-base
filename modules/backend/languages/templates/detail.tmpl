@@ -1,10 +1,14 @@
-<h1>{{quoteString=\{\{id\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}}</h1>
+<h1>{{quoteString=\{\{id\}\};alternate=true;defaultValue=\{\{writeString=new_entry\}\}}} <span class="id_info">[id: {{id}}] </span></h1>
 <form action="{{action}}" method="post">
-<fieldset><legend>{{writeString=language}} [id:{{id}}]</legend>
+<fieldset class="divider">
   <label for="id">Id</label>
   <input type="text" id="id" name="id" value="{{id}}" /><br /> {{writeFlashValue=language_id_required}}
-  <label for="sort">Sortierung</label>
-  <input type="text" id="sort" name="sort" value="{{sort}}" size="2" /><br />
+</fieldset>
+<fieldset class="divider">
+  <label for="sort">{{writeString=sort}}</label>
+  <input type="text" id="sort" class="autowidth" name="sort" value="{{sort}}" size="2" /><br />
+</fieldset>
+<fieldset class="divider">
   <label for="is_active">{{writeString=is_active}}</label>
   <input type="checkbox" name="is_active" id="is_active" value="1" {{is_active}}/><br />
 </fieldset>
