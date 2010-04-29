@@ -21,7 +21,7 @@ class LinksBackendModule extends BackendModule {
   public function getChooser() {
     $oTemplate = $this->constructTemplate('list');
     
-    $aTagsUsedInLinkModule = TagPeer::getTagsUsedInModel($this->getModelName());
+    $aTagsUsedInLinkModule = TagPeer::doSelect(TagPeer::getTagsUsedInModelCriteria($this->getModelName()));
     $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelectForTagFilter());
     $oTemplate->replaceIdentifierMultiple('filter_selector', $this->oListHelper->getFilterSelect(LinkPeer::URL, LinkPeer::getProtocolsWithLinksAssoc(), StringPeer::getString('links.all_protocols'), null, ListHelper::SELECTION_TYPE_BEGINS));
     

@@ -41,7 +41,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
   
   public function renderBackend() {
     $aOptions = @unserialize($this->getData());
-    $aListTags = TagPeer::getTagsUsedInModel('Link');
+    $aListTags = TagPeer::doSelect(TagPeer::getTagsUsedInModelCriteria('Link'));
     $oTemplate = $this->constructTemplate('backend');
     $oTemplate->replaceIdentifier('tags', TagWriter::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
     if(isset($aOptions['tags']) && is_array($aOptions['tags'])) {

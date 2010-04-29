@@ -117,7 +117,7 @@ class ListHelper {
 		if($sColumn === null) {
 			$sColumn = constant($this->sPeerClass.'::ID');
 		}
-		$aTagsUsedInModel = TagPeer::getTagsUsedInModel($this->sModelName);
+		$aTagsUsedInModel = TagPeer::doSelect(TagPeer::getTagsUsedInModelCriteria($this->sModelName));
 		
 		// @todo needs to be generic
 		return $this->getFilterSelect($sColumn, $aTagsUsedInModel, StringPeer::getString('all_entries'), StringPeer::getString('link.without_tags'), self::SELECTION_TYPE_TAG, 'getName');
