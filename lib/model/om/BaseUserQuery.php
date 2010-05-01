@@ -9,6 +9,7 @@
  * @method     UserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     UserQuery orderByUsername($order = Criteria::ASC) Order by the username column
  * @method     UserQuery orderByPassword($order = Criteria::ASC) Order by the password column
+ * @method     UserQuery orderByDigestHA1($order = Criteria::ASC) Order by the digest_ha1 column
  * @method     UserQuery orderByFirstName($order = Criteria::ASC) Order by the first_name column
  * @method     UserQuery orderByLastName($order = Criteria::ASC) Order by the last_name column
  * @method     UserQuery orderByEmail($order = Criteria::ASC) Order by the email column
@@ -26,6 +27,7 @@
  * @method     UserQuery groupById() Group by the id column
  * @method     UserQuery groupByUsername() Group by the username column
  * @method     UserQuery groupByPassword() Group by the password column
+ * @method     UserQuery groupByDigestHA1() Group by the digest_ha1 column
  * @method     UserQuery groupByFirstName() Group by the first_name column
  * @method     UserQuery groupByLastName() Group by the last_name column
  * @method     UserQuery groupByEmail() Group by the email column
@@ -216,6 +218,7 @@
  * @method     User findOneById(int $id) Return the first User filtered by the id column
  * @method     User findOneByUsername(string $username) Return the first User filtered by the username column
  * @method     User findOneByPassword(string $password) Return the first User filtered by the password column
+ * @method     User findOneByDigestHA1(string $digest_ha1) Return the first User filtered by the digest_ha1 column
  * @method     User findOneByFirstName(string $first_name) Return the first User filtered by the first_name column
  * @method     User findOneByLastName(string $last_name) Return the first User filtered by the last_name column
  * @method     User findOneByEmail(string $email) Return the first User filtered by the email column
@@ -233,6 +236,7 @@
  * @method     array findById(int $id) Return User objects filtered by the id column
  * @method     array findByUsername(string $username) Return User objects filtered by the username column
  * @method     array findByPassword(string $password) Return User objects filtered by the password column
+ * @method     array findByDigestHA1(string $digest_ha1) Return User objects filtered by the digest_ha1 column
  * @method     array findByFirstName(string $first_name) Return User objects filtered by the first_name column
  * @method     array findByLastName(string $last_name) Return User objects filtered by the last_name column
  * @method     array findByEmail(string $email) Return User objects filtered by the email column
@@ -416,6 +420,30 @@ abstract class BaseUserQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(UserPeer::PASSWORD, $password, $comparison);
+	}
+
+	/**
+	 * Filter the query on the digest_ha1 column
+	 * 
+	 * @param     string $digestHA1 The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UserQuery The current query, for fluid interface
+	 */
+	public function filterByDigestHA1($digestHA1 = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($digestHA1)) {
+			if ($comparison == Criteria::EQUAL) {
+				$comparison = Criteria::IN;
+			}
+		} elseif (preg_match('/[\%\*]/', $digestHA1)) {
+			$digestHA1 = str_replace('*', '%', $digestHA1);
+			if ($comparison == Criteria::EQUAL) {
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(UserPeer::DIGEST_HA1, $digestHA1, $comparison);
 	}
 
 	/**

@@ -42,6 +42,12 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected $password;
 
 	/**
+	 * The value for the digest_ha1 field.
+	 * @var        string
+	 */
+	protected $digest_ha1;
+
+	/**
 	 * The value for the first_name field.
 	 * @var        string
 	 */
@@ -400,6 +406,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Get the [digest_ha1] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getDigestHA1()
+	{
+		return $this->digest_ha1;
+	}
+
+	/**
 	 * Get the [first_name] column value.
 	 * 
 	 * @return     string
@@ -644,6 +660,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 		return $this;
 	} // setPassword()
+
+	/**
+	 * Set the value of [digest_ha1] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function setDigestHA1($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->digest_ha1 !== $v) {
+			$this->digest_ha1 = $v;
+			$this->modifiedColumns[] = UserPeer::DIGEST_HA1;
+		}
+
+		return $this;
+	} // setDigestHA1()
 
 	/**
 	 * Set the value of [first_name] column.
@@ -1014,19 +1050,20 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->username = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->password = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->first_name = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->last_name = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->email = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->language_id = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->is_admin = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
-			$this->is_backend_login_enabled = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->password_recover_hint = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->backend_settings = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->digest_ha1 = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->first_name = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->last_name = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->email = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->language_id = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->is_admin = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
+			$this->is_backend_login_enabled = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
+			$this->is_inactive = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
+			$this->password_recover_hint = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->backend_settings = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->created_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->updated_by = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1035,7 +1072,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 17; // 17 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating User object", $e);
@@ -2139,42 +2176,45 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				return $this->getPassword();
 				break;
 			case 3:
-				return $this->getFirstName();
+				return $this->getDigestHA1();
 				break;
 			case 4:
-				return $this->getLastName();
+				return $this->getFirstName();
 				break;
 			case 5:
-				return $this->getEmail();
+				return $this->getLastName();
 				break;
 			case 6:
-				return $this->getLanguageId();
+				return $this->getEmail();
 				break;
 			case 7:
-				return $this->getIsAdmin();
+				return $this->getLanguageId();
 				break;
 			case 8:
-				return $this->getIsBackendLoginEnabled();
+				return $this->getIsAdmin();
 				break;
 			case 9:
-				return $this->getIsInactive();
+				return $this->getIsBackendLoginEnabled();
 				break;
 			case 10:
-				return $this->getPasswordRecoverHint();
+				return $this->getIsInactive();
 				break;
 			case 11:
-				return $this->getBackendSettings();
+				return $this->getPasswordRecoverHint();
 				break;
 			case 12:
-				return $this->getCreatedAt();
+				return $this->getBackendSettings();
 				break;
 			case 13:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 14:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 15:
+				return $this->getCreatedBy();
+				break;
+			case 16:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -2204,19 +2244,20 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getUsername(),
 			$keys[2] => $this->getPassword(),
-			$keys[3] => $this->getFirstName(),
-			$keys[4] => $this->getLastName(),
-			$keys[5] => $this->getEmail(),
-			$keys[6] => $this->getLanguageId(),
-			$keys[7] => $this->getIsAdmin(),
-			$keys[8] => $this->getIsBackendLoginEnabled(),
-			$keys[9] => $this->getIsInactive(),
-			$keys[10] => $this->getPasswordRecoverHint(),
-			$keys[11] => $this->getBackendSettings(),
-			$keys[12] => $this->getCreatedAt(),
-			$keys[13] => $this->getUpdatedAt(),
-			$keys[14] => $this->getCreatedBy(),
-			$keys[15] => $this->getUpdatedBy(),
+			$keys[3] => $this->getDigestHA1(),
+			$keys[4] => $this->getFirstName(),
+			$keys[5] => $this->getLastName(),
+			$keys[6] => $this->getEmail(),
+			$keys[7] => $this->getLanguageId(),
+			$keys[8] => $this->getIsAdmin(),
+			$keys[9] => $this->getIsBackendLoginEnabled(),
+			$keys[10] => $this->getIsInactive(),
+			$keys[11] => $this->getPasswordRecoverHint(),
+			$keys[12] => $this->getBackendSettings(),
+			$keys[13] => $this->getCreatedAt(),
+			$keys[14] => $this->getUpdatedAt(),
+			$keys[15] => $this->getCreatedBy(),
+			$keys[16] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguage) {
@@ -2263,42 +2304,45 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->setPassword($value);
 				break;
 			case 3:
-				$this->setFirstName($value);
+				$this->setDigestHA1($value);
 				break;
 			case 4:
-				$this->setLastName($value);
+				$this->setFirstName($value);
 				break;
 			case 5:
-				$this->setEmail($value);
+				$this->setLastName($value);
 				break;
 			case 6:
-				$this->setLanguageId($value);
+				$this->setEmail($value);
 				break;
 			case 7:
-				$this->setIsAdmin($value);
+				$this->setLanguageId($value);
 				break;
 			case 8:
-				$this->setIsBackendLoginEnabled($value);
+				$this->setIsAdmin($value);
 				break;
 			case 9:
-				$this->setIsInactive($value);
+				$this->setIsBackendLoginEnabled($value);
 				break;
 			case 10:
-				$this->setPasswordRecoverHint($value);
+				$this->setIsInactive($value);
 				break;
 			case 11:
-				$this->setBackendSettings($value);
+				$this->setPasswordRecoverHint($value);
 				break;
 			case 12:
-				$this->setCreatedAt($value);
+				$this->setBackendSettings($value);
 				break;
 			case 13:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 14:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 15:
+				$this->setCreatedBy($value);
+				break;
+			case 16:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -2328,19 +2372,20 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setUsername($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setPassword($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setFirstName($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setLastName($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setEmail($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setLanguageId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIsAdmin($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsBackendLoginEnabled($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setPasswordRecoverHint($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setBackendSettings($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setCreatedBy($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[3], $arr)) $this->setDigestHA1($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setFirstName($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setLastName($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setEmail($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setLanguageId($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIsAdmin($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setIsBackendLoginEnabled($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setIsInactive($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setPasswordRecoverHint($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setBackendSettings($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
 	}
 
 	/**
@@ -2355,6 +2400,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($this->isColumnModified(UserPeer::ID)) $criteria->add(UserPeer::ID, $this->id);
 		if ($this->isColumnModified(UserPeer::USERNAME)) $criteria->add(UserPeer::USERNAME, $this->username);
 		if ($this->isColumnModified(UserPeer::PASSWORD)) $criteria->add(UserPeer::PASSWORD, $this->password);
+		if ($this->isColumnModified(UserPeer::DIGEST_HA1)) $criteria->add(UserPeer::DIGEST_HA1, $this->digest_ha1);
 		if ($this->isColumnModified(UserPeer::FIRST_NAME)) $criteria->add(UserPeer::FIRST_NAME, $this->first_name);
 		if ($this->isColumnModified(UserPeer::LAST_NAME)) $criteria->add(UserPeer::LAST_NAME, $this->last_name);
 		if ($this->isColumnModified(UserPeer::EMAIL)) $criteria->add(UserPeer::EMAIL, $this->email);
@@ -2431,6 +2477,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	{
 		$copyObj->setUsername($this->username);
 		$copyObj->setPassword($this->password);
+		$copyObj->setDigestHA1($this->digest_ha1);
 		$copyObj->setFirstName($this->first_name);
 		$copyObj->setLastName($this->last_name);
 		$copyObj->setEmail($this->email);
@@ -8147,6 +8194,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->id = null;
 		$this->username = null;
 		$this->password = null;
+		$this->digest_ha1 = null;
 		$this->first_name = null;
 		$this->last_name = null;
 		$this->email = null;

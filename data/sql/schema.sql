@@ -304,6 +304,7 @@ CREATE TABLE `users`
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
 	`username` VARCHAR(40)  NOT NULL,
 	`password` VARCHAR(144),
+	`digest_ha1` VARCHAR(32),
 	`first_name` VARCHAR(40),
 	`last_name` VARCHAR(60),
 	`email` VARCHAR(80),
