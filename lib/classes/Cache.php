@@ -203,7 +203,7 @@ class Cache {
 		if(isset($_REQUEST['nocache'])) {
 			return true;
 		}
-		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && stristr($_SERVER['HTTP_CACHE_CONTROL'], "no-cache") !== FALSE) {
+		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && stristr($_SERVER['HTTP_CACHE_CONTROL'], "no-cache") !== FALSE && !Manager::isPost()) {
 			return true;
 		}
 		return false;
