@@ -5,6 +5,11 @@ Two main questions that need time and consideration
 - widget concept. how do they relate, maybe go back to widget graffle chart
 - development strategy > plugins/new_admin > base/modules/admin
 
+migration 2.0 issues
+data->getContents > stream_get_contents(data)
+FrontendModule::save() > getSaveData
+find all Blob, new Blob and migrate them
+
 Beispiel UserKindInputWidgetModule
 - is_backend_login_enabled error see email CriteriaListWidgetDelegate::__call() exception missing getIsBackendLoginEnabled()
 - call setUserKind, getUserKind on UserListWidget to simplify?

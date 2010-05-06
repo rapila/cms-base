@@ -35,6 +35,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	
 	public function setUserKind($sUserKind = null) {
 		$this->sUserKind = $sUserKind;
+		$this->oUserKindFilter->setSelectedUserKind($sUserKind);
 	}
 	
 	public function getUserKind() {

@@ -93,6 +93,7 @@ class DocumentListWidgetModule extends WidgetModule {
 		
 	public function setDocumentKind($sDocumentKind) {
 		$this->sDocumentKind = $sDocumentKind;
+		$this->oDocumentKindFilter->setSelectedDocumentKind($sDocumentKind);
 	}
 	
 	public function getDocumentKind() {
