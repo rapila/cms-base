@@ -218,14 +218,15 @@ abstract class Module {
 	}
 	
 	public static function getClassNameByName($sModuleName) {
-		return StringUtil::camelize($sModuleName, true).get_class();
+		return StringUtil::camelize($sModuleName, true).get_called_class();
 	}
 	
 	public static function getNameByClassName($sClassName) {
-		if(strpos($sClassName, get_class()) === false) {
+		$sModuleTypeClassName = StringUtil::camelize(static::$MODULE_TYPE, true)."Module";
+		if(strpos($sClassName, $sModuleTypeClassName) === false) {
 			return $sClassName;
 		}
-		return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+		return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen($sModuleTypeClassName)));
 	}
 	
 	public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {

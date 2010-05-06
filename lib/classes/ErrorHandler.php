@@ -2,34 +2,37 @@
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
 	
-	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext) {
+	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext = null) {
+		if($aErrorContext === null) {
+			$aErrorContext = debug_backtrace();
+		}
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
 		}
-		self::handle(array("number" => $iErrorNumber,
-											 "message" => $sErrorString,
-											 "filename" => $sErrorFile,
-											 "line" => $iErrorLine,
-											 "context" => $aErrorContext));
+		$aError = array("code" => $iErrorNumber,
+										"message" => $sErrorString,
+										"filename" => $sErrorFile,
+										"line" => $iErrorLine,
+										"context" => $aErrorContext);
+		self::handle($aError);
 		if(self::shouldContinue($iErrorNumber)) {
 			return true;
 		}
-		self::displayErrorMessage($iErrorNumber);
+		self::displayErrorMessage($aError);
 	}
 	
 	public static function handleException($oException) {
-		self::handle(array('exception' => $oException, 'message' => $oException->getMessage()));
-		self::displayErrorMessage(E_NOTICE);
+		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), $oException->getTrace());
 	}
 	
 	/**
 	* if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
 	*/
-	private static function displayErrorMessage($iErrorNumber) {
-		ob_clean();
+	private static function displayErrorMessage($aError) {
+		if(ob_get_length() > 0) {ob_end_clean();}
 		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
-		if($iErrorNumber == E_ERROR || !file_exists($sErrorFileName)) {
+		if(!file_exists($sErrorFileName)) {
 			die("An Error occured, exiting");
 		}
 		header('Content-Type: text/html;charset=utf-8');
@@ -68,7 +71,7 @@ class ErrorHandler {
 	}
 	
 	private static function shouldContinue($iErrorNumber) {
-		return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT/* || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED*/;
+		return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED;
 	}
 
 	public static function log($mMessage) {
@@ -77,7 +80,7 @@ class ErrorHandler {
 	
 	private static function readableDump($mToDump, $iMaxLevel = 5, $sVariableSeparationString = ', ', $iCurrentLevel = 1, &$aReferenceChain = array()) {
 		if ($iCurrentLevel > $iMaxLevel) { 
-			return "[…]";
+			return "[...]";
 		}
 		$sResult = '';
 		if (is_object($mToDump)) {
@@ -117,6 +120,8 @@ class ErrorHandler {
 			if($bHasLooped)
 				$sResult = substr($sResult, 0, -strlen($sVariableSeparationString));
 			$sResult .= ")";
+		} else if($mToDump === null) {
+			$sResult .= " NULL ";
 		} else {
 			$sResult .= var_export($mToDump, true);
 		}
@@ -148,7 +153,7 @@ class ErrorHandler {
 			FilterModule::getFilters()->handleErrorLog(array(&$sLogFilePath, &$aError, &$sErrorMessage, &$iMode, &$sDestination));
 			error_log($sErrorMessage, $iMode, $sDestination);
 		}
-		if(self::shouldPrintErrors()) {
+		if(self::shouldPrintErrors() && !(isset($aError['code']) && self::shouldContinue($aError['code']))) {
 			FilterModule::getFilters()->handleErrorPrint(array(&$aError));
 			Util::dumpAll($aError);
 		}

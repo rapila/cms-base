@@ -23,7 +23,6 @@ class DocumentUtil {
 		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
 		if($oDocument === null || !$iDocumentId) {
 			$oDocument = new Document();
-			$oDocument->setData(new Blob());
 			$oDocument->setOwnerId(Session::getSession()->getUser()->getId());
 		}
 		$oDocument->setDocumentCategoryId($iDocumentCategoryId);

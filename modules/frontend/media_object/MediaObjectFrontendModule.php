@@ -71,7 +71,7 @@ class MediaObjectFrontendModule extends FrontendModule {
     return $this->constructTemplate("backend.js")->render();
   }
   
-  public function save(Blob $oData) {
+  public function getSaveData($oData) {
     $aResults = array();
     foreach($_POST['document_id'] as $iKey => $sId) {
       if($sId === '' && $_POST['url'][$iKey] === '') {
@@ -79,7 +79,7 @@ class MediaObjectFrontendModule extends FrontendModule {
       }
       $aResults[] = array("document_id" => $sId, 'url' => $_POST['url'][$iKey], "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey]);
     }
-    $oData->setContents(serialize($aResults));
+    return serialize($aResults);
   }
   
   public static function getContentInfo($oLanguageObject) {

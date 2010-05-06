@@ -43,6 +43,7 @@ abstract class PageTypeModule extends Module {
 		if(!$sModuleName) {
 			$aArgs[0] = "default";
 		}
-		return call_user_func_array(array('Module', 'getModuleInstance'), $aArgs);
+		array_unshift($aArgs, self::getType());
+		return call_user_func_array(array('Module', 'getModuleInstanceByTypeAndName'), $aArgs);
 	}
 }

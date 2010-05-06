@@ -19,7 +19,7 @@ abstract class FrontendModule extends Module {
 
 	public abstract function renderFrontend();
 
-	public function save(Blob $oData) {}
+	public function getSaveData() {}
 
 	public function renderBackend() {
 		return "";
@@ -46,7 +46,7 @@ abstract class FrontendModule extends Module {
 	}
 	
 	protected function constructTemplate($sTemplateName = "main", $bUseGlobalTemplatesDir = false) {
-		return parent::constructTemplate($sTemplateName, $bUseGlobalTemplatesDir);
+		return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bUseGlobalTemplatesDir);
 	}
 	
 	protected function getData() {
