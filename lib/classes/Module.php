@@ -250,8 +250,6 @@ abstract class Module {
 		return StringUtil::endsWith($sName, "Module");
 	}
 	
-	public abstract function getModuleName();
-	
 	public function getModuleInfo() {
 		return self::getModuleInfoByTypeAndName($this->getType(), $this->getModuleName());
 	}
