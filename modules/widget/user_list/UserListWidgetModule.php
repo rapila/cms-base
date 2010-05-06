@@ -6,11 +6,13 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	private $oListWidget;
 	private $aGroupId;
 	private $sUserKind = '1';
+	private $oUserKindFilter;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
 		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
 		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, true);
 	}
 	
 	public function doWidget() {
@@ -72,7 +74,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 			case 'user_kind':
 				$aResult['heading'] = '';
 				// $aResult['field_name'] = 'is_backend_login_enabled';
-				$aResult['heading_filter'] = 'user_kind_input';
+				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;			
 			case 'is_admin':
