@@ -26,7 +26,7 @@ class FormFileModule extends FileModule {
     if($oFormDataLanguageObject == null || $oFormDataLanguageObject->getContentObject()->getObjectType() !== 'form') {
       throw new Exception("Error in FormFileModule->__construct: object ID does not correspond to form object in given language");
     }
-    $this->oFormStorage = unserialize($oFormDataLanguageObject->getData()->getContents());
+    $this->oFormStorage = unserialize(stream_get_contents($oFormDataLanguageObject->getData()));
     $this->sPageName = $oFormDataLanguageObject->getContentObject()->getPage()->getName();
     
     if($this->oFormStorage->getFormType() !== 'email') {

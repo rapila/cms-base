@@ -5,20 +5,20 @@
  
 class EmptyFrontendModule extends FrontendModule {
 
-  public function __construct($oLanguageObject, $aRequestPath = null) {
-    parent::__construct($oLanguageObject, $aRequestPath);
-  }
+	public function __construct($oLanguageObject, $aRequestPath = null) {
+		parent::__construct($oLanguageObject, $aRequestPath);
+	}
 
-  public function renderFrontend() {
-    return "";
-  }
+	public function renderFrontend() {
+		return "";
+	}
 
-  public function renderBackend() {
-    return $this->constructTemplate('backend');
-  }
+	public function renderBackend() {
+		return $this->constructTemplate('backend');
+	}
 
-  public function save(Blob $oData) {
-    $oData->setContents("");
-  }
+	public function getSaveData() {
+		return "";
+	}
 }
 ?>

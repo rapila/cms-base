@@ -30,12 +30,12 @@ class TextFrontendModule extends FrontendModule {
     return $this->oRichtextUtil->getJavascript();
   }
   
-  public function save(Blob $oData) {
-    $oData->setContents($this->oRichtextUtil->parseInputFromMce());
+  public function getSaveData() {
+    return $this->oRichtextUtil->parseInputFromMce();
   }
   
   public static function getContentInfo($oLanguageObject) {
-    $sText = RichtextUtil::parseStorageForFrontendOutput($oLanguageObject->getData()->getContents());
+    $sText = RichtextUtil::parseStorageForFrontendOutput(stream_get_contents($oLanguageObject->getData()));
     return implode(" ", StringUtil::getWords($sText, true));
   }
 }

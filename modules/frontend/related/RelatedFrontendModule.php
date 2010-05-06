@@ -118,13 +118,13 @@ class RelatedFrontendModule extends DynamicFrontendModule {
     return $this->constructTemplate('js');
   }
   
-  public function save(Blob $oData) {
+  public function getSaveData() {
     $aData = array();
     
     $aData['tags'] = $_POST['data'];
     $aData['types'] = $_POST['types'];
     $aData['template'] = $_POST['template'];
     
-    $oData->setContents(serialize($aData));
+    return serialize($aData);
   }
 }

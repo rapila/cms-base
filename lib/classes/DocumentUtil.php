@@ -45,7 +45,7 @@ class DocumentUtil {
 		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null 
 			&& $oDocument->getDocumentCategory()->getMaxWidth() != null) {
 			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
-			$oImage = Image::imageFromData($oDocument->getData()->getContents());
+			$oImage = Image::imageFromStream($oDocument->getData());
 			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
 				$oImage->setSize((int)$oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
 				ob_start();
@@ -64,8 +64,10 @@ class DocumentUtil {
 		$iDocLength = 0;
 		if(is_string($mDocContent)) {
 			$iDocLength = strlen($mDocContent); 
-		} else if($mDocContent instanceof Blob) {
-			$iDocLength = strlen($mDocContent->getContents()); 
+		} else if(is_resource($mDocContent)) {
+			fseek($mDocContent, 0, SEEK_END);
+			$iDocLength = ftell($mDocContent);
+			rewind($mDocContent);
 		} else if(is_numeric($mDocContent)) {
 			$iDocLength = $mDocContent;
 		}

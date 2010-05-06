@@ -54,8 +54,8 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		return $oTemplate;
 	} 
 	
-	public function save(Blob $oData) {
+	public function getSaveData() {
 		$_POST['tags'] = is_array($_POST['tags']) ? $_POST['tags'] : array($_POST['tags']);
-		$oData->setContents(serialize(array('tags' => $_POST['tags'], 'list_template' => $_POST['list_template'])));
+		return serialize(array('tags' => $_POST['tags'], 'list_template' => $_POST['list_template']));
 	}
 }

@@ -71,7 +71,7 @@ class MediaObjectFrontendModule extends FrontendModule {
     return $this->constructTemplate("backend.js")->render();
   }
   
-  public function getSaveData($oData) {
+  public function getSaveData() {
     $aResults = array();
     foreach($_POST['document_id'] as $iKey => $sId) {
       if($sId === '' && $_POST['url'][$iKey] === '') {
@@ -86,7 +86,7 @@ class MediaObjectFrontendModule extends FrontendModule {
     if(!$oLanguageObject) {
       return null;
     }
-    $aData = @unserialize($oLanguageObject->getData()->getContents());
+    $aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
     if(!$aData && !isset($aData[0])) {
       return null;
     }

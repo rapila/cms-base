@@ -44,7 +44,7 @@ class FormFrontendModule extends DynamicFrontendModule {
     return $oTemplate;
   }
   
-  public function save(Blob $oData) {
+  public function getSaveData() {
     $oFormStorage = $this->getFormStorage();
     $oFormStorage->clearObjects();
     $oFormStorage->clearOptions();
@@ -78,7 +78,7 @@ class FormFrontendModule extends DynamicFrontendModule {
       $oFormObject->setIsRequired(isset($_POST['is_required_'.$this->iId.'_'.$iKey]));
       $oFormStorage->addFormObject($oFormObject);
     }
-    $oData->setContents(serialize($oFormStorage));
+    return serialize($oFormStorage);
   } // save()
   
   private function getFormStorage() {
@@ -107,7 +107,7 @@ class FormFrontendModule extends DynamicFrontendModule {
   }
   
   public static function getContentInfo($oLanguageObject) {
-    $oFormStorage = unserialize($oLanguageObject->getData()->getContents());
+    $oFormStorage = unserialize(stream_get_contents($oLanguageObject->getData()));
     
     $sType = $oFormStorage->getFormType();
     $sAction = '';

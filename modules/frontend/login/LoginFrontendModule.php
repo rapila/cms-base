@@ -92,7 +92,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
     return $oTemplate;
   }
 
-  public function save(Blob $oData) {
-    $oData->setContents(serialize($_POST));
+  public function getSaveData() {
+    return serialize($_POST);
   }
 }

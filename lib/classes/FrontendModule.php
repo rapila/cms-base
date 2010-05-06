@@ -52,7 +52,6 @@ abstract class FrontendModule extends Module {
 	protected function getData() {
 		if($this->oLanguageObject !== null) {
 			return stream_get_contents($this->oLanguageObject->getData());
-			// return $this->oLanguageObject->getData()->getContents();
 		}
 		return $this->oData;
 	}
@@ -95,7 +94,7 @@ abstract class FrontendModule extends Module {
 		if(!$oLanguageObject) {
 			return null;
 		}
-		$mData = @unserialize($oLanguageObject->getData()->getContents());
+		$mData = @unserialize(stream_get_contents($oLanguageObject->getData()));
 		if(!$mData) {
 			return null;
 		}

@@ -35,7 +35,7 @@ class MIMELeaf extends MIMEPart {
 	}
 	
 	public static function leafWithDocument($oDocument, $sEncoding = 'base64', $sDisposition = null, $sCharset = null, $sCid = null) {
-		$sContent = self::encode($oDocument->getData()->getContents(), $sEncoding);
+		$sContent = self::encode(stream_get_contents($oDocument->getData()), $sEncoding);
 		$sMimeType = $oDocument->getMimetype();
 		$sFileName = $oDocument->getFullName();
 		return new MIMELeaf($sContent, $sMimeType, $sEncoding, $sCharset, $sFileName, $sDisposition, $sCid);

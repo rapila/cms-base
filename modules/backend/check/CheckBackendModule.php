@@ -191,7 +191,7 @@ class CheckBackendModule extends BackendModule {
       }
       if($oLanguageObject->getContentObject()->getObjectType() === 'text') {
         $this->log("Re-creating all references in text language object", self::LOG_LEVEL_NOTICE);
-        $_POST[$oRichtextUtil->getAreaName()] = RichtextUtil::parseStorageForBackendOutput($oLanguageObject->getData()->getContents());
+        $_POST[$oRichtextUtil->getAreaName()] = RichtextUtil::parseStorageForBackendOutput(stream_get_contents($oLanguageObject->getData()));
         $oRichtextUtil->setTrackReferences($oLanguageObject);
         $oLanguageObject->getData()->setContents($oRichtextUtil->parseInputFromMce());
         $oLanguageObject->setData($oLanguageObject->getData());

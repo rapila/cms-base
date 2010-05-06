@@ -160,7 +160,6 @@ class DocumentsBackendModule extends BackendModule {
 
   public function create() {
     $this->oDocument = new Document();
-    $this->oDocument->setData(new Blob());
     $this->oDocument->setCreatedBy(Session::getSession()->getUserId());
     $this->oDocument->setCreatedAt(date('c'));
   }
@@ -197,7 +196,7 @@ class DocumentsBackendModule extends BackendModule {
     if(Flash::noErrors()) {
       if($this->reduceSizeIfRequired()) {
         $iMaxWidth = $this->oDocument->getDocumentCategory()->getMaxWidth();
-        $oImage = Image::imageFromData($this->oDocument->getData()->getContents());
+        $oImage = Image::imageFromStream($this->oDocument->getData());
         if($oImage->getOriginalWidth() > $this->oDocument->getDocumentCategory()->getMaxWidth()) {
           $oImage->setSize((int)$this->oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
           ob_start();

@@ -250,6 +250,10 @@ class Image {
 		return new Image(imagecreatefromstring($sImageData));
 	}
 	
+	public static function imageFromStream($rImageResource) {
+		return new Image(imagecreatefromstring(stream_get_contents($sImageData)));
+	}
+	
 	public static function emptyImage($iWidth, $iHeight) {
 		return new Image(imagecreatetruecolor($iWidth, $iHeight));
 	}
