@@ -1,0 +1,25 @@
+jQuery(document).ready(function() {
+	jQuery('.user_list').each(function() {
+		jQuery(this).prepareWidget(function(widget) {
+			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'user', widget, 'setUserId');
+			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
+				if(col.identifier === 'delete') {
+					var user_name = widget.cell_for_identifier('username', row).text();
+					Widget.confirm("{{writeString=delete_confirm}}", "{{writeString=user.delete_alert}} "+user_name, function(confirmed) {
+						if(confirmed) {
+							this.delete_row(row);
+						}
+					}.bind(this));
+					event.stopPropagation();
+				}
+			});
+			widget.handle('list.reloaded', function(event, list_length) {
+				if(list_length === 0) {
+					var search = widget.getSearch();
+					var message = "{{writeParameterizedString=module.user_list.no_results;search=$\{search\};group=$\{group\}}}".replace(/\$\{search\}/, search).replace('${group}', widget.getOption('group_id'));
+					Widget.notifyUser('info', message);
+				}
+			});
+		});
+	});
+});

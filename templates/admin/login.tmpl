@@ -1,0 +1,15 @@
+	<head>
+		<title>{{title}}</title>
+		{{writeResourceIncludes}}
+		{{addResourceInclude=favicon.ico}}
+		<script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+			Widget.handle('cmos.logged_in', function() {
+				window.location.search = window.location.search;
+			});
+		//--><!]]>
+		</script>
+	</head>
+	<body class="login"><h1>admin : {{writeServerVariable=HTTP_HOST;}}</h1>
+	</body>
+</html>

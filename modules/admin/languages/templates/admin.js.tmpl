@@ -1,0 +1,13 @@
+jQuery(document).ready(function() {
+	var language_list = AdminInterface.content.find('.language_list').getWidget();
+	AdminInterface.info_bar.getWidget().add_button('add-new-item', function() {
+		Widget.create('language_detail', function(widget) {
+			widget.open();
+			widget.save_callback = function() {
+				jQuery('.language_list.ui-list').each(function() {
+					jQuery(this).getWidget().reload();
+				});
+			};
+		});
+	}, 'n', true);
+});

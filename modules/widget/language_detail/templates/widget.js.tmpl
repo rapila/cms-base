@@ -1,0 +1,47 @@
+Widget.types.language_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget;
+			jQuery.extend(widget.options, {
+				title: "{{writeString=language.create}}",
+				width: 480,
+				save_callback: this.save.bind(this)
+			});
+			widget.content = this.content;
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+		this.detail_widget.content.find('input[name=language_id]').focus();
+	},
+	
+	fill_data: function() {
+		this.getLanguageData(function(language_data) {
+			this.content.find("input[name='language_id']").val(language_data.Id);
+			this.content.find("input[name='is_active']").attr('checked', language_data.IsActive);
+			this.detail_widget.set_title(this.detail_widget.options.title = language_data.LanguageName);
+		});
+	},
+	
+	save: function() {
+		this.saveData(this.content.serializeArrayKV(), this.save_callback);
+		return true;
+	},
+
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

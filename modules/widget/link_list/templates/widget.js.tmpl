@@ -1,0 +1,29 @@
+jQuery(document).ready(function() {
+	jQuery('.link_list').each(function() {
+		jQuery(this).prepareWidget(function(widget) {
+			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'link', widget, 'setLinkId');
+			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
+				if(col.identifier === 'delete') {
+					var file_name = widget.cell_for_identifier('name', row).text();
+					Widget.confirm("{{writeString=delete_confirm}}", "{{writeString=link.delete_alert}} "+file_name, function(confirmed) {
+						if(confirmed) {
+							this.delete_row(row);
+						}
+					}.bind(this));
+					event.stopPropagation();
+				}
+				if(col.identifier === 'is_inactive') {
+					this.toggle_boolean(row, col.identifier);
+					event.stopPropagation();
+				}				
+			});
+			widget.handle('list.reloaded', function(event, list_length) {
+				if(list_length === 0) {
+					var search = widget.getSearch();
+					var message = "{{writeParameterizedString=module.link_list.no_results;search=$\{search\};link_category_id=$\{link_category_id\}}}".replace(/\$\{search\}/, search).replace('${link_category_id}', widget.getOption('link_category_id'));
+					Widget.notifyUser('info', message);
+				}
+			});
+		});
+	});
+});

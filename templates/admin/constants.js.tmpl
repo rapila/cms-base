@@ -1,0 +1,13 @@
+window.FILE_PREFIX = "{{writeConstantValue=MAIN_DIR_FE}}{{writeManagerPrefix=FileManager}}";
+jQuery(document).ready(function() {
+	window.AdminInterface = {
+		sidebar: jQuery("#admin_sidebar"),
+		content: jQuery('#admin_main'),
+		info_bar: jQuery('#admin_info_bar'),
+		current_admin_module: {{current_admin_module;defaultValue=null;templateFlag=JAVASCRIPT_ESCAPE}},
+		translations: {
+			cancelButtonText: "{{writeString=cancel}}",
+			okButtonText: "{{writeString=ok}}"
+		}
+	};
+});

@@ -1,0 +1,75 @@
+Widget.types.image_picker = {
+	set_callback: function(callback) {
+		this.callback = callback;
+	},
+	
+	open_chooser: function() {
+		if(!this.list_element) {
+			this.listImages(function(result, error) {
+				if(error) {
+					return;
+				}
+				this.list_element = jQuery('<div/>');
+				var picker_object = this;
+				jQuery.each(result, function() {
+					var document_id = this.id;
+					var url = picker_object.document_url_from_id(document_id, 50);
+					var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-corner-all ui-image-picker-image');
+					image.children('img').attr({src: url, width: '50'});
+					image.data('document_id', document_id);
+					Widget.tooltip(image, this.name);
+					image.hover(function() {
+						image.addClass('ui-state-hover');
+					}, function() {
+						image.removeClass('ui-state-hover');
+					});
+					picker_object.list_element.append(image);
+				});
+				var buttons = {};
+				if(this.getAllowsMultiselect()) {
+					this.list_element.selectable({
+						selecting: function(event, ui) {
+							jQuery(ui.selecting).addClass('ui-state-active');
+						},
+						unselecting: function(event, ui) {
+							jQuery(ui.unselecting).removeClass('ui-state-active');
+						},
+						filter: "> div",
+						stop: function() {
+							//Change button active state
+						}
+					});
+					buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
+						var selected = picker_object.list_element.children('.ui-selected');
+						if(selected.length > 0) {
+							var collection = [];
+							selected.each(function() {
+								collection[collection.length] = jQuery(this).data('document_id');
+							});
+							selected.removeClass('ui-selected ui-state-active');
+							picker_object.callback.apply(picker_object, collection);
+						}
+						picker_object.list_element.dialog('close');
+					};
+				} else {
+					this.list_element.children('div').bind('click', function() {
+						var document_id = jQuery(this).data('document_id');
+						picker_object.callback(document_id);
+						picker_object.list_element.dialog('close');
+					});
+				}
+				this.list_element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600});
+			});
+			return;
+		}
+		this.list_element.dialog('open');
+	}, 
+	
+	remove_picture: function() {
+		this.callback();
+	},
+	
+	document_url_from_id: function(document_id, image_width) {
+		return FILE_PREFIX+'/display_document/'+document_id+(image_width ? '?max_width='+image_width : '');
+	}
+};

@@ -1,0 +1,16 @@
+Widget.types.language_input = {
+	prepare: function() {
+		var option = jQuery('<option/>');
+		var languages = this.getLanguages();
+		jQuery.each(languages, function(i, language) {
+			option.clone().text(language.language_name).attr('value', language.id).appendTo(this._element);
+		}.bind(this));
+		if(this.settings.international_option) {
+			option.text(this.settings.international_option).val('').prependTo(this._element);
+		}
+	},
+	
+	settings: {
+		international_option: "{{writeString=language.international}}"
+	}
+};

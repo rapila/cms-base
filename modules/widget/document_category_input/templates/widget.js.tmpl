@@ -1,0 +1,10 @@
+Widget.types.document_category_input = {
+	prepare: function() {
+		var option = jQuery('<option/>');
+		var categories = this.getCategories();
+		jQuery.each(categories, function(i, category) {
+			option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
+		}.bind(this));
+		option.text('----').val('').prependTo(this._element);
+	}
+};

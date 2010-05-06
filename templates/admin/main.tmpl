@@ -1,0 +1,20 @@
+	<head>
+		<title>{{title}}</title>
+		{{writeResourceIncludes}}
+		{{addResourceInclude=favicon.ico}}
+	</head>
+	<body class="{{module_name}}">
+	{{admin_menu}}
+		<div id="admin_area">
+			<div id="admin_message"></div>
+			<div id="admin_sidebar">{{sidebar_content}}</div>
+			<div id="admin_main">{{main_content}}</div>
+			<div class="ui-helper-clearfix"></div>
+		</div>
+		<div id="admin_info_bar" data-widget-type="info_bar">
+			<div class="infobar_left"></div>
+			<div class="sidebar_resizer"></div>
+			<div class="infobar_right"></div>
+		</div>
+	</body>
+</html>

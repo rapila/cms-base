@@ -1,0 +1,398 @@
+Widget.types.list = {
+	prepare: function() {
+		this.row_prototype = jQuery(this._element.is('table') ? '<tr>' : '<li>').addClass('ui-list-row');
+		var widget = this;
+		
+		var row_metadata = function(row) {
+			var rows = widget.all_rows();
+			return [rows.index(row), row];
+		};
+		var cell_metadata = function(cell) {
+			var rows = widget.all_rows();
+			var row = cell.closest('.ui-list-row');
+			var cellIndex = row.find('.ui-list-cell').index(cell);
+			var col_schema = widget.schema_for_col(cellIndex);
+			return [rows.index(row), col_schema, row, cell];
+		};
+		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
+			var row = jQuery(this);
+			widget.activate_row(row);
+			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
+		});		
+		this._element.delegate('.ui-list-row', 'click', function(event) {
+			var row = jQuery(this);
+			jQuery('.ui-widget.ui-notify').remove();
+			widget.activate_row(row);
+			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
+		});
+
+		this._element.delegate('.ui-list-cell', 'click', function(event) {
+			if(!widget._element.is('table')) {
+				return;
+			}
+			return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
+		});
+		this._element.delegate('.ui-list-row', 'hover', function(event) {
+			var row = jQuery(this);
+			if(widget.settings.row_hover) {
+				row.toggleClass('ui-state-hover');
+			}
+			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
+		});
+		this._element.delegate('.ui-list-cell', 'hover', function(event) {
+			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
+		});
+		this.loader = jQuery('<div>').hide().insertAfter(this._element);
+		this.reload();
+	},
+	
+	activate_row: function(row) {
+		if(row === null || row === undefined) {
+			if(this.settings.row_click_active_exclsive) {
+				this.all_rows().removeClass(this.settings.row_click_active_class);
+			}
+			return;
+		}
+		if(row.constructor === Number) {
+			row = this.row_from_number(row);
+		}
+		if(this.settings.row_click_active_mode) {
+			if(!row.hasClass(this.settings.row_click_active_class)) {
+				row.addClass(this.settings.row_click_active_class);
+				if(this.settings.row_click_active_exclsive) {
+					this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
+				}
+			} else if(this.settings.row_click_active_mode === 'toggle') {
+				row.removeClass(this.settings.row_click_active_class);
+			}
+		}
+	},
+	
+	active_row: function() {
+		return this.all_rows().filter('.'+this.settings.row_click_active_class);
+	},
+	
+	insert_row: function(rowData, isHeading, position) {
+		isHeading = !!isHeading;
+		var row = this.row_prototype.clone();
+		if(isHeading) {
+			row.addClass('ui-list-heading').removeClass('ui-list-row');
+		}
+		var className = isHeading ? 'ui-list-heading' : 'ui-list-cell';
+		var column_prototype = jQuery(isHeading ? "<th>" : "<td>").addClass(className);
+		jQuery.each(this.schema, function(i) {
+			var cell = this._element.is('table') ? column_prototype.clone() : row;
+			row.append(this.insert_cell(row, cell, i, rowData, isHeading));
+		}.bind(this));
+		if(position) {
+			position.after(row);
+			return row;
+		}
+
+		if(isHeading) {
+			this._element.prepend(row);
+		} else {
+			this._element.append(row);
+		}
+		return row;
+	},
+	
+	insert_cell: function(row, into, index, rowData, isHeading) {
+		var metadata = this.schema[index];
+		var data = rowData[metadata.identifier];
+		if(isHeading && metadata.is_sortable) {
+			this.prepare_sort(row, into, metadata);
+		}
+		var display_type = isHeading ? 'text' : metadata.display_type;
+		if(metadata.display_type === 'data') {
+			row.data(metadata.identifier, data);
+			return null;
+		}
+		if(metadata.display_type === 'classname') {
+			if(data) {
+				row.addClass(metadata.identifier+'-'+data);
+			}
+			return null;
+		}
+		if(display_type === null) {
+			display_type = 'text';
+			if(data === true || data === false) {
+				display_type = 'boolean';
+			}
+		}
+		// add isHeading for adding span for sortable
+		this.types[display_type](into, data, metadata, isHeading);
+		if(isHeading && metadata.heading_filter) {
+			this.prepare_filter(into, metadata);
+		}
+		return row === into ? null : into;
+	},
+	
+	prepare_filter: function(cell, metadata) {
+		var is_widget = !jQuery.isPlainObject(metadata.heading_filter);
+		var value_changed = function(event, value) {
+			if(event.val) {
+				value = event.val();
+			}
+			this.setOption(metadata.field_name, value);
+			this.reload();
+		}.bind(this);
+		if(is_widget) {
+			var widget_type = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[0] : metadata.heading_filter;
+			var session_key = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[1] : metadata.heading_filter+'_for_list';
+			Widget.createWithElement(widget_type, function(event, widget) {
+				widget.handle('value-changed', value_changed);
+				widget._element.appendTo(cell);
+			}, session_key);
+		} else {
+			var filter = jQuery('<select/>');
+			jQuery.each(metadata.heading_filter, function(value, text) {
+				filter.append(jQuery('<option/>').text(text).attr('value', value));
+			});
+			filter.bind('change', value_changed).appendTo(cell);
+		}
+	},
+	
+	prepare_sort: function(row, into, metadata) {
+		var widget = this;
+		into.addClass('sortable');
+		if(this.sort && this.sort[0] == metadata.field_name) {
+			into.addClass(this.sort[1]);
+		}
+		into.click(function(){
+			widget.setOrderColumnSort(metadata.field_name, into.hasClass('asc') ? 'desc' : 'asc');
+			widget.reload();
+		});
+	},
+	
+	delete_row: function(row) {
+		if(row.constructor === Number) {
+			row = this.row_from_number(row);
+		}
+		var rowData = this.collect_row_data(row);
+		this.deleteRow(rowData, function(result, error) {
+			if(!error) {
+				row.remove();
+			} else {
+				Widget.notifyUser('error', error.message);
+			}
+		});
+	},
+	
+	collect_row_data: function(row) {
+		var rowData = {};
+		jQuery.each(this.schema, function(i) {
+			if(this.schema[i].display_type === 'data') {
+				rowData[this.schema[i].field_name] = row.data(this.schema[i].identifier);
+			}
+		}.bind(this));
+		return rowData;
+	},
+
+	toggle_boolean: function(row, boolean_name) {
+		if(row.constructor === Number) {
+			row = this.row_from_number(row);
+		}
+		var rowData = this.collect_row_data(row);
+		this.toggleBoolean(rowData, boolean_name, function(result) {
+			this.update_row(row);
+		});
+	},
+	
+	update_row: function(row, additonalData) {
+		if(row.constructor === Number) {
+			row = this.row_from_number(row);
+		}
+		var rowData = this.collect_row_data(row);
+		jQuery.extend(rowData, (additonalData || {}));
+		this.rowFromData(rowData, function(row_contents) {
+			if(row_contents !== null) {
+				this.insert_row(row_contents, false, row);
+			}
+			row.remove();
+		});
+	},
+	
+	headings: function() {
+		var result = {};
+		jQuery.each(this.schema, function(i, column) {
+			if(column.display_heading) {
+				result[column.identifier] = column.heading;
+			}
+		});
+		return result;
+	},
+	
+	current_row_count: function() {
+		return this.all_rows().length;
+	},
+	
+	reload: function() {
+		this._element.hide();
+		this.toggle_loader(true);
+		this._element.empty();
+		this.sort = this.getOrderColumnSort();
+		this.schema = this.getSchema();
+		if(this._element.is('table')) {
+			var col = jQuery('<col/>');
+			jQuery.each(this.schema, function(i, column) {
+				if(column.display_heading) {
+					col.clone().addClass(column.identifier).appendTo(this._element);
+				}
+			}.bind(this));
+		}
+		var headings = this.headings();
+		if(!jQuery.isEmptyObject(headings)) {
+			this.insert_row(headings, true);
+		}
+		this.completeList(function(list) {
+			if(list.length > 0) {
+				jQuery.each(list, function(i, row) {
+					this.insert_row(row);
+				}.bind(this));
+				this.toggle_loader(false);
+			} else {
+				this.toggle_loader(false);
+			}
+			this._element.show();
+			this.fire('list.reloaded', list.length);
+		});
+	},
+	
+	col_is_invisible: function(col) {
+		display_type = col.display_type ? col.display_type : col;
+		return display_type === 'data' || display_type === 'classname';
+	},
+	
+	cell_for_identifier: function(identifier, row) {
+		var counter = 0;
+		var cell = null;
+		jQuery.each(this.schema, function(i, schema_item) {
+			if(Widget.types.list.col_is_invisible(schema_item)) {
+				return;
+			}
+			if(schema_item.identifier === identifier) {
+				cell = row.find('.ui-list-cell:eq('+counter+')');
+				return false;
+			}
+			counter++;
+		});
+		return cell;
+	},
+	
+	schema_for_col: function(col) {
+		var counter = 0;
+		var col_schema = null;
+		jQuery.each(this.schema, function(i, schema_item) {
+			if(Widget.types.list.col_is_invisible(schema_item)) {
+				return;
+			}
+			if(counter++ === col) {
+				col_schema = schema_item;
+				return false;
+			}
+		});
+		return col_schema;
+	},
+	
+	all_rows: function() {
+		return this._element.find('.ui-list-row');
+	},
+	
+	row_from_number: function(rowNumber) {
+		return this._element.find('.ui-list-row:eq('+rowNumber+')');
+	},
+	
+	row_from_row_data: function(rowData) {
+		var result = null;
+		var widget = this;
+		this.all_rows().each(function() {
+			var is_found = true;
+			var row = jQuery(this);
+			jQuery.each(widget.schema, function(i) {
+				if(widget.schema[i].display_type === 'data') {
+					if(row.data(widget.schema[i].identifier) != rowData[widget.schema[i].field_name]) {
+						is_found = false;
+						return false;
+					}
+				}
+			});
+			if(is_found) {
+				result = row;
+				return false;
+			}
+		});
+		return result;
+	},
+	
+	toggle_loader: function(toggle_active) {
+		if(toggle_active === undefined) {
+			toggle_active = !this.loader.hasClass('ui-loading');
+		}
+		if(toggle_active) {
+			this.loader.addClass('ui-loading').show();
+		} else {
+			this.loader.removeClass('ui-loading').hide();
+		}
+	},
+	
+	settings: {
+		row_hover: true,
+		//false, "toggle", "activate"
+		row_click_active_mode: false,
+		row_click_active_exclsive: true,
+		row_click_active_class: 'ui-state-active'
+	},
+	
+	schema: null,
+	
+	types: {
+		text: function(column, data, metadata, isHeading) {
+			if(isHeading) {
+				column = jQuery('<span>').appendTo(column);
+			}
+			column.text(data == null ? '-' : data);
+		},
+		
+		static: function(column, data, metadata) {
+			data = metadata.heading;
+			Widget.types.list.types.text(column, data);
+		},
+		
+		boolean: function(column, data, metadata) {
+			if(metadata.icon_true || metadata.icon_false) {
+				var icon = data ? metadata.icon_true : metadata.icon_false;
+				if(!icon) {
+					return;
+				}
+				return Widget.types.list.types.icon(column, icon);
+			}
+			var element = jQuery('<span/>').css('color', data ? 'green' : 'grey').text(data ? '✔' : '-');
+			Widget.types.list.types.html(column, element);
+		},
+		
+		url: function(column, data) {
+			if(!jQuery.isArray(data)) {
+				data = [data, data];
+			}
+			jQuery("<a>").attr('href', data[1]).text(data[0]).appendTo(column).bind('click', function(event) {
+				event.stopPropagation();
+			});
+		},
+		
+		icon: function(column, data, metadata) {
+			if(data === undefined) {
+				data = metadata.field_name;
+			}
+			data = jQuery('<div>').addClass('ui-icon ui-icon-'+data);
+			Widget.types.list.types.html(column, data);
+		},
+		
+		html: function(column, data) {
+			if(data.constructor === String) {
+				data = jQuery(data);
+			}
+			column.append(data);
+		}
+	}
+};

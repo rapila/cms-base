@@ -1,0 +1,113 @@
+Widget.types.detail = {
+	initialize: function() {
+		this.loader = jQuery('<div/>').addClass('ui-loading');
+	},
+	
+	open: function() {
+		if(this.has_dialog) {
+			this.content.dialog('open');
+			this.select();
+			return;
+		}
+		this.loader.appendTo(this.content).hide();
+		var detail_widget = this;
+		var save_button_handler = function() {
+			if(detail_widget.options.save_callback()) {
+				detail_widget.content.dialog('close');
+			}
+		};		
+		var cancel_callback = function() {
+			detail_widget.content.dialog('close');
+		};
+		var buttons = {
+			"{{writeString=save}}": save_button_handler
+		};
+		if(this.options.has_cancel_button) {
+			buttons["{{writeString=cancel}}"] = cancel_callback;
+		}
+		this.content.dialog({
+			title: this.options.title,
+			autoOpen: this.options.autoOpen,
+			modal: this.options.modal,
+			resizable: this.options.resizable,
+			closeOnEscape: this.options.closeOnEscape,
+			dialogClass: this.options.dialogClass,
+			width: this.options.width,
+			buttons: buttons
+		}).dialog('open').bind('keydown', function(event) {
+			if(event.which === 13) {
+				// check if is textarea or whatever
+				save_button_handler();
+			}
+		}).find('label[for]').bind('click', function() {
+			var related_input = detail_widget.content.find("*[name='"+jQuery(this).attr('for')+"']");
+			related_input.focus();
+			if(related_input.is(':checkbox, :radio')) {
+				related_input.attr('checked', !related_input.attr('checked'));
+			} else {
+				related_input.select();
+			}
+		});
+		this.select();
+		this.has_dialog = true;
+	},
+	has_dialog: false,
+	content: null,
+	
+	select: function() {
+		if(this.options.select) {
+			this.content.find(this.options.select).select();
+		}
+	},
+	
+	set_title: function(title) {
+		this.content.dialog('option', 'title', title);
+	}, 
+	
+	set_is_loading: function(is_loading) {
+		if(is_loading) {
+			this.loader.show();
+			this.content.children().css("visibility", "hidden");
+			// this.content.children().hide();
+		} else {
+			this.loader.hide();
+			this.content.children().css("visibility", "visible");
+			// this.content.children().show();
+		}
+	},
+	
+	connect_detail_with_list: function(detail_name, list, idMethod, idData) {
+		if(!idMethod) idMethod = 'setId';
+		if(!idData) idData = 'id';
+		list.settings.row_click_active_mode = 'activate';
+		list.settings.row_click_active_class = 'ui-state-highlight';
+		Widget.create(detail_name+"_detail", function(detail) {
+			list.handle('list.row-dblclick', function(event, rowIndex, row) {
+				//Init
+				detail[idMethod](row.data(idData));
+				detail.current_row = row;
+				detail.fill_data();
+				detail.open();
+				event.preventDefault();
+				event.stopPropagation();
+			});
+			detail.save_callback = function(returnValue) {
+				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
+				list.update_row(detail.current_row, additionalData);
+			};
+		});
+	},
+	
+	options: {
+		title: ' ',
+		autoOpen: true,
+		modal: false,
+		resizable: true,
+		closeOnEscape: true,
+		has_cancel_button: true,
+		cancel_callback: jQuery.noop,
+		save_callback: jQuery.noop,
+		select: "input:eq(0)",
+		width: 480
+	}
+};

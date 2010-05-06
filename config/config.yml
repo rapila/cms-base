@@ -16,6 +16,8 @@ routing:
     get_ajax:     'FileManager'
     cms_login:    'LoginManager'
     goto:         'GotoManager'
+    admin:        'AdminManager'
+    preview:      'PreviewManager'
   default: 'content'
 
 # give the page name as value here (be sure not to have allocated the name to more than one page)

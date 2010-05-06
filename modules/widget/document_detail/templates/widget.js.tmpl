@@ -1,0 +1,70 @@
+Widget.types.document_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget;
+			jQuery.extend(widget.options, {
+				title: "{{writeString=create}}",
+				width: 550,
+				dialogClass: "document_detail",
+				save_callback: this.save.bind(this),
+			});
+			widget.content = this.content;
+			this.content.find("select[name='document_category_id']").prepareWidget();
+			this.content.find("select[name='language_id']").prepareWidget();
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+		this.detail_widget.content.find('input[name=name]').focus();
+	},
+	
+	fill_data: function() {
+		this.detail_widget.set_is_loading(true);
+		this.getDocumentData(function(document_data) {
+			if(document_data.DocumentCategoryId === null) {
+				document_data.DocumentCategoryId = '';
+			}
+			if(document_data.LanguageId === null) {
+				document_data.LanguageId = '';
+			}
+			if(document_data.Id != null) {
+				this.content.find("label[for='file_upload']").text("{{writeString=file.upload_replace}}");
+			}
+			this.content.find("input[name='name']").val(document_data.Name);
+			this.content.find("textarea[name='description']").val(document_data.Description);
+			this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
+			this.content.find("select[name='language_id']").val(document_data.LanguageId);
+			this.content.find(".file_size").text(document_data.FileInfo);
+			this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
+			this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
+			this.content.find(".preview").attr('src', "{{writeLink=display_document;manager=FileManager}}/"+document_data.Id+"?max_width=150");
+			this.content.find(".updated_info").text(document_data.UpdatedInfo);
+			this.content.find(".created_info").text(document_data.CreatedInfo);
+			this.content.find(".detail_id").text(document_data.Id);
+			this.detail_widget.set_title(this.detail_widget.options.title = "{{writeString=file}}"+' '+document_data.Name);
+			this.detail_widget.set_is_loading(false);
+		});
+	},
+	
+	save: function() {
+		this.saveData(this.content.serializeArrayKV(), this.save_callback);
+		return true;
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

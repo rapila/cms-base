@@ -1,0 +1,39 @@
+jQuery(document).ready(function() {
+	var document_list = jQuery('.document_list');
+	document_list.each(function() {
+		jQuery(this).prepareWidget(function(widget) {
+			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');
+			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
+				if(col.identifier === 'delete') {
+					var file_name = widget.cell_for_identifier('name', row).text();
+					Widget.confirm("{{writeString=delete_confirm}}", "{{writeParameterizedString=file.delete_alert;dateiname=$\{dateiname\};}}".replace(/\$\{dateiname\}/, file_name), function(confirmed) {
+						if(confirmed) {
+							this.delete_row(row);
+						}
+					}.bind(this));
+					event.stopPropagation();
+				}
+				if(col.identifier === 'is_inactive') {
+					this.toggle_boolean(row, col.identifier);
+					event.stopPropagation();
+				}				
+				if(col.identifier === 'is_protected') {
+					this.toggle_boolean(row, col.identifier);
+					event.stopPropagation();
+				}
+			});
+			widget.handle('list.cell-hover', function(event, rowIndex, col, row, cell) {
+				if(col.identifier === 'is_inactive' || col.identifier === 'is_protected') {
+					cell.css({cursor: 'pointer'});
+				}
+			});
+			widget.handle('list.reloaded', function(event, list_length) {
+				if(list_length === 0) {
+					var search = widget.getSearch();
+					var message = "{{writeParameterizedString=module.document_list.no_results;search=$\{search\};category=$\{category\};document_kind=$\{document_kind\}}}".replace(/\$\{search\}/, search).replace('${category}', widget.getOption('document_category_id')).replace('${document_kind}', widget.getOption('document_kind'));
+					Widget.notifyUser('info', message);
+				}
+			});
+		});
+	});
+});

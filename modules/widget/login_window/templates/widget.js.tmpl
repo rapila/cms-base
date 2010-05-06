@@ -1,0 +1,50 @@
+Widget.types.login_window = {
+	initialize: function() {
+		this.login_markup = jQuery('<div class="cmos_alert"><form/></div>');
+		var login_window = this;
+		this.login_markup.children('form').append("{{includeTemplate=login_window.incl}}").bind('submit', function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			var form = jQuery(this);
+			var attributes = form.serializeArrayKV();
+			login_window.login(attributes.user_name, attributes.password, function(result, error) {
+				if(error) {
+					login_window.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
+				} else {
+					login_window.login_markup.dialog('close');
+					Widget.fire('cmos.logged_in');
+				}
+			});
+		});
+		login_window.login_markup.dialog({
+			title: 'Login',
+			autoOpen: false,
+			modal: true,
+			resizable: false,
+			closeOnEscape: false,
+			buttons: {
+				"{{writeString=login}}": function() {
+					login_window.login_markup.children('form').submit();
+				},
+				"{{writeString=login.password_forgotten}}": function() {
+					window.location.href="{{writeLink=;password_forgotten=true;manager=LoginManager;is_absolute=true}}";
+				}
+			}
+		});
+	},
+	
+	show: function() {
+		this.login_markup.dialog('open');
+		this.login_markup.find("input[name='user_name']").select();
+	}
+};
+
+jQuery(document).ready(function() {
+	Widget.create('login_window', function(login_window) {
+		if(!login_window.getIsLoggedIn()) {
+			login_window.show();
+		} else {
+			Widget.fire('cmos.logged_in');
+		}
+	});
+});

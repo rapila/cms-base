@@ -1,0 +1,25 @@
+<form>
+	<div class="status_section">
+		<input type="checkbox" name="is_admin" value="1" /><label for="is_admin">{{writeString=is_admin}}</label><br />
+		<input type="checkbox" name="is_backend_login_enabled" value="1" /><label for="is_backend_login_enabled">{{writeString=is_backend_login_enabled}}</label><br />
+		<input type="checkbox" name="is_inactive" value="1" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
+		<label for="group_ids[]" >{{writeString=user.group}}</label>
+		<select name="group_ids[]" multiple="multiple" style="height:auto;" class="ui-widget-content" data-widget-type="group_input"></select><br />
+		<label>{{writeString=created.info}}:</label><br /><span class="created_info status"></span><br />
+		<label>{{writeString=updated.info}}:</label><br /><span class="updated_info status"></span><br />
+	</div>
+	<label for="first_name">{{writeString=first_name}}</label>
+	<input type="text" name="first_name" class="ui-widget-content" /><br />
+	<label for="last_name">{{writeString=last_name}}</label>
+	<input type="text" name="last_name" class="ui-widget-content" /><br />
+	<label for="username">{{writeString=user_name}}</label>
+	<input type="text" name="username" class="ui-widget-content" /><br />
+	<label for="email">{{writeString=email}}</label>
+	<input type="text" name="email" class="ui-widget-content" /><br />
+	<label for="language_id">{{writeString=language}}</label>
+	<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
+	<label for="password">{{writeString=password}}</label>
+	<input type="text" name="password" autocomplete="off" class="ui-widget-content" /><br />
+	<label for="password_confirm">{{writeString=password_confirm}}</label>
+	<input type="text" name="password_confirm"  autocomplete="off" class="ui-widget-content" /><br />
+</form>

@@ -1,0 +1,49 @@
+Widget.types.string_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget;
+			jQuery.extend(widget.options, {
+				title: "{{writeString=create}}",
+				width: 600,
+				save_callback: this.save.bind(this)
+			});
+			widget.content = this.content;
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+	},
+	
+	fill_data: function() {
+		this.getStringData(function(string_data) {
+			this.string_key_old = string_data.StringKey;
+			this.content.find("input[name='string_key']").val(string_data.StringKey);
+			this.content.find("textarea[name='text']").val(string_data.Text);
+			this.detail_widget.set_title(this.detail_widget.options.title = string_data.StringKey);
+		});
+	},
+	
+	save: function() {
+		var form_data = this.content.serializeArrayKV();
+		form_data.string_key_old = this.string_key_old;
+		this.saveData(form_data, this.save_callback);
+		return true;
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

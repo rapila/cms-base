@@ -1,0 +1,60 @@
+Widget.types.user_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget;
+			jQuery.extend(widget.options, {
+				title: "{{writeString=create}}",
+				width: 600,
+				save_callback: this.save.bind(this)
+			});
+			widget.content = this.content;
+			if(this.auto_open) {
+				this.open();
+			}
+			this.content.find("select[name='language_id']").prepareWidget(function(widget) {
+				widget.settings.international_option = false;
+			});
+			this.content.find("select[name='group_ids[]']").prepareWidget();
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+	},
+	
+	fill_data: function() {
+		this.getUserData(function(user_data) {
+			this.content.find("input[name='first_name']").val(user_data.FirstName);
+			this.content.find("input[name='last_name']").val(user_data.LastName);
+			this.content.find("input[name='username']").val(user_data.Username);
+			this.content.find("input[name='email']").val(user_data.Email);
+			this.content.find("select[name='language_id']").val(user_data.LanguageId);
+			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
+			this.content.find("select[name='group_ids[]']").val(user_data.ActiveUserGroupIds);
+			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);
+			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
+			this.content.find(".updated_info").text(user_data.UpdatedInfo);
+			this.content.find(".created_info").text(user_data.CreatedInfo);
+			this.content.find("select[id='group_ids']").val(user_data.ActiveUserGroupIds);
+			this.detail_widget.set_title(this.detail_widget.options.title = "{{writeString=user}} "+user_data.FullName);
+		});
+	},
+	
+	save: function() {
+		this.saveData(this.content.serializeArrayKV(), this.save_callback);
+		return true;
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

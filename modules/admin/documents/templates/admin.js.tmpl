@@ -1,0 +1,69 @@
+jQuery(document).ready(function() {
+	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
+	sidebar.settings.row_click_active_mode = 'activate';
+	var initial_selection = "{{writeRequestValue=document_category_id}}";
+	if(initial_selection) {
+		initial_id = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
+		var row = sidebar.row_from_row_data({id: initial_selection});
+		sidebar.activate_row(row);
+	}
+	var document_list = AdminInterface.content.find('.document_list').getWidget();
+	var info_bar = AdminInterface.info_bar.getWidget();
+	info_bar.add_button('add-new-item', function() {
+		Widget.create('document_detail', function(widget) {
+			widget.content.find("select[name='document_category_id']").val(document_list.getOption('document_category_id'));
+			widget.open();
+			widget.save_callback = function() {
+				jQuery('.document_list.ui-list').each(function() {
+					jQuery(this).getWidget().reload();
+				});
+			};
+		});
+	}, 'n', true).add_button('add-new-item', function() {
+		Widget.create('sidebar_input', function(widget) {
+			widget.add_new_sidebar_input("{{writeString=documenent_category.default_name}}", 'DocumentCategory', function() {
+				var row_data = sidebar.active_row();
+				if(row_data.length>0) {
+					row_data = sidebar.collect_row_data(row_data);
+					sidebar.handle('list.reloaded', function() {
+						sidebar.activate_row(sidebar.row_from_row_data(row_data));
+					}, true);
+				}
+				sidebar.reload();
+			});
+		});
+	}).add_button('action', function() {
+			// add options delete category, or all document or whatever
+			alert('for example delete all currently shown documents');
+	}).add_search_input("{{writeString=search.file}}", function(search) {
+		if(document_list.setSearch(search)) {
+			document_list.reload();
+		}
+	});
+
+	// add row_count_info
+	var row_count_info = info_bar.get_row_count_info();
+	info_bar.add_element(row_count_info, true);
+	var list_reload_handler = function() {
+		row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+	};
+	list_reload_handler.call(document_list);
+	document_list.handle('list.reloaded', list_reload_handler);
+	
+	// sidebar list row dblclick
+	sidebar.handle('list.row-dblclick', function(event, row, element) {
+		alert(element.data('document_category_id'));
+	});
+	// sidebar list row click
+	sidebar.handle('list.row-click', function(event, row, element) {
+		var document_category_id = element.data('document_category_id');
+		if(!element.hasClass('ui-state-active')) {
+			// handle highlight of default element or initial selection
+		 	document_category_id = null;
+		}
+		document_list.setOption('document_category_id', document_category_id);
+		document_list.reload();
+		
+		jQuery('#new_sidebar_input').remove();
+	});	
+});

@@ -1,0 +1,112 @@
+Widget.types.info_bar = {
+	initialize: function() {
+		this.sidebar = AdminInterface.sidebar;
+		this.content_area = AdminInterface.content;
+		this.max_width = 480;
+		this.min_width = 100;
+		this.button_prototype = jQuery('<a/>').addClass('info-bar-button').text(' ');
+	},
+	
+	prepare: function() {
+		this.resizer = this._element.find('.sidebar_resizer');
+		this.resizer.draggable({
+			axis: 'x',
+			containment: 'parent',
+			drag: this.resizer_moved.bind(this)
+		});
+		this.infobar_left = this._element.find('.infobar_left');
+		this.infobar_right = this._element.find('.infobar_right');
+	},
+	
+	resizer_moved: function(event, ui) {
+		if(ui.position.left>this.max_width) {
+			ui.position.left = this.max_width;
+		} else if(ui.position.left < this.min_width) {
+			ui.position.left = this.min_width;
+		}
+		var px = ''+ui.position.left+'px';
+		this.sidebar.css('width', px);
+		this.content_area.css('left', px);
+		this.infobar_right.css('left', px);
+	},
+	
+	add_element: function(element, is_right_container, is_before, accesskey) {
+		var appendee = is_right_container ? this.infobar_right : this.infobar_left;
+		var func = is_before ? element.prependTo : element.appendTo;
+		if(accesskey) {
+			element.attr('accesskey', accesskey);
+		}
+		element.addClass('info-bar-element');
+		func.call(element, appendee);
+		return this;
+	},
+	
+	add_button: function(identifier, action, accesskey, is_right_container, is_before) {
+		var element = this.button_prototype.clone().addClass(identifier).click(action);
+		this.add_element(element, is_right_container, is_before, accesskey);
+		return this;
+	},
+	
+	add_menu: function(identifier) {
+		return this;
+	},
+	
+	add_menu_item: function(menuIdentifier, identifier, label, action, accesskey) {
+		return this;
+	},
+	
+	set_active_status: function(identifier, active) {
+		return this;
+	},
+	
+	add_search_input: function(default_value, click_handler) {
+		if(!default_value) {
+			default_value = "{{writeString=search}}";
+		}
+		var search_input = jQuery('<input/>').addClass('default_state search_field').attr({name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
+		this.add_element(search_input, true, false, 'f');
+		var clear_button = this.button_prototype.clone().addClass('search_field_reset').hide();
+		this.add_element(clear_button, true).add_button('search_button', function() {
+			if(search_input.hasClass('default_state')) {
+				Widget.notifyUser('info', "{{writeString=not_applicable.add_search_word}}");
+				return;
+			}
+			click_handler(search_input.val());
+		}, '', true);
+		var search_button = clear_button.next('.search_button');
+		clear_button.click(function() {
+			search_input.val('').focus();
+			search_button.removeClass('active');
+			click_handler(null);
+			jQuery(this).hide();
+		});
+		return search_input.focus(function() {
+			if(search_input.hasClass('default_state')) {
+				search_input.removeClass('default_state').val('');
+			}
+		}).blur(function() {
+			if(search_input.val() === '') { 
+				search_input.addClass('default_state').val(default_value);
+			}
+		}).bind('keyup', function(event) {
+			if(event.which === 27) { 
+				return clear_button.click();
+			}
+			if(event.which === 13) {
+				return search_button.click();
+			}
+			if(search_input.val() === '') {
+				clear_button.hide();
+				search_button.removeClass('active');
+			} else {
+				clear_button.show();
+				search_button.addClass('active');
+			}
+		});
+		return this;
+	},
+	
+	get_row_count_info: function() {
+		return jQuery('<span/>').addClass('row_count_info');
+	}
+};

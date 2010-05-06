@@ -209,15 +209,42 @@ abstract class Module {
 		return new Template($sTemplateName, $aDir);
 	}
 	
-	/*
-	public static abstract function getType();
-	public static abstract function listModules();
-	public static abstract function getClassNameByName($sModuleName);
-	public static abstract function getDisplayNameByName($sModuleName, $sLanguageId = null);
-	public static abstract function getModuleInstance();
-	public static abstract function isValidModuleClassName($sName);
-	public static abstract function getNameByClassName($sClassName);
-	*/
+	public static function getType() {
+		return static::$MODULE_TYPE;
+	}
+	
+	public static function listModules() {
+		return self::listModulesByType(self::getType());
+	}
+	
+	public static function getClassNameByName($sModuleName) {
+		return StringUtil::camelize($sModuleName, true).get_class();
+	}
+	
+	public static function getNameByClassName($sClassName) {
+		if(strpos($sClassName, get_class()) === false) {
+			return $sClassName;
+		}
+		return StringUtil::deCamelize(substr($sClassName, 0, 0-strlen(get_class())));
+	}
+	
+	public static function getDisplayNameByName($sModuleName, $sLangugaeId = null) {
+		return self::getDisplayNameByTypeAndName(self::getType(), $sModuleName, $sLangugaeId);
+	}
+	
+	public static function getModuleInstance($sModuleName) {
+		$aArgs = func_get_args();
+		array_unshift($aArgs, self::getType());
+		return call_user_func_array(array("Module", "getModuleInstanceByTypeAndName"), $aArgs);
+	}
+	
+	public function getModuleName() {
+		return self::getNameByClassName(get_class($this));
+	}
+	
+	public static function isValidModuleClassName($sName) {
+		return StringUtil::endsWith($sName, StringUtil::camelize(self::getType(), true)."Module");
+	}
 	
 	public static function isValidModuleClassNameOfAnyType($sName) {
 		return StringUtil::endsWith($sName, "Module");

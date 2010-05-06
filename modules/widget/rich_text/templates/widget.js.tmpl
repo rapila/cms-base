@@ -1,0 +1,57 @@
+Widget.types.rich_text = {
+	configuration: {
+		customConfig: '',
+		toolbar_Full: [
+			['Bold','Italic','-','Subscript','Superscript'],
+			['Link','Unlink','Anchor'],
+			['NumberedList','BulletedList','Blockquote'],
+			['Undo','Redo','-','Find','-','RemoveFormat', 'Scayt', 'ShowBlocks'],
+			['Maximize'],
+			'/',
+			['Styles','Format'],
+			['Image', 'PickImage','HorizontalRule','Smiley','SpecialChar'],
+			['Source'],
+		],
+		skin: "kama",
+		entities: false,
+		baseFloatZIndex: 1000
+	},
+	
+	prepare: function() {
+		var textarea = this._element.get(0);
+		this.instance = CKEDITOR.replace(textarea, this.configuration);
+		var rich_text = this;
+		Widget.create('image_picker', function(image_picker) {
+			rich_text.image_picker = image_picker;
+			rich_text.instance.addCommand('PickImage', {
+				exec: function(editor) {
+					image_picker.set_callback(rich_text.image_select_callback.bind(rich_text, editor, this));
+					image_picker.open_chooser();
+				},
+				async: true
+			});
+			rich_text.instance.ui.addButton('PickImage', {
+				label: 'Pick Image',
+				command: 'PickImage'
+			});
+		}, this._element.attr('data-widget-picker-session'));
+	},
+	
+	image_select_callback: function(editor, command) {
+		var selected_images = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		var image = editor.getSelection().getSelectedElement();
+		var image_width = '600';
+		if(image !== null && image.$.tagName.toLowerCase() === 'img') {
+			image_width = image.$.getAttribute('width');
+			image.remove();
+		}
+		image_picker = this.image_picker;
+		jQuery.each(selected_images, function(i, image_id) {
+			image = CKEDITOR.dom.element.createFromHtml('<img/>');
+			image.setAttribute('src', image_picker.document_url_from_id(image_id));
+			image.setAttribute('width', image_width);
+			editor.insertElement(image);
+		});
+		editor.fire('afterCommandExec', {name: 'PickImage', command: command});
+	}
+};

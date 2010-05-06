@@ -1,0 +1,93 @@
+Widget.handle('cmos.logged_in', function() {
+	Widget.create('admin_menu').show();
+});
+
+Widget.types.admin_menu = {
+	prepare: function() {
+		this.button_prototype = jQuery('<a/>').addClass('admin-menu-button');
+		this.toolbar = this._element.children();
+		this.right_container = this.toolbar.find('.admin_menu_right');
+		this.addButton(this.getLoggedInName(), function() {
+			window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
+		}, true).addElement(jQuery("<span/>").text('cmos').attr('style', "padding:0 1em;color:#B8D600;"),true).
+			addButton(" ", function() {
+			Widget.create('login_window', function(login_window) {
+				login_window.logout(function() {
+					this.show();
+				});
+				this.hide();
+			}.bind(this));
+		}.bind(this), true, this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}')).
+			addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module).
+			addSpacer(2).
+			addButton('   ', function() {
+			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
+		}, false, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
+			// addLanguageSelector("{{writeSessionAttribute=content_language}}");
+	},
+	
+	show: function() {
+		if(window.AdminInterface) {
+			return this._element.show();
+		}
+		this._element.show();
+		// this._element.show('slide', {direction: 'up'});
+	},
+	
+	hide: function() {
+		if(window.AdminInterface) {
+			return this._element.hide();
+		}
+		this._element.hide();
+	},
+	
+	addElement: function(element, is_right_container) {
+		var appendee = this.toolbar;
+		if(is_right_container) {
+			appendee = this.right_container;
+		}
+		jQuery(element).appendTo(appendee);
+		return this;
+	},
+	
+	addButton: function(text, callback, is_right_container, element) {
+		if(!element) {
+			element = jQuery("{{includeTemplate=menu_button.incl}}");
+		}
+		if(text == null) {
+			text = '';
+		}
+		return this.addElement(element.text(text).click(callback), is_right_container);
+	},
+		
+	addSpacer: function(width, is_right_container) {
+		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;height:100%;"/>'), is_right_container);
+	},
+	
+	addModuleSelector: function(selected, is_right_container) {
+		var select = jQuery('<select/>');
+		// select.addClass('ui-state-default');
+		var items = this.getModuleSelector();
+		jQuery.each(items, function(i, value) {
+			var option = jQuery('<option/>').attr("value", value.name).text(value.title).data('link', value.link);
+			select.append(option);
+		});
+		select.val(selected);
+		select.change(function() {
+			window.location.href = jQuery(this).find(':selected').data('link');
+		});
+		return this.addElement(select, is_right_container);
+	},
+	
+	addLanguageSelector: function(selected) {
+		var select = jQuery('<select/>').val(selected).addClass('content_language').attr('data-widget-type', 'language_input');
+		select.prepareWidget(function(widget) {
+			widget.settings.international_option = false;
+			select.change(function() {
+				widget.setContentLanguage(select.val());
+				Widget.fire('cmos.language_changed', select.val());
+			});
+		});
+		return this.addElement(select);
+	}
+};

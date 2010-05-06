@@ -1,0 +1,55 @@
+Widget.types.link_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget;
+			jQuery.extend(widget.options, {
+				title: "{{writeString=create}}",
+				width: 500,
+				save_callback: this.save.bind(this)
+			});
+			widget.content = this.content;
+			this.content.find("select[name='link_category_id']").prepareWidget();
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+	},
+	
+	fill_data: function() {
+		this.getLinkData(function(link_data) {
+			if(link_data.LinkCategoryId == null) {
+				link_data.LinkCategoryId = '';
+			}
+			this.content.find("input[name='name']").val(link_data.Name);
+			this.content.find("input[name='url']").val(link_data.Url);
+			this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+			this.content.find("textarea[name='description']").val(link_data.Description);
+			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
+			this.content.find(".updated_info").text(link_data.UpdatedInfo);
+			this.content.find(".created_info").text(link_data.CreatedInfo);
+			this.detail_widget.set_title(this.detail_widget.options.title = link_data.Name);
+		});
+	},
+	
+	save: function() {
+		this.saveData(this.content.serializeArrayKV(), this.save_callback);
+		return true;
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

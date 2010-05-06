@@ -1,0 +1,18 @@
+jQuery(document).ready(function() {
+	jQuery('.group_list').each(function() {
+		jQuery(this).prepareWidget(function(widget) {
+			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'group', widget, 'setGroupId');
+			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
+				if(col.identifier === 'delete') {
+					var file_name = widget.cell_for_identifier('name', row).text();
+					Widget.confirm("{{writeString=delete_confirm}}", "{{writeString=group.delete_alert}} "+file_name, function(confirmed) {
+						if(confirmed) {
+							this.delete_row(row);
+						}
+					}.bind(this));
+					event.stopPropagation();
+				}
+			});
+		});
+	});
+});

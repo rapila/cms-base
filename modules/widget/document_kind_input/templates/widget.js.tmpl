@@ -1,0 +1,27 @@
+Widget.types.document_kind_input = {
+	prepare: function() {
+		var option = jQuery('<option/>');
+		var document_kinds = this.getDocumentKinds();
+		jQuery.each(document_kinds, function(value, name) {
+			option.clone().text(name).val(value).appendTo(this._element);
+		}.bind(this));
+		option.text("{{writeString=document_kind.all}}").val('').prependTo(this._element);
+		
+		//Add change handler
+		this._element.change(function() {
+			if(this.settings.store_value) {
+				this.setSelectedDocumentKind(this._element.val());
+			}
+			this.fire('value-changed', this._element.val());
+		}.bind(this));
+		var current_value = this.getSelectedDocumentKind();
+		if(current_value === null) {
+			current_value = '';
+		}
+		this._element.val(current_value);
+	},
+	
+	settings: {
+		store_value: false
+	}
+};

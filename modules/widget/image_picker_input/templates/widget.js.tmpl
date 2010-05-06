@@ -1,0 +1,36 @@
+Widget.types.image_picker_input = {
+	prepare: function() {
+		this.picker_chooser = this._element.after('<div class="ui-icon ui-icon-image cmos-clickable"></div>').next();
+		this.picker_image = this.picker_chooser.after('<img/>').next().hide();
+		this.picker_remover = this.picker_image.after('<div class="ui-icon ui-icon-circle-close cmos-clickable"></div>').next().hide();
+		Widget.create('image_picker', function(picker) {
+			this.picker = picker;
+			this.picker.set_callback(this.callback.bind(this));
+			this.picker_remover.bind('click', this.picker.remove_picture.bind(this.picker));
+			this.picker_image.bind('click', this.picker.open_chooser.bind(this.picker));
+			this.picker_chooser.bind('click', this.picker.open_chooser.bind(this.picker));
+		}.bind(this), this._element.attr('data-widget-picker-session'));
+		this._element.bind('change', this.picker_changed.bind(this));
+	},
+	
+	callback: function(picked_docoument_id) {
+		if(picked_docoument_id) {
+			this._element.val(picked_docoument_id);
+		} else {
+			this._element.val('');
+		}
+		this._element.change();
+	},
+	
+	picker_changed: function() {
+		var document_id = this._element.val();
+		if(!document_id) {
+			//Hide the image and the remove button
+			this.picker_image.hide().attr('src', '');
+			this.picker_remover.hide();
+		} else {
+			this.picker_remover.show();
+			this.picker_image.show().attr('src', this.picker.document_url_from_id(document_id, 200));
+		}
+	}
+};

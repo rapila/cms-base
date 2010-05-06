@@ -1,0 +1,42 @@
+Widget.types.sidebar_input = {
+	initialize: function() {
+		this.sidebar = AdminInterface.sidebar;
+	},
+	
+	add_new_sidebar_input: function(default_value, model_name, save_callback) {
+		if(!default_value) {
+			default_value = "{{writeString=new_entry}}";
+		}
+		var new_input_container = jQuery('<div/>').attr('id', 'new_sidebar_input').addClass('ui-list-row');
+		var sidebar_input = jQuery('<input/>').attr({'name' : 'sidebar_input', 'type' : 'text', 'value' : default_value});
+		var sidebar_input_save = jQuery('<span/>').addClass('sidebar_input_save button ui-icon ui-icon-disk');
+		if(jQuery("input[name='sidebar_input']").length === 0) {
+			this.sidebar.append(new_input_container.append(sidebar_input).append(sidebar_input_save));
+		}
+		sidebar_input.focus().select();
+		sidebar_input.blur(function() {
+			if(sidebar_input.val() === '' || sidebar_input.val() === default_value) { 
+				new_input_container.remove();
+			}
+		}).keyup(function(event) {
+			if(sidebar_input.val() !== '' && sidebar_input.val() !== default_value) {
+				sidebar_input_save.addClass('active');
+			}
+			if(event.which === 13) {
+				return sidebar_input_save.click();
+			}
+			if(event.which === 27) { 
+				new_input_container.remove();
+			}
+		});
+		sidebar_input_save.click(function() {
+			if(sidebar_input.val() === default_value) {
+				return false;
+			}
+			this.createEntry(model_name, sidebar_input.val(), save_callback);
+			new_input_container.remove();
+		}.bind(this));
+		
+		return this;
+	}
+}
