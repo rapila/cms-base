@@ -148,9 +148,10 @@ class UserPeer extends BaseUserPeer {
 	}
 
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
-		 $oSearchCriterion = $oCriteria->getNewCriterion(UserPeer::FIRST_NAME, 'CONCAT(' . UserPeer::FIRST_NAME . '," ",' . UserPeer::LAST_NAME.') LIKE ("%' . $sSearch. '%")', Criteria::CUSTOM);
-		 $oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::USERNAME, "%$sSearch%", Criteria::LIKE));
-		 $oCriteria->add($oSearchCriterion);
+		$oSearchCriterion = $oCriteria->getNewCriterion(UserPeer::FIRST_NAME, 'CONCAT(' . UserPeer::FIRST_NAME . '," ",' . UserPeer::LAST_NAME.') LIKE ("%' . $sSearch. '%")', Criteria::CUSTOM);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::USERNAME, "%$sSearch%", Criteria::LIKE));
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::EMAIL, "%$sSearch%", Criteria::LIKE));
+		$oCriteria->add($oSearchCriterion);
 	}
 
 	

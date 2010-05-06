@@ -28,6 +28,10 @@ class User extends BaseUser {
 		return false;
 	}
 	
+	public function getUserKind() {
+		return $this->getIsBackendLoginEnabled();
+	}
+	
 	public function isFirstAdministrator() {
 		return (UserPeer::doCount(new Criteria()) === 1) 
 						&& $this->getIsAdmin() 
