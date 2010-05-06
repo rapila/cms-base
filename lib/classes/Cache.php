@@ -10,7 +10,10 @@ class Cache {
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
 		$sPath = ResourceFinder::findResource($mPath, ResourceFinder::SEARCH_MAIN_ONLY);
-	 
+		if($sPath === null) {
+			throw new Exception("Error in Cache->__construct(): Cache folder ".implode('/', $mPath)." does not exist");
+		}
+		
 		$sFileName = md5($sKey);
 		$this->sFilePath = $sPath.'/'.$sFileName.'.cache';
 		

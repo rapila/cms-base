@@ -38,7 +38,6 @@ abstract class WidgetModule extends Module {
 	}
 	
 	protected static function includeWidgetResources($bEndDependenciesOnJS = false, $oResourceIncluder = null) {
-	  // attention: php::get_called_class() requires PHP5.3
 		TemplateResourceFileModule::includeAvailableResources(get_called_class(), $bEndDependenciesOnJS, $oResourceIncluder);
 	}
 	

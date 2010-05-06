@@ -199,7 +199,7 @@ class Session {
 	}
 
 	public static function getRealm() {
-		str_replace(array('/', '.'), '_', StringUtil::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE);
+		return str_replace(array('/', '.'), '_', StringUtil::endsWith(MAIN_DIR_FE, '/') ? substr(MAIN_DIR_FE, 0, -1) : MAIN_DIR_FE);
 	}
 
 	public function getUser() {
@@ -211,12 +211,8 @@ class Session {
 	}
 }
 
-try {
-	session_name("Session".Session::getRealm());
-	@session_start();
-} catch (ClassNotFoundException $e) {
-	//Tried to load class that does not exist (may be because the user’s session contains old data, clearing the session)
-	foreach($_SESSION as $sSessionKey => $mSessionValue) {
-		unset($_SESSION[$sSessionKey]);
-	}
-}
+session_name("Session".Session::getRealm());
+$aCookieParams = session_get_cookie_params();
+session_set_cookie_params($aCookieParams['lifetime'], MAIN_DIR_FE, $aCookieParams['domain'], false, true);
+//TODO: use ini_set('unserialize_callback_func', gaga);
+session_start();
