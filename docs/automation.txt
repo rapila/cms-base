@@ -1,5 +1,0 @@
-todo
-export latest branch? for all but site, or site too?
-change permissions on caches folder
-db install, mysql, others
-- not forget document types (upload does not work without it)
