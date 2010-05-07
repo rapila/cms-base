@@ -1,53 +1,30 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 
-Two main questions that need time and consideration
-- widget concept. how do they relate, maybe go back to widget graffle chart
-- development strategy > plugins/new_admin > base/modules/admin
+bug 
+- 'Error in Cache->__construct(): Cache folder generated/caches/images does not exist'
+	should Cache create folders with the right permission if they do not exist?
 
-migration 2.0 issues
-data->getContents > stream_get_contents(data)
-FrontendModule::save() > getSaveData
-find all Blob, new Blob and migrate them
-
-Beispiel UserKindInputWidgetModule
-- is_backend_login_enabled error see email CriteriaListWidgetDelegate::__call() exception missing getIsBackendLoginEnabled()
-- call setUserKind, getUserKind on UserListWidget to simplify?
-- what is a persistent widget
-- how do widgets relate > ListWidget, InputWidget (can be input for detail or for list)
-	event listening > should we make a special type of list_input widget that always works closely together with the list within it is operating?
+Widget tasks
+- hierarchy of loading > bug Chrome initial section highlight
+- FilterCriteria add to CriteriaListWidgetDelegate
+	use new Query features or not
+-	event listening > how to update input widget (ie detail document_category on new/change of category in sidebar)
 - how can we simplify and make more transparent and more effective?
-- I get user_list widget and set and getUserKind by using get/setOption of list widget. That makes it consistent, but maybe also complicated
-- icon / and has_data???, display icon in user_kind row ui-icon-true???
-- user_group criteria
 
-js check chrome
-- default sidebar element does not highlight
+Criteria and Model
+- UserListWidgetModule > user_group == null criteria
+-	User->getUserRelatedByCreatedBy(), User->getUserRelatedByUpdatedBy() for user detail
 
-Widget handling : generell und Beispiel heading_filter
-- widget content on the fly erstellen > instanciateWidget
-- Widget.createWithElement() ?
-- egal ob das widget ein input oder ckeckbox oder wasauchimmer ist
-- input-widgets defaultmässig event fire() und handle() bei geändertem inhalt (input.value_changed) (nicht: form > onchange form.submit)
-- PHP vs Javascript ?
-- erst beim durchdenken kommt der ganze scheiss (Zitat Rafi). Denken wirs durch!
-
-SVN
-- trunk, release 1.0 für Bugfixes : rename 1-devel? 
-	> Error Handling XML Parse Error, wie können wir das verbessern. Frust Taylormade!
-- autoloader mapped file !is_readable() exception
-	site/lib/vendor/FLV/FLV.php change commit
-- new_admin Plugin > base
-
-Debug / Propel / Migration
-- migration documentation (getContents() vs stream_get_contents($this->oLanguageObject->getData()))
-	Umarbeiten der alten weiter benötigten Methoden auf Query::create()->etc()?
+ErrorHandling, Debug, Autoload issues
+- how can we make that Autoloader recognises changes?
+- how can we prevent problems created by old session
+- how can we make ErrorHandling display dumps effectively in "all" cases
 
 Issues	
-User->getUserRelatedByCreatedBy()
-User->getUserRelatedByUpdatedBy()
-getUsersWithoutGroup Criteria?
-DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe.
+- DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe.
+-	site/lib/vendor/FLV/FLV.php change commit
+- info alerts : pass array of information that allows links too, remove on click of other element, maybe close button
 
 Strategy for click, dblclick, option key handling.
 - consider successful(?) iPhone handling for these issues
@@ -340,3 +317,15 @@ mysqldump: Got error: 1044: Access denied for user 'cp23810_kwillac'@'localhost'
 - user group storage doesn not work proparly
 - what
 - save handling of created and updated? with Propel 1.5? @see User::save()
+- I get user_list widget and set and getUserKind by using get/setOption of list widget. That makes it consistent, but maybe also complicated
+- icon / and has_data???, display icon in user_kind row ui-icon-true???
+- is_backend_login_enabled error see email CriteriaListWidgetDelegate::__call() exception missing getIsBackendLoginEnabled()
+- call setUserKind, getUserKind on UserListWidget to simplify?
+
+Widget handling : generell und Beispiel heading_filter
+- widget content on the fly erstellen > instanciateWidget
+- Widget.createWithElement() ?
+- egal ob das widget ein input oder ckeckbox oder wasauchimmer ist
+- input-widgets defaultmässig event fire() und handle() bei geändertem inhalt (input.value_changed) (nicht: form > onchange form.submit)
+- PHP vs Javascript ?
+- erst beim durchdenken kommt der ganze scheiss (Zitat Rafi). Denken wirs durch!

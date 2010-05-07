@@ -58,13 +58,10 @@ body {
 }
 
 #admin_sidebar {
-	padding: 0px 0;
-	background-color: @background_color_sidebar;
-}
-
-#admin_sidebar {
 	left: 0;
 	width: @initial_sidebar_width;
+	padding: 0px 0;
+	background-color: @background_color_sidebar;
 }
 
 #admin_main {
@@ -72,7 +69,6 @@ body {
 	right: 0;
 	padding-right: @side_window_distance;
 	padding-left: 0;
-/*	background: #FFFFFF url('../../images/admin/sidebar_border.gif') repeat-y scroll 0 0;*/
 	border-left: @border;
 }
 
@@ -108,9 +104,7 @@ body {
 
 .infobar_right input {
 	float: left;
-/*	border: 1px solid #999;
-	height: 22px;
-*/	width:20em;
+	width:20em;
 	font-size: .95em;
 }
 
@@ -162,8 +156,6 @@ body {
 }
 
 #admin_info_bar span.info-bar-element.row_count_info {
-/*	display: block;
-	float:right;*/
 	padding-left: 1em;
 	color: #888;
 }
@@ -316,23 +308,6 @@ th.ui-list-heading.sortable.desc span {
 	background-image: url('../../images/admin/sort_asc.png');
 }
 
-/*th.ui-list-heading.sortable:hover span {
-	background-image: url('../../images/admin/sort_hover.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}
-th.ui-list-heading.sortable.desc:hover span {
-	background-image: url('../../images/admin/sort_desc_hover.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}
-
-th.ui-list-heading.sortable.asc:hover span {
-	background-image: url('../../images/admin/sort_asc_hover.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}*/
-
 input {
 	padding: .2em;
 	margin-bottom: .4em;
@@ -433,8 +408,8 @@ textarea.ui-widget-content {
 
 #admin_sidebar ul.ui-list li {
 	font-weight: 700;
-/*	letter-spacing: .02em;*/
 }
+
 #admin_sidebar input {
 	padding: 0 0 0 0;
 	margin: 0;
