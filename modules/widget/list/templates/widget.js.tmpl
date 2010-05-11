@@ -48,7 +48,7 @@ Widget.types.list = {
 	
 	activate_row: function(row) {
 		if(row === null || row === undefined) {
-			if(this.settings.row_click_active_exclsive) {
+			if(this.settings.row_click_active_exclusive) {
 				this.all_rows().removeClass(this.settings.row_click_active_class);
 			}
 			return;
@@ -59,7 +59,7 @@ Widget.types.list = {
 		if(this.settings.row_click_active_mode) {
 			if(!row.hasClass(this.settings.row_click_active_class)) {
 				row.addClass(this.settings.row_click_active_class);
-				if(this.settings.row_click_active_exclsive) {
+				if(this.settings.row_click_active_exclusive) {
 					this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
 				}
 			} else if(this.settings.row_click_active_mode === 'toggle') {
@@ -340,7 +340,7 @@ Widget.types.list = {
 		row_hover: true,
 		//false, "toggle", "activate"
 		row_click_active_mode: false,
-		row_click_active_exclsive: true,
+		row_click_active_exclusive: true,
 		row_click_active_class: 'ui-state-active'
 	},
 	

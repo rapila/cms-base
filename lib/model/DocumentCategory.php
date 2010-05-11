@@ -18,6 +18,11 @@ class DocumentCategory extends BaseDocumentCategory {
 		}
 	}
 	
+	public function getTitle() {
+		$iCount = $this->countDocuments();
+		return $this->getName().' ['.($iCount === 0 ? '-' : $iCount).']';
+	}
+	
 	public function getDocumentLinkData() {
 		$aArray = array();
 		$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('documents');

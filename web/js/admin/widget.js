@@ -28,8 +28,8 @@ jQuery.extend(Widget.prototype, {
 		}
 		var result = null;
 		var error = null;
-		//Make getters and setter synchronous
-		var is_async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && /[A-Z]/.test(name[3])); //Char after set or get must be uppercase
+		//Make getters and setter synchronous, Char after set or get must be uppercase
+		var is_async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && /[A-Z]/.test(name[3])); 
 		var widget = this;
 		this._widgetJSON(['methodCall', name], function(response, exception) {
 			if(callback.length<2 && exception) {

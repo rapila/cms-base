@@ -1,6 +1,14 @@
 INSTALL
-
-// braucht es dieses file, und wenn. Neu machen.
+What do we need?
+Install Manager for new Admin
+- unzip software of checkout / new site informations
+- create table with user suggestion or automatic if installer has mysql root access
+- Database User and Password, adapter
+- First User Admin
+- Default Language of page
+- Dashboard for install, starters informations
+ 
+Migration @see MIGRATION_2.0.txt
 
 
 mkdir > name of project

@@ -6,25 +6,42 @@ bug
 	should Cache create folders with the right permission if they do not exist?
 
 Widget tasks
-- hierarchy of loading > bug Chrome initial section highlight
+- check hierarchy of js loading > bug Chrome initial section highlight
 - FilterCriteria add to CriteriaListWidgetDelegate
 	use new Query features or not
 -	event listening > how to update input widget (ie detail document_category on new/change of category in sidebar)
+- sidebar element edit widget?
+- detail (row) widget, field widget? @see also project management
 - how can we simplify and make more transparent and more effective?
 
 Criteria and Model
 - UserListWidgetModule > user_group == null criteria
 -	User->getUserRelatedByCreatedBy(), User->getUserRelatedByUpdatedBy() for user detail
+- propel_additions
 
 ErrorHandling, Debug, Autoload issues
-- how can we make that Autoloader recognises changes?
+- how can we make Autoloader recognise changes?
 - how can we prevent problems created by old session
-- how can we make ErrorHandling display dumps effectively in "all" cases
+- how can we make ErrorHandling display dumps effectively in "all" cases, before header is sent?
+
+SVN, development and tracking tasks
+- make new project for developping plugins > name > where
+- remember > lets continue with tracker and get into it or change it.
 
 Issues	
 - DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe.
 -	site/lib/vendor/FLV/FLV.php change commit
 - info alerts : pass array of information that allows links too, remove on click of other element, maybe close button
+- how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
+	this issue concerns module select configuration and rights too.
+	and dashboard. how to exclude plugin project_management or group_it into 1?
+	
+ModuleManager > group, sort etc, handling for getModuleSelect
+
+Prepare Friday and Servance
+- Propel install for parallel old version maintenance and new development
+- Css and Skins, discuss how to clean up and make skinable
+- lang string strategy so I can clean up effectively
 
 Strategy for click, dblclick, option key handling.
 - consider successful(?) iPhone handling for these issues
@@ -79,14 +96,27 @@ DetailWidget
 	event listener, observer pattern, needs to be implemented
 - delete from detail
 
+SpecialWidgets
+- do we need specific row (detail) widgets, inline field in row, or row editing, depends where the event change is?
+- do we need field widget? are InputWidgets field widgeds? inline field editing
+
 DocumentDetail
 - file upload with jQuery UI? http://www.uploadify.com/demo/
 - label_fileupload dynamisch hochladen / ersetzen
 - html5, d&d
 
+PagesAdminModule
+- tree widget
+- test tree widget
+- pages list should be also full list with visible status for overview?
+- nested set vs hierarchical query http://en.wikipedia.org/wiki/Hierarchical_query
+-	page detail should not be a pop-up widget, should be full content? different visualisation @see design?
+- page insert (input) widget?	new page handling with + or on right click
+- is_inactive on page_string level
+- page tree with accordion, config open tree and/or toggle (small sites default open)
+
 UsersAdminModule
 - is_inactive handling by removing password?
-- sidebar selector? groups, is_backend_login_enabled, is_admin, is not backend_enabled > heading_filter????
 
 GroupsAdminModule
 - add users of this group
@@ -96,17 +126,6 @@ GroupsAdminModule
 
 LinkDetail
 - find more elegant version for protocol options
-
-PagesAdminModule
-- tree widget
-- test tree widget
-- nested set vs hierarchical query http://en.wikipedia.org/wiki/Hierarchical_query
--	page detail should not be a pop-up widget, should be full content. 
-- content insert widget?	new page handling with + or on right click
-- infobar button and right mouse/option click handling
-- is_inactive on page_string level
-- page tree with accordion, config open tree of toggle
-- DISCUSS the whole edit / previous / inline handling, @see todo_design.txt
 
 Validation
 - Javascript? how to implement? check required fields in js, rest php
@@ -329,3 +348,4 @@ Widget handling : generell und Beispiel heading_filter
 - input-widgets defaultmässig event fire() und handle() bei geändertem inhalt (input.value_changed) (nicht: form > onchange form.submit)
 - PHP vs Javascript ?
 - erst beim durchdenken kommt der ganze scheiss (Zitat Rafi). Denken wirs durch!
+- sidebar selector? groups, is_backend_login_enabled, is_admin, is not backend_enabled > heading_filter????
