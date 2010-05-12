@@ -12,14 +12,6 @@ Widget tasks
 - how can we simplify and make more transparent and more effective?
 - testing QUnit
 
-Criteria and Model
-- propel_additions
-
-ErrorHandling, Debug, Autoload issues
-- how can we make Autoloader recognise changes?
-- how can we prevent problems created by old session
-- how can we make ErrorHandling display dumps effectively in "all" cases, before header is sent?
-
 SVN, development and tracking tasks
 - make new project for developping plugins > name > where
 - remember > lets continue with tracker and get into it or change it.
@@ -352,3 +344,10 @@ bug
 	Caches dir with subdirs should be in repository or created if not exist
 - UserListWidgetModule > user_group == null criteria
 -	User->getUserRelatedByCreatedBy(), User->getUserRelatedByUpdatedBy() for user detail
+
+Criteria and Model
+- propel_additions
+ErrorHandling, Debug, Autoload issues
+- how can we make Autoloader recognise changes?
+- how can we prevent problems created by old session
+- how can we make ErrorHandling display dumps effectively in "all" cases, before header is sent?
