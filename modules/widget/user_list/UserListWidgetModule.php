@@ -97,7 +97,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public function getSortColumnForDisplayColumn($sDisplayColumn) {
+	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'full_name') {
 			return UserPeer::FIRST_NAME;
 		}

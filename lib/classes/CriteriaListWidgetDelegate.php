@@ -2,21 +2,36 @@
 
 class CriteriaListWidgetDelegate {
 	private $oCriteriaDelegate;
+	private $sModelName;
 	private $sPeerClassName;
 	private $oListSettings;
 	private $bSortColumnForDisplayColumnDefined;
+	private $aFilterTypes;
+	
 	const SELECT_ALL = '__all';
 	const SELECT_WITHOUT = '__without';
-
+	
+	const FILTER_TYPE_IS = 'is';
+	const FILTER_TYPE_BEGINS = 'begins';
+	const FILTER_TYPE_CONTAINS = 'contains';
+	const FILTER_TYPE_TAG = 'tag';
+	const FILTER_TYPE_IS_NULL = 'is_null';
+	const FILTER_TYPE_MANUAL = 'manual';
 	
 	public function __construct($oCriteriaDelegate, $sModelName, $sDefaultOrderColumn=null, $sDefaultSortOrder='asc') {
 		$this->oListSettings = new ListSettings();
 		$this->oCriteriaDelegate = $oCriteriaDelegate;
+		$this->sModelName = $sModelName;
 		$this->sPeerClassName = "${sModelName}Peer";
-		$this->bSortColumnForDisplayColumnDefined = method_exists($this->oCriteriaDelegate, 'getSortColumnForDisplayColumn');
+		$this->bSortColumnForDisplayColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForDisplayColumn');
 		if($sDefaultOrderColumn !== null) {
 			$this->oListSettings->addSortColumn($sDefaultOrderColumn, $sDefaultSortOrder);
 		}
+		$this->aFilterTypes = method_exists($this->oCriteriaDelegate, 'getFilterTypeForColumn') ? array() : null;
+	}
+	
+	public function getListSettings() {
+		return $this->oListSettings;
 	}
 	
 	public function getDelegate() {
@@ -24,6 +39,19 @@ class CriteriaListWidgetDelegate {
 	}
 	
 	public function __call($sMethodName, $aArguments) {
+		if($this->aFilterTypes !== null && StringUtil::startsWith($sMethodName, 'set') && $sMethodName[3] === strtoupper($sMethodName[3])) {
+			$sFilterColumn = StringUtil::deCamelize(lcfirst(substr($sMethodName, 3)));
+			if(!isset($this->aFilterTypes[$sFilterColumn])) {
+				$sFilterType = $this->oCriteriaDelegate->getFilterTypeForColumn($sFilterColumn);
+				if($sFilterType === null) {
+					goto default_function;
+				}
+				$this->aFilterTypes[$sFilterColumn] = $sFilterType;
+			}
+			$this->oListSettings->setFilterColumnValue($sFilterColumn, $aArguments[0]);
+			return;
+		}
+		default_function:
 		return call_user_func_array(array($this->oCriteriaDelegate, $sMethodName), $aArguments);
 	}
 	
@@ -38,6 +66,7 @@ class CriteriaListWidgetDelegate {
 		if(!$bSortIsIrrelevant) {
 			$this->handleListSorting($oCriteria);
 		}
+		$this->handleListFiltering($oCriteria);
 		return $oCriteria;
 	}
 	
@@ -65,13 +94,44 @@ class CriteriaListWidgetDelegate {
 	private function handleListSorting($oCriteria) {
 		foreach($this->oListSettings->aSorts as $sSortColumn => $sSortOrder) {
 			$sMethod = 'add'.ucfirst(strtolower($sSortOrder)).'endingOrderByColumn';
-			$oCriteria->$sMethod($this->getSortColumnForDisplayColumn($sSortColumn));
+			$oCriteria->$sMethod($this->getDatabaseColumnForDisplayColumn($sSortColumn));
 		}
 	}
 	
-	private function getSortColumnForDisplayColumn($sSortColumn) {
+	private function handleListFiltering($oCriteria) {
+		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $sFilterValue) {
+			$sFilterColumn = $this->getDatabaseColumnForDisplayColumn($sFilterIdentifier);
+			if($sFilterValue === self::SELECT_ALL || $this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_MANUAL) {
+				continue;
+			}
+			$bInverted = $sFilterValue === self::SELECT_WITHOUT;
+			$sFilterValue = $bInverted ? null : $sFilterValue;
+			if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_IS) {
+				$oCriteria->add($sFilterColumn, $sFilterValue, Criteria::EQUAL);
+			//LIKE criterias are not compatible with $bInverted == true
+			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_BEGINS) {
+				$oCriteria->add($sFilterColumn, "$sFilterValue%", Criteria::LIKE);
+			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_CONTAINS) {
+				$oCriteria->add($sFilterColumn, "%$sFilterValue%", Criteria::LIKE);
+			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_IS_NULL) {
+				if($sFilterValue) {
+					$oCriteria->add($sFilterColumn, null, Criteria::ISNULL);
+				} else {
+					$oCriteria->add($sFilterColumn, null, Criteria::ISNOTNULL);
+				}
+			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_TAG) {
+				$aTaggedItemIds = array();
+				foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {
+					$aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
+				}
+				$oCriteria->add($sFilterColumn, $aTaggedItemIds, $bInverted ? Criteria::NOT_IN : Criteria::IN);
+			}
+		}
+	}
+	
+	private function getDatabaseColumnForDisplayColumn($sSortColumn) {
 		$sSortOverride = null;
-		if($this->bSortColumnForDisplayColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getSortColumnForDisplayColumn($sSortColumn)) !== null) {
+		if($this->bSortColumnForDisplayColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForDisplayColumn($sSortColumn)) !== null) {
 			return $sSortOverride;
 		}
 		return constant("$this->sPeerClassName::".strtoupper($sSortColumn));

@@ -6,7 +6,6 @@ class DocumentListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	private $iDocumentCategoryId;
-	private $sDocumentKind;
 	private $oDocumentKindFilter;
 	
 	public function __construct() {
@@ -33,7 +32,6 @@ class DocumentListWidgetModule extends WidgetModule {
 		switch($sColumnIdentifier) {
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('name');
-				break;
 				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -90,28 +88,12 @@ class DocumentListWidgetModule extends WidgetModule {
 			$oDocument->save();
 		}
 	}
-		
-	public function setDocumentKind($sDocumentKind) {
-		$this->sDocumentKind = $sDocumentKind;
-		$this->oDocumentKindFilter->setSelectedDocumentKind($sDocumentKind);
-	}
-	
-	public function getDocumentKind() {
-		return $this->sDocumentKind;
-	}
-	
-	public function setDocumentCategoryId($iDocumentCategoryId = null) {
-		$this->iDocumentCategoryId = $iDocumentCategoryId;
-	}
 	
 	public function getDocumentCategoryId() {
-		if($this->iDocumentCategoryId === null) {
-			return CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->iDocumentCategoryId;
+		return $this->oListWidget->getDelegate()->getListSettings()->getFilterColumnValue('category_name');
 	}
 	
-	public function getSortColumnForDisplayColumn($sDisplayColumn) {
+	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
 		}
@@ -127,22 +109,22 @@ class DocumentListWidgetModule extends WidgetModule {
 		return null;
 	}
 	
+	public function getFilterTypeForColumn($sColumnName) {
+		if($sColumnName === 'document_kind') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
+		}
+		if($sColumnName === 'category_name') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
+		return null;
+	}
+	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		// addJoin to Document Types for sort order of ducment kinds
-	  $oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-		if($this->iDocumentCategoryId !== null) {
-			if($this->iDocumentCategoryId === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-				$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, null, Criteria::EQUAL);
-			} elseif(is_int($this->iDocumentCategoryId)) {
-				$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->iDocumentCategoryId);
-			}
-			// do not handle all
-		}
-		if($this->sDocumentKind) {
-		  $oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-		        $oCriteria->add(DocumentPeer::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($this->sDocumentKind, true)), Criteria::IN);
-		}
+		// addJoin to Document Types for sort speed, sort order and filter
+		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, Criteria::LEFT_JOIN);
+		// Speed only
+		$oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
 		return $oCriteria;
 	}
 }

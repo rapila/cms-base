@@ -57,7 +57,7 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function getSortColumnForDisplayColumn($sDisplayColumn) {
+	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'document_kind') {
 			return DocumentTypePeer::MIMETYPE;
 		}

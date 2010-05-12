@@ -31,7 +31,7 @@ class ErrorHandler {
 	*/
 	private static function displayErrorMessage($aError) {
 		while(ob_get_level() > 0) {
-			ob_end_flush();
+			ob_end_clean();
 		}
 		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
 		if(!file_exists($sErrorFileName)) {

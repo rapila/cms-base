@@ -8,7 +8,7 @@ class ListSettings {
 	public $aSorts = array();
 	public $aFilters = array();
 	
-	public function getFilterColumnValue($sColumnName, $mDefaultValue = ListHelper::SELECT_ALL) {
+	public function getFilterColumnValue($sColumnName, $mDefaultValue = '__all') {
 		if(!isset($this->aFilters[$sColumnName])) {
 			$this->aFilters[$sColumnName] = $mDefaultValue;
 		}

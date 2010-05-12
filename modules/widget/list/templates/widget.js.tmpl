@@ -76,7 +76,7 @@ Widget.types.list = {
 		isHeading = !!isHeading;
 		var row = this.row_prototype.clone();
 		if(isHeading) {
-			row.addClass('ui-list-heading').removeClass('ui-list-row');
+			row.addClass('ui-list-headrow').removeClass('ui-list-row');
 		}
 		var className = isHeading ? 'ui-list-heading' : 'ui-list-cell';
 		var column_prototype = jQuery(isHeading ? "<th>" : "<td>").addClass(className);
@@ -135,7 +135,7 @@ Widget.types.list = {
 				value = event.val();
 			}
 			this.setOption(metadata.field_name, value);
-			this.reload();
+			this.reload(true);
 		}.bind(this);
 		if(is_widget) {
 			var widget_type = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[0] : metadata.heading_filter;
@@ -161,7 +161,20 @@ Widget.types.list = {
 		}
 		into.click(function(){
 			widget.setOrderColumnSort(metadata.field_name, into.hasClass('asc') ? 'desc' : 'asc');
-			widget.reload();
+			widget.reload(true);
+		});
+	},
+	
+	update_sort: function() {
+		var all_headings = this._element.find('.ui-list-heading');
+		var sort = this.sort;
+		var widget = this;
+		all_headings.filter('.sortable').removeClass('asc').removeClass('desc').each(function() {
+			var sortable = jQuery(this);
+			var index = all_headings.index(sortable);
+			if(widget.schema_for_col(index).field_name == sort[0]) {
+				sortable.addClass(sort[1]);
+			}
 		});
 	},
 	
@@ -227,23 +240,31 @@ Widget.types.list = {
 		return this.all_rows().length;
 	},
 	
-	reload: function() {
+	reload: function(leave_heading) {
 		this._element.hide();
 		this.toggle_loader(true);
-		this._element.empty();
-		this.sort = this.getOrderColumnSort();
-		this.schema = this.getSchema();
-		if(this._element.is('table')) {
-			var col = jQuery('<col/>');
-			jQuery.each(this.schema, function(i, column) {
-				if(column.display_heading) {
-					col.clone().addClass(column.identifier).appendTo(this._element);
-				}
-			}.bind(this));
+		if(leave_heading) {
+			this._element.find('.ui-list-row').remove()
+		} else {
+			this._element.empty();
 		}
-		var headings = this.headings();
-		if(!jQuery.isEmptyObject(headings)) {
-			this.insert_row(headings, true);
+		this.sort = this.getOrderColumnSort();
+		if(!leave_heading) {
+			this.schema = this.getSchema();
+			if(this._element.is('table')) {
+				var col = jQuery('<col/>');
+				jQuery.each(this.schema, function(i, column) {
+					if(column.display_heading) {
+						col.clone().addClass(column.identifier).appendTo(this._element);
+					}
+				}.bind(this));
+			}
+			var headings = this.headings();
+			if(!jQuery.isEmptyObject(headings)) {
+				this.insert_row(headings, true);
+			}
+		} else {
+			this.update_sort();
 		}
 		this.completeList(function(list) {
 			if(list.length > 0) {

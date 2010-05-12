@@ -72,7 +72,7 @@ class LinkListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 	
-	public function getSortColumnForDisplayColumn($sDisplayColumn) {
+	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {
 			return LinkPeer::LINK_CATEGORY_ID;
 		}

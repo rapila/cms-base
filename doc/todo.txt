@@ -17,8 +17,6 @@ SVN, development and tracking tasks
 - remember > lets continue with tracker and get into it or change it.
 
 Issues	
-- DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe.
--	site/lib/vendor/FLV/FLV.php change commit
 - info alerts : pass array of information that allows links too, remove on click of other element, maybe close button
 - how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
 	this issue concerns module select configuration and rights too.
@@ -351,3 +349,5 @@ ErrorHandling, Debug, Autoload issues
 - how can we make Autoloader recognise changes?
 - how can we prevent problems created by old session
 - how can we make ErrorHandling display dumps effectively in "all" cases, before header is sent?
+- DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe. war in backend/documents/lang!
+-	site/lib/vendor/FLV/FLV.php , is external

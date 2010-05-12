@@ -29,15 +29,15 @@ class LinkUtil {
 	* Discards all buffered output and exits
 	*/
 	public static function redirect($sLocation, $sHost = null, $sProtocol = null, $bPermanent = true) {
+		while(ob_get_level() > 0) {
+			ob_end_clean();
+		}
 		if($bPermanent) {
 			header("HTTP/1.0 301 Moved Permanently");
 		} else {
 			header("HTTP/1.0 302 Found");
 		}
 		$sRedirectString = "Location: ".self::absoluteLink($sLocation, $sHost, $sProtocol);
-		while(ob_get_level() > 0) {
-			ob_end_flush();
-		}
 		header($sRedirectString);exit;
 	}
 	

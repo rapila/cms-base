@@ -26,6 +26,10 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function setDelegate($oDelegate) {
 		$this->oDelegate = $oDelegate;
 	}
+	
+	public function getDelegate() {
+		return $this->oDelegate;
+	}
 
 	public function setListTag($oListTag) {
 		$this->oListTag = $oListTag;
