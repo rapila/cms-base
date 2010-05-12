@@ -109,10 +109,11 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -128,6 +129,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,9 +168,9 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id) && $comparison == Criteria::EQUAL) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(LinkCategoryPeer::ID, $id, $comparison);
@@ -183,15 +185,15 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByName($name = null, $comparison = Criteria::EQUAL)
+	public function filterByName($name = null, $comparison = null)
 	{
 		if (is_array($name)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $name)) {
 			$name = str_replace('*', '%', $name);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -207,7 +209,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -222,7 +224,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -238,7 +240,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -253,7 +255,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -269,7 +271,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -284,7 +286,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -300,7 +302,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -315,7 +317,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -330,7 +332,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LinkCategoryPeer::CREATED_BY, $user->getId(), $comparison);
@@ -353,6 +355,9 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -391,7 +396,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LinkCategoryPeer::UPDATED_BY, $user->getId(), $comparison);
@@ -414,6 +419,9 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -452,7 +460,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function filterByLink($link, $comparison = Criteria::EQUAL)
+	public function filterByLink($link, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LinkCategoryPeer::ID, $link->getLinkCategoryId(), $comparison);
@@ -475,6 +483,9 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -519,37 +530,6 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

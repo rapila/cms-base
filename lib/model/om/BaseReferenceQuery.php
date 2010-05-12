@@ -117,10 +117,11 @@ abstract class BaseReferenceQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -136,6 +137,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -174,9 +176,9 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id) && $comparison == Criteria::EQUAL) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(ReferencePeer::ID, $id, $comparison);
@@ -191,15 +193,15 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByFromId($fromId = null, $comparison = Criteria::EQUAL)
+	public function filterByFromId($fromId = null, $comparison = null)
 	{
 		if (is_array($fromId)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $fromId)) {
 			$fromId = str_replace('*', '%', $fromId);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -215,15 +217,15 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByFromModelName($fromModelName = null, $comparison = Criteria::EQUAL)
+	public function filterByFromModelName($fromModelName = null, $comparison = null)
 	{
 		if (is_array($fromModelName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $fromModelName)) {
 			$fromModelName = str_replace('*', '%', $fromModelName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -239,15 +241,15 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByToId($toId = null, $comparison = Criteria::EQUAL)
+	public function filterByToId($toId = null, $comparison = null)
 	{
 		if (is_array($toId)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $toId)) {
 			$toId = str_replace('*', '%', $toId);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -263,15 +265,15 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByToModelName($toModelName = null, $comparison = Criteria::EQUAL)
+	public function filterByToModelName($toModelName = null, $comparison = null)
 	{
 		if (is_array($toModelName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $toModelName)) {
 			$toModelName = str_replace('*', '%', $toModelName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -287,7 +289,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -302,7 +304,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -318,7 +320,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -333,7 +335,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -349,7 +351,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -364,7 +366,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -380,7 +382,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -395,7 +397,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -410,7 +412,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ReferencePeer::CREATED_BY, $user->getId(), $comparison);
@@ -433,6 +435,9 @@ abstract class BaseReferenceQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -471,7 +476,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ReferencePeer::UPDATED_BY, $user->getId(), $comparison);
@@ -494,6 +499,9 @@ abstract class BaseReferenceQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -538,37 +546,6 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

@@ -1645,8 +1645,8 @@ abstract class BaseTagInstancePeer {
 	 * @return     TagInstance
 	 */
 	public static function retrieveByPK($tag_id, $tagged_item_id, $model_name, PropelPDO $con = null) {
-		$key = serialize(array((string) $tag_id, (string) $tagged_item_id, (string) $model_name));
- 		if (null !== ($obj = TagInstancePeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $tag_id, (string) $tagged_item_id, (string) $model_name));
+ 		if (null !== ($obj = TagInstancePeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

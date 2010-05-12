@@ -2029,8 +2029,8 @@ abstract class BaseLanguageObjectPeer {
 	 * @return     LanguageObject
 	 */
 	public static function retrieveByPK($object_id, $language_id, PropelPDO $con = null) {
-		$key = serialize(array((string) $object_id, (string) $language_id));
- 		if (null !== ($obj = LanguageObjectPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $object_id, (string) $language_id));
+ 		if (null !== ($obj = LanguageObjectPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

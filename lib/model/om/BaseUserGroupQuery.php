@@ -112,10 +112,11 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -131,6 +132,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -179,9 +181,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUserId($userId = null, $comparison = Criteria::EQUAL)
+	public function filterByUserId($userId = null, $comparison = null)
 	{
-		if (is_array($userId) && $comparison == Criteria::EQUAL) {
+		if (is_array($userId) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(UserGroupPeer::USER_ID, $userId, $comparison);
@@ -196,9 +198,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByGroupId($groupId = null, $comparison = Criteria::EQUAL)
+	public function filterByGroupId($groupId = null, $comparison = null)
 	{
-		if (is_array($groupId) && $comparison == Criteria::EQUAL) {
+		if (is_array($groupId) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(UserGroupPeer::GROUP_ID, $groupId, $comparison);
@@ -213,7 +215,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -228,7 +230,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -244,7 +246,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -259,7 +261,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -275,7 +277,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -290,7 +292,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -306,7 +308,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -321,7 +323,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -336,7 +338,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUserId($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUserId($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserGroupPeer::USER_ID, $user->getId(), $comparison);
@@ -359,6 +361,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -397,7 +402,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByGroup($group, $comparison = Criteria::EQUAL)
+	public function filterByGroup($group, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserGroupPeer::GROUP_ID, $group->getId(), $comparison);
@@ -420,6 +425,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -458,7 +466,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserGroupPeer::CREATED_BY, $user->getId(), $comparison);
@@ -481,6 +489,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -519,7 +530,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserGroupPeer::UPDATED_BY, $user->getId(), $comparison);
@@ -542,6 +553,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -588,37 +602,6 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

@@ -157,10 +157,11 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -176,6 +177,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -214,9 +216,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id) && $comparison == Criteria::EQUAL) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(DocumentPeer::ID, $id, $comparison);
@@ -231,15 +233,15 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByName($name = null, $comparison = Criteria::EQUAL)
+	public function filterByName($name = null, $comparison = null)
 	{
 		if (is_array($name)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $name)) {
 			$name = str_replace('*', '%', $name);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -255,15 +257,15 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByDescription($description = null, $comparison = Criteria::EQUAL)
+	public function filterByDescription($description = null, $comparison = null)
 	{
 		if (is_array($description)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $description)) {
 			$description = str_replace('*', '%', $description);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -279,15 +281,15 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageId($languageId = null, $comparison = Criteria::EQUAL)
+	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
 		if (is_array($languageId)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $languageId)) {
 			$languageId = str_replace('*', '%', $languageId);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -303,7 +305,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByOwnerId($ownerId = null, $comparison = Criteria::EQUAL)
+	public function filterByOwnerId($ownerId = null, $comparison = null)
 	{
 		if (is_array($ownerId)) {
 			$useMinMax = false;
@@ -318,7 +320,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -334,7 +336,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentTypeId($documentTypeId = null, $comparison = Criteria::EQUAL)
+	public function filterByDocumentTypeId($documentTypeId = null, $comparison = null)
 	{
 		if (is_array($documentTypeId)) {
 			$useMinMax = false;
@@ -349,7 +351,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -365,7 +367,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentCategoryId($documentCategoryId = null, $comparison = Criteria::EQUAL)
+	public function filterByDocumentCategoryId($documentCategoryId = null, $comparison = null)
 	{
 		if (is_array($documentCategoryId)) {
 			$useMinMax = false;
@@ -380,7 +382,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -396,7 +398,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByIsPrivate($isPrivate = null, $comparison = Criteria::EQUAL)
+	public function filterByIsPrivate($isPrivate = null, $comparison = null)
 	{
 		if (is_string($isPrivate)) {
 			$is_private = in_array(strtolower($isPrivate), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -413,7 +415,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByIsInactive($isInactive = null, $comparison = Criteria::EQUAL)
+	public function filterByIsInactive($isInactive = null, $comparison = null)
 	{
 		if (is_string($isInactive)) {
 			$is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -430,7 +432,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByIsProtected($isProtected = null, $comparison = Criteria::EQUAL)
+	public function filterByIsProtected($isProtected = null, $comparison = null)
 	{
 		if (is_string($isProtected)) {
 			$is_protected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -446,7 +448,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByData($data = null, $comparison = Criteria::EQUAL)
+	public function filterByData($data = null, $comparison = null)
 	{
 		return $this->addUsingAlias(DocumentPeer::DATA, $data, $comparison);
 	}
@@ -460,7 +462,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -475,7 +477,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -491,7 +493,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -506,7 +508,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -522,7 +524,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -537,7 +539,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -553,7 +555,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -568,7 +570,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -583,7 +585,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByLanguage($language, $comparison = Criteria::EQUAL)
+	public function filterByLanguage($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::LANGUAGE_ID, $language->getId(), $comparison);
@@ -606,6 +608,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -644,7 +649,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByOwnerId($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByOwnerId($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::OWNER_ID, $user->getId(), $comparison);
@@ -667,6 +672,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -705,7 +713,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentType($documentType, $comparison = Criteria::EQUAL)
+	public function filterByDocumentType($documentType, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::DOCUMENT_TYPE_ID, $documentType->getId(), $comparison);
@@ -728,6 +736,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -766,7 +777,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentCategory($documentCategory, $comparison = Criteria::EQUAL)
+	public function filterByDocumentCategory($documentCategory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::DOCUMENT_CATEGORY_ID, $documentCategory->getId(), $comparison);
@@ -789,6 +800,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -827,7 +841,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::CREATED_BY, $user->getId(), $comparison);
@@ -850,6 +864,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -888,7 +905,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(DocumentPeer::UPDATED_BY, $user->getId(), $comparison);
@@ -911,6 +928,9 @@ abstract class BaseDocumentQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -955,37 +975,6 @@ abstract class BaseDocumentQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

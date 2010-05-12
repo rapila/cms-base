@@ -161,10 +161,11 @@ abstract class BasePageQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -180,6 +181,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -218,9 +220,9 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id) && $comparison == Criteria::EQUAL) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(PagePeer::ID, $id, $comparison);
@@ -235,7 +237,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByParentId($parentId = null, $comparison = Criteria::EQUAL)
+	public function filterByParentId($parentId = null, $comparison = null)
 	{
 		if (is_array($parentId)) {
 			$useMinMax = false;
@@ -250,7 +252,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -266,7 +268,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterBySort($sort = null, $comparison = Criteria::EQUAL)
+	public function filterBySort($sort = null, $comparison = null)
 	{
 		if (is_array($sort)) {
 			$useMinMax = false;
@@ -281,7 +283,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -297,15 +299,15 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByName($name = null, $comparison = Criteria::EQUAL)
+	public function filterByName($name = null, $comparison = null)
 	{
 		if (is_array($name)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $name)) {
 			$name = str_replace('*', '%', $name);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -321,15 +323,15 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByPageType($pageType = null, $comparison = Criteria::EQUAL)
+	public function filterByPageType($pageType = null, $comparison = null)
 	{
 		if (is_array($pageType)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $pageType)) {
 			$pageType = str_replace('*', '%', $pageType);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -345,15 +347,15 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByTemplateName($templateName = null, $comparison = Criteria::EQUAL)
+	public function filterByTemplateName($templateName = null, $comparison = null)
 	{
 		if (is_array($templateName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $templateName)) {
 			$templateName = str_replace('*', '%', $templateName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -369,7 +371,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByIsInactive($isInactive = null, $comparison = Criteria::EQUAL)
+	public function filterByIsInactive($isInactive = null, $comparison = null)
 	{
 		if (is_string($isInactive)) {
 			$is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -386,7 +388,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByIsFolder($isFolder = null, $comparison = Criteria::EQUAL)
+	public function filterByIsFolder($isFolder = null, $comparison = null)
 	{
 		if (is_string($isFolder)) {
 			$is_folder = in_array(strtolower($isFolder), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -403,7 +405,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByIsHidden($isHidden = null, $comparison = Criteria::EQUAL)
+	public function filterByIsHidden($isHidden = null, $comparison = null)
 	{
 		if (is_string($isHidden)) {
 			$is_hidden = in_array(strtolower($isHidden), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -420,7 +422,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByIsProtected($isProtected = null, $comparison = Criteria::EQUAL)
+	public function filterByIsProtected($isProtected = null, $comparison = null)
 	{
 		if (is_string($isProtected)) {
 			$is_protected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -437,7 +439,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -452,7 +454,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -468,7 +470,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -483,7 +485,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -499,7 +501,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -514,7 +516,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -530,7 +532,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -545,7 +547,7 @@ abstract class BasePageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -560,7 +562,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByPageRelatedByParentId($page, $comparison = Criteria::EQUAL)
+	public function filterByPageRelatedByParentId($page, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::PARENT_ID, $page->getId(), $comparison);
@@ -583,6 +585,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -621,7 +626,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::CREATED_BY, $user->getId(), $comparison);
@@ -644,6 +649,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -682,7 +690,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::UPDATED_BY, $user->getId(), $comparison);
@@ -705,6 +713,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -743,7 +754,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByPageRelatedById($page, $comparison = Criteria::EQUAL)
+	public function filterByPageRelatedById($page, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::ID, $page->getParentId(), $comparison);
@@ -766,6 +777,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -804,7 +818,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByPageProperty($pageProperty, $comparison = Criteria::EQUAL)
+	public function filterByPageProperty($pageProperty, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::ID, $pageProperty->getPageId(), $comparison);
@@ -827,6 +841,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -865,7 +882,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByPageString($pageString, $comparison = Criteria::EQUAL)
+	public function filterByPageString($pageString, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::ID, $pageString->getPageId(), $comparison);
@@ -888,6 +905,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -926,7 +946,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByContentObject($contentObject, $comparison = Criteria::EQUAL)
+	public function filterByContentObject($contentObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::ID, $contentObject->getPageId(), $comparison);
@@ -949,6 +969,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -987,7 +1010,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery The current query, for fluid interface
 	 */
-	public function filterByRight($right, $comparison = Criteria::EQUAL)
+	public function filterByRight($right, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PagePeer::ID, $right->getPageId(), $comparison);
@@ -1010,6 +1033,9 @@ abstract class BasePageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1054,37 +1080,6 @@ abstract class BasePageQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

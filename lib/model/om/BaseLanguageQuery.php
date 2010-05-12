@@ -137,10 +137,11 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -156,6 +157,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -194,15 +196,15 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
 		if (is_array($id)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $id)) {
 			$id = str_replace('*', '%', $id);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -218,7 +220,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByIsActive($isActive = null, $comparison = Criteria::EQUAL)
+	public function filterByIsActive($isActive = null, $comparison = null)
 	{
 		if (is_string($isActive)) {
 			$is_active = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -235,7 +237,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterBySort($sort = null, $comparison = Criteria::EQUAL)
+	public function filterBySort($sort = null, $comparison = null)
 	{
 		if (is_array($sort)) {
 			$useMinMax = false;
@@ -250,7 +252,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -266,7 +268,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -281,7 +283,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -297,7 +299,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -312,7 +314,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -328,7 +330,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -343,7 +345,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -359,7 +361,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -374,7 +376,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -389,7 +391,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::CREATED_BY, $user->getId(), $comparison);
@@ -412,6 +414,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -450,7 +455,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::UPDATED_BY, $user->getId(), $comparison);
@@ -473,6 +478,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -511,7 +519,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByPageString($pageString, $comparison = Criteria::EQUAL)
+	public function filterByPageString($pageString, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $pageString->getLanguageId(), $comparison);
@@ -534,6 +542,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -572,7 +583,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObject($languageObject, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObject($languageObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $languageObject->getLanguageId(), $comparison);
@@ -595,6 +606,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -633,7 +647,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObjectHistory($languageObjectHistory, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObjectHistory($languageObjectHistory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $languageObjectHistory->getLanguageId(), $comparison);
@@ -656,6 +670,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -694,7 +711,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByString($string, $comparison = Criteria::EQUAL)
+	public function filterByString($string, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $string->getLanguageId(), $comparison);
@@ -717,6 +734,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -755,7 +775,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByUser($user, $comparison = Criteria::EQUAL)
+	public function filterByUser($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $user->getLanguageId(), $comparison);
@@ -778,6 +798,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -816,7 +839,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByDocument($document, $comparison = Criteria::EQUAL)
+	public function filterByDocument($document, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $document->getLanguageId(), $comparison);
@@ -839,6 +862,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -877,7 +903,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery The current query, for fluid interface
 	 */
-	public function filterByLink($link, $comparison = Criteria::EQUAL)
+	public function filterByLink($link, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguagePeer::ID, $link->getLanguageId(), $comparison);
@@ -900,6 +926,9 @@ abstract class BaseLanguageQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -944,37 +973,6 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

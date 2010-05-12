@@ -22,11 +22,16 @@
  * @author     Martin Poeschl <mpoeschl@marmot.at> (Torque)
  * @author     Henning P. Schmiedehausen <hps@intermeta.de> (Torque)
  * @author     Kurt Schrader <kschrader@karmalab.org> (Torque)
- * @version    $Revision: 1642 $
+ * @version    $Revision: 1760 $
  * @package    propel.runtime
  */
 class Propel
 {
+	/**
+	 * The Propel version.
+	 */
+	const VERSION = '1.5.1';
+	
 	/**
 	 * A constant for <code>default</code>.
 	 */
@@ -71,11 +76,6 @@ class Propel
 	 * A constant defining 'Debug-level messages' logging level
 	 */
 	const LOG_DEBUG = 7;
-
-	/**
-	 * The Propel version.
-	 */
-	const VERSION = '1.5.0-dev';
 
 	/**
 	 * The class name for a PDO object.
@@ -186,6 +186,7 @@ class Propel
 
 		'PropelException'     => 'exception/PropelException.php',
 		
+		'ModelWith'           => 'formatter/ModelWith.php',
 		'PropelArrayFormatter' => 'formatter/PropelArrayFormatter.php',
 		'PropelFormatter'     => 'formatter/PropelFormatter.php',
 		'PropelObjectFormatter' => 'formatter/PropelObjectFormatter.php',
@@ -855,18 +856,32 @@ class Propel
 
 	/**
 	 * Disable instance pooling.
+	 * 
+	 * @return boolean true if the method changed the instance pooling state,
+	 *                 false if it was already disabled
 	 */
 	public static function disableInstancePooling()
 	{
+		if (!self::$instancePoolingEnabled) {
+			return false;
+		}
 		self::$instancePoolingEnabled = false;
+		return true;
 	}
 
 	/**
 	 * Enable instance pooling (enabled by default).
+	 * 
+	 * @return boolean true if the method changed the instance pooling state,
+	 *                 false if it was already enabled
 	 */
 	public static function enableInstancePooling()
 	{
+		if (self::$instancePoolingEnabled) {
+			return false;
+		}
 		self::$instancePoolingEnabled = true;
+		return true;
 	}
 
 	/**

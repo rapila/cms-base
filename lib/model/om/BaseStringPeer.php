@@ -1635,8 +1635,8 @@ abstract class BaseStringPeer {
 	 * @return     String
 	 */
 	public static function retrieveByPK($language_id, $string_key, PropelPDO $con = null) {
-		$key = serialize(array((string) $language_id, (string) $string_key));
- 		if (null !== ($obj = StringPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $language_id, (string) $string_key));
+ 		if (null !== ($obj = StringPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

@@ -12,10 +12,12 @@ class Settings {
 	 */
 	private function __construct($sFileName) {
 		require_once("spyc/Spyc.php");
+		$oSpyc = new Spyc();
+		$oSpyc->setting_use_syck_is_possible = true;
 		$aConfigPaths = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, $sFileName), ResourceFinder::SEARCH_BASE_FIRST);
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
-			foreach(Spyc::YAMLLoad($sConfigPath) as $sSection => $aSection) {
+			foreach($oSpyc->loadFile($sConfigPath) as $sSection => $aSection) {
 				foreach($aSection as $sKey => $mValue) {
 					if(!isset($this->aSettings[$sSection])) {
 						$this->aSettings[$sSection] = array();

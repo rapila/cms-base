@@ -12,11 +12,10 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 	public function getUserData() {
 		$oUser = UserPeer::retrieveByPK($this->iUserId);
 		$aResult = $oUser->toArray();
-		Util::dumpAll($aResult, $oUser);
 		$aResult['FullName'] = $oUser->getFullName();
 		$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
-		$aResult['CreatedInfo'] = $oUser->getCreatedAt(DetailWidgetModule::DATE_FORMAT).' / '.$oUser->getCreatedBy()->getUserName();
-		$aResult['UpdatedInfo'] = $oUser->getUpdatedAt(DetailWidgetModule::DATE_FORMAT).' / '.$oUser->getUpdatedBy()->getUserName();
+		$aResult['CreatedInfo'] = $oUser->getCreatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByCreatedBy() == null ? "" : $oUser->getUserRelatedByCreatedBy()->getUserName());
+		$aResult['UpdatedInfo'] = $oUser->getUpdatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByUpdatedBy() == null ? "" : $oUser->getUserRelatedByUpdatedBy()->getUserName());
 		return $aResult;
 	}
 	

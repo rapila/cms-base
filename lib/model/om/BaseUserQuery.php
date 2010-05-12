@@ -309,10 +309,11 @@ abstract class BaseUserQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -328,6 +329,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -366,9 +368,9 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id) && $comparison == Criteria::EQUAL) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(UserPeer::ID, $id, $comparison);
@@ -383,15 +385,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUsername($username = null, $comparison = Criteria::EQUAL)
+	public function filterByUsername($username = null, $comparison = null)
 	{
 		if (is_array($username)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $username)) {
 			$username = str_replace('*', '%', $username);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -407,15 +409,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPassword($password = null, $comparison = Criteria::EQUAL)
+	public function filterByPassword($password = null, $comparison = null)
 	{
 		if (is_array($password)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $password)) {
 			$password = str_replace('*', '%', $password);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -431,15 +433,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDigestHA1($digestHA1 = null, $comparison = Criteria::EQUAL)
+	public function filterByDigestHA1($digestHA1 = null, $comparison = null)
 	{
 		if (is_array($digestHA1)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $digestHA1)) {
 			$digestHA1 = str_replace('*', '%', $digestHA1);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -455,15 +457,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByFirstName($firstName = null, $comparison = Criteria::EQUAL)
+	public function filterByFirstName($firstName = null, $comparison = null)
 	{
 		if (is_array($firstName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $firstName)) {
 			$firstName = str_replace('*', '%', $firstName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -479,15 +481,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLastName($lastName = null, $comparison = Criteria::EQUAL)
+	public function filterByLastName($lastName = null, $comparison = null)
 	{
 		if (is_array($lastName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $lastName)) {
 			$lastName = str_replace('*', '%', $lastName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -503,15 +505,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByEmail($email = null, $comparison = Criteria::EQUAL)
+	public function filterByEmail($email = null, $comparison = null)
 	{
 		if (is_array($email)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $email)) {
 			$email = str_replace('*', '%', $email);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -527,15 +529,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageId($languageId = null, $comparison = Criteria::EQUAL)
+	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
 		if (is_array($languageId)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $languageId)) {
 			$languageId = str_replace('*', '%', $languageId);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -551,7 +553,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByIsAdmin($isAdmin = null, $comparison = Criteria::EQUAL)
+	public function filterByIsAdmin($isAdmin = null, $comparison = null)
 	{
 		if (is_string($isAdmin)) {
 			$is_admin = in_array(strtolower($isAdmin), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -568,7 +570,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByIsBackendLoginEnabled($isBackendLoginEnabled = null, $comparison = Criteria::EQUAL)
+	public function filterByIsBackendLoginEnabled($isBackendLoginEnabled = null, $comparison = null)
 	{
 		if (is_string($isBackendLoginEnabled)) {
 			$is_backend_login_enabled = in_array(strtolower($isBackendLoginEnabled), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -585,7 +587,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByIsInactive($isInactive = null, $comparison = Criteria::EQUAL)
+	public function filterByIsInactive($isInactive = null, $comparison = null)
 	{
 		if (is_string($isInactive)) {
 			$is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
@@ -602,15 +604,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPasswordRecoverHint($passwordRecoverHint = null, $comparison = Criteria::EQUAL)
+	public function filterByPasswordRecoverHint($passwordRecoverHint = null, $comparison = null)
 	{
 		if (is_array($passwordRecoverHint)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $passwordRecoverHint)) {
 			$passwordRecoverHint = str_replace('*', '%', $passwordRecoverHint);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -626,15 +628,15 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByBackendSettings($backendSettings = null, $comparison = Criteria::EQUAL)
+	public function filterByBackendSettings($backendSettings = null, $comparison = null)
 	{
 		if (is_array($backendSettings)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $backendSettings)) {
 			$backendSettings = str_replace('*', '%', $backendSettings);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -650,7 +652,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -665,7 +667,7 @@ abstract class BaseUserQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -681,7 +683,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -696,7 +698,7 @@ abstract class BaseUserQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -712,7 +714,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -727,7 +729,7 @@ abstract class BaseUserQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -743,7 +745,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -758,7 +760,7 @@ abstract class BaseUserQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -773,7 +775,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguage($language, $comparison = Criteria::EQUAL)
+	public function filterByLanguage($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::LANGUAGE_ID, $language->getId(), $comparison);
@@ -796,6 +798,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -834,7 +839,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPageRelatedByCreatedBy($page, $comparison = Criteria::EQUAL)
+	public function filterByPageRelatedByCreatedBy($page, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $page->getCreatedBy(), $comparison);
@@ -857,6 +862,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -895,7 +903,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPageRelatedByUpdatedBy($page, $comparison = Criteria::EQUAL)
+	public function filterByPageRelatedByUpdatedBy($page, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $page->getUpdatedBy(), $comparison);
@@ -918,6 +926,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -956,7 +967,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPagePropertyRelatedByCreatedBy($pageProperty, $comparison = Criteria::EQUAL)
+	public function filterByPagePropertyRelatedByCreatedBy($pageProperty, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $pageProperty->getCreatedBy(), $comparison);
@@ -979,6 +990,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1017,7 +1031,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPagePropertyRelatedByUpdatedBy($pageProperty, $comparison = Criteria::EQUAL)
+	public function filterByPagePropertyRelatedByUpdatedBy($pageProperty, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $pageProperty->getUpdatedBy(), $comparison);
@@ -1040,6 +1054,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1078,7 +1095,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPageStringRelatedByCreatedBy($pageString, $comparison = Criteria::EQUAL)
+	public function filterByPageStringRelatedByCreatedBy($pageString, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $pageString->getCreatedBy(), $comparison);
@@ -1101,6 +1118,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1139,7 +1159,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByPageStringRelatedByUpdatedBy($pageString, $comparison = Criteria::EQUAL)
+	public function filterByPageStringRelatedByUpdatedBy($pageString, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $pageString->getUpdatedBy(), $comparison);
@@ -1162,6 +1182,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1200,7 +1223,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByContentObjectRelatedByCreatedBy($contentObject, $comparison = Criteria::EQUAL)
+	public function filterByContentObjectRelatedByCreatedBy($contentObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $contentObject->getCreatedBy(), $comparison);
@@ -1223,6 +1246,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1261,7 +1287,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByContentObjectRelatedByUpdatedBy($contentObject, $comparison = Criteria::EQUAL)
+	public function filterByContentObjectRelatedByUpdatedBy($contentObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $contentObject->getUpdatedBy(), $comparison);
@@ -1284,6 +1310,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1322,7 +1351,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObjectRelatedByCreatedBy($languageObject, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObjectRelatedByCreatedBy($languageObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $languageObject->getCreatedBy(), $comparison);
@@ -1345,6 +1374,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1383,7 +1415,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObjectRelatedByUpdatedBy($languageObject, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObjectRelatedByUpdatedBy($languageObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $languageObject->getUpdatedBy(), $comparison);
@@ -1406,6 +1438,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1444,7 +1479,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistory, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $languageObjectHistory->getCreatedBy(), $comparison);
@@ -1467,6 +1502,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1505,7 +1543,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistory, $comparison = Criteria::EQUAL)
+	public function filterByLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $languageObjectHistory->getUpdatedBy(), $comparison);
@@ -1528,6 +1566,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1566,7 +1607,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageRelatedByCreatedBy($language, $comparison = Criteria::EQUAL)
+	public function filterByLanguageRelatedByCreatedBy($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $language->getCreatedBy(), $comparison);
@@ -1589,6 +1630,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1627,7 +1671,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageRelatedByUpdatedBy($language, $comparison = Criteria::EQUAL)
+	public function filterByLanguageRelatedByUpdatedBy($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $language->getUpdatedBy(), $comparison);
@@ -1650,6 +1694,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1688,7 +1735,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByStringRelatedByCreatedBy($string, $comparison = Criteria::EQUAL)
+	public function filterByStringRelatedByCreatedBy($string, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $string->getCreatedBy(), $comparison);
@@ -1711,6 +1758,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1749,7 +1799,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByStringRelatedByUpdatedBy($string, $comparison = Criteria::EQUAL)
+	public function filterByStringRelatedByUpdatedBy($string, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $string->getUpdatedBy(), $comparison);
@@ -1772,6 +1822,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1810,7 +1863,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByGroupRelatedByCreatedBy($group, $comparison = Criteria::EQUAL)
+	public function filterByGroupRelatedByCreatedBy($group, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $group->getCreatedBy(), $comparison);
@@ -1833,6 +1886,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1871,7 +1927,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByGroupRelatedByUpdatedBy($group, $comparison = Criteria::EQUAL)
+	public function filterByGroupRelatedByUpdatedBy($group, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $group->getUpdatedBy(), $comparison);
@@ -1894,6 +1950,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1932,7 +1991,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUserGroupRelatedByUserId($userGroup, $comparison = Criteria::EQUAL)
+	public function filterByUserGroupRelatedByUserId($userGroup, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $userGroup->getUserId(), $comparison);
@@ -1955,6 +2014,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1993,7 +2055,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUserGroupRelatedByCreatedBy($userGroup, $comparison = Criteria::EQUAL)
+	public function filterByUserGroupRelatedByCreatedBy($userGroup, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $userGroup->getCreatedBy(), $comparison);
@@ -2016,6 +2078,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2054,7 +2119,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByUserGroupRelatedByUpdatedBy($userGroup, $comparison = Criteria::EQUAL)
+	public function filterByUserGroupRelatedByUpdatedBy($userGroup, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $userGroup->getUpdatedBy(), $comparison);
@@ -2077,6 +2142,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2115,7 +2183,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByRightRelatedByCreatedBy($right, $comparison = Criteria::EQUAL)
+	public function filterByRightRelatedByCreatedBy($right, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $right->getCreatedBy(), $comparison);
@@ -2138,6 +2206,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2176,7 +2247,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByRightRelatedByUpdatedBy($right, $comparison = Criteria::EQUAL)
+	public function filterByRightRelatedByUpdatedBy($right, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $right->getUpdatedBy(), $comparison);
@@ -2199,6 +2270,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2237,7 +2311,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentRelatedByOwnerId($document, $comparison = Criteria::EQUAL)
+	public function filterByDocumentRelatedByOwnerId($document, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $document->getOwnerId(), $comparison);
@@ -2260,6 +2334,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2298,7 +2375,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentRelatedByCreatedBy($document, $comparison = Criteria::EQUAL)
+	public function filterByDocumentRelatedByCreatedBy($document, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $document->getCreatedBy(), $comparison);
@@ -2321,6 +2398,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2359,7 +2439,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentRelatedByUpdatedBy($document, $comparison = Criteria::EQUAL)
+	public function filterByDocumentRelatedByUpdatedBy($document, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $document->getUpdatedBy(), $comparison);
@@ -2382,6 +2462,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2420,7 +2503,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentTypeRelatedByCreatedBy($documentType, $comparison = Criteria::EQUAL)
+	public function filterByDocumentTypeRelatedByCreatedBy($documentType, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $documentType->getCreatedBy(), $comparison);
@@ -2443,6 +2526,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2481,7 +2567,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentTypeRelatedByUpdatedBy($documentType, $comparison = Criteria::EQUAL)
+	public function filterByDocumentTypeRelatedByUpdatedBy($documentType, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $documentType->getUpdatedBy(), $comparison);
@@ -2504,6 +2590,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2542,7 +2631,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentCategoryRelatedByCreatedBy($documentCategory, $comparison = Criteria::EQUAL)
+	public function filterByDocumentCategoryRelatedByCreatedBy($documentCategory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $documentCategory->getCreatedBy(), $comparison);
@@ -2565,6 +2654,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2603,7 +2695,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByDocumentCategoryRelatedByUpdatedBy($documentCategory, $comparison = Criteria::EQUAL)
+	public function filterByDocumentCategoryRelatedByUpdatedBy($documentCategory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $documentCategory->getUpdatedBy(), $comparison);
@@ -2626,6 +2718,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2664,7 +2759,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByTagRelatedByCreatedBy($tag, $comparison = Criteria::EQUAL)
+	public function filterByTagRelatedByCreatedBy($tag, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $tag->getCreatedBy(), $comparison);
@@ -2687,6 +2782,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2725,7 +2823,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByTagRelatedByUpdatedBy($tag, $comparison = Criteria::EQUAL)
+	public function filterByTagRelatedByUpdatedBy($tag, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $tag->getUpdatedBy(), $comparison);
@@ -2748,6 +2846,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2786,7 +2887,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByTagInstanceRelatedByCreatedBy($tagInstance, $comparison = Criteria::EQUAL)
+	public function filterByTagInstanceRelatedByCreatedBy($tagInstance, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $tagInstance->getCreatedBy(), $comparison);
@@ -2809,6 +2910,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2847,7 +2951,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByTagInstanceRelatedByUpdatedBy($tagInstance, $comparison = Criteria::EQUAL)
+	public function filterByTagInstanceRelatedByUpdatedBy($tagInstance, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $tagInstance->getUpdatedBy(), $comparison);
@@ -2870,6 +2974,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2908,7 +3015,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLinkRelatedByOwnerId($link, $comparison = Criteria::EQUAL)
+	public function filterByLinkRelatedByOwnerId($link, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $link->getOwnerId(), $comparison);
@@ -2931,6 +3038,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -2969,7 +3079,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLinkRelatedByCreatedBy($link, $comparison = Criteria::EQUAL)
+	public function filterByLinkRelatedByCreatedBy($link, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $link->getCreatedBy(), $comparison);
@@ -2992,6 +3102,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3030,7 +3143,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLinkRelatedByUpdatedBy($link, $comparison = Criteria::EQUAL)
+	public function filterByLinkRelatedByUpdatedBy($link, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $link->getUpdatedBy(), $comparison);
@@ -3053,6 +3166,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3091,7 +3207,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLinkCategoryRelatedByCreatedBy($linkCategory, $comparison = Criteria::EQUAL)
+	public function filterByLinkCategoryRelatedByCreatedBy($linkCategory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $linkCategory->getCreatedBy(), $comparison);
@@ -3114,6 +3230,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3152,7 +3271,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLinkCategoryRelatedByUpdatedBy($linkCategory, $comparison = Criteria::EQUAL)
+	public function filterByLinkCategoryRelatedByUpdatedBy($linkCategory, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $linkCategory->getUpdatedBy(), $comparison);
@@ -3175,6 +3294,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3213,7 +3335,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByReferenceRelatedByCreatedBy($reference, $comparison = Criteria::EQUAL)
+	public function filterByReferenceRelatedByCreatedBy($reference, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $reference->getCreatedBy(), $comparison);
@@ -3236,6 +3358,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3274,7 +3399,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByReferenceRelatedByUpdatedBy($reference, $comparison = Criteria::EQUAL)
+	public function filterByReferenceRelatedByUpdatedBy($reference, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::ID, $reference->getUpdatedBy(), $comparison);
@@ -3297,6 +3422,9 @@ abstract class BaseUserQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -3341,37 +3469,6 @@ abstract class BaseUserQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

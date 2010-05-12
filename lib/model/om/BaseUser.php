@@ -2875,8 +2875,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Page[] List of Page objects
 	 * @throws     PropelException
 	 */
@@ -2957,6 +2957,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
 	 */
 	public function getPagesRelatedByCreatedByJoinPageRelatedByParentId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3004,8 +3009,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Page[] List of Page objects
 	 * @throws     PropelException
 	 */
@@ -3086,6 +3091,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
 	 */
 	public function getPagesRelatedByUpdatedByJoinPageRelatedByParentId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3133,8 +3143,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
 	 * @throws     PropelException
 	 */
@@ -3215,6 +3225,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
 	 */
 	public function getPagePropertysRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3262,8 +3277,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
 	 * @throws     PropelException
 	 */
@@ -3344,6 +3359,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
 	 */
 	public function getPagePropertysRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3391,8 +3411,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 * @throws     PropelException
 	 */
@@ -3473,6 +3493,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 */
 	public function getPageStringsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3493,6 +3518,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 */
 	public function getPageStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3540,8 +3570,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 * @throws     PropelException
 	 */
@@ -3622,6 +3652,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 */
 	public function getPageStringsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3642,6 +3677,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
 	 */
 	public function getPageStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3689,8 +3729,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
 	 * @throws     PropelException
 	 */
@@ -3771,6 +3811,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
 	 */
 	public function getContentObjectsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3818,8 +3863,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
 	 * @throws     PropelException
 	 */
@@ -3900,6 +3945,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
 	 */
 	public function getContentObjectsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3947,8 +3997,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 * @throws     PropelException
 	 */
@@ -4029,6 +4079,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 */
 	public function getLanguageObjectsRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4049,6 +4104,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 */
 	public function getLanguageObjectsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4096,8 +4156,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 * @throws     PropelException
 	 */
@@ -4178,6 +4238,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 */
 	public function getLanguageObjectsRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4198,6 +4263,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
 	 */
 	public function getLanguageObjectsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4245,8 +4315,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 * @throws     PropelException
 	 */
@@ -4327,6 +4397,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 */
 	public function getLanguageObjectHistorysRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4347,6 +4422,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 */
 	public function getLanguageObjectHistorysRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4394,8 +4474,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 * @throws     PropelException
 	 */
@@ -4476,6 +4556,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 */
 	public function getLanguageObjectHistorysRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4496,6 +4581,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
 	 */
 	public function getLanguageObjectHistorysRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4543,8 +4633,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Language[] List of Language objects
 	 * @throws     PropelException
 	 */
@@ -4652,8 +4742,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Language[] List of Language objects
 	 * @throws     PropelException
 	 */
@@ -4761,8 +4851,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array String[] List of String objects
 	 * @throws     PropelException
 	 */
@@ -4843,6 +4933,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array String[] List of String objects
 	 */
 	public function getStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4890,8 +4985,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array String[] List of String objects
 	 * @throws     PropelException
 	 */
@@ -4972,6 +5067,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array String[] List of String objects
 	 */
 	public function getStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5019,8 +5119,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Group[] List of Group objects
 	 * @throws     PropelException
 	 */
@@ -5128,8 +5228,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Group[] List of Group objects
 	 * @throws     PropelException
 	 */
@@ -5237,8 +5337,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 * @throws     PropelException
 	 */
@@ -5319,6 +5419,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 */
 	public function getUserGroupsRelatedByUserIdJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5366,8 +5471,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 * @throws     PropelException
 	 */
@@ -5448,6 +5553,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 */
 	public function getUserGroupsRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5495,8 +5605,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 * @throws     PropelException
 	 */
@@ -5577,6 +5687,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
 	 */
 	public function getUserGroupsRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5624,8 +5739,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Right[] List of Right objects
 	 * @throws     PropelException
 	 */
@@ -5706,6 +5821,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
 	public function getRightsRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5726,6 +5846,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
 	public function getRightsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5773,8 +5898,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Right[] List of Right objects
 	 * @throws     PropelException
 	 */
@@ -5855,6 +5980,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
 	public function getRightsRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5875,6 +6005,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
 	public function getRightsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -5922,8 +6057,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Document[] List of Document objects
 	 * @throws     PropelException
 	 */
@@ -6004,6 +6139,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByOwnerIdJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6024,6 +6164,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByOwnerIdJoinDocumentType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6044,6 +6189,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByOwnerIdJoinDocumentCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6091,8 +6241,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Document[] List of Document objects
 	 * @throws     PropelException
 	 */
@@ -6173,6 +6323,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6193,6 +6348,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByCreatedByJoinDocumentType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6213,6 +6373,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByCreatedByJoinDocumentCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6260,8 +6425,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Document[] List of Document objects
 	 * @throws     PropelException
 	 */
@@ -6342,6 +6507,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6362,6 +6532,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByUpdatedByJoinDocumentType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6382,6 +6557,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Document[] List of Document objects
 	 */
 	public function getDocumentsRelatedByUpdatedByJoinDocumentCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -6429,8 +6609,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array DocumentType[] List of DocumentType objects
 	 * @throws     PropelException
 	 */
@@ -6538,8 +6718,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array DocumentType[] List of DocumentType objects
 	 * @throws     PropelException
 	 */
@@ -6647,8 +6827,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array DocumentCategory[] List of DocumentCategory objects
 	 * @throws     PropelException
 	 */
@@ -6756,8 +6936,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array DocumentCategory[] List of DocumentCategory objects
 	 * @throws     PropelException
 	 */
@@ -6865,8 +7045,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Tag[] List of Tag objects
 	 * @throws     PropelException
 	 */
@@ -6974,8 +7154,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Tag[] List of Tag objects
 	 * @throws     PropelException
 	 */
@@ -7083,8 +7263,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array TagInstance[] List of TagInstance objects
 	 * @throws     PropelException
 	 */
@@ -7165,6 +7345,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TagInstance[] List of TagInstance objects
 	 */
 	public function getTagInstancesRelatedByCreatedByJoinTag($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7212,8 +7397,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array TagInstance[] List of TagInstance objects
 	 * @throws     PropelException
 	 */
@@ -7294,6 +7479,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TagInstance[] List of TagInstance objects
 	 */
 	public function getTagInstancesRelatedByUpdatedByJoinTag($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7341,8 +7531,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Link[] List of Link objects
 	 * @throws     PropelException
 	 */
@@ -7423,6 +7613,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByOwnerIdJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7443,6 +7638,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByOwnerIdJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7490,8 +7690,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Link[] List of Link objects
 	 * @throws     PropelException
 	 */
@@ -7572,6 +7772,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7592,6 +7797,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByCreatedByJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7639,8 +7849,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Link[] List of Link objects
 	 * @throws     PropelException
 	 */
@@ -7721,6 +7931,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7741,6 +7956,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
 	 */
 	public function getLinksRelatedByUpdatedByJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -7788,8 +8008,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LinkCategory[] List of LinkCategory objects
 	 * @throws     PropelException
 	 */
@@ -7897,8 +8117,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array LinkCategory[] List of LinkCategory objects
 	 * @throws     PropelException
 	 */
@@ -8006,8 +8226,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Reference[] List of Reference objects
 	 * @throws     PropelException
 	 */
@@ -8115,8 +8335,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Reference[] List of Reference objects
 	 * @throws     PropelException
 	 */
@@ -8536,6 +8756,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->modifiedColumns[] = UserPeer::UPDATED_BY;
 		return $this;
 	}
+	
+		/**
+		 * Get the associated User object
+		 *
+		 * @param      PropelPDO Optional Connection object.
+		 * @return     User The associated User object.
+		 * @throws     PropelException
+		 */
+		public function getUserRelatedByCreatedBy(PropelPDO $con = null)
+		{
+			return UserQuery::create()->findPk($this->created_by);
+		}
+		/**
+		 * Get the associated User object
+		 *
+		 * @param      PropelPDO Optional Connection object.
+		 * @return     User The associated User object.
+		 * @throws     PropelException
+		 */
+		public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
+		{
+			return UserQuery::create()->findPk($this->updated_by);
+		}
 
 	/**
 	 * Catches calls to virtual methods

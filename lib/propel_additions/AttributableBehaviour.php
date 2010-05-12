@@ -6,8 +6,9 @@
  *
  * @package    propel.generator.behavior
  */
-class AttributableBehaviour extends Behavior
-{
+class AttributableBehaviour extends Behavior {
+	
+	private $bIsUsersTable = false;
 	// default parameters value
 	protected $parameters = array(
 		'create_column' => 'created_by',
@@ -19,13 +20,18 @@ class AttributableBehaviour extends Behavior
 	 */
 	public function modifyTable()
 	{
+		$oUsersTable = $this->getDatabase()->getTable('users');
+		$oUsersId = $oUsersTable->getColumn('id');
+		$this->bIsUsersTable = $oUsersTable === $this->getTable();
 		
 		if(!$this->getTable()->containsColumn($this->getParameter('create_column'))) {
 			$oCreateColumn = $this->getTable()->addColumn(array(
 				'name' => $this->getParameter('create_column'),
 				'type' => 'integer'
 			));
-			$this->addRelation($oCreateColumn);
+			if(!$this->bIsUsersTable) {
+				$this->addRelation($oCreateColumn, $oUsersTable, $oUsersId);
+			}
 		}
 		
 		if(!$this->getTable()->containsColumn($this->getParameter('update_column'))) {
@@ -33,17 +39,17 @@ class AttributableBehaviour extends Behavior
 				'name' => $this->getParameter('update_column'),
 				'type' => 'integer'
 			));
-			$this->addRelation($oUpdateColumn);
+			if(!$this->bIsUsersTable) {
+				$this->addRelation($oUpdateColumn, $oUsersTable, $oUsersId);
+			}
 		}
 	}
 	
-	private function addRelation($oLocalColumn) {
-		$oUsersTable = $this->getDatabase()->getTable('users');
-		$oUsersId = $oUsersTable->getColumn('id');
+	private function addRelation($oLocalColumn, $oUsersTable, $oUsersId) {
 		$oFk = new ForeignKey();
 		$oFk->setTable($this->getTable());
 		$oFk->setForeignTableName($oUsersTable->getName());
-		if(!$oFk->isMatchedByInverseFK() && $oUsersTable !== $this->getTable()) {
+		if(!$oFk->isMatchedByInverseFK()) {
 			$oFk->setOnDelete(ForeignKey::SETNULL);
 			$oFk->setOnUpdate(null);
 			$oFk->addReference($oLocalColumn, $oUsersId);
@@ -55,7 +61,7 @@ class AttributableBehaviour extends Behavior
 	 * Get the setter of one of the columns of the behavior
 	 * 
 	 * @param     string $column One of the behavior colums, 'create_column' or 'update_column'
-	 * @return    string The related setter, 'setCreatedOn' or 'setUpdatedOn'
+	 * @return    string The related setter, 'setCreatedBy' or 'setUpdatedBy'
 	 */
 	protected function getColumnSetter($column)
 	{
@@ -109,6 +115,29 @@ public function keepUpdateUserUnchanged()
 	\$this->modifiedColumns[] = " . $this->getColumnForParameter('update_column')->getConstantName() . ";
 	return \$this;
 }
-";
+".($this->bIsUsersTable ? "
+	/**
+	 * Get the associated User object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     User The associated User object.
+	 * @throws     PropelException
+	 */
+	public function getUserRelatedByCreatedBy(PropelPDO \$con = null)
+	{
+		return UserQuery::create()->findPk(\$this->".$this->getParameter('create_column').");
+	}
+	/**
+	 * Get the associated User object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     User The associated User object.
+	 * @throws     PropelException
+	 */
+	public function getUserRelatedByUpdatedBy(PropelPDO \$con = null)
+	{
+		return UserQuery::create()->findPk(\$this->".$this->getParameter('update_column').");
+	}
+" : '');
 	}
 }

@@ -19,7 +19,7 @@
  * These classes in themselves do not do any database metadata lookups.
  *
  * @author     Francois Zaninotto
- * @version    $Revision: 1612 $
+ * @version    $Revision: 1728 $
  * @package    propel.runtime.map
  */
 class RelationMap
@@ -124,6 +124,16 @@ class RelationMap
     return $this->foreignTable;
   }
   
+  /**
+   * Get the left table of the relation
+   *
+   * @return    TableMap The left table for this relationship
+   */
+  public function getLeftTable()
+  {
+  	return ($this->getType() == RelationMap::MANY_TO_ONE) ? $this->getLocalTable() : $this->getForeignTable();
+  }
+
   /**
    * Get the right table of the relation
    *

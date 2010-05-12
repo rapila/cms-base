@@ -14,7 +14,7 @@
  * In Torque this is an inner class of the Criteria class.
  *
  * @author     Hans Lellelid <hans@xmpl.org> (Propel)
- * @version    $Revision: 1664 $
+ * @version    $Revision: 1740 $
  * @package    propel.runtime.query
  */
 class Criterion
@@ -529,5 +529,15 @@ class Criterion
 			$criterions = array_merge($criterions, $criterion->getAttachedCriterion());
 		}
 		return $criterions;
+	}
+	
+	/**
+	 * Ensures deep cloning of attached objects
+	 */
+	public function __clone()
+	{
+		foreach ($this->clauses as $key => $criterion) {
+			$this->clauses[$key] = clone $criterion;
+		}
 	}
 }

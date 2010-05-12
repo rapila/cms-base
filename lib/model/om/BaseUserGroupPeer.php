@@ -1920,8 +1920,8 @@ abstract class BaseUserGroupPeer {
 	 * @return     UserGroup
 	 */
 	public static function retrieveByPK($user_id, $group_id, PropelPDO $con = null) {
-		$key = serialize(array((string) $user_id, (string) $group_id));
- 		if (null !== ($obj = UserGroupPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $user_id, (string) $group_id));
+ 		if (null !== ($obj = UserGroupPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

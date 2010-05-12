@@ -120,10 +120,11 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -139,6 +140,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -190,9 +192,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByObjectId($objectId = null, $comparison = Criteria::EQUAL)
+	public function filterByObjectId($objectId = null, $comparison = null)
 	{
-		if (is_array($objectId) && $comparison == Criteria::EQUAL) {
+		if (is_array($objectId) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(LanguageObjectHistoryPeer::OBJECT_ID, $objectId, $comparison);
@@ -207,15 +209,15 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByLanguageId($languageId = null, $comparison = Criteria::EQUAL)
+	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
 		if (is_array($languageId)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $languageId)) {
 			$languageId = str_replace('*', '%', $languageId);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -230,7 +232,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByData($data = null, $comparison = Criteria::EQUAL)
+	public function filterByData($data = null, $comparison = null)
 	{
 		return $this->addUsingAlias(LanguageObjectHistoryPeer::DATA, $data, $comparison);
 	}
@@ -244,9 +246,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByRevision($revision = null, $comparison = Criteria::EQUAL)
+	public function filterByRevision($revision = null, $comparison = null)
 	{
-		if (is_array($revision) && $comparison == Criteria::EQUAL) {
+		if (is_array($revision) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(LanguageObjectHistoryPeer::REVISION, $revision, $comparison);
@@ -261,7 +263,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -276,7 +278,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -292,7 +294,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -307,7 +309,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -323,7 +325,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -338,7 +340,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -354,7 +356,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -369,7 +371,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -384,7 +386,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByContentObject($contentObject, $comparison = Criteria::EQUAL)
+	public function filterByContentObject($contentObject, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguageObjectHistoryPeer::OBJECT_ID, $contentObject->getId(), $comparison);
@@ -407,6 +409,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -445,7 +450,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByLanguage($language, $comparison = Criteria::EQUAL)
+	public function filterByLanguage($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguageObjectHistoryPeer::LANGUAGE_ID, $language->getId(), $comparison);
@@ -468,6 +473,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -506,7 +514,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguageObjectHistoryPeer::CREATED_BY, $user->getId(), $comparison);
@@ -529,6 +537,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -567,7 +578,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(LanguageObjectHistoryPeer::UPDATED_BY, $user->getId(), $comparison);
@@ -590,6 +601,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -637,37 +651,6 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior

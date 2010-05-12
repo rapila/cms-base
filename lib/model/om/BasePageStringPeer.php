@@ -2039,8 +2039,8 @@ abstract class BasePageStringPeer {
 	 * @return     PageString
 	 */
 	public static function retrieveByPK($page_id, $language_id, PropelPDO $con = null) {
-		$key = serialize(array((string) $page_id, (string) $language_id));
- 		if (null !== ($obj = PageStringPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $page_id, (string) $language_id));
+ 		if (null !== ($obj = PageStringPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

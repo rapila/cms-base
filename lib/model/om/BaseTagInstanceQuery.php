@@ -112,10 +112,11 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -131,6 +132,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -182,9 +184,9 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByTagId($tagId = null, $comparison = Criteria::EQUAL)
+	public function filterByTagId($tagId = null, $comparison = null)
 	{
-		if (is_array($tagId) && $comparison == Criteria::EQUAL) {
+		if (is_array($tagId) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(TagInstancePeer::TAG_ID, $tagId, $comparison);
@@ -199,9 +201,9 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByTaggedItemId($taggedItemId = null, $comparison = Criteria::EQUAL)
+	public function filterByTaggedItemId($taggedItemId = null, $comparison = null)
 	{
-		if (is_array($taggedItemId) && $comparison == Criteria::EQUAL) {
+		if (is_array($taggedItemId) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(TagInstancePeer::TAGGED_ITEM_ID, $taggedItemId, $comparison);
@@ -216,15 +218,15 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByModelName($modelName = null, $comparison = Criteria::EQUAL)
+	public function filterByModelName($modelName = null, $comparison = null)
 	{
 		if (is_array($modelName)) {
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		} elseif (preg_match('/[\%\*]/', $modelName)) {
 			$modelName = str_replace('*', '%', $modelName);
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -240,7 +242,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
 			$useMinMax = false;
@@ -255,7 +257,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -271,7 +273,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
 			$useMinMax = false;
@@ -286,7 +288,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -302,7 +304,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedBy($createdBy = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedBy($createdBy = null, $comparison = null)
 	{
 		if (is_array($createdBy)) {
 			$useMinMax = false;
@@ -317,7 +319,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -333,7 +335,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedBy($updatedBy = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedBy($updatedBy = null, $comparison = null)
 	{
 		if (is_array($updatedBy)) {
 			$useMinMax = false;
@@ -348,7 +350,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 			if ($useMinMax) {
 				return $this;
 			}
-			if ($comparison == Criteria::EQUAL) {
+			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 		}
@@ -363,7 +365,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByTag($tag, $comparison = Criteria::EQUAL)
+	public function filterByTag($tag, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(TagInstancePeer::TAG_ID, $tag->getId(), $comparison);
@@ -386,6 +388,9 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -424,7 +429,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByCreatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByCreatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(TagInstancePeer::CREATED_BY, $user->getId(), $comparison);
@@ -447,6 +452,9 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -485,7 +493,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery The current query, for fluid interface
 	 */
-	public function filterByUserRelatedByUpdatedBy($user, $comparison = Criteria::EQUAL)
+	public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(TagInstancePeer::UPDATED_BY, $user->getId(), $comparison);
@@ -508,6 +516,9 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -555,37 +566,6 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// extended_timestampable behavior
