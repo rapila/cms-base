@@ -49,6 +49,7 @@ Strategy for click, dblclick, option key handling.
 - consider successful(?) iPhone handling for these issues
 
 html and css
+- css Chrome #admin_main
 - check table, ul, heading valid and appropriate elements (heading ul, tbody, thead, tfoot?)
 
 Alert: info

@@ -1,0 +1,45 @@
+INSTALL
+What do we need?
+Install Manager for new Admin
+- unzip software of checkout / new site informations
+- create table with user suggestion or automatic if installer has mysql root access
+- Database User and Password, adapter
+- First User Admin
+- Default Language of page
+- Dashboard for install, starters informations
+ 
+Migration @see MIGRATION_2.0.txt
+
+
+mkdir > name of project
+cd project dir
+
+checkout site_prototyp
+http://svn.mini-cms.ch/sites/trunk/site_prototype/ site
+
+checkout mini-cms shell scripts
+http://svn.mini-cms.ch/mini-cms/scripts into a separate dir
+
+run from project dir:
+script mini_cms_update_cms_into_site.sh && mini_cms_clear_cache_and_set_permissions.sh
+
+whenever you want to update to the latest version do this again.
+do not change anything outside your site folder
+
+projectname/site/config/config.yml
+change to your requirements:
+- connection
+- multilingual
+- cache
+- domain_holder
+- session_defaults
+
+in config.yml you can overwrite any parameter that is configured in base/config/config.yml
+
+Ready for running mini-cms the first time?
+request url
+
+if you are the first user, you can just enter your username and password to your liking.
+The dialog will ask you to confirm the entries and you are logged in and then you can fillin your user data in the backend
+
+if there is no page entry yet, the system asks you to enter a first "root" page from where you will be able to build the page tree
