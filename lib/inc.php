@@ -9,6 +9,7 @@ define('DIRNAME_MODEL',          'model');
 define('DIRNAME_TEST',           'test');
 define('DIRNAME_LIB',            'lib');
 define('DIRNAME_CONFIG',         'config');
+define('DIRNAME_PRELOAD',        'preload');
 define('DIRNAME_IMAGES',         'images');
 define('DIRNAME_CACHES',         'caches');
 define('DIRNAME_FULL_PAGE',      'full_page');

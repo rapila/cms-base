@@ -10,7 +10,7 @@ abstract class FilterModule extends Module {
 	
 	public static function getFilters() {
 		if(self::$FILTERS === null) {
-			$oCache = new Cache("preconfigured_filter_handlers", DIRNAME_CONFIG);
+			$oCache = new Cache("preconfigured_filter_handlers", DIRNAME_PRELOAD);
 			if($oCache->cacheFileExists()) {
 				self::$FILTERS = $oCache->getContentsAsVariable();
 			} else {

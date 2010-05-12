@@ -11,7 +11,9 @@ class Cache {
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
 		$sPath = ResourceFinder::findResource($mPath, ResourceFinder::SEARCH_MAIN_ONLY);
 		if($sPath === null) {
-			throw new Exception("Error in Cache->__construct(): Cache folder ".implode('/', $mPath)." does not exist");
+			if(!mkdir($sPath = MAIN_DIR.'/'.implode('/', $mPath), 0775, true)) {
+				throw new Exception("Error in Cache->__construct(): Cache folder $sPath does not exist and we do not have rights to create it");
+			}
 		}
 		
 		$sFileName = md5($sKey);

@@ -96,7 +96,7 @@ abstract class Module {
 			return $aModuleMetadata;
 		}
 		$aInfoFilePaths = ResourceFinder::findAllResources(array(DIRNAME_MODULES, $sType, $sName, self::INFO_FILE));
-		$oCache = new Cache("module_md_$sType-$sName", DIRNAME_CONFIG);
+		$oCache = new Cache("module_md_$sType-$sName", DIRNAME_PRELOAD);
 		if($oCache->cacheFileExists() && !$oCache->isOutdated($aInfoFilePaths)) {
 			$aModuleMetadata = $oCache->getContentsAsVariable();
 		} else {

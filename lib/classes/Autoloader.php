@@ -12,7 +12,7 @@ class Autoloader {
 	public static $MAPPING_HAS_BEEN_MODIFIED;
 	
 	public static function loadIncludeCache() {
-		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_CONFIG);
+		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_PRELOAD);
 		self::$MAPPING_HAS_BEEN_MODIFIED = false;
 		if(!self::$INCLUDE_CACHE->cacheFileExists(false)) {
 			self::$CLASS_MAPPING = array();
