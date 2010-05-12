@@ -3,6 +3,7 @@ MIGRATION Issues for upgrade from Mini-CMS Version 1 > 2 (CMOS)
 1. Update and clear caches
 2. Clear session (just in case)
 3. run migration.sql changes required for update between local version and trunk (version 2)
+4. remove YAML 1.1 declaration in db_config.yml because of update to Spyc 1.45
 
 Migration Issues for previous mini-cms applications
 - handle all Blob related changes

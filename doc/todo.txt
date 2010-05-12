@@ -1,9 +1,6 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 
-bug 
-- 'Error in Cache->__construct(): Cache folder generated/caches/images does not exist'
-	Caches dir with subdirs should be in repository or created if not exist
 
 Widget tasks
 - check hierarchy of js loading > bug Chrome initial section highlight
@@ -352,3 +349,6 @@ Widget handling : generell und Beispiel heading_filter
 - PHP vs Javascript ?
 - erst beim durchdenken kommt der ganze scheiss (Zitat Rafi). Denken wirs durch!
 - sidebar selector? groups, is_backend_login_enabled, is_admin, is not backend_enabled > heading_filter????
+bug 
+- 'Error in Cache->__construct(): Cache folder generated/caches/images does not exist'
+	Caches dir with subdirs should be in repository or created if not exist

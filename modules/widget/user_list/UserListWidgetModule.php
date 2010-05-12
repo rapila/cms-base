@@ -70,8 +70,8 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('email');
 				break;
 			// case 'is_backend_login_enabled':
-			// 	$aResult['heading'] = StringPeer::getString('column.is_backend_login_enabled');
-			// 	break;
+			//	$aResult['heading'] = StringPeer::getString('column.is_backend_login_enabled');
+			//	break;
 			case 'user_kind':
 				$aResult['heading'] = '';
 				// $aResult['field_name'] = 'is_backend_login_enabled';
@@ -110,11 +110,12 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		if($this->getGroupId() && ($this->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL)) {
-      $oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::INNER_JOIN);
 			if(is_numeric($this->getGroupId())) {
-	  		$oCriteria->add(UserGroupPeer::GROUP_ID, $this->aGroupId);
+				$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::INNER_JOIN);
+				$oCriteria->add(UserGroupPeer::GROUP_ID, $this->aGroupId);
 			} elseif($this->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-	  		$oCriteria->add(UserGroupPeer::USER_ID, null, Criteria::ISNULL);
+				$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);
+				$oCriteria->add(UserGroupPeer::GROUP_ID, null, Criteria::ISNULL);
 			}
 		} 
 		if($this->sUserKind) {
