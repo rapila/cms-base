@@ -13,12 +13,10 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		if(isset($_REQUEST['document_category_id'])) {
-			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
-			$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $_REQUEST['document_category_id']);
+			$this->oListWidget->oDelegateProxy->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
-		if(!is_numeric($this->oListWidget->getDocumentCategoryId())) {
-			$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $this->oListWidget->getDocumentCategoryId());
-		}
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $this->oListWidget->oDelegateProxy->getDocumentCategoryId());
+		
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 	}
 	

@@ -1,8 +1,8 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 
-
 Widget tasks
+- set default value for filter columns
 - check hierarchy of js loading > bug Chrome initial section highlight
 - FilterCriteria add to CriteriaListWidgetDelegate
 	use new Query features or not

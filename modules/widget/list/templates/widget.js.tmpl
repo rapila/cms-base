@@ -43,7 +43,7 @@ Widget.types.list = {
 			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
 		});
 		this.loader = jQuery('<div>').hide().insertAfter(this._element);
-		this.reload();
+		this.reload(true);
 	},
 	
 	activate_row: function(row) {
@@ -135,7 +135,7 @@ Widget.types.list = {
 				value = event.val();
 			}
 			this.setOption(metadata.field_name, value);
-			this.reload(true);
+			this.reload();
 		}.bind(this);
 		if(is_widget) {
 			var widget_type = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[0] : metadata.heading_filter;
@@ -161,7 +161,7 @@ Widget.types.list = {
 		}
 		into.click(function(){
 			widget.setOrderColumnSort(metadata.field_name, into.hasClass('asc') ? 'desc' : 'asc');
-			widget.reload(true);
+			widget.reload();
 		});
 	},
 	
@@ -240,16 +240,16 @@ Widget.types.list = {
 		return this.all_rows().length;
 	},
 	
-	reload: function(leave_heading) {
+	reload: function(load_heading) {
 		this._element.hide();
 		this.toggle_loader(true);
-		if(leave_heading) {
-			this._element.find('.ui-list-row').remove()
-		} else {
+		if(load_heading) {
 			this._element.empty();
+		} else {
+			this._element.find('.ui-list-row').remove()
 		}
 		this.sort = this.getOrderColumnSort();
-		if(!leave_heading) {
+		if(load_heading) {
 			this.schema = this.getSchema();
 			if(this._element.is('table')) {
 				var col = jQuery('<col/>');

@@ -51,6 +51,17 @@ class CriteriaListWidgetDelegate {
 			$this->oListSettings->setFilterColumnValue($sFilterColumn, $aArguments[0]);
 			return;
 		}
+		if($this->aFilterTypes !== null && StringUtil::startsWith($sMethodName, 'get') && $sMethodName[3] === strtoupper($sMethodName[3])) {
+			$sFilterColumn = StringUtil::deCamelize(lcfirst(substr($sMethodName, 3)));
+			if(!isset($this->aFilterTypes[$sFilterColumn])) {
+				$sFilterType = $this->oCriteriaDelegate->getFilterTypeForColumn($sFilterColumn);
+				if($sFilterType === null) {
+					goto default_function;
+				}
+				$this->aFilterTypes[$sFilterColumn] = $sFilterType;
+			}
+			return $this->oListSettings->getFilterColumnValue($sFilterColumn);
+		}
 		default_function:
 		return call_user_func_array(array($this->oCriteriaDelegate, $sMethodName), $aArguments);
 	}

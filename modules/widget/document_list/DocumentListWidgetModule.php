@@ -5,13 +5,14 @@
 class DocumentListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
+	public $oDelegateProxy;
 	private $iDocumentCategoryId;
 	private $oDocumentKindFilter;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name", "asc");
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name", "asc");
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->iDocumentCategoryId = null;
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
 	}
@@ -89,10 +90,6 @@ class DocumentListWidgetModule extends WidgetModule {
 		}
 	}
 	
-	public function getDocumentCategoryId() {
-		return $this->oListWidget->getDelegate()->getListSettings()->getFilterColumnValue('category_name');
-	}
-	
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
@@ -113,7 +110,7 @@ class DocumentListWidgetModule extends WidgetModule {
 		if($sColumnName === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
-		if($sColumnName === 'category_name') {
+		if($sColumnName === 'document_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;

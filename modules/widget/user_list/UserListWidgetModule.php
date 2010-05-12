@@ -4,14 +4,13 @@
  */
 class UserListWidgetModule extends PersistentWidgetModule {
 	private $oListWidget;
-	private $aGroupId;
-	private $sUserKind = '1';
 	private $oUserKindFilter;
+	public $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, true);
 	}
 	
@@ -20,37 +19,6 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		$oListTag = new TagWriter('table', $aTagAttributes);
 		$this->oListWidget->setListTag($oListTag);
 		return $this->oListWidget->doWidget();
-	}
-	
-	public function setGroupId($aGroupId = null) {
-		$this->aGroupId = $aGroupId;
-	}
-	
-	public function getGroupId() {
-		if($this->aGroupId === null) {
-			return CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->aGroupId;
-	}
-	
-	public function setUserKind($sUserKind = null) {
-		$this->sUserKind = $sUserKind;
-		$this->oUserKindFilter->setSelectedUserKind($sUserKind);
-	}
-	
-	public function getUserKind() {
-		if($this->sUserKind === null) {
-			return CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->sUserKind;
-	}
-	
-	public function setUserId($aUserId = null) {
-		$this->aUserId = $aUserId;
-	}
-	
-	public function getUserId() {
-		return $this->aUserId;
 	}
 	
 	public function getColumnIdentifiers() {
@@ -104,23 +72,29 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		if($sDisplayColumn === 'updated_at_formatted') {
 			return UserPeer::UPDATED_AT;
 		}
+		if($sDisplayColumn === 'user_kind') {
+			return UserPeer::IS_BACKEND_LOGIN_ENABLED;
+		}
+		if($sDisplayColumn === 'group_id') {
+			return UserGroupPeer::GROUP_ID;
+		}
+		return null;
+	}
+	
+	public function getFilterTypeForColumn($sColumnName) {
+		if($sColumnName === 'user_kind') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
+		if($sColumnName === 'group_id') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
 		return null;
 	}
 
+
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		if($this->getGroupId() && ($this->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL)) {
-			if(is_numeric($this->getGroupId())) {
-				$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::INNER_JOIN);
-				$oCriteria->add(UserGroupPeer::GROUP_ID, $this->aGroupId);
-			} elseif($this->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-				$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);
-				$oCriteria->add(UserGroupPeer::GROUP_ID, null, Criteria::ISNULL);
-			}
-		} 
-		if($this->sUserKind) {
-			$oCriteria->add(UserPeer::IS_BACKEND_LOGIN_ENABLED, $this->sUserKind == '1');
-		}
+		$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);
 		return $oCriteria;
 	}
 }
