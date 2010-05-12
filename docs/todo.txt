@@ -3,7 +3,7 @@ Miscellaneous projects
 
 bug 
 - 'Error in Cache->__construct(): Cache folder generated/caches/images does not exist'
-	should Cache create folders with the right permission if they do not exist?
+	Caches dir with subdirs should be in repository or created if not exist
 
 Widget tasks
 - check hierarchy of js loading > bug Chrome initial section highlight
@@ -39,9 +39,10 @@ Issues
 ModuleManager > group, sort etc, handling for getModuleSelect
 
 Prepare Friday and Servance
-- Propel install for parallel old version maintenance and new development
+- Propel install for parallel old version maintenance and new development including dependencies?
 - Css and Skins, discuss how to clean up and make skinable
 - lang string strategy so I can clean up effectively
+- discuss CONTINUOUS development strategy ? Plugins, project_management. What can CMOS do and what not?
 
 Strategy for click, dblclick, option key handling.
 - consider successful(?) iPhone handling for these issues
@@ -195,6 +196,7 @@ languages: content_language=language,  interface_language
 - handle languages in AdminModule
 - refactor code in String Modules or wherever used
 - languages selector should only be seen if necessary, probably not in menubar, but in context (tabs) of module (ie Strings, Pages, etc?)
+- language_chooser future, language should only be displayed if page is available at language
 
 BackupAdminModule
 - should load and backup be in same module, advantage, disadvantage
