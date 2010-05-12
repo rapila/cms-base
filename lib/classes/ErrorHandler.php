@@ -30,7 +30,9 @@ class ErrorHandler {
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
 	*/
 	private static function displayErrorMessage($aError) {
-		if(ob_get_length() > 0) {ob_end_clean();}
+		while(ob_get_level() > 0) {
+			ob_end_flush();
+		}
 		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
 		if(!file_exists($sErrorFileName)) {
 			die("An Error occured, exiting");

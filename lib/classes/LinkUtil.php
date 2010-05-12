@@ -35,7 +35,10 @@ class LinkUtil {
 			header("HTTP/1.0 302 Found");
 		}
 		$sRedirectString = "Location: ".self::absoluteLink($sLocation, $sHost, $sProtocol);
-		if(ob_get_length() > 0) {ob_end_clean();}header($sRedirectString);exit;
+		while(ob_get_level() > 0) {
+			ob_end_flush();
+		}
+		header($sRedirectString);exit;
 	}
 	
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {

@@ -13,8 +13,6 @@ Widget tasks
 - testing QUnit
 
 Criteria and Model
-- UserListWidgetModule > user_group == null criteria
--	User->getUserRelatedByCreatedBy(), User->getUserRelatedByUpdatedBy() for user detail
 - propel_additions
 
 ErrorHandling, Debug, Autoload issues
@@ -352,3 +350,5 @@ Widget handling : generell und Beispiel heading_filter
 bug 
 - 'Error in Cache->__construct(): Cache folder generated/caches/images does not exist'
 	Caches dir with subdirs should be in repository or created if not exist
+- UserListWidgetModule > user_group == null criteria
+-	User->getUserRelatedByCreatedBy(), User->getUserRelatedByUpdatedBy() for user detail
