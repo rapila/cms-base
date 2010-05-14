@@ -10,6 +10,10 @@
 		//--><!]]>
 		</script>
 	</head>
-	<body class="login"><h1>admin : {{writeServerVariable=HTTP_HOST;}}</h1>
+	<body class="login">
+		<h1>admin : {{writeServerVariable=HTTP_HOST;}}</h1>
+		<noscript>
+			<h2>{{writeString=admin.script_warning}}</h2>
+		</noscript>
 	</body>
 </html>

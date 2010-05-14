@@ -4,11 +4,17 @@
 		{{addResourceInclude=admin/admin.ico}}
 	</head>
 	<body class="{{module_name}}">
-	{{admin_menu}}
+		{{admin_menu}}
 		<div id="admin_area">
-			<div id="admin_message"></div>
+			<div id="admin_message">
+			</div>
 			<div id="admin_sidebar">{{sidebar_content}}</div>
-			<div id="admin_main">{{main_content}}</div>
+			<div id="admin_main">
+				<noscript>
+					<h2>{{writeString=admin.script_warning}}</h2>
+				</noscript>
+				{{main_content}}
+			</div>
 			<div class="ui-helper-clearfix"></div>
 		</div>
 		<div id="admin_info_bar" data-widget-type="info_bar">
