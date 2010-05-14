@@ -19,7 +19,7 @@ jQuery(document).ready(function() {
 					var message = "{{writeParameterizedString=module.user_list.no_results;search=$\{search\};group=$\{group\}}}".replace(/\$\{search\}/, search).replace('${group}', widget.getOption('group_id'));
 					Widget.notifyUser('info', message);
 				}
-			});
+			}, false, true);
 		});
 	});
 });

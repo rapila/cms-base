@@ -25,6 +25,7 @@ jQuery(document).ready(function() {
 			widget.add_new_sidebar_input("{{writeString=link_category.default_name}}", 'LinkCategory', function() {
 				var row_data = sidebar.active_row();
 				if(row_data.length>0) {
+						// TODO: re-setting the last selected item after reload should be default functionality
 					row_data = sidebar.collect_row_data(row_data);
 					sidebar.handle('list.reloaded', function() {
 						sidebar.activate_row(sidebar.row_from_row_data(row_data));
@@ -40,13 +41,7 @@ jQuery(document).ready(function() {
 	});
 
 	// add row_count_info
-	var row_count_info = info_bar.get_row_count_info();
-	info_bar.add_element(row_count_info, true);
-	var list_reload_handler = function() {
-		row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
-	};
-	list_reload_handler.call(link_list);
-	link_list.handle('list.reloaded', list_reload_handler);
+	info_bar.add_row_count_info_for_list(link_list);
 
 	// sidebar
 	sidebar.handle('list.row-click', function(event, row, element) {

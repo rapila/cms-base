@@ -45,10 +45,12 @@ jQuery.extend(Widget.prototype, {
 		return result;
 	},
 	
-	fire: function(event, realEvent) {
-		event = jQuery.Event("widget."+event);
+	fire: function(eventName, realEvent) {
+		event = jQuery.Event("widget."+eventName);
 		var has_real_event = (realEvent instanceof jQuery.Event);
-		jQuery(this).trigger(event, jQuery.makeArray(arguments).slice(has_real_event ? 2 : 1));
+		var args = jQuery.makeArray(arguments).slice(has_real_event ? 2 : 1);
+		this._pastEvents[eventName] = [event].concat(args);
+		jQuery(this).trigger(event, args);
 		if(has_real_event) {
 			if(event.isDefaultPrevented()) {
 				realEvent.preventDefault();
@@ -63,10 +65,20 @@ jQuery.extend(Widget.prototype, {
 		return !event.isDefaultPrevented() && !event.isPropagationStopped();
 	},
 	
-	handle: function(event, handler, isOnce) {
+	handle: function(event, handler, isOnce, fireIfPast) {
+		if(fireIfPast && this._pastEvents[event]) {
+			handler.apply(this, this._pastEvents[event]);
+			if(isOnce) {
+				return this;
+			}
+		}
 		jQuery(this)[isOnce ? 'one' : 'bind']("widget."+event, handler.bind(this));
 		return this;
-	}
+	},
+	
+	_pastEvents: {},
+	_widgetInformation: {},
+	_instanceInformation: {}
 });
 
 jQuery.extend(Widget, {
@@ -107,9 +119,19 @@ jQuery.extend(Widget, {
 	},
 	
 	create: function(widgetType, finishCallback, session) {
+		var intermediateCallback = jQuery.noop;
+		if(jQuery.isFunction(session)) {
+			//intermediate callback given → shift session
+			intermediateCallback = finishCallback;
+			finishCallback = session;
+			session = arguments[3];
+		}
 		if(Widget.singletons[widgetType]) {
+			if(intermediateCallback) {
+				intermediateCallback(Widget.singletons[widgetType]);
+			}
 			if(finishCallback) {
-				finishCallback(Widget.singletons[widgetType], Widget.singletons[widgetType]._widgetInformation);
+				finishCallback(Widget.singletons[widgetType]);
 			}
 			return Widget.singletons[widgetType];
 		}
@@ -134,11 +156,13 @@ jQuery.extend(Widget, {
 			}
 			widget._widgetInformation = widgetInformation;
 			widget._instanceInformation = instanceInformation;
+			if(intermediateCallback) {
+				intermediateCallback(widget)
+			}
 			if(widget.initialize) {
 				widget.initialize();
 			}
-			widget.fire('initialized');
-			finishCallback(widget, widgetInformation, instanceInformation);
+			finishCallback(widget);
 			if(widget.prepare) {
 				widget.prepare();
 			}
@@ -147,8 +171,8 @@ jQuery.extend(Widget, {
 	},
 	
 	createWithElement: function(widgetType, finishCallback, session) {
-		Widget.create(widgetType, function(widget, widgetInformation, instanceInformation) {
-			widget._element = jQuery(instanceInformation.content);
+		Widget.create(widgetType, function(widget) {
+			widget._element = jQuery(widget._instanceInformation.content);
 			widget.handle('prepared', finishCallback);
 		}, session);
 	},
@@ -229,10 +253,24 @@ jQuery.extend(Widget, {
 	
 	defaultMethodHandler: jQuery.noop,
 	
+	log: jQuery.noop,
+	
 	types: {},
 	singletons: {},
 	widgetInformation: {}
 });
+
+if(window.console && window.console.log) {
+	Widget.log = function() {
+		window.console.log.apply(console, jQuery.makeArray(arguments));
+	};
+} else {
+	Widget.log = function() {
+		var args = jQuery.makeArray(arguments);
+		args.unshift('info');
+		Widget.notifyUser.apply(Widget, args);
+	};
+}
 
 jQuery.extend(jQuery, {
 	widgetElements: function(type) {
@@ -255,13 +293,23 @@ jQuery.fn.extend({
 			callback(this.getWidget());
 			return this;
 		}
+		var waiting_callbacks = this.data('waiting_prepare_callbacks');
+		if(waiting_callbacks !== null) {
+			waiting_callbacks[waiting_callbacks.length] = callback;
+			return;
+		}
+		waiting_callbacks = [callback];
+		this.data('waiting_prepare_callbacks', waiting_callbacks);
 		var widget_type = this.attr('data-widget-type');
 		var widget_session = this.attr('data-widget-session');
 		var widget_element = this;
 		Widget.create(widget_type, function(widget) {
 			widget_element.data('widget', widget);
 			widget._element = widget_element;
-			callback(widget);
+			jQuery.each(widget_element.data('waiting_prepare_callbacks'), function(i, callback) {
+				callback(widget);
+			});
+			widget_element.removeData('waiting_prepare_callbacks');
 		}, widget_session);
 		return this;
 	}

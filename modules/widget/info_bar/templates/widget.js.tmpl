@@ -106,7 +106,11 @@ Widget.types.info_bar = {
 		return this;
 	},
 	
-	get_row_count_info: function() {
-		return jQuery('<span/>').addClass('row_count_info');
+	add_row_count_info_for_list: function(list) {
+		var row_count_info = jQuery('<span/>').addClass('row_count_info');
+		this.add_element(row_count_info, true);
+		list.handle('list.reloaded', function() {
+			row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+		}, false, true);
 	}
 };

@@ -3,7 +3,7 @@ Widget.types.document_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
 				width: 550,
 				dialogClass: "document_detail",
@@ -50,7 +50,7 @@ Widget.types.document_detail = {
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);
-			this.detail_widget.set_title(this.detail_widget.options.title = "{{writeString=file}}"+' '+document_data.Name);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=file}}"+' '+document_data.Name);
 			this.detail_widget.set_is_loading(false);
 		});
 	},

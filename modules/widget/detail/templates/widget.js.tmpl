@@ -12,7 +12,7 @@ Widget.types.detail = {
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
 		var save_button_handler = function() {
-			if(detail_widget.options.save_callback()) {
+			if(detail_widget.settings.save_callback()) {
 				detail_widget.content.dialog('close');
 			}
 		};		
@@ -22,17 +22,17 @@ Widget.types.detail = {
 		var buttons = {
 			"{{writeString=save}}": save_button_handler
 		};
-		if(this.options.has_cancel_button) {
+		if(this.settings.has_cancel_button) {
 			buttons["{{writeString=cancel}}"] = cancel_callback;
 		}
 		this.content.dialog({
-			title: this.options.title,
-			autoOpen: this.options.autoOpen,
-			modal: this.options.modal,
-			resizable: this.options.resizable,
-			closeOnEscape: this.options.closeOnEscape,
-			dialogClass: this.options.dialogClass,
-			width: this.options.width,
+			title: this.settings.title,
+			autoOpen: this.settings.autoOpen,
+			modal: this.settings.modal,
+			resizable: this.settings.resizable,
+			closeOnEscape: this.settings.closeOnEscape,
+			dialogClass: this.settings.dialogClass,
+			width: this.settings.width,
 			buttons: buttons
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
@@ -55,8 +55,8 @@ Widget.types.detail = {
 	content: null,
 	
 	select: function() {
-		if(this.options.select) {
-			this.content.find(this.options.select).select();
+		if(this.settings.select) {
+			this.content.find(this.settings.select).select();
 		}
 	},
 	
@@ -98,7 +98,7 @@ Widget.types.detail = {
 		});
 	},
 	
-	options: {
+	settings: {
 		title: ' ',
 		autoOpen: true,
 		modal: false,

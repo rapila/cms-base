@@ -23,7 +23,7 @@ jQuery(document).ready(function() {
 					var message = "{{writeParameterizedString=module.link_list.no_results;search=$\{search\};link_category_id=$\{link_category_id\}}}".replace(/\$\{search\}/, search).replace('${link_category_id}', widget.getOption('link_category_id'));
 					Widget.notifyUser('info', message);
 				}
-			});
+			}, false, true);
 		});
 	});
 });

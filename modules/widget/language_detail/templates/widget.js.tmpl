@@ -3,7 +3,7 @@ Widget.types.language_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=language.create}}",
 				width: 480,
 				save_callback: this.save.bind(this)
@@ -28,7 +28,7 @@ Widget.types.language_detail = {
 		this.getLanguageData(function(language_data) {
 			this.content.find("input[name='language_id']").val(language_data.Id);
 			this.content.find("input[name='is_active']").attr('checked', language_data.IsActive);
-			this.detail_widget.set_title(this.detail_widget.options.title = language_data.LanguageName);
+			this.detail_widget.set_title(this.detail_widget.settings.title = language_data.LanguageName);
 		});
 	},
 	

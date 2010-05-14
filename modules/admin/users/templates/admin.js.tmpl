@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
 	}
 	
 	var info_bar = AdminInterface.info_bar.getWidget();
-	var row_count_info = info_bar.get_row_count_info();
+	info_bar.add_row_count_info_for_list(user_list);
 	AdminInterface.info_bar.getWidget().add_button('add-new-item', function() {
 		Widget.create('user_detail', function(widget) {
 			widget.open();
@@ -40,13 +40,6 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	info_bar.add_element(row_count_info, true);
-	var list_reload_handler = function() {
-		row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
-	};
-	list_reload_handler.call(user_list);
-	user_list.handle('list.reloaded', list_reload_handler);
-
 	sidebar.handle('list.row-click', function(event, row, element) {
 		// jQuery('.ui-dialog').hide();
 		var group_id = element.data('id');

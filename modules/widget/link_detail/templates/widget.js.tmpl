@@ -3,7 +3,7 @@ Widget.types.link_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
 				width: 500,
 				save_callback: this.save.bind(this)
@@ -36,7 +36,7 @@ Widget.types.link_detail = {
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
 			this.content.find(".created_info").text(link_data.CreatedInfo);
-			this.detail_widget.set_title(this.detail_widget.options.title = link_data.Name);
+			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 		});
 	},
 	

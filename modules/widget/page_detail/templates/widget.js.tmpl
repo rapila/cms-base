@@ -3,7 +3,7 @@ Widget.types.page_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=page.create}}",
 				width: 480,
 				save_callback: this.save.bind(this)
@@ -26,7 +26,7 @@ Widget.types.page_detail = {
 	fill_data: function() {
 		this.getPageData(function(page_data) {
 			// this.content.find("input[name='name']").val(page_data.Name);
-			this.detail_widget.set_title(this.detail_widget.options.title = page_data.Name);
+			this.detail_widget.set_title(this.detail_widget.settings.title = page_data.Name);
 		});
 	},
 	

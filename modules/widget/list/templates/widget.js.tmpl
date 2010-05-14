@@ -276,6 +276,9 @@ Widget.types.list = {
 				this.toggle_loader(false);
 			}
 			this._element.show();
+			if(load_heading) {
+				this.fire('list.loaded', list.length);
+			}
 			this.fire('list.reloaded', list.length);
 		});
 	},
@@ -332,7 +335,7 @@ Widget.types.list = {
 			var row = jQuery(this);
 			jQuery.each(widget.schema, function(i) {
 				if(widget.schema[i].display_type === 'data') {
-					if(row.data(widget.schema[i].identifier) != rowData[widget.schema[i].field_name]) {
+					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].field_name]) {
 						is_found = false;
 						return false;
 					}

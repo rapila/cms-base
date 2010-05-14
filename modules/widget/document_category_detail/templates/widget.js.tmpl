@@ -3,7 +3,7 @@ Widget.types.document_category_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=document_category.create}}",
 				width: 480,
 				save_callback: this.save.bind(this)
@@ -30,7 +30,7 @@ Widget.types.document_category_detail = {
 			this.content.find("input[name='is_inactive']").attr('checked', category_data.IsInactive);
 			this.content.find("input[name='is_externally_managed']").attr('checked', category_data.IsExternallyManaged);
 			this.content.find("span[class='detail_id']").text(category_data.Id);
-			this.detail_widget.set_title(this.detail_widget.options.title = category_data.Name);
+			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
 		});
 	},
 	

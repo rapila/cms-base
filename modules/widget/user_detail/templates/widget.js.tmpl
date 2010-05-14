@@ -3,7 +3,7 @@ Widget.types.user_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
-			jQuery.extend(widget.options, {
+			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
 				width: 600,
 				save_callback: this.save.bind(this)
@@ -41,7 +41,7 @@ Widget.types.user_detail = {
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
 			this.content.find("select[id='group_ids']").val(user_data.ActiveUserGroupIds);
-			this.detail_widget.set_title(this.detail_widget.options.title = "{{writeString=user}} "+user_data.FullName);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
 		});
 	},
 	

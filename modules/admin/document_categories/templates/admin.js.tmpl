@@ -12,12 +12,5 @@ jQuery(document).ready(function() {
 		});
 	}, 'n', true);
 	
-	var row_count_info = info_bar.get_row_count_info();
-	info_bar.add_element(row_count_info, true);
-	var list_reload_handler = function() {
-		row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
-	};
-	list_reload_handler.call(document_category_list);
-	document_category_list.handle('list.reloaded', list_reload_handler);
-
+	info_bar.add_row_count_info_for_list(document_category_list);
 });
