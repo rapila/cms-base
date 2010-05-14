@@ -5,6 +5,7 @@ Widget.types.user_kind_input = {
 		jQuery.each(user_kinds, function(value, name) {
 			option.clone().text(name).val(value).appendTo(this._element);
 		}.bind(this));
+		option.text("{{writeString=user_kind.all}}").val('').prependTo(this._element);
 		this._element.change(function() {
 			if(this.settings.store_value) {
 				this.setSelectedUserKind(this._element.val());

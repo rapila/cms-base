@@ -4,7 +4,7 @@
  */
 class UserKindInputWidgetModule extends PersistentWidgetModule {
 
-	private $sSelectedUserKind = '1';
+	private $sSelectedUserKind;
 		
 	public function getUserKinds() {
 		return array('1' => 'Backend User', '2' => 'Frontend User');

@@ -295,7 +295,7 @@ textarea.ui-widget-content { width: 22em; }
   font-style: oblique;
   background-image: url(../../images/admin/folder_magic_open.png);
 }
-#admin_sidebar ul.ui-list li.ui-list-heading {
+#admin_sidebar ul.ui-list li.ui-list-headrow {
   font-size: 1em;
   padding: 10px 2px 1px 4px;
   background-color: #f6f6f6;

@@ -1,5 +1,9 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
+- Schule Altenburg
+
+Update release-1-devel auf Propel1.5, alle Webseiten migrieren, migrations.sql, Blob issues?
+- kathleenwills.com, gcgroup.ch, gems-europe.com, taylormade.ch, myplacement.ch, remcom.ch, butti.ch, svenja.ch, cgcmac.ch, hubergeologe.ch, mosaics.ch, mini-cms.ch, vagabunt.ch, summercampsombor.ch, mariamalibran.net, walo-deuber.ch
 
 Widget tasks
 - set default value for filter columns
