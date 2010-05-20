@@ -84,8 +84,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if($oPageContents === null) {
 			return false;
 		}
-		if($oContentObject->getConditionSerialized() && $oContentObject->getConditionSerialized()->getContents()) {
-			$oConditionTemplate = unserialize($oContentObject->getConditionSerialized()->getContents());
+		if($oContentObject->getConditionSerialized() !== null) {
+			$oConditionTemplate = unserialize(stream_get_contents($oContentObject->getConditionSerialized()));
 			if($oConditionTemplate->render() === '') {
 				return false;
 			}
@@ -321,8 +321,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		//Condition-management
 		$sComparatorValue = null;
-		if($this->oCurrentContentObject->getConditionSerialized() && $this->oCurrentContentObject->getConditionSerialized()->getContents()) {
-			$oConditionTemplate = unserialize($this->oCurrentContentObject->getConditionSerialized()->getContents());
+		if($this->oCurrentContentObject->getConditionSerialized() !== null) {
+			$oConditionTemplate = unserialize(stream_get_contents($this->oCurrentContentObject->getConditionSerialized()));
 			$oIfIdentifier = $oConditionTemplate->identifiersMatching('if', Template::$ANY_VALUE);
 			$oIfIdentifier = $oIfIdentifier[0];
 			$oTemplate->replaceIdentifier("comparison_1", $oIfIdentifier->getParameter('1'));
