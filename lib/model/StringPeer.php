@@ -102,11 +102,12 @@ class StringPeer extends BaseStringPeer {
 		$sSQL = <<<EOT
 SELECT DISTINCT SUBSTR($sStringKeyColumn, 1, LOCATE('.',$sStringKeyColumn)-1) AS namespace FROM `$sTable` WHERE LOCATE('.',$sStringKeyColumn)>0;
 EOT;
-		$oStatement = $oConnection->prepareStatement($sSQL);
-		$oStrings = $oStatement->executeQuery(ResultSet::FETCHMODE_ASSOC);
+		$oStatement = $oConnection->prepare($sSQL);
+		$oStatement->execute();
+		$oStatement->setFetchMode(PDO::FETCH_OBJ);
 		$aResult = array();
-		while($oStrings->next()) {
-			$sNamespace = $oStrings->get('namespace');
+		foreach($oStatement as $oRow) {
+			$sNamespace = $oRow->namespace;
 			$aResult[$sNamespace] = $sNamespace;
 		}
 		return $aResult;

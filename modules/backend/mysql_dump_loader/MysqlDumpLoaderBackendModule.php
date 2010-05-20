@@ -100,14 +100,14 @@ class MysqlDumpLoaderBackendModule extends BackendModule {
       }
       if($sReadLine === "\n" || StringUtil::endsWith($sReadLine, ";\n")) {
         if(trim($sStatement) !== "") {
-          $oConnection->executeQuery($sStatement);
+          $oConnection->exec($sStatement);
           $iQueryCount++;
         }
         $sStatement = "";
       }
     }
     if(trim($sStatement) !== "") {
-      $oConnection->executeQuery($sStatement);
+      $oConnection->exec($sStatement);
     }
     // report successfull upload
     Cache::clearAllCaches();

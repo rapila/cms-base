@@ -171,7 +171,7 @@ class MigrationBackendModule extends BackendModule {
     if($bIsTest) {
       $this->oTemplate->replaceIdentifierMultiple('messages', $sStatement);
     } else {
-      $oConnection->executeQuery($sStatement);
+      $oConnection->exec($sStatement);
     }
     return 1;
   }

@@ -4,20 +4,9 @@ Miscellaneous projects
 
 general questions
 - php.ini where is it located, find by name
+	 php --ini, mdfind name:php.ini
 - exclude .sql etc from svn st
-
-Update release-1-devel auf Propel1.5, alle Webseiten migrieren, Migration Info
-- DefaultPageTypeModule::fillContainerWithModule > handle $oContentObject->getConditionSerialized() @see cms_cgc
-- JournalEntry::getCreatedAtTimestamp() missing, since behaviours or attributables are not generated in release-1-devel, how to resolve this
-- $oConnection->query() in MysqlDumpLoaderBackendModule.php on line 103
-- Blob understanding $oModule->save(new Blob (oLanguageObject))
-- handle Richttext blobs in general more issues: don't change for easier migration of release-1-devel sites? confusing
-- DocumentUtil::updateDocument() ??
-- check all instances of getContentInfo() like MediaObjectFrontendModule
-- check FormFileModule $this->oFormStorage = unserialize(stream_get_contents($oFormDataLanguageObject->getData()));
-- changed: parseStorageForOutput($sStorage) if $sStorage is_resource > stream_get_contents
-- changed: CheckBackendModule RichtextUtil::parseStorageForBackendOutput(stream_get_contents($oLanguageObject->getData()));
-	doCheckContent() > $oLanguageObject->setData($oRichtextUtil->parseInputFromMce());
+ svn propedit svn:ignore   site/data/sql/
 
 Sites overview: 
 - svenja.ch ✓
@@ -27,6 +16,7 @@ Sites overview:
 - vagabunt.ch ✓
 - taylormade.ch ✓
 - myplacement.ch ✓
+- mosaics.ch ✓
 - summercampsombor.ch
 - mariamalibran.net
 - kathleenwills.com
@@ -38,8 +28,6 @@ Sites overview:
 	what happened to google analytics?	var pageTracker = _gat._getTracker("UA-10691002-1"); pageTracker._trackPageview();
 - remcom.ch ✓ check DocumentUtil
 	check accordion, various js errors online, submit Dumpexport
-- mosaics.ch
-	discuss > see JournalEntry behaviour branch handling
 - cgcmac.ch 
 	check migration stuff in todo.txt, svn conflict resolved by tc > Autoloader.php.edited?
 
@@ -405,3 +393,16 @@ ErrorHandling, Debug, Autoload issues
 - how can we make ErrorHandling display dumps effectively in "all" cases, before header is sent?
 - DocumentTypePeer::getDocumentKindsAssoc(), wo kommt der String Dokumente / Andere her????? Hilfe. war in backend/documents/lang!
 -	site/lib/vendor/FLV/FLV.php , is external
+release-1-devel propel update
+- DefaultPageTypeModule::fillContainerWithModule > handle $oContentObject->getConditionSerialized() @see cms_cgc
+- JournalEntry::getCreatedAtTimestamp() missing, since behaviours or attributables are not generated in release-1-devel, how to resolve this
+- $oConnection->query() in MysqlDumpLoaderBackendModule.php on line 103
+- Blob understanding $oModule->save(new Blob (oLanguageObject))
+- handle Richttext blobs in general more issues: don't change for easier migration of release-1-devel sites? confusing
+- DocumentUtil::updateDocument() ??
+- check all instances of getContentInfo() like MediaObjectFrontendModule
+- check FormFileModule $this->oFormStorage = unserialize(stream_get_contents($oFormDataLanguageObject->getData()));
+- changed: parseStorageForOutput($sStorage) if $sStorage is_resource > stream_get_contents
+- changed: CheckBackendModule RichtextUtil::parseStorageForBackendOutput(stream_get_contents($oLanguageObject->getData()));
+	doCheckContent() > $oLanguageObject->setData($oRichtextUtil->parseInputFromMce());
+	discuss > see JournalEntry behaviour branch handling
