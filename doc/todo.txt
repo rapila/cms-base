@@ -1,9 +1,51 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
-- Schule Altenburg
+- Schule Altenburg > server requirements for (windows servers, access rights)
 
-Update release-1-devel auf Propel1.5, alle Webseiten migrieren, migrations.sql, Blob issues?
-- kathleenwills.com, gcgroup.ch, gems-europe.com, taylormade.ch, myplacement.ch, remcom.ch, butti.ch, svenja.ch, cgcmac.ch, hubergeologe.ch, mosaics.ch, mini-cms.ch, vagabunt.ch, summercampsombor.ch, mariamalibran.net, walo-deuber.ch
+Update release-1-devel auf Propel1.5, alle Webseiten migrieren, Migration Info
+- DefaultPageTypeModule::fillContainerWithModule > handle $oContentObject->getConditionSerialized() @see cms_cgc
+- JournalEntry::getCreatedAtTimestamp() missing, since behaviours or attributables are not generated in release-1-devel, how to resolve this
+- $oConnection->query() in MysqlDumpLoaderBackendModule.php on line 103
+- Blob understanding $oModule->save(new Blob (oLanguageObject))
+- handle Richttext blobs in general more issues: don't change for easier migration of release-1-devel sites? confusing
+- DocumentUtil::updateDocument() ??
+- check all instances of getContentInfo() like MediaObjectFrontendModule
+- check FormFileModule $this->oFormStorage = unserialize(stream_get_contents($oFormDataLanguageObject->getData()));
+- changed: parseStorageForOutput($sStorage) if $sStorage is_resource > stream_get_contents
+- changed: CheckBackendModule RichtextUtil::parseStorageForBackendOutput(stream_get_contents($oLanguageObject->getData()));
+	doCheckContent() > $oLanguageObject->setData($oRichtextUtil->parseInputFromMce());
+
+Sites overview: 
+- svenja.ch ✓
+- walo-deuber.ch ✓
+- mini-cms.ch ✓
+- hubergeologe.ch ✓
+- vagabunt.ch ✓
+- taylormade.ch ✓
+- myplacement.ch
+- summercampsombor.ch
+- mariamalibran.net
+- kathleenwills.com
+- gems-europe.com
+- butti.ch
+- gcgroup.ch
+- remcom.ch ✓ check DocumentUtil
+	check accordion, various js errors online, submit Dumpexport
+- mosaics.ch
+	discuss > see JournalEntry behaviour branch handling
+- cgcmac.ch 
+	check migration stuff in todo.txt, svn conflict resolved by tc > Autoloader.php.edited?
+
+Version cleanup
+- make branches for plugins like newsletter
+- remove MigrationBackendModule or modify it if can be used
+- integrate new rs http download to MysqlDumpLoaderBackendModule::doToDownload
+
+Servance
+- make plan for pages, users-rights, moduleSelect [rights, grouping, settings] and more
+- discuss InstallManager, file dir name changes, make clean 2.0 [compromise or not and where], strings, testing
+	and implement accordingly
+- discuss Altenburg, NFZH, project management
 
 Widget tasks
 - set default value for filter columns
@@ -19,6 +61,9 @@ Widget tasks
 SVN, development and tracking tasks
 - make new project for developping plugins > name > where
 - remember > lets continue with tracker and get into it or change it.
+- ModuleManager > group, sort etc, handling for getModuleSelect
+- discuss plural classes dir name and new dirs for helper/util, manager, module etc?
+- RichtextUtil 	change names like parseInputFromMce to more generic ones for different editors
 
 Issues	
 - info alerts : pass array of information that allows links too, remove on click of other element, maybe close button
@@ -26,7 +71,6 @@ Issues
 	this issue concerns module select configuration and rights too.
 	and dashboard. how to exclude plugin project_management or group_it into 1?
 	
-ModuleManager > group, sort etc, handling for getModuleSelect
 
 Prepare Friday and Servance
 - Propel install for parallel old version maintenance and new development including dependencies?

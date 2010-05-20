@@ -12,3 +12,9 @@ Migration Issues for previous mini-cms applications
 - find all Blob, new Blob and migrate them
 - FrontendModule::save() > getSaveData
 - Test thoroughly before putting online and test again.
+
+Special: 1.5 w/ release branch (1.0)
+- Frontendmodules should use $this->getData()
+  NOTE, only in bbject context, not when called statically
+- stream_get_contents($oSomeExBlobField->getData())
+- PropelPDO declarations in save() and delete()
