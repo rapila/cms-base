@@ -27,6 +27,7 @@ class ResourceIncluder {
 																			 'jqueryui-uncomp' => 'http://ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.js',
 																			 'prototype' => 'http://ajax.googleapis.com/ajax/libs/prototype/${version}/prototype.js',
 																			 'scriptaculous' => 'http://ajax.googleapis.com/ajax/libs/scriptaculous/${version}/${library_name}.js',
+																			 'webfont' => 'http://ajax.googleapis.com/ajax/libs/webfont/${version}/webfont.js',
 																			 'mootools' => 'http://ajax.googleapis.com/ajax/libs/mootools/${version}/mootools-yui-compressed.js',
 																			 'mootools-uncomp' => 'http://ajax.googleapis.com/ajax/libs/mootools/${version}/mootools.js',
 																			 'dojo' => 'http://ajax.googleapis.com/ajax/libs/dojo/${version}/dojo/dojo.xd.js',
