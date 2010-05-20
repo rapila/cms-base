@@ -39,7 +39,7 @@ class ResourceIncluder {
 																			 'ext-core-uncomp' => 'http://ajax.googleapis.com/ajax/libs/ext-core/${version}/ext-core-debug.js');
 	
 	private static $LIBRARY_DEPENDENCIES = array('scriptaculous' => array('prototype' => 1.6),
-																							 'jqueryui' => array('jquery' => 1.3));
+																							 'jqueryui' => array('jquery' => 1.4));
 	private static $IE_CONDITIONAL = null;
 	
 	private $aIncludedResources;
