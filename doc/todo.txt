@@ -2,6 +2,10 @@ Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 
+general questions
+- php.ini where is it located, find by name
+- exclude .sql etc from svn st
+
 Update release-1-devel auf Propel1.5, alle Webseiten migrieren, Migration Info
 - DefaultPageTypeModule::fillContainerWithModule > handle $oContentObject->getConditionSerialized() @see cms_cgc
 - JournalEntry::getCreatedAtTimestamp() missing, since behaviours or attributables are not generated in release-1-devel, how to resolve this
@@ -22,13 +26,16 @@ Sites overview:
 - hubergeologe.ch ✓
 - vagabunt.ch ✓
 - taylormade.ch ✓
-- myplacement.ch
+- myplacement.ch ✓
 - summercampsombor.ch
 - mariamalibran.net
 - kathleenwills.com
 - gems-europe.com
+	any upgrade difficulties expected? HTTPRequest? no, ShopController? no? branch?
 - butti.ch
 - gcgroup.ch
+	checkin base changes!
+	what happened to google analytics?	var pageTracker = _gat._getTracker("UA-10691002-1"); pageTracker._trackPageview();
 - remcom.ch ✓ check DocumentUtil
 	check accordion, various js errors online, submit Dumpexport
 - mosaics.ch
@@ -37,7 +44,7 @@ Sites overview:
 	check migration stuff in todo.txt, svn conflict resolved by tc > Autoloader.php.edited?
 
 Version cleanup
-- make branches for plugins like newsletter
+- make branches for plugins like newsletter, journal
 - remove MigrationBackendModule or modify it if can be used
 - integrate new rs http download to MysqlDumpLoaderBackendModule::doToDownload
 
@@ -70,7 +77,6 @@ Issues
 - how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
 	this issue concerns module select configuration and rights too.
 	and dashboard. how to exclude plugin project_management or group_it into 1?
-	
 
 Prepare Friday and Servance
 - Propel install for parallel old version maintenance and new development including dependencies?
