@@ -3,12 +3,13 @@ Miscellaneous projects
 - Schule Altenburg > server requirements for (windows servers, access rights)
 
 general questions
-- php.ini where is it located, find by name
-	 php --ini, mdfind name:php.ini
-- exclude .sql etc from svn st
- svn propedit svn:ignore   site/data/sql/
+- gems check version on server regarding Request2.php
+- sombor update
+- svn externals handling
+- prepare playground tasks
 
-Sites overview: 
+Sites done locally 
+	last update and remote migration.sql check always needs to be done
 - svenja.ch ✓
 - walo-deuber.ch ✓
 - mini-cms.ch ✓
@@ -17,24 +18,29 @@ Sites overview:
 - taylormade.ch ✓
 - myplacement.ch ✓
 - mosaics.ch ✓
-- summercampsombor.ch
-- mariamalibran.net
-- kathleenwills.com
-- gems-europe.com
-	any upgrade difficulties expected? HTTPRequest? no, ShopController? no? branch?
-- butti.ch
-- gcgroup.ch
-	checkin base changes!
+
+Sites to check something
+- summercampsombor.ch ✓
+	exclude camp-sites!
+- kathleenwills.com ✓
+- gems-europe.com ✓
+	check HTTP/Request2.php and ShopItemImpl
+- butti.ch ✓
+	check local FLV.php changes, PrettyPhoto
+- gcgroup.ch ✓
 	what happened to google analytics?	var pageTracker = _gat._getTracker("UA-10691002-1"); pageTracker._trackPageview();
-- remcom.ch ✓ check DocumentUtil
+- remcom.ch ✓ check
 	check accordion, various js errors online, submit Dumpexport
-- cgcmac.ch 
-	check migration stuff in todo.txt, svn conflict resolved by tc > Autoloader.php.edited?
+- cgcmac.ch ✓
+	newsletter plugin check 
+	
+Site wait
+- mariamalibran.net // dont do anything for now
 
 Version cleanup
-- make branches for plugins like newsletter, journal
-- remove MigrationBackendModule or modify it if can be used
-- integrate new rs http download to MysqlDumpLoaderBackendModule::doToDownload
+- plug journal > PropelPDO for version _minicms_1.0_plugins
+- svn external management how to find out all propedits for site
+- what's wrong with gems st?
 
 Servance
 - make plan for pages, users-rights, moduleSelect [rights, grouping, settings] and more
@@ -406,3 +412,5 @@ release-1-devel propel update
 - changed: CheckBackendModule RichtextUtil::parseStorageForBackendOutput(stream_get_contents($oLanguageObject->getData()));
 	doCheckContent() > $oLanguageObject->setData($oRichtextUtil->parseInputFromMce());
 	discuss > see JournalEntry behaviour branch handling
+- remove MigrationBackendModule or modify it if can be used
+- integrate new rs http download to MysqlDumpLoaderBackendModule::doToDownload
