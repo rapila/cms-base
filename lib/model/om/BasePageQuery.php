@@ -7,8 +7,6 @@
  * 
  *
  * @method     PageQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     PageQuery orderByParentId($order = Criteria::ASC) Order by the parent_id column
- * @method     PageQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method     PageQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     PageQuery orderByPageType($order = Criteria::ASC) Order by the page_type column
  * @method     PageQuery orderByTemplateName($order = Criteria::ASC) Order by the template_name column
@@ -16,14 +14,15 @@
  * @method     PageQuery orderByIsFolder($order = Criteria::ASC) Order by the is_folder column
  * @method     PageQuery orderByIsHidden($order = Criteria::ASC) Order by the is_hidden column
  * @method     PageQuery orderByIsProtected($order = Criteria::ASC) Order by the is_protected column
+ * @method     PageQuery orderByTreeLeft($order = Criteria::ASC) Order by the tree_left column
+ * @method     PageQuery orderByTreeRight($order = Criteria::ASC) Order by the tree_right column
+ * @method     PageQuery orderByTreeLevel($order = Criteria::ASC) Order by the tree_level column
  * @method     PageQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     PageQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     PageQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
  * @method     PageQuery orderByUpdatedBy($order = Criteria::ASC) Order by the updated_by column
  *
  * @method     PageQuery groupById() Group by the id column
- * @method     PageQuery groupByParentId() Group by the parent_id column
- * @method     PageQuery groupBySort() Group by the sort column
  * @method     PageQuery groupByName() Group by the name column
  * @method     PageQuery groupByPageType() Group by the page_type column
  * @method     PageQuery groupByTemplateName() Group by the template_name column
@@ -31,6 +30,9 @@
  * @method     PageQuery groupByIsFolder() Group by the is_folder column
  * @method     PageQuery groupByIsHidden() Group by the is_hidden column
  * @method     PageQuery groupByIsProtected() Group by the is_protected column
+ * @method     PageQuery groupByTreeLeft() Group by the tree_left column
+ * @method     PageQuery groupByTreeRight() Group by the tree_right column
+ * @method     PageQuery groupByTreeLevel() Group by the tree_level column
  * @method     PageQuery groupByCreatedAt() Group by the created_at column
  * @method     PageQuery groupByUpdatedAt() Group by the updated_at column
  * @method     PageQuery groupByCreatedBy() Group by the created_by column
@@ -40,10 +42,6 @@
  * @method     PageQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PageQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PageQuery leftJoinPageRelatedByParentId($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageRelatedByParentId relation
- * @method     PageQuery rightJoinPageRelatedByParentId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageRelatedByParentId relation
- * @method     PageQuery innerJoinPageRelatedByParentId($relationAlias = '') Adds a INNER JOIN clause to the query using the PageRelatedByParentId relation
- *
  * @method     PageQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
  * @method     PageQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
  * @method     PageQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
@@ -51,10 +49,6 @@
  * @method     PageQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
  * @method     PageQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
  * @method     PageQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
- *
- * @method     PageQuery leftJoinPageRelatedById($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageRelatedById relation
- * @method     PageQuery rightJoinPageRelatedById($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageRelatedById relation
- * @method     PageQuery innerJoinPageRelatedById($relationAlias = '') Adds a INNER JOIN clause to the query using the PageRelatedById relation
  *
  * @method     PageQuery leftJoinPageProperty($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageProperty relation
  * @method     PageQuery rightJoinPageProperty($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageProperty relation
@@ -74,8 +68,6 @@
  *
  * @method     Page findOne(PropelPDO $con = null) Return the first Page matching the query
  * @method     Page findOneById(int $id) Return the first Page filtered by the id column
- * @method     Page findOneByParentId(int $parent_id) Return the first Page filtered by the parent_id column
- * @method     Page findOneBySort(int $sort) Return the first Page filtered by the sort column
  * @method     Page findOneByName(string $name) Return the first Page filtered by the name column
  * @method     Page findOneByPageType(string $page_type) Return the first Page filtered by the page_type column
  * @method     Page findOneByTemplateName(string $template_name) Return the first Page filtered by the template_name column
@@ -83,14 +75,15 @@
  * @method     Page findOneByIsFolder(boolean $is_folder) Return the first Page filtered by the is_folder column
  * @method     Page findOneByIsHidden(boolean $is_hidden) Return the first Page filtered by the is_hidden column
  * @method     Page findOneByIsProtected(boolean $is_protected) Return the first Page filtered by the is_protected column
+ * @method     Page findOneByTreeLeft(int $tree_left) Return the first Page filtered by the tree_left column
+ * @method     Page findOneByTreeRight(int $tree_right) Return the first Page filtered by the tree_right column
+ * @method     Page findOneByTreeLevel(int $tree_level) Return the first Page filtered by the tree_level column
  * @method     Page findOneByCreatedAt(string $created_at) Return the first Page filtered by the created_at column
  * @method     Page findOneByUpdatedAt(string $updated_at) Return the first Page filtered by the updated_at column
  * @method     Page findOneByCreatedBy(int $created_by) Return the first Page filtered by the created_by column
  * @method     Page findOneByUpdatedBy(int $updated_by) Return the first Page filtered by the updated_by column
  *
  * @method     array findById(int $id) Return Page objects filtered by the id column
- * @method     array findByParentId(int $parent_id) Return Page objects filtered by the parent_id column
- * @method     array findBySort(int $sort) Return Page objects filtered by the sort column
  * @method     array findByName(string $name) Return Page objects filtered by the name column
  * @method     array findByPageType(string $page_type) Return Page objects filtered by the page_type column
  * @method     array findByTemplateName(string $template_name) Return Page objects filtered by the template_name column
@@ -98,6 +91,9 @@
  * @method     array findByIsFolder(boolean $is_folder) Return Page objects filtered by the is_folder column
  * @method     array findByIsHidden(boolean $is_hidden) Return Page objects filtered by the is_hidden column
  * @method     array findByIsProtected(boolean $is_protected) Return Page objects filtered by the is_protected column
+ * @method     array findByTreeLeft(int $tree_left) Return Page objects filtered by the tree_left column
+ * @method     array findByTreeRight(int $tree_right) Return Page objects filtered by the tree_right column
+ * @method     array findByTreeLevel(int $tree_level) Return Page objects filtered by the tree_level column
  * @method     array findByCreatedAt(string $created_at) Return Page objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return Page objects filtered by the updated_at column
  * @method     array findByCreatedBy(int $created_by) Return Page objects filtered by the created_by column
@@ -226,68 +222,6 @@ abstract class BasePageQuery extends ModelCriteria
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(PagePeer::ID, $id, $comparison);
-	}
-
-	/**
-	 * Filter the query on the parent_id column
-	 * 
-	 * @param     int|array $parentId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function filterByParentId($parentId = null, $comparison = null)
-	{
-		if (is_array($parentId)) {
-			$useMinMax = false;
-			if (isset($parentId['min'])) {
-				$this->addUsingAlias(PagePeer::PARENT_ID, $parentId['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
-			}
-			if (isset($parentId['max'])) {
-				$this->addUsingAlias(PagePeer::PARENT_ID, $parentId['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
-			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
-		}
-		return $this->addUsingAlias(PagePeer::PARENT_ID, $parentId, $comparison);
-	}
-
-	/**
-	 * Filter the query on the sort column
-	 * 
-	 * @param     int|array $sort The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function filterBySort($sort = null, $comparison = null)
-	{
-		if (is_array($sort)) {
-			$useMinMax = false;
-			if (isset($sort['min'])) {
-				$this->addUsingAlias(PagePeer::SORT, $sort['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
-			}
-			if (isset($sort['max'])) {
-				$this->addUsingAlias(PagePeer::SORT, $sort['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
-			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
-		}
-		return $this->addUsingAlias(PagePeer::SORT, $sort, $comparison);
 	}
 
 	/**
@@ -431,6 +365,99 @@ abstract class BasePageQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query on the tree_left column
+	 * 
+	 * @param     int|array $treeLeft The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByTreeLeft($treeLeft = null, $comparison = null)
+	{
+		if (is_array($treeLeft)) {
+			$useMinMax = false;
+			if (isset($treeLeft['min'])) {
+				$this->addUsingAlias(PagePeer::TREE_LEFT, $treeLeft['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($treeLeft['max'])) {
+				$this->addUsingAlias(PagePeer::TREE_LEFT, $treeLeft['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(PagePeer::TREE_LEFT, $treeLeft, $comparison);
+	}
+
+	/**
+	 * Filter the query on the tree_right column
+	 * 
+	 * @param     int|array $treeRight The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByTreeRight($treeRight = null, $comparison = null)
+	{
+		if (is_array($treeRight)) {
+			$useMinMax = false;
+			if (isset($treeRight['min'])) {
+				$this->addUsingAlias(PagePeer::TREE_RIGHT, $treeRight['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($treeRight['max'])) {
+				$this->addUsingAlias(PagePeer::TREE_RIGHT, $treeRight['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(PagePeer::TREE_RIGHT, $treeRight, $comparison);
+	}
+
+	/**
+	 * Filter the query on the tree_level column
+	 * 
+	 * @param     int|array $treeLevel The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByTreeLevel($treeLevel = null, $comparison = null)
+	{
+		if (is_array($treeLevel)) {
+			$useMinMax = false;
+			if (isset($treeLevel['min'])) {
+				$this->addUsingAlias(PagePeer::TREE_LEVEL, $treeLevel['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($treeLevel['max'])) {
+				$this->addUsingAlias(PagePeer::TREE_LEVEL, $treeLevel['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(PagePeer::TREE_LEVEL, $treeLevel, $comparison);
+	}
+
+	/**
 	 * Filter the query on the created_at column
 	 * 
 	 * @param     string|array $createdAt The value to use as filter.
@@ -552,70 +579,6 @@ abstract class BasePageQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(PagePeer::UPDATED_BY, $updatedBy, $comparison);
-	}
-
-	/**
-	 * Filter the query by a related Page object
-	 *
-	 * @param     Page $page  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function filterByPageRelatedByParentId($page, $comparison = null)
-	{
-		return $this
-			->addUsingAlias(PagePeer::PARENT_ID, $page->getId(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the PageRelatedByParentId relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function joinPageRelatedByParentId($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('PageRelatedByParentId');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'PageRelatedByParentId');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the PageRelatedByParentId relation Page object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    PageQuery A secondary query class using the current class as primary query
-	 */
-	public function usePageRelatedByParentIdQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinPageRelatedByParentId($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'PageRelatedByParentId', 'PageQuery');
 	}
 
 	/**
@@ -744,70 +707,6 @@ abstract class BasePageQuery extends ModelCriteria
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByUpdatedBy', 'UserQuery');
-	}
-
-	/**
-	 * Filter the query by a related Page object
-	 *
-	 * @param     Page $page  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function filterByPageRelatedById($page, $comparison = null)
-	{
-		return $this
-			->addUsingAlias(PagePeer::ID, $page->getParentId(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the PageRelatedById relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    PageQuery The current query, for fluid interface
-	 */
-	public function joinPageRelatedById($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('PageRelatedById');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'PageRelatedById');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the PageRelatedById relation Page object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    PageQuery A secondary query class using the current class as primary query
-	 */
-	public function usePageRelatedByIdQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinPageRelatedById($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'PageRelatedById', 'PageQuery');
 	}
 
 	/**
@@ -1080,6 +979,165 @@ abstract class BasePageQuery extends ModelCriteria
 	  }
 	  
 		return $this;
+	}
+
+	// nested_set behavior
+	
+	/**
+	 * Filter the query to restrict the result to descendants of an object
+	 *
+	 * @param     Page $page The object to use for descendant search
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function descendantsOf($page)
+	{
+		return $this
+			->addUsingAlias(PagePeer::LEFT_COL, $page->getLeftValue(), Criteria::GREATER_THAN)
+			->addUsingAlias(PagePeer::RIGHT_COL, $page->getRightValue(), Criteria::LESS_THAN);
+	}
+	
+	/**
+	 * Filter the query to restrict the result to the branch of an object.
+	 * Same as descendantsOf(), except that it includes the object passed as parameter in the result
+	 *
+	 * @param     Page $page The object to use for branch search
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function branchOf($page)
+	{
+		return $this
+			->addUsingAlias(PagePeer::LEFT_COL, $page->getLeftValue(), Criteria::GREATER_EQUAL)
+			->addUsingAlias(PagePeer::RIGHT_COL, $page->getRightValue(), Criteria::LESS_EQUAL);
+	}
+	
+	/**
+	 * Filter the query to restrict the result to children of an object
+	 *
+	 * @param     Page $page The object to use for child search
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function childrenOf($page)
+	{
+		return $this
+			->descendantsOf($page)
+			->addUsingAlias(PagePeer::LEVEL_COL, $page->getLevel() + 1, Criteria::EQUAL);
+	}
+	
+	/**
+	 * Filter the query to restrict the result to siblings of an object.
+	 * The result does not include the object passed as parameter.
+	 *
+	 * @param     Page $page The object to use for sibling search
+	 * @param      PropelPDO $con Connection to use.
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function siblingsOf($page, PropelPDO $con = null)
+	{
+		if ($page->isRoot()) {
+			return $this->
+				add(PagePeer::LEVEL_COL, '1<>1', Criteria::CUSTOM);
+		} else {
+			return $this
+				->childrenOf($page->getParent($con))
+				->prune($page);
+		}
+	}
+	
+	/**
+	 * Filter the query to restrict the result to ancestors of an object
+	 *
+	 * @param     Page $page The object to use for ancestors search
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function ancestorsOf($page)
+	{
+		return $this
+			->addUsingAlias(PagePeer::LEFT_COL, $page->getLeftValue(), Criteria::LESS_THAN)
+			->addUsingAlias(PagePeer::RIGHT_COL, $page->getRightValue(), Criteria::GREATER_THAN);
+	}
+	
+	/**
+	 * Filter the query to restrict the result to roots of an object.
+	 * Same as ancestorsOf(), except that it includes the object passed as parameter in the result
+	 *
+	 * @param     Page $page The object to use for roots search
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function rootsOf($page)
+	{
+		return $this
+			->addUsingAlias(PagePeer::LEFT_COL, $page->getLeftValue(), Criteria::LESS_EQUAL)
+			->addUsingAlias(PagePeer::RIGHT_COL, $page->getRightValue(), Criteria::GREATER_EQUAL);
+	}
+	
+	/**
+	 * Order the result by branch, i.e. natural tree order
+	 *
+	 * @param     bool $reverse if true, reverses the order
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function orderByBranch($reverse = false)
+	{
+		if ($reverse) {
+			return $this
+				->addDescendingOrderByColumn(PagePeer::LEFT_COL);
+		} else {
+			return $this
+				->addAscendingOrderByColumn(PagePeer::LEFT_COL);
+		}
+	}
+	
+	/**
+	 * Order the result by level, the closer to the root first
+	 *
+	 * @param     bool $reverse if true, reverses the order
+	 *
+	 * @return    PageQuery The current query, for fuid interface
+	 */
+	public function orderByLevel($reverse = false)
+	{
+		if ($reverse) {
+			return $this
+				->addAscendingOrderByColumn(PagePeer::RIGHT_COL);
+		} else {
+			return $this
+				->addDescendingOrderByColumn(PagePeer::RIGHT_COL);
+		}
+	}
+	
+	/**
+	 * Returns the root node for the tree
+	 *
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     Page The tree root object
+	 */
+	public function findRoot($con = null)
+	{
+		return $this
+			->addUsingAlias(PagePeer::LEFT_COL, 1, Criteria::EQUAL)
+			->findOne($con);
+	}
+	
+	/**
+	 * Returns the tree of objects
+	 *
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     mixed the list of results, formatted by the current formatter
+	 */
+	public function findTree($con = null)
+	{
+		return $this
+			->orderByBranch()
+			->find($con);
 	}
 
 	// extended_timestampable behavior

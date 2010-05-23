@@ -8,6 +8,7 @@
  *
  * @method     PageStringQuery orderByPageId($order = Criteria::ASC) Order by the page_id column
  * @method     PageStringQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
+ * @method     PageStringQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method     PageStringQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     PageStringQuery orderByLongTitle($order = Criteria::ASC) Order by the long_title column
  * @method     PageStringQuery orderByKeywords($order = Criteria::ASC) Order by the keywords column
@@ -18,6 +19,7 @@
  *
  * @method     PageStringQuery groupByPageId() Group by the page_id column
  * @method     PageStringQuery groupByLanguageId() Group by the language_id column
+ * @method     PageStringQuery groupByIsInactive() Group by the is_inactive column
  * @method     PageStringQuery groupByTitle() Group by the title column
  * @method     PageStringQuery groupByLongTitle() Group by the long_title column
  * @method     PageStringQuery groupByKeywords() Group by the keywords column
@@ -49,6 +51,7 @@
  * @method     PageString findOne(PropelPDO $con = null) Return the first PageString matching the query
  * @method     PageString findOneByPageId(int $page_id) Return the first PageString filtered by the page_id column
  * @method     PageString findOneByLanguageId(string $language_id) Return the first PageString filtered by the language_id column
+ * @method     PageString findOneByIsInactive(boolean $is_inactive) Return the first PageString filtered by the is_inactive column
  * @method     PageString findOneByTitle(string $title) Return the first PageString filtered by the title column
  * @method     PageString findOneByLongTitle(string $long_title) Return the first PageString filtered by the long_title column
  * @method     PageString findOneByKeywords(string $keywords) Return the first PageString filtered by the keywords column
@@ -59,6 +62,7 @@
  *
  * @method     array findByPageId(int $page_id) Return PageString objects filtered by the page_id column
  * @method     array findByLanguageId(string $language_id) Return PageString objects filtered by the language_id column
+ * @method     array findByIsInactive(boolean $is_inactive) Return PageString objects filtered by the is_inactive column
  * @method     array findByTitle(string $title) Return PageString objects filtered by the title column
  * @method     array findByLongTitle(string $long_title) Return PageString objects filtered by the long_title column
  * @method     array findByKeywords(string $keywords) Return PageString objects filtered by the keywords column
@@ -223,6 +227,23 @@ abstract class BasePageStringQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(PageStringPeer::LANGUAGE_ID, $languageId, $comparison);
+	}
+
+	/**
+	 * Filter the query on the is_inactive column
+	 * 
+	 * @param     boolean|string $isInactive The value to use as filter.
+	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageStringQuery The current query, for fluid interface
+	 */
+	public function filterByIsInactive($isInactive = null, $comparison = null)
+	{
+		if (is_string($isInactive)) {
+			$is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		}
+		return $this->addUsingAlias(PageStringPeer::IS_INACTIVE, $isInactive, $comparison);
 	}
 
 	/**

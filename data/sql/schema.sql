@@ -13,8 +13,6 @@ DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`parent_id` INTEGER,
-	`sort` INTEGER,
 	`name` VARCHAR(50),
 	`page_type` VARCHAR(15),
 	`template_name` VARCHAR(50),
@@ -22,16 +20,14 @@ CREATE TABLE `pages`
 	`is_folder` TINYINT(1) default 0,
 	`is_hidden` TINYINT(1) default 0,
 	`is_protected` TINYINT(1) default 0,
+	`tree_left` INTEGER,
+	`tree_right` INTEGER,
+	`tree_level` INTEGER,
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `pages_U_1` (`parent_id`, `name`),
-	CONSTRAINT `pages_FK_1`
-		FOREIGN KEY (`parent_id`)
-		REFERENCES `pages` (`id`)
-		ON DELETE RESTRICT,
 	INDEX `FI_` (`created_by`),
 	CONSTRAINT ``
 		FOREIGN KEY (`created_by`)
@@ -91,6 +87,7 @@ CREATE TABLE `page_strings`
 (
 	`page_id` INTEGER  NOT NULL,
 	`language_id` VARCHAR(3)  NOT NULL,
+	`is_inactive` TINYINT(1) default 0,
 	`title` VARCHAR(50) default '',
 	`long_title` VARCHAR(255)  NOT NULL,
 	`keywords` VARCHAR(255),

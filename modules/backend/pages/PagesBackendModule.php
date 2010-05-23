@@ -141,7 +141,7 @@ class PagesBackendModule extends BackendModule {
 			
 			// sortselect to null, do not show if not applicable (only one, or new etc)
 			$aSortSelect = null;
-			$aSiblingsForSort = $this->oPage->getSiblings(false);
+			$aSiblingsForSort = $this->oPage->getSiblings(true);
 			$bNeedsSortSelect = count($aSiblingsForSort) > 1;
 			if($bNeedsSortSelect) {
 				$iKey = 1;

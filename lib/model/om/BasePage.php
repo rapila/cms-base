@@ -30,18 +30,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $id;
 
 	/**
-	 * The value for the parent_id field.
-	 * @var        int
-	 */
-	protected $parent_id;
-
-	/**
-	 * The value for the sort field.
-	 * @var        int
-	 */
-	protected $sort;
-
-	/**
 	 * The value for the name field.
 	 * @var        string
 	 */
@@ -88,6 +76,24 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $is_protected;
 
 	/**
+	 * The value for the tree_left field.
+	 * @var        int
+	 */
+	protected $tree_left;
+
+	/**
+	 * The value for the tree_right field.
+	 * @var        int
+	 */
+	protected $tree_right;
+
+	/**
+	 * The value for the tree_level field.
+	 * @var        int
+	 */
+	protected $tree_level;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -112,11 +118,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $updated_by;
 
 	/**
-	 * @var        Page
-	 */
-	protected $aPageRelatedByParentId;
-
-	/**
 	 * @var        User
 	 */
 	protected $aUserRelatedByCreatedBy;
@@ -125,11 +126,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 * @var        User
 	 */
 	protected $aUserRelatedByUpdatedBy;
-
-	/**
-	 * @var        array Page[] Collection to store aggregation of Page objects.
-	 */
-	protected $collPagesRelatedById;
 
 	/**
 	 * @var        array PageProperty[] Collection to store aggregation of PageProperty objects.
@@ -165,6 +161,27 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 */
 	protected $alreadyInValidation = false;
 
+	// nested_set behavior
+	
+	/**
+	 * Queries to be executed in the save transaction
+	 * @var        array
+	 */
+	protected $nestedSetQueries = array();
+	
+	/**
+	 * Internal cache for children nodes
+	 * @var        null|PropelObjectCollection
+	 */
+	protected $collNestedSetChildren = null;
+	
+	/**
+	 * Internal cache for parent node
+	 * @var        null|Page
+	 */
+	protected $aNestedSetParent = null;
+	
+
 	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
@@ -197,26 +214,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getId()
 	{
 		return $this->id;
-	}
-
-	/**
-	 * Get the [parent_id] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getParentId()
-	{
-		return $this->parent_id;
-	}
-
-	/**
-	 * Get the [sort] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getSort()
-	{
-		return $this->sort;
 	}
 
 	/**
@@ -287,6 +284,36 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getIsProtected()
 	{
 		return $this->is_protected;
+	}
+
+	/**
+	 * Get the [tree_left] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getTreeLeft()
+	{
+		return $this->tree_left;
+	}
+
+	/**
+	 * Get the [tree_right] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getTreeRight()
+	{
+		return $this->tree_right;
+	}
+
+	/**
+	 * Get the [tree_level] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getTreeLevel()
+	{
+		return $this->tree_level;
 	}
 
 	/**
@@ -404,50 +431,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		return $this;
 	} // setId()
-
-	/**
-	 * Set the value of [parent_id] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     Page The current object (for fluent API support)
-	 */
-	public function setParentId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->parent_id !== $v) {
-			$this->parent_id = $v;
-			$this->modifiedColumns[] = PagePeer::PARENT_ID;
-		}
-
-		if ($this->aPageRelatedByParentId !== null && $this->aPageRelatedByParentId->getId() !== $v) {
-			$this->aPageRelatedByParentId = null;
-		}
-
-		return $this;
-	} // setParentId()
-
-	/**
-	 * Set the value of [sort] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     Page The current object (for fluent API support)
-	 */
-	public function setSort($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->sort !== $v) {
-			$this->sort = $v;
-			$this->modifiedColumns[] = PagePeer::SORT;
-		}
-
-		return $this;
-	} // setSort()
 
 	/**
 	 * Set the value of [name] column.
@@ -588,6 +571,66 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		return $this;
 	} // setIsProtected()
+
+	/**
+	 * Set the value of [tree_left] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setTreeLeft($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->tree_left !== $v) {
+			$this->tree_left = $v;
+			$this->modifiedColumns[] = PagePeer::TREE_LEFT;
+		}
+
+		return $this;
+	} // setTreeLeft()
+
+	/**
+	 * Set the value of [tree_right] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setTreeRight($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->tree_right !== $v) {
+			$this->tree_right = $v;
+			$this->modifiedColumns[] = PagePeer::TREE_RIGHT;
+		}
+
+		return $this;
+	} // setTreeRight()
+
+	/**
+	 * Set the value of [tree_level] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setTreeLevel($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->tree_level !== $v) {
+			$this->tree_level = $v;
+			$this->modifiedColumns[] = PagePeer::TREE_LEVEL;
+		}
+
+		return $this;
+	} // setTreeLevel()
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -784,19 +827,20 @@ abstract class BasePage extends BaseObject  implements Persistent
 		try {
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->parent_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->name = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->page_type = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->template_name = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->is_inactive = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
-			$this->is_folder = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
-			$this->is_hidden = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->is_protected = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->created_by = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-			$this->updated_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->page_type = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->template_name = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->is_inactive = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
+			$this->is_folder = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
+			$this->is_hidden = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
+			$this->is_protected = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
+			$this->tree_left = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->tree_right = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->tree_level = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->created_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+			$this->updated_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -805,7 +849,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 14; // 14 = PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 15; // 15 = PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Page object", $e);
@@ -828,9 +872,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aPageRelatedByParentId !== null && $this->parent_id !== $this->aPageRelatedByParentId->getId()) {
-			$this->aPageRelatedByParentId = null;
-		}
 		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
 			$this->aUserRelatedByCreatedBy = null;
 		}
@@ -876,11 +917,8 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aPageRelatedByParentId = null;
 			$this->aUserRelatedByCreatedBy = null;
 			$this->aUserRelatedByUpdatedBy = null;
-			$this->collPagesRelatedById = null;
-
 			$this->collPagePropertys = null;
 
 			$this->collPageStrings = null;
@@ -914,11 +952,21 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
+			// nested_set behavior
+			if ($this->isRoot()) {
+				throw new PropelException('Deletion of a root node is disabled for nested sets. Use PagePeer::deleteTree() instead to delete an entire tree');
+			}
+			$this->deleteDescendants($con);
+
 			if ($ret) {
 				PageQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
+				// nested_set behavior
+				// fill up the room that was used by the node
+				PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
+
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -957,6 +1005,8 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$isInsert = $this->isNew();
 		try {
 			$ret = $this->preSave($con);
+			// nested_set behavior
+			$this->processNestedSetQueries($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// extended_timestampable behavior
@@ -1033,13 +1083,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aPageRelatedByParentId !== null) {
-				if ($this->aPageRelatedByParentId->isModified() || $this->aPageRelatedByParentId->isNew()) {
-					$affectedRows += $this->aPageRelatedByParentId->save($con);
-				}
-				$this->setPageRelatedByParentId($this->aPageRelatedByParentId);
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
 					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
@@ -1075,14 +1118,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
-			}
-
-			if ($this->collPagesRelatedById !== null) {
-				foreach ($this->collPagesRelatedById as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
 			}
 
 			if ($this->collPagePropertys !== null) {
@@ -1188,12 +1223,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aPageRelatedByParentId !== null) {
-				if (!$this->aPageRelatedByParentId->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aPageRelatedByParentId->getValidationFailures());
-				}
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
@@ -1211,14 +1240,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
-
-				if ($this->collPagesRelatedById !== null) {
-					foreach ($this->collPagesRelatedById as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
 
 				if ($this->collPagePropertys !== null) {
 					foreach ($this->collPagePropertys as $referrerFK) {
@@ -1289,42 +1310,45 @@ abstract class BasePage extends BaseObject  implements Persistent
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getParentId();
-				break;
-			case 2:
-				return $this->getSort();
-				break;
-			case 3:
 				return $this->getName();
 				break;
-			case 4:
+			case 2:
 				return $this->getPageType();
 				break;
-			case 5:
+			case 3:
 				return $this->getTemplateName();
 				break;
-			case 6:
+			case 4:
 				return $this->getIsInactive();
 				break;
-			case 7:
+			case 5:
 				return $this->getIsFolder();
 				break;
-			case 8:
+			case 6:
 				return $this->getIsHidden();
 				break;
-			case 9:
+			case 7:
 				return $this->getIsProtected();
 				break;
+			case 8:
+				return $this->getTreeLeft();
+				break;
+			case 9:
+				return $this->getTreeRight();
+				break;
 			case 10:
-				return $this->getCreatedAt();
+				return $this->getTreeLevel();
 				break;
 			case 11:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 12:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 13:
+				return $this->getCreatedBy();
+				break;
+			case 14:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1352,24 +1376,22 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$keys = PagePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getParentId(),
-			$keys[2] => $this->getSort(),
-			$keys[3] => $this->getName(),
-			$keys[4] => $this->getPageType(),
-			$keys[5] => $this->getTemplateName(),
-			$keys[6] => $this->getIsInactive(),
-			$keys[7] => $this->getIsFolder(),
-			$keys[8] => $this->getIsHidden(),
-			$keys[9] => $this->getIsProtected(),
-			$keys[10] => $this->getCreatedAt(),
-			$keys[11] => $this->getUpdatedAt(),
-			$keys[12] => $this->getCreatedBy(),
-			$keys[13] => $this->getUpdatedBy(),
+			$keys[1] => $this->getName(),
+			$keys[2] => $this->getPageType(),
+			$keys[3] => $this->getTemplateName(),
+			$keys[4] => $this->getIsInactive(),
+			$keys[5] => $this->getIsFolder(),
+			$keys[6] => $this->getIsHidden(),
+			$keys[7] => $this->getIsProtected(),
+			$keys[8] => $this->getTreeLeft(),
+			$keys[9] => $this->getTreeRight(),
+			$keys[10] => $this->getTreeLevel(),
+			$keys[11] => $this->getCreatedAt(),
+			$keys[12] => $this->getUpdatedAt(),
+			$keys[13] => $this->getCreatedBy(),
+			$keys[14] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
-			if (null !== $this->aPageRelatedByParentId) {
-				$result['PageRelatedByParentId'] = $this->aPageRelatedByParentId->toArray($keyType, $includeLazyLoadColumns, true);
-			}
 			if (null !== $this->aUserRelatedByCreatedBy) {
 				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
 			}
@@ -1411,42 +1433,45 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setParentId($value);
-				break;
-			case 2:
-				$this->setSort($value);
-				break;
-			case 3:
 				$this->setName($value);
 				break;
-			case 4:
+			case 2:
 				$this->setPageType($value);
 				break;
-			case 5:
+			case 3:
 				$this->setTemplateName($value);
 				break;
-			case 6:
+			case 4:
 				$this->setIsInactive($value);
 				break;
-			case 7:
+			case 5:
 				$this->setIsFolder($value);
 				break;
-			case 8:
+			case 6:
 				$this->setIsHidden($value);
 				break;
-			case 9:
+			case 7:
 				$this->setIsProtected($value);
 				break;
+			case 8:
+				$this->setTreeLeft($value);
+				break;
+			case 9:
+				$this->setTreeRight($value);
+				break;
 			case 10:
-				$this->setCreatedAt($value);
+				$this->setTreeLevel($value);
 				break;
 			case 11:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 12:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 13:
+				$this->setCreatedBy($value);
+				break;
+			case 14:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1474,19 +1499,20 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$keys = PagePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setParentId($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setName($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setPageType($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setTemplateName($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setIsInactive($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIsFolder($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsHidden($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsProtected($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setCreatedBy($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setUpdatedBy($arr[$keys[13]]);
+		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setPageType($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setTemplateName($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setIsInactive($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setIsFolder($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIsHidden($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setIsProtected($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setTreeLeft($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setTreeRight($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setTreeLevel($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setCreatedBy($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setUpdatedBy($arr[$keys[14]]);
 	}
 
 	/**
@@ -1499,8 +1525,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$criteria = new Criteria(PagePeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(PagePeer::ID)) $criteria->add(PagePeer::ID, $this->id);
-		if ($this->isColumnModified(PagePeer::PARENT_ID)) $criteria->add(PagePeer::PARENT_ID, $this->parent_id);
-		if ($this->isColumnModified(PagePeer::SORT)) $criteria->add(PagePeer::SORT, $this->sort);
 		if ($this->isColumnModified(PagePeer::NAME)) $criteria->add(PagePeer::NAME, $this->name);
 		if ($this->isColumnModified(PagePeer::PAGE_TYPE)) $criteria->add(PagePeer::PAGE_TYPE, $this->page_type);
 		if ($this->isColumnModified(PagePeer::TEMPLATE_NAME)) $criteria->add(PagePeer::TEMPLATE_NAME, $this->template_name);
@@ -1508,6 +1532,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PagePeer::IS_FOLDER)) $criteria->add(PagePeer::IS_FOLDER, $this->is_folder);
 		if ($this->isColumnModified(PagePeer::IS_HIDDEN)) $criteria->add(PagePeer::IS_HIDDEN, $this->is_hidden);
 		if ($this->isColumnModified(PagePeer::IS_PROTECTED)) $criteria->add(PagePeer::IS_PROTECTED, $this->is_protected);
+		if ($this->isColumnModified(PagePeer::TREE_LEFT)) $criteria->add(PagePeer::TREE_LEFT, $this->tree_left);
+		if ($this->isColumnModified(PagePeer::TREE_RIGHT)) $criteria->add(PagePeer::TREE_RIGHT, $this->tree_right);
+		if ($this->isColumnModified(PagePeer::TREE_LEVEL)) $criteria->add(PagePeer::TREE_LEVEL, $this->tree_level);
 		if ($this->isColumnModified(PagePeer::CREATED_AT)) $criteria->add(PagePeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(PagePeer::UPDATED_AT)) $criteria->add(PagePeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(PagePeer::CREATED_BY)) $criteria->add(PagePeer::CREATED_BY, $this->created_by);
@@ -1573,8 +1600,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setParentId($this->parent_id);
-		$copyObj->setSort($this->sort);
 		$copyObj->setName($this->name);
 		$copyObj->setPageType($this->page_type);
 		$copyObj->setTemplateName($this->template_name);
@@ -1582,6 +1607,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$copyObj->setIsFolder($this->is_folder);
 		$copyObj->setIsHidden($this->is_hidden);
 		$copyObj->setIsProtected($this->is_protected);
+		$copyObj->setTreeLeft($this->tree_left);
+		$copyObj->setTreeRight($this->tree_right);
+		$copyObj->setTreeLevel($this->tree_level);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 		$copyObj->setCreatedBy($this->created_by);
@@ -1591,12 +1619,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
-
-			foreach ($this->getPagesRelatedById() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addPageRelatedById($relObj->copy($deepCopy));
-				}
-			}
 
 			foreach ($this->getPagePropertys() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1665,55 +1687,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			self::$peer = new PagePeer();
 		}
 		return self::$peer;
-	}
-
-	/**
-	 * Declares an association between this object and a Page object.
-	 *
-	 * @param      Page $v
-	 * @return     Page The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setPageRelatedByParentId(Page $v = null)
-	{
-		if ($v === null) {
-			$this->setParentId(NULL);
-		} else {
-			$this->setParentId($v->getId());
-		}
-
-		$this->aPageRelatedByParentId = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Page object, it will not be re-added.
-		if ($v !== null) {
-			$v->addPageRelatedById($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated Page object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     Page The associated Page object.
-	 * @throws     PropelException
-	 */
-	public function getPageRelatedByParentId(PropelPDO $con = null)
-	{
-		if ($this->aPageRelatedByParentId === null && ($this->parent_id !== null)) {
-			$this->aPageRelatedByParentId = PageQuery::create()->findPk($this->parent_id);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aPageRelatedByParentId->addPagesRelatedById($this);
-			 */
-		}
-		return $this->aPageRelatedByParentId;
 	}
 
 	/**
@@ -1812,165 +1785,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Clears out the collPagesRelatedById collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPagesRelatedById()
-	 */
-	public function clearPagesRelatedById()
-	{
-		$this->collPagesRelatedById = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPagesRelatedById collection.
-	 *
-	 * By default this just sets the collPagesRelatedById collection to an empty array (like clearcollPagesRelatedById());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPagesRelatedById()
-	{
-		$this->collPagesRelatedById = new PropelObjectCollection();
-		$this->collPagesRelatedById->setModel('Page');
-	}
-
-	/**
-	 * Gets an array of Page objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this Page is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Page[] List of Page objects
-	 * @throws     PropelException
-	 */
-	public function getPagesRelatedById($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedById || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedById) {
-				// return empty collection
-				$this->initPagesRelatedById();
-			} else {
-				$collPagesRelatedById = PageQuery::create(null, $criteria)
-					->filterByPageRelatedByParentId($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPagesRelatedById;
-				}
-				$this->collPagesRelatedById = $collPagesRelatedById;
-			}
-		}
-		return $this->collPagesRelatedById;
-	}
-
-	/**
-	 * Returns the number of related Page objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Page objects.
-	 * @throws     PropelException
-	 */
-	public function countPagesRelatedById(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedById || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedById) {
-				return 0;
-			} else {
-				$query = PageQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByPageRelatedByParentId($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPagesRelatedById);
-		}
-	}
-
-	/**
-	 * Method called to associate a Page object to this object
-	 * through the Page foreign key attribute.
-	 *
-	 * @param      Page $l Page
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPageRelatedById(Page $l)
-	{
-		if ($this->collPagesRelatedById === null) {
-			$this->initPagesRelatedById();
-		}
-		if (!$this->collPagesRelatedById->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagesRelatedById[]= $l;
-			$l->setPageRelatedByParentId($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Page is new, it will return
-	 * an empty collection; or if this Page has previously
-	 * been saved, it will retrieve related PagesRelatedById from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Page.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Page[] List of Page objects
-	 */
-	public function getPagesRelatedByIdJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageQuery::create(null, $criteria);
-		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
-
-		return $this->getPagesRelatedById($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Page is new, it will return
-	 * an empty collection; or if this Page has previously
-	 * been saved, it will retrieve related PagesRelatedById from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Page.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Page[] List of Page objects
-	 */
-	public function getPagesRelatedByIdJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageQuery::create(null, $criteria);
-		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
-
-		return $this->getPagesRelatedById($query, $con);
 	}
 
 	/**
@@ -2665,8 +2479,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id = null;
-		$this->parent_id = null;
-		$this->sort = null;
 		$this->name = null;
 		$this->page_type = null;
 		$this->template_name = null;
@@ -2674,6 +2486,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$this->is_folder = null;
 		$this->is_hidden = null;
 		$this->is_protected = null;
+		$this->tree_left = null;
+		$this->tree_right = null;
+		$this->tree_level = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
@@ -2698,11 +2513,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collPagesRelatedById) {
-				foreach ((array) $this->collPagesRelatedById as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collPagePropertys) {
 				foreach ((array) $this->collPagePropertys as $o) {
 					$o->clearAllReferences($deep);
@@ -2725,14 +2535,833 @@ abstract class BasePage extends BaseObject  implements Persistent
 			}
 		} // if ($deep)
 
-		$this->collPagesRelatedById = null;
+		// nested_set behavior
+		$this->collNestedSetChildren = null;
+		$this->aNestedSetParent = null;
 		$this->collPagePropertys = null;
 		$this->collPageStrings = null;
 		$this->collContentObjects = null;
 		$this->collRights = null;
-		$this->aPageRelatedByParentId = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
+	}
+
+	// nested_set behavior
+	
+	/**
+	 * Execute queries that were saved to be run inside the save transaction
+	 */
+	protected function processNestedSetQueries($con)
+	{
+		foreach ($this->nestedSetQueries as $query) {
+			$query['arguments'][]= $con;
+			call_user_func_array($query['callable'], $query['arguments']);
+		}
+		$this->nestedSetQueries = array();
+	}
+	
+	/**
+	 * Wraps the getter for the nested set left value
+	 *
+	 * @return     int
+	 */
+	public function getLeftValue()
+	{
+		return $this->tree_left;
+	}
+	
+	/**
+	 * Wraps the getter for the nested set right value
+	 *
+	 * @return     int
+	 */
+	public function getRightValue()
+	{
+		return $this->tree_right;
+	}
+	
+	/**
+	 * Wraps the getter for the nested set level
+	 *
+	 * @return     int
+	 */
+	public function getLevel()
+	{
+		return $this->tree_level;
+	}
+	
+	/**
+	 * Set the value left column
+	 *
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setLeftValue($v)
+	{
+		return $this->setTreeLeft($v);
+	}
+	
+	/**
+	 * Set the value of right column
+	 *
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setRightValue($v)
+	{
+		return $this->setTreeRight($v);
+	}
+	
+	/**
+	 * Set the value of level column
+	 *
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setLevel($v)
+	{
+		return $this->setTreeLevel($v);
+	}
+	
+	/**
+	 * Creates the supplied node as the root node.
+	 *
+	 * @return     Page The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function makeRoot()
+	{
+		if ($this->getLeftValue() || $this->getRightValue()) {
+			throw new PropelException('Cannot turn an existing node into a root node.');
+		}
+	
+		$this->setLeftValue(1);
+		$this->setRightValue(2);
+		$this->setLevel(0);
+		return $this;
+	}
+	
+	/**
+	 * Tests if onbject is a node, i.e. if it is inserted in the tree
+	 *
+	 * @return     bool
+	 */
+	public function isInTree()
+	{
+		return $this->getLeftValue() > 0 && $this->getRightValue() > $this->getLeftValue();
+	}
+	
+	/**
+	 * Tests if node is a root
+	 *
+	 * @return     bool
+	 */
+	public function isRoot()
+	{
+		return $this->isInTree() && $this->getLeftValue() == 1;
+	}
+	
+	/**
+	 * Tests if node is a leaf
+	 *
+	 * @return     bool
+	 */
+	public function isLeaf()
+	{
+		return $this->isInTree() &&  ($this->getRightValue() - $this->getLeftValue()) == 1;
+	}
+	
+	/**
+	 * Tests if node is a descendant of another node
+	 *
+	 * @param      Page $node Propel node object
+	 * @return     bool
+	 */
+	public function isDescendantOf($parent)
+	{
+		return $this->isInTree() && $this->getLeftValue() > $parent->getLeftValue() && $this->getRightValue() < $parent->getRightValue();
+	}
+	
+	/**
+	 * Tests if node is a ancestor of another node
+	 *
+	 * @param      Page $node Propel node object
+	 * @return     bool
+	 */
+	public function isAncestorOf($child)
+	{
+		return $child->isDescendantOf($this);
+	}
+	
+	/**
+	 * Tests if object has an ancestor
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     bool
+	 */
+	public function hasParent(PropelPDO $con = null)
+	{
+		return $this->getLevel() > 0;
+	}
+	
+	/**
+	 * Sets the cache for parent node of the current object.
+	 * Warning: this does not move the current object in the tree.
+	 * Use moveTofirstChildOf() or moveToLastChildOf() for that purpose
+	 *
+	 * @param      Page $parent
+	 * @return     Page The current object, for fluid interface
+	 */
+	public function setParent($parent = null)
+	{
+		$this->aNestedSetParent = $parent;
+		return $this;
+	}
+	
+	/**
+	 * Gets parent node for the current object if it exists
+	 * The result is cached so further calls to the same method don't issue any queries
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     mixed 		Propel object if exists else false
+	 */
+	public function getParent(PropelPDO $con = null)
+	{
+		if ($this->aNestedSetParent === null && $this->hasParent()) {
+			$this->aNestedSetParent = PageQuery::create()
+				->ancestorsOf($this)
+				->orderByLevel(true)
+				->findOne($con);
+		}
+		return $this->aNestedSetParent;
+	}
+	
+	/**
+	 * Determines if the node has previous sibling
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     bool
+	 */
+	public function hasPrevSibling(PropelPDO $con = null)
+	{
+		if (!PagePeer::isValid($this)) {
+			return false;
+		}
+		return PageQuery::create()
+			->filterByTreeRight($this->getLeftValue() - 1)
+			->count($con) > 0;
+	}
+	
+	/**
+	 * Gets previous sibling for the given node if it exists
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     mixed 		Propel object if exists else false
+	 */
+	public function getPrevSibling(PropelPDO $con = null)
+	{
+		return PageQuery::create()
+			->filterByTreeRight($this->getLeftValue() - 1)
+			->findOne($con);
+	}
+	
+	/**
+	 * Determines if the node has next sibling
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     bool
+	 */
+	public function hasNextSibling(PropelPDO $con = null)
+	{
+		if (!PagePeer::isValid($this)) {
+			return false;
+		}
+		return PageQuery::create()
+			->filterByTreeLeft($this->getRightValue() + 1)
+			->count($con) > 0;
+	}
+	
+	/**
+	 * Gets next sibling for the given node if it exists
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     mixed 		Propel object if exists else false
+	 */
+	public function getNextSibling(PropelPDO $con = null)
+	{
+		return PageQuery::create()
+			->filterByTreeLeft($this->getRightValue() + 1)
+			->findOne($con);
+	}
+	
+	/**
+	 * Clears out the $collNestedSetChildren collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 */
+	public function clearNestedSetChildren()
+	{
+		$this->collNestedSetChildren = null;
+	}
+	
+	/**
+	 * Initializes the $collNestedSetChildren collection.
+	 *
+	 * @return     void
+	 */
+	public function initNestedSetChildren()
+	{
+		$this->collNestedSetChildren = new PropelObjectCollection();
+		$this->collNestedSetChildren->setModel('Page');
+	}
+	
+	/**
+	 * Adds an element to the internal $collNestedSetChildren collection.
+	 * Beware that this doesn't insert a node in the tree.
+	 * This method is only used to facilitate children hydration.
+	 *
+	 * @param      Page $page
+	 *
+	 * @return     void
+	 */
+	public function addNestedSetChild($page)
+	{
+		if ($this->collNestedSetChildren === null) {
+			$this->initNestedSetChildren();
+		}
+		if (!$this->collNestedSetChildren->contains($page)) { // only add it if the **same** object is not already associated
+			$this->collNestedSetChildren[]= $page;
+			$page->setParent($this);
+		}
+	}
+	
+	/**
+	 * Tests if node has children
+	 *
+	 * @return     bool
+	 */
+	public function hasChildren()
+	{
+		return ($this->getRightValue() - $this->getLeftValue()) > 1;
+	}
+	
+	/**
+	 * Gets the children of the given node
+	 *
+	 * @param      Criteria  $criteria Criteria to filter results.
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array     List of Page objects
+	 */
+	public function getChildren($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collNestedSetChildren || null !== $criteria) {
+			if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
+				// return empty collection
+				$this->initNestedSetChildren();
+			} else {
+				$collNestedSetChildren = PageQuery::create(null, $criteria)
+	  			->childrenOf($this)
+	  			->orderByBranch()
+					->find($con);
+				if (null !== $criteria) {
+					return $collNestedSetChildren;
+				}
+				$this->collNestedSetChildren = $collNestedSetChildren;
+			}
+		}
+		return $this->collNestedSetChildren;
+	}
+	
+	/**
+	 * Gets number of children for the given node
+	 *
+	 * @param      Criteria  $criteria Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     int       Number of children
+	 */
+	public function countChildren($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collNestedSetChildren || null !== $criteria) {
+			if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
+				return 0;
+			} else {
+				return PageQuery::create(null, $criteria)
+					->childrenOf($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collNestedSetChildren);
+		}
+	}
+	
+	/**
+	 * Gets the first child of the given node
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array 		List of Page objects
+	 */
+	public function getFirstChild($query = null, PropelPDO $con = null)
+	{
+		if($this->isLeaf()) {
+			return array();
+		} else {
+			return PageQuery::create(null, $query)
+				->childrenOf($this)
+				->orderByBranch()
+				->findOne($con);
+		}
+	}
+	
+	/**
+	 * Gets the last child of the given node
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array 		List of Page objects
+	 */
+	public function getLastChild($query = null, PropelPDO $con = null)
+	{
+		if($this->isLeaf()) {
+			return array();
+		} else {
+			return PageQuery::create(null, $query)
+				->childrenOf($this)
+				->orderByBranch(true)
+				->findOne($con);
+		}
+	}
+	
+	/**
+	 * Gets the siblings of the given node
+	 *
+	 * @param      bool			$includeNode Whether to include the current node or not
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 *
+	 * @return     array 		List of Page objects
+	 */
+	public function getSiblings($includeNode = false, $query = null, PropelPDO $con = null)
+	{
+		if($this->isRoot()) {
+			return array();
+		} else {
+			 $query = PageQuery::create(null, $query)
+					->childrenOf($this->getParent($con))
+					->orderByBranch(true);
+			if (!$includeNode) {
+				$query->prune($this);
+			}
+			return $query->find($con);
+		}
+	}
+	
+	/**
+	 * Gets descendants for the given node
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array 		List of Page objects
+	 */
+	public function getDescendants($query = null, PropelPDO $con = null)
+	{
+		if($this->isLeaf()) {
+			return array();
+		} else {
+			return PageQuery::create(null, $query)
+				->descendantsOf($this)
+				->orderByBranch()
+				->find($con);
+		}
+	}
+	
+	/**
+	 * Gets number of descendants for the given node
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     int 		Number of descendants
+	 */
+	public function countDescendants($query = null, PropelPDO $con = null)
+	{
+		if($this->isLeaf()) {
+			// save one query
+			return 0;
+		} else {
+			return PageQuery::create(null, $query)
+				->descendantsOf($this)
+				->count($con);
+		}
+	}
+	
+	/**
+	 * Gets descendants for the given node, plus the current node
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array 		List of Page objects
+	 */
+	public function getBranch($query = null, PropelPDO $con = null)
+	{
+		return PageQuery::create(null, $query)
+			->branchOf($this)
+			->orderByBranch()
+			->find($con);
+	}
+	
+	/**
+	 * Gets ancestors for the given node, starting with the root node
+	 * Use it for breadcrumb paths for instance
+	 *
+	 * @param      Criteria $query Criteria to filter results. 
+	 * @param      PropelPDO $con Connection to use.
+	 * @return     array 		List of Page objects
+	 */
+	public function getAncestors($query = null, PropelPDO $con = null)
+	{
+		if($this->isRoot()) {
+			// save one query
+			return array();
+		} else {
+			return PageQuery::create(null, $query)
+				->ancestorsOf($this)
+				->orderByBranch()
+				->find($con);
+		}
+	}
+	
+	/**
+	 * Inserts the given $child node as first child of current
+	 * The modifications in the current object and the tree
+	 * are not persisted until the child object is saved.
+	 *
+	 * @param      Page $child	Propel object for child node
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function addChild(Page $child)
+	{
+		if ($this->isNew()) {
+			throw new PropelException('A Page object must not be new to accept children.');
+		}
+		$child->insertAsFirstChildOf($this);
+		return $this;
+	}
+	
+	/**
+	 * Inserts the current node as first child of given $parent node
+	 * The modifications in the current object and the tree
+	 * are not persisted until the current object is saved.
+	 *
+	 * @param      Page $parent	Propel object for parent node
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function insertAsFirstChildOf($parent)
+	{
+		if ($this->isInTree()) {
+			throw new PropelException('A Page object must not already be in the tree to be inserted. Use the moveToFirstChildOf() instead.');
+		}
+		$left = $parent->getLeftValue() + 1;
+		// Update node properties
+		$this->setLeftValue($left);
+		$this->setRightValue($left + 1);
+		$this->setLevel($parent->getLevel() + 1);
+		// update the children collection of the parent
+		$parent->addNestedSetChild($this);
+		
+		// Keep the tree modification query for the save() transaction
+		$this->nestedSetQueries []= array(
+			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
+			'arguments' => array($left)
+		);
+		return $this;
+	}
+	
+	/**
+	 * Inserts the current node as last child of given $parent node
+	 * The modifications in the current object and the tree
+	 * are not persisted until the current object is saved.
+	 *
+	 * @param      Page $parent	Propel object for parent node
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function insertAsLastChildOf($parent)
+	{
+		if ($this->isInTree()) {
+			throw new PropelException('A Page object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.');
+		}
+		$left = $parent->getRightValue();
+		// Update node properties
+		$this->setLeftValue($left);
+		$this->setRightValue($left + 1);
+		$this->setLevel($parent->getLevel() + 1);
+		// update the children collection of the parent
+		$parent->addNestedSetChild($this);
+		
+		// Keep the tree modification query for the save() transaction
+		$this->nestedSetQueries []= array(
+			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
+			'arguments' => array($left)
+		);
+		return $this;
+	}
+	
+	/**
+	 * Inserts the current node as prev sibling given $sibling node
+	 * The modifications in the current object and the tree
+	 * are not persisted until the current object is saved.
+	 *
+	 * @param      Page $sibling	Propel object for parent node
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function insertAsPrevSiblingOf($sibling)
+	{
+		if ($this->isInTree()) {
+			throw new PropelException('A Page object must not already be in the tree to be inserted. Use the moveToPrevSiblingOf() instead.');
+		}
+		$left = $sibling->getLeftValue();
+		// Update node properties
+		$this->setLeftValue($left);
+		$this->setRightValue($left + 1);
+		$this->setLevel($sibling->getLevel());
+		// Keep the tree modification query for the save() transaction
+		$this->nestedSetQueries []= array(
+			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
+			'arguments' => array($left)
+		);
+		return $this;
+	}
+	
+	/**
+	 * Inserts the current node as next sibling given $sibling node
+	 * The modifications in the current object and the tree
+	 * are not persisted until the current object is saved.
+	 *
+	 * @param      Page $sibling	Propel object for parent node
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function insertAsNextSiblingOf($sibling)
+	{
+		if ($this->isInTree()) {
+			throw new PropelException('A Page object must not already be in the tree to be inserted. Use the moveToNextSiblingOf() instead.');
+		}
+		$left = $sibling->getRightValue() + 1;
+		// Update node properties
+		$this->setLeftValue($left);
+		$this->setRightValue($left + 1);
+		$this->setLevel($sibling->getLevel());
+		// Keep the tree modification query for the save() transaction
+		$this->nestedSetQueries []= array(
+			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
+			'arguments' => array($left)
+		);
+		return $this;
+	}
+	
+	/**
+	 * Moves current node and its subtree to be the first child of $parent
+	 * The modifications in the current object and the tree are immediate
+	 *
+	 * @param      Page $parent	Propel object for parent node
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function moveToFirstChildOf($parent, PropelPDO $con = null)
+	{
+		if (!$this->isInTree()) {
+			throw new PropelException('A Page object must be already in the tree to be moved. Use the insertAsFirstChildOf() instead.');
+		}
+		if ($parent->isDescendantOf($this)) {
+			throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
+		}
+		
+		$this->moveSubtreeTo($parent->getLeftValue() + 1, $parent->getLevel() - $this->getLevel() + 1, $con);
+		
+		return $this;
+	}
+	
+	/**
+	 * Moves current node and its subtree to be the last child of $parent
+	 * The modifications in the current object and the tree are immediate
+	 *
+	 * @param      Page $parent	Propel object for parent node
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function moveToLastChildOf($parent, PropelPDO $con = null)
+	{
+		if (!$this->isInTree()) {
+			throw new PropelException('A Page object must be already in the tree to be moved. Use the insertAsLastChildOf() instead.');
+		}
+		if ($parent->isDescendantOf($this)) {
+			throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
+		}
+		
+		$this->moveSubtreeTo($parent->getRightValue(), $parent->getLevel() - $this->getLevel() + 1, $con);
+		
+		return $this;
+	}
+	
+	/**
+	 * Moves current node and its subtree to be the previous sibling of $sibling
+	 * The modifications in the current object and the tree are immediate
+	 *
+	 * @param      Page $sibling	Propel object for sibling node
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function moveToPrevSiblingOf($sibling, PropelPDO $con = null)
+	{
+		if (!$this->isInTree()) {
+			throw new PropelException('A Page object must be already in the tree to be moved. Use the insertAsPrevSiblingOf() instead.');
+		}
+		if ($sibling->isRoot()) {
+			throw new PropelException('Cannot move to previous sibling of a root node.');
+		}
+		if ($sibling->isDescendantOf($this)) {
+			throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
+		}
+		
+		$this->moveSubtreeTo($sibling->getLeftValue(), $sibling->getLevel() - $this->getLevel(), $con);
+		
+		return $this;
+	}
+	
+	/**
+	 * Moves current node and its subtree to be the next sibling of $sibling
+	 * The modifications in the current object and the tree are immediate
+	 *
+	 * @param      Page $sibling	Propel object for sibling node
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     Page The current Propel object
+	 */
+	public function moveToNextSiblingOf($sibling, PropelPDO $con = null)
+	{
+		if (!$this->isInTree()) {
+			throw new PropelException('A Page object must be already in the tree to be moved. Use the insertAsNextSiblingOf() instead.');
+		}
+		if ($sibling->isRoot()) {
+			throw new PropelException('Cannot move to next sibling of a root node.');
+		}
+		if ($sibling->isDescendantOf($this)) {
+			throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
+		}
+		
+		$this->moveSubtreeTo($sibling->getRightValue() + 1, $sibling->getLevel() - $this->getLevel(), $con);
+		
+		return $this;
+	}
+	
+	/**
+	 * Move current node and its children to location $destLeft and updates rest of tree
+	 *
+	 * @param      int	$destLeft Destination left value
+	 * @param      int	$levelDelta Delta to add to the levels
+	 * @param      PropelPDO $con		Connection to use.
+	 */
+	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null)
+	{
+		$left  = $this->getLeftValue();
+		$right = $this->getRightValue();
+	
+		$treeSize = $right - $left +1;
+		
+		if ($con === null) {
+			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+			
+		$con->beginTransaction();
+		try {
+			// make room next to the target for the subtree
+			PagePeer::shiftRLValues($treeSize, $destLeft, null, $con);
+		
+			if ($left >= $destLeft) { // src was shifted too?
+				$left += $treeSize;
+				$right += $treeSize;
+			}
+			
+			if ($levelDelta) {
+				// update the levels of the subtree
+				PagePeer::shiftLevel($levelDelta, $left, $right, $con);
+			}
+			
+			// move the subtree to the target
+			PagePeer::shiftRLValues($destLeft - $left, $left, $right, $con);
+		
+			// remove the empty room at the previous location of the subtree
+			PagePeer::shiftRLValues(-$treeSize, $right + 1, null, $con);
+			
+			// update all loaded nodes
+			PagePeer::updateLoadedNodes($con);
+			
+			$con->commit();
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Deletes all descendants for the given node
+	 * Instance pooling is wiped out by this command, 
+	 * so existing Page instances are probably invalid (except for the current one)
+	 *
+	 * @param      PropelPDO $con Connection to use.
+	 *
+	 * @return     int 		number of deleted nodes
+	 */
+	public function deleteDescendants(PropelPDO $con = null)
+	{
+		if($this->isLeaf()) {
+			// save one query
+			return;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$left = $this->getLeftValue();
+		$right = $this->getRightValue();
+		$con->beginTransaction();
+		try {
+			// delete descendant nodes (will empty the instance pool)
+			$ret = PageQuery::create()
+				->descendantsOf($this)
+				->delete($con);
+			
+			// fill up the room that was used by descendants
+			PagePeer::shiftRLValues($left - $right + 1, $right, null, $con);
+			
+			// fix the right value for the current node, which is now a leaf
+			$this->setRightValue($left + 1);
+			
+			$con->commit();
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+		
+		return $ret;
+	}
+	
+	/**
+	 * Returns a pre-order iterator for this node and its children.
+	 *
+	 * @return     RecursiveIterator
+	 */
+	public function getIterator()
+	{
+		return new NestedSetRecursiveIterator($this);
 	}
 
 	// extended_timestampable behavior

@@ -14,7 +14,7 @@ class DisplayDocumentFileModule extends FileModule {
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
 			LinkUtil::redirect(LinkUtil::link(PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'))->getLink(), "FrontendManager"));
 			break;
-		}	 
+		}
 	}
 	
 	protected function isAuthenticated() {
@@ -41,8 +41,10 @@ class DisplayDocumentFileModule extends FileModule {
 			$oCache->passContents(true);exit;
 		}
 		
+		$rDataStream = $this->oDocument->getData();
+		
 		if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
-			$oImage = Image::imageFromData(stream_get_contents($this->oDocument->getData()));
+			$oImage = Image::imageFromData(stream_get_contents($rDataStream));
 			if(is_int($mMaxWidth) && is_int($mMaxHeight)) {
 				$oImage->setSize($mMaxWidth, $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
 			} else if(is_int($mMaxWidth)) {
@@ -57,15 +59,16 @@ class DisplayDocumentFileModule extends FileModule {
 			} else {
 				//Free up space
 				$oImage->destroy();
+				rewind($rDataStream);
 			}
 		}
 		
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
-		$oCache->setContents(stream_get_contents($this->oDocument->getData()));
+		$oCache->setContents(stream_get_contents($rDataStream));
 		$oCache->sendCacheControlHeaders($iTimestamp);
-		rewind($this->oDocument->getData());
-		fpassthru($this->oDocument->getData());
+		rewind($rDataStream);
+		fpassthru($rDataStream);
 	}
 }
 ?>

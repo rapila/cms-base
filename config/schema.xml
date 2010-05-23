@@ -1,14 +1,11 @@
 <table name="pages" phpName="Page">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-	<column name="parent_id" type="integer" required="false" />
-	<foreign-key foreignTable="pages" onDelete="restrict">
-		<reference local="parent_id" foreign="id" />
-	</foreign-key>
+	<!--
 	<unique>
 		<unique-column name="parent_id" />
 		<unique-column name="name" />
 	</unique>
-	<column name="sort" type="integer" />
+	-->
 	<column name="name" type="varchar" size="50" />
 	<column name="page_type" type="varchar" size="15" />
 	<column name="template_name" type="varchar" size="50" />
@@ -16,6 +13,7 @@
 	<column name="is_folder" type="boolean" size="1" default="0" />
 	<column name="is_hidden" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
+	<behavior name="nested_set" />
 </table>
 
 <table name="page_properties" phpName="PageProperty">
@@ -41,6 +39,7 @@
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
+	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="title" type="varchar" size="50" default="" />
 	<column name="long_title" type="varchar" size="255" required="true" />
 	<column name="keywords" type="varchar" size="255" required="false" />

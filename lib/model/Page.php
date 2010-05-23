@@ -15,16 +15,15 @@ class Page extends BasePage {
 	private $aFullPathArray = null;
 	
 	public function getChildByName($sName) {
-		$aChildren = $this->getChildren();
-		foreach($aChildren as $oChild) {
-			if($oChild->getName() === $sName) {
-				return $oChild;
-			}
+		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
+		if($oPage === null) {
+			return null;
 		}
-		return null;
+		$oPage->aNestedSetParent = $this;
+		return $oPage;
 	}
 
-	public function getActivePageString($sLanguageId=null) {
+	public function getActivePageString($sLanguageId = null) {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
@@ -36,7 +35,7 @@ class Page extends BasePage {
 			$oResult = $this->getPageStrings();
 			if(count($oResult) === 0) {
 				throw new Exception("No PageString defined for Page ".$this->getName());
-				// FIXME getActivePageString in case of missing root page should be redirected to Form Page......
+				// FIXME getActivePageString in case of missing root page should be redirected to Form Page…
 			}
 			$oResult = $oResult[0];
 		}
@@ -157,85 +156,70 @@ class Page extends BasePage {
 		return $this->getPageStringByLanguage($sLanguageId) !== null;
 	}
 
-	public function hasChildren($sLanguageId=null) {
-		return count($this->getChildren($sLanguageId)) > 0;
+	public function hasChildren($sLanguageId = null) {
+		return count($this->getChildrenWithLanguage($sLanguageId)) > 0;
 	}
-
-	public function getChildren($sLanguageId=null) {
-		$aChildren;
-		if($this->collPagesRelatedById !== null) {
-			$aChildren = $this->collPagesRelatedById;
-		} else {
-			$aChildren = $this->getChildrenSortedBySort();
+	
+	public function getChildren($oCriteria = null, PropelPDO $oConnection = null) {
+		if($oCriteria !== null) {
+			$aResult = parent::getChildren($oCriteria, $oConnection);
+			foreach($aResult as $oChild) {
+				$oChild->aNestedSetParent = $this;
+			}
+			return $aResult;
 		}
-		if($sLanguageId === null) {
-			return $aChildren;
-		}
-		foreach($aChildren as $iKey => $oPage) {
-			if($oPage->getPageStringByLanguage($sLanguageId) === null) {
-				unset($aChildren[$iKey]);
+		if($this->collNestedSetChildren === null) {
+			parent::getChildren($oCriteria, $oConnection);
+			foreach($this->collNestedSetChildren as $oChild) {
+				$oChild->aNestedSetParent = $this;
 			}
 		}
-		return $aChildren;
+		return $this->collNestedSetChildren;
 	}
-
-	private function getChildrenSortedBySort() {
-		$oCriteria = new Criteria();
-		$oCriteria->addAscendingOrderByColumn(PagePeer::SORT);
-		$aResult = $this->getPagesRelatedById($oCriteria);
-		foreach($aResult as $oPage) {
-			$oPage->aPageRelatedByParentId = $this;
+	public function getEnabledChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsInactive(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
 		}
-		return $aResult;
+		return $this->getChildren($oCriteria);
 	}
 
-	public function getEnabledChildren($sLanguageId=null) {
-		$aChildren = $this->getChildren();
-		$aResult = array();
-		foreach($aChildren as $oPage) {
-			if(!$oPage->getIsInactive() && ($sLanguageId === null || $oPage->getPageStringByLanguage($sLanguageId) !== null)) {
-				$aResult[] = $oPage;
-			}
+	public function getVisibleChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsHidden(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
 		}
-		return $aResult;
+		return $this->getChildren($oCriteria);
 	}
 
-	public function getVisibleChildren($sLanguageId=null) {
-		$aChildren = $this->getChildren();
-		$aResult = array();
-		foreach($aChildren as $oPage) {
-			if(!$oPage->getIsHidden() && ($sLanguageId === null || $oPage->getPageStringByLanguage($sLanguageId) !== null)) {
-				$aResult[] = $oPage;
-			}
+	public function getEnabledAndVisibleChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsHidden(false)->filterByIsInactive(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
 		}
-		return $aResult;
+		return $this->getChildren($oCriteria);
 	}
 
-	public function getEnabledAndVisibleChildren($sLanguageId=null) {
-		$aChildren = $this->getChildren();
-		$aResult = array();
-		foreach($aChildren as $oPage) {
-			if(!$oPage->getIsInactive() && !$oPage->getIsHidden() && ($sLanguageId === null || $oPage->getPageStringByLanguage($sLanguageId) !== null)) {
-				$aResult[] = $oPage;
-			}
-		}
-		return $aResult;
-	}
-
-	public function hasEnabledChildren($sLanguageId=null) {
+	public function hasEnabledChildren($sLanguageId = null) {
 		return count($this->getEnabledChildren($sLanguageId)) > 0;
 	}
 
-	public function hasVisibleChildren($sLanguageId=null) {
+	public function hasVisibleChildren($sLanguageId = null) {
 		return count($this->getVisibleChildren($sLanguageId)) > 0;
 	}
 
-	public function hasEnabledAndVisibleChildren($sLanguageId=null) {
+	public function hasEnabledAndVisibleChildren($sLanguageId = null) {
 		return count($this->getEnabledAndVisibleChildren($sLanguageId)) > 0;
 	}
 
-	public function getChildrenWithLanguage($sLanguageId) {
+	public function getChildrenWithLanguage($sLanguageId = null) {
 		$aChildren = $this->getChildren();
+		if($sLanguageId === null) {
+			return $aChildren;
+		}
 		$aResult = array();
 		foreach($aChildren as $oChild) {
 			if($oChild->hasLanguage($sLanguageId)) {
@@ -247,13 +231,6 @@ class Page extends BasePage {
 
 	public function getChildrenWithCurrentLanguage() {
 		return $this->getChildrenWithLanguage(Session::language());
-	}
-
-	public function getParent() {
-		if($this->isRoot()) {
-			return null;
-		}
-		return $this->getPageRelatedByParentId();
 	}
 
 	public function isCurrent() {
@@ -283,23 +260,6 @@ class Page extends BasePage {
 			}
 		}
 		return false;
-	}
-	
-	public function getSiblings($bSiblingsOnly=true) {
-		$oParent = $this->getParent();
-		if($oParent == null) {
-			return array();
-		}
-		$aResult = $oParent->getChildren();
-		if($bSiblingsOnly) {
-			foreach($aResult as $iKey => $oPossibleSibling) {
-				if($oPossibleSibling->getId() === $this->getId()) {
-					unset($aResult[$iKey]);
-					break;
-				}
-			}
-		}
-		return $aResult;
 	}
 
 	public function isSiblingOfCurrent() {
@@ -336,18 +296,6 @@ class Page extends BasePage {
 		return false;
 	}
 
-	public function isRoot() {
-		if($this->bIsRoot !== null) {
-			return $this->bIsRoot;
-		}
-		if($this->getPageRelatedByParentId() === null) {
-			$this->bIsRoot = true;
-		} else {
-			$this->bIsRoot = false;
-		}
-		return $this->bIsRoot;
-	}
-	
 	public function isLoginPage() {
 		return $this->isOfType('login');
 	}
@@ -356,25 +304,15 @@ class Page extends BasePage {
 		return $this->getPageType() === $sType;
 	}
 
-	public function getLevel() {
-		$iResult = 0;
-		$oParent = $this->getParent();
-		while($oParent !== null) {
-			$iResult++;
-			$oParent = $oParent->getParent();
-		}
-		return $iResult;
-	}
-
-	public function getLongTitle($sLanguageId=null) {
+	public function getLongTitle($sLanguageId = null) {
 		throw new Exception("Warning: used deprecated method Page->getLongTitle()");
 	}
 
-	public function getTitle($sLanguageId=null) {
+	public function getTitle($sLanguageId = null) {
 		throw new Exception("Warning: used deprecated method Page->getTitle()");
 	}
 
-	public function getLinkText($sLanguageId=null) {
+	public function getLinkText($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
 			return $oActivePageString->getLinkText();
@@ -382,14 +320,14 @@ class Page extends BasePage {
 		return null;
 	}
 	
-	public function getLinkTextIfExists($sLanguageId=null) {
+	public function getLinkTextIfExists($sLanguageId = null) {
 		if ($this->getLinkText($sLanguageId)) {
 			return $this->getLinkText($sLanguageId);
 		}
 		return $this->getName();
 	}
 
-	public function getLinkTextOnly($sLanguageId=null) {
+	public function getLinkTextOnly($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
 			return $oActivePageString->getLinkTextOnly();
@@ -397,7 +335,7 @@ class Page extends BasePage {
 		return null;
 	}
 
-	public function getPageTitle($sLanguageId=null) {
+	public function getPageTitle($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
 			return $oActivePageString->getPageTitle();

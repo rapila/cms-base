@@ -141,7 +141,7 @@ EOT;
 		$sClassName = "$sClassName$sSuffix.php";
 		$sClass = "$sDestination/$sClassName";
 		if(!file_exists($sClass)) {
-			print "Moving user-modifiable $sClassName to $sClass";
+			print "Moving user-modifiable $sClassName to $sClass\n";
 			rename($sPath, $sClass);
 		} else {
 			print "[Deleting generated $sClassName because user-modified version exists]\n";

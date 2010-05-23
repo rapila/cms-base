@@ -36,6 +36,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	protected $language_id;
 
 	/**
+	 * The value for the is_inactive field.
+	 * Note: this column has a database default value of: false
+	 * @var        boolean
+	 */
+	protected $is_inactive;
+
+	/**
 	 * The value for the title field.
 	 * Note: this column has a database default value of: ''
 	 * @var        string
@@ -120,6 +127,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
+		$this->is_inactive = false;
 		$this->title = '';
 	}
 
@@ -151,6 +159,16 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getLanguageId()
 	{
 		return $this->language_id;
+	}
+
+	/**
+	 * Get the [is_inactive] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getIsInactive()
+	{
+		return $this->is_inactive;
 	}
 
 	/**
@@ -326,6 +344,26 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 		return $this;
 	} // setLanguageId()
+
+	/**
+	 * Set the value of [is_inactive] column.
+	 * 
+	 * @param      boolean $v new value
+	 * @return     PageString The current object (for fluent API support)
+	 */
+	public function setIsInactive($v)
+	{
+		if ($v !== null) {
+			$v = (boolean) $v;
+		}
+
+		if ($this->is_inactive !== $v || $this->isNew()) {
+			$this->is_inactive = $v;
+			$this->modifiedColumns[] = PageStringPeer::IS_INACTIVE;
+		}
+
+		return $this;
+	} // setIsInactive()
 
 	/**
 	 * Set the value of [title] column.
@@ -543,6 +581,10 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->is_inactive !== false) {
+				return false;
+			}
+
 			if ($this->title !== '') {
 				return false;
 			}
@@ -571,13 +613,14 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 			$this->page_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->language_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->title = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->long_title = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->keywords = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->created_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->updated_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->created_by = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->updated_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->is_inactive = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
+			$this->title = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->long_title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->keywords = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->created_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->updated_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -586,7 +629,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 9; // 9 = PageStringPeer::NUM_COLUMNS - PageStringPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 10; // 10 = PageStringPeer::NUM_COLUMNS - PageStringPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating PageString object", $e);
@@ -992,24 +1035,27 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				return $this->getLanguageId();
 				break;
 			case 2:
-				return $this->getTitle();
+				return $this->getIsInactive();
 				break;
 			case 3:
-				return $this->getLongTitle();
+				return $this->getTitle();
 				break;
 			case 4:
-				return $this->getKeywords();
+				return $this->getLongTitle();
 				break;
 			case 5:
-				return $this->getCreatedAt();
+				return $this->getKeywords();
 				break;
 			case 6:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 7:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 8:
+				return $this->getCreatedBy();
+				break;
+			case 9:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1038,13 +1084,14 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getPageId(),
 			$keys[1] => $this->getLanguageId(),
-			$keys[2] => $this->getTitle(),
-			$keys[3] => $this->getLongTitle(),
-			$keys[4] => $this->getKeywords(),
-			$keys[5] => $this->getCreatedAt(),
-			$keys[6] => $this->getUpdatedAt(),
-			$keys[7] => $this->getCreatedBy(),
-			$keys[8] => $this->getUpdatedBy(),
+			$keys[2] => $this->getIsInactive(),
+			$keys[3] => $this->getTitle(),
+			$keys[4] => $this->getLongTitle(),
+			$keys[5] => $this->getKeywords(),
+			$keys[6] => $this->getCreatedAt(),
+			$keys[7] => $this->getUpdatedAt(),
+			$keys[8] => $this->getCreatedBy(),
+			$keys[9] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aPage) {
@@ -1097,24 +1144,27 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->setLanguageId($value);
 				break;
 			case 2:
-				$this->setTitle($value);
+				$this->setIsInactive($value);
 				break;
 			case 3:
-				$this->setLongTitle($value);
+				$this->setTitle($value);
 				break;
 			case 4:
-				$this->setKeywords($value);
+				$this->setLongTitle($value);
 				break;
 			case 5:
-				$this->setCreatedAt($value);
+				$this->setKeywords($value);
 				break;
 			case 6:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 7:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 8:
+				$this->setCreatedBy($value);
+				break;
+			case 9:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1143,13 +1193,14 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setPageId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setLanguageId($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setTitle($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setLongTitle($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setKeywords($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setCreatedBy($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setUpdatedBy($arr[$keys[8]]);
+		if (array_key_exists($keys[2], $arr)) $this->setIsInactive($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setTitle($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setLongTitle($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setKeywords($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setCreatedBy($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setUpdatedBy($arr[$keys[9]]);
 	}
 
 	/**
@@ -1163,6 +1214,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(PageStringPeer::PAGE_ID)) $criteria->add(PageStringPeer::PAGE_ID, $this->page_id);
 		if ($this->isColumnModified(PageStringPeer::LANGUAGE_ID)) $criteria->add(PageStringPeer::LANGUAGE_ID, $this->language_id);
+		if ($this->isColumnModified(PageStringPeer::IS_INACTIVE)) $criteria->add(PageStringPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(PageStringPeer::TITLE)) $criteria->add(PageStringPeer::TITLE, $this->title);
 		if ($this->isColumnModified(PageStringPeer::LONG_TITLE)) $criteria->add(PageStringPeer::LONG_TITLE, $this->long_title);
 		if ($this->isColumnModified(PageStringPeer::KEYWORDS)) $criteria->add(PageStringPeer::KEYWORDS, $this->keywords);
@@ -1240,6 +1292,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	{
 		$copyObj->setPageId($this->page_id);
 		$copyObj->setLanguageId($this->language_id);
+		$copyObj->setIsInactive($this->is_inactive);
 		$copyObj->setTitle($this->title);
 		$copyObj->setLongTitle($this->long_title);
 		$copyObj->setKeywords($this->keywords);
@@ -1492,6 +1545,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	{
 		$this->page_id = null;
 		$this->language_id = null;
+		$this->is_inactive = null;
 		$this->title = null;
 		$this->long_title = null;
 		$this->keywords = null;

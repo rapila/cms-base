@@ -195,3 +195,11 @@ ALTER TABLE `users_groups` ADD `created_at` DATETIME;
 ALTER TABLE `users_groups` ADD `updated_at` DATETIME;
 ALTER TABLE `users_groups` ADD `created_by` INTEGER;
 ALTER TABLE `users_groups` ADD `updated_by` INTEGER;
+
+#svn r2447
+ALTER TABLE `page_strings` ADD `is_inactive` TINYINT(1) default 0;
+ALTER TABLE `pages` ADD `tree_left` INTEGER;
+ALTER TABLE `pages` ADD `tree_right` INTEGER;
+ALTER TABLE `pages` ADD `tree_level` INTEGER;
+-- after mini_cms_migrate_adjacency_list_to_nested_set.sh
+ALTER TABLE `pages` DROP `parent_id`, DROP `sort`;
