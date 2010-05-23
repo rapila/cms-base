@@ -9,8 +9,8 @@
  * @method     PageStringQuery orderByPageId($order = Criteria::ASC) Order by the page_id column
  * @method     PageStringQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     PageStringQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
- * @method     PageStringQuery orderByTitle($order = Criteria::ASC) Order by the title column
- * @method     PageStringQuery orderByLongTitle($order = Criteria::ASC) Order by the long_title column
+ * @method     PageStringQuery orderByLinkText($order = Criteria::ASC) Order by the link_text column
+ * @method     PageStringQuery orderByPageTitle($order = Criteria::ASC) Order by the page_title column
  * @method     PageStringQuery orderByKeywords($order = Criteria::ASC) Order by the keywords column
  * @method     PageStringQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     PageStringQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -20,8 +20,8 @@
  * @method     PageStringQuery groupByPageId() Group by the page_id column
  * @method     PageStringQuery groupByLanguageId() Group by the language_id column
  * @method     PageStringQuery groupByIsInactive() Group by the is_inactive column
- * @method     PageStringQuery groupByTitle() Group by the title column
- * @method     PageStringQuery groupByLongTitle() Group by the long_title column
+ * @method     PageStringQuery groupByLinkText() Group by the link_text column
+ * @method     PageStringQuery groupByPageTitle() Group by the page_title column
  * @method     PageStringQuery groupByKeywords() Group by the keywords column
  * @method     PageStringQuery groupByCreatedAt() Group by the created_at column
  * @method     PageStringQuery groupByUpdatedAt() Group by the updated_at column
@@ -52,8 +52,8 @@
  * @method     PageString findOneByPageId(int $page_id) Return the first PageString filtered by the page_id column
  * @method     PageString findOneByLanguageId(string $language_id) Return the first PageString filtered by the language_id column
  * @method     PageString findOneByIsInactive(boolean $is_inactive) Return the first PageString filtered by the is_inactive column
- * @method     PageString findOneByTitle(string $title) Return the first PageString filtered by the title column
- * @method     PageString findOneByLongTitle(string $long_title) Return the first PageString filtered by the long_title column
+ * @method     PageString findOneByLinkText(string $link_text) Return the first PageString filtered by the link_text column
+ * @method     PageString findOneByPageTitle(string $page_title) Return the first PageString filtered by the page_title column
  * @method     PageString findOneByKeywords(string $keywords) Return the first PageString filtered by the keywords column
  * @method     PageString findOneByCreatedAt(string $created_at) Return the first PageString filtered by the created_at column
  * @method     PageString findOneByUpdatedAt(string $updated_at) Return the first PageString filtered by the updated_at column
@@ -63,8 +63,8 @@
  * @method     array findByPageId(int $page_id) Return PageString objects filtered by the page_id column
  * @method     array findByLanguageId(string $language_id) Return PageString objects filtered by the language_id column
  * @method     array findByIsInactive(boolean $is_inactive) Return PageString objects filtered by the is_inactive column
- * @method     array findByTitle(string $title) Return PageString objects filtered by the title column
- * @method     array findByLongTitle(string $long_title) Return PageString objects filtered by the long_title column
+ * @method     array findByLinkText(string $link_text) Return PageString objects filtered by the link_text column
+ * @method     array findByPageTitle(string $page_title) Return PageString objects filtered by the page_title column
  * @method     array findByKeywords(string $keywords) Return PageString objects filtered by the keywords column
  * @method     array findByCreatedAt(string $created_at) Return PageString objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return PageString objects filtered by the updated_at column
@@ -247,51 +247,51 @@ abstract class BasePageStringQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the title column
+	 * Filter the query on the link_text column
 	 * 
-	 * @param     string $title The value to use as filter.
+	 * @param     string $linkText The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function filterByTitle($title = null, $comparison = null)
+	public function filterByLinkText($linkText = null, $comparison = null)
 	{
-		if (is_array($title)) {
+		if (is_array($linkText)) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
-		} elseif (preg_match('/[\%\*]/', $title)) {
-			$title = str_replace('*', '%', $title);
+		} elseif (preg_match('/[\%\*]/', $linkText)) {
+			$linkText = str_replace('*', '%', $linkText);
 			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(PageStringPeer::TITLE, $title, $comparison);
+		return $this->addUsingAlias(PageStringPeer::LINK_TEXT, $linkText, $comparison);
 	}
 
 	/**
-	 * Filter the query on the long_title column
+	 * Filter the query on the page_title column
 	 * 
-	 * @param     string $longTitle The value to use as filter.
+	 * @param     string $pageTitle The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function filterByLongTitle($longTitle = null, $comparison = null)
+	public function filterByPageTitle($pageTitle = null, $comparison = null)
 	{
-		if (is_array($longTitle)) {
+		if (is_array($pageTitle)) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
-		} elseif (preg_match('/[\%\*]/', $longTitle)) {
-			$longTitle = str_replace('*', '%', $longTitle);
+		} elseif (preg_match('/[\%\*]/', $pageTitle)) {
+			$pageTitle = str_replace('*', '%', $pageTitle);
 			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(PageStringPeer::LONG_TITLE, $longTitle, $comparison);
+		return $this->addUsingAlias(PageStringPeer::PAGE_TITLE, $pageTitle, $comparison);
 	}
 
 	/**

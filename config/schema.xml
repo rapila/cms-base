@@ -40,8 +40,8 @@
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
 	<column name="is_inactive" type="boolean" size="1" default="0" />
-	<column name="title" type="varchar" size="50" default="" />
-	<column name="long_title" type="varchar" size="255" required="true" />
+	<column name="link_text" type="varchar" size="50" default="" />
+	<column name="page_title" type="varchar" size="255" required="true" />
 	<column name="keywords" type="varchar" size="255" required="false" />
 </table>
 

@@ -2,11 +2,11 @@
     <div style="display:{{display_style}};">
       <div>
         <label for="long_title_{{language_id}}">{{writeString=page.title}}</label>
-        <input type="text" id="long_title_{{language_id}}" name="long_title[{{language_id}}]" value="{{long_title}}" size="40" />
+        <input type="text" id="long_title_{{language_id}}" name="long_title[{{language_id}}]" value="{{page_title}}" size="40" />
       </div>
       <div>
         <label for="title_{{language_id}}">{{writeString=page.title_short}}</label>
-        <input class="short" type="text" id="title_{{language_id}}" name="title[{{language_id}}]" value="{{title}}" size="20" />
+        <input class="short" type="text" id="title_{{language_id}}" name="title[{{language_id}}]" value="{{link_text}}" size="20" />
       </div>
       <div>
         <label for="keywords_{{language_id}}" class="helptext dimm" title="{{writeString=helptext.keywords}}">[{{writeString=page.keywords}}]</label>

@@ -43,17 +43,17 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	protected $is_inactive;
 
 	/**
-	 * The value for the title field.
+	 * The value for the link_text field.
 	 * Note: this column has a database default value of: ''
 	 * @var        string
 	 */
-	protected $title;
+	protected $link_text;
 
 	/**
-	 * The value for the long_title field.
+	 * The value for the page_title field.
 	 * @var        string
 	 */
-	protected $long_title;
+	protected $page_title;
 
 	/**
 	 * The value for the keywords field.
@@ -128,7 +128,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function applyDefaultValues()
 	{
 		$this->is_inactive = false;
-		$this->title = '';
+		$this->link_text = '';
 	}
 
 	/**
@@ -172,23 +172,23 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [title] column value.
+	 * Get the [link_text] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getTitle()
+	public function getLinkText()
 	{
-		return $this->title;
+		return $this->link_text;
 	}
 
 	/**
-	 * Get the [long_title] column value.
+	 * Get the [page_title] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getLongTitle()
+	public function getPageTitle()
 	{
-		return $this->long_title;
+		return $this->page_title;
 	}
 
 	/**
@@ -366,44 +366,44 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	} // setIsInactive()
 
 	/**
-	 * Set the value of [title] column.
+	 * Set the value of [link_text] column.
 	 * 
 	 * @param      string $v new value
 	 * @return     PageString The current object (for fluent API support)
 	 */
-	public function setTitle($v)
+	public function setLinkText($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->title !== $v || $this->isNew()) {
-			$this->title = $v;
-			$this->modifiedColumns[] = PageStringPeer::TITLE;
+		if ($this->link_text !== $v || $this->isNew()) {
+			$this->link_text = $v;
+			$this->modifiedColumns[] = PageStringPeer::LINK_TEXT;
 		}
 
 		return $this;
-	} // setTitle()
+	} // setLinkText()
 
 	/**
-	 * Set the value of [long_title] column.
+	 * Set the value of [page_title] column.
 	 * 
 	 * @param      string $v new value
 	 * @return     PageString The current object (for fluent API support)
 	 */
-	public function setLongTitle($v)
+	public function setPageTitle($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->long_title !== $v) {
-			$this->long_title = $v;
-			$this->modifiedColumns[] = PageStringPeer::LONG_TITLE;
+		if ($this->page_title !== $v) {
+			$this->page_title = $v;
+			$this->modifiedColumns[] = PageStringPeer::PAGE_TITLE;
 		}
 
 		return $this;
-	} // setLongTitle()
+	} // setPageTitle()
 
 	/**
 	 * Set the value of [keywords] column.
@@ -585,7 +585,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				return false;
 			}
 
-			if ($this->title !== '') {
+			if ($this->link_text !== '') {
 				return false;
 			}
 
@@ -614,8 +614,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$this->page_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->language_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->is_inactive = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
-			$this->title = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->long_title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->link_text = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->page_title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->keywords = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
@@ -1038,10 +1038,10 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				return $this->getIsInactive();
 				break;
 			case 3:
-				return $this->getTitle();
+				return $this->getLinkText();
 				break;
 			case 4:
-				return $this->getLongTitle();
+				return $this->getPageTitle();
 				break;
 			case 5:
 				return $this->getKeywords();
@@ -1085,8 +1085,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$keys[0] => $this->getPageId(),
 			$keys[1] => $this->getLanguageId(),
 			$keys[2] => $this->getIsInactive(),
-			$keys[3] => $this->getTitle(),
-			$keys[4] => $this->getLongTitle(),
+			$keys[3] => $this->getLinkText(),
+			$keys[4] => $this->getPageTitle(),
 			$keys[5] => $this->getKeywords(),
 			$keys[6] => $this->getCreatedAt(),
 			$keys[7] => $this->getUpdatedAt(),
@@ -1147,10 +1147,10 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->setIsInactive($value);
 				break;
 			case 3:
-				$this->setTitle($value);
+				$this->setLinkText($value);
 				break;
 			case 4:
-				$this->setLongTitle($value);
+				$this->setPageTitle($value);
 				break;
 			case 5:
 				$this->setKeywords($value);
@@ -1194,8 +1194,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if (array_key_exists($keys[0], $arr)) $this->setPageId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setLanguageId($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setIsInactive($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setTitle($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setLongTitle($arr[$keys[4]]);
+		if (array_key_exists($keys[3], $arr)) $this->setLinkText($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setPageTitle($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setKeywords($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
@@ -1215,8 +1215,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PageStringPeer::PAGE_ID)) $criteria->add(PageStringPeer::PAGE_ID, $this->page_id);
 		if ($this->isColumnModified(PageStringPeer::LANGUAGE_ID)) $criteria->add(PageStringPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(PageStringPeer::IS_INACTIVE)) $criteria->add(PageStringPeer::IS_INACTIVE, $this->is_inactive);
-		if ($this->isColumnModified(PageStringPeer::TITLE)) $criteria->add(PageStringPeer::TITLE, $this->title);
-		if ($this->isColumnModified(PageStringPeer::LONG_TITLE)) $criteria->add(PageStringPeer::LONG_TITLE, $this->long_title);
+		if ($this->isColumnModified(PageStringPeer::LINK_TEXT)) $criteria->add(PageStringPeer::LINK_TEXT, $this->link_text);
+		if ($this->isColumnModified(PageStringPeer::PAGE_TITLE)) $criteria->add(PageStringPeer::PAGE_TITLE, $this->page_title);
 		if ($this->isColumnModified(PageStringPeer::KEYWORDS)) $criteria->add(PageStringPeer::KEYWORDS, $this->keywords);
 		if ($this->isColumnModified(PageStringPeer::CREATED_AT)) $criteria->add(PageStringPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(PageStringPeer::UPDATED_AT)) $criteria->add(PageStringPeer::UPDATED_AT, $this->updated_at);
@@ -1293,8 +1293,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$copyObj->setPageId($this->page_id);
 		$copyObj->setLanguageId($this->language_id);
 		$copyObj->setIsInactive($this->is_inactive);
-		$copyObj->setTitle($this->title);
-		$copyObj->setLongTitle($this->long_title);
+		$copyObj->setLinkText($this->link_text);
+		$copyObj->setPageTitle($this->page_title);
 		$copyObj->setKeywords($this->keywords);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
@@ -1546,8 +1546,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$this->page_id = null;
 		$this->language_id = null;
 		$this->is_inactive = null;
-		$this->title = null;
-		$this->long_title = null;
+		$this->link_text = null;
+		$this->page_title = null;
 		$this->keywords = null;
 		$this->created_at = null;
 		$this->updated_at = null;

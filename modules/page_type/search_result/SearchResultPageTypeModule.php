@@ -42,8 +42,8 @@ class SearchResultPageTypeModule extends PageTypeModule {
       $iResultCount++;
       $oResultTemplate = new Template($sResultTemplateName);
       $oResultTemplate->replaceIdentifier('link', LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
-      $oResultTemplate->replaceIdentifier('title', $oPage->getPageTitle());
-      $oResultTemplate->replaceIdentifier('long_title', $oPage->getLinkText());
+      $oResultTemplate->replaceIdentifier('page_title', $oPage->getPageTitle());
+      $oResultTemplate->replaceIdentifier('link_text', $oPage->getLinkText());
       $oResultTemplate->replaceIdentifier('id', $oPage->getId());
       $oResultTemplate->replaceIdentifier('name', $oPage->getName());
       $oResultTemplate->replaceIdentifier('count', $iCount);

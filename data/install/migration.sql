@@ -203,3 +203,8 @@ ALTER TABLE `pages` ADD `tree_right` INTEGER;
 ALTER TABLE `pages` ADD `tree_level` INTEGER;
 -- after mini_cms_migrate_adjacency_list_to_nested_set.sh
 ALTER TABLE `pages` DROP `parent_id`, DROP `sort`;
+
+#svn r2449
+ALTER TABLE `page_strings` CHANGE `title` `link_text` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `page_strings` CHANGE `long_title` `page_title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+

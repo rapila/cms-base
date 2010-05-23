@@ -284,8 +284,8 @@ class PagesBackendModule extends BackendModule {
 				$oPageString = $this->oPage->getPageStringByLanguage($oLanguage->getId());
 				$oTitleTemplate = $this->constructTemplate("title");
 				if($oPageString !== null) {
-					$oTitleTemplate->replaceIdentifier("title", $oPageString->getTitle());
-					$oTitleTemplate->replaceIdentifier("long_title", $oPageString->getLongTitle());
+					$oTitleTemplate->replaceIdentifier("link_text", $oPageString->getLinkTextOnly());
+					$oTitleTemplate->replaceIdentifier("page_title", $oPageString->getPageTitle());
 					$oTitleTemplate->replaceIdentifier("keywords", $oPageString->getKeywords());
 				}
 				$oTitleTemplate->replaceIdentifier("language_id", $oLanguage->getId());
@@ -646,14 +646,14 @@ class PagesBackendModule extends BackendModule {
 		$aOptionsArray = array();
 		if($this->oPage !== null && $this->oPage->getId() !== PagePeer::getRootPage()->getId()
 			&& Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK($this->oPage->getParentId()))) {
-			$sNameTruncated = StringUtil::truncate($this->oPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
+			$sNameTruncated = StringUtil::truncate($this->oPage->getLinkText(BackendManager::getContentEditLanguage()), 10);
 			$iParentId = $this->oPage->getParentId();
 			$aOptionsArray[$this->oPage->getParentId()] = StringPeer::getString('page.sibling_of').' '.$sNameTruncated;
 			$aOptionsArray[$this->oPage->getId()] = StringPeer::getString('page.child_of').' '.$sNameTruncated;
 		} else if (Session::getSession()->getUser()->mayCreateChildren(PagePeer::retrieveByPK(PagePeer::getRootPage()->getId()))) {
 			$oRootPage = PagePeer::getRootPage();
 			$iParentId = $oRootPage->getId();
-			$aOptionsArray[$oRootPage->getId()] = StringPeer::getString('page.child_of').' '.StringUtil::truncate($oRootPage->getLinkTextIfExists(BackendManager::getContentEditLanguage()), 10);
+			$aOptionsArray[$oRootPage->getId()] = StringPeer::getString('page.child_of').' '.StringUtil::truncate($oRootPage->getLinkText(BackendManager::getContentEditLanguage()), 10);
 		} else {
 			$bShowSelect = false;
 		}

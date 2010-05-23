@@ -14,14 +14,9 @@ class PagePeer extends BasePagePeer {
 
 	public static function getRootPage() {
 		if(self::$ROOT_PAGE === null) {
-			$oCriteria = new Criteria();
-			$oSubCriterion = $oCriteria->getNewCriterion(PagePeer::PARENT_ID, 0);
-			$oSubCriterion->addOr($oCriteria->getNewCriterion(PagePeer::PARENT_ID, null, Criteria::ISNULL));
-			$oCriteria->add($oSubCriterion);
-			self::$ROOT_PAGE = self::doSelectOne($oCriteria);
+			self::$ROOT_PAGE = self::retrieveRoot();
 			if(self::$ROOT_PAGE === null) {
-				//throw new Exception('Error in PagePeer::getRootPage\(\): there is no root page with parent 0 or null');
-				return null;
+				throw new Exception('Error in PagePeer::getRootPage(): there is no root page');
 			}
 		}
 		return self::$ROOT_PAGE;
@@ -33,8 +28,7 @@ class PagePeer extends BasePagePeer {
 	 */ 
 	public static function initialiseRootPage() {
 		$oRootPage = new Page();
-		$oRootPage->setParentId(null);
-		$oRootPage->setSort(1);
+		$oRootPage->makeRoot();
 		$oRootPage->setName('root');
 		$oRootPage->setIsInactive(false);
 		$oFirstUser = UserPeer::getFirstUser();
@@ -48,28 +42,23 @@ class PagePeer extends BasePagePeer {
 		return $oRootPage;
 	}
 	
-	public static function getPageByNameAndParentId($sName, $iParentId, $oCurrentPageId = null) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::NAME, $sName);
-		$oCriteria->add(self::PARENT_ID, $iParentId);
-		if($oCurrentPageId != null) {
+	public static function getPageByNameAndParentId($sName, $oParent, $oCurrentPageId = null) {
+		if(!($oParent instanceof Page)) {
+			$oParent = PagePeer::retrieveByPK($oParent);
+		}
+		$oCriteria = PageQuery::create()->filterByName($sName)->childrenOf($oParent);
+		if($oCurrentPageId !== null) {
 			$oCriteria->add(self::ID, $oCurrentPageId, Criteria::NOT_EQUAL);
 		}
-		return self::doSelectOne($oCriteria);
+		return $oCriteria->findOne();
 	}
 	
 	public static function pageIsNotUnique($sName, $iParentId, $oCurrentPageId = null) {
 		return self::getPageByNameAndParentId($sName, $iParentId, $oCurrentPageId) !== null;
 	}
 
-	public static function getMainNavigation() {
-		return self::getRootPage()->getChildrenWithCurrentLanguage();
-	}
-
 	public static function getPageByName($sName) {
-		$oC = new Criteria();
-		$oC->add(self::NAME, $sName);
-		return self::doSelectOne($oC);
+		return PageQuery::create()->filterByName($sName)->findOne();
 	}
 
 	public static function getLastUpdatedTimestamp() {

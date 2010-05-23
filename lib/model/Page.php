@@ -84,24 +84,9 @@ class Page extends BasePage {
 		}
 		return $sResult.$this->getName();
 	}
-	
-	// getLanguageId is required by the relatedModule
-	public function getLanguageId() {
-		$oPageString = PageStringPeer::retrieveByPK($this->getId(), Session::language());
-		if($oPageString !== null) {
-			return $oPageString->getLanguageId();
-		}
-		return null;
-	}
 
 	public function getPageStringByLanguage($sLanguageId) {
-		$aPageStrings = $this->getPageStrings();
-		foreach($aPageStrings as $oPageString) {
-			if($oPageString->getLanguageId() == $sLanguageId) {
-				return $oPageString;
-			}
-		}
-		return null;
+		return PageStringQuery::create()->filterByPage($this)->filterByLanguage($sLanguageId)->findOne();
 	}
 
 	public function getPageProperties() {
@@ -123,6 +108,11 @@ class Page extends BasePage {
 		return $sDefaultValue;
 	}
 	
+	/**
+	* Updated page properties: changes them if they exist and creates them otherwise.
+	* @param $sPropertyName the property name
+	* @param $sPropertyValue the new value. Set null if you wish to remove the property
+	*/
 	public function updatePageProperty($sPropertyName, $sPropertyValue) {
 		$this->getPageProperties();
 		$oTempProperty = $this->getPagePropertyByName($sPropertyName);
@@ -143,6 +133,9 @@ class Page extends BasePage {
 		$this->addPageProperty($oTempProperty);
 	}
 	
+	/**
+	* Add a temporary page property to the page for the duration of the request. 
+	*/
 	public function addTempPageProperty($sName, $sValue) {
 		$this->getPageProperties();
 		$oTempProperty = new PageProperty();
@@ -152,14 +145,6 @@ class Page extends BasePage {
 		$this->addPageProperty($oTempProperty);
 	}
 
-	public function hasLanguage($sLanguageId) {
-		return $this->getPageStringByLanguage($sLanguageId) !== null;
-	}
-
-	public function hasChildren($sLanguageId = null) {
-		return count($this->getChildrenWithLanguage($sLanguageId)) > 0;
-	}
-	
 	public function getChildren($oCriteria = null, PropelPDO $oConnection = null) {
 		if($oCriteria !== null) {
 			$aResult = parent::getChildren($oCriteria, $oConnection);
@@ -176,6 +161,7 @@ class Page extends BasePage {
 		}
 		return $this->collNestedSetChildren;
 	}
+	
 	public function getEnabledChildren($sLanguageId = null) {
 		$oCriteria = PageQuery::create()->filterByIsInactive(false);
 		if($sLanguageId !== null) {
@@ -203,46 +189,128 @@ class Page extends BasePage {
 		return $this->getChildren($oCriteria);
 	}
 
+	public function getChildrenWithLanguage($sLanguageId = null) {
+		$oCriteria = PageQuery::create();
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+		}
+		return $this->getChildren($oCriteria);
+	}
+
+	public function hasChildrenWithLanguage($sLanguageId = null) {
+		return $this->countChildrenWithLanguage($sLanguageId) > 0;
+	}
+	
 	public function hasEnabledChildren($sLanguageId = null) {
-		return count($this->getEnabledChildren($sLanguageId)) > 0;
+		return $this->countEnabledChildren($sLanguageId) > 0;
 	}
 
 	public function hasVisibleChildren($sLanguageId = null) {
-		return count($this->getVisibleChildren($sLanguageId)) > 0;
+		return $this->countVisibleChildren($sLanguageId) > 0;
 	}
 
 	public function hasEnabledAndVisibleChildren($sLanguageId = null) {
-		return count($this->getEnabledAndVisibleChildren($sLanguageId)) > 0;
-	}
-
-	public function getChildrenWithLanguage($sLanguageId = null) {
-		$aChildren = $this->getChildren();
-		if($sLanguageId === null) {
-			return $aChildren;
-		}
-		$aResult = array();
-		foreach($aChildren as $oChild) {
-			if($oChild->hasLanguage($sLanguageId)) {
-				$aResult[] = $oChild;
-			}
-		}
-		return $aResult;
+		return $this->countEnabledAndVisibleChildren($sLanguageId) > 0;
 	}
 
 	public function getChildrenWithCurrentLanguage() {
 		return $this->getChildrenWithLanguage(Session::language());
 	}
+	
+	public function countEnabledChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsInactive(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+		}
+		return $this->countChildren($oCriteria);
+	}
 
+	public function countVisibleChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsHidden(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+		}
+		return $this->countChildren($oCriteria);
+	}
+
+	public function countEnabledAndVisibleChildren($sLanguageId = null) {
+		$oCriteria = PageQuery::create()->filterByIsHidden(false)->filterByIsInactive(false);
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+		}
+		return $this->countChildren($oCriteria);
+	}
+	
+	public function countChildrenWithLanguage($sLanguageId = null) {
+		$oCriteria = PageQuery::create();
+		if($sLanguageId !== null) {
+			$oCriteria->joinPageString();
+			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+		}
+		return $this->countChildren($oCriteria);
+	}
+	
+	public function isFolder() {
+		return $this->getIsFolder();
+	}
+	
+	public function isLoginPage() {
+		return $this->isOfType('login');
+	}
+	
+	public function isOfType($sType) {
+		return $this->getPageType() === $sType;
+	}
+
+	public function getLoginPage() {
+		return $this->getPageOfType('login');
+	}
+	
+	public function getPageOfType($sPageType) {
+		if($this->isOfType($sPageType)) {
+			return $this;
+		}
+		foreach($this->getChildren() as $oChild) {
+			if($oChild->isOfType($sPageType)) {
+				return $oChild;
+			}
+		}
+		if($this->isRoot()) {
+			$oCriteria = new Criteria();
+			$oCriteria->add(PagePeer::IS_INACTIVE, false);
+			$oCriteria->add(PagePeer::PAGE_TYPE, $sPageType);
+			return PagePeer::doSelectOne($oCriteria);
+		}
+		return $this->getParent()->getPageOfType($sPageType);
+	}
+	
+	public function getPageOfName($sName) {
+		if($this->getName() === $sName) {
+			return $this;
+		}
+		foreach($this->getChildren() as $oChild) {
+			if($oChild->getName() === $sName) {
+				return $oChild;
+			}
+		}
+		if($this->isRoot()) {
+			return $this->getName() === $sName ? $this : null;
+		}
+		return $this->getParent()->getPageOfName($sName);
+	}
+	
+	// START of active/current methods
+	
 	public function isCurrent() {
 		$oCurrentPage = Manager::getCurrentPage();
 		if($oCurrentPage == null) {
 			return false;
 		}
 		return $oCurrentPage->getId() === $this->getId();
-	}
-
-	public function isFolder() {
-		return $this->getIsFolder();
 	}
 
 	public function isChildOfCurrent() {
@@ -295,52 +363,44 @@ class Page extends BasePage {
 		$this->bIsActive = false;
 		return false;
 	}
-
-	public function isLoginPage() {
-		return $this->isOfType('login');
+	
+	public function getTopNavigationPage() {
+		$oRootPage = PagePeer::getRootPage();
+		if($oRootPage->isCurrent()) {
+			return $oRootPage;
+		}
+		foreach($oRootPage->getChildren() as $oPage) {
+			if($oPage->isActive()) {
+				return $oPage;
+			}
+		}
+		throw new Exception("Exception in Page->getTopNavigationName(): rootPage is not current but no child is active");
 	}
 	
-	public function isOfType($sType) {
-		return $this->getPageType() === $sType;
+	public function getTopNavigationName($bNameNotTitle = true) {
+		$oPage = $this->getTopNavigationPage();
+		if($oPage) {
+			return ($bNameNotTitle ? $oPage->getName() : $oPage->getLinkText());
+		}
+		throw new Exception("Exception in Page->getTopNavigationName(): rootPage is not current but no child is active");
 	}
-
-	public function getLongTitle($sLanguageId = null) {
-		throw new Exception("Warning: used deprecated method Page->getLongTitle()");
-	}
-
-	public function getTitle($sLanguageId = null) {
-		throw new Exception("Warning: used deprecated method Page->getTitle()");
-	}
-
+	
+	// END of active/current methods
+	
 	public function getLinkText($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
 			return $oActivePageString->getLinkText();
 		}
-		return null;
-	}
-	
-	public function getLinkTextIfExists($sLanguageId = null) {
-		if ($this->getLinkText($sLanguageId)) {
-			return $this->getLinkText($sLanguageId);
-		}
 		return $this->getName();
 	}
-
-	public function getLinkTextOnly($sLanguageId = null) {
-		$oActivePageString = $this->getActivePageString($sLanguageId);
-		if($oActivePageString !== null) {
-			return $oActivePageString->getLinkTextOnly();
-		}
-		return null;
-	}
-
+	
 	public function getPageTitle($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
 			return $oActivePageString->getPageTitle();
 		}
-		return null;
+		return $this->getName();
 	}
 
 	public function getTemplateNameUsed() {
@@ -368,14 +428,6 @@ class Page extends BasePage {
 		return $this->countContentObjects($this->getObjectsForContainerCriteria($sContainerName));
 	}
 
-	public function getFirstChild() {
-		$aAllChildren = $this->getChildren();
-		if(isset($aAllChildren[0])) {
-			return $aAllChildren[0];
-		}
-		return null;
-	}
-	
 	public function getFirstEnabledChild($sLanguageId=null, $iLevel=0) {
 		$aAllChildren = $this->getEnabledChildren($sLanguageId);
 		if(isset($aAllChildren[0])) {
@@ -398,13 +450,6 @@ class Page extends BasePage {
 		}
 		return $this->aFullPathArray;
 	}
-
-	/**
-	* @deprecated Use getFullPathArray() instead
-	*/
-	public function getFullPath() {
-		return implode("/", $this->getFullPathArray());
-	}
 	
 	/**
 	* Alias of getFullPathArray()
@@ -414,65 +459,11 @@ class Page extends BasePage {
 		return $this->getFullPathArray();
 	}
 	
-	public function getTopNavigationPage() {
-		$oRootPage = PagePeer::getRootPage();
-		if($oRootPage->isCurrent()) {
-			return $oRootPage;
-		}
-		foreach($oRootPage->getChildren() as $oPage) {
-			if($oPage->isActive()) {
-				return $oPage;
-			}
-		}
-		throw new Exception("Exception in Page->getTopNavigationName(): rootPage is not current but no child is active");
-	}
-	
-	public function getLoginPage() {
-		return $this->getPageOfType('login');
-	}
-	
-	public function getPageOfType($sPageType) {
-		if($this->isOfType($sPageType)) {
-			return $this;
-		}
-		foreach($this->getChildren() as $oChild) {
-			if($oChild->isOfType($sPageType)) {
-				return $oChild;
-			}
-		}
-		if($this->isRoot()) {
-			$oCriteria = new Criteria();
-			$oCriteria->add(PagePeer::IS_INACTIVE, false);
-			$oCriteria->add(PagePeer::PAGE_TYPE, $sPageType);
-			return PagePeer::doSelectOne($oCriteria);
-		}
-		return $this->getParent()->getPageOfType($sPageType);
-	}
-	
-	public function getPageOfName($sName) {
-		if($this->getName() === $sName) {
-			return $this;
-		}
-		foreach($this->getChildren() as $oChild) {
-			if($oChild->getName() === $sName) {
-				return $oChild;
-			}
-		}
-		if($this->isRoot()) {
-			return $this->getName() === $sName ? $this : null;
-		}
-		return $this->getParent()->getPageOfName($sName);
-	}
-
-	public function getTopNavigationName($bNameNotTitle = true) {
-		$oPage = $this->getTopNavigationPage();
-		if($oPage) {
-			return ($bNameNotTitle ? $oPage->getName() : $oPage->getLinkText());
-		}
-		throw new Exception("Exception in Page->getTopNavigationName(): rootPage is not current but no child is active");
-	}
-
-	public function getTree($bNameOnly=false, $iLevel=0) {
+	/**
+	* @deprecated use PagePeer::getRootPage()->getIterator()
+	* @todo replace usages with Propel 1.5’s RecursiveIterator
+	*/
+	public function getTree($bNameOnly = false, $iLevel = 0) {
 		$aResults = array();
 		if($bNameOnly) {
 			$aResults[$this->getId()]['value'] = $this->getName();
@@ -489,14 +480,13 @@ class Page extends BasePage {
 	public function delete(PropelPDO $con = null) {
 		if($this->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
 			throw new Exception('Pages with children are not allowed to be deleted', self::DELETE_NOT_ALLOWED_CODE);
-		} else {
-			if(ReferencePeer::hasReference($this)) {
-				throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", self::REFERENCE_EXISTS_CODE);
-			}
-			TagPeer::deleteTagsForObject($this);
-			ReferencePeer::removeReferences($this);
-			return parent::delete($con);
 		}
+		if(ReferencePeer::hasReference($this)) {
+			throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", self::REFERENCE_EXISTS_CODE);
+		}
+		TagPeer::deleteTagsForObject($this);
+		ReferencePeer::removeReferences($this);
+		return parent::delete($con);
 	}
 	
 	public function deletePageAndDescendants() {
