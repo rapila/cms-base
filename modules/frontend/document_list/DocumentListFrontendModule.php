@@ -9,12 +9,15 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
-		$oCriteria = new Criteria();
+		$oCriteria = DocumentQuery::create();
+		if(!Session::getSession()->isAuthenticated()) {
+			$oCriteria->filterByIsProtected(false);
+		}
 		if(isset($aOptions['categories']) && is_array($aOptions['categories']) && (count($aOptions['categories']) > 0)) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories'], Criteria::IN);
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
 		}
-		$aDocuments = DocumentPeer::doSelect($oCriteria);
+		$aDocuments = $oCriteria->find();
 		
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
