@@ -8,6 +8,11 @@ general questions
 - svn externals handling
 - prepare playground tasks
 
+Sites done remote and 
+- taylormade.ch ✓ r2446
+- remcom.ch ✓ backup done r2446
+- kathleenwills.com ✓ r2446
+
 Sites done locally 
 	last update and remote migration.sql check always needs to be done
 - svenja.ch ✓
@@ -15,22 +20,18 @@ Sites done locally
 - mini-cms.ch ✓
 - hubergeologe.ch ✓
 - vagabunt.ch ✓
-- taylormade.ch ✓
 - myplacement.ch ✓
 - mosaics.ch ✓
 
 Sites to check something
 - summercampsombor.ch ✓
 	exclude camp-sites!
-- kathleenwills.com ✓
 - gems-europe.com ✓
 	check HTTP/Request2.php and ShopItemImpl
 - butti.ch ✓
 	check local FLV.php changes, PrettyPhoto
 - gcgroup.ch ✓
 	what happened to google analytics?	var pageTracker = _gat._getTracker("UA-10691002-1"); pageTracker._trackPageview();
-- remcom.ch ✓ check
-	check accordion, various js errors online, submit Dumpexport
 - cgcmac.ch ✓
 	newsletter plugin check 
 	

@@ -3,18 +3,10 @@ MIGRATION Issues for upgrade from Mini-CMS Version 1 > 2 (CMOS)
 1. Update and clear caches
 2. Clear session (just in case)
 3. run migration.sql changes required for update between local version and trunk (version 2)
-4. remove YAML 1.1 declaration in db_config.yml because of update to Spyc 1.45
+4. make release-1-devel MIGRATION changes if older than r2442
 
-Migration Issues for previous mini-cms applications
-- handle all Blob related changes
-	1. $this->oLanguageObject->getData()->getContents() > stream_get_contents($this->oLanguageObject->getData()))
-	 	beware that Richtext->parse methods have to be checked individually
-- find all Blob, new Blob and migrate them
-- FrontendModule::save() > getSaveData
-- Test thoroughly before putting online and test again.
-
-Special: 1.5 w/ release branch (1.0)
-- Frontendmodules should use $this->getData()
-  NOTE, only in bbject context, not when called statically
-- stream_get_contents($oSomeExBlobField->getData())
-- PropelPDO declarations in save() and delete()
+PageTree changes
+- remove parent_id, sort (after mini_cms_migrate_adjacency_list_to_nested_set.sh, @see migration.sql)
+- replace Page/PageString::getLongTitle(), identifiers 'long_title' by getPageTitle(), 'page_title'
+- replace Pape/PageString::getTitle(), idendifiers 'title' ??? watch out, getLinkText(), getLinkTextOnly()
+- getTree() is deprecated
