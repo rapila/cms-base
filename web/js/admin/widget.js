@@ -172,7 +172,7 @@ jQuery.extend(Widget, {
 	
 	createWithElement: function(widgetType, finishCallback, session) {
 		Widget.create(widgetType, function(widget) {
-			widget._element = jQuery(widget._instanceInformation.content);
+			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
 			widget.handle('prepared', finishCallback);
 		}, session);
 	},
@@ -229,7 +229,7 @@ jQuery.extend(Widget, {
 			},
 			error: function(request, statusCode, error) {
 				if(statusCode === 'parsererror') {
-					var text = jQuery.trim(request.responseText);
+					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
 					//This is most likely a PHP error… 
 					Widget.notifyUser('error', text);
 				} else {
@@ -285,6 +285,12 @@ jQuery.extend(jQuery, {
 		} else {
 			return jQuery('*[data-widget-type]');
 		}
+	},
+	
+	parseHTML: function(html) {
+		var element = document.createElement('div');
+		element.innerHTML = html;
+		return jQuery(element.childNodes);
 	}
 });
 
