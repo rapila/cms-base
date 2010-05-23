@@ -1,7 +1,14 @@
 jQuery.extend(jQuery, {
 	postMessage: function(severity, message) {
 		var highlight = severity == 'info' ? 'highlight' : 'error';
-		var display = jQuery('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div><span class="ui-icon ui-icon-'+severity+'" />'+message+'.</div></div></div>').hide().appendTo("#admin_message").show('blind');
+		var display = jQuery('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div><span class="ui-icon ui-icon-'+severity+'" /><span class="message"></span></div></div></div>').hide().appendTo("#admin_message");
+		var message_container = display.find('.message');
+		if(message.constructor === String) {
+			message_container.text(message);
+		} else {
+			message_container.append(message);
+		}
+		display.show('blind');
 		window.setTimeout(function() {
 			display.hide('blind', function() {display.remove()});
 		}, 10000);
