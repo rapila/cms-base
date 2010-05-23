@@ -12,7 +12,12 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		$this->oDocument = DocumentPeer::retrieveByPK($this->aPath[0]);
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
-			LinkUtil::redirect(LinkUtil::link(PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'))->getLink(), "FrontendManager"));
+			$oErrorPage = PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
+			if($oErrorPage) {
+				LinkUtil::redirect(LinkUtil::link($oErrorPage->getLinkArray(), "FrontendManager"));
+			} else {
+				print "Not found";exit;
+			}
 			break;
 		}
 	}
@@ -24,6 +29,10 @@ class DisplayDocumentFileModule extends FileModule {
 	public function renderFile() {
 		$mMaxWidth = is_numeric(@$_REQUEST['max_width']) ? (int)$_REQUEST['max_width'] : 'full';
 		$mMaxHeight = is_numeric(@$_REQUEST['max_height']) ? (int)$_REQUEST['max_height'] : 'full';
+		if($this->oDocument->getDocumentKind() != 'image') {
+			$mMaxWidth = 'full';
+			$mMaxHeight = 'full';
+		}
 		
 		$sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
 		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
