@@ -228,7 +228,13 @@ jQuery.extend(Widget, {
 				callback.call(this, result, error);
 			},
 			error: function(request, statusCode, error) {
-				Widget.notifyUser('error', statusCode);
+				if(statusCode === 'parsererror') {
+					var text = jQuery.trim(request.responseText);
+					//This is most likely a PHP error… 
+					Widget.notifyUser('error', text);
+				} else {
+					Widget.notifyUser('error', error);
+				}
 			}
 		});
 	},
