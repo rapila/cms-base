@@ -78,7 +78,6 @@ class PageTableMap extends TableMap {
 		return array(
 			'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
 			'referenceable' => array(),
-			'referencing' => array(),
 			'taggable' => array(),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),

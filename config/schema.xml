@@ -1,11 +1,5 @@
 <table name="pages" phpName="Page">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-	<!--
-	<unique>
-		<unique-column name="parent_id" />
-		<unique-column name="name" />
-	</unique>
-	-->
 	<column name="name" type="varchar" size="50" />
 	<column name="page_type" type="varchar" size="15" />
 	<column name="template_name" type="varchar" size="50" />
@@ -15,7 +9,6 @@
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<behavior name="nested_set" />
 	<behavior name="referenceable" />
-	<behavior name="referencing" />
 	<behavior name="taggable" />
 </table>
 

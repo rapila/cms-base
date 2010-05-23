@@ -971,8 +971,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 				// fill up the room that was used by the node
 				PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
 
-				// referencing behavior
-				ReferencePeer::removeReferences($this);
 				// taggable behavior
 				TagPeer::deleteTagsForObject($this);
 				$con->commit();
@@ -3380,15 +3378,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getReferees()
 	{
 		return ReferencePeer::getReferences($this);
-	}
-	// referencing behavior
-	
-	/**
-	 * @return A list of References (not Objects) which this Page references
-	 */
-	public function getReferenced()
-	{
-		return ReferencePeer::getReferencesFromObject($this);
 	}
 	// taggable behavior
 	
