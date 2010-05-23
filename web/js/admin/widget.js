@@ -174,7 +174,7 @@ jQuery.extend(Widget, {
 		Widget.create(widgetType, function(widget) {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
 			widget.handle('prepared', finishCallback);
-		}, session);
+		}, session, arguments[3]);
 	},
 	
 	notifyUser: function(severity, message) {
