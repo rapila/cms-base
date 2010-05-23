@@ -603,6 +603,8 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
+				// referencing behavior
+				ReferencePeer::removeReferences($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -1418,6 +1420,15 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
+	// referencing behavior
+	
+	/**
+	 * @return A list of References (not Objects) which this LanguageObject references
+	 */
+	public function getReferenced()
+	{
+		return ReferencePeer::getReferencesFromObject($this);
+	}
 	// extended_timestampable behavior
 	
 	/**

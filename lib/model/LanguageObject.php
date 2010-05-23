@@ -15,15 +15,6 @@ class LanguageObject extends BaseLanguageObject {
 		return $this->getObjectId().'_'.$this->getLanguageId();
 	}
 	
-	public function delete(PropelPDO $con = null) {
-		if(ReferencePeer::hasReference($this)) {
-			throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
-		}
-		TagPeer::deleteTagsForObject($this);
-		ReferencePeer::removeReferences($this);
-		return parent::delete($con);
-	}
-	
 	public function save(PropelPDO $oConnection = null) {
 		$this->getContentObject()->getPage()->save();
 		return parent::save($oConnection);

@@ -1250,6 +1250,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
+				// taggable behavior
+				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -8649,6 +8651,15 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->aLanguage = null;
 	}
 
+	// taggable behavior
+	
+	/**
+	 * @return A list of TagInstances (not Tags) which reference this User
+	 */
+	public function getTags()
+	{
+		return TagPeer::tagInstancesForObject($this);
+	}
 	// extended_timestampable behavior
 	
 	/**

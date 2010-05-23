@@ -14,6 +14,9 @@
 	<column name="is_hidden" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<behavior name="nested_set" />
+	<behavior name="referenceable" />
+	<behavior name="referencing" />
+	<behavior name="taggable" />
 </table>
 
 <table name="page_properties" phpName="PageProperty">
@@ -67,6 +70,7 @@
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
 	<column name="data" type="blob" />
+	<behavior name="referencing" />
 </table>
 
 <table name="language_object_history" phpName="LanguageObjectHistory">
@@ -117,6 +121,7 @@
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="password_recover_hint" type="varchar" size="10" />
 	<column name="backend_settings" type="longvarchar" required="false" />
+	<behavior name="taggable" />
 </table>
 
 <table name="groups" phpName="Group">
@@ -185,7 +190,9 @@
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<column name="data" type="blob" lazyLoad="true" />
-</table>	
+	<behavior name="referenceable" />
+	<behavior name="taggable" />
+</table>
 
 <table name="document_types" phpName="DocumentType">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
@@ -239,6 +246,8 @@
 	</foreign-key>
 	<column name="is_private" type="boolean" size="1" default="0" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
+	<behavior name="referenceable" />
+	<behavior name="taggable" />
 </table>
 
 <table name="link_categories" phpName="LinkCategory">

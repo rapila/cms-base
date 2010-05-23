@@ -86,7 +86,7 @@ class Page extends BasePage {
 	}
 
 	public function getPageStringByLanguage($sLanguageId) {
-		return PageStringQuery::create()->filterByPage($this)->filterByLanguage($sLanguageId)->findOne();
+		return PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
 	}
 
 	public function getPageProperties() {
@@ -481,11 +481,6 @@ class Page extends BasePage {
 		if($this->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
 			throw new Exception('Pages with children are not allowed to be deleted', self::DELETE_NOT_ALLOWED_CODE);
 		}
-		if(ReferencePeer::hasReference($this)) {
-			throw new Exception("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", self::REFERENCE_EXISTS_CODE);
-		}
-		TagPeer::deleteTagsForObject($this);
-		ReferencePeer::removeReferences($this);
 		return parent::delete($con);
 	}
 	

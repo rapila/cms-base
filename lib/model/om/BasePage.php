@@ -958,6 +958,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 			}
 			$this->deleteDescendants($con);
 
+			// referenceable behavior
+			if(ReferencePeer::hasReference($this)) {
+				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
+			}
 			if ($ret) {
 				PageQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
@@ -967,6 +971,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 				// fill up the room that was used by the node
 				PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
 
+				// referencing behavior
+				ReferencePeer::removeReferences($this);
+				// taggable behavior
+				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -3364,6 +3372,33 @@ abstract class BasePage extends BaseObject  implements Persistent
 		return new NestedSetRecursiveIterator($this);
 	}
 
+	// referenceable behavior
+	
+	/**
+	 * @return A list of References (not Objects) which reference this Page
+	 */
+	public function getReferees()
+	{
+		return ReferencePeer::getReferences($this);
+	}
+	// referencing behavior
+	
+	/**
+	 * @return A list of References (not Objects) which this Page references
+	 */
+	public function getReferenced()
+	{
+		return ReferencePeer::getReferencesFromObject($this);
+	}
+	// taggable behavior
+	
+	/**
+	 * @return A list of TagInstances (not Tags) which reference this Page
+	 */
+	public function getTags()
+	{
+		return TagPeer::tagInstancesForObject($this);
+	}
 	// extended_timestampable behavior
 	
 	/**
