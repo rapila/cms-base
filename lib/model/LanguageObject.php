@@ -29,4 +29,5 @@ class LanguageObject extends BaseLanguageObject {
 			$this->setData($oLanguageObjectHistory->getData());
 		}
 	}
-} // LanguageObject
+}
+
