@@ -77,6 +77,9 @@ class ErrorHandler {
 	}
 
 	public static function log($mMessage) {
+		if(func_num_args() > 1) {
+			$mMessage = func_get_args();
+		}
 		error_log(self::readableDump($mMessage));
 	}
 	

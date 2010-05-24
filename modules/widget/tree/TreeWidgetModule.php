@@ -26,13 +26,13 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	
 	public function doWidget() {
 		$oListTag = new TagWriter($this->bIsOrdered ? 'ol' : 'ul');
-		$oListTag->addToParameter('class', 'ui-tree');
+		$oListTag->addToParameter('class', 'ui-tree ui-list');
 		$oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$oListTag->setParameter('data-widget-type', $this->getModuleName());
 		return $oListTag->parse();
 	}
 	
-	public function listChildren($aParentData) {
-		return $this->oDelegate->listChildren($aParentData);
+	public function listChildren($mParentData) {
+		return $this->oDelegate->listChildren($mParentData);
 	}
 }

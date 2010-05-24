@@ -18,6 +18,9 @@ public function getCreatedAtTimestamp()
  */
 public function getCreatedAtFormatted()
 {
+	if(\$this->created_at === null) {
+		return null;
+	}
 	return LocaleUtil::localizeDate(\$this->created_at);
 }
 
@@ -34,6 +37,9 @@ public function getUpdatedAtTimestamp()
  */
 public function getUpdatedAtFormatted()
 {
+	if(\$this->updated_at === null) {
+		return null;
+	}
 	return LocaleUtil::localizeDate(\$this->updated_at);
 }
 ";

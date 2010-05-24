@@ -345,7 +345,7 @@ label {
 	padding-right: .5em;
 }
 
-#admin_sidebar ul.ui-list {
+#admin_sidebar .ui-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -365,7 +365,7 @@ textarea.ui-widget-content {
 	width: 22em;
 }
 
-#admin_sidebar ul.ui-list li,
+#admin_sidebar .ui-list li,
 #admin_sidebar div.ui-list-row {
 	font-size: 1.2em;
 	padding: 3px 3px 3px 10px;
@@ -406,7 +406,7 @@ textarea.ui-widget-content {
 	border-top: 0;
 }
 
-#admin_sidebar ul.ui-list li {
+#admin_sidebar .ui-list li {
 	font-weight: 700;
 }
 
@@ -420,9 +420,29 @@ textarea.ui-widget-content {
 	width: 240px;
 }
 
-#admin_sidebar ul.ui-list li a {
+#admin_sidebar .ui-list li a {
 	color: #333;
 	text-decoration: none;
+}
+
+.ui-tree {
+	list-style: none inside;
+}
+
+#admin_sidebar .ui-tree .ui-tree li {
+	font-size: 1em;
+}
+
+.ui-tree li {
+	clear: left;
+}
+
+.ui-tree .tree-opener {
+	float: left;
+}
+
+.ui-tree .tree-opener.no-children {
+	background-image: none;
 }
 
 .ui-dialog .ui-dialog-buttonpane button {

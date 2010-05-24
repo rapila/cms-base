@@ -1,5 +1,18 @@
 jQuery(document).ready(function() {
-	var page_list = AdminInterface.sidebar.find('.page_list').getWidget();
+	var page_tree = null;
+	Widget.createWithElement('tree', function(event, widget) {
+		AdminInterface.sidebar.append(widget._element);
+	}, function(widget) {
+		widget.settings.description_from_item = function(item) {
+			return item.Name;
+		};
+		widget.settings.has_children = function(item) {
+			return item.TreeRight-item.TreeLeft > 1;
+		};
+		widget.settings.data_from_element = function(item) {
+			return item.data('tree-data').Id;
+		};
+	}, '{{writeRequestValue=tree_session}}');
 	AdminInterface.info_bar.getWidget().add_button('add-new-item', function() {
 		Widget.create('page_detail', function(widget) {
 			widget.open();

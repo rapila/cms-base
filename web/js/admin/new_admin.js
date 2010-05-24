@@ -10,7 +10,7 @@ jQuery.extend(jQuery, {
 		}
 		display.show('blind');
 		window.setTimeout(function() {
-			display.hide('blind', function() {display.remove()});
+			display.hide('blind', function() {display.remove();});
 		}, 10000);
 	}
 });
@@ -80,6 +80,7 @@ Widget.notifyUser = jQuery.postMessage;
 Widget.tooltip = function(element, text) {
 	jQuery(element).tooltip(text);
 };
+
 Widget.confirm = function(title, message, callback, cancelButtonText, okButtonText) {
 	if(cancelButtonText === undefined) {
 		cancelButtonText = AdminInterface.translations.cancelButtonText;

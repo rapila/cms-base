@@ -928,6 +928,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// extended_timestampable behavior
+			// ErrorHandler::log($this->isModified(), !$this->isColumnModified(LinkPeer::UPDATED_AT));
 				if ($this->isModified() && !$this->isColumnModified(LinkPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}

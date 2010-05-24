@@ -1,16 +1,17 @@
 Widget.types.tree = {
 	prepare: function() {
+		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
 		this.reload();
 	},
 	
 	reload: function() {
 		this._element.empty();
-		this.open_item(null);
+		this.open_item(this._element);
 	},
 	
-	open_item: function(item) {
+	open_item: function(item, data) {
 		var tree = this;
-		this.listChildren(item, function(children) {
+		this.listChildren(data, function(children) {
 			jQuery.each(children, function(i, child) {
 				tree.add_item(item, child)
 			});
@@ -22,21 +23,41 @@ Widget.types.tree = {
 			parent = this._element;
 		}
 		if(parent.is('li')) {
-			var new_parent = jQuery(document.createElement(this._element.is('ul') ? 'ul' : 'ol'));
-			parent = new_parent.appendTo(parent);
+			if(parent.find(this.settings.tag_name).length > 0) {
+				parent = parent.find(this.settings.tag_name);
+			} else {
+				var new_parent = jQuery(document.createElement(this.settings.tag_name));
+				new_parent.addClass(this._element.get(0).className);
+				parent = new_parent.appendTo(parent);
+			}
 		}
 		var element = jQuery("<li/>").text(this.settings.description_from_item(child));
-		var opener = jQuery("<div/>").addClass('opener');
+		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
 		if(this.settings.has_children(child)) {
-			opener.addClass('openable');
-			opener.click(this.open_item.bind(this))
+			opener.removeClass('no-children');
+			opener.addClass('ui-icon-circlesmall-plus closed');
+			opener.click(function() {
+				if(opener.hasClass('opened')) {
+					opener.removeClass('opened ui-icon-circlesmall-minus').addClass('closed ui-icon-circlesmall-plus');
+					element.find(this.settings.tag_name).hide();
+				} else {
+					opener.removeClass('closed ui-icon-circlesmall-plus').addClass('opened ui-icon-circlesmall-minus');
+					var sub_list = element.find(this.settings.tag_name).show();
+					if(sub_list.length === 0) {
+						this.open_item(element, this.settings.data_from_element(element));
+					}
+				}
+			}.bind(this));
 		}
+		element.prepend(opener);
+		element.data('tree-data', child);
 		parent.append(element);
 		return parent;
 	},
 	
 	settings: {
 		description_from_item: jQuery.noop,
-		has_children: jQuery.noop
+		has_children: jQuery.noop,
+		data_from_element: jQuery.noop
 	}
 };
