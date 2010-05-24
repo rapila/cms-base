@@ -132,6 +132,17 @@ class ErrorHandler {
 		}
 		return $sResult;
 	}
+	
+	public static function trace($aTrace = null) {
+		if($aTrace === null) {
+			$aTrace = debug_backtrace();
+		}
+		foreach($aTrace as $iKey => $aTraceInfo) {
+			unset($aTrace[$iKey]['args']);
+			unset($aTrace[$iKey]['object']);
+		}
+		self::log($aTrace);
+	}
 
 	private static function handle($aError) {
 		//Add additional information for logging/sending

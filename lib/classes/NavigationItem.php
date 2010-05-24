@@ -7,18 +7,46 @@ abstract class NavigationItem {
 	
 	public function __construct($oParent) {
 		$this->oParent = $oParent;
-		$this->aCustomChildren = array();
 		$this->aChildren = array();
+		$this->aCustomChildren = null;
+	}
+	
+	public function getLevel() {
+		if($this->isRoot()) {
+			return 0;
+		}
+		return $this->oParent->getLevel()+1;
 	}
 	
 	protected abstract function getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
+	protected abstract function hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
+	
+	private function prepareChildren() {
+		if($this->aCustomChildren === null) {
+			$this->aCustomChildren = array();
+			FilterModule::getFilters()->handleNavigationItemChildrenRequested($this);
+		}
+	}
 	
 	public function getChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		$sKey = "{$sLanguageId}_{$bIncludeDisabled}_{$bIncludeInvisible}";
 		if(!isset($this->aChildren[$sKey])) {
 			$this->aChildren[$sKey] = $this->getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 		}
+		$this->prepareChildren();
 		return array_merge($this->aCustomChildren, $this->aChildren[$sKey]);
+	}
+	
+	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
+		$this->prepareChildren();
+		if($this->hasCustomChildren()) {
+			return true;
+		}
+		return $this->hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
+	}
+	
+	private function hasCustomChildren() {
+		return count($this->aCustomChildren) > 0;
 	}
 	
 	public function isRoot() {
@@ -29,10 +57,20 @@ abstract class NavigationItem {
 	public function isActive() {
 		return $this->getCurrent() !== null;
 	}
-	public abstract function isSiblingOfCurrent();
+	
+	public function isSiblingOfCurrent() {
+		if($this->isActive()) {
+			return false;
+		}
+		$oCurrent = $this->getCurrent();
+		if($oCurrent === null) {
+			return false;
+		}
+		return $this->oParent->isActive() && $oCurrent->getLevel() === $this->getLevel();
+	}
 	
 	public function isSiblingOfActive() {
-		if($this->oParent === null) {
+		if($this->isRoot()) {
 			return false;
 		}
 		return !$this->isActive() && !$this->oParent->isCurrent() && $this->oParent->isActive();
@@ -66,6 +104,20 @@ abstract class NavigationItem {
 		return array_merge($this->oParent->getLink(), array($this->getName()));
 	}
 	
+	public function getParent() {
+		return $this->oParent;
+	}
+	
+	public function getFirstChild($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
+		foreach($this->getChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) as $oChild) {
+			if($oChild->isFolder()) {
+				return $oChild->getFirstChild();
+			}
+			return $oChild;
+		}
+		return null;
+	}
+	
 	public abstract function isProtected();
 	public function isAccessible() {
 		if(!$this->isProtected()) {
@@ -78,23 +130,14 @@ abstract class NavigationItem {
 	public abstract function isFolder();
 	public abstract function isVirtual();
 	
-	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
-		if($this->hasCustomChildren()) {
-			return true;
-		}
-		return count($this->getChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible)) > 0;
-	}
-	
-	public function hasCustomChildren() {
-		return count($this->aCustomChildren) > 0;
-	}
-	
 	public function addChild(NavigationItem $oChild) {
+		$this->prepareChildren();
+		$oChild->oParent = $this;
 		$this->aCustomChildren[$oChild->getName()] = $oChild;
 	}
 	
-	public function namedChild($sName) {
-		$aChildren = $this->getChildren();
+	public function namedChild($sName, $sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
+		$aChildren = $this->getChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 		if(isset($aChildren[$sName])) {
 			return $aChildren[$sName];
 		}

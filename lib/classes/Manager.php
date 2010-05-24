@@ -7,7 +7,6 @@ abstract class Manager {
 	protected static $REQUEST_PATH = array();
 	private static $USED_PATH = array();
 	
-	private static $CURRENT_PAGE = null;
 	private static $CURRENT_MANAGER = null;
 	
 	private static $ORIGINAL_PATH = null;
@@ -103,10 +102,6 @@ abstract class Manager {
 		return self::getPrefixForManager(self::$CURRENT_MANAGER);
 	}
 
-	public static function getCurrentPage() {
-		return self::$CURRENT_PAGE;
-	}
-	
 	public static function isPost($sMethod = 'POST') {
 		return $_SERVER['REQUEST_METHOD'] === $sMethod;
 	}
@@ -121,10 +116,6 @@ abstract class Manager {
 
 	public static function getCurrentManager() {
 		return self::$CURRENT_MANAGER;
-	}
-
-	protected static function setCurrentPage($oCurrentPage) {
-		self::$CURRENT_PAGE = $oCurrentPage;
 	}
 
 	public static function shouldIncludeLanguageInLink() {

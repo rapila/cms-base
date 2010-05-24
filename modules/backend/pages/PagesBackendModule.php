@@ -85,7 +85,7 @@ class PagesBackendModule extends BackendModule {
 		}
 		$oTemplate->replaceIdentifier("action", $this->link($this->oPage->getId()));
 		// $oTemplate->replaceIdentifierMultiple('path_names', TagWriter::quickTag('span', array(), $_SERVER['HTTP_HOST']), null, Template::NO_NEWLINE);
-		$oCurrentPage = Manager::getCurrentPage();
+		$oCurrentPage = FrontendManager::$CURRENT_PAGE;
 		$sName = '';
 		if($oCurrentPage) {
 			foreach($oCurrentPage->getFullPathArray() as $sPath) {
@@ -93,7 +93,7 @@ class PagesBackendModule extends BackendModule {
 					$oTemplate->replaceIdentifier("name", $this->oPage->getName());
 				} 
 			}
-			$sWeblink = BackendManager::getWebLink(Manager::getCurrentPage()->getFullPathArray());
+			$sWeblink = BackendManager::getWebLink(FrontendManager::$CURRENT_PAGE->getFullPathArray());
 			$oTemplate->replaceIdentifier("weblink", $sWeblink);
 			$sDisplayWeblink = str_replace($this->oPage->getName(), '<span>'.$this->oPage->getName().'</span>', $_SERVER['HTTP_HOST'].$sWeblink);
 			$oTemplate->replaceIdentifier("display_weblink", $sDisplayWeblink, null, Template::NO_HTML_ESCAPE);

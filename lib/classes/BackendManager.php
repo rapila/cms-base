@@ -189,8 +189,8 @@ class BackendManager extends Manager {
 			 * @todo: implement better solution for this
 			 */
 			$aUrlParameters = array($sModuleName);
-			if(($sModuleName === "pages" || $sModuleName === "content") && Manager::getCurrentPage()) {
-				array_push($aUrlParameters, Manager::getCurrentPage()->getId());
+			if(($sModuleName === "pages" || $sModuleName === "content") && FrontendManager::$CURRENT_PAGE) {
+				array_push($aUrlParameters, FrontendManager::$CURRENT_PAGE->getId());
 			}
 			$sUrl = LinkUtil::link($aUrlParameters);
 			
@@ -392,7 +392,7 @@ class BackendManager extends Manager {
 	}
 	
 	public static function setCurrentPage($oPage) {
-		Manager::setCurrentPage($oPage);
+		FrontendManager::$CURRENT_PAGE = $oPage;
 	}
 
  /**
@@ -402,11 +402,11 @@ class BackendManager extends Manager {
 		$sPreviewTitle = '';
 		$aWeblinkPathArray = array();
 		$iPageId = null;
-		if(self::getCurrentPage() instanceof Page) {
-			$aWeblinkPathArray = self::getCurrentPage()->getFullPathArray();
-			$iPageId = self::getCurrentPage()->getId();
-			$sPreviewTitle = self::getCurrentPage()->getLinkText();
-			$this->oTemplate->replaceIdentifier("current_page_title", self::getCurrentPage()->getLinkText());
+		if(FrontendManager::$CURRENT_PAGE instanceof Page) {
+			$aWeblinkPathArray = FrontendManager::$CURRENT_PAGE->getFullPathArray();
+			$iPageId = FrontendManager::$CURRENT_PAGE->getId();
+			$sPreviewTitle = FrontendManager::$CURRENT_PAGE->getLinkText();
+			$this->oTemplate->replaceIdentifier("current_page_title", FrontendManager::$CURRENT_PAGE->getLinkText());
 		} else {
 			// handle last_requested_page if stored
 			$aLastPageRequestArray = Session::getSession()->getAttribute(self::LAST_REQUESTED_PAGE_SESSION_KEY);

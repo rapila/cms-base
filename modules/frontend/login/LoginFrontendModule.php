@@ -15,7 +15,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 
   public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
     parent::__construct($oLanguageObject, $aRequestPath, $iId);
-    $this->oPage = Manager::getCurrentPage();
+    $this->oPage = FrontendManager::$CURRENT_PAGE;
   }
 
   public function renderFrontend($sAction = 'login') {

@@ -4,11 +4,14 @@
  * @package manager
  */
 class FrontendManager extends Manager {
+	public static $CURRENT_PAGE = null;
+	public static $CURRENT_NAVIGATION_ITEM = null;
 	
 	private $oTemplate;
 	private $aPathRequestParams;
 	private $bIsNotFound;
 	private $oPageType;
+	private $oRootNavigationItem;
 	
 	const USEPATH_HANDLED_BY_MODULE = 'usepath_handled_by_module';
 	/**
@@ -31,46 +34,51 @@ class FrontendManager extends Manager {
 		}
 
 		// Find requested page
-		$oMatchingPage = PagePeer::getRootPage(); 
-		if($oMatchingPage === null) {
+		$oRootPage = PagePeer::getRootPage();
+		if($oRootPage === null) {
 			throw new Exception("No root node exists in the database. Use the admin tool to create one.");
 		}
+		$this->oRootNavigationItem = PageNavigationItem::navigationItemForPage($oRootPage);
+		$oMatchingNavigationItem = $this->oRootNavigationItem;
 		 
 		while(self::hasNextPathItem()) {
-			$oNextPage = $oMatchingPage->getChildByName(self::usePath());
-			if($oNextPage !== null) {
-				if($oNextPage->getIsInactive()) {
-					self::unusePath();
-					break;
-				}
-				$oMatchingPage = $oNextPage;
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
+			if($oNextNavigationItem !== null) {
+				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
 				self::unusePath();
 				break;
 			}
 		}
 		
-		// Transfer unused path parts from the end of the path array as key/value-pairs to the $_REQUEST global
-		$iTimesUsed = 0;
-		while(self::hasNextPathItem()) {
-			$sKey = self::usePath();
-			$iTimesUsed++;
-			$sValue = null;
-			if(self::hasNextPathItem()) {
-				$sValue = self::usePath();
-				$iTimesUsed++;
-			}
-			$this->aPathRequestParams[] = $sKey;
-			if(!isset($_REQUEST[$sKey])) {
-				$_REQUEST[$sKey] = $sValue;
-			}
+		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
+		$oParent = $oMatchingNavigationItem;
+		while(!($oParent instanceof PageNavigationItem)) {
+			$oParent = $oParent->getParent();
 		}
-		for($i=1;$i<=$iTimesUsed;$i++) {
-			self::unusePath();
-		}
+		self::$CURRENT_PAGE = $oParent->getMe();
+		FilterModule::getFilters()->handleNavigationPathFound($this->oRootNavigationItem, $oMatchingNavigationItem);
+		// See if the filter(s) changed anything
 		
-		if($oMatchingPage->getIsFolder()) {
-			$oFirstChild = $oMatchingPage->getFirstEnabledChild(Session::language());
+		// There may now be new, virtual navigation items. Follow them.
+		while(self::hasNextPathItem()) {
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
+			if($oNextNavigationItem !== null) {
+				$oMatchingNavigationItem = $oNextNavigationItem;
+			} else {
+				self::unusePath();
+				$this->bIsNotFound = true;
+				break;
+			}
+		}
+		// See if anything has changed
+		if(self::$CURRENT_NAVIGATION_ITEM !== $oMatchingNavigationItem && self::$CURRENT_NAVIGATION_ITEM instanceof PageNavigationItem) {
+			self::$CURRENT_NAVIGATION_ITEM->setCurrent(false); //It is, however, still active
+		}
+		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
+		
+		if($oMatchingNavigationItem->isFolder()) {
+			$oFirstChild = $oMatchingNavigationItem->getFirstChild(Session::language(), false, true);
 			if($oFirstChild !== null) {
 				LinkUtil::redirectToManager($oFirstChild->getLink());
 			} else {
@@ -78,22 +86,21 @@ class FrontendManager extends Manager {
 			}
 		}
 		
-		if($oMatchingPage->getIsProtected()) {
-			if(!(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->mayViewPage($oMatchingPage))) {
-				$oLoginPage = $oMatchingPage->getLoginPage();
-				if($oLoginPage !== $oMatchingPage) {
-					Session::getSession()->setAttribute('login_referrer_page', $oMatchingPage);
-					Session::getSession()->setAttribute('login_referrer', LinkUtil::link($oMatchingPage->getFullPathArray(), "FrontendManager"));
+		if($oMatchingNavigationItem->isProtected()) {
+			if(!$oMatchingNavigationItem->isAccessible()) {
+				$oLoginPage = self::$CURRENT_PAGE->getLoginPage();
+				if($oLoginPage !== self::$CURRENT_PAGE) {
+					Session::getSession()->setAttribute('login_referrer_page', self::$CURRENT_PAGE);
+					Session::getSession()->setAttribute('login_referrer', LinkUtil::link($oMatchingNavigationItem->getLink(), "FrontendManager"));
 				}
 				if($oLoginPage === null) {
 					LinkUtil::redirect(LinkUtil::link('', "LoginManager"));
 				}
-				$oMatchingPage = $oLoginPage;
+				self::$CURRENT_PAGE = $oLoginPage;
 			}
 		}
 		
-		FilterModule::getFilters()->handlePageHasBeenSet($oMatchingPage, $this->bIsNotFound);
-		self::setCurrentPage($oMatchingPage);
+		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound);
 	}
 	
 	/**
@@ -106,8 +113,8 @@ class FrontendManager extends Manager {
 		
 		$bIsAjaxRequest = isset($_REQUEST['container_only']) && Manager::isXMLHttpRequest();
 		
-		$sPageType = self::getCurrentPage()->getPageType();
-		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::getCurrentPage());
+		$sPageType = self::$CURRENT_PAGE->getPageType();
+		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
 		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, isset($_REQUEST['container_only']) ? array($_REQUEST['container_only']) : null);
 		
 		$bIsDynamic = $bIsDynamic || !Settings::getSetting('general', 'use_full_page_cache', true);
@@ -132,11 +139,11 @@ class FrontendManager extends Manager {
 			if($oPage === null) {
 				die(StringPeer::getString('page.not_found'));
 			}
-			self::setCurrentPage($oPage);
+			self::$CURRENT_PAGE = $oPage;
 			
 			//Set correct page type of 404 page
-			$sPageType = self::getCurrentPage()->getPageType();
-			$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::getCurrentPage());
+			$sPageType = self::$CURRENT_PAGE->getPageType();
+			$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
 		}
 		
 		if(!$bIsAjaxRequest) {
@@ -144,7 +151,7 @@ class FrontendManager extends Manager {
 			$oOutput->render();
 		}
 		
-		$sPageIdentifier = self::getCurrentPage()->getId().'_'.Session::language();
+		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.Session::language();
 		if($bIsAjaxRequest) {
 			$sPageIdentifier .= '_'.$_REQUEST['container_only'];
 		}
@@ -159,7 +166,7 @@ class FrontendManager extends Manager {
 			$bIsOutdated = false;
 		
 			if($bIsCached) {
-				$bIsOutdated = $oCache->isOlderThan(self::getCurrentPage()->getUpdatedAtTimestamp());
+				$bIsOutdated = $oCache->isOlderThan(self::$CURRENT_PAGE->getUpdatedAtTimestamp());
 			}
 			if($bIsCached && !$bIsOutdated) {
 				return print $oCache->getContentsAsString();
@@ -170,10 +177,10 @@ class FrontendManager extends Manager {
 		if($bIsAjaxRequest) {
 			$this->oTemplate = new Template(TemplateIdentifier::constructIdentifier('container', $_REQUEST['container_only']), null, true, true);
 		} else {
-			$this->oTemplate = self::getCurrentPage()->getTemplate(true);
+			$this->oTemplate = self::$CURRENT_PAGE->getTemplate(true);
 		}
 
-		FilterModule::getFilters()->handleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
+		FilterModule::getFilters()->handleBeforePageFill(self::$CURRENT_PAGE, $this->oTemplate);
 		if(!$bIsAjaxRequest) {
 			$this->fillAttributes();
 			$this->fillNavigation();
@@ -188,7 +195,7 @@ class FrontendManager extends Manager {
 		while(ob_get_level() > 0) {
 			ob_end_flush();
 		}
-		FilterModule::getFilters()->handleRequestFinished(array(self::getCurrentPage(), $bIsDynamic, $bIsAjaxRequest, $bIsCached));
+		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest, $bIsCached));
 	}
 
 	/**
@@ -197,10 +204,9 @@ class FrontendManager extends Manager {
 	private function fillNavigation() {
 		$aNavigations = $this->oTemplate->listValuesByIdentifier("navigation");
 		if(count($aNavigations) > 0) {
-			$oRootNavigationItem = new PageNavigationItem(PagePeer::getRootPage(), self::getCurrentPage());
 			foreach($aNavigations as $sNavigationName) {
 				$oNavigation = new Navigation($sNavigationName);
-				$this->oTemplate->replaceIdentifier("navigation", $oNavigation->parse($oRootNavigationItem), $sNavigationName);
+				$this->oTemplate->replaceIdentifier("navigation", $oNavigation->parse($this->oRootNavigationItem), $sNavigationName);
 			}
 		}
 	}
@@ -209,7 +215,7 @@ class FrontendManager extends Manager {
 	 * fillContent()
 	 */
 	private function fillContent() { 
-		// FilterModule::getFilters()->handleBeforePageTypeDisplay(self::getCurrentPage(), $this->oPageType, $this->oTemplate);
+		// FilterModule::getFilters()->handleBeforePageTypeDisplay(self::$CURRENT_PAGE, $this->oPageType, $this->oTemplate);
 		$this->oPageType->display($this->oTemplate);
 	}
 			
@@ -217,26 +223,26 @@ class FrontendManager extends Manager {
 	 * fillAttributes()
 	 */
 	private function fillAttributes() { 
-		FilterModule::getFilters()->handleFillPageAttributes(self::getCurrentPage(), $this->oTemplate);
+		FilterModule::getFilters()->handleFillPageAttributes(self::$CURRENT_PAGE, $this->oTemplate);
 		$oSearchPage = PagePeer::getPageByName(Settings::getSetting('special_pages', 'search_result', 'search'));
 		if($oSearchPage !== null) {
 			$this->oTemplate->replaceIdentifier("search_action", LinkUtil::link($oSearchPage->getLink()));
 		}
 		
-		$this->oTemplate->replaceIdentifier("meta_keywords", self::getCurrentPage()->getConsolidatedKeywords());
-		$this->oTemplate->replaceIdentifier("link_text", self::getCurrentPage()->getLinkText());
-		$this->oTemplate->replaceIdentifier("title", self::getCurrentPage()->getPageTitle());
-		$this->oTemplate->replaceIdentifier("page_name", self::getCurrentPage()->getName());
-		$this->oTemplate->replaceIdentifier("page_title", self::getCurrentPage()->getPageTitle());
-		foreach(self::getCurrentPage()->getPageProperties() as $oPageProperty) {
+		$this->oTemplate->replaceIdentifier("meta_keywords", self::$CURRENT_PAGE->getConsolidatedKeywords());
+		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_PAGE->getLinkText());
+		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_PAGE->getPageTitle());
+		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_PAGE->getName());
+		$this->oTemplate->replaceIdentifier("page_title", self::$CURRENT_PAGE->getPageTitle());
+		foreach(self::$CURRENT_PAGE->getPageProperties() as $oPageProperty) {
 			$this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
 		}
-		$this->oTemplate->replaceIdentifier("page_id", self::getCurrentPage()->getId());
+		$this->oTemplate->replaceIdentifier("page_id", self::$CURRENT_PAGE->getId());
 		$this->oTemplate->replaceIdentifierCallback("page_link", 'FrontendManager', 'replacePageLinkIdentifier');
 		if(Settings::getSetting('general', 'multilingual', false) && $this->oTemplate->hasIdentifier('language_chooser')) {
 			$this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser(), null, Template::NO_HTML_ESCAPE);
 		}
-		FilterModule::getFilters()->handleFillAttributesFinished(self::getCurrentPage(), $this->oTemplate);
+		FilterModule::getFilters()->handleFillAttributesFinished(self::$CURRENT_PAGE, $this->oTemplate);
 	}
 
 	/**
@@ -252,7 +258,7 @@ class FrontendManager extends Manager {
 		$sName = $oTemplateIdentifier->getParameter('name');
 		if($sName !== null) {
 			if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
-				$oPage = self::getCurrentPage()->getPageOfName($sName);
+				$oPage = self::$CURRENT_PAGE->getPageOfName($sName);
 			} else {
 				$oPage = PagePeer::getPageByName($sName);
 			}
@@ -268,7 +274,7 @@ class FrontendManager extends Manager {
 		if($oTemplateIdentifier->hasParameter('href_only')) {
 			return LinkUtil::link($oPage->getLink());
 		}
-		if(self::getCurrentPage() !== null && self::getCurrentPage()->getId() == $oPage->getId()) {
+		if(self::$CURRENT_PAGE !== null && self::$CURRENT_PAGE->getId() == $oPage->getId()) {
 			return TagWriter::quickTag('span', array('class' => "meta_navigation {$oPage->getName()}", 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
 		}
 		return TagWriter::quickTag('a', array('class' => "meta_navigation {$oPage->getName()}", 'href' => LinkUtil::link($oPage->getLink()), 'title' => $oPage->getPageTitle()), $oPage->getLinkText());

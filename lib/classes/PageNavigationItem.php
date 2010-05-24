@@ -2,23 +2,34 @@
 
 class PageNavigationItem extends NavigationItem {
 	private $oMe;
-	private $oCurrentPage;
-	
 	private $bIsCurrent;
 	
-	public function __construct(Page $oMe, Page $oCurrentPage, $oParent = null) {
-		parent::__construct($oParent);
+	private static $NAVIGATION_ITEMS = array();
+	
+	public function __construct(Page $oMe, $oParent = null) {
 		$this->oMe = $oMe;
-		$this->oCurrentPage = $oCurrentPage;
-		$this->bIsCurrent = $this->oMe->getId() === $this->oCurrentPage->getId();
+		$this->bIsCurrent = null;
+		parent::__construct($oParent);
+	}
+	
+	public function getMe() {
+		return $this->oMe;
+	}
+	
+	public function getLevel() {
+		$this->oMe->getLevel();
 	}
 	
 	protected function getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) {
 		$aResult = array();
 		foreach($this->oMe->getChildrenWith($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) as $oPage) {
-			$aResult[$oPage->getName()] = new PageNavigationItem($oPage, $this->oCurrentPage, $this);
+			$aResult[$oPage->getName()] = PageNavigationItem::navigationItemForPage($oPage, $this);
 		}
 		return $aResult;
+	}
+	
+	protected function hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) {
+		return $this->oMe->hasChildrenWith($sLanguageId, $bIncludeInvisible, $bIncludeInvisible);
 	}
 	
 	public function isRoot() {
@@ -26,21 +37,28 @@ class PageNavigationItem extends NavigationItem {
 	}
 	
 	public function isCurrent() {
+		if($this->bIsCurrent === null) {
+			return $this->oMe->getId() === FrontendManager::$CURRENT_PAGE->getId();
+		}
 		return $this->bIsCurrent;
 	}
 	
+	public function setCurrent($bIsCurrent) {
+		$this->bIsCurrent = $bIsCurrent;
+	}
+	
 	public function isActive() {
-		return $this->oMe->getLeftValue() <= $this->oCurrentPage->getLeftValue() && $this->oMe->getRightValue() >= $this->oCurrentPage->getRightValue();
+		return $this->oMe->getLeftValue() <= FrontendManager::$CURRENT_PAGE->getLeftValue() && $this->oMe->getRightValue() >= FrontendManager::$CURRENT_PAGE->getRightValue();
 	}
 	
 	public function isSiblingOfCurrent() {
 		if($this->isRoot()) {
 			return false;
 		}
-		if($this->oMe->getLevel() !== $this->oCurrentPage->getLevel()) {
+		if($this->oMe->getLevel() !== FrontendManager::$CURRENT_PAGE->getLevel()) {
 			return false;
 		}
-		return $this->oMe->getParent()->getId() === $this->oCurrentPage->getParent()->getId();
+		return $this->oMe->getParent()->getId() === FrontendManager::$CURRENT_PAGE->getParent()->getId();
 	}
 	
 	public function getTitle($sLanguageId = null) {
@@ -86,8 +104,11 @@ class PageNavigationItem extends NavigationItem {
 		return false;
 	}
 	
-	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
-		return $this->oMe->hasChildrenWith($sLanguageId, $bIncludeInvisible, $bIncludeInvisible);
+	public static function navigationItemForPage(Page $oPage, $oParent = null) {
+		$sIdentifier = "{$oPage->getId()}";
+		if(!isset(self::$NAVIGATION_ITEMS[$sIdentifier])) {
+			self::$NAVIGATION_ITEMS[$sIdentifier] = new PageNavigationItem($oPage, $oParent);
+		}
+		return self::$NAVIGATION_ITEMS[$sIdentifier];
 	}
-	
 }

@@ -69,7 +69,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
       if(in_array('pages', $aData['types'])) {
         $aCorrespondingPages = $oTag->getAllCorrespondingDataEntries("Page");
         foreach($aCorrespondingPages as $oCorrespondingPage) {
-          if(Manager::getCurrentPage() !== null && $oCorrespondingPage->getId() === Manager::getCurrentPage()->getId()) {
+          if(FrontendManager::$CURRENT_PAGE !== null && $oCorrespondingPage->getId() === FrontendManager::$CURRENT_PAGE->getId()) {
             continue;
           }
           $bDocumentFound = true;
