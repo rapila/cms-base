@@ -66,7 +66,7 @@ class CriteriaListWidgetDelegate {
 		return call_user_func_array(array($this->oCriteriaDelegate, $sMethodName), $aArguments);
 	}
 	
-	private function getCriteria($bSortIsIrrelevant = false) {
+	public function getCriteria($bSortIsIrrelevant = false) {
 		$oCriteria = null;
 		if($this->oCriteriaDelegate === null || !method_exists($this->oCriteriaDelegate, 'getCriteria')) {
 			$oCriteria = new Criteria();

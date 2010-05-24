@@ -136,9 +136,11 @@ button.ui-button.ui-state-default {
 
 #admin_sidebar li.ui-state-hover,
 #admin_sidebar li.ui-state-active {
-	border: 0;
+	border-top: none;
+	border-left: none;
+	border-right: none;
 	background: url() #728697;
-	border-bottom: 1px solid @border_color;
+	border-bottom: 1px solid @border_color !important;
 }
 
 #admin_sidebar li.ui-state-active {

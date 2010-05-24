@@ -30,7 +30,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
 		$oDocument->setName($aDocumentData['name']);
-		$oDocument->setDescription($aDocumentData['description']);
+		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
 		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
 		$oDocument->setLanguageId($sLanguageId);

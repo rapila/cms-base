@@ -49,15 +49,16 @@ class UsersAdminModule extends AdminModule {
 	}
 
 	public function getCustomListElements() {
-		$aCustomElements = array(
-			array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
-						'name' => StringPeer::getString('users.select_all_title'),
-						'magic_column' => 'all'),
-			array('id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-						'name' => StringPeer::getString('users.select_without_title'),
-						'magic_column' => 'without'));
-		//TODO: Return an empty array if doCount($this->getCriteria()) > 0
-		return $aCustomElements;
+		if(UserPeer::doCount($this->oListWidget->oDelegateProxy->getCriteria(true)) > 0) {
+			return array(
+				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'name' => StringPeer::getString('users.select_all_title'),
+							'magic_column' => 'all'),
+				array('id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+							'name' => StringPeer::getString('users.select_without_title'),
+							'magic_column' => 'without'));
+		}
+		return array();
 	}
 
 	public function usedWidgets() {

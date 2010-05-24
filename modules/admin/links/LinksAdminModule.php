@@ -54,15 +54,16 @@ class LinksAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		$aCustomElements = array(
-			array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
-						'title' => StringPeer::getString('links.select_all_title'),
-						'magic_column' => 'all'),
-			array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-						'title' => StringPeer::getString('links.select_without_title'),
-						'magic_column' => 'without'));
-		//TODO: Return an empty array if doCount($this->getCriteria()) > 0
-		return $aCustomElements;
+		if(LinkPeer::doCount($this->oListWidget->oDelegateProxy->getCriteria(true)) > 0) {
+			return array(
+				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'title' => StringPeer::getString('links.select_all_title'),
+							'magic_column' => 'all'),
+				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+							'title' => StringPeer::getString('links.select_without_title'),
+							'magic_column' => 'without'));
+		}
+		return array();
 	}
 
 	public function usedWidgets() {

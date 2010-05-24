@@ -33,15 +33,16 @@ class DocumentsAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		$aCustomElements = array(
-			array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-						'title' => StringPeer::getString('files.select_all_title'),
-						'magic_column' => 'all'),
-			array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-						'title' => StringPeer::getString('files.select_without_title'),
-						'magic_column' => 'without'));
-		//TODO: Return an empty array if doCount($this->getCriteria()) > 0
-		return $aCustomElements;
+		if(DocumentPeer::doCount($this->oListWidget->oDelegateProxy->getCriteria(true)) > 0) {
+		 	return array(
+				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'title' => StringPeer::getString('files.select_all_title'),
+							'magic_column' => 'all'),
+				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+							'title' => StringPeer::getString('files.select_without_title'),
+							'magic_column' => 'without'));
+		}
+		return array();
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
