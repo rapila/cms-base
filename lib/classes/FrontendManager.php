@@ -33,8 +33,7 @@ class FrontendManager extends Manager {
 		// Find requested page
 		$oMatchingPage = PagePeer::getRootPage(); 
 		if($oMatchingPage === null) {
-			echo "please create root node in database! <br />"; 
-			echo "to backend: <a href=\"".LinkUtil::link('pages', "BackendManager")."\">Pages</a>"; exit;
+			throw new Exception("No root node exists in the database. Use the admin tool to create one.");
 		}
 		 
 		while(self::hasNextPathItem()) {
@@ -176,7 +175,7 @@ class FrontendManager extends Manager {
 
 		FilterModule::getFilters()->handleBeforePageFill(self::getCurrentPage(), $this->oTemplate);
 		if(!$bIsAjaxRequest) {
-			$this->fillAttributes(self::getCurrentPage()->getTopNavigationPage());
+			$this->fillAttributes();
 			$this->fillNavigation();
 		}
 		$this->fillContent();
@@ -197,9 +196,12 @@ class FrontendManager extends Manager {
 	 */
 	private function fillNavigation() {
 		$aNavigations = $this->oTemplate->listValuesByIdentifier("navigation");
-		foreach($aNavigations as $sNavigationName) {
-			$oNavigation = new Navigation($sNavigationName);
-			$this->oTemplate->replaceIdentifier("navigation", $oNavigation->parse(), $sNavigationName);
+		if(count($aNavigations) > 0) {
+			$oRootNavigationItem = new PageNavigationItem(PagePeer::getRootPage(), self::getCurrentPage());
+			foreach($aNavigations as $sNavigationName) {
+				$oNavigation = new Navigation($sNavigationName);
+				$this->oTemplate->replaceIdentifier("navigation", $oNavigation->parse($oRootNavigationItem), $sNavigationName);
+			}
 		}
 	}
 	
@@ -216,11 +218,6 @@ class FrontendManager extends Manager {
 	 */
 	private function fillAttributes() { 
 		FilterModule::getFilters()->handleFillPageAttributes(self::getCurrentPage(), $this->oTemplate);
-		$oTopNavigationPage = self::getCurrentPage()->getTopNavigationPage();
-		FilterModule::getFilters()->handleFillTopNavigationPageAttribute($oTopNavigationPage, $this->oTemplate);
-		$this->oTemplate->replaceIdentifier("top_navigation", $oTopNavigationPage->getName());
-		$this->oTemplate->replaceIdentifier("top_navigation_linktext", $oTopNavigationPage->getLinkText());
-		$this->oTemplate->replaceIdentifier("navigation_level", self::getCurrentPage()->getLevel());
 		$oSearchPage = PagePeer::getPageByName(Settings::getSetting('special_pages', 'search_result', 'search'));
 		if($oSearchPage !== null) {
 			$this->oTemplate->replaceIdentifier("search_action", LinkUtil::link($oSearchPage->getLink()));

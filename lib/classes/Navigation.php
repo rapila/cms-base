@@ -19,6 +19,7 @@ class Navigation {
 						"is_sibling_of_active" => false,
 						"is_child_of_current" => false,
 						"is_folder" => false,
+						"is_virtual" => false,
 						"is_descendant_of_current" => false,
 						//Please don't use those properties in frontend navigations
 						"user_may_create" => false,
@@ -26,8 +27,8 @@ class Navigation {
 	private $sTemplatesDir;
 	private $bShowOnlyEnabledChildren;
 	private $bShowOnlyVisibleChildren;
+	private $bPrintNewline;
 	private $sLanguageId;
-	private $sTreeLanguageId;
 	
 	/**
 	 * __constructor()
@@ -62,20 +63,15 @@ class Navigation {
 		}
 		$this->bShowOnlyEnabledChildren = isset($this->aConfig["show_inactive"]) ? ($this->aConfig["show_inactive"] !== true) : true;
 		$this->bShowOnlyVisibleChildren = isset($this->aConfig["show_hidden"]) ? ($this->aConfig["show_hidden"] !== true) : true;
+		$this->bPrintNewline = isset($this->aConfig["no_newline"]) ? ($this->aConfig["no_newline"] !== true) : true;
 		$this->sLanguageId = isset($this->aConfig["language"]) ? $this->aConfig["language"] : Session::language();
-		$this->sTreeLanguageId = array_key_exists("tree_language", $this->aConfig) ? $this->aConfig["tree_language"] : $this->sLanguageId;
 	} // __construct()
 
 	/**
 	 * parse()
 	 */	 
-	public function parse() {
-		if (PagePeer::getRootPage() !== null) {
-			return $this->parseTree(array(PagePeer::getRootPage()), 0);
-		}
-		
-		// FIXME the whole redirection in case of a missing rootelement
-		LinkUtil::redirectToManager(array('pages', 'newPage'));
+	public function parse(NavigationItem $oNavigationItem) {
+		return $this->parseTree(array($oNavigationItem), 0);
 	} // parse()
 	
 	/**
@@ -84,51 +80,51 @@ class Navigation {
 	 * @param int level of navigation
 	 * @return string parsed navigation
 	 */
-	private function parseTree($aPages, $iLevel) {
+	private function parseTree($aNavigationItems, $iLevel) {
 		if($this->iMaxLevel !== null && $iLevel > $this->iMaxLevel) {
 			return null;
 		}
 		$sResult = new Template(TemplateIdentifier::constructIdentifier('content'), null, true);
 		$bNoPagesDisplayed = true;
-		foreach($aPages as $oPage) { 
+		foreach($aNavigationItems as $oNavigationItem) {
 			$oBooleanParser = new BooleanParser(self::$BOOLEAN_PARSER_DEFAULT_VALUES);
-			$bHasChildren = ( $this->bShowOnlyVisibleChildren &&	$this->bShowOnlyEnabledChildren && $oPage->hasEnabledAndVisibleChildren($this->sTreeLanguageId))
-									 || (!$this->bShowOnlyVisibleChildren &&	$this->bShowOnlyEnabledChildren && $oPage->hasEnabledChildren($this->sTreeLanguageId))
-									 || ( $this->bShowOnlyVisibleChildren && !$this->bShowOnlyEnabledChildren && $oPage->hasVisibleChildren($this->sTreeLanguageId))
-									 || (!$this->bShowOnlyVisibleChildren && !$this->bShowOnlyEnabledChildren && $oPage->hasChildren($this->sTreeLanguageId));
+			$bHasChildren = $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyVisibleChildren, !$this->bShowOnlyEnabledChildren);
 
 			if($bHasChildren) {
 				$oBooleanParser->has_children = true;
 			}
-			if($oPage->isCurrent()) {
+			if($oNavigationItem->isCurrent()) {
 				$oBooleanParser->is_current = true;
 			}
-			if($oPage->isActive()) {
+			if($oNavigationItem->isActive()) {
 				$oBooleanParser->is_active = true;
 			}
-			if($oPage->getIsInactive()) {
+			if(!$oNavigationItem->isEnabled()) {
 				$oBooleanParser->is_disabled = true;
 			}
-			if($oPage->getIsHidden()) {
+			if(!$oNavigationItem->isVisible()) {
 				$oBooleanParser->is_hidden = true;
 			}
-			if($oPage->getIsProtected() && (!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->mayViewPage($oPage))) {
+			if(!$oNavigationItem->isAccessible()) {
 				$oBooleanParser->is_inaccessible = true;
 			}
-			if($oPage->isSiblingOfCurrent()) {
+			if($oNavigationItem->isSiblingOfCurrent()) {
 				$oBooleanParser->is_sibling_of_current = true;
 			}
-			if($oPage->isSiblingOfActive()) {
+			if($oNavigationItem->isSiblingOfActive()) {
 				$oBooleanParser->is_sibling_of_active = true;
 			}
-			if($oPage->isChildOfCurrent()) {
+			if($oNavigationItem->isChildOfCurrent()) {
 				$oBooleanParser->is_child_of_current = true;
 			}
-			if($oPage->isDescendantOfCurrent()) {
+			if($oNavigationItem->isDescendantOfCurrent()) {
 					$oBooleanParser->is_descendant_of_current = true;
 			}
-			if($oPage->isFolder()) {
+			if($oNavigationItem->isFolder()) {
 					$oBooleanParser->is_folder = true;
+			}
+			if($oNavigationItem->isVirtual()) {
+					$oBooleanParser->is_virtual = true;
 			}
 			
 			$sTemplateName = $this->getConfigForPage("template", $iLevel, $oBooleanParser);
@@ -146,20 +142,14 @@ class Navigation {
 			
 			$oTemplate = $this->getTemplate($sTemplateName);
 			
-			$oPageString = $oPage->getPageStringByLanguage($this->sLanguageId);
-			if($oPageString === null) {
-				$oPageString = $oPage->getActivePageString();
-			}
-			$oTemplate->replaceIdentifier('name', $oPage->getName());
-			$oTemplate->replaceIdentifier('long_title', $oPageString->getPageTitle());
-			$oTemplate->replaceIdentifier('title', $oPageString->getLinkText());
-			$oTemplate->replaceIdentifier('page_name', $oPage->getName());
+			$oTemplate->replaceIdentifier('name', $oNavigationItem->getName());
+			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
+			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
-			$oTemplate->replaceIdentifier('link', implode('/', $oPage->getLink()));
-			$oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oPage->getLink()));
-			$oTemplate->replaceIdentifier('id', $oPage->getId());
+			$oTemplate->replaceIdentifier('link', implode('/', $oNavigationItem->getLink()));
+			$oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
 			$oTemplate->replaceIdentifier('level', $iLevel);
-			$oTemplate->replaceIdentifier('is_inactive', $oPage->getIsInactive() ? ' inactive' : '');
+			$oTemplate->replaceIdentifier('is_inactive', $oNavigationItem->isEnabled() ? '' : ' inactive');
 			
 			if($oBooleanParser->is_current) {
 				$oTemplate->replaceIdentifier('status', "current");
@@ -182,23 +172,11 @@ class Navigation {
 			$oTemplate->replaceIdentifier('status', "default");
 			
 			if($oTemplate->hasIdentifier('children') && $bHasChildren && !($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
-				if($this->bShowOnlyEnabledChildren) {
-					if($this->bShowOnlyVisibleChildren) {
-						$aChildren = $oPage->getEnabledAndVisibleChildren($this->sTreeLanguageId);
-					} else {
-						$aChildren = $oPage->getEnabledChildren($this->sTreeLanguageId);
-					}
-				} else {
-					if($this->bShowOnlyVisibleChildren) {
-						$aChildren = $oPage->getVisibleChildren($this->sTreeLanguageId);
-					} else {
-						$aChildren = $oPage->getChildren($this->sTreeLanguageId);
-					}
-				}
+				$aChildren = $oNavigationItem->getChildren($this->sLanguageId, !$this->bShowOnlyVisibleChildren, !$this->bShowOnlyEnabledChildren);
 				$oTemplate->replaceIdentifier('children', $this->parseTree($aChildren, $iLevel+1));
 			}
 			
-			$sResult->replaceIdentifierMultiple("content", $oTemplate);
+			$sResult->replaceIdentifierMultiple("content", $oTemplate, null, ($this->bPrintNewline ? 0 : Template::NO_NEWLINE));
 		}
 		if($bNoPagesDisplayed) {
 			return null;
