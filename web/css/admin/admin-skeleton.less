@@ -136,13 +136,19 @@ body {
 	border: none;
 	border-right: @border;
 }
+
+#admin_info_bar .info-bar-element {
+	line-height: @info_bar_height;
+	vertical-align: middle;
+}
+
 #admin_info_bar input.info-bar-element {
 	border-color: #E4E4E4;
 	border-right-style: dotted;
-	line-height: 24px;
 	vertical-align: middle;
 	background-color: #B8D600;
 }
+
 #admin_info_bar input.info-bar-element.default_state {
 	background-color: transparent;
 }
@@ -150,9 +156,7 @@ body {
 #admin_info_bar span.info-bar-element {
 	display: block;
 	line-height: @info_bar_height;
-	height: @info_bar_height;
 	vertical-align: middle;
-	padding: 0 .5em;
 }
 
 #admin_info_bar span.info-bar-element.row_count_info {

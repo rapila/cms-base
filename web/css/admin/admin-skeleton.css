@@ -94,10 +94,13 @@ body {
   border: none;
   border-right: 1px solid #d4d8dc;
 }
+#admin_info_bar .info-bar-element {
+  line-height: 24px;
+  vertical-align: middle;
+}
 #admin_info_bar input.info-bar-element {
   border-color: #e4e4e4;
   border-right-style: dotted;
-  line-height: 24px;
   vertical-align: middle;
   background-color: #b8d600;
 }
@@ -105,9 +108,7 @@ body {
 #admin_info_bar span.info-bar-element {
   display: block;
   line-height: 24px;
-  height: 24px;
   vertical-align: middle;
-  padding: 0 0.5em;
 }
 #admin_info_bar span.info-bar-element.row_count_info {
   padding-left: 1em;

@@ -14,7 +14,7 @@ Widget.types.image_picker = {
 				jQuery.each(result, function() {
 					var document_id = this.id;
 					var url = picker_object.document_url_from_id(document_id, 50);
-					var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-corner-all ui-image-picker-image');
+					var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-image-picker-image');
 					image.children('img').attr({src: url, width: '50'});
 					image.data('document_id', document_id);
 					Widget.tooltip(image, this.name);
