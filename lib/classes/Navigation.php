@@ -130,15 +130,6 @@ class Navigation {
 			if($oPage->isFolder()) {
 					$oBooleanParser->is_folder = true;
 			}
-			if(Session::getSession()->isAuthenticated()) {
-				$oUser = Session::getSession()->getUser();
-				if($oUser->mayCreateChildren($oPage)) {
-					$oBooleanParser->user_may_create = true;
-				}
-				if($oUser->mayEditPageDetails($oPage)) {
-					$oBooleanParser->user_may_edit = true;
-				}
-			}
 			
 			$sTemplateName = $this->getConfigForPage("template", $iLevel, $oBooleanParser);
 			
@@ -155,39 +146,12 @@ class Navigation {
 			
 			$oTemplate = $this->getTemplate($sTemplateName);
 			
-			$sLanguageWarning = '';
 			$oPageString = $oPage->getPageStringByLanguage($this->sLanguageId);
 			if($oPageString === null) {
 				$oPageString = $oPage->getActivePageString();
-				$oWriter = new TagWriter('span', array('title' => StringPeer::getString("page.translation_missing")), '[!]');
-				$sLanguageWarning = $oWriter->parse();
 			}
 			$oTemplate->replaceIdentifier('name', $oPage->getName());
-			$sDocStatus = $oPage->getIsFolder() ? 'is_folder': 'is_doc';
-			$oTemplate->replaceIdentifier('doc_status', StringPeer::getString($sDocStatus . '_description'));
-
-			$oTemplate->replaceIdentifier('class_doc_status', $sDocStatus);
-			$sNewPageIcon = $oPage->getIsFolder() ? 'folder_new' : 'page_new';
-			if(!$oPage->getIsFolder()) {
-				if($oPage->getIsInactive() && $oPage->getIsHidden()) {
-					$sNewPageIcon = 'new_inactive_hidden';
-				} elseif($oPage->getIsInactive()) {
-					$sNewPageIcon = 'new_inactive';
-				} elseif($oPage->getIsHidden()) {
-					$sNewPageIcon = 'new_hidden';
-				}
-			} elseif($oPage->getIsFolder()) {
-				if($oPage->getIsInactive() && $oPage->getIsHidden()) {
-					$sNewPageIcon = 'new_folder_inactive_hidden';
-				} elseif($oPage->getIsInactive()) {
-					$sNewPageIcon = 'new_folder_inactive';
-				} elseif($oPage->getIsHidden()) {
-					$sNewPageIcon = 'new_folder_hidden';
-				}
-			}
-			$oTemplate->replaceIdentifier("new_page", $sNewPageIcon);
 			$oTemplate->replaceIdentifier('long_title', $oPageString->getPageTitle());
-			$oTemplate->replaceIdentifier('language_warning', $sLanguageWarning);
 			$oTemplate->replaceIdentifier('title', $oPageString->getLinkText());
 			$oTemplate->replaceIdentifier('page_name', $oPage->getName());
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);

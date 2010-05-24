@@ -8684,9 +8684,12 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * @return created_at formatted to the current locale
 	 */
-	public function getCreatedAtFormatted()
+	public function getCreatedAtFormatted($sLanguageId = null, $sFormatString = 'x')
 	{
-		return LocaleUtil::localizeDate($this->created_at);
+		if($this->created_at === null) {
+			return null;
+		}
+		return LocaleUtil::localizeDate($this->created_at, $sLanguageId, $sFormatString);
 	}
 	
 	/**
@@ -8700,9 +8703,12 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * @return updated_at formatted to the current locale
 	 */
-	public function getUpdatedAtFormatted()
+	public function getUpdatedAtFormatted($sLanguageId = null, $sFormatString = 'x')
 	{
-		return LocaleUtil::localizeDate($this->updated_at);
+		if($this->updated_at === null) {
+			return null;
+		}
+		return LocaleUtil::localizeDate($this->updated_at, $sLanguageId, $sFormatString);
 	}
 
 	// attributable behavior
