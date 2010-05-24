@@ -287,7 +287,7 @@ class Page extends BasePage {
 	}
 
 	public function getFirstEnabledChild($sLanguageId=null, $iLevel=0) {
-		$aAllChildren = $this->getEnabledChildren($sLanguageId);
+		$aAllChildren = $this->getChildrenWith($sLanguageId, false, true);
 		if(isset($aAllChildren[0])) {
 			if(!$aAllChildren[0]->getIsFolder()) {
 				return $aAllChildren[0];
