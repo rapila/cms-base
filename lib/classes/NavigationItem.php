@@ -58,7 +58,13 @@ abstract class NavigationItem {
 	public abstract function getTitle($sLanguageId = null);
 	public abstract function getLinkText($sLanguageId = null);
 	public abstract function getName();
-	public abstract function getLink();
+	
+	public function getLink() {
+		if($this->isRoot()) {
+			return array();
+		}
+		return array_merge($this->oParent->getLink(), array($this->getName()));
+	}
 	
 	public abstract function isProtected();
 	public function isAccessible() {

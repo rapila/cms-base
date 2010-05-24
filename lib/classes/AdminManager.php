@@ -61,9 +61,9 @@ class AdminManager extends Manager {
 			$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$this->doAdmin($oTemplate);
 		}
+		$oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'), null, Template::LEAVE_IDENTIFIERS);
 		$oTemplate->replaceIdentifier('module_name', $this->sModuleName);
 		$oTemplate->replaceIdentifier('module_display_name', AdminModule::getDisplayNameByName($this->sModuleName));
-		$oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'), null, Template::LEAVE_IDENTIFIERS);
 
 		$oTemplate->render();
 	}
