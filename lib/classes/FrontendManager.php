@@ -56,6 +56,9 @@ class FrontendManager extends Manager {
 		while(!($oParent instanceof PageNavigationItem)) {
 			$oParent = $oParent->getParent();
 		}
+		if($oParent !== $oMatchingNavigationItem) {
+			$oParent->setCurrent(false);
+		}
 		self::$CURRENT_PAGE = $oParent->getMe();
 		FilterModule::getFilters()->handleNavigationPathFound($this->oRootNavigationItem, $oMatchingNavigationItem);
 		// See if the filter(s) changed anything
@@ -230,9 +233,9 @@ class FrontendManager extends Manager {
 		}
 		
 		$this->oTemplate->replaceIdentifier("meta_keywords", self::$CURRENT_PAGE->getConsolidatedKeywords());
-		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_PAGE->getLinkText());
-		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_PAGE->getPageTitle());
-		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_PAGE->getName());
+		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
+		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
+		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_NAVIGATION_ITEM->getName());
 		$this->oTemplate->replaceIdentifier("page_title", self::$CURRENT_PAGE->getPageTitle());
 		foreach(self::$CURRENT_PAGE->getPageProperties() as $oPageProperty) {
 			$this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
