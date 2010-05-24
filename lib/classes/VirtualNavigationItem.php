@@ -24,7 +24,7 @@ class VirtualNavigationItem extends NavigationItem {
 	* @todo
 	*/
 	public function isCurrent() {
-		return false;
+		return FrontendManager::$CURRENT_NAVIGATION_ITEM === $this;
 	}
 	
 	public function getTitle($sLanguageId = null) {
