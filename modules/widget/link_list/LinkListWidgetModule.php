@@ -6,11 +6,12 @@ class LinkListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	private $iLinkCategoryId;
+	public $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
 	
 	public function doWidget() {

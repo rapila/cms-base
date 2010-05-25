@@ -11,13 +11,10 @@ class LinksAdminModule extends AdminModule {
 	public function __construct() {
 		$this->oListWidget = new LinkListWidgetModule();
 		if(isset($_REQUEST['link_category_id'])) {
-			$this->oListWidget->setLinkCategoryId($_REQUEST['link_category_id']);
-			$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $_REQUEST['link_category_id']);
+			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['document_category_id']);
 		}
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $this->oListWidget->oDelegateProxy->getLinkCategoryId());
 		$this->oSidebarWidget = new ListWidgetModule();
-		if(!is_numeric($this->oListWidget->getLinkCategoryId())) {
-			$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $this->oListWidget->getLinkCategoryId());
-		}
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}

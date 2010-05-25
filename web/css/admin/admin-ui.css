@@ -139,7 +139,7 @@ button.ui-button.ui-state-default {
 	border-top: none;
 	border-left: none;
 	border-right: none;
-	background: url() #728697;
+	background-color: #728697;
 	border-bottom: 1px solid @border_color !important;
 }
 

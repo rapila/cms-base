@@ -362,6 +362,24 @@ textarea.ui-widget-content {
 	width: 22em;
 }
 
+#admin_sidebar .ui-tree,
+#admin_sidebar .ui-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#admin_sidebar .ui-list li, 
+#admin_sidebar .ui-tree li {
+	font-weight: 700;
+}
+
+#admin_sidebar .ui-list li a,
+#admin_sidebar .ui-tree li a {
+	color: #333;
+	text-decoration: none;
+}
+
 #admin_sidebar .ui-list li,
 #admin_sidebar div.ui-list-row {
 	font-size: 1.2em;
@@ -371,13 +389,6 @@ textarea.ui-widget-content {
 
 #admin_sidebar > .ui-tree {
 	border-bottom: 1px solid @border_color;
-}
-
-#admin_sidebar .ui-tree,
-#admin_sidebar .ui-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
 }
 
 #admin_sidebar .ui-tree div.ui-icon {
@@ -438,12 +449,14 @@ textarea.ui-widget-content {
 #admin_sidebar ul.ui-list li.ui-list-row.magic_column-without {
 	font-style: oblique;
 	background-image: url(../../images/admin/folder_magic.png);
+	background-repeat: none;
 }
 
 #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active.magic_column-all,
 #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active.magic_column-without {
 	font-style: oblique;
 	background-image: url(../../images/admin/folder_magic_open.png);
+	background-repeat: none;
 }
 
 #admin_sidebar ul.ui-list li.ui-list-headrow,
@@ -452,26 +465,6 @@ textarea.ui-widget-content {
 	padding: 10px 2px 1px 4px;
 	background-color:#F6F6F6;
 	border-top: 0;
-}
-
-#admin_sidebar .ui-list li, 
-#admin_sidebar .ui-tree li {
-	font-weight: 700;
-}
-
-#admin_sidebar input {
-	padding: 0 0 0 0;
-	margin: 0;
-	border: 0;
-	background-color: transparent;
-	color: #999;
-	font-size: 1.0em;
-	width: 240px;
-}
-
-#admin_sidebar .ui-list li a {
-	color: #333;
-	text-decoration: none;
 }
 
 .ui-tree {
@@ -492,6 +485,16 @@ textarea.ui-widget-content {
 
 .ui-tree .tree-opener.no-children {
 	background-image: none;
+}
+
+#admin_sidebar input {
+	padding: 0 0 0 0;
+	margin: 0;
+	border: 0;
+	background-color: transparent;
+	color: #999;
+	font-size: 1.0em;
+	width: 240px;
 }
 
 .ui-dialog .ui-dialog-buttonpane button {
