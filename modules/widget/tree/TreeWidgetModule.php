@@ -26,7 +26,7 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	
 	public function doWidget() {
 		$oListTag = new TagWriter($this->bIsOrdered ? 'ol' : 'ul');
-		$oListTag->addToParameter('class', 'ui-tree ui-list');
+		$oListTag->addToParameter('class', 'ui-tree');
 		$oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$oListTag->setParameter('data-widget-type', $this->getModuleName());
 		return $oListTag->parse();

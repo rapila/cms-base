@@ -134,13 +134,21 @@ button.ui-button.ui-state-default {
 	border-color: #000 #555 #666 #555;
 }
 
-#admin_sidebar li.ui-state-hover,
-#admin_sidebar li.ui-state-active {
+#admin_sidebar .ui-list li.ui-state-hover,
+#admin_sidebar .ui-list li.ui-state-active {
 	border-top: none;
 	border-left: none;
 	border-right: none;
 	background: url() #728697;
 	border-bottom: 1px solid @border_color !important;
+}
+
+#admin_sidebar .ui-tree li.ui-state-hover,
+#admin_sidebar .ui-tree li.ui-state-active {
+	border-left: none;
+	border-right: none;
+	border-top: 1px solid @border_color !important;
+	background: url() #728697;
 }
 
 #admin_sidebar li.ui-state-active {

@@ -28,7 +28,7 @@ class PagesAdminModule extends AdminModule {
 	public function listChildren($iId) {
 		$oParentPage = null;
 		if($iId === null) {
-			$oParentPage = PagePeer::getRootPage();
+			return array(PagePeer::getRootPage()->toArray());
 		} else {
 			$oParentPage = PagePeer::retrieveByPK($iId);
 		}

@@ -349,13 +349,6 @@ label {
 	padding-right: .5em;
 }
 
-#admin_sidebar .ui-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	border-top: 1px solid @border_color;
-}
-
 ui-widget {
 	font-size: .5em;
 }
@@ -374,6 +367,57 @@ textarea.ui-widget-content {
 	font-size: 1.2em;
 	padding: 3px 3px 3px 10px;
 	border-bottom: 1px solid #DDD;
+}
+
+#admin_sidebar > .ui-tree {
+	border-bottom: 1px solid @border_color;
+}
+
+#admin_sidebar .ui-tree,
+#admin_sidebar .ui-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#admin_sidebar .ui-tree div.ui-icon {
+	margin: .3em 0;
+}
+
+#admin_sidebar .ui-tree > li {
+	margin-left: 25px;
+}
+
+#admin_sidebar > .ui-tree > li {
+	margin-left: 0;
+}
+
+#admin_sidebar .ui-tree li {
+	font-size: 1.2em;
+	padding: 0 0 0 0;
+	line-height: 24px;
+	vertical-align: middle;
+	border-bottom: none;
+	border-top: 1px solid #DDD;
+}
+
+#admin_sidebar .ui-tree li {
+	border-bottom: none;
+	border-top: 1px solid #DDD;
+}
+
+#admin_sidebar .ui-list li.ui-list-row {
+	border-bottom: 1px solid #DDD;
+}
+
+#admin_sidebar .ui-tree li.show-children {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+#admin_sidebar .ui-tree li.show-children ol {
+	margin-left: -10px;
+	margin-top: 3px;
 }
 
 .documents #admin_sidebar li.ui-list-row,
@@ -410,7 +454,8 @@ textarea.ui-widget-content {
 	border-top: 0;
 }
 
-#admin_sidebar .ui-list li {
+#admin_sidebar .ui-list li, 
+#admin_sidebar .ui-tree li {
 	font-weight: 700;
 }
 
