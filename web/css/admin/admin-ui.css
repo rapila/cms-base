@@ -151,6 +151,11 @@ button.ui-button.ui-state-default {
 	background: url() #728697;
 }
 
+#cmos_admin_menu .cmos-button.ui-state-default,
+.ui-state-default, .ui-widget-content .ui-state-default {
+	background: url() transparent;
+}
+
 #admin_sidebar li.ui-state-active {
 	color: white;
 }

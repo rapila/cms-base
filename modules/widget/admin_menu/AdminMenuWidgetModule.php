@@ -38,6 +38,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 			$aResult[AdminModule::getDisplayNameByName($sModuleName)] = array('name' => $sModuleName, 'link' => LinkUtil::link(array($sModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sModuleName));
 		}
 		ksort($aResult);
+		array_unshift($aResult, array('name' => 'pages', 'link' => LinkUtil::link(array('pages'), 'AdminManager'), 'title' => 'Verwalten und Administrieren'));
 		return $aResult;
 	}
 }

@@ -16,6 +16,8 @@ Widget.types.info_bar = {
 		});
 		this.infobar_left = this._element.find('.infobar_left');
 		this.infobar_right = this._element.find('.infobar_right');
+		this.admin_menu_right = this._element.find('.admin_menu_right');
+		this.admin_menu_left = this._element.find('.admin_menu_left');
 	},
 	
 	resizer_moved: function(event, ui) {
@@ -28,6 +30,8 @@ Widget.types.info_bar = {
 		this.sidebar.css('width', px);
 		this.content_area.css('left', px);
 		this.infobar_right.css('left', px);
+		this.admin_menu_right.css('left', px);
+		this.admin_menu_left.css('width', px);
 	},
 	
 	add_element: function(element, is_right_container, is_before, accesskey) {

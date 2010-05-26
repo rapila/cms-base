@@ -5,7 +5,7 @@
 @initial_sidebar_width: 277px;
 
 @info_bar_height: 24px;
-@admin_menu_height: 34px;
+@admin_menu_height: 30px;
 
 @border_width: 1px;
 @border_color: #D4D8DC;
@@ -35,7 +35,7 @@ body {
 	margin-bottom: 5px;
 }
 
-#admin_area, #admin_info_bar {
+#admin_area, #admin_info_bar, #cmos_admin_menu {
 	position: absolute;
 	overflow: hidden;
 	left: @side_window_distance;
@@ -43,7 +43,7 @@ body {
 }
 
 #admin_area {
-	top: (@admin_menu_height - 4px);
+	top: @admin_menu_height;
 	bottom: (@info_bar_height + @border_width);
 	background-color: #FFFFFF;
 }
@@ -64,11 +64,15 @@ body {
 	background-color: @background_color_sidebar;
 }
 
-#admin_main {
+#admin_main,
+#cmos_admin_menu .admin_menu_right {
 	left: @initial_sidebar_width;
 	right: 0;
 	padding-right: @side_window_distance;
 	padding-left: 0;
+}
+
+#admin_main {
 	border-left: @border;
 }
 
@@ -159,9 +163,10 @@ body {
 	vertical-align: middle;
 }
 
-#admin_info_bar span.info-bar-element.row_count_info {
+#admin_info_bar .info-bar-element.row_count_info {
 	padding-left: 1em;
 	color: #888;
+	border-right: 0;
 }
 
 #admin_info_bar .add-new-item {
@@ -204,15 +209,42 @@ body {
 }
 
 #cmos_admin_menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
 	font-size: 13px;
-	width: 100%;
 	height: @admin_menu_height;
 	color: #FFF;
 	z-index: 100;
 }
 
-#cmos_admin_menu .admin_menu_right {
+#cmos_admin_menu .ui-widget-header {
 	height: @admin_menu_height;
+	padding: 0;
+}
+
+#cmos_admin_menu .admin_menu_right,
+#cmos_admin_menu .admin_menu_left {
+	position: absolute;
+	top: 0;
+	height: (@admin_menu_height - 6px);
+	margin: 3px 3px;
+}
+
+#cmos_admin_menu .admin_menu_left { 
+	left: 0;
+	width: (@initial_sidebar_width - 3px);
+}
+
+#cmos_admin_menu .admin_menu_right {
+	position: absolute;
+	right: 0;
+  left: @initial_sidebar_width;
+}
+
+#cmos_admin_menu .admin_menu_right * {
+	float: right;
 }
 
 #cmos_admin_menu .admin_menu_right span.cmos-button.ui-state-default {
@@ -237,8 +269,8 @@ body {
 	min-width: 20em;
 	line-height: 12px;
 	text-align: left;
+	margin-left: 1px;
 	float: left;
-	margin-left: 270px;
 }
 
 #cmos_admin_menu .ui-widget-header select.content_language {
@@ -258,10 +290,6 @@ body {
 	padding-bottom: 0;
 }
 
-#cmos_admin_menu .admin_menu_right {
-	float: right;
-}
-
 #cmos_admin_menu .admin-menu-button {
 	display: inline-block;
 	width: 24px;
@@ -272,8 +300,17 @@ body {
 	float: right;
 }
 
-#cmos_admin_menu .dashboard_link {
+#cmos_admin_menu .admin_menu_left .cmos-button {
+	float: left;
+	margin: 0 .3em;
+	padding-left: 1.5em;
+	padding-right: 1.5em;
+}
+
+#cmos_admin_menu  .admin_menu_right .dashboard_link {
 	background: transparent url('../../images/admin/dashboard_icon.gif') repeat-y scroll 0 0;
+	float: left;
+	margin-left: .5em;
 }
 
 #cmos_admin_menu .dashboard_link:hover,
@@ -431,16 +468,26 @@ textarea.ui-widget-content {
 	margin-top: 3px;
 }
 
+.document_types #admin_sidebar li.ui-list-row,
 .documents #admin_sidebar li.ui-list-row,
 .links #admin_sidebar li.ui-list-row,
-.users #admin_sidebar li.ui-list-row {
+.users #admin_sidebar li.ui-list-row,
+.strings #admin_sidebar li.ui-list-row {
 	padding-left: 1.4em;
 	background-image: url(../../images/admin/folder_collapsed.png);
 	background-repeat: no-repeat;
 	background-position: .3em .3em;
 }
+
+#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active,
+#admin_sidebar ul.ui-list li.ui-list-row.ui-state-hover {
+	background-image: url();
+}
+
+.document_types #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active,
 .documents #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active,
 .links #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active,
+.strings #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active,
 .users #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active {
 	background-image: url(../../images/admin/folder_open.png);
 }
@@ -462,7 +509,7 @@ textarea.ui-widget-content {
 #admin_sidebar ul.ui-list li.ui-list-headrow,
 #admin_sidebar .ui-list th.ui-list-heading {
 	font-size: 1em;
-	padding: 10px 2px 1px 4px;
+	padding: 11px 2px 1px 4px;
 	background-color:#F6F6F6;
 	border-top: 0;
 }

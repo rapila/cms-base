@@ -7,22 +7,29 @@ Widget.types.admin_menu = {
 		this.button_prototype = jQuery('<a/>').addClass('admin-menu-button');
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
-		this.addButton(this.getLoggedInName(), function() {
-			window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
-		}, true).addElement(jQuery("<span/>").text('cmos').attr('style', "padding:0 1em;color:#B8D600;"),true).
+		this.left_container = this.toolbar.find('.admin_menu_left');
+		this.addButton("Seitenvorschau", function() {
+			
+			}.bind(this), false).
+			addButton("Seite bearbeiten", function() {
+			
+			}.bind(this), false).
 			addButton(" ", function() {
-			Widget.create('login_window', function(login_window) {
-				login_window.logout(function() {
-					this.show();
-				});
-				this.hide();
-			}.bind(this));
-		}.bind(this), true, this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}')).
-			addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module).
-			addSpacer(2).
+				Widget.create('login_window', function(login_window) {
+					login_window.logout(function() {
+						this.show();
+					});
+					this.hide();
+				}.bind(this));
+			}.bind(this), true, this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}')).
+			addElement(jQuery("<span/>").text('cmos').attr('style', "padding:.3em 1em;color:#B8D600;"),true).
+			addButton(this.getLoggedInName(), function() {
+			window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
+		}, true).
+			addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module, true).
 			addButton('   ', function() {
 			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
-		}, false, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
+		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
 			// addLanguageSelector("{{writeSessionAttribute=content_language}}");
 	},
 	
@@ -42,7 +49,7 @@ Widget.types.admin_menu = {
 	},
 	
 	addElement: function(element, is_right_container) {
-		var appendee = this.toolbar;
+		var appendee = this.left_container;
 		if(is_right_container) {
 			appendee = this.right_container;
 		}
