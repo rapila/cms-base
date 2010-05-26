@@ -2,6 +2,9 @@ Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 
+Issues
+- TODO: re-setting the last selected item after reload should be default functionality
+
 PageTree
 - show root element
 - make separate tree style sheet?

@@ -13,10 +13,6 @@ class UsersAdminModule extends AdminModule {
 			$this->oListWidget->oDelegateProxy->setGroupId($_REQUEST['group_id']);
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'group_id', $this->oListWidget->oDelegateProxy->getGroupId());
-		
-		if(isset($_REQUEST['user_id'])) {
-			$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'user_id', $_REQUEST['user_id']);
-		}
 		$this->oSidebarWidget 		= new ListWidgetModule();
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
 	}
