@@ -20,17 +20,6 @@ class StringListWidgetModule extends WidgetModule {
 		return $this->oListWidget->doWidget();
 	}
 	
-	public function setNameSpace($sNameSpace = null) {
-		$this->sNameSpace = $sNameSpace;
-	}
-	
-	public function getNameSpace() {
-		if($this->sNameSpace === null) {
-			$this->sNameSpace = CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->sNameSpace;
-	}
-	
 	public function getColumnIdentifiers() {
 		return array('id', 'language', 'string_key', 'text', 'language_id', 'delete');
 	}
@@ -66,12 +55,26 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
+		if($sDisplayColumn === 'name_space') {
+			return StringPeer::STRING_KEY;
+		}
+		return null;
+	}
+	
+	public function getFilterTypeForColumn($sColumnName) {
+		if($sColumnName === 'name_space') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
+		}
+		return null;
+	}
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		$oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
-		if($this->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(StringPeer::STRING_KEY, "{$this->getNameSpace()}.%", Criteria::LIKE);
+		if($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oCriteria->add(StringPeer::STRING_KEY, "{$this->oDelegateProxy->getNameSpace()}.%", Criteria::LIKE);
 		}
 		return $oCriteria;
 	}

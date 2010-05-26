@@ -2,7 +2,7 @@ Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 
-PageTree
+PageTree Widget
 - make separate tree style sheet?
 - hover: on page li hover the children should not be highlighted, they should have their own color?
 - nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
@@ -17,6 +17,8 @@ Widget tasks
 - detail (row) widget, field widget? @see also project management
 - how can we simplify and make more transparent and more effective?
 - testing QUnit
+
+PermissionWidget?
 
 SVN, development and tracking tasks
 - make new project for developing plugins > name > where

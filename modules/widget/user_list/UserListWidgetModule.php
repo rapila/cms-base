@@ -37,12 +37,8 @@ class UserListWidgetModule extends PersistentWidgetModule {
 			case 'email':
 				$aResult['heading'] = StringPeer::getString('email');
 				break;
-			// case 'is_backend_login_enabled':
-			//	$aResult['heading'] = StringPeer::getString('column.is_backend_login_enabled');
-			//	break;
 			case 'user_kind':
 				$aResult['heading'] = '';
-				// $aResult['field_name'] = 'is_backend_login_enabled';
 				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;			

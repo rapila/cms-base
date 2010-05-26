@@ -21,17 +21,6 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		return $this->oListWidget->doWidget();
 	}
 	
-	public function setDocumentKind($sDocumentKind = null) {
-		$this->sDocumentKind = $sDocumentKind;
-	}
-	
-	public function getDocumentKind() {
-		if($this->sDocumentKind === null) {
-			$this->sDocumentKind = CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->sDocumentKind;
-	}
-	
 	public function getColumnIdentifiers() {
 		return array('id', 'extension', 'document_kind', 'mimetype', 'is_office_doc', 'document_count', 'delete');
 	}
@@ -72,10 +61,17 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		return null;
 	}
 	
+	public function getFilterTypeForColumn($sColumnName) {
+		if($sColumnName === 'document_kind') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
+		}
+		return null;
+	}
+	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		if($this->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(DocumentTypePeer::MIMETYPE, $this->sDocumentKind.'/%', Criteria::LIKE);
+		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oCriteria->add(DocumentTypePeer::MIMETYPE, $this->oDelegateProxy->getDocumentKind().'/%', Criteria::LIKE);
 		}
 		return $oCriteria;
 	}

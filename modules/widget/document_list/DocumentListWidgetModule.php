@@ -23,6 +23,22 @@ class DocumentListWidgetModule extends WidgetModule {
 		$this->oListWidget->setListTag($oListTag);
 		return $this->oListWidget->doWidget();
 	}
+
+	public function toggleIsInactive($aRowData) {
+		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
+		if($oDocument) {
+			$oDocument->setIsInactive(!$oDocument->getIsInactive());
+			$oDocument->save();
+		}
+	}
+
+	public function toggleIsProtected($aRowData) {
+		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
+		if($oDocument) {
+			$oDocument->setIsProtected(!$oDocument->getIsProtected());
+			$oDocument->save();
+		}
+	}
 	
 	public function getColumnIdentifiers() {
 		return array('id', 'name', 'document_kind', 'file_info', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
@@ -72,22 +88,6 @@ class DocumentListWidgetModule extends WidgetModule {
 				break;
 		}
 		return $aResult;
-	}
-
-	public function toggleIsInactive($aRowData) {
-		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
-		if($oDocument) {
-			$oDocument->setIsInactive(!$oDocument->getIsInactive());
-			$oDocument->save();
-		}
-	}
-
-	public function toggleIsProtected($aRowData) {
-		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
-		if($oDocument) {
-			$oDocument->setIsProtected(!$oDocument->getIsProtected());
-			$oDocument->save();
-		}
 	}
 	
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
