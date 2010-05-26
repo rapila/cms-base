@@ -11,6 +11,7 @@ class StringsAdminModule extends AdminModule {
 		$this->oListWidget 		= new StringListWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setDelegate($this);
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'name_space', $this->oListWidget->oDelegateProxy->getNameSpace());
 	}
 	
 	public function mainContent() {
@@ -26,7 +27,7 @@ class StringsAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('title', 'name_space');
+		return array('title', 'name_space', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -38,8 +39,23 @@ class StringsAdminModule extends AdminModule {
 			case 'name_space':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
+			case 'magic_column':
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_CLASSNAME;
+				$aResult['has_data'] = false;
+				break;
 		}
 		return $aResult;
+	}
+	
+	public static function getCustomListElements() {
+		if(StringPeer::doCount(new Criteria()) > 0) {
+		 	return array(
+				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'title' => StringPeer::getString('files.select_all_title'),
+							'magic_column' => 'all')
+			);
+		}
+		return array();
 	}
 	
 	public static function getListContents($iRowStart = 0, $iRowCount = null) {
@@ -50,7 +66,11 @@ class StringsAdminModule extends AdminModule {
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);
 		}
-		return array_splice($aResult, $iRowStart, $iRowCount);
+		$aResult = array_merge(self::getCustomListElements(), $aResult);
+		// array_unshift($aResult, self::getCustomListElements());
+		// ErrorHandler::log($aResult);
+		return $aResult;
+		// return array_splice($aResult, $iRowStart, $iRowCount);
 	}
 
 	public function usedWidgets() {

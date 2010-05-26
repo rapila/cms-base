@@ -342,6 +342,7 @@ textarea.ui-widget-content { width: 22em; }
   margin-left: -10px;
   margin-top: 3px;
 }
+#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(); }
 .document_types #admin_sidebar li.ui-list-row {
   padding-left: 1.4em;
   background-image: url(../../images/admin/folder_collapsed.png);
@@ -360,20 +361,18 @@ textarea.ui-widget-content { width: 22em; }
   background-repeat: no-repeat;
   background-position: 0.3em 0.3em;
 }
-.users #admin_sidebar li.ui-list-row {
-  padding-left: 1.4em;
-  background-image: url(../../images/admin/folder_collapsed.png);
-  background-repeat: no-repeat;
-  background-position: 0.3em 0.3em;
-}
 .strings #admin_sidebar li.ui-list-row {
   padding-left: 1.4em;
   background-image: url(../../images/admin/folder_collapsed.png);
   background-repeat: no-repeat;
   background-position: 0.3em 0.3em;
 }
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(); }
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-hover { background-image: url(); }
+.users #admin_sidebar li.ui-list-row {
+  padding-left: 1.4em;
+  background-image: url(../../images/admin/folder_collapsed.png);
+  background-repeat: no-repeat;
+  background-position: 0.3em 0.3em;
+}
 .document_types #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
 .documents #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
 .links #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }

@@ -42,7 +42,8 @@ jQuery(document).ready(function() {
 			user_list.reload();
 		}
 	});
-	
+
+	// click handlers
 	sidebar.handle('list.row-click', function(event, row, element) {
 		var group_id = element.data('id');
 		if(!element.hasClass('ui-state-active')) {

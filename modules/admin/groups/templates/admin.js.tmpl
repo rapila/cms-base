@@ -1,5 +1,9 @@
 jQuery(document).ready(function() {
+	// init main content
 	var group_list = AdminInterface.content.find('.group_list').getWidget();
+
+	// has no sidebar
+	// init infobar
 	var info_bar = AdminInterface.info_bar.getWidget();
 	info_bar.add_button('add-new-item', function() {
 		Widget.create('group_detail', function(widget) {

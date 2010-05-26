@@ -13,7 +13,7 @@ jQuery(document).ready(function() {
 		}, true, true);
 	}	
 
-	// init infobar
+	// init info_bar
 	var info_bar = AdminInterface.info_bar.getWidget();
 	info_bar.add_button('add-new-item', function() {
 		Widget.create('link_detail', function(widget) {
@@ -43,9 +43,6 @@ jQuery(document).ready(function() {
 		}
 	});
 
-	// add row_count_info
-	info_bar.add_row_count_info_for_list(link_list);
-
 	// sidebar
 	sidebar.handle('list.row-click', function(event, row, element) {
 		var link_category_id = element.data('link_category_id');
@@ -57,4 +54,6 @@ jQuery(document).ready(function() {
 		link_list.reload();
 	});
 
+	// add row_count_info
+	info_bar.add_row_count_info_for_list(link_list);
 });

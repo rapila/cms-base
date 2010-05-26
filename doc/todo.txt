@@ -2,56 +2,38 @@ Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 
-Issues
-- TODO: re-setting the last selected item after reload should be default functionality
-
 PageTree
-- show root element
 - make separate tree style sheet?
 - hover: on page li hover the children should not be highlighted, they should have their own color?
 - nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
 - tree view? http://jquery.bassistance.de/treeview/demo/
 
 Widget tasks
-- set default value for filter columns
-- check hierarchy of js loading > bug Chrome initial section highlight
-- FilterCriteria add to CriteriaListWidgetDelegate
-	use new Query features or not
--	event listening > how to update input widget (ie detail document_category on new/change of category in sidebar)
-- sidebar element edit widget?
+- TODO: re-setting the last selected item after reload should be default functionality
+- initial_selection does not work in sting_list/document_type_list, both no id
+- sidebar element edit/delete?
+- userNotify > array and links handling for helpful messages (not found)
+	remove on click of other element, maybe close button
 - detail (row) widget, field widget? @see also project management
 - how can we simplify and make more transparent and more effective?
 - testing QUnit
 
 SVN, development and tracking tasks
-- make new project for developping plugins > name > where
+- make new project for developing plugins > name > where
 - remember > lets continue with tracker and get into it or change it.
-- ModuleManager > group, sort etc, handling for getModuleSelect
 - discuss plural classes dir name and new dirs for helper/util, manager, module etc?
-- RichtextUtil 	change names like parseInputFromMce to more generic ones for different editors
 
 Issues	
-- info alerts : pass array of information that allows links too, remove on click of other element, maybe close button
+- blur on filter change
+- ModuleManager > group, sort etc, handling for getModuleSelect
 - how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
 	this issue concerns module select configuration and rights too.
-	and dashboard. how to exclude plugin project_management or group_it into 1?
-
-Prepare Friday and Servance
-- Propel install for parallel old version maintenance and new development including dependencies?
-- Css and Skins, discuss how to clean up and make skinable
-- lang string strategy so I can clean up effectively
-- discuss CONTINUOUS development strategy ? Plugins, project_management. What can CMOS do and what not?
-
-Strategy for click, dblclick, option key handling.
-- consider successful(?) iPhone handling for these issues
+- RichtextUtil 	change names like parseInputFromMce to more generic ones for different editors
 
 html and css
+- Css and Skins, discuss how to clean up and make skinable
 - check table, ul, heading valid and appropriate elements (heading ul, tbody, thead, tfoot?)
-
-Alert: info
-- Langsam erhalte ich Freude an den alert clouds. 
-	Finden wir einen guten Kompromiss. Grösse, Stil etc.??
-	message > array and links handling for helpful messages (not found)
+- lang string strategy so I can clean up effectively
 
 dashboard, context help
 - if dashboard is a context button I guess it should be in the footer
@@ -59,10 +41,9 @@ dashboard, context help
 - fix select menu selected
 - think about the requirements of access rights, modules, categories, altenburg etc, discuss Groups / Users / PagesRight
 
-TODO Next?
-- list @see ListWidget
-- list @see DetailWidget
+General topics
 - content language should always be displayed in tabs, depending on context in pages, strings, wherever?
+	does it need a language selector in menu_bar
 - context menu > edit sidebar item ie document category etc 
 		http://www.javascripttoolbox.com/lib/contextmenu/
 		http://beckelman.net/demos/jQueryListViewWithContextMenu/Default.aspx
@@ -72,8 +53,6 @@ TODO Next?
 - MiniCMS Redesign DOMAIN and software names @see todo_design.txt
 
 ListWidgets
-- fix header_filter widget (file_kind, user_kind etc)
-- use widget (file_kind...) in list widget header
 - cols, solution for align/valign attributes
 - delete handling / from list. discuss is_inactive as "temp deleted", delete currently selected category (with documents/documents etc)
 - list inline editing, required ? how to implement?
@@ -414,3 +393,11 @@ release-1-devel propel update
 	discuss > see JournalEntry behaviour branch handling
 - remove MigrationBackendModule or modify it if can be used
 - integrate new rs http download to MysqlDumpLoaderBackendModule::doToDownload
+- FilterCriteria add to CriteriaListWidgetDelegate
+	use new Query features or not
+-	event listening > how to update input widget (ie detail document_category on new/change of category in sidebar)
+- check hierarchy of js loading > bug Chrome initial section highlight
+- set default value for filter columns
+- fix header_filter widget (file_kind, user_kind etc)
+- use widget (file_kind...) in list widget header
+- Propel install for parallel old version maintenance and new development including dependencies?

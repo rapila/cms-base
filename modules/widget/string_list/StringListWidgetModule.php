@@ -5,11 +5,12 @@
 class StringListWidgetModule extends WidgetModule {
 	private $oListWidget;
 	private $sNameSpace;
+	public $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "String", 'string_key');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "String", 'string_key');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
 	
 	public function doWidget() {
@@ -24,6 +25,9 @@ class StringListWidgetModule extends WidgetModule {
 	}
 	
 	public function getNameSpace() {
+		if($this->sNameSpace === null) {
+			$this->sNameSpace = CriteriaListWidgetDelegate::SELECT_ALL;
+		}
 		return $this->sNameSpace;
 	}
 	
@@ -62,9 +66,13 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-		
+
 	public function getCriteria() {
-		$oCriteria = StringPeer::getStringsByLanguageIdAndNameSpaceCriteria(AdminManager::getContentLanguage(), $this->sNameSpace);
+		$oCriteria = new Criteria();
+		$oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
+		if($this->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oCriteria->add(StringPeer::STRING_KEY, "{$this->getNameSpace()}.%", Criteria::LIKE);
+		}
 		return $oCriteria;
 	}
 }

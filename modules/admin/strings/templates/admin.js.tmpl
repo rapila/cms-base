@@ -2,6 +2,25 @@ jQuery(document).ready(function() {
 	// init main content
 	var string_list = AdminInterface.content.find('.string_list').getWidget();
 	
+	// init sidebar
+	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
+	var initial_selection = "{{writeRequestValue=name_space}}";
+	if(initial_selection) {
+		initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
+		sidebar.handle('list.loaded', function() {
+			sidebar.activate_row(sidebar.row_from_row_data({name_space: initial_selection}));
+		}, true, true);
+	}	
+	sidebar.settings.row_click_active_mode = 'toggle';
+	sidebar.handle('list.row-click', function(event, row, element) {
+		var name_space = element.data('name_space');
+		if(!element.hasClass('ui-state-active')) {
+		 	name_space = null;
+		}
+		string_list.setOption('name_space', name_space);
+		string_list.reload();
+	});
+
 	// init info bar
 	var info_bar = AdminInterface.info_bar.getWidget();
 	info_bar.add_button('add-new-item', function() {
@@ -15,17 +34,6 @@ jQuery(document).ready(function() {
 		if(string_list.setSearch(search)) {
 			string_list.reload();
 		}
-	});
-	// init sidebar
-	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
-	sidebar.settings.row_click_active_mode = 'toggle';
-	sidebar.handle('list.row-click', function(event, row, element) {
-		var name_space = element.data('name_space');
-		if(!element.hasClass('ui-state-active')) {
-		 	name_space = null;
-		}
-		string_list.setOption('name_space', name_space);
-		string_list.reload();
 	});
 	
 	// init language change
