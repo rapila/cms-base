@@ -90,8 +90,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return null;
 	}
-
-
+	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);

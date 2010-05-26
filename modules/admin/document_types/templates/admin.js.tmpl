@@ -14,7 +14,13 @@ jQuery(document).ready(function() {
 	info_bar.add_row_count_info_for_list(document_type_list);
 		
 	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
-	sidebar.settings.row_click_active_mode = 'toggle';
+	var initial_selection = "{{writeRequestValue=document_kind}}";
+	if(initial_selection) {
+		sidebar.handle('list.loaded', function() {
+			sidebar.activate_row(sidebar.row_from_row_data({document_kind: initial_selection}));
+		}, true, true);
+	}
+	sidebar.settings.row_click_active_mode = 'activate';
 	sidebar.handle('list.row-click', function(event, row, element) {
 		var document_kind = element.data('document_kind');
 		if(!element.hasClass('ui-state-active')) {

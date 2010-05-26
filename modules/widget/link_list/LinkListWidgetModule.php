@@ -21,17 +21,6 @@ class LinkListWidgetModule extends WidgetModule {
 		return $this->oListWidget->doWidget();
 	}
 	
-	public function setLinkCategoryId($iLinkCategoryId = null) {
-		$this->iLinkCategoryId = $iLinkCategoryId;
-	}
-	
-	public function getLinkCategoryId() {
-		if($this->iLinkCategoryId === null) {
-			return CriteriaListWidgetDelegate::SELECT_ALL;
-		}
-		return $this->iLinkCategoryId;
-	}
-
 	public function toggleIsInactive($aRowData) {
 		$oLink = LinkPeer::retrieveByPK($aRowData['id']);
 		if($oLink) {
@@ -72,6 +61,14 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
+
+	public function getFilterTypeForColumn($sColumnName) {
+		if($sColumnName === 'link_category_id') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
+		return null;
+	}
+
 	
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {

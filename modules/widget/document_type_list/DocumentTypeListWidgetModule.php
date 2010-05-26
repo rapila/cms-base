@@ -6,11 +6,12 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	private $sDocumentKind;
+	public $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentType", 'extension');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentType", 'extension');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
 	
 	public function doWidget() {
@@ -22,6 +23,13 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 	
 	public function setDocumentKind($sDocumentKind = null) {
 		$this->sDocumentKind = $sDocumentKind;
+	}
+	
+	public function getDocumentKind() {
+		if($this->sDocumentKind === null) {
+			$this->sDocumentKind = CriteriaListWidgetDelegate::SELECT_ALL;
+		}
+		return $this->sDocumentKind;
 	}
 	
 	public function getColumnIdentifiers() {
@@ -66,7 +74,7 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		if($this->sDocumentKind) {
+		if($this->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(DocumentTypePeer::MIMETYPE, $this->sDocumentKind.'/%', Criteria::LIKE);
 		}
 		return $oCriteria;

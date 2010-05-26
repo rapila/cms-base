@@ -33,7 +33,7 @@ class DocumentsAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		if(DocumentPeer::doCount($this->oListWidget->oDelegateProxy->getCriteria(true)) > 0) {
+		if(DocumentPeer::doCount(new Criteria()) > 0) {
 		 	return array(
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('files.select_all_title'),

@@ -10,7 +10,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageData() {
-		return PagePeer::retrieveByPK($this->iPageId)->toArray();
+		$aResult = PagePeer::retrieveByPK($this->iPageId)->toArray();
+		return $aResult;
 	}
 	
 	public function saveData($aPageData) {

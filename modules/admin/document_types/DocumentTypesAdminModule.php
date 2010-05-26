@@ -6,11 +6,13 @@ class DocumentTypesAdminModule extends AdminModule {
 	
 	private $oListWidget;
 	private $oSideBarWidget;
+	private static $aDOCUMENT_KINDS;
 	
 	public function __construct() {
 		$this->oListWidget = new DocumentTypeListWidgetModule();
 		$this->oSideBarWidget = new ListWidgetModule();
 		$this->oSideBarWidget->setDelegate($this);
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_kind', $this->oListWidget->oDelegateProxy->getDocumentKind());
 	}
 	
 	public function mainContent() {
@@ -26,7 +28,7 @@ class DocumentTypesAdminModule extends AdminModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('document_kind', 'title');
+		return array('document_kind', 'title', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -36,20 +38,42 @@ class DocumentTypesAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['display_heading'] = false;
+				$aResult['heading'] = StringPeer::getString('file_types.sidebar_heading');
+				$aResult['field_name'] = 'name';
+				break;		
+			case 'magic_column':
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_CLASSNAME;
+				$aResult['has_data'] = false;
 				break;
-		}
+			}
 		return $aResult;
 	}
 	
+	public static function getCustomListElements() {
+		if(count(self::getDocumentKinds()) > 0) {
+		 	return array(
+				array('document_kind' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'title' => StringPeer::getString('files.select_all_title'),
+							'magic_column' => 'all')
+			);
+		}
+		return array();
+	}
+	
+	private static function getDocumentKinds() {
+		if(self::$aDOCUMENT_KINDS === null) {
+			self::$aDOCUMENT_KINDS = DocumentTypePeer::getDocumentKindsAssoc();	
+			asort(self::$aDOCUMENT_KINDS);	
+		}
+		return self::$aDOCUMENT_KINDS;
+	}
+
 	public static function getListContents() {
 		$aResult = array();
-		$aDocumentKinds = DocumentTypePeer::getDocumentKindsAssoc();
-		asort($aDocumentKinds);
-		foreach($aDocumentKinds as $sDocumentKind => $sDocumentKindName) {
+		foreach(self::getDocumentKinds() as $sDocumentKind => $sDocumentKindName) {
 			$aResult[] = array('document_kind' => $sDocumentKind, 'title' => $sDocumentKindName);
 		}
-		return $aResult;
+		return array_merge(self::getCustomListElements(), $aResult);
 	}
 
 	public function usedWidgets() {

@@ -5,7 +5,7 @@ Widget.types.page_detail = {
 			this.detail_widget = widget;
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=page.create}}",
-				width: 480,
+				width: 600,
 				save_callback: this.save.bind(this)
 			});
 			widget.content = this.content;
@@ -25,8 +25,12 @@ Widget.types.page_detail = {
 	
 	fill_data: function() {
 		this.getPageData(function(page_data) {
-			// this.content.find("input[name='name']").val(page_data.Name);
+			this.content.find("input[name='name']").val(page_data.Name);
 			this.detail_widget.set_title(this.detail_widget.settings.title = page_data.Name);
+			this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
+			this.content.find("input[name='is_folder']").attr('checked', document_data.IsFolder);
+			this.content.find("input[name='is_hidden']").attr('checked', document_data.IsHidden);
+			this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
 		});
 	},
 	
