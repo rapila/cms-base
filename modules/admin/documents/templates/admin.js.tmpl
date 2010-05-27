@@ -18,6 +18,7 @@ jQuery(document).ready(function() {
 	info_bar.add_button('add-new-item', function() {
 		Widget.create('document_detail', function(widget) {
 			widget.content.find("select[name='document_category_id']").val(document_list.getOption('document_category_id'));
+			widget.content.find("select[name='language_id']").val('');
 			widget.open();
 			widget.save_callback = function() {
 				document_list.reload();
@@ -25,7 +26,7 @@ jQuery(document).ready(function() {
 		});
 	}, 'n', true).add_button('add-new-item', function() {
 		Widget.create('sidebar_input', function(widget) {
-			widget.add_new_sidebar_input("{{writeString=documenent_category.default_name}}", 'DocumentCategory', function() {
+			widget.add_new_sidebar_input("{{writeString=widget.document_category.default_name}}", 'DocumentCategory', function() {
 				var row_data = sidebar.active_row();
 				if(row_data.length>0) {
 					// TODO: re-setting the last selected item after reload should be default functionality

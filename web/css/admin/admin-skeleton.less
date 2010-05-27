@@ -1,23 +1,10 @@
 // lessc -w admin-skeleton.less
-@sidebar_resizer_width: 20px;
-@side_window_distance: 0;
-@initial_sidebar_width: 277px;
+@import "colors";
 
-@info_bar_height: 24px;
-@admin_menu_height: 31px;
-
-@border_width: 1px;
-@border_color: #D4D8DC;
-@border: @border_width solid @border_color;
-
-@background_color: #f6f6f6;
-@background_color_sidebar: #DFE1E3;
-
-@highlight_color: #e3ef99;
 /* all basic admin styles, use admin-ui.css for overwriting jQuery ui theme styles */
 html {
-	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -253,18 +240,16 @@ body.login h1 {
 	display: inline-block;
 	margin-right: 1em;
 }
-select {
-	font-family: Arial, Helvetica, sans-serif;
-}
+
 #cmos_admin_menu .ui-widget-header select {
 	background-color: transparent !important;
 	border: #000 1px solid;
 	border-color: #000 #555 #666 #555;
 	padding: .2em .1em .0em 2em;
 	color:@highlight_color !important;
-	-moz-border-radius: 0.3em;
-	-webkit-border-radius: 0.3em;
-	border-radius: 0.3em;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	min-width: 20em;
 	line-height: 12px;
 	text-align: left;
@@ -378,10 +363,11 @@ label {
 ui-widget {
 	font-size: .5em;
 }
-
-input.ui-widget-content {
-	width: 21.5em;
+select.ui-widget-content,
+input.ui-widget-content,
+textarea.ui-widget-content {
 	border-color:#DBDBDB;
+	width: 21.5em;
 }
 
 textarea.ui-widget-content {
@@ -506,11 +492,9 @@ table.ui-list .ui-list-cell a {
 }
 
 #admin_sidebar .ui-tree > li {
-	margin-left: 25px;
-}
-
-#admin_sidebar > .ui-tree > li {
-	margin-left: 0;
+	ol {
+		padding-left: 25px;
+	}
 }
 
 #admin_sidebar .ui-tree li.show-children ol {

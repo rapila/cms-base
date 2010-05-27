@@ -1,49 +1,40 @@
 Widget.types.page_detail = {
-	initialize: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=page.create}}",
-				width: 600,
-				save_callback: this.save.bind(this)
-			});
-			widget.content = this.content;
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
+	prepare: function() {
+		this.disable_editing();
 	},
 	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
+	disable_editing: function() {
+		this._element.find('input, textarea, button').attr('disabled', 'disabled');
+	},
+	
+	enable_editing: function() {
+		this._element.find('input, textarea, button').attr('disabled', null);
+	},
+	
+	load_page: function(page_id) {
+		this.setPageId(page_id);
+		this.fill_data();
+		this.enable_editing();
 	},
 	
 	fill_data: function() {
 		this.getPageData(function(page_data) {
-			this.content.find("input[name='name']").val(page_data.Name);
-			this.detail_widget.set_title(this.detail_widget.settings.title = page_data.Name);
-			this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
-			this.content.find("input[name='is_folder']").attr('checked', document_data.IsFolder);
-			this.content.find("input[name='is_hidden']").attr('checked', document_data.IsHidden);
-			this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
+			this._element.find("input[name='name']").val(page_data.Name);
+			this._element.find("input[name='is_inactive']").attr('checked', page_data.IsInactive);
+			this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
+			this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
+			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
 		});
 	},
 	
 	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
+		this.saveData(this._element.serializeArrayKV(), function() {
+			this.fire('saved');
+		});
 		return true;
 	},
 	
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
-	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		
+	}
 };

@@ -61,13 +61,13 @@ class DocumentListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('file.info');
 				break;
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('document_category_id_label_list');
+				$aResult['heading'] = StringPeer::getString('label_list.file_category_list');
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('label_list.language_id');
+				$aResult['heading'] = StringPeer::getString('widget.language');
 				break;
 			case 'is_protected':
-				$aResult['heading'] = StringPeer::getString('file.is_protected');
+				$aResult['heading'] = StringPeer::getString('widget.document.is_protected');
 				$aResult['icon_false'] = 'radio-on';
 				$aResult['icon_true'] = 'key';
 				break;

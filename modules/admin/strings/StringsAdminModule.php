@@ -49,7 +49,7 @@ class StringsAdminModule extends AdminModule {
 		if(StringPeer::doCount(new Criteria()) > 0) {
 		 	return array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('files.select_all_title'),
+							'title' => StringPeer::getString('widget.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

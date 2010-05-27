@@ -12,7 +12,7 @@ class DocumentCategory extends BaseDocumentCategory {
 		return $this->countDocuments();
 	}
 	
-	public function getExtras() {
+	public function getSettings() {
 		if($this->getMaxWidth() != null) {
 			return $this->getMaxWidth().'px';
 		}
@@ -23,7 +23,7 @@ class DocumentCategory extends BaseDocumentCategory {
 		return $this->getName().' ['.($iCount === 0 ? '-' : $iCount).']';
 	}
 	
-	public function getDocumentLinkData() {
+	public function getLinkToDocumentData() {
 		$aArray = array();
 		$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('documents');
 		$aArray[] = LinkUtil::link(array('documents'), 'AdminManager', array('document_category_id' => $this->getId()));

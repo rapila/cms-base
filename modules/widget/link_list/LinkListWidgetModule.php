@@ -47,7 +47,7 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('description');
 				break;
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('link_category_id_label_list');
+				$aResult['heading'] = StringPeer::getString('widget.link_category_list');
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('updated_at');

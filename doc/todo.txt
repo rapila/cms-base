@@ -406,5 +406,5 @@ release-1-devel propel update
 - check hierarchy of js loading > bug Chrome initial section highlight
 - set default value for filter columns
 - fix header_filter widget (file_kind, user_kind etc)
-- use widget (file_kind...) in list widget header
+- use widget (widget.document_kind...) in list widget header
 - Propel install for parallel old version maintenance and new development including dependencies?

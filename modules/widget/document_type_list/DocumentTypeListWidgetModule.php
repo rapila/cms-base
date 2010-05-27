@@ -29,19 +29,19 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'extension':
-				$aResult['heading'] = StringPeer::getString('extension');
+				$aResult['heading'] = StringPeer::getString('widget.extension');
 				break;
 			case 'document_kind':
-				$aResult['heading'] = StringPeer::getString('document_kind');
+				$aResult['heading'] = StringPeer::getString('widget.document_kind');
 				break;			
 			case 'mimetype':
-				$aResult['heading'] = StringPeer::getString('mimetype');
+				$aResult['heading'] = StringPeer::getString('widget.mimetype');
 				break;
 			case 'is_office_doc':
-				$aResult['heading'] = StringPeer::getString('is_office_doc');
+				$aResult['heading'] = StringPeer::getString('widget.is_office_doc');
 				break;
 			case 'document_count':
-				$aResult['heading'] = StringPeer::getString('document.count');
+				$aResult['heading'] = StringPeer::getString('widget.documents_count');
 				$aResult['is_sortable'] = false;
 				break;			
 			case 'delete':

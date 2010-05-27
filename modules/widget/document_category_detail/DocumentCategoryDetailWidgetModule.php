@@ -22,7 +22,7 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oCategory->setName($aDocumentCategoryData['name']);
 		$oCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);
-		$oCategory->setIsExternallyManaged(isset($aDocumentCategoryData['is_externally_managed']));
+		$oCategory->setIsExternallyManaged(isset($aDocumentCategoryData['widget.is_externally_managed']));
 		$oCategory->setIsInactive(isset($aDocumentCategoryData['is_inactive']));
 		return $oCategory->save();
 	}

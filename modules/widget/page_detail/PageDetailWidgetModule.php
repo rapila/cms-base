@@ -5,6 +5,10 @@
 class PageDetailWidgetModule extends PersistentWidgetModule {
 	private $iPageId = null;
 	
+	public function doWidget() {
+		return $this->constructTemplate('edit');
+	}
+	
 	public function setPageId($iPageId) {
 		$this->iPageId = $iPageId;
 	}

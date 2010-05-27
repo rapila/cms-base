@@ -13,7 +13,7 @@ class DocumentTypesAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_kind', $this->oListWidget->oDelegateProxy->getDocumentKind());
 
 		$this->oSideBarWidget = new ListWidgetModule();
-		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSideBarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
 		$this->oSideBarWidget->setDelegate($this);
 	}
 	
@@ -40,7 +40,7 @@ class DocumentTypesAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('file_types.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('widget.document_types.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;		
 			case 'magic_column':
@@ -55,7 +55,7 @@ class DocumentTypesAdminModule extends AdminModule {
 		if(count(self::getDocumentKinds()) > 0) {
 		 	return array(
 				array('document_kind' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('files.select_all_title'),
+							'title' => StringPeer::getString('widget.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

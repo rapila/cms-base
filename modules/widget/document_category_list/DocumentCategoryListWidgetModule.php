@@ -29,7 +29,7 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'document_link_data', 'extras', 'is_externally_managed', 'delete');
+		return array('id', 'name', 'link_to_document_data', 'settings', 'is_externally_managed', 'delete');
 	}
 
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -39,16 +39,16 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('name');
 				$aResult['is_sortable'] = true;
 				break;
-			case 'extras':
-				$aResult['heading'] = StringPeer::getString('extras');
+			case 'settings':
+				$aResult['heading'] = StringPeer::getString('widget.document_category.settings');
 				break;
-			case 'document_link_data':
-				$aResult['heading'] = StringPeer::getString('document_count');
+			case 'link_to_document_data':
+				$aResult['heading'] = StringPeer::getString('widget.documents_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
 				$aResult['is_sortable'] = true;
-				$aResult['heading'] = StringPeer::getString('is_externally_managed');
+				$aResult['heading'] = StringPeer::getString('widget.is_externally_managed');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

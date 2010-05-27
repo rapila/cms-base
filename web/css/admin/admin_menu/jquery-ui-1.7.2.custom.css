@@ -48,7 +48,7 @@
 
 /* Component containers
 ----------------------------------*/
-/*.ui-widget { font-family: Verdana,sans-serif; font-size: 1.0em; }*/
+/*.ui-widget { font-family: Arial,sans-serif; font-size: 1.0em; }*/
 .ui-widget { font-family: Arial, Helvetica,sans-serif; font-size: 1.0em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial, Helvetica,sans-serif; font-size: 1em; }
 .ui-widget-content { border: 1px solid #b9b9b9; background: #ffffff url(images/ui-bg_flat_55_ffffff_40x100.png) 50% 50% repeat-x; color: #00000; }

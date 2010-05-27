@@ -38,7 +38,7 @@ class LinksAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('links.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('widget.links.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'link_category_id':

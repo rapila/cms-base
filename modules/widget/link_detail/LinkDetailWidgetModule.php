@@ -12,6 +12,9 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function getLinkData() {
 		$oLink = LinkPeer::retrieveByPK($this->iLinkId);
+		if($oLink === null) {
+			return array();
+		}
 		$aResult = $oLink->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['CreatedInfo'] = $oLink->getCreatedAtFormatted().' / '.($oLink->getUserRelatedByCreatedBy() ? $oLink->getUserRelatedByCreatedBy()->getUserName() : '');
 		$aResult['UpdatedInfo'] = $oLink->getUpdatedAtFormatted().' / '.($oLink->getUserRelatedByUpdatedBy() ? $oLink->getUserRelatedByUpdatedBy()->getUserName() : '');

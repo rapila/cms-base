@@ -4,7 +4,7 @@ Widget.types.document_category_detail = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=document_category.create}}",
+				title: "{{writeString=widget.document_category.create}}",
 				width: 480,
 				save_callback: this.save.bind(this)
 			});

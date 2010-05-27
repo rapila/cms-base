@@ -17,7 +17,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		$aResult = array();
 		foreach(self::doSelect($oCriteria) as $oDocumentType) {
 			$aKind = explode('/', $oDocumentType->getMimeType());
-			$aResult[$aKind[0]] = StringPeer::getString('document_kind.'.$aKind[0]);
+			$aResult[$aKind[0]] = StringPeer::getString('widget.document_kind.'.$aKind[0]);
 		}
 		return $aResult;
 	}
@@ -27,7 +27,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		$aResult = array();
 		foreach(self::doSelect($oCriteria) as $oDocumentType) {
 			$aKind = explode('/', $oDocumentType->getMimeType());
-			$aResult[$aKind[0]] = StringPeer::getString('document_kind.'.$aKind[0]);
+			$aResult[$aKind[0]] = StringPeer::getString('widget.document_kind.'.$aKind[0]);
 		}
 		return $aResult;
 	}
