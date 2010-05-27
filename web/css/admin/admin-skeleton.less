@@ -13,6 +13,8 @@
 @background_color: #f6f6f6;
 @background_color_sidebar: #DFE1E3;
 
+@highlight_color: #e3ef99;
+
 html {
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
@@ -21,6 +23,12 @@ html {
 body {
 	font-size: 0.75em;
 	margin: 0 @side_window_distance;
+}
+
+body.login h1 {
+	text-align: center;
+	font-size: 5em;
+	color: #C2C2C2;
 }
 
 #admin_message {
@@ -32,6 +40,11 @@ body {
 
 #admin_message .ui-notify {
 	margin-bottom: 5px;
+}
+
+#cmos_admin_menu .cmos_logo {
+	padding:.3em 1em;
+	color: @highlight_color;
 }
 
 #admin_area, #admin_info_bar, #cmos_admin_menu {
@@ -250,7 +263,7 @@ body {
 	border: #000 1px solid;
 	border-color: #000 #555 #666 #555;
 	padding: .1em .1em;
-	color:#B8D600 !important;
+	color:@highlight_color !important;
 	-moz-border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
 	border-radius: 0.3em;
@@ -407,6 +420,18 @@ table.ui-list .ui-list-cell a {
 
 #admin_main .ui-list .ui-list-row:nth-child(2n+2) {
 	background-color: #E9E9E9;
+}
+
+#admin_main .ui-list tr.ui-list-row.ui-state-hover,
+#admin_main .ui-list tr.ui-list-row.ui-state-highlight {
+	background-image: url('');
+	border: 0;
+	background-color:@highlight_color;
+}
+
+#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon,
+#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon	{
+	background-image: url(admin_menu/images/ui-icons_000000_256x240.png); 
 }
 
 #admin_main .ui-list td:first-child,

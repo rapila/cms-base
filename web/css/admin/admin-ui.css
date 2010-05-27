@@ -27,21 +27,12 @@
 	float: left;
 	margin-right: 10px;
 }
-
 .ui-icon-application { background-position: -240px -128px; }
 
 .ui-image-picker-image {
 	float: left;
 	margin: 0 5px 5px 0;
 	padding: 5px;
-}
-
-.ui-list tr.ui-state-hover {
-	border: 0;
-}
-
-.ui-state-highlight {
-	border: 0;
 }
 
 .ui-widget .status_section {
@@ -80,14 +71,9 @@
 div.ui-dialog-titlebar.ui-corner-all,
 div.ui-corner-all  {
 	-moz-border-radius:0px 0px 0px 0px;
+	-webkit-border-radius:0px 0px 0px 0px;
 	border-width: 0;
 	padding: .6em .8em;
-}
-
-body.login h1 {
-	text-align: center;
-	font-size: 5em;
-	color: #C2C2C2;
 }
 
 #admin_sidebar .ui-tree,
@@ -137,7 +123,6 @@ button.ui-button.ui-state-default {
 	display: none;
 	height: 16px;
 	width: 16px;
-/*	background: url('../../images/admin/save_icon.gif') no-repeat 0 2px;*/
 }
 
 #admin_sidebar span.sidebar_input_save.active {

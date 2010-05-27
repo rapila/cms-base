@@ -6,6 +6,11 @@ body {
   font-size: 0.75em;
   margin: 0 0;
 }
+body.login h1 {
+  text-align: center;
+  font-size: 5em;
+  color: #c2c2c2;
+}
 #admin_message {
   position: fixed;
   right: 0;
@@ -13,6 +18,10 @@ body {
   z-index: 5;
 }
 #admin_message .ui-notify { margin-bottom: 5px; }
+#cmos_admin_menu .cmos_logo {
+  padding: 0.3em 1em;
+  color: #e3ef99;
+}
 #admin_area, #admin_info_bar, #cmos_admin_menu {
   position: absolute;
   overflow: hidden;
@@ -181,7 +190,7 @@ body {
   border: #000000 1px solid;
   border-color: #000000 #555555 #666666 #555555;
   padding: 0.1em 0.1em;
-  color: #b8d600 !important;
+  color: #e3ef99 !important;
   -moz-border-radius: 0.3em;
   -webkit-border-radius: 0.3em;
   border-radius: 0.3em;
@@ -297,6 +306,18 @@ table.ui-list .ui-list-cell a {
   text-decoration: underline;
 }
 #admin_main .ui-list .ui-list-row:nth-child(2n+2) { background-color: #e9e9e9; }
+#admin_main .ui-list tr.ui-list-row.ui-state-hover {
+  background-image: url('');
+  border: 0;
+  background-color: #e3ef99;
+}
+#admin_main .ui-list tr.ui-list-row.ui-state-highlight {
+  background-image: url('');
+  border: 0;
+  background-color: #e3ef99;
+}
+#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon { background-image: url(admin_menu/images/ui-icons_000000_256x240.png); }
+#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon { background-image: url(admin_menu/images/ui-icons_000000_256x240.png); }
 #admin_main .ui-list td:first-child {
   min-width: 15em;
   padding-left: 5px;
