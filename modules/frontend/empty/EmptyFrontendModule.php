@@ -21,4 +21,3 @@ class EmptyFrontendModule extends FrontendModule {
 		return "";
 	}
 }
-?>

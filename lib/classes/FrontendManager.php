@@ -103,7 +103,7 @@ class FrontendManager extends Manager {
 			}
 		}
 		
-		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound);
+		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
 	
 	/**

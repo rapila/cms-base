@@ -4,11 +4,15 @@ class VirtualNavigationItem extends NavigationItem {
 	private $sName;
 	private $sTitle;
 	private $sLinkText;
+	private $mData;
+	private $sIdentifier;
 	
-	public function __construct($sName, $sTitle, $sLinkText = null) {
+	public function __construct($sIdentifier, $sName, $sTitle, $sLinkText = null, $mData = null) {
+		$this->sIdentifier = $sIdentifier;
 		$this->sName = $sName;
 		$this->sTitle = $sTitle;
 		$this->sLinkText = ($sLinkText === null ? $sTitle : $sLinkText);
+		$this->mData = $mData;
 		parent::__construct(null);
 	}
 	
@@ -20,11 +24,16 @@ class VirtualNavigationItem extends NavigationItem {
 		return false;
 	}
 	
-	/**
-	* @todo
-	*/
 	public function isCurrent() {
 		return FrontendManager::$CURRENT_NAVIGATION_ITEM === $this;
+	}
+	
+	public function getData() {
+	    return $this->mData;
+	}
+	
+	public function getIdentifier() {
+	    return $this->sIdentifier;
 	}
 	
 	public function getTitle($sLanguageId = null) {
