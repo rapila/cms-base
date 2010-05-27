@@ -343,41 +343,13 @@ textarea.ui-widget-content { width: 22em; }
   margin-top: 3px;
 }
 #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(); }
-.document_types #admin_sidebar li.ui-list-row {
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row {
   padding-left: 1.4em;
   background-image: url(../../images/admin/folder_collapsed.png);
   background-repeat: no-repeat;
   background-position: 0.3em 0.3em;
 }
-.documents #admin_sidebar li.ui-list-row {
-  padding-left: 1.4em;
-  background-image: url(../../images/admin/folder_collapsed.png);
-  background-repeat: no-repeat;
-  background-position: 0.3em 0.3em;
-}
-.links #admin_sidebar li.ui-list-row {
-  padding-left: 1.4em;
-  background-image: url(../../images/admin/folder_collapsed.png);
-  background-repeat: no-repeat;
-  background-position: 0.3em 0.3em;
-}
-.strings #admin_sidebar li.ui-list-row {
-  padding-left: 1.4em;
-  background-image: url(../../images/admin/folder_collapsed.png);
-  background-repeat: no-repeat;
-  background-position: 0.3em 0.3em;
-}
-.users #admin_sidebar li.ui-list-row {
-  padding-left: 1.4em;
-  background-image: url(../../images/admin/folder_collapsed.png);
-  background-repeat: no-repeat;
-  background-position: 0.3em 0.3em;
-}
-.document_types #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
-.documents #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
-.links #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
-.strings #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
-.users #admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active { background-image: url(../../images/admin/folder_open.png); }
 #admin_sidebar ul.ui-list li.ui-list-row.magic_column-all {
   font-style: oblique;
   background-image: url(../../images/admin/folder_magic.png);

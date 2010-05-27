@@ -12,18 +12,19 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oListWidget = new DocumentListWidgetModule();
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
+		
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->oDelegateProxy->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $this->oListWidget->oDelegateProxy->getDocumentCategoryId());
-		
-		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 	}
 	
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
+		
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}

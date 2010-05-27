@@ -14,8 +14,11 @@ class LinksAdminModule extends AdminModule {
 			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['document_category_id']);
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $this->oListWidget->oDelegateProxy->getLinkCategoryId());
+
 		$this->oSidebarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
+		
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}
 	

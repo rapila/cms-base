@@ -9,9 +9,11 @@ class StringsAdminModule extends AdminModule {
 	
 	public function __construct() {
 		$this->oListWidget 		= new StringListWidgetModule();
-		$this->oSidebarWidget = new ListWidgetModule();
-		$this->oSidebarWidget->setDelegate($this);
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'name_space', $this->oListWidget->oDelegateProxy->getNameSpace());
+
+		$this->oSidebarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSidebarWidget->setDelegate($this);
 	}
 	
 	public function mainContent() {
@@ -20,10 +22,6 @@ class StringsAdminModule extends AdminModule {
 	
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
-	}
-	
-	public function numberOfRows() {
-		return count(StringsPeer::getNamespaces($this->sNameSpace));
 	}
 	
 	public function getColumnIdentifiers() {

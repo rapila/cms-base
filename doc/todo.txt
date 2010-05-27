@@ -1,14 +1,19 @@
 Miscellaneous projects
 - naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
+- http://www.triboje.com/ ?? united domains
+- Transmit d&d rights writing dump
 
 PageTree Widget
 - make separate tree style sheet?
+- reuse list widget widget.js method, separate into general (list/tree) and list or tree?
 - hover: on page li hover the children should not be highlighted, they should have their own color?
 - nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
 - tree view? http://jquery.bassistance.de/treeview/demo/
 
 Widget tasks
+- getListContents() array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
+- best way to add use-folder-icons class to sidebar widget? setListTag() also
 - TODO: re-setting the last selected item after reload should be default functionality
 - initial_selection does not work in sting_list/document_type_list, both no id
 - sidebar element edit/delete?
@@ -17,11 +22,10 @@ Widget tasks
 - detail (row) widget, field widget? @see also project management
 - how can we simplify and make more transparent and more effective?
 - testing QUnit
-
-PermissionWidget?
+- PermissionWidget?
 
 SVN, development and tracking tasks
-- make new project for developing plugins > name > where
+- plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
 - remember > lets continue with tracker and get into it or change it.
 - discuss plural classes dir name and new dirs for helper/util, manager, module etc?
 

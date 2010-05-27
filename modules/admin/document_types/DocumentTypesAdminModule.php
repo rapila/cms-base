@@ -10,9 +10,11 @@ class DocumentTypesAdminModule extends AdminModule {
 	
 	public function __construct() {
 		$this->oListWidget = new DocumentTypeListWidgetModule();
-		$this->oSideBarWidget = new ListWidgetModule();
-		$this->oSideBarWidget->setDelegate($this);
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_kind', $this->oListWidget->oDelegateProxy->getDocumentKind());
+
+		$this->oSideBarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSideBarWidget->setDelegate($this);
 	}
 	
 	public function mainContent() {
