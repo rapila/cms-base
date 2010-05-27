@@ -14,7 +14,7 @@
 @background_color_sidebar: #DFE1E3;
 
 @highlight_color: #e3ef99;
-
+/* all basic admin styles, use admin-ui.css for overwriting jQuery ui theme styles */
 html {
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
@@ -25,6 +25,7 @@ body {
 	margin: 0 @side_window_distance;
 }
 
+/* for fun login background */
 body.login h1 {
 	text-align: center;
 	font-size: 5em;
@@ -209,11 +210,6 @@ body.login h1 {
 	border-right: 0;
 }
 
-#cmos_admin_menu .ui-widget,
-#cmos_admin_menu .ui-widget-header {
-	font-size: 12px;
-}
-
 #cmos_admin_menu {
 	position: absolute;
 	top: 0;
@@ -257,12 +253,14 @@ body.login h1 {
 	display: inline-block;
 	margin-right: 1em;
 }
-
+select {
+	font-family: Arial, Helvetica, sans-serif;
+}
 #cmos_admin_menu .ui-widget-header select {
 	background-color: transparent !important;
 	border: #000 1px solid;
 	border-color: #000 #555 #666 #555;
-	padding: .1em .1em;
+	padding: .2em .1em .0em 2em;
 	color:@highlight_color !important;
 	-moz-border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
@@ -272,6 +270,12 @@ body.login h1 {
 	text-align: left;
 	margin-left: 1px;
 	float: left;
+}
+
+#cmos_admin_menu .ui-widget,
+#cmos_admin_menu .ui-widget-header,
+#cmos_admin_menu .ui-widget-header select {
+	font-size: 12px;
 }
 
 #cmos_admin_menu .ui-widget-header select.content_language {
