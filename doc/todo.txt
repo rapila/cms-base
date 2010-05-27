@@ -12,6 +12,7 @@ PageTree Widget
 - tree view? http://jquery.bassistance.de/treeview/demo/
 
 Widget tasks
+- lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin
 - getListContents() array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
 - best way to add use-folder-icons class to sidebar widget? setListTag() also
 - TODO: re-setting the last selected item after reload should be default functionality

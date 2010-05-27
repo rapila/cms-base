@@ -8,10 +8,10 @@ Widget.types.admin_menu = {
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
-		this.addButton("Seitenvorschau", function() {
+		this.addButton("{{writeString=page.preview_linktext}}", function() {
 			
 			}.bind(this), false).
-			addButton("Seite bearbeiten", function() {
+			addButton("{{writeString=page.edit_linktext}}", function() {
 			
 			}.bind(this), false).
 			addButton(" ", function() {

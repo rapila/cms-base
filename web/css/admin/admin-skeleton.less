@@ -1,5 +1,4 @@
 // lessc -w admin-skeleton.less
-
 @sidebar_resizer_width: 20px;
 @side_window_distance: 0;
 @initial_sidebar_width: 277px;
@@ -120,7 +119,14 @@ body {
 	position: absolute;
 }
 
-#admin_info_bar	 select.info-bar-element {
+#admin_info_bar .info-bar-element {
+	float: left;
+	height: @info_bar_height;
+	border: none;
+	border-right: @border;
+}
+
+#admin_info_bar	select.info-bar-element {
 	vertical-align: middle;
 	padding: 4px 0 2px;
 }
@@ -132,13 +138,6 @@ body {
 	background-position: center center;
 	padding-right: 1px;
 	cursor: pointer;
-}
-
-#admin_info_bar .info-bar-element {
-	float: left;
-	height: @info_bar_height;
-	border: none;
-	border-right: @border;
 }
 
 #admin_info_bar .info-bar-element {
@@ -294,6 +293,7 @@ body {
 	display: inline-block;
 	width: 24px;
 	height: 24px;
+	cursor: pointer;
 }
 
 #cmos_admin_menu .admin_menu_right .admin-menu-button {
@@ -320,33 +320,6 @@ body.dashboard #cmos_admin_menu .dashboard_link {
 
 #cmos_admin_menu .logout_link {
 	background: transparent url('../../images/admin/logout_icon.gif') repeat-y scroll 0 0;
-}
-
-th.ui-list-heading {
-	font-family: Arial;
-	color: #000;
-	border-bottom: solid 1px #E9E9E9;
-	height: 20px;
-}
-
-th.ui-list-heading.sortable span {
-	color: #444;
-	padding-right: 1.0em;
-}
-
-th.ui-list-heading.sortable {
-	cursor: pointer;
-}
-
-th.ui-list-heading.sortable.asc span,
-th.ui-list-heading.sortable.desc span {
-	background-image: url('../../images/admin/sort_desc.png');
-	background-position: right;
-	background-repeat: no-repeat;
-}
-
-th.ui-list-heading.sortable.desc span {
-	background-image: url('../../images/admin/sort_asc.png');
 }
 
 input {
@@ -399,6 +372,50 @@ textarea.ui-widget-content {
 	width: 22em;
 }
 
+table.ui-list {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+th.ui-list-heading.sortable span {
+	color: #444;
+	padding-right: 1.0em;
+}
+
+th.ui-list-heading.sortable {
+	cursor: pointer;
+}
+
+th.ui-list-heading.sortable.asc span,
+th.ui-list-heading.sortable.desc span {
+	background-image: url('../../images/admin/sort_desc.png');
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+th.ui-list-heading.sortable.desc span {
+	background-image: url('../../images/admin/sort_asc.png');
+}
+
+table.ui-list { border-collapse: collapse; border-spacing: 0;}
+table.ui-list td { padding: .3em .5em .3em 0.2em;}
+
+table.ui-list .ui-list-cell a {
+  color: #333 !important;
+	text-decoration: underline;
+}
+
+#admin_main .ui-list .ui-list-row:nth-child(2n+2) {
+	background-color: #E9E9E9;
+}
+
+#admin_main .ui-list td:first-child,
+#admin_main .ui-list th:first-child {
+	min-width: 15em;
+	padding-left:5px;
+}
+
 #admin_sidebar .ui-tree,
 #admin_sidebar .ui-list {
 	list-style: none;
@@ -406,14 +423,33 @@ textarea.ui-widget-content {
 	margin: 0;
 }
 
-#admin_sidebar .ui-list li, 
-#admin_sidebar .ui-tree li {
-	font-weight: 700;
+.ui-tree {
+	list-style: none inside;
+}
+
+#admin_sidebar .ui-tree .ui-tree li {
+	font-size: 1em;
+}
+
+.ui-tree li {
+	clear: left;
+}
+
+.ui-tree .tree-opener {
+	float: left;
+}
+
+.ui-tree .tree-opener.no-children {
+	background-image: none;
+}
+
+#admin_sidebar > .ui-tree {
+	border-bottom: 1px solid @border_color;
 }
 
 #admin_sidebar .ui-list li a,
 #admin_sidebar .ui-tree li a {
-	color: #333;
+	color: #444;
 	text-decoration: none;
 }
 
@@ -424,20 +460,12 @@ textarea.ui-widget-content {
 	border-bottom: 1px solid #DDD;
 }
 
-#admin_sidebar > .ui-tree {
-	border-bottom: 1px solid @border_color;
+#admin_sidebar .ui-list li.ui-list-row {
+	line-height: 20px;
 }
 
 #admin_sidebar .ui-tree div.ui-icon {
 	margin: .3em 0;
-}
-
-#admin_sidebar .ui-tree > li {
-	margin-left: 25px;
-}
-
-#admin_sidebar > .ui-tree > li {
-	margin-left: 0;
 }
 
 #admin_sidebar .ui-tree li {
@@ -449,18 +477,12 @@ textarea.ui-widget-content {
 	border-top: 1px solid #DDD;
 }
 
-#admin_sidebar .ui-tree li {
-	border-bottom: none;
-	border-top: 1px solid #DDD;
+#admin_sidebar .ui-tree > li {
+	margin-left: 25px;
 }
 
-#admin_sidebar .ui-list li.ui-list-row {
-	border-bottom: 1px solid #DDD;
-}
-
-#admin_sidebar .ui-tree li.show-children {
-	border-bottom: none;
-	padding-bottom: 0;
+#admin_sidebar > .ui-tree > li {
+	margin-left: 0;
 }
 
 #admin_sidebar .ui-tree li.show-children ol {
@@ -498,31 +520,52 @@ textarea.ui-widget-content {
 }
 
 #admin_sidebar ul.ui-list li.ui-list-headrow,
-#admin_sidebar .ui-list th.ui-list-heading {
+tr.ui-list-headrow th {
+	color: #000;
+	text-align: left;
+	vertical-align: bottom;
 	font-size: 1em;
-	padding: 11px 2px 1px 4px;
+	padding: 8px 2px 1px 4px;
 	background-color:#F6F6F6;
 	border-top: 0;
+	border-bottom: solid 1px #E9E9E9;
 }
 
-.ui-tree {
-	list-style: none inside;
+#admin_main th span,
+#admin_sidebar li.ui-list-headrow span {
+	padding-top: 3px;
+	padding-bottom: 1px;
+	display: inline-block;
 }
 
-#admin_sidebar .ui-tree .ui-tree li {
-	font-size: 1em;
+th.ui-list-heading select {
+	border: solid 1px #CDCDCD;
+	background-color: transparent;
+	margin: 0;
 }
 
-.ui-tree li {
-	clear: left;
+th.ui-list-heading.sortable span {
+	color: #444;
+	padding-right: 1.0em;
 }
 
-.ui-tree .tree-opener {
-	float: left;
+th.ui-list-heading.sortable {
+	cursor: pointer;
 }
 
-.ui-tree .tree-opener.no-children {
-	background-image: none;
+th.ui-list-heading.sortable.asc span,
+th.ui-list-heading.sortable.desc span {
+	background-image: url('../../images/admin/sort_desc.png');
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+th.ui-list-heading.sortable.desc span {
+	background-image: url('../../images/admin/sort_asc.png');
+}
+
+#admin_sidebar .ui-list th {
+	line-height: 14px;
 }
 
 #admin_sidebar input {

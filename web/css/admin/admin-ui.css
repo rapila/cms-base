@@ -36,42 +36,8 @@
 	padding: 5px;
 }
 
-table.ui-list {
-	width: 100%;
-	margin: 5px 0 0 0;
-	padding: 0;
-}
-
-table.ui-list col.file_info {
-	text-align: right;
-}
-
-#admin_main .ui-list .ui-list-row:nth-child(2n+2) {
-	background-color: #E9E9E9;
-}
-
-#admin_main .ui-list td:first-child,
-#admin_main .ui-list th:first-child {
-	min-width: 15em;
-	padding-left:5px;
-}
-
 .ui-list tr.ui-state-hover {
 	border: 0;
-}
-
-table.ui-list th {
-	text-align: left;
-	vertical-align: bottom;
-	height: 22px;
-}
-
-table.ui-list { border-collapse: collapse; }
-table.ui-list td { padding: .3em .5em .3em 0.2em;}
-
-table.ui-list .ui-list-cell a {
-  color: #333 !important;
-	text-decoration: underline;
 }
 
 .ui-state-highlight {
@@ -124,6 +90,13 @@ body.login h1 {
 	color: #C2C2C2;
 }
 
+#admin_sidebar .ui-tree,
+#admin_sidebar .ui-list,
+#admin_sidebar .ui-list .ui-state-active,
+#admin_sidebar .ui-list .ui-state-hover {
+	font-weight: 700;
+}
+
 .ui-dialog .ui-dialog-buttonpane {
 	margin-top: 0;
 	background: url("images/ui-bg_highlight-soft_45_2d3238_1x100.png") repeat-x scroll 50% 50% #2D3238 !important;
@@ -169,38 +142,6 @@ button.ui-button.ui-state-default {
 
 #admin_sidebar span.sidebar_input_save.active {
 	display: inline-block;
-}
-
-th.ui-list-heading select {
-	border: solid 1px #CDCDCD;
-	background-color: transparent;
-}
-
-th.ui-list-heading {
-	font-family: Arial;
-	color: #000;
-	border-bottom: solid 1px #E9E9E9;
-	height: 20px;
-}
-
-th.ui-list-heading.sortable span {
-	color: #444;
-	padding-right: 1.0em;
-}
-
-th.ui-list-heading.sortable {
-	cursor: pointer;
-}
-
-th.ui-list-heading.sortable.asc span,
-th.ui-list-heading.sortable.desc span {
-	background-image: url('../../images/admin/sort_desc.png');
-	background-position: right;
-	background-repeat: no-repeat;
-}
-
-th.ui-list-heading.sortable.desc span {
-	background-image: url('../../images/admin/sort_asc.png');
 }
 
 
