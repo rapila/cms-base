@@ -4,7 +4,7 @@
 @initial_sidebar_width: 277px;
 
 @info_bar_height: 24px;
-@admin_menu_height: 30px;
+@admin_menu_height: 31px;
 
 @border_width: 1px;
 @border_color: #D4D8DC;
@@ -48,12 +48,16 @@ body {
 }
 
 #admin_sidebar, #admin_main {
-	padding: 0px 2px;
 	overflow-y: auto;
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	background-color: @background_color;
+}
+
+#admin_main {
+	padding: 0px 2px 0 0;
+	border-left: @border;
 }
 
 #admin_sidebar {
@@ -68,11 +72,6 @@ body {
 	left: @initial_sidebar_width;
 	right: 0;
 	padding-right: @side_window_distance;
-	padding-left: 0;
-}
-
-#admin_main {
-	border-left: @border;
 }
 
 #admin_info_bar {
@@ -197,14 +196,9 @@ body {
 	border-right: 0;
 }
 
-.tooltip {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 10000 !important;
-	display: none;
-	padding: .5em;
-	font-size: .7em !important;
+#cmos_admin_menu .ui-widget,
+#cmos_admin_menu .ui-widget-header {
+	font-size: 12px;
 }
 
 #cmos_admin_menu {
@@ -227,13 +221,13 @@ body {
 #cmos_admin_menu .admin_menu_left {
 	position: absolute;
 	top: 0;
-	height: (@admin_menu_height - 6px);
-	margin: 3px 3px;
+	height: (@admin_menu_height - 8px);
+	margin: 4px 0px;
 }
 
 #cmos_admin_menu .admin_menu_left { 
 	left: 0;
-	width: (@initial_sidebar_width - 3px);
+	width: @initial_sidebar_width;
 }
 
 #cmos_admin_menu .admin_menu_right {
@@ -249,11 +243,6 @@ body {
 #cmos_admin_menu .admin_menu_right span.cmos-button.ui-state-default {
 	display: inline-block;
 	margin-right: 1em;
-}
-
-#cmos_admin_menu .ui-widget,
-#cmos_admin_menu .ui-widget-header {
-	font-size: 12px;
 }
 
 #cmos_admin_menu .ui-widget-header select {
@@ -322,6 +311,28 @@ body.dashboard #cmos_admin_menu .dashboard_link {
 	background: transparent url('../../images/admin/logout_icon.gif') repeat-y scroll 0 0;
 }
 
+#cmos_admin_menu > div {
+	padding: .3em .7em;
+	border: none;
+	border-bottom: @border;
+}
+
+.cmos-button {
+	padding: 0.2em;
+	margin-right: 0.2em;
+	cursor: pointer;
+}
+
+.tooltip {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10000 !important;
+	display: none;
+	padding: .5em;
+	font-size: .7em !important;
+}
+
 input {
 	padding: .2em;
 	margin-bottom: .4em;
@@ -333,18 +344,6 @@ input[type=checkbox] {
 
 input.default_state {
 	color: #9E9E9E;
-}
-
-.cmos-button {
-	padding: 0.2em;
-	margin-right: 0.2em;
-	cursor: pointer;
-}
-
-#cmos_admin_menu > div {
-	padding: .3em .7em;
-	border: none;
-	border-bottom: @border;
 }
 
 label {
