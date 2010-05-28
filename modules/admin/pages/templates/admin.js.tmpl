@@ -4,7 +4,6 @@ jQuery(document).ready(function() {
 
 	Widget.createWithElement('page_detail', function(event, widget) {
 		page_detail = widget;
-		// console.log(initial_selection);
 		page_detail.load_page(initial_selection);
 		AdminInterface.content.append(widget._element);
 		jQuery("#accordion").accordion({ active: 0 });

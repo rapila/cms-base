@@ -91,27 +91,51 @@ button.ui-button.ui-state-default { border-color: #000000 #555555 #666666 #55555
   background-repeat: no-repeat;
   background-position: top left;
 }
+#admin_sidebar .ui-tree li li.ui-state-hover {
+  background-image: url('../../images/admin/child_default.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+#admin_sidebar .ui-tree li li.ui-state-active {
+  background-image: url('../../images/admin/child_default.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+#admin_sidebar .ui-tree li ol {
+  background-image: url('../../images/admin/line_ol.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
 #admin_sidebar .ui-tree li li:last-child {
   background-image: url('../../images/admin/child_last.gif');
   background-repeat: no-repeat;
   background-position: bottom left;
 }
+#admin_sidebar .ui-tree li li.ui-state-hover:last-child {
+  background-image: url('../../images/admin/child_last.gif');
+  background-repeat: no-repeat;
+  background-position: bottom left;
+}
+#admin_sidebar .ui-tree li li.ui-state-active:last-child {
+  background-image: url('../../images/admin/child_last.gif');
+  background-repeat: no-repeat;
+  background-position: bottom left;
+}
 #admin_sidebar .ui-tree li.ui-state-hover {
-  border: none;
   background-color: #728697;
   background-image: none;
-  border-bottom: 1px solid #d4d8dc;
+  border-bottom: none;
 }
 #admin_sidebar .ui-tree li.ui-state-hover ol { background-color: #dfe1e3; }
 #admin_sidebar .ui-tree li.ui-state-hover ol li { background-color: #dfe1e3; }
 #admin_sidebar .ui-tree li.ui-state-active {
-  border: none;
   background-color: #728697;
   background-image: none;
-  border-bottom: 1px solid #d4d8dc;
+  border-bottom: none;
 }
 #admin_sidebar .ui-tree li.ui-state-active ol { background-color: #dfe1e3; }
 #admin_sidebar .ui-tree li.ui-state-active ol li { background-color: #dfe1e3; }
+#admin_sidebar .ui-tree li { border: none !important; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover {
   border-bottom: none !important;
   background-color: #728697;

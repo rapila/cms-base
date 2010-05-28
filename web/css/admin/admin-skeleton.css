@@ -359,11 +359,8 @@ table.ui-list .ui-list-cell a {
 .ui-tree li { clear: left; }
 .ui-tree .tree-opener { float: left; }
 .ui-tree .tree-opener.no-children { background-image: none; }
-#admin_sidebar > .ui-tree ol li { border-bottom: 1px solid #d7dbe3; }
-#admin_sidebar > .ui-tree > ol > li:first-child {
-  border-bottom: 1px solid #d4d8dc;
-  border-top: 1px solid #d4d8dc;
-}
+#admin_sidebar > .ui-tree ol li { border-bottom: none; }
+#admin_sidebar > .ui-tree > ol > li:first-child { border-bottom: none; }
 #admin_sidebar > .ui-tree ol ol li {
   border-bottom: none;
   border-top: none;
@@ -399,7 +396,7 @@ table.ui-list .ui-list-cell a {
   border-bottom: 1px solid #dddddd;
 }
 #admin_sidebar .ui-list li.ui-list-row { line-height: 20px; }
-#admin_sidebar .ui-tree div.ui-icon { margin: 0.3em 0; }
+#admin_sidebar .ui-tree div.ui-icon { margin: 0.3em 0 0.3em 0.4em; }
 #admin_sidebar .ui-tree li {
   font-size: 1.2em;
   padding: 0 0 0 0;

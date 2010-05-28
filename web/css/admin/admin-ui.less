@@ -115,13 +115,23 @@ button.ui-button.ui-state-default {
 	.active-sidebar-list-item;
 }
 
-#admin_sidebar .ui-tree li li {
+#admin_sidebar .ui-tree li li,
+#admin_sidebar .ui-tree li li.ui-state-hover,
+#admin_sidebar .ui-tree li li.ui-state-active {
 	background-image: url('../../images/admin/child_default.gif');
 	background-repeat: no-repeat; 
 	background-position: top left;
 }
 
-#admin_sidebar .ui-tree li li:last-child {
+#admin_sidebar .ui-tree li ol {
+	background-image: url('../../images/admin/line_ol.gif');
+	background-repeat: no-repeat; 
+	background-position: top left;
+}
+
+#admin_sidebar .ui-tree li li:last-child,
+#admin_sidebar .ui-tree li li.ui-state-hover:last-child,
+#admin_sidebar .ui-tree li li.ui-state-active:last-child {
 	background-image: url('../../images/admin/child_last.gif');
 	background-repeat: no-repeat; 
 	background-position: bottom left;
@@ -129,11 +139,17 @@ button.ui-button.ui-state-default {
 
 #admin_sidebar .ui-tree li.ui-state-hover,
 #admin_sidebar .ui-tree li.ui-state-active {
-	.active-sidebar-list-item;
+	background-color: @sidebar_highlight_color;
+	background-image: none;
+	border-bottom: none;
 	ol, ol li {
 		background-color: @background_color_sidebar;
 	}
 }
+#admin_sidebar  .ui-tree  li {
+	border: none !important;
+}
+
 
 #admin_sidebar > ol.ui-tree > li.ui-state-hover {
 	border-bottom: none !important;
