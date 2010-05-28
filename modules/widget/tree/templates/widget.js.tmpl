@@ -57,13 +57,13 @@ Widget.types.tree = {
 		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
 		if(this.settings.has_children(child)) {
 			opener.removeClass('no-children');
-			opener.addClass('ui-icon-circlesmall-plus closed');
+			opener.addClass('ui-icon-triangle-1-e closed');
 			opener.click(function() {
 				if(opener.hasClass('opened')) {
-					opener.removeClass('opened ui-icon-circlesmall-minus').addClass('closed ui-icon-circlesmall-plus');
+					opener.removeClass('opened ui-icon-triangle-1-s').addClass('closed ui-icon-triangle-1-e');
 					element.find(this.settings.tag_name).hide();
 				} else {
-					opener.removeClass('closed ui-icon-circlesmall-plus').addClass('opened ui-icon-circlesmall-minus');
+					opener.removeClass('closed ui-icon-triangle-1-e').addClass('opened ui-icon-triangle-1-s');
 					var sub_list = element.find(this.settings.tag_name).show();
 					if(sub_list.length === 0) {
 						this.open_item(element, this.settings.data_from_element(element));

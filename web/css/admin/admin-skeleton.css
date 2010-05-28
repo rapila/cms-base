@@ -263,7 +263,7 @@ input {
 input[type=checkbox] { padding: 0 !important; }
 input.default_state { color: #9e9e9e; }
 label {
-  color: #777777;
+  color: #999999;
   font-family: Arial;
   font-size: 0.95em;
   display: block;
@@ -359,7 +359,7 @@ table.ui-list .ui-list-cell a {
 .ui-tree li { clear: left; }
 .ui-tree .tree-opener { float: left; }
 .ui-tree .tree-opener.no-children { background-image: none; }
-#admin_sidebar > .ui-tree ol li { border-bottom: 1px solid #d4d8dc; }
+#admin_sidebar > .ui-tree ol li { border-bottom: 1px solid #d7dbe3; }
 #admin_sidebar > .ui-tree > ol > li:first-child {
   border-bottom: 1px solid #d4d8dc;
   border-top: 1px solid #d4d8dc;

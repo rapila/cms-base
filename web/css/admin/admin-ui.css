@@ -86,6 +86,16 @@ button.ui-button.ui-state-default { border-color: #000000 #555555 #666666 #55555
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
+#admin_sidebar .ui-tree li li {
+  background-image: url('../../images/admin/child_default.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+#admin_sidebar .ui-tree li li:last-child {
+  background-image: url('../../images/admin/child_last.gif');
+  background-repeat: no-repeat;
+  background-position: bottom left;
+}
 #admin_sidebar .ui-tree li.ui-state-hover {
   border: none;
   background-color: #728697;
