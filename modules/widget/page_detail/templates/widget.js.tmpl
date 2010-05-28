@@ -41,3 +41,11 @@ Widget.types.page_detail = {
 		
 	}
 };
+jQuery(document).ready(function() {
+	$(".fakecheck").click(function(){
+		($(this).hasClass('fakechecked')) ? $(this).removeClass('fakechecked') : $(this).addClass('fakechecked');
+		$(this.hash).trigger("click");
+		return false;
+	});
+});
+

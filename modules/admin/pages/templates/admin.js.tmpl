@@ -41,6 +41,10 @@ jQuery(document).ready(function() {
 			};
 		});
 	}, 'n', false);
+		// init language change
+	Widget.handle('cmos.language_changed', function() {
+		page_detail.reload();
+	});
 });
 
 

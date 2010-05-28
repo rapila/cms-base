@@ -30,7 +30,9 @@ Widget.types.admin_menu = {
 			addButton('   ', function() {
 			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
 		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
-			// addLanguageSelector("{{writeSessionAttribute=content_language}}");
+		if(AdminInterface.current_admin_module == "pages" || AdminInterface.current_admin_module == "strings") {
+			this.addLanguageSelector("{{writeSessionAttribute=content_language}}");
+		}
 	},
 	
 	show: function() {
@@ -95,6 +97,6 @@ Widget.types.admin_menu = {
 				Widget.fire('cmos.language_changed', select.val());
 			});
 		});
-		return this.addElement(select);
+		return this.addElement(select, true);
 	}
 };
