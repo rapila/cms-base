@@ -92,37 +92,21 @@ button.ui-button.ui-state-default { border-color: #000000 #555555 #666666 #55555
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
-#admin_sidebar .ui-tree li.ui-state-hover ol {
-  background-color: #dfe1e3;
-  background-image: ur(../../images/admin/navigation_bg_highlight.gif);
-  background-repeat: repeat;
-}
-#admin_sidebar .ui-tree li.ui-state-hover ol li {
-  background-color: #dfe1e3;
-  background-image: ur(../../images/admin/navigation_bg_highlight.gif);
-  background-repeat: repeat;
-}
+#admin_sidebar .ui-tree li.ui-state-hover ol { background-color: #dfe1e3; }
+#admin_sidebar .ui-tree li.ui-state-hover ol li { background-color: #dfe1e3; }
 #admin_sidebar .ui-tree li.ui-state-active {
   border: none;
   background-color: #728697;
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
-#admin_sidebar .ui-tree li.ui-state-active ol {
-  background-color: #dfe1e3;
-  background-image: ur(../../images/admin/navigation_bg_highlight.gif);
-  background-repeat: repeat;
-}
-#admin_sidebar .ui-tree li.ui-state-active ol li {
-  background-color: #dfe1e3;
-  background-image: ur(../../images/admin/navigation_bg_highlight.gif);
-  background-repeat: repeat;
-}
+#admin_sidebar .ui-tree li.ui-state-active ol { background-color: #dfe1e3; }
+#admin_sidebar .ui-tree li.ui-state-active ol li { background-color: #dfe1e3; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover {
   border-bottom: none !important;
   background-color: #728697;
 }
-#admin_sidebar > ol.ui-tree > li.ui-state-active li.ui-state-hover { background-color: #728697; }
+#admin_sidebar > ol.ui-tree li.ui-state-active li.ui-state-hover { background-color: #728697; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active { background-color: #728697; }
 #cmos_admin_menu .cmos-button.ui-state-default { background: url() transparent; }
 .ui-state-default { background: url() transparent; }
