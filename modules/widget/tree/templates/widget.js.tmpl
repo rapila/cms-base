@@ -7,7 +7,11 @@ Widget.types.tree = {
 			if(jQuery(event.target).is('.tree-opener')) {
 				return;
 			}
+			jQuery('#admin_sidebar').find('li').each(function() {
+				jQuery(this).removeClass('ui-state-hover').removeClass('ui-state-active');
+			});
 			var row = jQuery(this);
+			row.addClass('ui-state-active');
 			widget.fire('tree.clicked', row, widget.settings.data_from_element(row));
 		});	
 		this._element.delegate('.ui-tree li', 'hover', function(event) {
@@ -58,10 +62,8 @@ Widget.types.tree = {
 				if(opener.hasClass('opened')) {
 					opener.removeClass('opened ui-icon-circlesmall-minus').addClass('closed ui-icon-circlesmall-plus');
 					element.find(this.settings.tag_name).hide();
-					// element.removeClass('show-children');
 				} else {
 					opener.removeClass('closed ui-icon-circlesmall-plus').addClass('opened ui-icon-circlesmall-minus');
-					// element.addClass('show-children');
 					var sub_list = element.find(this.settings.tag_name).show();
 					if(sub_list.length === 0) {
 						this.open_item(element, this.settings.data_from_element(element));

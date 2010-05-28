@@ -1,14 +1,26 @@
-<form>
+<form class="page_detail">
 	<div class="status_section">
-		<input type="checkbox" name="is_inactive" value="1" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
-		<input type="checkbox" name="is_folder" value="1" /><label for="is_folder">{{writeString=is_folder}}</label><br />
-		<input type="checkbox" name="is_hidden" value="1" /><label for="is_hidden">{{writeString=is_hidden}}</label><br />
-		<input type="checkbox" name="is_protected" value="1" /><label for="is_protected">{{writeString=is_protected}}</label><br />
+	<h3 class="status">Status</h3>
+		<label style="margin: 1em 1em 1em .5em">Seitenlink</label><span class="page_href" style="font-family:Courier;"></span>
+		<label for="name" style="margin-left:2em;">{{writeString=name}}</label><input type="text" name="name" class="ui-widget-content path_input" /><br />
+		<input type="checkbox" name="is_inactive" value="1" /><label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label> 
+		<input type="checkbox" name="is_folder" value="1" /><label for="is_folder" class="for_checkbox">{{writeString=widget.page.folder}}</label> 
+		<input type="checkbox" name="is_hidden" value="1" /><label for="is_hidden" class="for_checkbox">{{writeString=widget.page.hidden}}</label> 
+		<input type="checkbox" name="is_protected" value="1" /><label for="is_protected" class="for_checkbox">{{writeString=widget.page.protected}}</label> 
 	</div>
-	<label for="name">{{writeString=name}}</label>
-	<input type="text" name="name" class="ui-widget-content" /><br />
-	<label for="page_title">{{writeString=page_title}}</label>
-	<input type="text" name="page_title" class="ui-widget-content" /><br />
-	<label for="link_text">{{writeString=link_text}}</label>
-	<input type="text" name="link_text" class="ui-widget-content" /><br />
+	<div id="accordion">
+    <h3><a href="#">Labels</a></h3>
+    <div class="inner_wrapper">		
+			<br />
+			<label for="page_title">{{writeString=page_title}}</label>
+			<input type="text" name="page_title" class="ui-widget-content input_long" /><br />
+			<label for="link_text">{{writeString=link_text}}</label>
+			<input type="text" name="link_text" class="ui-widget-content" /><br />
+		</div>
+    <h3><a href="#">Template</a></h3>
+    <div class="inner_wrapper">Nichts
+		</div>
+		<h3><a href="#">Inhalte</a></h3>
+    <div class="inner_wrapper">Inhalte wie</div>
+</div>	
 </form>

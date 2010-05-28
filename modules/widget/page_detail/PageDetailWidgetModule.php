@@ -14,7 +14,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageData() {
-		$aResult = PagePeer::retrieveByPK($this->iPageId)->toArray();
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
+		$oPageString = $oPage->getActivePageString();
+		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
+		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
+		$aResult['PageHref'] = 'http://Weblink';
 		return $aResult;
 	}
 	

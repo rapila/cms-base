@@ -64,7 +64,7 @@
 }
 
 .cmos_alert.ui-dialog-content .ui-icon {
-	background-image:url("admin_menu/images/ui-icons_b8d600_256x240.png");
+	background-image: url("admin_menu/images/ui-icons_b8d600_256x240.png");
 }
 
 div.ui-dialog-titlebar.ui-corner-all,
@@ -76,10 +76,15 @@ div.ui-corner-all  {
 	padding: .6em .8em;
 }
 
+.ui-state-active .ui-icon,
+.ui-state-hover .ui-icon {
+	background-image: url("admin_menu/images/ui-icons_000000_256x240.png");
+}
+
 #admin_sidebar .ui-tree,
 #admin_sidebar .ui-list,
-#admin_sidebar .ui-list .ui-state-active,
-#admin_sidebar .ui-list .ui-state-hover {
+#admin_sidebar li.ui-state-active,
+#admin_sidebar li.ui-state-hover {
 	font-weight: 700;
 }
 
@@ -93,14 +98,19 @@ button.ui-button.ui-state-default {
 	border-color: #000 #555 #666 #555;
 }
 
+#admin_sidebar li.ui-state-active li {
+	color: #000;
+}
+
 .active-sidebar-list-item {
 	border: none;
 	background-color: @sidebar_highlight_color;
 	background-image: none;
-	border-bottom: 1px solid @border_color !important;
+	border-bottom: 1px solid @border_color;
 }
 
 #admin_sidebar .ui-list li.ui-state-hover,
+#admin_sidebar .ui-list .ui-state-active li.ui-state-hover,
 #admin_sidebar .ui-list li.ui-state-active {
 	.active-sidebar-list-item;
 }
@@ -109,8 +119,23 @@ button.ui-button.ui-state-default {
 #admin_sidebar .ui-tree li.ui-state-active {
 	.active-sidebar-list-item;
 	ol, ol li {
-		background-color: #fff;
+		background-color: @background_color_sidebar;
+		background-image: ur(../../images/admin/navigation_bg_highlight.gif);
+		background-repeat: repeat;
 	}
+}
+
+#admin_sidebar > ol.ui-tree > li.ui-state-hover {
+	border-bottom: none !important;
+	background-color: @sidebar_highlight_color;
+}
+
+#admin_sidebar > ol.ui-tree > li.ui-state-active li.ui-state-hover {
+	background-color: @sidebar_highlight_color;
+}
+
+#admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active {
+	background-color: @sidebar_highlight_color;
 }
 
 #cmos_admin_menu .cmos-button.ui-state-default,
@@ -132,4 +157,88 @@ button.ui-button.ui-state-default {
 	display: inline-block;
 }
 
+form .inner_wrapper {
+	padding: 0 0em;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border: none;
+	border-top: #C1C2C4 1px solid !important;	
+	border-bottom: #F2F4F6 1px solid;
+}
 
+form.page_detail {
+	background-color: #FFF;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+}
+form.page_detail h3,
+.status_section {
+	background-color: #ebedef;
+}
+form.page_detail .status_section {
+	border-top: none;
+	border-bottom: #C1C2C4 1px solid;
+	padding-bottom: .5em;
+	padding-left: 1.6em;
+}
+
+form.page_detail .ui-accordion .ui-accordion-content {
+	padding-top: 0;
+}
+
+form.page_detail h3 {
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	margin: 0;
+	font-weight: 1.5em;
+	border: none;
+	border-bottom: #C1C2C4 1px solid;
+}
+
+form.page_detail h3 a {
+	text-decoration: none;
+	color: #666;
+}
+
+form.page_detail label {
+	display: inline-block;
+}
+
+form.page_detail label.for_checkbox {
+	margin-right: 2em;
+	padding-left:.2em;
+}
+
+.inner_wrapper label {
+	width: 120px;
+}
+form.page_detail h3.ui-state-default a, 
+form.page_detail h3.ui-state-default a:link,
+form.page_detail h3.ui-state-default a:visited,
+form.page_detail h3.status,
+form.page_detail .ui-state-active a, 
+form.page_detail .ui-state-active a:link, 
+form.page_detail .ui-state-active a:visited {
+	font-size: 1.2em; font-weight: 700; color: #666;
+	padding: 0.3em 0.3em 0.3em 1.6em;	
+	border-bottom:none; 
+}
+
+form.page_detail h3.status { 
+	padding-left: .3em;
+}
+
+form.page_detail .ui-state-active, 
+form.page_detail .ui-widget-content .ui-state-active {
+	background-image: none;
+	background-color: #ebedef;
+	color: #000;
+}
+.ui-widget-content.path_input {
+	background: url() #EBEDEF;
+}
+
+input.ui-widget-content.input_long {
+	width: 35em;
+}

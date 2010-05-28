@@ -1,26 +1,29 @@
 Widget.types.page_detail = {
 	prepare: function() {
-		this.disable_editing();
+		this.disable_input();
 	},
 	
-	disable_editing: function() {
+	disable_input: function() {
 		this._element.find('input, textarea, button').attr('disabled', 'disabled');
 	},
 	
-	enable_editing: function() {
+	enable_input: function() {
 		this._element.find('input, textarea, button').attr('disabled', null);
 	},
 	
 	load_page: function(page_id) {
 		this.setPageId(page_id);
 		this.fill_data();
-		this.enable_editing();
+		this.enable_input();
 	},
 	
 	fill_data: function() {
 		this.getPageData(function(page_data) {
 			this._element.find("input[name='name']").val(page_data.Name);
-			this._element.find("input[name='is_inactive']").attr('checked', page_data.IsInactive);
+			this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);
+			this._element.find("input[name='page_title']").val(page_data.active_page_string.PageTitle);
+			this._element.find(".page_href").text(page_data.PageHref);
+			this._element.find("input[name='is_inactive']").attr('checked', !page_data.IsInactive);
 			this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
 			this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
 			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);

@@ -437,6 +437,18 @@ table.ui-list .ui-list-cell a {
 	margin: 0;
 }
 
+#admin_sidebar .ui-tree li.ui-state-hover,
+#admin_sidebar .ui-tree li.ui-state-active {
+	list-style: none;
+	padding: 0;
+	margin: 0;	
+}
+
+#admin_sidebar ol {
+	padding: 0;
+	margin: 0;	
+}
+
 .ui-tree {
 	list-style: none inside;
 }
@@ -457,8 +469,22 @@ table.ui-list .ui-list-cell a {
 	background-image: none;
 }
 
-#admin_sidebar > .ui-tree {
+#admin_sidebar > .ui-tree ol li {
+/*	border-bottom: 1px solid @border_color;*/
 	border-bottom: 1px solid @border_color;
+}
+
+#admin_sidebar > .ui-tree > ol > li:first-child {
+/*	border-bottom: 1px solid @border_color;*/
+	border-bottom: 1px solid @border_color;
+	border-top: 1px solid @border_color;
+}
+#admin_sidebar > .ui-tree ol ol li,
+#admin_sidebar > .ui-tree ol ol li:first-child,
+#admin_sidebar > .ui-tree ol ol li.ui-state-hover,
+#admin_sidebar > .ui-tree ol ol li.ui-state-active {
+	border-bottom: none;
+	border-top: none;
 }
 
 #admin_sidebar .ui-list li a,
@@ -485,15 +511,14 @@ table.ui-list .ui-list-cell a {
 #admin_sidebar .ui-tree li {
 	font-size: 1.2em;
 	padding: 0 0 0 0;
-	line-height: 24px;
+	line-height: 25px;
 	vertical-align: middle;
 	border-bottom: none;
-	border-top: 1px solid #DDD;
 }
 
 #admin_sidebar .ui-tree > li {
 	ol {
-		padding-left: 25px;
+		padding-left: 18px;
 	}
 }
 
@@ -502,9 +527,16 @@ table.ui-list .ui-list-cell a {
 	margin-top: 3px;
 }
 
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active {
+#admin_sidebar li.ui-list-row.ui-state-active,
+#admin_sidebar li.ui-list-row.ui-state-hover {
 	background-image: url();
+	background-color: @sidebar_highlight_color;
 }
+
+#admin_sidebar ol > li.ui-list-row.ui-state-hover {
+	border: none;
+}
+
 
 #admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row {
 	padding-left: 1.4em;

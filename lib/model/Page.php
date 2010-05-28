@@ -318,6 +318,13 @@ class Page extends BasePage {
 	}
 	
 	/**
+	* Alias of getFullPathArray()
+	*/
+	public function getLinkArray() {
+		return $this->getFullPathArray();
+	}
+	
+	/**
 	* @deprecated use PagePeer::getRootPage()->getIterator()
 	* @todo replace usages with Propel 1.5’s RecursiveIterator
 	*/

@@ -337,12 +337,46 @@ table.ui-list .ui-list-cell a {
   padding: 0;
   margin: 0;
 }
+#admin_sidebar .ui-tree li.ui-state-hover {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#admin_sidebar .ui-tree li.ui-state-active {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#admin_sidebar ol {
+  padding: 0;
+  margin: 0;
+}
 .ui-tree { list-style: none inside; }
 #admin_sidebar .ui-tree .ui-tree li { font-size: 1em; }
 .ui-tree li { clear: left; }
 .ui-tree .tree-opener { float: left; }
 .ui-tree .tree-opener.no-children { background-image: none; }
-#admin_sidebar > .ui-tree { border-bottom: 1px solid #d4d8dc; }
+#admin_sidebar > .ui-tree ol li { border-bottom: 1px solid #d4d8dc; }
+#admin_sidebar > .ui-tree > ol > li:first-child {
+  border-bottom: 1px solid #d4d8dc;
+  border-top: 1px solid #d4d8dc;
+}
+#admin_sidebar > .ui-tree ol ol li {
+  border-bottom: none;
+  border-top: none;
+}
+#admin_sidebar > .ui-tree ol ol li:first-child {
+  border-bottom: none;
+  border-top: none;
+}
+#admin_sidebar > .ui-tree ol ol li.ui-state-hover {
+  border-bottom: none;
+  border-top: none;
+}
+#admin_sidebar > .ui-tree ol ol li.ui-state-active {
+  border-bottom: none;
+  border-top: none;
+}
 #admin_sidebar .ui-list li a {
   color: #444444;
   text-decoration: none;
@@ -366,17 +400,24 @@ table.ui-list .ui-list-cell a {
 #admin_sidebar .ui-tree li {
   font-size: 1.2em;
   padding: 0 0 0 0;
-  line-height: 24px;
+  line-height: 25px;
   vertical-align: middle;
   border-bottom: none;
-  border-top: 1px solid #dddddd;
 }
-#admin_sidebar .ui-tree > li ol { padding-left: 25px; }
+#admin_sidebar .ui-tree > li ol { padding-left: 18px; }
 #admin_sidebar .ui-tree li.show-children ol {
   margin-left: -10px;
   margin-top: 3px;
 }
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active { background-image: url(); }
+#admin_sidebar li.ui-list-row.ui-state-active {
+  background-image: url();
+  background-color: #728697;
+}
+#admin_sidebar li.ui-list-row.ui-state-hover {
+  background-image: url();
+  background-color: #728697;
+}
+#admin_sidebar ol > li.ui-list-row.ui-state-hover { border: none; }
 #admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row {
   padding-left: 1.4em;
   background-image: url(../../images/admin/folder_collapsed.png);
