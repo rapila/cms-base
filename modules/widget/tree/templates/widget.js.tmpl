@@ -33,6 +33,9 @@ Widget.types.tree = {
 	
 	open_item: function(item, data) {
 		var tree = this;
+		// var is_li = jQuery(item).is("li");
+		// console.log(is_li, item);
+		
 		this.listChildren(data, function(children) {
 			jQuery.each(children, function(i, child) {
 				tree.add_item(item, child);
@@ -72,7 +75,6 @@ Widget.types.tree = {
 				}
 			}.bind(this));
 		}
-		console.log(child);
 		if(child.IsProtected) {
 			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-protected'));
 		}		
@@ -80,7 +82,6 @@ Widget.types.tree = {
 			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-hidden'));
 		}
 		element.prepend(opener);
-		console.log(child);
 		element.data('tree-data', child);
 		parent.append(element);
 		return parent;
