@@ -37,7 +37,7 @@ Widget.types.document_detail = {
 				document_data.LanguageId = '';
 			}
 			if(document_data.Id != null) {
-				this.content.find("label[for='file_upload']").text("{{writeString=file.upload_replace}}");
+				this.content.find("label[for='file_upload']").text("{{writeString=widget.document.file_upload_replace}}");
 			}
 			this.content.find("input[name='name']").val(document_data.Name);
 			this.content.find("textarea[name='description']").val(document_data.Description);
@@ -50,7 +50,7 @@ Widget.types.document_detail = {
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);
-			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=file}}"+' '+document_data.Name);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.document}}"+' '+document_data.Name);
 			this.detail_widget.set_is_loading(false);
 		});
 	},

@@ -263,7 +263,7 @@ input {
 input[type=checkbox] { padding: 0 !important; }
 input.default_state { color: #9e9e9e; }
 label {
-  color: #999999;
+  color: #666666;
   font-family: Arial;
   font-size: 0.95em;
   display: block;

@@ -1,9 +1,9 @@
 <form enctype="multipart/form-data">
-	<label for="file_upload">{{writeString=file.upload}}</label>
+	<label for="file_upload">{{writeString=widget.document.file_upload}}</label>
 	<input type="file" name="file_upload" size="48" class="ui-widget-content" /><br />
 	<div class="status_section">
 		<img class="preview" width="150" />
-		<label>{{writeString=file.info_detail}}:</label><br /><span class="file_size status"></span><br />
+		<label>{{writeString=widget.document.info}}:</label><br /><span class="file_size status"></span><br />
 		<label>{{writeString=created.info}}:</label><br /><span class="created_info status"></span><br />
 		<label>{{writeString=updated.info}}:</label><br /><span class="updated_info status"></span><br />
 		<label>ID:</label><span class="detail_id">{{id}}</span>
@@ -12,7 +12,7 @@
 	<input type="text" name="name" class="ui-widget-content" /><br />
 	<label for="description">{{writeString=description}}</label>
 	<textarea rows="2" cols="30" name="description" class="ui-widget-content"></textarea>
-	<label for="document_category_id">{{writeString=label.file_category}}</label>
+	<label for="document_category_id">{{writeString=widget.document.document_category}}</label>
 	<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
 	<label for="language_id">{{writeString=widget.language}}</label>
 	<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />

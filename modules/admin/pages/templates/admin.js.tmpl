@@ -30,7 +30,8 @@ jQuery(document).ready(function() {
 			return item.data('tree-data').Id;
 		};
 	}, '{{writeRequestValue=tree_session}}');
-	AdminInterface.info_bar.getWidget().add_button('add-new-item', function() {
+	var info_bar = AdminInterface.info_bar.getWidget();
+	info_bar.add_button('add-new-item', function() {
 		Widget.create('page_detail', function(widget) {
 			widget.open();
 			widget.save_callback = function() {
@@ -39,10 +40,12 @@ jQuery(document).ready(function() {
 				});
 			};
 		});
-	}, 'n', false);
-		// init language change
+	}, 'n', false).add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text('Save'), true, false);
+
+	// init language change
 	Widget.handle('cmos.language_changed', function() {
-		page_detail.reload();
+		console.log('test');
+		// reload the sidebar and page detail
 	});
 });
 

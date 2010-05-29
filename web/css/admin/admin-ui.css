@@ -101,8 +101,8 @@ button.ui-button.ui-state-default { border-color: #000000 #555555 #666666 #55555
   background-repeat: no-repeat;
   background-position: top left;
 }
-#admin_sidebar .ui-tree li ol {
-  background-image: url('../../images/admin/line_ol.gif');
+#admin_sidebar .ui-tree li ol ol {
+  background-image: url('../../images/admin/child_line.gif');
   background-repeat: no-repeat;
   background-position: top left;
 }
@@ -145,6 +145,10 @@ button.ui-button.ui-state-default { border-color: #000000 #555555 #666666 #55555
 #cmos_admin_menu .cmos-button.ui-state-default { background: url() transparent; }
 .ui-state-default { background: url() transparent; }
 .ui-widget-content .ui-state-default { background: url() transparent; }
+.infobar_right button.info-bar-element.cmos_button.ui-state-default {
+  float: right !important;
+  padding: auto 2em !important;
+}
 #admin_sidebar li.ui-state-active { color: white; }
 #admin_sidebar span.sidebar_input_save {
   display: none;
@@ -169,7 +173,7 @@ form.page_detail {
   vertical-align: top;
 }
 form.page_detail h3 { background-color: #ebedef; }
-.status_section { background-color: #ebedef; }
+form.page_detail .status_section { background-color: #ebedef; }
 form.page_detail .status_section {
   border-top: none;
   border-bottom: #c1c2c4 1px solid;

@@ -94,6 +94,7 @@ Widget.types.admin_menu = {
 			widget.settings.international_option = false;
 			select.change(function() {
 				widget.setContentLanguage(select.val());
+				console.log(Widget);
 				Widget.fire('cmos.language_changed', select.val());
 			});
 		});

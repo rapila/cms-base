@@ -5,7 +5,11 @@ Miscellaneous projects
 - Transmit d&d rights writing dump
 
 PageTree Widget
+- open 1. Level all the time
+- open branch on click of parent
+- make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
+- make custom made checkboxes. all the same but the active checkbox green/red?
 - reuse list widget widget.js method, separate into general (list/tree) and list or tree?
 - hover: on page li hover the children should not be highlighted, they should have their own color?
 - nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
