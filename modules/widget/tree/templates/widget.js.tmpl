@@ -55,6 +55,7 @@ Widget.types.tree = {
 		}
 		var element = jQuery("<li/>").text(this.settings.description_from_item(child));
 		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
+		
 		if(this.settings.has_children(child)) {
 			opener.removeClass('no-children');
 			opener.addClass('ui-icon-triangle-1-e closed');
@@ -71,7 +72,15 @@ Widget.types.tree = {
 				}
 			}.bind(this));
 		}
+		console.log(child);
+		if(child.IsProtected) {
+			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-protected'));
+		}		
+		if(child.IsHidden) {
+			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-hidden'));
+		}
 		element.prepend(opener);
+		console.log(child);
 		element.data('tree-data', child);
 		parent.append(element);
 		return parent;

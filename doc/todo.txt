@@ -5,15 +5,14 @@ Miscellaneous projects
 - Transmit d&d rights writing dump
 
 PageTree Widget
+- display linktext in page tree (on hover page_title)
 - open 1. Level all the time
 - open branch on click of parent
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
+- add hidden, protected (and folder?) icons to page links
+- buttons in infobar, how to add, style and position them best?
 - make custom made checkboxes. all the same but the active checkbox green/red?
-- reuse list widget widget.js method, separate into general (list/tree) and list or tree?
-- hover: on page li hover the children should not be highlighted, they should have their own color?
-- nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
-- tree view? http://jquery.bassistance.de/treeview/demo/
 
 Widget tasks
 - lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin
@@ -412,3 +411,6 @@ release-1-devel propel update
 - fix header_filter widget (file_kind, user_kind etc)
 - use widget (widget.document_kind...) in list widget header
 - Propel install for parallel old version maintenance and new development including dependencies?
+- hover: on page li hover the children should not be highlighted, they should have their own color?
+- nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
+- tree view? http://jquery.bassistance.de/treeview/demo/
