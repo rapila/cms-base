@@ -2,7 +2,7 @@
 	<div class="status_section">
 	<h3 class="status">Status</h3>
 		<label style="margin: 1em 1em 1em .5em">Seitenlink</label><span class="page_href" style="font-family:Courier;"></span>
-		<label for="name" style="margin-left:2em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" /><br />
+		<label for="name" style="margin-left:4em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" /><br />
 		<input type="checkbox" name="is_inactive" value="1" /><label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label> 
 		<input type="checkbox" name="is_hidden" value="1" /><label for="is_hidden" class="for_checkbox">{{writeString=widget.page.hidden}}</label> 
 		<input type="checkbox" name="is_protected" value="1" /><label for="is_protected" class="for_checkbox">{{writeString=widget.page.protected}}</label> 
@@ -17,10 +17,11 @@
 			<label for="link_text">{{writeString=widget.page.link_text}}</label>
 			<input type="text" name="link_text" class="ui-widget-content" /><br />
 		</div>
-    <h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
-    <div class="inner_wrapper"><p>Templateauswahl</p>
-		</div>
 		<h3><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
     <div class="inner_wrapper"><p>Inhalte Konfigurationen und bearbeiten</p></div>
+		<h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
+		<div class="inner_wrapper"><p>Templateauswahl <select name="template_name"></select></p></div>
+		<h3><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
+    <div class="inner_wrapper"><p>Referenzen auf diese Seite</p></div>
 </div>	
 </form>

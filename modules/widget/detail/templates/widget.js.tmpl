@@ -60,6 +60,13 @@ Widget.types.detail = {
 		}
 	},
 	
+	select_options: function(element, options) {
+		var option = jQuery('<option/>');
+		jQuery.each(options, function(i, params) {
+			option.clone().text(params.name).attr('value', params.id).appendTo(element);
+		}.bind(this));
+	},
+	
 	set_title: function(title) {
 		this.content.dialog('option', 'title', title);
 	}, 

@@ -886,12 +886,12 @@ class Template {
 		return call_user_func(self::$HTML_ENTITY_FUNCTION, $sString, ENT_QUOTES, Settings::getSetting("encoding", "browser", "utf-8"));
 	}
 	
-	public static function listTemplates($mDirName = DIRNAME_TEMPLATES, $bListSubdirs = false) {
+	public static function listTemplates($mDirName = DIRNAME_TEMPLATES, $bListSubdirs = false, $bFlag=null) {
 		$aResult = array();
 		if(!is_array($mDirName)) {
 			$mDirName = explode("/", $mDirName);
 		}
-		$aDirectories = ResourceFinder::findResource($mDirName, null, false, true);
+		$aDirectories = ResourceFinder::findResource($mDirName, $bFlag, false, true);
 		foreach($aDirectories as $sDirectory) {
 			if($iTemplatesDir = opendir($sDirectory)) {
 				while (false !== ($sFileName = readdir($iTemplatesDir))) {
