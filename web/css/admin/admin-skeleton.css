@@ -113,6 +113,7 @@ body.login h1 {
   line-height: 24px;
   vertical-align: middle;
 }
+#admin_info_bar .info-bar-element-page { line-height: auto; }
 #admin_info_bar input.info-bar-element {
   border-color: #e4e4e4;
   border-right-style: dotted;
@@ -474,7 +475,7 @@ table.ui-list .ui-list-cell a {
   text-align: left;
   vertical-align: bottom;
   font-size: 1em;
-  padding: 8px 2px 1px 4px;
+  padding: 8px 2px 1px 1px;
   background-color: #f6f6f6;
   border-top: 0;
   border-bottom: solid 1px #e9e9e9;
@@ -484,7 +485,7 @@ tr.ui-list-headrow th {
   text-align: left;
   vertical-align: bottom;
   font-size: 1em;
-  padding: 8px 2px 1px 4px;
+  padding: 8px 2px 1px 1px;
   background-color: #f6f6f6;
   border-top: 0;
   border-bottom: solid 1px #e9e9e9;

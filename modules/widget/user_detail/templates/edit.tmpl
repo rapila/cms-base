@@ -1,7 +1,7 @@
 <form>
 	<div class="status_section">
 		<input type="checkbox" name="is_admin" value="1" /><label for="is_admin">{{writeString=is_admin}}</label><br />
-		<input type="checkbox" name="is_backend_login_enabled" value="1" /><label for="is_backend_login_enabled">{{writeString=is_backend_login_enabled}}</label><br />
+		<input type="checkbox" name="is_backend_login_enabled" value="1" /><label for="is_backend_login_enabled">{{writeString=widget.user.is_backend_login_enabled}}</label><br />
 		<input type="checkbox" name="is_inactive" value="1" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
 		<label for="group_ids[]" >{{writeString=user.group}}</label>
 		<select name="group_ids[]" multiple="multiple" style="height:auto;" class="ui-widget-content" data-widget-type="group_input"></select><br />

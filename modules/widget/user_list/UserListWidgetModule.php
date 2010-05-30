@@ -49,7 +49,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('column.language_id');
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('updated_at');
+				$aResult['heading'] = StringPeer::getString('widget.updated_at');
 				break;
 			case 'delete':
 				$aResult['is_sortable'] = false;

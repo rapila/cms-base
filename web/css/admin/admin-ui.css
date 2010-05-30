@@ -186,10 +186,6 @@ button.ui-button.ui-state-default {
 #cmos_admin_menu .cmos-button.ui-state-default { background: url() transparent; }
 .ui-state-default { background: url() transparent; }
 .ui-widget-content .ui-state-default { background: url() transparent; }
-.infobar_right button.info-bar-element.cmos_button.ui-state-default {
-  float: right !important;
-  padding: auto 2em !important;
-}
 #admin_sidebar li.ui-state-active { color: white; }
 #admin_sidebar span.sidebar_input_save {
   display: none;

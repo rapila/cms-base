@@ -2,6 +2,7 @@ Widget.types.info_bar = {
 	initialize: function() {
 		this.sidebar = AdminInterface.sidebar;
 		this.content_area = AdminInterface.content;
+		this.is_pages_module = AdminInterface.current_admin_module === "pages";
 		this.max_width = 480;
 		this.min_width = 100;
 		this.button_prototype = jQuery('<a/>').addClass('info-bar-button').text(' ');
@@ -40,7 +41,11 @@ Widget.types.info_bar = {
 		if(accesskey) {
 			element.attr('accesskey', accesskey);
 		}
-		element.addClass('info-bar-element');
+		if(this.is_pages_module && is_right_container) {
+			element.addClass('info-bar-element-page');
+		} else {
+			element.addClass('info-bar-element');
+		}
 		func.call(element, appendee);
 		return this;
 	},

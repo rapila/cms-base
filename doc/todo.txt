@@ -31,7 +31,7 @@ Widget tasks
 - PermissionWidget?
 
 Browser fixes
-- Chrome select does not work (sometimes), User group select does not work and is too big
+- Chrome select does not work (sometimes), User group select does not work and is too big group_ids[]???
 - Safari, Chrome, Opera User Detail window to small or status section to big, define minWidth instead of width
 
 SVN, development and tracking tasks
