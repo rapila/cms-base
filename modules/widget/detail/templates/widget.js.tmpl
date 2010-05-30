@@ -20,10 +20,10 @@ Widget.types.detail = {
 			detail_widget.content.dialog('close');
 		};
 		var buttons = {
-			"{{writeString=save}}": save_button_handler
+			"{{writeString=widget.save}}": save_button_handler
 		};
 		if(this.settings.has_cancel_button) {
-			buttons["{{writeString=cancel}}"] = cancel_callback;
+			buttons["{{writeString=widget.cancel}}"] = cancel_callback;
 		}
 		this.content.dialog({
 			title: this.settings.title,

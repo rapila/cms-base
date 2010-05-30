@@ -72,7 +72,7 @@ class DocumentListWidgetModule extends WidgetModule {
 				$aResult['icon_true'] = 'key';
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('updated_at');
+				$aResult['heading'] = StringPeer::getString('widget.updated_at');
 				break;
 			case 'edit':
 				$aResult['heading'] = ' ';

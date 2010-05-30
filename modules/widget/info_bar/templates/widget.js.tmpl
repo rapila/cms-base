@@ -65,14 +65,14 @@ Widget.types.info_bar = {
 	
 	add_search_input: function(default_value, click_handler) {
 		if(!default_value) {
-			default_value = "{{writeString=search}}";
+			default_value = "{{writeString=widget.search}}";
 		}
 		var search_input = jQuery('<input/>').addClass('default_state search_field').attr({name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
 		this.add_element(search_input, true, false, 'f');
 		var clear_button = this.button_prototype.clone().addClass('search_field_reset').hide();
 		this.add_element(clear_button, true).add_button('search_button', function() {
 			if(search_input.hasClass('default_state')) {
-				Widget.notifyUser('info', "{{writeString=not_applicable.add_search_word}}");
+				Widget.notifyUser('info', "{{writeString=widget.not_applicable.add_search_word}}");
 				return;
 			}
 			click_handler(search_input.val());
@@ -114,7 +114,7 @@ Widget.types.info_bar = {
 		var row_count_info = jQuery('<span/>').addClass('row_count_info');
 		this.add_element(row_count_info, true);
 		list.handle('list.reloaded', function() {
-			row_count_info.text("{{writeParameterizedString=list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+			row_count_info.text("{{writeParameterizedString=widget.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
 		}, false, true);
 	}
 };
