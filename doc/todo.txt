@@ -5,11 +5,13 @@ Miscellaneous projects
 - Transmit d&d rights writing dump
 
 PageTree Widget
+- user_list widget error, failed to debug it
 - display linktext in page tree (on hover page_title)
 - open 1. Level all the time
 - open branch on click of parent
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
+- discuss subtle highlight of active parent elements to make hierarchy explicit
 - add hidden, protected (and folder?) icons to page links
 - buttons in infobar, how to add, style and position them best?
 - make custom made checkboxes. all the same but the active checkbox green/red?
@@ -27,6 +29,10 @@ Widget tasks
 - how can we simplify and make more transparent and more effective?
 - testing QUnit
 - PermissionWidget?
+
+Browser fixes
+- Chrome select does not work (sometimes), User group select does not work and is too big
+- Safari, Chrome, Opera User Detail window to small or status section to big, define minWidth instead of width
 
 SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?

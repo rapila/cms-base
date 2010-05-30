@@ -188,7 +188,7 @@ body.login h1 {
   border: #000000 1px solid;
   border-color: #000000 #555555 #666666 #555555;
   padding: 0.2em 0.1em 0em 2em;
-  color: #e3ef99 !important;
+  color: #e3ef99;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -212,7 +212,7 @@ body.login h1 {
   margin: 0em 0;
 }
 #cmos_admin_menu .ui-widget-header select option[selected] {
-  color: #b8d600 !important;
+  color: #b8d600 important;
   background-color: #b8d600;
   padding-bottom: 0;
 }
@@ -267,7 +267,7 @@ label {
   font-family: Arial;
   font-size: 0.95em;
   display: block;
-  margin-top: 0.5em;
+  margin-top: 0.8em;
 }
 .status_section label {
   display: inline-block;
@@ -275,7 +275,31 @@ label {
 }
 ui-widget { font-size: 0.5em; }
 select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
-  border-color: #dbdbdb;
+  border-color: #dfdfdf;
+  width: 21.5em;
+}
+select.ui-widget-content:hover {
+  border-color: #b5b5b5;
+  width: 21.5em;
+}
+select.ui-widget-content:focus {
+  border-color: #b5b5b5;
+  width: 21.5em;
+}
+input.ui-widget-content:hover {
+  border-color: #b5b5b5;
+  width: 21.5em;
+}
+input.ui-widget-content:focus {
+  border-color: #b5b5b5;
+  width: 21.5em;
+}
+textarea.ui-widget-content:hover {
+  border-color: #b5b5b5;
+  width: 21.5em;
+}
+textarea.ui-widget-content:focus {
+  border-color: #b5b5b5;
   width: 21.5em;
 }
 textarea.ui-widget-content { width: 22em; }
@@ -511,4 +535,3 @@ th.ui-list-heading.sortable.desc span { background-image: url('../../images/admi
   background-color: #000000;
   padding: 0 !important;
 }
-.ui-dialog .ui-dialog-content { background-color: #dbdbdb; }
