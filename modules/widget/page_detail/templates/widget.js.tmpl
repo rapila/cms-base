@@ -27,13 +27,13 @@ Widget.types.page_detail = {
 			this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
 			this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
 			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
+			this._element.find(".page_href").text(page_data.PageHref);
 			// templates
 			var option = jQuery('<option/>');
 			var template_select = this._element.find("select[name='template_name']");
-			jQuery(page_data.template_options).each(function(i, params) {
-				option.clone().text(params.name).attr('value', params.value).appendTo(template_select);
+			jQuery.each(page_data.template_options, function(i, template) {
+				option.clone().text(template.name).attr('value', template.value).appendTo(template_select);
 			}.bind(this));
-			this._element.find(".page_href").text(page_data.PageHref);
 			// references
 			var count_text = page_data.CountReferences > 0 ? " ("+page_data.CountReferences+")" : '';
 		});

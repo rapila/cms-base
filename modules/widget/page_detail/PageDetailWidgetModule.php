@@ -33,19 +33,19 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	public static function getFrontendTemplates($bExcludeDefault=true) {
 		$aResult = array();
 		$bHasDefault = false;
-		foreach(Template::listTemplates(DIRNAME_TEMPLATES, false, ResourceFinder::SEARCH_SITE_ONLY) as $sTemplateName) {
+		foreach(Template::listTemplates(DIRNAME_TEMPLATES, false, ResourceFinder::SEARCH_SITE_ONLY) as $i => $sTemplateName) {
 			if (Settings::getSetting('frontend', 'main_template', 'general') == $sTemplateName) {
 				$bHasDefault = true;
 				continue;				
 			} 
-			$aResult['name'] = $sTemplateName;
-			$aResult['value'] = $sTemplateName;
-			if($bHasDefault) {
-				$aResult['name'] = StringPeer::getString('widget.default');
-				$aResult['value'] = '';
-			}
+			$aResult[$i]['value'] = $sTemplateName;
+			$aResult[$i]['name'] = StringUtil::makeReadableName($sTemplateName);
 		}
-		asort($aResult);
+		if($bHasDefault) {
+			$aResult[$i+1]['value'] = "";
+			$aResult[$i+1]['name'] = StringPeer::getString('widget.default');
+		}
+		krsort($aResult);
 		return $aResult;
 	}
 	
