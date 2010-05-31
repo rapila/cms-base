@@ -4,11 +4,17 @@ Miscellaneous projects
 - http://www.triboje.com/ ?? united domains
 - Transmit d&d rights writing dump
 
+Prioritäten
+- PageDetail save, delete event handlers, was müssen wir langsam beachten wegen Preview
+- Template getCustomPageProperties how to
+- Load children on click of parent when children are not open
+- bug user detail js
+
 PageTree Widget
 - user_list widget error, failed to debug it
 - display linktext in page tree (on hover page_title)
 - open 1. Level all the time
-- open branch on click of parent
+- open_item on click of page with children that are not loaded yet
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
 - discuss subtle highlight of active parent elements to make hierarchy explicit
@@ -41,9 +47,10 @@ Widget tasks
 - testing QUnit
 - PermissionWidget?
 
-Browser fixes
+Browser fixes & bugs
 - Chrome select does not work (sometimes), User group select does not work and is too big group_ids[]???
 - Safari, Chrome, Opera User Detail window to small or status section to big, define minWidth instead of width
+- DumpExporter wirft oft eine JS exception, führt den Export bei neuladen der seite jedoch aus
 
 SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?

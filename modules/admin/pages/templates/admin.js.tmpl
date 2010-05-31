@@ -13,8 +13,9 @@ jQuery(document).ready(function() {
 	var page_tree = null;
 	var click_handler = function(event, row, page_id) {
 		page_detail.load_page(page_id);
-		jQuery("#accordion").accordion( "activate" ,0);
-		// this.open_item(this._element);
+		// reset on pageload
+		jQuery("#accordion").accordion( "activate",0);
+		// @todo to this.open_item(this._element);
 	};
 	
 	Widget.createWithElement('tree', function(event, widget) {

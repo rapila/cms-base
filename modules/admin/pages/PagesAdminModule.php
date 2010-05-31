@@ -17,11 +17,9 @@ class PagesAdminModule extends AdminModule {
 	}
 	
 	public function mainContent() {
-		// return page details
 	}	
 	
 	public function sidebarContent() {
-		// return $this->oTreeWidget->doWidget();
 	}
 
 	public function usedWidgets() {

@@ -14,13 +14,11 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		return $this->oDelegate;
 	}
 	
-	public function setOrdered($bIsOrdered)
-	{
+	public function setOrdered($bIsOrdered) {
 	    $this->bIsOrdered = $bIsOrdered;
 	}
 
-	public function isOrdered()
-	{
+	public function isOrdered() {
 	    return $this->bIsOrdered;
 	}
 	
