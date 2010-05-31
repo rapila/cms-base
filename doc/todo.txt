@@ -18,12 +18,14 @@ PageTree Widget
 
 PageDetail
 - how and where to handle page properties. should be configurable (off in most cases, too many notes, if not used)
-	show template parts only if condition is given, how to do that with JSON the most efficient way
+	show page_property options only only if configured, how to do that with JSON the most efficient way
 	unter Template anzeigen > Einstellungen/Properties, dieses Wort nur anzeigen wenn Properties aktiv.
 	Dies soll keine Einschränkung von usern sein, sondern nur Ansichten entschlacken und übersichtlicher machen.
 	im "Dashboard" kann es den Hinweis geben, wie man das freischaltet.
+	Auswahl der vorhandenen PageProperties anzeigen. Template->getCustomPageProperties() with name and default value
 - contents, depending on page_type, only if not new
 - references
+- how to visually display different templates > standard ones like naming conventions, no clue
 
 Widget tasks
 - lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin

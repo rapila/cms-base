@@ -103,7 +103,26 @@ body.login h1 {
 .infobar_right {
 	position: relative;
 	left: @initial_sidebar_width;
+	max-width:75em;
+	min-width:40em;
+	margin-right: (@initial_sidebar_width + 30px);
 }
+
+.infobar_right button.info-bar-element-page {
+	float: right;
+	background-color: #DBDBDB;
+	color: #777;
+	padding: 0 1em 0.1em;
+	margin: .2em .3em;
+}
+.infobar_right button.info-bar-element-page.ui-state-default {
+	border-color: #999 #9E9E9E #9E9E9E #9E9E9E;
+}
+
+.infobar_right button[name=save].info-bar-element-page {
+	background-color: #f1f1f1;
+}
+
 
 .infobar_right input {
 	float: left;
