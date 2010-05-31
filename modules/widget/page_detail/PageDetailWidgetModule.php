@@ -4,6 +4,7 @@
  */
 class PageDetailWidgetModule extends PersistentWidgetModule {
 	private $iPageId = null;
+	private $oPage;
 	
 	public function doWidget() {
 		return $this->constructTemplate('edit');
@@ -14,14 +15,18 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageData() {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
-		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
-		$oPageString = $oPage->getActivePageString();
+		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
+		if($this->oPage === null) {
+			// not found message
+		}
+		$aResult = $this->oPage->toArray(BasePeer::TYPE_PHPNAME, false);
+		$oPageString = $this->oPage->getActivePageString();
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = 'http://Weblink';
-		$aResult['CountReferences'] = ReferencePeer::countReferences($oPage);
+		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
 		$aResult['template_options'] = self::getFrontendTemplates();
+		$aResult['page_property_options'] = $this->getPageProperties();
 		return $aResult;
 	}
 	
@@ -33,13 +38,20 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 				$bHasDefault = true;
 				continue;				
 			} 
-			$aResult[$sTemplateName] = $sTemplateName;
+			$aResult['name'] = $sTemplateName;
+			$aResult['value'] = $sTemplateName;
 			if($bHasDefault) {
-				$aResult[''] = StringPeer::getString('widget.default');
+				$aResult['name'] = StringPeer::getString('widget.default');
+				$aResult['value'] = '';
 			}
 		}
-		ksort($aResult);
+		asort($aResult);
 		return $aResult;
+	}
+	
+	public function getPageProperties() {
+		return array();
+		// return $this->oPage->getTemplate()->getCustomPagePropertyIdentifiers();
 	}
 	
 	public function saveData($aPageData) {
