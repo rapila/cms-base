@@ -236,11 +236,6 @@ class Template {
 		return $aResult;
 	}
 
-	public function getCustomPagePropertyIdentifiers() {
-		$aResult = $this->identifiersMatching("PageProperty", null, null, false);
-		return $aResult;
-	}
-	
 	private function insertAt($iIndex, $mReplacement) {
 		$this->replaceAt($iIndex, $mReplacement, 0);
 	}

@@ -45,8 +45,13 @@ jQuery(document).ready(function() {
 			};
 		});
 	}, 'n', false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.save}}").attr('name', 'save'), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.cancel}}").attr('name', 'cancel'), true, false).
+	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
+		page_detail.save();
+	}), true, false).
+	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
+		page_detail.fill_data();
+		page_detail.enable_input();
+	}), true, false).
 	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete'), true, false);
 
 	// init language change

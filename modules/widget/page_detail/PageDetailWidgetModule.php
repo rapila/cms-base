@@ -23,9 +23,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPageString = $this->oPage->getActivePageString();
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
-		$aResult['PageHref'] = 'http://Weblink';
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
 		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
-		$aResult['template_options'] = self::getFrontendTemplates(false);
 		$aResult['page_property_options'] = $this->getPageProperties();
 		return $aResult;
 	}
@@ -47,8 +46,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageProperties() {
-		return array();
-		// return $this->oPage->getTemplate()->getCustomPagePropertyIdentifiers();
+		$aResult = array();
+		foreach($this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE) as $oProperty) {
+			$aResult[$oProperty->getValue()] = $oProperty->getParameter('defaultValue');
+		}
+		return $aResult;
 	}
 	
 	public function saveData($aPageData) {
@@ -58,7 +60,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oPage = PagePeer::retrieveByPK($this->iPageId);
 		}
 		$oPage->setName($aPageData['name']);
-		$oPage->setIsInactive(isset($aPageData['is_inactive']));
+		$oPage->setIsInactive(!isset($aPageData['is_inactive']));
 		return $oPage->save();
 	}
 }
