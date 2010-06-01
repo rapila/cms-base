@@ -44,7 +44,11 @@ class AdminManager extends Manager {
     }
     return $sLanguageId;
   }
-	
+
+	public static function setCurrentPage($oPage) {
+		FrontendManager::$CURRENT_PAGE = $oPage;
+	}
+
 	public function render() {
 		$this->preRender();
 		

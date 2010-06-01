@@ -11,7 +11,6 @@
 	<div id="accordion">
     <h3><a href="#">Labels</a></h3>
     <div class="inner_wrapper">		
-			<br />
 			<label for="page_title">{{writeString=widget.page.page_title}}</label>
 			<input type="text" name="page_title" class="ui-widget-content input_long" /><br />
 			<label for="link_text">{{writeString=widget.page.link_text}}</label>
@@ -20,7 +19,12 @@
 		<h3><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
     <div class="inner_wrapper"><p>Inhalte Konfigurationen und bearbeiten</p></div>
 		<h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
-		<div class="inner_wrapper"><p>Templateauswahl <select name="template_name"></select></p></div>
+		<div class="inner_wrapper">
+			<label for="template_name">{{writeString=widget.page.template_name}}</label>
+			<select name="template_name" class="ui-widget-content input_short"></select><br />
+			<label for="page_type">{{writeString=widget.page.page_type}}</label>
+			<select name="page_type" class="ui-widget-content input_short"></select><br />
+		</div>
 		<h3><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
     <div class="inner_wrapper"><p>Referenzen auf diese Seite</p></div>
 </div>	

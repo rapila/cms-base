@@ -6,6 +6,10 @@ Widget.types.page_detail = {
 		jQuery.each(this.getFrontendTemplates(), function(i, template) {
 			option.clone().text(template.name).attr('value', template.value).appendTo(template_select);
 		}.bind(this));
+		var page_type_select = this._element.find("select[name='page_type']");
+		jQuery.each(this.getPageTypes(), function(i, page_type) {
+			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
+		}.bind(this));
 		this.disable_input();
 	},
 	

@@ -54,7 +54,6 @@ Widget.types.tree = {
 	
 	open_item: function(item, data) {
 		var tree = this;
-		
 		this.listChildren(data, function(children) {
 			jQuery.each(children, function(i, child) {
 				tree.add_item(item, child);

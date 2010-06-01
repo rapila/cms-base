@@ -25,7 +25,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
 		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
-		$aResult['page_property_options'] = $this->getPageProperties();
 		return $aResult;
 	}
 	
@@ -52,6 +51,15 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
+
+	public function getPageTypes() {
+		$aResult = array();
+		foreach(Module::listModulesByType(PageTypeModule::getType()) as $sKey => $aValues) {
+			$aResult[$sKey]['value'] = $sKey;
+			$aResult[$sKey]['name'] = StringUtil::makeReadableName(isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name']);
+		}
+		return $aResult;
+	}
 	
 	public function saveData($aPageData) {
 		if($this->iPageId === null) {
@@ -59,8 +67,20 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oPage = PagePeer::retrieveByPK($this->iPageId);
 		}
-		$oPage->setName($aPageData['name']);
+		// validate post values / fetch most with js
+		$oPage->setName(StringUtil::normalize($_POST['name']));
 		$oPage->setIsInactive(!isset($aPageData['is_inactive']));
+		$oPage->setIsHidden(isset($aPageData['is_hidden']));
+		$oPage->setIsFolder(isset($aPageData['is_folder']));
+		$oPage->setIsProtected(isset($aPageData['is_protected']));
+		if($_POST['template_name'] === "") {
+			$oPage->setTemplateName(null);
+		} else {
+			$oPage->setTemplateName($_POST['template_name']);
+		}		
+		$oPage->setPageType($_POST['page_type']);
+		// getLanguageObjects if exists, if new
+// $oPage->setIsProtected(isset($aPageData['is_protected']));		
 		return $oPage->save();
 	}
 }

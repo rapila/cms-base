@@ -5,10 +5,11 @@ Miscellaneous projects
 - Transmit d&d rights writing dump
 
 Prioritäten
+- bug user detail js
 - PageDetail save, delete event handlers, was müssen wir langsam beachten wegen Preview
 - Template getCustomPageProperties how to
+- Fill contents page type how to
 - Load children on click of parent when children are not open
-- bug user detail js
 
 PageTree Widget
 - user_list widget error, failed to debug it
