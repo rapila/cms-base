@@ -3,7 +3,7 @@ Widget.types.group_input = {
 		var option = jQuery('<option/>');
 		var groups = this.getGroups();
 		jQuery.each(groups, function(i, group) {
-			option.clone().text(widget.group.name).attr('value', group.id).appendTo(this._element);
+			option.clone().text(group.name).attr('value', group.id).appendTo(this._element);
 		}.bind(this));
 	}
 };

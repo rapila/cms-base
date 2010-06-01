@@ -208,3 +208,4 @@ ALTER TABLE `pages` DROP `parent_id`, DROP `sort`;
 ALTER TABLE `page_strings` CHANGE `title` `link_text` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `page_strings` CHANGE `long_title` `page_title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 
+UPDATE `objects` SET `condition_serialized` = NULL WHERE `condition_serialized` = '';
