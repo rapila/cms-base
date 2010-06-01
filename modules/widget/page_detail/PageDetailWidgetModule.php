@@ -68,7 +68,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oPage = PagePeer::retrieveByPK($this->iPageId);
 		}
 		// validate post values / fetch most with js
-		$oPage->setName(StringUtil::normalize($_POST['name']));
+		$oPage->setName(StringUtil::normalize($aPageData['name']));
 		$oPage->setIsInactive(!isset($aPageData['is_inactive']));
 		$oPage->setIsHidden(isset($aPageData['is_hidden']));
 		$oPage->setIsFolder(isset($aPageData['is_folder']));

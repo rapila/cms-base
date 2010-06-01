@@ -37,6 +37,8 @@ Widget.types.page_detail = {
 			this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
 			this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
 			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
+			this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
+			this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType);
 			this._element.find(".page_href").text(page_data.PageHref);
 			// references
 			var count_text = page_data.CountReferences > 0 ? " ("+page_data.CountReferences+")" : '';
