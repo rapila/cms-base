@@ -12,9 +12,10 @@ jQuery(document).ready(function() {
 	// init main content
 	var page_tree = null;
 	var click_handler = function(event, row, page_id) {
+		page_tree.open(row);
 		page_detail.load_page(page_id);
 		// reset on pageload
-		jQuery("#accordion").accordion( "activate",0);
+		jQuery("#accordion").accordion( "activate", 0);
 		// @todo to this.open_item(this._element);
 	};
 	

@@ -199,7 +199,7 @@ class RichtextUtil {
 	public function getJavascript($oTemplate = null) {
 		// for integration of new gzip function implement separate "mce_gzip.tmpl" read tinymce/readme.html
 		if($oTemplate === null) {
-			$oTemplate = new Template('mce');
+			$oTemplate = new Template('backend/mce');
 		}
 		$oTemplate->replaceIdentifier('textarea_id', $this->sAreaName);
 		$aCssFiles = $this->getMceConfigArray('css_files');

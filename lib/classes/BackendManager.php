@@ -98,7 +98,7 @@ class BackendManager extends Manager {
 		}
 		$oOutput = new XHTMLOutput('transitional');
 		$oOutput->render();
-		$this->oTemplate = new Template('be_main', null, false, true);
+		$this->oTemplate = new Template('backend/be_main', null, false, true);
 		$this->oTemplate->replaceIdentifier("title", Settings::getSetting('backend', 'title', 'no title set in config/config.yml for backend'), null, Template::LEAVE_IDENTIFIERS);
 	}
 
