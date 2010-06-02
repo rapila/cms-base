@@ -6,7 +6,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	private $iPageId = null;
 	private $oPage;
 	const PAGE_PROPERTY_PREFIX = 'page_property_';
-	
+		
 	public function doWidget() {
 		return $this->constructTemplate('edit');
 	}
@@ -24,18 +24,33 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	public function getPageData() {
 		$this->setPage();
 		if($this->oPage === null) {
-			// not found message
+			// redirect 404
 		}
 		$aResult = $this->oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 		$oPageString = $this->oPage->getActivePageString();
+		
+		// addition related params that do not relate to primary tables fields
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
 		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
-		$aResult['page_properties'] = $this->getAvailablePageProperties();
+
+		// page properties are displayed if added to template
+		$mAvailableProperties = $this->getAvailablePageProperties();
+		if($mAvailableProperties !== null) {
+			$aResult['page_properties'] = $mAvailableProperties;
+		}
 		return $aResult;
 	}
-	
+
+ /** 
+	* getFrontendTemplates()
+	* 
+	* @param boolean $bExcludeDefault, @see config.yml frontend: main_template
+	* description: 
+	* called once at page_detail widget prepare
+	* @return array of template name options
+	*/	
 	public static function getFrontendTemplates($bExcludeDefault = true) {
 		$aResult = array();
 		$bHasDefault = false;
@@ -52,6 +67,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 
+ /** 
+	* getPageTypes()
+	* description: 
+	* called once in page_detail widget prepare
+	* @return hash of page_types options
+	*/
 	public function getPageTypes() {
 		$aResult = array();
 		foreach(Module::listModulesByType(PageTypeModule::getType()) as $sKey => $aValues) {
@@ -60,37 +81,33 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}	
-	
-	public function getAvailablePageProperties() {
+
+ /** 
+	* getAvailablePageProperties()
+	* 
+	* description: 
+	* - gets instances of 'pageProperty' with default values in template and fills the stored page related values if exist
+	* - called at page_detail.load_page @see getPageData()
+	* @return mixed null/hash of page_properties
+	*/	
+	private function getAvailablePageProperties() {
+		$aAvailablePageProperties = $this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
+		if(count($aAvailablePageProperties) === null) {
+			return null;
+		}
 		$aResult = array();
 		$aSetProperties=array();
 		foreach($this->oPage->getPageProperties() as $oPageProperty) {
 			$aSetProperties[$oPageProperty->getName()] = $oPageProperty->getValue();
 		}
-		foreach($this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE) as $i => $oProperty) {
+		foreach($aAvailablePageProperties as $i => $oProperty) {
 			$sValue = isset($aSetProperties[$oProperty->getValue()]) ? $aSetProperties[$oProperty->getValue()] : '';
 			$aResult[$oProperty->getValue()]['value'] = $sValue;
 			$aResult[$oProperty->getValue()]['default'] = $oProperty->getParameter('defaultValue');
 		}
 		return $aResult;
 	}
-	
-	private function setPageProperties($aPageData) {
-		foreach($this->oPage->getPageProperties() as $oProperty) {
-			$oProperty->delete();
-		}
-		// ErrorHandler::log($this->getAvailablePageProperties(), $aPageData);
-		foreach($this->getAvailablePageProperties() as $sName => $aProperties) {
-			if(isset($aPageData[$sName])) {
-				$oPageProperty = new PageProperty();
-				$oPageProperty->setName($sName);
-				$oPageProperty->setValue($aPageData[$sName]);
-				$this->oPage->addPageProperty($oPageProperty);
-			}
-		}
-	}
 
-	
 	public function saveData($aPageData) {
 		$this->setPage();
 		// validate post values / fetch most with js
@@ -105,11 +122,40 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$this->oPage->setTemplateName($aPageData['template_name']);
 		}		
 		$this->oPage->setPageType($aPageData['page_type']);
-		$this->setPageProperties($aPageData);
-		// ErrorHandler::log($this->oPage);
-
-		// page_strings
-		// language_objects if exists, if new
+		// handle related tables
+		$this->handlePageStrings($aPageData);
+		$this->handleLanguageObjects($aPageData);
+		$this->handlePageProperties($aPageData);
+		
+		// save if no errors
 		return $this->oPage->save();
+	}
+	
+	private function handlePageStrings($aPageData) {
+		$oPageString = $this->oPage->getActivePageString();	
+		if($oPageString === null) {
+			$oPageString = new PageString();
+			$this->oPage->addPageString(); 
+		}
+		$oPageString->setPageTitle($aPageData['page_title']);
+		$oPageString->setLinkText($aPageData['link_text']);
+	}
+	
+	private function handleLanguageObjects($aPageData) {
+	}
+	
+	private function handlePageProperties($aPageData) {
+		foreach($this->oPage->getPageProperties() as $oProperty) {
+			$oProperty->delete();
+		}
+		// set valid posted page properties
+		foreach($this->getAvailablePageProperties() as $sName => $aProperties) {
+			if(isset($aPageData[$sName]) && trim($aPageData[$sName]) != null) {
+				$oPageProperty = new PageProperty();
+				$oPageProperty->setName($sName);
+				$oPageProperty->setValue($aPageData[$sName]);
+				$this->oPage->addPageProperty($oPageProperty);
+			}
+		}
 	}
 }

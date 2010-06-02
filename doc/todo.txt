@@ -5,41 +5,39 @@ Miscellaneous projects
 - Transmit d&d rights writing dump
 
 Prioritäten
-- bug user detail js
-- PageDetail save, delete event handlers, was müssen wir langsam beachten wegen Preview
-- Template getCustomPageProperties how to
-- Fill contents page type how to
-- Load children on click of parent when children are not open
+- bug 'Undefined variable: ret', [filename] => '/Users/jmg/Sites/playground/base/lib/vendor/propel/collection/PropelObjectCollection.php'
+- Fill contents by page_type
+- validation and user notification, validation serverside clientside
+- Firefox does not show PagesAdmin when Firebug is off, or sometimes when "find" is on...... crazy browser
 
 PageTree Widget
-- user_list widget error, failed to debug it
 - display linktext in page tree (on hover page_title)
+- language change and language page strings and objects
+- highlight initially selected tree element
+- update tree element of save
 - open 1. Level all the time
-- open_item on click of page with children that are not loaded yet
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
 - discuss subtle highlight of active parent elements to make hierarchy explicit
 - add hidden, protected (and folder?) icons to page links
 - buttons in infobar, how to add, style and position them best?
 - make custom made checkboxes. all the same but the active checkbox green/red?
+- add page, move page d&d
 
 PageDetail
-- how and where to handle page properties. should be configurable (off in most cases, too many notes, if not used)
-	show page_property options only only if configured, how to do that with JSON the most efficient way
-	unter Template anzeigen > Einstellungen/Properties, dieses Wort nur anzeigen wenn Properties aktiv.
-	Dies soll keine Einschränkung von usern sein, sondern nur Ansichten entschlacken und übersichtlicher machen.
-	im "Dashboard" kann es den Hinweis geben, wie man das freischaltet.
-	Auswahl der vorhandenen PageProperties anzeigen. Template->getCustomPageProperties() with name and default value
 - contents, depending on page_type, only if not new
 - references
 - how to visually display different templates > standard ones like naming conventions, no clue
 
+Detail
+- highlight save button when any input has changed
+- make save always standout, different then save
+- discuss tabs, icons-"tabs" for references, list / thumbnail views etc
+
 Widget tasks
 - lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin
 - getListContents() array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
-- best way to add use-folder-icons class to sidebar widget? setListTag() also
 - TODO: re-setting the last selected item after reload should be default functionality
-- initial_selection does not work in sting_list/document_type_list, both no id
 - sidebar element edit/delete?
 - userNotify > array and links handling for helpful messages (not found)
 	remove on click of other element, maybe close button
@@ -49,9 +47,8 @@ Widget tasks
 - PermissionWidget?
 
 Browser fixes & bugs
-- Chrome select does not work (sometimes), User group select does not work and is too big group_ids[]???
-- Safari, Chrome, Opera User Detail window to small or status section to big, define minWidth instead of width
-- DumpExporter wirft oft eine JS exception, führt den Export bei neuladen der seite jedoch aus
+- Firefox does not show PagesAdmin pages when "find" mode is on and Firebug is off
+- DumpExporter wirft oft eine JS exception, führt den Export bei neuladen der seite jedoch aus (wahrscheinlich mit FireBug on)
 
 SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
@@ -117,16 +114,6 @@ DocumentDetail
 - file upload with jQuery UI? http://www.uploadify.com/demo/
 - label_fileupload dynamisch hochladen / ersetzen
 - html5, d&d
-
-PagesAdminModule
-- tree widget
-- test tree widget
-- pages list should be also full list with visible status for overview?
-- nested set vs hierarchical query http://en.wikipedia.org/wiki/Hierarchical_query
--	page detail should not be a pop-up widget, should be full content? different visualisation @see design?
-- page insert (input) widget?	new page handling with + or on right click
-- is_inactive on page_string level
-- page tree with accordion, config open tree and/or toggle (small sites default open)
 
 UsersAdminModule
 - is_inactive handling by removing password?
@@ -439,3 +426,27 @@ release-1-devel propel update
 - hover: on page li hover the children should not be highlighted, they should have their own color?
 - nested li, the last child should have no line and no bottom padding (now the parent li is handled like this)
 - tree view? http://jquery.bassistance.de/treeview/demo/
+- bug user detail js
+- PageDetail save, delete event handlers, was müssen wir langsam beachten wegen Preview
+- Template getCustomPageProperties how to
+- Load children on click of parent when children are not open
+- user_list widget error, failed to debug it
+- open_item on click of page with children that are not loaded yet
+- how and where to handle page properties. should be configurable (off in most cases, too many notes, if not used)
+	show page_property options only only if configured, how to do that with JSON the most efficient way
+	unter Template anzeigen > Einstellungen/Properties, dieses Wort nur anzeigen wenn Properties aktiv.
+	Dies soll keine Einschränkung von usern sein, sondern nur Ansichten entschlacken und übersichtlicher machen.
+	im "Dashboard" kann es den Hinweis geben, wie man das freischaltet.
+	Auswahl der vorhandenen PageProperties anzeigen. Template->getCustomPageProperties() with name and default value
+- best way to add use-folder-icons class to sidebar widget? setListTag() also
+- initial_selection does not work in sting_list/document_type_list, both no id
+- tree widget
+- test tree widget
+- pages list should be also full list with visible status for overview?
+- nested set vs hierarchical query http://en.wikipedia.org/wiki/Hierarchical_query
+-	page detail should not be a pop-up widget, should be full content? different visualisation @see design?
+- page insert (input) widget?	new page handling with + or on right click
+- is_inactive on page_string level
+- page tree with accordion, config open tree and/or toggle (small sites default open)
+- Chrome select does not work (sometimes)
+- Page does not show in Firefox without Firebug activ, or ErrorHandler::log(), In other Browsers it does! > console.log()!

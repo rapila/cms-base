@@ -130,7 +130,6 @@ body.login h1 {
   border-color: #e4e4e4;
   border-right-style: dotted;
   vertical-align: middle;
-  background-color: #b8d600;
 }
 #admin_info_bar input.info-bar-element.default_state { background-color: transparent; }
 #admin_info_bar span.info-bar-element {
