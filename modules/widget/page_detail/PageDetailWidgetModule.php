@@ -5,6 +5,7 @@
 class PageDetailWidgetModule extends PersistentWidgetModule {
 	private $iPageId = null;
 	private $oPage;
+	const PAGE_PROPERTY_PREFIX = 'page_property_';
 	
 	public function doWidget() {
 		return $this->constructTemplate('edit');
@@ -14,8 +15,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$this->iPageId = $iPageId;
 	}
 	
+	public function setPage() {
+		if($this->oPage === null) {
+			$this->oPage = PagePeer::retrieveByPK($this->iPageId);
+		}
+	}
+	
 	public function getPageData() {
-		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
+		$this->setPage();
 		if($this->oPage === null) {
 			// not found message
 		}
@@ -25,6 +32,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
 		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
+		$aResult['page_properties'] = $this->getAvailablePageProperties();
 		return $aResult;
 	}
 	
@@ -43,14 +51,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		krsort($aResult);
 		return $aResult;
 	}
-	
-	public function getPageProperties() {
-		$aResult = array();
-		foreach($this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE) as $oProperty) {
-			$aResult[$oProperty->getValue()] = $oProperty->getParameter('defaultValue');
-		}
-		return $aResult;
-	}
 
 	public function getPageTypes() {
 		$aResult = array();
@@ -59,28 +59,57 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult[$sKey]['name'] = StringUtil::makeReadableName(isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name']);
 		}
 		return $aResult;
+	}	
+	
+	public function getAvailablePageProperties() {
+		$aResult = array();
+		$aSetProperties=array();
+		foreach($this->oPage->getPageProperties() as $oPageProperty) {
+			$aSetProperties[$oPageProperty->getName()] = $oPageProperty->getValue();
+		}
+		foreach($this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE) as $i => $oProperty) {
+			$sValue = isset($aSetProperties[$oProperty->getValue()]) ? $aSetProperties[$oProperty->getValue()] : '';
+			$aResult[$oProperty->getValue()]['value'] = $sValue;
+			$aResult[$oProperty->getValue()]['default'] = $oProperty->getParameter('defaultValue');
+		}
+		return $aResult;
 	}
 	
-	public function saveData($aPageData) {
-		if($this->iPageId === null) {
-			$oPage = new Page();
-		} else {
-			$oPage = PagePeer::retrieveByPK($this->iPageId);
+	private function setPageProperties($aPageData) {
+		foreach($this->oPage->getPageProperties() as $oProperty) {
+			$oProperty->delete();
 		}
+		// ErrorHandler::log($this->getAvailablePageProperties(), $aPageData);
+		foreach($this->getAvailablePageProperties() as $sName => $aProperties) {
+			if(isset($aPageData[$sName])) {
+				$oPageProperty = new PageProperty();
+				$oPageProperty->setName($sName);
+				$oPageProperty->setValue($aPageData[$sName]);
+				$this->oPage->addPageProperty($oPageProperty);
+			}
+		}
+	}
+
+	
+	public function saveData($aPageData) {
+		$this->setPage();
 		// validate post values / fetch most with js
-		$oPage->setName(StringUtil::normalize($aPageData['name']));
-		$oPage->setIsInactive(!isset($aPageData['is_inactive']));
-		$oPage->setIsHidden(isset($aPageData['is_hidden']));
-		$oPage->setIsFolder(isset($aPageData['is_folder']));
-		$oPage->setIsProtected(isset($aPageData['is_protected']));
-		if($_POST['template_name'] === "") {
-			$oPage->setTemplateName(null);
+		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
+		$this->oPage->setIsInactive(!isset($aPageData['is_inactive']));
+		$this->oPage->setIsHidden(isset($aPageData['is_hidden']));
+		$this->oPage->setIsFolder(isset($aPageData['is_folder']));
+		$this->oPage->setIsProtected(isset($aPageData['is_protected']));
+		if($aPageData['template_name'] === "") {
+			$this->oPage->setTemplateName(null);
 		} else {
-			$oPage->setTemplateName($_POST['template_name']);
+			$this->oPage->setTemplateName($aPageData['template_name']);
 		}		
-		$oPage->setPageType($_POST['page_type']);
-		// getLanguageObjects if exists, if new
-// $oPage->setIsProtected(isset($aPageData['is_protected']));		
-		return $oPage->save();
+		$this->oPage->setPageType($aPageData['page_type']);
+		$this->setPageProperties($aPageData);
+		// ErrorHandler::log($this->oPage);
+
+		// page_strings
+		// language_objects if exists, if new
+		return $this->oPage->save();
 	}
 }

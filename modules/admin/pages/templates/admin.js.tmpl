@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
 		page_detail = widget;
 		page_detail.load_page(initial_selection);
 		AdminInterface.content.append(widget._element);
-		jQuery("#accordion").accordion({ active: 0 });
+		jQuery("#accordion").accordion({ active: 0, autoHeight: false });
 	}, jQuery.noop);
 	
 	// init main content
