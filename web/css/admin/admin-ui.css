@@ -205,7 +205,7 @@ form .inner_wrapper {
   border: none;
   background: url() #f9f9f9;
   border-top: #c1c2c4 1px solid !important;
-  border-bottom: #f2f4f6 1px solid;
+  border-bottom: #dddfe1 1px solid;
 }
 form.page_detail {
   background-color: #ffffff;
