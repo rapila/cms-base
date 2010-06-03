@@ -33,9 +33,9 @@ class PagesAdminModule extends AdminModule {
 		} else {
 			$oParentPage = PagePeer::retrieveByPK($iId);
 		}
-		if($oParentPage) {
+		if($oParentPage && $oParentPage->hasChildren()) {
 			return $oParentPage->getChildren()->toArray();
 		}
-		throw new Exception(__METHOD__.": id $iId given, no oParentPage object to getChildren()");
+		return array();
 	}
 }
