@@ -1948,7 +1948,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 */
 	public function getCreatedAtTimestamp()
 	{
-		return $this->created_at;
+		return $this->getCreatedAt('U');
 	}
 	
 	/**
@@ -1967,7 +1967,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 */
 	public function getUpdatedAtTimestamp()
 	{
-		return $this->updated_at;
+		return $this->getUpdatedAt('U');
 	}
 	
 	/**

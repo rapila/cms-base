@@ -1004,11 +1004,17 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
+			// referenceable behavior
+			if(ReferencePeer::hasReference($this)) {
+				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
+			}
 			if ($ret) {
 				DocumentQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
+				// taggable behavior
+				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -2046,6 +2052,24 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
+	// referenceable behavior
+	
+	/**
+	 * @return A list of References (not Objects) which reference this Document
+	 */
+	public function getReferees()
+	{
+		return ReferencePeer::getReferences($this);
+	}
+	// taggable behavior
+	
+	/**
+	 * @return A list of TagInstances (not Tags) which reference this Document
+	 */
+	public function getTags()
+	{
+		return TagPeer::tagInstancesForObject($this);
+	}
 	// extended_timestampable behavior
 	
 	/**
@@ -2064,15 +2088,18 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	 */
 	public function getCreatedAtTimestamp()
 	{
-		return $this->created_at;
+		return $this->getCreatedAt('U');
 	}
 	
 	/**
 	 * @return created_at formatted to the current locale
 	 */
-	public function getCreatedAtFormatted()
+	public function getCreatedAtFormatted($sLanguageId = null, $sFormatString = 'x')
 	{
-		return LocaleUtil::localizeDate($this->created_at);
+		if($this->created_at === null) {
+			return null;
+		}
+		return LocaleUtil::localizeDate($this->created_at, $sLanguageId, $sFormatString);
 	}
 	
 	/**
@@ -2080,15 +2107,18 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	 */
 	public function getUpdatedAtTimestamp()
 	{
-		return $this->updated_at;
+		return $this->getUpdatedAt('U');
 	}
 	
 	/**
 	 * @return updated_at formatted to the current locale
 	 */
-	public function getUpdatedAtFormatted()
+	public function getUpdatedAtFormatted($sLanguageId = null, $sFormatString = 'x')
 	{
-		return LocaleUtil::localizeDate($this->updated_at);
+		if($this->updated_at === null) {
+			return null;
+		}
+		return LocaleUtil::localizeDate($this->updated_at, $sLanguageId, $sFormatString);
 	}
 
 	// attributable behavior
