@@ -12,31 +12,23 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function setPageId($iPageId) {
-		$this->iPageId = $iPageId;
-	}
-	
-	public function setPage() {
-		if($this->oPage === null) {
-			$this->oPage = PagePeer::retrieveByPK($this->iPageId);
-		}
+		$this->iPageId = (int) $iPageId;
 	}
 	
 	public function getPageData() {
-		$this->setPage();
-		if($this->oPage === null) {
-			// redirect 404
-		}
-		$aResult = $this->oPage->toArray(BasePeer::TYPE_PHPNAME, false);
-		$oPageString = $this->oPage->getActivePageString();
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+
+		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
+		$oPageString = $oPage->getActivePageString();
 		
 		// addition related params that do not relate to primary tables fields
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
-		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($this->oPage->getFullPathArray(), 'FrontendManager'));
-		$aResult['CountReferences'] = ReferencePeer::countReferences($this->oPage);
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
+		$aResult['CountReferences'] = ReferencePeer::countReferences($oPage);
 
 		// page properties are displayed if added to template
-		$mAvailableProperties = $this->getAvailablePageProperties();
+		$mAvailableProperties = $this->getAvailablePageProperties($oPage);
 		if($mAvailableProperties !== null) {
 			$aResult['page_properties'] = $mAvailableProperties;
 			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
@@ -92,14 +84,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	* - called at page_detail.load_page @see getPageData()
 	* @return mixed null/hash of page_properties
 	*/	
-	private function getAvailablePageProperties() {
-		$aAvailablePageProperties = $this->oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
+	private function getAvailablePageProperties($oPage) {
+		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
 		if(count($aAvailablePageProperties) === null) {
 			return null;
 		}
 		$aResult = array();
 		$aSetProperties=array();
-		foreach($this->oPage->getPageProperties() as $oPageProperty) {
+		foreach($oPage->getPageProperties() as $oPageProperty) {
 			$aSetProperties[$oPageProperty->getName()] = $oPageProperty->getValue();
 		}
 		foreach($aAvailablePageProperties as $i => $oProperty) {
@@ -111,7 +103,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function saveData($aPageData) {
-		$this->setPage();
+		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
 		// validate post values / fetch most with js
 		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
 		$this->oPage->setIsInactive(!isset($aPageData['is_inactive']));
@@ -151,7 +143,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oProperty->delete();
 		}
 		// set valid posted page properties
-		foreach($this->getAvailablePageProperties() as $sName => $aProperties) {
+		foreach($this->getAvailablePageProperties($this->oPage) as $sName => $aProperties) {
 			if(isset($aPageData[$sName]) && trim($aPageData[$sName]) != null) {
 				$oPageProperty = new PageProperty();
 				$oPageProperty->setName(substr($sName,strlen(self::PAGE_PROPERTY_NS)));
