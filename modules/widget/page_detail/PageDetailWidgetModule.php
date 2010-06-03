@@ -5,7 +5,7 @@
 class PageDetailWidgetModule extends PersistentWidgetModule {
 	private $iPageId = null;
 	private $oPage;
-	const PAGE_PROPERTY_PREFIX = 'page_property.';
+	const PAGE_PROPERTY_NS = 'page_property.';
 		
 	public function doWidget() {
 		return $this->constructTemplate('edit');
@@ -39,7 +39,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$mAvailableProperties = $this->getAvailablePageProperties();
 		if($mAvailableProperties !== null) {
 			$aResult['page_properties'] = $mAvailableProperties;
-			$aResult['NameSpace'] = self::PAGE_PROPERTY_PREFIX;
+			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 		}
 		return $aResult;
 	}
@@ -87,7 +87,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	* getAvailablePageProperties()
 	* 
 	* description: 
-	* - gets instances of 'pageProperty' with default values in template and fills the stored page related values if exist
+	* - gets instances of 'pageProperty' with default values in template and fills the stored page related properties if exist
+	* - use self::PAGE_PROPERTY_NS to prevent post key problems
 	* - called at page_detail.load_page @see getPageData()
 	* @return mixed null/hash of page_properties
 	*/	
@@ -103,8 +104,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		foreach($aAvailablePageProperties as $i => $oProperty) {
 			$sValue = isset($aSetProperties[$oProperty->getValue()]) ? $aSetProperties[$oProperty->getValue()] : '';
-			$aResult[self::PAGE_PROPERTY_PREFIX.$oProperty->getValue()]['value'] = $sValue;
-			$aResult[self::PAGE_PROPERTY_PREFIX.$oProperty->getValue()]['default'] = $oProperty->getParameter('defaultValue');
+			$aResult[self::PAGE_PROPERTY_NS.$oProperty->getValue()]['value'] = $sValue;
+			$aResult[self::PAGE_PROPERTY_NS.$oProperty->getValue()]['default'] = $oProperty->getParameter('defaultValue');
 		}
 		return $aResult;
 	}
@@ -149,13 +150,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		foreach($this->oPage->getPageProperties() as $oProperty) {
 			$oProperty->delete();
 		}
-		
-		ErrorHandler::log($aPageData, $this->getAvailablePageProperties());
 		// set valid posted page properties
 		foreach($this->getAvailablePageProperties() as $sName => $aProperties) {
 			if(isset($aPageData[$sName]) && trim($aPageData[$sName]) != null) {
 				$oPageProperty = new PageProperty();
-				$oPageProperty->setName(substr($sName,strlen(self::PAGE_PROPERTY_PREFIX)));
+				$oPageProperty->setName(substr($sName,strlen(self::PAGE_PROPERTY_NS)));
 				$oPageProperty->setValue($aPageData[$sName]);
 				$this->oPage->addPageProperty($oPageProperty);
 			}
