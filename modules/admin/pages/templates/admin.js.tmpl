@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	var page_detail = null;
-	var initial_selection = "{{writeRequestValue=page_id}}";
+	var initial_selection = {{writeRequestValue=initial_page_id}};
 
 	Widget.createWithElement('page_detail', function(event, widget) {
 		page_detail = widget;
@@ -12,7 +12,6 @@ jQuery(document).ready(function() {
 	// init main content
 	var page_tree = null;
 	var click_handler = function(event, row, page_id) {
-		page_tree.open(row);
 		page_detail.load_page(page_id);
 		// reset on pageload
 		jQuery("#accordion").accordion( "activate", 0);
@@ -29,8 +28,14 @@ jQuery(document).ready(function() {
 		widget.settings.has_children = function(item) {
 			return item.TreeRight-item.TreeLeft > 1;
 		};
-		widget.settings.data_from_element = function(item) {
-			return item.data('tree-data').Id;
+		widget.settings.data_from_element = function(element) {
+			return element.data('tree-data').Id;
+		};
+		widget.settings.is_open = function(item) {
+			return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
+		};
+		widget.settings.is_active = function(item) {
+			return item.Id === initial_selection;
 		};
 	}, '{{writeRequestValue=tree_session}}');
 	var info_bar = AdminInterface.info_bar.getWidget();
@@ -53,7 +58,7 @@ jQuery(document).ready(function() {
 	}), true, false).
 	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
 		alert('delete page');
-		// page_detail.delete(); // too much recursion
+		page_detail.delete();
 	}), true, false);
 
 	// init language change
