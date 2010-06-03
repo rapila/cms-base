@@ -7,13 +7,13 @@ Widget.types.tree = {
 			if(jQuery(event.target).is('.tree-opener')) {
 				return;
 			}
-			var row = jQuery(this);
-			widget.activate(row);
-			widget.fire('tree.clicked', row, widget.settings.data_from_element(row));
+			var element = jQuery(this);
+			widget.activate(element);
+			widget.fire('tree.clicked', element, widget.settings.data_from_element(element));
 		});	
 		this._element.delegate('.ui-tree li', 'hover', function(event) {
-			var row = jQuery(this);
-			row.toggleClass('ui-state-hover');
+			var element = jQuery(this);
+			element.toggleClass('ui-state-hover');
 		});
 		
 		this.reload();
@@ -28,30 +28,53 @@ Widget.types.tree = {
 		return jQuery('#admin_sidebar').find('li');
 	},
 	
+	element_with_data: function(data) {
+		var result = null;
+		var widget = this;
+		this._element.find('li').each(function() {
+			if(widget.settings.data_from_element(jQuery(this)) === data) {
+				result = jQuery(this);
+				return false;
+			}
+		});
+		return result;
+	},
+	
+	update_element: function(element) {
+		var data = arguments[1] || this.settings.data_from_element(element);
+		this.loadItem(data, function(item) {
+			var icons = element.children('.ui-icons');
+			var name = element.children('span');
+			icons.empty();
+			name.text(this.settings.description_from_item(item));
+			this.fire('tree.updated', element, item);
+		});
+	},
+	
 	reload: function() {
 		this._element.empty();
 		this.open_item(this._element);
 	},
 	
-	open: function(row, opener) {
-		opener = opener || row.children('.tree-opener');
+	open: function(element, opener) {
+		opener = opener || element.children('.tree-opener');
 		if(opener.hasClass('opened')) {
 			return;
 		}
 		opener.removeClass('closed ui-icon-triangle-1-e').addClass('opened ui-icon-triangle-1-s');
-		var sub_list = row.find(this.settings.tag_name).show();
+		var sub_list = element.find(this.settings.tag_name).show();
 		if(sub_list.length === 0) {
-			this.open_item(row, this.settings.data_from_element(row));
+			this.open_item(element, this.settings.data_from_element(element));
 		}
 	},
 	
-	close: function(row, opener) {
-		opener = opener || row.children('.tree-opener');
+	close: function(element, opener) {
+		opener = opener || element.children('.tree-opener');
 		if(opener.hasClass('closed')) {
 			return;
 		}
 		opener.removeClass('opened ui-icon-triangle-1-s').addClass('closed ui-icon-triangle-1-e');
-		row.find(this.settings.tag_name).hide();
+		element.find(this.settings.tag_name).hide();
 	},
 	
 	open_item: function(item, data) {
@@ -76,8 +99,10 @@ Widget.types.tree = {
 				parent = new_parent.appendTo(parent);
 			}
 		}
-		var element = jQuery("<li/>").text(this.settings.description_from_item(child));
+		// var element = jQuery("<li/>").text(this.settings.description_from_item(child));
+		var element = jQuery("<li/>").append(jQuery("<span/>").text(this.settings.description_from_item(child)));
 		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
+		var icons = jQuery('<div/>').addClass('ui-icons');
 		
 		if(this.settings.has_children(child)) {
 			opener.removeClass('no-children');
@@ -93,12 +118,7 @@ Widget.types.tree = {
 				}
 			}.bind(this));
 		}
-		if(child.IsProtected) {
-			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-protected'));
-		}		
-		if(child.IsHidden) {
-			element.prepend(jQuery("<div/>").addClass('ui-icon ui-icon-is-hidden'));
-		}
+		element.prepend(icons);
 		element.prepend(opener);
 		element.data('tree-data', child);
 		parent.append(element);
@@ -108,7 +128,13 @@ Widget.types.tree = {
 		if(this.settings.is_active(child)) {
 			this.activate(element);
 		}
+		this.fire('tree.inserted', element, child);
 		return parent;
+	},
+	
+	add_icon: function(name, element) {
+		var icons = element.children('.ui-icons');
+		icons.append(jQuery('<div/>').addClass('ui-icon ui-icon-'+name));
 	},
 	
 	settings: {

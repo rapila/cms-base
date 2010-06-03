@@ -43,4 +43,8 @@ class PagesAdminModule extends AdminModule {
 		}
 		return array();
 	}
+	
+	public function loadItem($iId) {
+		return PagePeer::retrieveByPK($iId)->toArray();
+	}
 }

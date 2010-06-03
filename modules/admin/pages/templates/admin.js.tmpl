@@ -1,26 +1,41 @@
 jQuery(document).ready(function() {
 	var page_detail = null;
+	var page_tree = null;
+	
 	var initial_selection = {{writeRequestValue=initial_page_id}};
 
 	Widget.createWithElement('page_detail', function(event, widget) {
 		page_detail = widget;
-		page_detail.load_page(initial_selection);
+		widget.handle('saved', function(event) {
+			var page_id = widget.current_page_id;
+			var element = page_tree.element_with_data(page_id);
+			page_tree.update_element(element, page_id);
+		});
+		widget.load_page(initial_selection);
 		AdminInterface.content.append(widget._element);
 		jQuery("#accordion").accordion({ active: 0, autoHeight: false });
 	}, jQuery.noop);
 	
 	// init main content
-	var page_tree = null;
-	var click_handler = function(event, row, page_id) {
+	var click_handler = function(event, element, page_id) {
 		page_detail.load_page(page_id);
 		// reset on pageload
 		jQuery("#accordion").accordion( "activate", 0);
 	};
 	
+	var icon_handler = function(event, element, child) {
+		if(child.IsProtected) {
+			page_tree.add_icon('is-protected', element);
+		}		
+		if(child.IsHidden) {
+			page_tree.add_icon('is-hidden', element);
+		}
+	};
+	
 	Widget.createWithElement('tree', function(event, widget) {
 		page_tree = widget;
 		AdminInterface.sidebar.append(widget._element);
-		widget.handle('tree.clicked', click_handler);
+		widget.handle('tree.clicked', click_handler).handle('tree.inserted', icon_handler).handle('tree.updated', icon_handler);
 	}, function(widget) {
 		widget.settings.description_from_item = function(item) {
 			return item.Name;

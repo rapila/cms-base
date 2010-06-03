@@ -33,4 +33,9 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	public function listChildren($mParentData) {
 		return $this->oDelegate->listChildren($mParentData);
 	}
+	
+	public function loadItem($mData) {
+		return $this->oDelegate->loadItem($mData);
+	}
+	
 }

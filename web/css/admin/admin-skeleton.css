@@ -432,7 +432,7 @@ table.ui-list .ui-list-cell a {
   border-bottom: 1px solid #dddddd;
 }
 #admin_sidebar .ui-list li.ui-list-row { line-height: 20px; }
-#admin_sidebar .ui-tree div.ui-icon { margin: 0.3em 0 0.3em 0.4em; }
+#admin_sidebar .ui-tree div.ui-icon { margin: 0.3em 0 0 0; }
 #admin_sidebar .ui-tree li {
   font-size: 1.2em;
   padding: 0 0 0 0;

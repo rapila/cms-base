@@ -1,5 +1,6 @@
 Widget.types.page_detail = {
 	prepare: function() {
+		var widget = this;
 		// templates
 		var option = jQuery('<option/>');
 		var template_select = this._element.find("select[name='template_name']");
@@ -11,6 +12,15 @@ Widget.types.page_detail = {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
 		this.disable_input();
+		this._element.find('label[for]').bind('click', function() {
+			var related_input = widget._element.find("*[name='"+jQuery(this).attr('for')+"']");
+			related_input.focus();
+			if(related_input.is(':checkbox, :radio')) {
+				related_input.attr('checked', !related_input.attr('checked'));
+			} else {
+				related_input.select();
+			}
+		});
 	},
 	
 	disable_input: function() {
@@ -29,6 +39,7 @@ Widget.types.page_detail = {
 	
 	fill_data: function() {
 		this.getPageData(function(page_data) {
+			this.current_page_id = page_data.Id;
 			this._element.find("input[name='name']").val(page_data.Name);
 			this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);
 			this._element.find("input[name='page_title']").val(page_data.active_page_string.PageTitle);
@@ -55,7 +66,8 @@ Widget.types.page_detail = {
 					property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
 					for(name in page_data.page_properties[property_name]) {
 						if(name === 'value') {
-							property_container.append(jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content', "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+page_data.page_properties[property_name][name]+';'}));
+							var color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
+							property_container.append(jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content', "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+color+';'}));
 						}
 						if(name === 'default') {
 							property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));

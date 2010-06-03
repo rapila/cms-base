@@ -39,7 +39,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_references'] = $mReferences;
 			
 		}
+		// $this->getContentObjects($oPage);
 		return $aResult;
+	}
+	
+	public function getContentObjects($oPage) {
+		foreach($oPage->getContentObjects() as $oContentObject) {
+			ErrorHandler::log($oContentObject->getLanguageObjects());
+		}
 	}
 
  /** 

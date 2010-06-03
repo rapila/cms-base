@@ -29,6 +29,7 @@
   margin-top: 2px;
   margin-right: 5px;
 }
+#admin_sidebar .ui-tree li span { display: block; }
 .ui-state-hover .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
 .ui-state-active .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
 .ui-state-hover .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
