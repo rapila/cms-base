@@ -8,7 +8,7 @@ Widget.types.tree = {
 				return;
 			}
 			var row = jQuery(this);
-			this.activate(row);
+			widget.activate(row);
 			widget.fire('tree.clicked', row, widget.settings.data_from_element(row));
 		});	
 		this._element.delegate('.ui-tree li', 'hover', function(event) {

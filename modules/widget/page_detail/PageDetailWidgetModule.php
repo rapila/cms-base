@@ -110,7 +110,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function deletePage() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
-		ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
+		// ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
 		// check if user may delete page, or maybe just set inactive the current language
 		
 		if(ReferencePeer::countReferences($oPage)) {
@@ -148,13 +148,16 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPageString = $this->oPage->getActivePageString();	
 		if($oPageString === null) {
 			$oPageString = new PageString();
-			$this->oPage->addPageString(); 
+			$this->oPage->addPageString($oPageString); 
 		}
 		$oPageString->setPageTitle($aPageData['page_title']);
-		$oPageString->setLinkText($aPageData['link_text']);
+		$oPageString->setLinkText($aPageData['link_text'] ? $aPageData['link_text'] : null);
+		$oPageString->save();
 	}
 	
 	private function handleLanguageObjects($aPageData) {
+		foreach($this->oPage->getContentObjects() as $oContentObject) {
+		}
 	}
 	
 	private function handlePageProperties($aPageData) {
