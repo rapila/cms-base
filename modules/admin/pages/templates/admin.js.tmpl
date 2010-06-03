@@ -51,7 +51,10 @@ jQuery(document).ready(function() {
 		page_detail.fill_data();
 		page_detail.enable_input();
 	}), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete'), true, false);
+	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
+		alert('delete page');
+		// page_detail.delete(); // too much recursion
+	}), true, false);
 
 	// init language change
 	Widget.handle('cmos.language_changed', function() {

@@ -68,6 +68,10 @@ Widget.types.page_detail = {
 		});
 	},
 	
+	delete: function() {
+		this.delete();
+	},
+	
 	save: function() {
 		this.saveData(this._element.serializeArrayKV(), function() {
 			this.fill_data();

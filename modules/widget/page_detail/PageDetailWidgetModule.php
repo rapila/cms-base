@@ -107,6 +107,18 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function delete() {
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		// check if user may delete page, or maybe just set inactive the current language
+		
+		if(ReferencePeer::countReferences($oPage)) {
+			// check whether page is referenced else where, recursive?
+		}
+		if($oPage->hasChildren()) {
+			// check whether backend user is allowed to delete whole branches
+		}
+	}
 
 	public function saveData($aPageData) {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
