@@ -12,8 +12,12 @@ class PagesAdminModule extends AdminModule {
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
 		$this->oTreeWidget->setOrdered(true);
+		$iPageId=null;
+		if(Manager::hasNextPathItem()) {
+			$iPageId = Manager::usePath();
+		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'tree_session', $this->oTreeWidget->getSessionKey());
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'page_id', $this->oRootPage->getId());
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'page_id', $iPageId ? $iPageId : $this->oRootPage->getId());
 	}
 	
 	public function mainContent() {

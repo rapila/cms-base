@@ -7,26 +7,27 @@ Miscellaneous projects
 Prioritäten
 - bug 'Undefined variable: ret', [filename] => '/Users/jmg/Sites/playground/base/lib/vendor/propel/collection/PropelObjectCollection.php'
 	bug fixed by checking Page->hasChildren, otherwise return array in PagesAdminModule::listChildren()
-- Fill contents by page_type
+- page_id = usePath if exists else root_page_id, open corresponding page branch containing page and highlight
+- Fill contents by page_type > adminDisplay() ?
 - validation and user notification, validation serverside clientside
-- Firefox does not show PagesAdmin when Firebug is off, or sometimes when "find" is on...... crazy browser
+- sketch rights handling, PermissionWidget
 
 PageTree Widget
 - display linktext in page tree (on hover page_title)
 - language change and language page strings and objects
-- highlight initially selected tree element
-- update tree element of save
-- open 1. Level all the time
+- highlight initially selected tree element, like root_page of usePath Page
+- open initially selected item all the time if has childen
+- update tree element on save
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
 - discuss subtle highlight of active parent elements to make hierarchy explicit
-- add hidden, protected (and folder?) icons to page links
+- how to visualize is_folder, how to name it best (Untermenu zeigt)
 - buttons in infobar, how to add, style and position them best?
 - make custom made checkboxes. all the same but the active checkbox green/red?
 - add page, move page d&d
 
 PageDetail
-- contents, depending on page_type, only if not new
+- show content & references tabs only if not new
 - references
 - how to visually display different templates > standard ones like naming conventions, no clue
 

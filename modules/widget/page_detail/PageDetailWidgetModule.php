@@ -33,6 +33,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_properties'] = $mAvailableProperties;
 			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 		}
+		// page references are displayed if exist
+		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
+		if($mReferences !== null) {
+			$aResult['page_references'] = $mReferences;
+			
+		}
 		return $aResult;
 	}
 
