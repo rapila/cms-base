@@ -60,8 +60,8 @@ class FrontendManager extends Manager {
 			$oParent->setCurrent(false);
 		}
 		self::$CURRENT_PAGE = $oParent->getMe();
-		FilterModule::getFilters()->handleNavigationPathFound($this->oRootNavigationItem, $oMatchingNavigationItem);
 		// See if the filter(s) changed anything
+		FilterModule::getFilters()->handleNavigationPathFound($this->oRootNavigationItem, $oMatchingNavigationItem);
 		
 		// There may now be new, virtual navigation items. Follow them.
 		while(self::hasNextPathItem()) {
@@ -218,7 +218,6 @@ class FrontendManager extends Manager {
 	 * fillContent()
 	 */
 	private function fillContent() { 
-		// FilterModule::getFilters()->handleBeforePageTypeDisplay(self::$CURRENT_PAGE, $this->oPageType, $this->oTemplate);
 		$this->oPageType->display($this->oTemplate);
 	}
 			
@@ -254,7 +253,7 @@ class FrontendManager extends Manager {
 	 * @return object Template
 	 * used in fillAttributes to replace page_link identifiers
 	 * - get a page by name
-	 * - get nearest neighbour page {@link PagePeer::getPageByName()}
+	 * - get nearest neighbor page {@link PagePeer::getPageByName()}
 	 */
 	public static function replacePageLinkIdentifier($oTemplateIdentifier) {
 		$oPage = null;
