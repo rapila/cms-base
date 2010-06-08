@@ -15,6 +15,7 @@ PageTypeWidget?
 - template, page_type, containers and objects > language_objects
 - fill only containers at page_load and make method ->getContainerObjects(); 
 - move containers_content to it's own method widget::content_load(container_name)
+- are DetailWidgets a delegate of a PageTypeWidget or viceversa
 
 PageProperties
 - maybe make the same, load page properties only when tab is opened?

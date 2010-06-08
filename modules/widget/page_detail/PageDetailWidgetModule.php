@@ -39,6 +39,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_references'] = $mReferences;
 			
 		}
+		// test page container with contents, should be moved to new PageTypeWidget
 		$aResult['container_contents'] = $this->getContentObjects($oPage);
 		return $aResult;
 	}
@@ -85,8 +86,10 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			}			
 			asort($aAllowedItems);
 			
-			$aResult[$sContainerName]['module_options'] = $aAllowedItems;		
-			foreach($aObjects as $oObject) {
+			$aResult[$sContainerName]['module_options'] = $aAllowedItems;	
+			$iCount = 0;	
+			foreach($aObjects as $iCount => $oObject) {
+				$iCount++;
 				$oLanguageObject = $oObject->getActiveLanguageObjectBe();
 				if($oLanguageObject === null) {
 					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = StringPeer::getString('empty');
@@ -97,6 +100,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 				}		
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
 				// $aResult[$sContainerName]['contents'][$oObject->getId()]['edit_link'] = $this->adminLink(array($oPage->getId(), "edit", $oObject->getId()));		
+			}
+			if(!isset($aResult[$sContainerName]['contents'])) {
+				$aResult[$sContainerName]['contents'] = null;
 			}
 		}
 		return $aResult;

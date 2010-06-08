@@ -67,15 +67,27 @@ Widget.types.page_detail = {
 				container_section.append(jQuery('<h4>').text(container_title));
 				for(param in page_data.container_contents[container_name]) {
 					if(param === 'contents') {
-						for(object_id in page_data.container_contents[container_name][param]) {
-							var content_type = 'Content type: '+page_data.container_contents[container_name][param][object_id]['content_type'];
-							var content_info = 'Content Info: ';
-							if(page_data.container_contents[container_name][param][object_id]['content_info']) {
-								content_info = content_info+page_data.container_contents[container_name][param][object_id]['content_info'];
+						if(page_data.container_contents[container_name][param] !== null) {
+							for(object_id in page_data.container_contents[container_name][param]) {
+								var content_type = 'Content type: '+page_data.container_contents[container_name][param][object_id]['content_type'];
+								var content_info = 'Content Info: ';
+								if(page_data.container_contents[container_name][param][object_id]['content_info']) {
+									content_info = content_info+page_data.container_contents[container_name][param][object_id]['content_info'];
+								}
+								container_section.append(jQuery('<div>').text(content_type+', '+content_info+', Object-Id: '+object_id));
 							}
-							container_section.append(jQuery('<div>').text(content_type+', '+content_info+', Object-Id: '+object_id));
+						} else {
+							container_section.append(jQuery('<div>').text('No contents'));
 						}
-					}
+					} else if(param === 'module_options') {
+						var module_options = jQuery('<select>').attr('name', 'module_options_'+container_name);
+						for(module_name in page_data.container_contents[container_name][param]) {
+							var option = jQuery('<option>').text(page_data.container_contents[container_name][param][module_name]).attr('value', module_name);
+							module_options.append(option);
+						}
+						container_section.append(jQuery('<br>'));
+						container_section.append(module_options);
+					}	
 				}
 				contents_container.append(container_section);
 			}

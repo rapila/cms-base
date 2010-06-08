@@ -317,3 +317,11 @@ fieldset.page_properties_container legend {
   margin-left: -0.3em;
   padding-left: 0 0.3em;
 }
+div.container {
+  background-color: #f2f2f2;
+  border-bottom: #dddddd 1px solid;
+}
+.contents_container h4 {
+  margin: 0;
+  padding: 0.2em 0;
+}
