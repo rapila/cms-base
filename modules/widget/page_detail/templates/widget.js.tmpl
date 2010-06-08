@@ -60,6 +60,7 @@ Widget.types.page_detail = {
 			contents_container.empty();
 			for(container_name in page_data.container_contents) {
 				var container_title = container_name;
+				console.log(page_data.container_contents[container_name]['inherit_info']);
 				if(page_data.container_contents[container_name]['inherit_info']) {
 					container_title = container_title+', '+page_data.container_contents[container_name]['inherit_info'];
 				}

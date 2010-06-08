@@ -86,7 +86,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			}			
 			asort($aAllowedItems);
 			
-			$aResult[$sContainerName]['module_options'] = $aAllowedItems;	
 			$iCount = 0;	
 			foreach($aObjects as $iCount => $oObject) {
 				$iCount++;
@@ -104,6 +103,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			if(!isset($aResult[$sContainerName]['contents'])) {
 				$aResult[$sContainerName]['contents'] = null;
 			}
+			$aResult[$sContainerName]['module_options'] = $aAllowedItems;	
 		}
 		return $aResult;
 	}
