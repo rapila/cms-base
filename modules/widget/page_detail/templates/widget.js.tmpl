@@ -49,11 +49,36 @@ Widget.types.page_detail = {
 			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
 			this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
 			this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType);
-			this._element.find(".page_href").text(page_data.PageHref);
+			this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
 
 			// references
 			var count_text = page_data.CountReferences > 0 ? " ("+page_data.CountReferences+")" : '';
 			this._element.find(".references_count").text(count_text);
+			
+			// content_containers
+			var contents_container = this._element.find(".contents_container");
+			contents_container.empty();
+			for(container_name in page_data.container_contents) {
+				var container_title = container_name;
+				if(page_data.container_contents[container_name]['inherit_info']) {
+					container_title = container_title+', '+page_data.container_contents[container_name]['inherit_info'];
+				}
+				var container_section = jQuery('<div>').addClass('container');
+				container_section.append(jQuery('<h4>').text(container_title));
+				for(param in page_data.container_contents[container_name]) {
+					if(param === 'contents') {
+						for(object_id in page_data.container_contents[container_name][param]) {
+							var content_type = 'Content type: '+page_data.container_contents[container_name][param][object_id]['content_type'];
+							var content_info = 'Content Info: ';
+							if(page_data.container_contents[container_name][param][object_id]['content_info']) {
+								content_info = content_info+page_data.container_contents[container_name][param][object_id]['content_info'];
+							}
+							container_section.append(jQuery('<div>').text(content_type+', '+content_info+', Object-Id: '+object_id));
+						}
+					}
+				}
+				contents_container.append(container_section);
+			}
 
 			// page_properties
 			if(page_data.page_properties != undefined) {
@@ -66,8 +91,13 @@ Widget.types.page_detail = {
 					property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
 					for(name in page_data.page_properties[property_name]) {
 						if(name === 'value') {
-							var color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
-							property_container.append(jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content', "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+color+';'}));
+							var background_color  ='';
+							if(page_data.page_properties[property_name]['type'] == 'color') {
+								background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
+							}
+							var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
+							var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
+							property_container.append(property_input);
 						}
 						if(name === 'default') {
 							property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));

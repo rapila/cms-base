@@ -98,8 +98,7 @@
 	background-image: url("admin_menu/images/ui-icons_b8d600_256x240.png");
 }
 
-#admin_main div.ui-dialog-titlebar.ui-corner-all,
-#admin_main div.ui-corner-all  {
+.ui-dialog .ui-dialog-titlebar  {
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	border-radius: 0px;
@@ -221,6 +220,10 @@ button.ui-button.ui-state-default,
 .ui-widget-content {
 	background: url() #FFF;
 }
+
+div.ui-widget-content {
+	border: 1px solid #999;
+}
 .ui-widget-content input,
 .ui-widget-content select,
 .ui-widget-content textarea {
@@ -309,9 +312,11 @@ form.page_detail .ui-state-active a:visited {
 form.page_detail h3.status { 
 	padding-left: .3em;
 }
+
 .ui-widget-content.path_input {
 	font-family: Courier;
 	background: url() #EBEDEF;
+	font-size: 1.0em;
 }
 
 input.ui-widget-content.input_long {

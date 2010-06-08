@@ -39,14 +39,67 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_references'] = $mReferences;
 			
 		}
-		// $this->getContentObjects($oPage);
+		$aResult['container_contents'] = $this->getContentObjects($oPage);
 		return $aResult;
 	}
 	
 	public function getContentObjects($oPage) {
-		foreach($oPage->getContentObjects() as $oContentObject) {
-			ErrorHandler::log($oContentObject->getLanguageObjects());
+		$aContainers = $oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
+		asort($aContainers);
+		$aResult = array();
+		foreach($aContainers as $oContainer) {
+			if($oContainer->hasParameter('autofill')) {
+				continue;
+			}
+			$sContainerName = $oContainer->getValue();
+			$aObjects = $oPage->getObjectsForContainer($sContainerName);
+			$bHasNoObjects = count($aObjects) === 0;
+			
+			$oInheritedFrom = null;
+			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
+				$oInheritedFrom = $oPage;
+				$iInheritedObjectCount = 0;
+				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
+					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
+				}
+			}
+			$aResult[$sContainerName]['inherit_info'] = $oInheritedFrom !== null ? StringPeer::getString('container.inherit_message', null, null, array('pathname' => $oInheritedFrom->getName()), true) : null;
+
+			$aContentModuleNames = FrontendModule::listContentModules();
+			$aAllowedItems = array();
+			if($oContainer->hasParameter("allowed_modules")) {
+				foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
+					if(isset($aContentModuleNames[$sAllowedModuleName])) {
+						$aAllowedItems[$sAllowedModuleName] = $aContentModuleNames[$sAllowedModuleName];
+					}
+				}
+			} else {
+				$aAllowedItems = $aContentModuleNames;
+			}
+			if($oContainer->hasParameter("disabled_modules")) {
+				foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
+					if(isset($aAllowedItems[$sDisabledModuleName])) {
+						unset($aAllowedItems[$sDisabledModuleName]);
+					}
+				}
+			}			
+			asort($aAllowedItems);
+			
+			$aResult[$sContainerName]['module_options'] = $aAllowedItems;		
+			foreach($aObjects as $oObject) {
+				$oLanguageObject = $oObject->getActiveLanguageObjectBe();
+				if($oLanguageObject === null) {
+					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = StringPeer::getString('empty');
+				} else {
+					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
+					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
+					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
+				}		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
+				// $aResult[$sContainerName]['contents'][$oObject->getId()]['edit_link'] = $this->adminLink(array($oPage->getId(), "edit", $oObject->getId()));		
+			}
 		}
+		return $aResult;
 	}
 
  /** 
@@ -111,6 +164,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$sValue = isset($aSetProperties[$oProperty->getValue()]) ? $aSetProperties[$oProperty->getValue()] : '';
 			$aResult[self::PAGE_PROPERTY_NS.$oProperty->getValue()]['value'] = $sValue;
 			$aResult[self::PAGE_PROPERTY_NS.$oProperty->getValue()]['default'] = $oProperty->getParameter('defaultValue');
+			$aResult[self::PAGE_PROPERTY_NS.$oProperty->getValue()]['type'] = $oProperty->getParameter('propertyType');
 		}
 		return $aResult;
 	}
