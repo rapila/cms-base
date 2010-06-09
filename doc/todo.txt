@@ -1,18 +1,20 @@
 Miscellaneous projects
-- naturfreunde, diskussion was beachten bei NFS, NFCH. Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
+- naturfreunde, 
+	diskussion was beachten bei NFS, NFCH. 
+	Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
-- http://www.triboje.com/ ?? united domains
-- Transmit d&d rights writing dump
-
+	Synchronisation, shell_exec, Exporte
+	
 Prioritäten
 - noch einmal Blob! devel und trunk z.B. FrontendModule::getData();oLanguageObject->getData & stream_get_contents()??? check
-- Fill contents by page_type > adminDisplay() ?
-- bind(keydown) { if(event.which === 13) > page detail save }
+- page detail save on return/enter > bind(keydown) { if(event.which === 13) > page detail save }
 - validation and user notification, validation serverside clientside
 - sketch rights handling, PermissionWidget
 
 PageTypeWidget?
 - template, page_type, containers and objects > language_objects
+- Template und Module, Einstellungen, Wie kann man das Ganze übersichtlich machen?
+- how to visualize templates most effectively????
 - fill only containers at page_load and make method ->getContainerObjects(); 
 - move containers_content to it's own method widget::content_load(container_name)
 - are DetailWidgets a delegate of a PageTypeWidget or viceversa
@@ -464,3 +466,5 @@ release-1-devel propel update
 - bug 'Undefined variable: ret', [filename] => '/Users/jmg/Sites/playground/base/lib/vendor/propel/collection/PropelObjectCollection.php'
 	bug fixed by checking Page->hasChildren, otherwise return array in PagesAdminModule::listChildren()
 - page_id = usePath if exists else root_page_id, open corresponding page branch containing page and highlight
+- Transmit d&d rights writing dump
+- http://www.triboje.com/ ?? united domains
