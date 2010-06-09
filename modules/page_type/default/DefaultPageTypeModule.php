@@ -19,7 +19,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 																			"file_exists" => "file_exists");
 	
 	public function __construct(Page $oPage) {
-
 		parent::__construct($oPage);
 	}
 	
@@ -434,6 +433,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$sRedirectUrl = $this->backendLink(array($this->oPage->getId(), "edit", $this->oCurrentContentObject->getId()));
 		}
 		LinkUtil::redirect($sRedirectUrl);
+	}
+	
+	//Admin stuff
+	public function adminListPossibleFrontendModules() {
+		return FrontendModule::listContentModules();
 	}
 	
 	public function getAjax($aPath) {

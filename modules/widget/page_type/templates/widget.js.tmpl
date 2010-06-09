@@ -1,0 +1,28 @@
+Widget.types.page_type = {
+	initialize: function() {
+		this.setPageType(this.settings.page_type, this.settings.page_id);
+		this.getPageTypeJs(function(js_location) {
+			jQuery.ajax({
+				url: js_location,
+				dataType: 'script',
+				async: false
+			});
+		});
+	},
+	
+	handle_preview: function() {
+		Widget.types.page_type.types[this.settings.page_type].handle_preview(this.settings.page_id, this);
+	},
+	
+	handle_admin: function() {
+		Widget.types.page_type.types[this.settings.page_type].handle_admin(this.settings.page_id, this.settings.container, this);
+	},
+	
+	settings: {
+		page_type: 'default',
+		container: null,
+		page_id: null,
+	},
+	
+	types: {}
+};

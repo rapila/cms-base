@@ -13,7 +13,6 @@ jQuery(document).ready(function() {
 		});
 		widget.load_page(initial_selection);
 		AdminInterface.content.append(widget._element);
-		jQuery("#accordion").accordion({ active: 1, autoHeight: false });
 	}, jQuery.noop);
 	
 	// init main content
@@ -53,6 +52,8 @@ jQuery(document).ready(function() {
 			return item.Id === initial_selection;
 		};
 	}, '{{writeRequestValue=tree_session}}');
+	
+	var infobar_button_incl = "{{includeTemplate=infobar_button.incl}}";
 	var info_bar = AdminInterface.info_bar.getWidget();
 	info_bar.add_button('add-new-item', function() {
 		Widget.create('page_detail', function(widget) {
@@ -64,14 +65,14 @@ jQuery(document).ready(function() {
 			};
 		});
 	}, 'n', false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
+	add_element(jQuery(infobar_button_incl).text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
 		page_detail.save();
 	}), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
+	add_element(jQuery(infobar_button_incl).text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
 		page_detail.fill_data();
 		page_detail.enable_input();
 	}), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
+	add_element(jQuery(infobar_button_incl).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
 		alert('delete page');
 		page_detail.delete();
 	}), true, false);

@@ -49,17 +49,24 @@ abstract class TemplateResourceFileModule extends FileModule {
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
-		$sFileModule = str_replace('template_', "{$sModuleType}_", self::getNameByClassName(get_class()));
 		foreach(self::$RESOURCE_TYPES as $sResourceType) {
-			$sFileName = "$sModuleType.$sResourceType.tmpl";
-			if(ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, $sModuleName, DIRNAME_TEMPLATES, "$sFileName")) !== null) {
-				$aLinkParameters = $aParameters[$sResourceType];
+			$sResourceLink = self::getAvailableResource($sModuleName, $sModuleType, $sResourceType, @$aParameters[$sResourceType]);
+			if($sResourceLink !== null) {
 				if($sResourceType === ResourceIncluder::RESOURCE_TYPE_JS && $bEndDependenciesOnJS) {
-					$oResourceIncluder->addResourceEndingDependency(LinkUtil::link(array($sFileModule, $sResourceType, $sModuleName), 'FileManager', $aLinkParameters), $sResourceType);
+					$oResourceIncluder->addResourceEndingDependency($sResourceLink, $sResourceType);
 				} else {
-					$oResourceIncluder->addResource(LinkUtil::link(array($sFileModule, $sResourceType, $sModuleName), 'FileManager', $aLinkParameters), $sResourceType);
+					$oResourceIncluder->addResource($sResourceLink, $sResourceType);
 				}
 			}
 		}
+	}
+	
+	public static function getAvailableResource($sModuleName, $sModuleType, $sResourceType, $aParameters) {
+		$sFileModule = str_replace('template_', "{$sModuleType}_", self::getNameByClassName(get_class()));
+		$sFileName = "$sModuleType.$sResourceType.tmpl";
+		if(ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, $sModuleName, DIRNAME_TEMPLATES, "$sFileName")) === null) {
+			return null;
+		}
+		return LinkUtil::link(array($sFileModule, $sResourceType, $sModuleName), 'FileManager', $aParameters);
 	}
 }
