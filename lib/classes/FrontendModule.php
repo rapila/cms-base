@@ -63,6 +63,7 @@ abstract class FrontendModule extends Module {
 			$sClassName = self::getClassNameByName($sModuleName);
 			$aResult[$sModuleName] = self::getDisplayNameByName($sModuleName);
 		}
+		asort($aResult);
 		return $aResult;
 	}
 	

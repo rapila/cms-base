@@ -325,3 +325,28 @@ div.container {
   margin: 0;
   padding: 0.2em 0;
 }
+.page_detail .filled_modules {
+  margin-top: 12px;
+  width: 500px;
+  min-height: 300px;
+  float: left;
+  background-color: black;
+}
+.page_detail .available_modules {
+  min-width: 100px;
+  max-width: 250px;
+  margin: 12px 0 0 1em;
+  min-height: 150px;
+  padding: 0;
+  float: left;
+  background-color: #f2f2f2;
+}
+.available_modules li {
+  list-style: none inside;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  padding: 4px 6px;
+  border-radius: 3px;
+  border: 1px solid #999999;
+  margin-bottom: 4px;
+}

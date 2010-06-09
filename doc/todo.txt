@@ -33,7 +33,6 @@ PageTree Widget
 - make separate tree style sheet?
 - discuss subtle highlight of active parent elements to make hierarchy explicit
 - how to visualize is_folder, how to name it best (Untermenu zeigt)
-- buttons in infobar, how to add, style and position them best?
 - make custom made checkboxes. all the same but the active checkbox green/red?
 - add page, move page d&d
 
@@ -469,3 +468,4 @@ release-1-devel propel update
 - page_id = usePath if exists else root_page_id, open corresponding page branch containing page and highlight
 - Transmit d&d rights writing dump
 - http://www.triboje.com/ ?? united domains
+- buttons in infobar, how to add, style and position them best?
