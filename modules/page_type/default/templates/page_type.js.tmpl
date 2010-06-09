@@ -5,6 +5,8 @@ Widget.types.page_type.types.default = {
 	
 	handle_admin: function(page_id, container, page_type) {
 		var available_modules = jQuery('<div/>').addClass('available_modules').appendTo(container);
+		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
+		
 		page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
 			jQuery.each(modules, function(module_type, module_name) {
 				jQuery('<h2/>').text(module_name).data('module_type', module_type).appendTo(available_modules);
@@ -13,6 +15,5 @@ Widget.types.page_type.types.default = {
 		
 		
 		//Parser stuff
-		
 	}
 };
