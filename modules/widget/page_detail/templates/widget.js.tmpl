@@ -59,23 +59,22 @@ Widget.types.page_detail = {
 			var contents_container = this._element.find(".contents_container");
 			contents_container.empty();
 			for(container_name in page_data.container_contents) {
-				var container_title = container_name;
+				var container_section = jQuery('<div>').addClass('container '+container_name).attr("title", container_name);
 				// console.log(page_data.container_contents[container_name]['inherit_info']);
 				if(page_data.container_contents[container_name]['inherit_info']) {
-					container_title = container_title+', '+page_data.container_contents[container_name]['inherit_info'];
-				}
-				var container_section = jQuery('<div>').addClass('container');
-				container_section.append(jQuery('<h4>').text(container_title));
+					var title_content = jQuery('<h4>');
+					title_content.append(jQuery('<a>').text(page_data.container_contents[container_name]['inherit_info']).attr('href', page_data.container_contents[container_name]['inherit_info_href']));
+					container_section.append(title_content);
+				} 
 				for(param in page_data.container_contents[container_name]) {
 					if(param === 'contents') {
 						if(page_data.container_contents[container_name][param] !== null) {
 							for(object_id in page_data.container_contents[container_name][param]) {
-								var content_type = 'Content type: '+page_data.container_contents[container_name][param][object_id]['content_type'];
-								var content_info = 'Content Info: ';
+								var object_info = page_data.container_contents[container_name][param][object_id]['content_type'];
 								if(page_data.container_contents[container_name][param][object_id]['content_info']) {
-									content_info = content_info+page_data.container_contents[container_name][param][object_id]['content_info'];
+									object_info = object_info+' ('+page_data.container_contents[container_name][param][object_id]['content_info']+')';
 								}
-								container_section.append(jQuery('<div>').text(content_type+', '+content_info+', Object-Id: '+object_id));
+								container_section.append(jQuery('<div>').text(object_info));
 							}
 						} else {
 							container_section.append(jQuery('<div>').text('No contents'));
@@ -95,9 +94,8 @@ Widget.types.page_detail = {
 
 			// page_properties
 			if(page_data.page_properties != undefined) {
-				var page_properties_container = this._element.find(".page_properties_container");
+				var page_properties_container = this._element.find(".page_properties.container");
 				page_properties_container.empty();
-				page_properties_container.append(jQuery('<legend>').text("{{writeString=widget.page.page_properties}}"));
 				var default_name = "{{writeString=widget.default}}";
 				for(property_name in page_data.page_properties) {
 					var property_container = jQuery("<div/>");
@@ -118,7 +116,10 @@ Widget.types.page_detail = {
 					}
 					page_properties_container.append(property_container);
 					page_properties_container.attr('style' , 'display:block;');
-				}
+				} 
+			}	else {
+				// remove properties if not exists
+				this._element.find(".page_properties").remove();
 			}
 		});
 	},

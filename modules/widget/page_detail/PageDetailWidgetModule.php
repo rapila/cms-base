@@ -44,6 +44,10 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
+	protected static function adminLink($aPath = array(), $aParameters = array()) {
+		return LinkUtil::link($aPath, 'AdminManager', $aParameters);
+	}
+	
 	public function getContentObjects($oPage) {
 		$aContainers = $oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
 		asort($aContainers);
@@ -64,7 +68,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
 				}
 			}
-			$aResult[$sContainerName]['inherit_info'] = $oInheritedFrom !== null ? StringPeer::getString('container.inherit_message', null, null, array('pathname' => $oInheritedFrom->getName()), true) : null;
+			$aResult[$sContainerName]['inherit_info'] = null;
+			if($oInheritedFrom !== null) {
+				$aResult[$sContainerName]['inherit_info'] = StringPeer::getString('widget.container.inherit_message').$oInheritedFrom->getPageTitle();
+				$aResult[$sContainerName]['inherit_info_href'] = self::adminLink(array('pages', $oInheritedFrom->getId()));
+			}
 
 			$aContentModuleNames = FrontendModule::listContentModules();
 			$aAllowedItems = array();

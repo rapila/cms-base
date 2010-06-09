@@ -19,6 +19,8 @@ class PagesAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'tree_session', $this->oTreeWidget->getSessionKey());
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'initial_page_id', $oInitialPage->getId());
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'initial_page_tree_left', $oInitialPage->getTreeLeft());
+		$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		$oResourceIncluder->addResource('admin/template.css');
 	}
 	
 	public function mainContent() {

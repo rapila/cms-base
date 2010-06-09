@@ -4,6 +4,7 @@ Miscellaneous projects
 	Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 	Synchronisation, shell_exec, Exporte
+	Lehrer, Klassen, Events, Galerie, Werkstücke
 	
 Prioritäten
 - noch einmal Blob! devel und trunk z.B. FrontendModule::getData();oLanguageObject->getData & stream_get_contents()??? check
