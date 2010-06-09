@@ -2,7 +2,9 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var widget = this;
 		
-		jQuery(this._element.find('.accordion')).accordion({active: 0, autoHeight: false, clearStyle: true}).bind('accordionchangestart', function(event, ui) {
+		this.accordion = jQuery(this._element.find('.accordion')).
+		accordion({active: 0, autoHeight: false, clearStyle: true}).
+		bind('accordionchangestart', function(event, ui) {
 			if(!ui.newContent.is('.contents_container')) {
 				return;
 			}

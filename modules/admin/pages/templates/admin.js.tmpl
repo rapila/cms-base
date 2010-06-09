@@ -18,8 +18,6 @@ jQuery(document).ready(function() {
 	// init main content
 	var click_handler = function(event, element, page_id) {
 		page_detail.load_page(page_id);
-		// reset on pageload
-		jQuery("#accordion").accordion( "activate", 1);
 	};
 	
 	var icon_handler = function(event, element, child) {
