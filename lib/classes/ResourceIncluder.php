@@ -149,7 +149,7 @@ class ResourceIncluder {
 				$sFinalLocation = $mLocation;
 			}
 		} else {
-			//Relative location can be given with resource type with or without extension, and without resource type with extension
+			//Relative location can be given with resource type, and without resource type (which will then be determined by extension)
 			$aLocation = explode('/', $mLocation);
 			if($sTemplateName === null) {
 				$sTemplateName = $this->findTemplateNameForLocation($aLocation[count($aLocation)-1]);
@@ -190,6 +190,9 @@ class ResourceIncluder {
 			}
 		
 			$aExtraInfo['location'] = $sFinalLocation;
+			if(!isset($aExtraInfo['resource_type'])) {
+				$aExtraInfo['resource_type'] = $sTemplateName;
+			}
 			if(!isset($aExtraInfo['template'])) {
 				$aExtraInfo['template'] = $sTemplateName;
 			}
@@ -198,6 +201,9 @@ class ResourceIncluder {
 			}
 			if(!isset($aExtraInfo['dependees'])) {
 				$aExtraInfo['dependees'] = array();
+			}
+			if($oFileResource instanceof FileResource && !isset($aExtraInfo['file_resource'])) {
+				$aExtraInfo['file_resource'] = $oFileResource;
 			}
 			if($bEndsDependencyList) {
 				$aDependencyList = array_shift($this->aCurrentDependencyStack);
@@ -320,6 +326,10 @@ class ResourceIncluder {
 
 	public function getIncludedResources() {
 			return $this->aIncludedResources;
+	}
+
+	public function getAllIncludedResources() {
+			return array_merge($this->aIncludedResources[self::PRIORITY_LAST], $this->aIncludedResources[self::PRIORITY_NORMAL], $this->aIncludedResources[self::PRIORITY_FIRST]);
 	}
 	
 	public function getResourceInfosForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
