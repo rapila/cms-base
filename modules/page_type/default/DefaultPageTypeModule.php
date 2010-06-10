@@ -440,6 +440,54 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return FrontendModule::listContentModules();
 	}
 	
+	public function adminListFilledFrontendModules() {
+		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
+		asort($aContainers);
+		$aResult = array();
+		foreach($aContainers as $oContainer) {
+			if($oContainer->hasParameter('autofill')) {
+				continue;
+			}
+			$sContainerName = $oContainer->getValue();
+			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
+			$bHasNoObjects = count($aObjects) === 0;
+			
+			$oInheritedFrom = null;
+			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
+				$oInheritedFrom = $this->oPage;
+				$iInheritedObjectCount = 0;
+				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
+					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
+				}
+			}
+			$aResult[$sContainerName]['inherit_info'] = null;
+			if($oInheritedFrom !== null) {
+				$aResult[$sContainerName]['inherit_info'] = StringPeer::getString('widget.container.inherit_message').$oInheritedFrom->getPageTitle();
+				$aResult[$sContainerName]['inherit_info_href'] = self::adminLink(array('pages', $oInheritedFrom->getId()));
+			}
+			
+			$iCount = 0;	
+			foreach($aObjects as $iCount => $oObject) {
+				$iCount++;
+				$oLanguageObject = $oObject->getActiveLanguageObjectBe();
+				if($oLanguageObject === null) {
+					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = StringPeer::getString('empty');
+				} else {
+					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
+					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
+					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
+				}		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
+			}
+			if(!isset($aResult[$sContainerName]['contents'])) {
+				$aResult[$sContainerName]['contents'] = null;
+			}
+		}
+		return $aResult;
+	}
+	
+	
+	
 	public function getAjax($aPath) {
 		$sContainerName = $_REQUEST['container'];
 		$iItemNumber = $_REQUEST['item_number']+0;

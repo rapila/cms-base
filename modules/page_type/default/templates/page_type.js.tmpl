@@ -5,14 +5,31 @@ Widget.types.page_type.types.default = {
 	
 	handle_admin: function(page_id, container, page_type) {
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
-		var available_modules = jQuery('<ul/>').addClass('available_modules').appendTo(container);
+		var available_modules = jQuery('<ul/>').addClass('available_modules draggable').appendTo(container);
 		
 		page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
+			var dragOptions = {
+				cursor: "move",
+				helper: "clone",
+				containment: ".contents_container",
+				connectToSortable: '.filled_modules > .target'
+			}
 			jQuery.each(modules, function(module_type, module_name) {
-				jQuery('<li/>').text(module_name).data('module_type', module_type).appendTo(available_modules);
+				var element = jQuery('<li/>').text(module_name).data('module_type', module_type).draggable(dragOptions);
+				element.appendTo(available_modules);
 			});
 		});
 		
+		page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
+			jQuery.each(containers, function(container_name, params) {
+				var target = jQuery('<ul>').addClass('target '+container_name).attr('style', "float:left;width:40%;min-height:300px;border:1px solid red;").appendTo(filled_modules);
+				var element = jQuery('<li/>').text("Add Item").addClass('placeholder').appendTo(target);
+			});
+			
+			filled_modules.find('.target').sortable({
+				connectWith: filled_modules.find('.target')
+			});
+		});
 		
 		//Parser stuff
 	}

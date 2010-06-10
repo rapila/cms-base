@@ -325,6 +325,7 @@ th.ui-list-heading.sortable span {
   padding-right: 1em;
 }
 th.ui-list-heading.sortable { cursor: pointer; }
+.ui-sortable, .ui-draggable { cursor: move; }
 th.ui-list-heading.sortable.asc span {
   background-image: url('../../images/admin/sort_desc.png');
   background-position: right;
