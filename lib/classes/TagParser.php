@@ -128,6 +128,13 @@ class HtmlTag {
 		$this->aChildren[] = $mChild;
 	}
 	
+	public function removeChild($mChild) {
+		$iIndex = array_search($mChild, $this->aChildren, true);
+		if($iIndex !== false) {
+			unset($this->aChildren[$iIndex]);
+		}
+	}
+	
 	public function setParseCallback($mParseCallback)
 	{
 			$this->mParseCallback = $mParseCallback;
