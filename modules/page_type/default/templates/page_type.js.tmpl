@@ -11,14 +11,15 @@ Widget.types.page_type.types.default = {
 			var dragOptions = {
 				cursor: "move",
 				helper: function(event) {
-					var element = jQuery(this);
-					return element.clone().appendTo(available_modules).data('object_data', element.data('object_data'));
+					var element = jQuery(this).clone().appendTo(available_modules);
+					element.data('object_data', jQuery(this).data('object_data'));
+					return element;
 				},
 				containment: ".contents_container",
 				connectToSortable: '.filled_modules > .target'
 			}
-			jQuery.each(modules, function(module_type, module_name) {
-				var element = jQuery('<li/>').text(module_name).data('module_type', module_type).draggable(dragOptions);
+			jQuery.each(modules, function(object_type, module_name) {
+				var element = jQuery('<li/>').text(module_name).data('object_data', {object_type: object_type}).draggable(dragOptions);
 				element.appendTo(available_modules);
 			});
 		});
@@ -28,14 +29,14 @@ Widget.types.page_type.types.default = {
 				var target = jQuery('<ul>').addClass('target '+container_name).attr('style', "float:left;width:40%;min-height:300px;border:1px solid red;").appendTo(filled_modules);
 
 				jQuery.each(params.contents, function(object_id, content) {
-					jQuery('<li/>').text(content.object_type_display_name).data('object_data', {object_id: object_id, object_type: content.object_type}).appendTo(target);
+					jQuery('<li/>').text(content.object_type_display_name).data('object_data', {object_id: object_id, object_type: content.object_type, container: container_name}).appendTo(target);
 				});
 			});
 			
 			filled_modules.find('.target').sortable({
 				connectWith: filled_modules.find('.target')
 			}).bind('sortstop', function(event, ui) {
-				console.log(ui.item.data('object_data'));
+				console.log(ui);
 			});
 		});
 		

@@ -34,6 +34,14 @@ Widget.types.page_detail = {
 				related_input.select();
 			}
 		});
+		this._element.bind('keyup', function(event) {
+			if(this.current_page_id === null) {
+				return;
+			}
+			if(event.which == 13) {
+				this.save();
+			}
+		}.bind(this));
 	},
 	
 	disable_input: function() {

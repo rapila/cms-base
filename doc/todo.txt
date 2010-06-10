@@ -7,8 +7,6 @@ Miscellaneous projects
 	Lehrer, Klassen, Events, Galerie, Werkstücke
 	
 Prioritäten
-- noch einmal Blob! devel und trunk z.B. FrontendModule::getData();oLanguageObject->getData & stream_get_contents()??? check
-- page detail save on return/enter > bind(keydown) { if(event.which === 13) > page detail save }
 - validation and user notification, validation serverside clientside
 - sketch rights handling, PermissionWidget
 
@@ -469,3 +467,5 @@ release-1-devel propel update
 - Transmit d&d rights writing dump
 - http://www.triboje.com/ ?? united domains
 - buttons in infobar, how to add, style and position them best?
+- noch einmal Blob! devel und trunk z.B. FrontendModule::getData();oLanguageObject->getData & stream_get_contents()??? check
+- page detail save on return/enter > bind(keydown) { if(event.which === 13) > page detail save }
