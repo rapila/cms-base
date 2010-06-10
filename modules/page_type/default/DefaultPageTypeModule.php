@@ -527,6 +527,67 @@ class DefaultPageTypeModule extends PageTypeModule {
 		ContentObjectPeer::doDelete($iObjectId);
 	}
 
+	public function adminGetContainers() {
+		$oIncluder = ResourceIncluder::namedIncluder(get_class($this));
+		
+		$oTemplate = $this->oPage->getTemplate();
+		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
+			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue()), StringPeer::getString('page.container', null, null, array('container' => $oIdentifier->getValue()), true)));
+		}
+		
+		foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
+			$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
+		}
+		
+		$sCssContents = "";
+		foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
+			if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS) {
+				if(isset($aResource['file_resource'])) {
+					$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
+				} else {
+					// Absolute link, requires fopen wrappers
+					$sCssContents .= file_get_contents($aResource['location']);
+				}
+			}
+		}
+		
+		$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
+		$oCss = $oParser->parse();
+		ErrorHandler::log($oCss);
+		
+		$sTemplate = $oTemplate->render();
+		
+		$sTemplate = substr($sTemplate, strpos($sTemplate, '<body')+5);
+		$sTemplate = substr($sTemplate, strpos($sTemplate, '>')+1);
+		$sTemplate = substr($sTemplate, 0, strpos($sTemplate, '</body'));
+		$oParser = new TagParser("<body>$sTemplate</body>");
+		$oTag = $oParser->getTag();
+		$this->cleanupContainerStructure($oTag);
+		$sResult = $oTag->__toString();
+		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
+		$sResult = substr($sResult, 0, strpos($sResult, '</body>'));
+		return $sResult;
+	}
+	
+	private function cleanupContainerStructure($mTag, $oParent = null) {
+		if(!($mTag instanceof HtmlTag)) {
+			//Text node
+			if(!$oParent->hasParameter('data-container-name')) {
+				$oParent->removeChild($mTag);
+			}
+			return;
+		}
+		foreach($mTag->getChildren() as $mChild) {
+			$this->cleanupContainerStructure($mChild, $mTag);
+		}
+		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name')) {
+			if($oParent === null) {
+				return null;
+			}
+			$oParent->removeChild($mTag);
+		}
+	}
+
 	public function getAjax($aPath) {
 		$sContainerName = $_REQUEST['container'];
 		$iItemNumber = $_REQUEST['item_number']+0;

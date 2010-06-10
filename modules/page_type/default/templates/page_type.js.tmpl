@@ -41,5 +41,8 @@ Widget.types.page_type.types.default = {
 		});
 		
 		//Parser stuff
+		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
+			jQuery.parseHTML(container_html).appendTo(filled_modules);
+		});
 	}
 };
