@@ -446,7 +446,7 @@ class Template {
 	 * replaceIdentifier()
 	 * @return void
 	 */
-	public function replaceIdentifier($sIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mFunction=null) {
+	public function replaceIdentifier($mIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mFunction=null) {
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aText = null;
 		if($mFunction === null) {
@@ -455,7 +455,12 @@ class Template {
 			}
 			$aText = $this->getTextForReplaceIdentifier($mOriginalText, $iFlags);
 		}
-		$aIdentifiersToBeReplaced = $this->identifiersMatching($sIdentifier, $sValue);
+		$aIdentifiersToBeReplaced = null;
+		if($mIdentifier instanceof TemplateIdentifier) {
+			$aIdentifiersToBeReplaced = array($mIdentifier);
+		} else {
+			$aIdentifiersToBeReplaced = $this->identifiersMatching($mIdentifier, $sValue);
+		}
 		foreach($aIdentifiersToBeReplaced as $oIdentifier) {
 			$iIdentifierFlags = $oIdentifier->iFlags | $iFlags;
 			$aOldText = null;
@@ -475,13 +480,13 @@ class Template {
 			}
 		}
 		$bHasDoneIdentifierValueReplacement = false;
-		if($mFunction === null && ($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === 0) {
+		if($mFunction === null && ($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === 0 && !($mIdentifier instanceof TemplateIdentifier)) {
 			$aIdentifiers = $this->allIdentifiers();
 			foreach($aIdentifiers as $oIdentifier) {
 				//Identifier replacement in value
 				if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
 					$oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
-					$oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
+					$oValueTemplate->replaceIdentifier($mIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
 					$oValueTemplate->bKillIdentifiersBeforeRender = false;
 					$oIdentifier->setValue($oValueTemplate->render());
 					$bHasDoneIdentifierValueReplacement = true;
@@ -490,7 +495,7 @@ class Template {
 				foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
 					if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
 						$oValueTemplate = $this->derivativeTemplate($sIdentifierValue, false, true);
-						$oValueTemplate->replaceIdentifier($sIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
+						$oValueTemplate->replaceIdentifier($mIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
 						$oValueTemplate->bKillIdentifiersBeforeRender = false;
 						$oIdentifier->setParameter($sKey, $oValueTemplate->render());
 						$bHasDoneIdentifierValueReplacement = true;
@@ -508,7 +513,7 @@ class Template {
 	 * replaceIdentifierMultiple()
 	 * @return void
 	 */
-	public function replaceIdentifierMultiple($sIdentifier, $mOriginalText=null, $sValue=null, $iFlags=0, $mFunction=null) {
+	public function replaceIdentifierMultiple($mIdentifier, $mOriginalText=null, $sValue=null, $iFlags=0, $mFunction=null) {
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aText = null;
 		if($mFunction === null) {
@@ -517,7 +522,12 @@ class Template {
 			}
 			$aText = $this->getTextForReplaceIdentifier($mOriginalText, $iFlags);
 		}
-		$aIdentifiersToBeReplaced = $this->identifiersMatching($sIdentifier, $sValue);
+		$aIdentifiersToBeReplaced = null;
+		if($mIdentifier instanceof TemplateIdentifier) {
+			$aIdentifiersToBeReplaced = array($mIdentifier);
+		} else {
+			$aIdentifiersToBeReplaced = $this->identifiersMatching($mIdentifier, $sValue);
+		}
 		foreach($aIdentifiersToBeReplaced as $oIdentifier) {
 			$iIdentifierFlags = $oIdentifier->iFlags | $iFlags;
 			$aOldText = null;
