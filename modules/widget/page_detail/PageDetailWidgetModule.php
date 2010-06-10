@@ -106,7 +106,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
 				}		
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
-				// $aResult[$sContainerName]['contents'][$oObject->getId()]['edit_link'] = $this->adminLink(array($oPage->getId(), "edit", $oObject->getId()));		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
 			}
 			if(!isset($aResult[$sContainerName]['contents'])) {
 				$aResult[$sContainerName]['contents'] = null;

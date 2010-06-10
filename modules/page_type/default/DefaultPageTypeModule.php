@@ -460,10 +460,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
 				}
 			}
-			$aResult[$sContainerName]['inherit_info'] = null;
+			$aResult[$sContainerName]['inherited_from'] = null;
 			if($oInheritedFrom !== null) {
-				$aResult[$sContainerName]['inherit_info'] = StringPeer::getString('widget.container.inherit_message').$oInheritedFrom->getPageTitle();
-				$aResult[$sContainerName]['inherit_info_href'] = self::adminLink(array('pages', $oInheritedFrom->getId()));
+				$aResult[$sContainerName]['inherited_from'] = $oInheritedFrom->getId();
 			}
 			
 			$iCount = 0;	
@@ -477,7 +476,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
 					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
 				}		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
 			}
 			if(!isset($aResult[$sContainerName]['contents'])) {
 				$aResult[$sContainerName]['contents'] = null;
@@ -486,8 +486,47 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $aResult;
 	}
 	
+	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort) {
+		foreach($this->oPage->getObjectsForContainer($sContainerName, $iSort) as $oObject) {
+			$oObject->setSort($oObject->getSort()+1);
+			$oObject->save();
+		}
+		$oContentObject = new ContentObject();
+		$oContentObject->setContainerName($sContainerName);
+		$oContentObject->setObjectType($sObjectType);
+		$oContentObject->setSort($iSort);
+		$oContentObject->setPageId($this->oPage->getId());
+		$oContentObject->save();
+		return $oContentObject->getId();
+	}
 	
+	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
+		$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+		if($sNewContainerName) {
+			foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), $iSort) as $oObject) {
+				$oObject->setSort($oObject->getSort()+1);
+				$oObject->save();
+			}
+			$oContentObject->setContainerName($sNewContainerName);
+			$oContentObject->setSort($iSort);
+			$oContentObject->save();
+		} else {
+			$this->sortObjects($oContentObject, $iSort);
+		}
+		return $oContentObject->getId();
+	}
+		
+	public function sortObjects($oContentObject, $iSort) {
+		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
+			$oObjects->setSort($i);
+			$oObjects->save();
+		}
+	}
 	
+	public function removeObject($iObjectId) {
+		ContentObjectPeer::doDelete($iObjectId);
+	}
+
 	public function getAjax($aPath) {
 		$sContainerName = $_REQUEST['container'];
 		$iItemNumber = $_REQUEST['item_number']+0;

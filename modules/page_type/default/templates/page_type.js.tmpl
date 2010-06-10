@@ -10,7 +10,10 @@ Widget.types.page_type.types.default = {
 		page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
 			var dragOptions = {
 				cursor: "move",
-				helper: "clone",
+				helper: function(event) {
+					var element = jQuery(this);
+					return element.clone().appendTo(available_modules).data('object_data', element.data('object_data'));
+				},
 				containment: ".contents_container",
 				connectToSortable: '.filled_modules > .target'
 			}
@@ -23,11 +26,16 @@ Widget.types.page_type.types.default = {
 		page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
 			jQuery.each(containers, function(container_name, params) {
 				var target = jQuery('<ul>').addClass('target '+container_name).attr('style', "float:left;width:40%;min-height:300px;border:1px solid red;").appendTo(filled_modules);
-				var element = jQuery('<li/>').text("Add Item").addClass('placeholder').appendTo(target);
+
+				jQuery.each(params.contents, function(object_id, content) {
+					jQuery('<li/>').text(content.object_type_display_name).data('object_data', {object_id: object_id, object_type: content.object_type}).appendTo(target);
+				});
 			});
 			
 			filled_modules.find('.target').sortable({
 				connectWith: filled_modules.find('.target')
+			}).bind('sortstop', function(event, ui) {
+				console.log(ui.item.data('object_data'));
 			});
 		});
 		
