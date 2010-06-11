@@ -553,7 +553,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
 		$oCss = $oParser->parse();
-		ErrorHandler::log($oCss);
+		ErrorHandler::log($oCss->__toString());
 		
 		$sTemplate = $oTemplate->render();
 		

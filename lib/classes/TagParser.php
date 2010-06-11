@@ -1,4 +1,8 @@
 <?php
+
+/**
+* @package html
+*/
 class TagParser {
 	private $oTag = null;
 	private $sInput;

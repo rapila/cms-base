@@ -1,4 +1,7 @@
 <?php
+/**
+* @package html
+*/
 class TagWriter {
 	private $sTagName;
 	private $aParameters;
