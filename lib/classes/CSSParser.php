@@ -208,7 +208,7 @@ class CSSParser {
 	}
 	
 	private function parseValue() {
-		if(is_numeric($this->peek()) || $this->comes('-')) {
+		if(is_numeric($this->peek()) || $this->comes('-') || $this->comes('.')) {
 			return $this->parseNumericValue();
 		} else if($this->comes('#') || $this->comes('rgb') || $this->comes('hsl')) {
 			return $this->parseColorValue();
@@ -271,7 +271,6 @@ class CSSParser {
 				}
 				$aColor = array('r' => intval($sValue[0].$sValue[1], 16), 'g' => intval($sValue[2].$sValue[3], 16), 'b' => intval($sValue[4].$sValue[5], 16));
 			}
-			$aColor = array('r' => $iR, 'g' => $iG, 'b' => $iB);
 			if($fAlpha != 1.0) {
 				$aColor['a'] = $fAlpha;
 			}
