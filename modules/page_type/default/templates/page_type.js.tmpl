@@ -26,7 +26,7 @@ Widget.types.page_type.types.default = {
 		
 		page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
 			jQuery.each(containers, function(container_name, params) {
-				var target = jQuery('<ul>').addClass('target '+container_name).attr('style', "float:left;width:40%;min-height:300px;border:1px solid red;").appendTo(filled_modules);
+				var target = jQuery('<ul>').addClass('target '+container_name).attr({'style' : "float:left;width:40%;min-height:300px;border:1px solid red;", "id" : container_name}).appendTo(filled_modules);
 
 				jQuery.each(params.contents, function(object_id, content) {
 					jQuery('<li/>').text(content.object_type_display_name).data('object_data', {object_id: object_id, object_type: content.object_type, container: container_name}).appendTo(target);
@@ -36,13 +36,13 @@ Widget.types.page_type.types.default = {
 			filled_modules.find('.target').sortable({
 				connectWith: filled_modules.find('.target'),
 				receive: function(event, ui) {
-					// console.log('receive'	, ui.item.data('object_data'));
+					console.log('receive'	, ui.item.data('object_data'), ui.item.parent().attr('id'));
 				}, 
 				change: function(event, ui) {
 					// console.log('change', ui.item.data('object_data'));
 				}
 			}).bind('sortstop', function(event, ui) {
-					console.log('sortstop', ui.item.data('object_data'));
+					console.log('sortstop', ui.item.data('object_data'), ui.item.parent().attr('id'));
 			});
 		});
 		
