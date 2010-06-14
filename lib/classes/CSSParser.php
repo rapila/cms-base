@@ -367,17 +367,20 @@ class CSSParser {
 	}
 	
 	private function consumeWhiteSpace() {
-		while(preg_match('/\\s/isS', $this->peek()) === 1) {
-			$this->consume(1);
-			$this->consumeComment();
-		}
+		do {
+			while(preg_match('/\\s/isS', $this->peek()) === 1) {
+				$this->consume(1);
+			}
+		} while($this->consumeComment());
 	}
 	
 	private function consumeComment() {
 		if($this->comes('/*')) {
 			$this->consumeUntil('*/');
 			$this->consume('*/');
+			return true;
 		}
+		return false;
 	}
 	
 	private function isEnd() {
