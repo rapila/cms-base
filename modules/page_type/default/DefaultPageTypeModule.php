@@ -553,7 +553,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
 		$oCss = $oParser->parse();
-		ErrorHandler::log($oCss->__toString());
 		
 		$sTemplate = $oTemplate->render();
 		
@@ -563,9 +562,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oParser = new TagParser("<body>$sTemplate</body>");
 		$oTag = $oParser->getTag();
 		$this->cleanupContainerStructure($oTag);
+		$oStyle = new HtmlTag('style');
+		$oStyle->addParameters(array('scoped', 'scoped'));
+		$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+		$oTag->appendChild($oStyle);
 		$sResult = $oTag->__toString();
 		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
-		$sResult = substr($sResult, 0, strpos($sResult, '</body>'));
+		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
 		return $sResult;
 	}
 	
