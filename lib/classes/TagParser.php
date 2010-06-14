@@ -9,7 +9,7 @@ class TagParser {
 	private $oCurrentTag;
 	
 	public function __construct($sInput) {
-		$this->sInput = $sInput;
+		$this->sInput = str_replace('&nbsp;', '&#160;', $sInput);
 		
 		$iParseHandle = xml_parser_create(Settings::getSetting("encoding", "browser", "utf-8"));
 		xml_parser_set_option($iParseHandle, XML_OPTION_CASE_FOLDING, 0);
