@@ -35,20 +35,21 @@ Widget.types.page_type.types.default = {
 			
 			filled_modules.find('.target').sortable({
 				connectWith: filled_modules.find('.target'),
+				// why is received ui.item not the same like the sortstop item??? do NOT get it!
 				receive: function(event, ui) {
-					console.log('receive'	, ui.item.data('object_data'), ui.item.parent().attr('id'));
-				}, 
-				change: function(event, ui) {
-					// console.log('change', ui.item.data('object_data'));
+					console.log('receive',ui,ui.item.data('object_data'),ui.item.parent().attr('id'));
+				},
+				// testing the idea that any sortable includes draggable like drop
+				drop: function(event, ui) {
+					console.log('drop',ui,ui.item.data('object_data'),ui.item.parent().attr('id'));
 				}
 			}).bind('sortstop', function(event, ui) {
-					console.log('sortstop', ui.item.data('object_data'), ui.item.parent().attr('id'));
+					console.log('sortstop', ui, ui.item.data('object_data'), ui.item.parent().attr('id'));
 			});
 		});
 		
 		//Parser stuff
 		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
-			// console.log(container_html);
 			if(container_html) {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
