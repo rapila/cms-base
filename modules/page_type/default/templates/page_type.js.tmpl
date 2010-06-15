@@ -6,13 +6,15 @@ Widget.types.page_type.types.default = {
 	handle_admin: function(page_id, container, page_type) {
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
-
+		available_modules.empty();
+		filled_modules.empty();
 		// get containers before filling the objects
 		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
 			if(container_html) {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
+			console.log(filled_modules_containers);
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
@@ -28,6 +30,7 @@ Widget.types.page_type.types.default = {
 				}
 				jQuery.each(containers, function(container_name, params) {
 					var target = get_target_container(container_name);
+					console.log(params.contents);
 					jQuery.each(params.contents, function(object_id, content) {
 						jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
 					});

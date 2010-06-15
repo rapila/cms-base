@@ -480,13 +480,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
 			}
 			if(!isset($aResult[$sContainerName]['contents'])) {
-				$aResult[$sContainerName]['contents'] = null;
+				$aResult[$sContainerName]['contents'] = array();
 			}
 		}
 		return $aResult;
 	}
 	
 	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort) {
+		// ErrorHandler::log($sContainerName, $sObjectType, $iSort);
 		foreach($this->oPage->getObjectsForContainer($sContainerName, $iSort) as $oObject) {
 			$oObject->setSort($oObject->getSort()+1);
 			$oObject->save();
@@ -504,20 +505,24 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
 		if($sNewContainerName) {
-			foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), $iSort) as $oObject) {
-				$oObject->setSort($oObject->getSort()+1);
-				$oObject->save();
-			}
 			$oContentObject->setContainerName($sNewContainerName);
 			$oContentObject->setSort($iSort);
+			$oContentObject->setUpdatedAt(time());
 			$oContentObject->save();
+			foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
+				$oObject->setSort($i);
+				$oObject->save();
+			}
 		} else {
-			$this->sortObjects($oContentObject, $iSort);
+			$oContentObject->setSort($iSort);
+			$oContentObject->setUpdatedAt(time());
+			$oContentObject->save();
+			$this->sortObjects($oContentObject);
 		}
 		return $oContentObject->getId();
 	}
 		
-	public function sortObjects($oContentObject, $iSort) {
+	public function sortObjects($oContentObject) {
 		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
 			$oObject->setSort($i);
 			$oObject->save();

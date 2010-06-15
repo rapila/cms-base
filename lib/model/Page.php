@@ -282,6 +282,7 @@ class Page extends BasePage {
 		}
 		$oCrit->addAscendingOrderByColumn(ContentObjectPeer::SORT);
 		$oCrit->addDescendingOrderByColumn(ContentObjectPeer::UPDATED_AT);
+		// ErrorHandler::log($sContainerName, $mEqualHigherSort, $oCrit);
 		return $this->getContentObjects($oCrit);
 	}
 

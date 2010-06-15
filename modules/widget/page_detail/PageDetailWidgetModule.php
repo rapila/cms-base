@@ -25,8 +25,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
-		$aResult['CountReferences'] = ReferencePeer::countReferences($oPage);
-
+		
 		// page properties are displayed if added to template
 		$mAvailableProperties = $this->getAvailablePageProperties($oPage);
 		if($mAvailableProperties !== null) {
@@ -35,87 +34,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
+		$aResult['CountReferences'] = count($mReferences);
 		if($mReferences !== null) {
 			$aResult['page_references'] = $mReferences;
 			
 		}
-		// test page container with contents, should be moved to new PageTypeWidget
-		$aResult['container_contents'] = $this->getContentObjects($oPage);
 		return $aResult;
 	}
 	
-	protected static function adminLink($aPath = array(), $aParameters = array()) {
-		return LinkUtil::link($aPath, 'AdminManager', $aParameters);
-	}
-	
-	public function getContentObjects($oPage) {
-		$aContainers = $oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
-		asort($aContainers);
-		$aResult = array();
-		foreach($aContainers as $oContainer) {
-			if($oContainer->hasParameter('autofill')) {
-				continue;
-			}
-			$sContainerName = $oContainer->getValue();
-			$aObjects = $oPage->getObjectsForContainer($sContainerName);
-			$bHasNoObjects = count($aObjects) === 0;
-			
-			$oInheritedFrom = null;
-			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
-				$oInheritedFrom = $oPage;
-				$iInheritedObjectCount = 0;
-				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
-					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
-				}
-			}
-			$aResult[$sContainerName]['inherit_info'] = null;
-			if($oInheritedFrom !== null) {
-				$aResult[$sContainerName]['inherit_info'] = StringPeer::getString('widget.container.inherit_message').$oInheritedFrom->getPageTitle();
-				$aResult[$sContainerName]['inherit_info_href'] = self::adminLink(array('pages', $oInheritedFrom->getId()));
-			}
-
-			$aContentModuleNames = FrontendModule::listContentModules();
-			$aAllowedItems = array();
-			if($oContainer->hasParameter("allowed_modules")) {
-				foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("allowed_modules"))) as $sAllowedModuleName) {
-					if(isset($aContentModuleNames[$sAllowedModuleName])) {
-						$aAllowedItems[$sAllowedModuleName] = $aContentModuleNames[$sAllowedModuleName];
-					}
-				}
-			} else {
-				$aAllowedItems = $aContentModuleNames;
-			}
-			if($oContainer->hasParameter("disabled_modules")) {
-				foreach(@ArrayUtil::trimStringsInArray(explode(",", $oContainer->getParameter("disabled_modules"))) as $sDisabledModuleName) {
-					if(isset($aAllowedItems[$sDisabledModuleName])) {
-						unset($aAllowedItems[$sDisabledModuleName]);
-					}
-				}
-			}			
-			asort($aAllowedItems);
-			
-			$iCount = 0;	
-			foreach($aObjects as $iCount => $oObject) {
-				$iCount++;
-				$oLanguageObject = $oObject->getActiveLanguageObjectBe();
-				if($oLanguageObject === null) {
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = StringPeer::getString('empty');
-				} else {
-					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
-				}		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type'] = $oObject->getObjectType();		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['content_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
-			}
-			if(!isset($aResult[$sContainerName]['contents'])) {
-				$aResult[$sContainerName]['contents'] = null;
-			}
-			$aResult[$sContainerName]['module_options'] = $aAllowedItems;	
-		}
-		return $aResult;
-	}
-
  /** 
 	* getFrontendTemplates()
 	* 
