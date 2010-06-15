@@ -10,41 +10,53 @@ Widget.types.page_type.types.default = {
 		page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
 			var dragOptions = {
 				cursor: "move",
-				helper: function(event) {
-					var element = jQuery(this).clone().appendTo(available_modules);
-					element.data('object_data', jQuery(this).data('object_data'));
-					return element;
-				},
+				helper: 'clone',
 				containment: ".contents_container",
 				connectToSortable: '.filled_modules > .target'
-			}
+			};
 			jQuery.each(modules, function(object_type, module_name) {
-				var element = jQuery('<li/>').text(module_name).data('object_data', {object_type: object_type}).draggable(dragOptions).sortable();
+				var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
 				element.appendTo(available_modules);
 			});
 		});
 		
 		page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
 			jQuery.each(containers, function(container_name, params) {
-				var target = jQuery('<ul>').addClass('target '+container_name).attr({'style' : "float:left;width:40%;min-height:300px;border:1px solid red;", "id" : container_name}).appendTo(filled_modules);
+				var target = jQuery('<ul>').addClass('target '+container_name).css({float: 'left', width: '40%', minHeight: '300px', border: '1px solid red'}).data('container_name', container_name).appendTo(filled_modules);
 
 				jQuery.each(params.contents, function(object_id, content) {
-					jQuery('<li/>').text(content.object_type_display_name).data('object_data', {object_id: object_id, object_type: content.object_type, container: container_name}).appendTo(target);
+					jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
 				});
 			});
 			
 			filled_modules.find('.target').sortable({
 				connectWith: filled_modules.find('.target'),
-				// why is received ui.item not the same like the sortstop item??? do NOT get it!
-				receive: function(event, ui) {
-					console.log('receive',ui,ui.item.data('object_data'),ui.item.parent().attr('id'));
-				},
-				// testing the idea that any sortable includes draggable like drop
-				drop: function(event, ui) {
-					console.log('drop',ui,ui.item.data('object_data'),ui.item.parent().attr('id'));
+				helper: 'clone',
+				update: function(event, ui) {
+					if(ui.sender) {
+						return;
+					}
+					var target = jQuery(this);
+					var item = ui.item;
+					var position = target.children().index(item);
+					// 3 types of operations:
+					// 1. Internal move
+					if(target.data('container_name') === item.attr('data-container')) {
+						// …
+						return;
+					}
+					// 2. From other container
+					if(item.attr('data-container')) {
+						// …
+						return;
+					}
+					// 3. New element
+					item.attr('data-container', target.data('container_name'));
+					// add obeject, set id;
+					// page_type.callPageTypeMethod('', function(id) {
+					// 	item.attr('data-obeject-id', id);
+					// });
 				}
-			}).bind('sortstop', function(event, ui) {
-					console.log('sortstop', ui, ui.item.data('object_data'), ui.item.parent().attr('id'));
 			});
 		});
 		

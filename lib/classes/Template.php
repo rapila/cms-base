@@ -544,7 +544,7 @@ class Template {
 			$aIdentifierContext = $this->findIdentifierContext($oIdentifier);
 			$mReplaceValues = $aText;
 			if($aIdentifierContext !== null) {
-				if(($iIdentifierFlags&self::NO_NEW_CONTEXT)!==self::NO_NEW_CONTEXT) {
+				if(($iIdentifierFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT) {
 					$aContextPart = $this->partBetween($aIdentifierContext["start"], $aIdentifierContext["end"]);
 					$iIdentifierPosition = array_search($oIdentifier, $aContextPart, true);
 					foreach($aContextPart as $iContextPartKey => $mContextPartItem) {

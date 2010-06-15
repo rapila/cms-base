@@ -532,7 +532,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oTemplate = $this->oPage->getTemplate();
 		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
-			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue()), StringPeer::getString('page.container', null, null, array('container' => $oIdentifier->getValue()), true)));
+			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('widget.page.template_container', null, null, array('container' => $oIdentifier->getValue()), true)), null);
+			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue())));
 		}
 		
 		foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
@@ -575,7 +576,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function cleanupContainerStructure($mTag, $oParent = null) {
 		if(!($mTag instanceof HtmlTag)) {
 			//Text node
-			if(!$oParent->hasParameter('data-container-name')) {
+			if(!$oParent->hasParameter('data-container-name') && $oParent->getParameter('class') != 'template-container-description') {
 				$oParent->removeChild($mTag);
 			}
 			return;
@@ -583,7 +584,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		foreach($mTag->getChildren() as $mChild) {
 			$this->cleanupContainerStructure($mChild, $mTag);
 		}
-		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name')) {
+		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name') && $oParent->getParameter('class') != 'template-container-description') {
 			if($oParent === null) {
 				return null;
 			}

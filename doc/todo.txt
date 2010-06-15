@@ -4,7 +4,10 @@ Miscellaneous projects
 	Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 	Synchronisation, shell_exec, Exporte
+	install domain on mini-cms and prepare tests, db, temp db, access rights for test with blaccess
 	Lehrer, Klassen, Events, Galerie, Werkstücke
+- Gems Europe Update HTTP_Request2.php test
+	General check and update
 	
 Prioritäten
 - validation and user notification, validation serverside clientside
