@@ -5,66 +5,78 @@ Widget.types.page_type.types.default = {
 	
 	handle_admin: function(page_id, container, page_type) {
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
-		var available_modules = jQuery('<ul/>').addClass('available_modules draggable').appendTo(container);
-		
-		page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
-			var dragOptions = {
-				cursor: "move",
-				helper: 'clone',
-				containment: ".contents_container",
-				connectToSortable: '.filled_modules > .target'
-			};
-			jQuery.each(modules, function(object_type, module_name) {
-				var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
-				element.appendTo(available_modules);
-			});
-		});
-		
-		page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
-			jQuery.each(containers, function(container_name, params) {
-				var target = jQuery('<ul>').addClass('target '+container_name).css({float: 'left', width: '40%', minHeight: '300px', border: '1px solid red'}).data('container_name', container_name).appendTo(filled_modules);
+		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
 
-				jQuery.each(params.contents, function(object_id, content) {
-					jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
-				});
-			});
-			
-			filled_modules.find('.target').sortable({
-				connectWith: filled_modules.find('.target'),
-				helper: 'clone',
-				update: function(event, ui) {
-					if(ui.sender) {
-						return;
-					}
-					var target = jQuery(this);
-					var item = ui.item;
-					var position = target.children().index(item);
-					// 3 types of operations:
-					// 1. Internal move
-					if(target.data('container_name') === item.attr('data-container')) {
-						// …
-						return;
-					}
-					// 2. From other container
-					if(item.attr('data-container')) {
-						// …
-						return;
-					}
-					// 3. New element
-					item.attr('data-container', target.data('container_name'));
-					// add obeject, set id;
-					// page_type.callPageTypeMethod('', function(id) {
-					// 	item.attr('data-obeject-id', id);
-					// });
-				}
-			});
-		});
-		
-		//Parser stuff
+		// get containers before filling the objects
 		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
 			if(container_html) {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
+			var filled_modules_containers = filled_modules.find('ol');			
+			
+			// fill existing objects and handle drag and drop and sort
+			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
+				var get_target_container = function(container_name) {
+					var return_container = null;
+				 	filled_modules_containers.each(function() {
+						var target_container = jQuery(this);
+						if(target_container.attr('data-container-name') == container_name) {
+							return_container =  target_container;
+						}
+					});
+					return return_container;
+				}
+				jQuery.each(containers, function(container_name, params) {
+					var target = get_target_container(container_name);
+					jQuery.each(params.contents, function(object_id, content) {
+						jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
+					});
+				});
+			
+				filled_modules_containers.sortable({
+					connectWith: filled_modules.find('ol'),
+					helper: 'clone',
+					update: function(event, ui) {
+						if(ui.sender) {
+							return;
+						}
+						var item = ui.item;
+						// get final target (not original one)
+						var target = jQuery(item).parent();
+						var position = target.children().index(item);
+						
+						// just move within container
+						if(target.attr('data-container-name') === item.attr('data-container')) {
+							page_type.callPageTypeMethod('adminMoveObject', item.attr('data-object-id'), position);
+							return;
+						}
+						// move to container and resort
+						if(item.attr('data-container')) {
+							item.attr('data-container', target.attr('data-container-name'));
+							page_type.callPageTypeMethod('adminMoveObject', item.attr('data-object-id'), position, target.attr('data-container-name'));
+							return;
+						}
+						// add new object
+						item.attr('data-container', target.attr('data-container-name'));
+						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
+							item.attr('data-object-id', object_id);
+						});
+					}
+				});
+			});
+			page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
+				var dragOptions = {
+					cursor: "move",
+					helper: 'clone',
+					// containment: ".contents_container",
+					connectToSortable: filled_modules_containers
+				};
+				jQuery.each(modules, function(object_type, module_name) {
+					var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
+					element.appendTo(available_modules);
+				});
+			});
 		});
+		
 	}
 };

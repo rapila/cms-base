@@ -501,7 +501,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
-		$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+		$iSort = (int) $iSort;
+		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
 		if($sNewContainerName) {
 			foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), $iSort) as $oObject) {
 				$oObject->setSort($oObject->getSort()+1);
@@ -518,8 +519,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 	public function sortObjects($oContentObject, $iSort) {
 		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
-			$oObjects->setSort($i);
-			$oObjects->save();
+			$oObject->setSort($i);
+			$oObject->save();
 		}
 	}
 	
@@ -563,10 +564,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oParser = new TagParser("<body>$sTemplate</body>");
 		$oTag = $oParser->getTag();
 		$this->cleanupContainerStructure($oTag);
-		$oStyle = new HtmlTag('style');
-		$oStyle->addParameters(array('scoped', 'scoped'));
-		$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
-		$oTag->appendChild($oStyle);
+		// $oStyle = new HtmlTag('style');
+		// $oStyle->addParameters(array('scoped', 'scoped'));
+		// $oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+		// $oTag->appendChild($oStyle);
 		$sResult = $oTag->__toString();
 		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
 		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
