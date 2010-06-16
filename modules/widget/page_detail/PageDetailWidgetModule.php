@@ -3,6 +3,7 @@
  * @package modules.widget
  */
 class PageDetailWidgetModule extends PersistentWidgetModule {
+	
 	private $iPageId = null;
 	private $oPage;
 	const PAGE_PROPERTY_NS = 'page_property.';
@@ -17,11 +18,10 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function getPageData() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
-
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
-		$oPageString = $oPage->getActivePageString();
 		
-		// addition related params that do not relate to primary tables fields
+		// addition related page fields
+		$oPageString = $oPage->getActivePageString();
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
@@ -37,7 +37,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['CountReferences'] = count($mReferences);
 		if($mReferences !== null) {
 			$aResult['page_references'] = $mReferences;
-			
 		}
 		return $aResult;
 	}

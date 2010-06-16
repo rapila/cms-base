@@ -57,11 +57,15 @@ Widget.types.page_detail = {
 		this.setPageId(page_id);
 		this.fill_data();
 		this.enable_input();
+		var contents_container = this._element.find('.contents_container');
+		contents_container.empty();
+		if(contents_container) {
+			this.load_content(contents_container);
+		}
 	},
 	
 	load_content: function(container) {
 		var widget = this;
-		
 		if(this.current_page_id === null || this.content_has_been_loaded) {
 			return;
 		}
@@ -82,7 +86,6 @@ Widget.types.page_detail = {
 	fill_data: function() {
 		this.getPageData(function(page_data) {
 			var widget = this;
-			
 			this.current_page_id = page_data.Id;
 			this._element.find("input[name='name']").val(page_data.Name);
 			this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);

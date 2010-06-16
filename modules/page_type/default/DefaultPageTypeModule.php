@@ -530,7 +530,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function removeObject($iObjectId) {
-		ContentObjectPeer::doDelete($iObjectId);
+		return ContentObjectPeer::doDelete($iObjectId);
 	}
 
 	public function adminGetContainers() {

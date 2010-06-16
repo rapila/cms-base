@@ -4,6 +4,7 @@ Widget.types.page_type.types.default = {
 	},
 	
 	handle_admin: function(page_id, container, page_type) {
+		var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').css({ float:"right" });
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
 		available_modules.empty();
@@ -14,7 +15,6 @@ Widget.types.page_type.types.default = {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
-			console.log(filled_modules_containers);
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
@@ -28,11 +28,17 @@ Widget.types.page_type.types.default = {
 					});
 					return return_container;
 				}
+				var remove_object = function(item_to_remove) {
+					page_type.callPageTypeMethod('removeObject', item_to_remove.attr('data-object-id'), function(error) {
+						item_to_remove.remove();
+					});
+				}
 				jQuery.each(containers, function(container_name, params) {
 					var target = get_target_container(container_name);
-					console.log(params.contents);
 					jQuery.each(params.contents, function(object_id, content) {
-						jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
+						jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target).prepend(remove_button.clone().click(function() {
+								remove_object(jQuery(this).parent());
+						}));
 					});
 				});
 			
@@ -63,6 +69,9 @@ Widget.types.page_type.types.default = {
 						item.attr('data-container', target.attr('data-container-name'));
 						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
 							item.attr('data-object-id', object_id);
+							item.prepend(remove_button.clone().click(function() {
+								remove_object(jQuery(this).parent());
+							}));
 						});
 					}
 				});
