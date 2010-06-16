@@ -1,28 +1,31 @@
 Miscellaneous projects
-- naturfreunde, 
-	diskussion was beachten bei NFS, NFCH. 
-	Individualisierbare Sektionsseiten, angebunden an NFS db und Administration, Schnittstellen.
 - Schule Altenburg > server requirements for (windows servers, access rights)
 	Synchronisation, shell_exec, Exporte
 	install domain on mini-cms and prepare tests, db, temp db, access rights for test with blaccess
 	Lehrer, Klassen, Events, Galerie, Werkstücke
 - Gems Europe Update HTTP_Request2.php test
 	General check and update
-	
-Prioritäten
-- validation and user notification, validation serverside clientside
-- sketch rights handling, PermissionWidget
 
-PageTypeWidget?
-- template, page_type, containers and objects > language_objects
-- Template und Module, Einstellungen, Wie kann man das Ganze übersichtlich machen?
-- how to visualize templates most effectively????
-- fill only containers at page_load and make method ->getContainerObjects(); 
-- move containers_content to it's own method widget::content_load(container_name)
-- are DetailWidgets a delegate of a PageTypeWidget or viceversa
+CSSParser, adminGetContainers()
+- Caching of result > params page_type and template, modification date temp
+- CSS cleaning or transforming for admin > should that not be a callback feature for the Parser, to do this in one go...
 
-PageProperties
-- maybe make the same, load page properties only when tab is opened?
+PageTypeWidget
+- initial selected page drag and drop of content object does not work
+- carefully test for reliable behaviour, performance
+- if template and pagetype are the same should that be kind of persistant, not rendered all the time (container name and target ol)
+- sort order of objects does not work properly yet
+- add loading image for various loading times
+- everything does not work on Safari, Opera, Chrome
+- implement/sketch journal page type
+
+PageDetail
+- fix accordion, only one should be open. page_properties should not be visible by default
+- show content & references tabs only if not new
+- references
+- templates visualisation, choosing from images rather then names
+- activities show with loader image, ie. save, take away focus from save button
+- how to handle language, language objects, permissions etc
 
 PageTree Widget
 - display linktext in page tree (on hover page_title)
@@ -36,12 +39,6 @@ PageTree Widget
 - how to visualize is_folder, how to name it best (Untermenu zeigt)
 - make custom made checkboxes. all the same but the active checkbox green/red?
 - add page, move page d&d
-
-PageDetail
-- show content & references tabs only if not new
-- references
-- how to visually display different templates > standard ones like naming conventions, no clue
-- activities show with loader image, ie. save, take away focus from save button
 
 Detail
 - highlight save button when any input has changed
@@ -472,3 +469,9 @@ release-1-devel propel update
 - buttons in infobar, how to add, style and position them best?
 - noch einmal Blob! devel und trunk z.B. FrontendModule::getData();oLanguageObject->getData & stream_get_contents()??? check
 - page detail save on return/enter > bind(keydown) { if(event.which === 13) > page detail save }
+- template, page_type, containers and objects > language_objects
+- Template und Module, Einstellungen, Wie kann man das Ganze übersichtlich machen?
+- how to visualize templates most effectively????
+- fill only containers at page_load and make method ->getContainerObjects(); 
+- move containers_content to it's own method widget::content_load(container_name)
+- are DetailWidgets a delegate of a PageTypeWidget or viceversa

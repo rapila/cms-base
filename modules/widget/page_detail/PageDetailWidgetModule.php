@@ -32,6 +32,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_properties'] = $mAvailableProperties;
 			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 		}
+		
+		$aLanguages = LanguagePeer::getLanguagesAssoc();
+		if(count($aLanguages) > 1) {
+			$aResult['page_languages'] = $aLanguages;
+		}
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
 		$aResult['CountReferences'] = count($mReferences);

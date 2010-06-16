@@ -524,6 +524,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 	public function sortObjects($oContentObject) {
 		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
+			// ErrorHandler::log($oContentObject->getContainerName(), $oObject->getId(), $oObject->getObjectType(), $oObject->getSort(), $oObject->getUpdatedAtTimestamp());
 			$oObject->setSort($i);
 			$oObject->save();
 		}

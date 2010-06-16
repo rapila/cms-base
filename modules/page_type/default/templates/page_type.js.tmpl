@@ -4,35 +4,42 @@ Widget.types.page_type.types.default = {
 	},
 	
 	handle_admin: function(page_id, container, page_type) {
-		var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').css({ float:"right" });
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
 		available_modules.empty();
 		filled_modules.empty();
+		
 		// get containers before filling the objects
 		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
 			if(container_html) {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
+			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').css({ float:"right", cursor: "pointer" });
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
+				
+				// get target container
 				var get_target_container = function(container_name) {
-					var return_container = null;
+					var target_container = null;
 				 	filled_modules_containers.each(function() {
-						var target_container = jQuery(this);
-						if(target_container.attr('data-container-name') == container_name) {
-							return_container =  target_container;
+						var container = jQuery(this);
+						if(container.attr('data-container-name') == container_name) {
+							target_container =  container;
 						}
 					});
-					return return_container;
+					return target_container;
 				}
+				
+				// remove content objects
 				var remove_object = function(item_to_remove) {
 					page_type.callPageTypeMethod('removeObject', item_to_remove.attr('data-object-id'), function(error) {
 						item_to_remove.remove();
 					});
 				}
+				
+				// add objects to target container
 				jQuery.each(containers, function(container_name, params) {
 					var target = get_target_container(container_name);
 					jQuery.each(params.contents, function(object_id, content) {
@@ -65,7 +72,7 @@ Widget.types.page_type.types.default = {
 							page_type.callPageTypeMethod('adminMoveObject', item.attr('data-object-id'), position, target.attr('data-container-name'));
 							return;
 						}
-						// add new object
+						// add new object, prepare for delete
 						item.attr('data-container', target.attr('data-container-name'));
 						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
 							item.attr('data-object-id', object_id);
@@ -80,7 +87,6 @@ Widget.types.page_type.types.default = {
 				var dragOptions = {
 					cursor: "move",
 					helper: 'clone',
-					// containment: ".contents_container",
 					connectToSortable: filled_modules_containers
 				};
 				jQuery.each(modules, function(object_type, module_name) {
@@ -89,6 +95,5 @@ Widget.types.page_type.types.default = {
 				});
 			});
 		});
-		
 	}
 };
