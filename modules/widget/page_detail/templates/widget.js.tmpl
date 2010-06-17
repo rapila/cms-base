@@ -1,7 +1,6 @@
 Widget.types.page_detail = {
 	prepare: function() {
 		var widget = this;
-		
 		this.accordion = jQuery(this._element.find('div.accordion')).
 		accordion({active: 0, autoHeight: false, clearStyle: true}).
 		bind('accordionchangestart', function(event, ui) {
@@ -67,7 +66,7 @@ Widget.types.page_detail = {
 	load_page: function(page_id) {
 		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
-
+		this.toggle_loader(true);
 		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
@@ -76,6 +75,7 @@ Widget.types.page_detail = {
 		if(this.accordion_active() == 1) {
 			this.load_content(contents_container);
 		}
+		this.toggle_loader(false);
 		page_detail.show();
 	},
 
@@ -164,7 +164,7 @@ Widget.types.page_detail = {
 		});
 	},
 	
-	delete: function() {
+	deletePage: function() {
 		this.deletePage();
 	},
 	

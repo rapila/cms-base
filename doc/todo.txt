@@ -15,12 +15,15 @@ PageTypeWidget
 - carefully test for reliable behaviour, performance
 - if template and pagetype are the same should that be kind of persistant, not rendered all the time (container name and target ol)
 - sort order of objects does not work properly yet
-- add loading image for various loading times
-- everything does not work on Safari, Opera, Chrome
-	> Chrome > Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
 - implement/sketch journal page type
 
 PageDetail
+- add loading image for various loading times
+- everything does not work on Safari, Opera, Chrome
+	> Chrome > Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
+	> Safari, Opera? widget.load_page() is not a function
+- this.loader and toggle_loader do not work properly
+- check all code that I created
 - delete, cancel, reset buttons should only be visible when ready
 - fix accordion, only one should be open. page_properties should not be visible by default
 - show content & references tabs only if not new
