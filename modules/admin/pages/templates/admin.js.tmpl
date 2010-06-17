@@ -18,8 +18,7 @@ jQuery(document).ready(function() {
 	// init main content
 	var click_handler = function(event, element, page_id) {
 		page_detail.load_page(page_id);
-		// reset on pageload
-		jQuery("#accordion").accordion( "activate", 1);
+		// jQuery("div.accordion").accordion( "activate", 0);
 	};
 	
 	var icon_handler = function(event, element, child) {
@@ -72,7 +71,7 @@ jQuery(document).ready(function() {
 	}), true, false).
 	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
 		alert('delete page');
-		page_detail.delete();
+		// page_detail.delete();
 	}), true, false);
 
 	// init language change

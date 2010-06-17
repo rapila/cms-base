@@ -2,7 +2,7 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var widget = this;
 		
-		this.accordion = jQuery(this._element.find('.accordion')).
+		this.accordion = jQuery(this._element.find('div.accordion')).
 		accordion({active: 0, autoHeight: false, clearStyle: true}).
 		bind('accordionchangestart', function(event, ui) {
 			if(!ui.newContent.is('.contents_container')) {
@@ -54,10 +54,10 @@ Widget.types.page_detail = {
 	},
 	
 	load_page: function(page_id) {
-		var page_detail = jQuery('.page_detail');
+		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
 
-		var contents_container = this._element.find('.contents_container');
+		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
 		this.fill_data();
@@ -65,7 +65,6 @@ Widget.types.page_detail = {
 		if(contents_container) {
 			this.load_content(contents_container);
 		}
-		this.toggle_loader(false);
 		page_detail.show();
 	},
 
@@ -126,7 +125,7 @@ Widget.types.page_detail = {
 			}
 			// page_properties
 			if(page_data.page_properties != undefined) {
-				var page_properties_container = this._element.find(".page_properties.container");
+				var page_properties_container = this._element.find("div.page_properties");
 				page_properties_container.empty();
 				var default_name = "{{writeString=widget.default}}";
 				for(property_name in page_data.page_properties) {
@@ -147,11 +146,9 @@ Widget.types.page_detail = {
 						}
 					}
 					page_properties_container.append(property_container);
-					page_properties_container.attr('style' , 'display:block;');
 				} 
 			}	else {
-				// remove properties if not exists
-				this._element.find(".page_properties").remove();
+				this._element.find("div.page_properties").remove();
 			}
 		});
 	},

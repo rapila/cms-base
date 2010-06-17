@@ -17,9 +17,11 @@ PageTypeWidget
 - sort order of objects does not work properly yet
 - add loading image for various loading times
 - everything does not work on Safari, Opera, Chrome
+	> Chrome > Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
 - implement/sketch journal page type
 
 PageDetail
+- delete, cancel, reset buttons should only be visible when ready
 - fix accordion, only one should be open. page_properties should not be visible by default
 - show content & references tabs only if not new
 - references
@@ -39,6 +41,9 @@ PageTree Widget
 - how to visualize is_folder, how to name it best (Untermenu zeigt)
 - make custom made checkboxes. all the same but the active checkbox green/red?
 - add page, move page d&d
+
+Security and Stability!!!!!
+- ResourceInclude make stable, fallback for google lib.
 
 Detail
 - highlight save button when any input has changed
