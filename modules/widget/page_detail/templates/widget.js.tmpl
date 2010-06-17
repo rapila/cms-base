@@ -53,6 +53,17 @@ Widget.types.page_detail = {
 		this._element.find('input, textarea, button').attr('disabled', null);
 	},
 	
+	accordion_active: function() {
+		var accordion_headers = this._element.find('div.accordion h3');
+		var index;
+		accordion_headers.each(function(i, element) {
+			if(jQuery(element).hasClass('ui-state-active')) {
+				index = i;
+			}
+		});
+		return index;
+	},
+	
 	load_page: function(page_id) {
 		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
@@ -62,7 +73,7 @@ Widget.types.page_detail = {
 		this.setPageId(page_id);
 		this.fill_data();
 		this.enable_input();
-		if(contents_container) {
+		if(this.accordion_active() == 1) {
 			this.load_content(contents_container);
 		}
 		page_detail.show();

@@ -13,8 +13,8 @@ body.login h1 {
 }
 #admin_message {
   position: fixed;
-  right: 0;
-  bottom: 20px;
+  left: 278px;
+  top: 58px;
   z-index: 5;
 }
 #admin_message .ui-notify { margin-bottom: 5px; }

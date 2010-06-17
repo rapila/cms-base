@@ -50,7 +50,7 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.link_category_list');
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('updated_at');
+				$aResult['heading'] = StringPeer::getString('widget.updated_at');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -69,7 +69,6 @@ class LinkListWidgetModule extends WidgetModule {
 		return null;
 	}
 
-	
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {
 			return LinkPeer::LINK_CATEGORY_ID;
