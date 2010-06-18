@@ -7,10 +7,14 @@ Miscellaneous projects
 	General check and update
 
 Priorities
-- bugs and strategy keywords browsers, ie page_type "default"
+- bugs and strategy keywords browsers, ie page_type "default" (unexpected token default Chrome)
+	> Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
+	> SOLUTION:page_detail delete: function() renamed to deletePage() since it throughs exceptions in all browsers but Firefox
 - start example code for permissions in admin, widgets and permission
 - module, site versioning strategy for continuous development of modules ()
 - add and sort pages
+- getListContent Limit arguments consistency, array_splice($aResult, $iRowStart, $iRowCount);
+- usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
 
 PageTypeWidget
 - Keyword "default" error on Chrome, Opera etc. Widget.types.page_type.types.default, how to solve? name change to "standard"
@@ -22,9 +26,6 @@ PageTypeWidget
 PageDetail
 - add loading image for various loading times
 - everything does not work on Safari, Opera, Chrome
-	> Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
-	> Safari, Opera? widget.load_page() is not a function
-	> SOLUTION:page_detail delete: function() renamed to deletePage() since it though exceptions in all browsers but Firefox
 - this.loader and toggle_loader do not work properly
 - check all code that I created
 - delete, cancel, reset buttons should only be visible when ready

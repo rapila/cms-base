@@ -72,6 +72,6 @@ class StringsAdminModule extends AdminModule {
 	}
 
 	public function usedWidgets() {
-		return array($this->oListWidget, $this->oListWidget);
+		return array($this->oSidebarWidget, $this->oListWidget);
 	}
 }
