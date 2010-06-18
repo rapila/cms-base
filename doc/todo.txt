@@ -6,22 +6,25 @@ Miscellaneous projects
 - Gems Europe Update HTTP_Request2.php test
 	General check and update
 
-CSSParser, adminGetContainers()
-- Caching of result > params page_type and template, modification date temp
-- CSS cleaning or transforming for admin > should that not be a callback feature for the Parser, to do this in one go...
+Priorities
+- bugs and strategy keywords browsers, ie page_type "default"
+- start example code for permissions in admin, widgets and permission
+- module, site versioning strategy for continuous development of modules ()
+- add and sort pages
 
 PageTypeWidget
-- initial selected page drag and drop of content object does not work
+- Keyword "default" error on Chrome, Opera etc. Widget.types.page_type.types.default, how to solve? name change to "standard"
+- sort order of objects does not work properly yet, looks like mysql lock... problem, if ErrorHandler::log() > correct
 - carefully test for reliable behaviour, performance
 - if template and pagetype are the same should that be kind of persistant, not rendered all the time (container name and target ol)
-- sort order of objects does not work properly yet
 - implement/sketch journal page type
 
 PageDetail
 - add loading image for various loading times
 - everything does not work on Safari, Opera, Chrome
-	> Chrome > Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
+	> Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
 	> Safari, Opera? widget.load_page() is not a function
+	> SOLUTION:page_detail delete: function() renamed to deletePage() since it though exceptions in all browsers but Firefox
 - this.loader and toggle_loader do not work properly
 - check all code that I created
 - delete, cancel, reset buttons should only be visible when ready
@@ -33,6 +36,7 @@ PageDetail
 - how to handle language, language objects, permissions etc
 
 PageTree Widget
+- new page, move page d&d
 - display linktext in page tree (on hover page_title)
 - language change and language page strings and objects
 - highlight initially selected tree element, like root_page of usePath Page
@@ -43,7 +47,10 @@ PageTree Widget
 - discuss subtle highlight of active parent elements to make hierarchy explicit
 - how to visualize is_folder, how to name it best (Untermenu zeigt)
 - make custom made checkboxes. all the same but the active checkbox green/red?
-- add page, move page d&d
+
+CSSParser, adminGetContainers()
+- Caching of result > params page_type and template, modification date temp
+- CSS cleaning or transforming for admin > should that not be a callback feature for the Parser, to do this in one go...
 
 Security and Stability!!!!!
 - ResourceInclude make stable, fallback for google lib.

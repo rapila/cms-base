@@ -12,6 +12,7 @@ Widget.types.page_detail = {
 		
 		this.content_has_been_loaded = false;
 		this.current_page_id = null;
+		this.loader = jQuery('<div>').hide().insertAfter(this._element);
 		
 		// templates
 		var option = jQuery('<option/>');
@@ -41,7 +42,6 @@ Widget.types.page_detail = {
 				this.save();
 			}
 		}.bind(this));
-		this.loader = jQuery('<div>').hide().insertAfter(this._element);
 	},
 	
 	disable_input: function() {
@@ -164,7 +164,7 @@ Widget.types.page_detail = {
 		});
 	},
 	
-	deletePage: function() {
+	delete_page: function() {
 		this.deletePage();
 	},
 	

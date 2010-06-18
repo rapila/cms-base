@@ -115,7 +115,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function deletePage() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
-		// ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
+		ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
 		// check if user may delete page, or maybe just set inactive the current language
 		
 		if(ReferencePeer::countReferences($oPage)) {
