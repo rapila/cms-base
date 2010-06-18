@@ -467,6 +467,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			
 			$iCount = 0;	
 			foreach($aObjects as $iCount => $oObject) {
+				// ErrorHandler::log($oObject->getContainerName(), $oObject->getObjectType(), $oObject->getSort(), $oObject->getUpdatedAt());
 				$iCount++;
 				$oLanguageObject = $oObject->getActiveLanguageObjectBe();
 				if($oLanguageObject === null) {
@@ -504,26 +505,23 @@ class DefaultPageTypeModule extends PageTypeModule {
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
+		$bSortAsc = $iSort > $oContentObject->getSort();
+		// ErrorHandler::log($oContentObject->getSort(), $iSort);
 		if($sNewContainerName) {
 			$oContentObject->setContainerName($sNewContainerName);
 			$oContentObject->setSort($iSort);
 			$oContentObject->setUpdatedAt(time());
-			$oContentObject->save();
-			foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
-				$oObject->setSort($i);
-				$oObject->save();
-			}
 		} else {
 			$oContentObject->setSort($iSort);
 			$oContentObject->setUpdatedAt(time());
-			$oContentObject->save();
-			$this->sortObjects($oContentObject);
 		}
+		$oContentObject->save();
+		$this->sortObjects($oContentObject, $bSortAsc);
 		return $oContentObject->getId();
 	}
 		
-	public function sortObjects($oContentObject) {
-		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName()) as $i => $oObject) {
+	public function sortObjects($oContentObject, $bSortAsc) {
+		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), null, $bSortAsc) as $i => $oObject) {
 			// ErrorHandler::log($oContentObject->getContainerName(), $oObject->getId(), $oObject->getObjectType(), $oObject->getSort(), $oObject->getUpdatedAtTimestamp());
 			$oObject->setSort($i);
 			$oObject->save();

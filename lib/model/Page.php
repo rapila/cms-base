@@ -275,14 +275,17 @@ class Page extends BasePage {
 		return $oCrit;
 	}
 	
-	public function getObjectsForContainer($sContainerName, $mEqualHigherSort=null) {
+	public function getObjectsForContainer($sContainerName, $mEqualHigherSort=null, $bSortAsc = false) {
 		$oCrit = $this->getObjectsForContainerCriteria($sContainerName);
 		if($mEqualHigherSort) {
 			$oCrit->add(ContentObjectPeer::SORT, $mEqualHigherSort, Criteria::GREATER_EQUAL);
 		}
 		$oCrit->addAscendingOrderByColumn(ContentObjectPeer::SORT);
-		$oCrit->addDescendingOrderByColumn(ContentObjectPeer::UPDATED_AT);
-		// ErrorHandler::log($sContainerName, $mEqualHigherSort, $oCrit);
+		if($bSortAsc) {
+			$oCrit->addAscendingOrderByColumn(ContentObjectPeer::UPDATED_AT);
+		} else {
+			$oCrit->addDescendingOrderByColumn(ContentObjectPeer::UPDATED_AT);
+		}
 		return $this->getContentObjects($oCrit);
 	}
 
