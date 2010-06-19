@@ -17,9 +17,7 @@ Priorities
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
 
-Major bugs & consequences, questions
-- strategy keywords/namespaces browsers, ie page_type "default" (unexpected token default Chrome)
-	keyword delete: SOLUTION:page_detail.delete() renamed to deletePage() since it throws exceptions in all browsers but Firefox
+Bugs & consequences, questions
 - Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
 - getListContent Limit arguments consistency
 	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
@@ -42,6 +40,7 @@ PageDetail
 - templates visualisation, choosing from images rather then names, CSS Parser
 - activities show with loader image, ie. save, take away focus from save button
 - how to handle language, language objects, permissions etc
+- show curren
 
 PageTree Widget
 - new page, move page d&d
@@ -74,6 +73,7 @@ Widget tasks
 - testing QUnit
 - how can we simplify and make more transparent and more effective?
 - PermissionWidget? @see use_cases_permissions.txt
+- d&d, sortable and assign to category or tag etc
 
 SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
@@ -497,3 +497,5 @@ release-1-devel propel update
 - update tree element on save
 - TODO: re-setting the last selected item after reload should be default functionality
 - fix select menu selected
+- strategy keywords/namespaces browsers, ie page_type "default" (unexpected token default Chrome)
+	keyword delete: SOLUTION:page_detail.delete() renamed to deletePage() since it throws exceptions in all browsers but Firefox
