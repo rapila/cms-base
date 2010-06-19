@@ -1,0 +1,12 @@
+use_cases permissions
+1. no backend rights
+ 	 or backend rights but for some reason no rights? 
+	 > what happens, what does the user see
+2. no page rights, only module rights 
+	 discuss module rights, where to store
+	 > what happens, what does the user see
+3. pages rights, but references
+	 discuss is_inherited, may_edit_page_details, may_edit_page_contents, may_delete, may_create_children, may_view_page
+	 > no permission to delete, only set inactive
+	 > display references and message please remove references before you finally delete page in page_references tab
+	

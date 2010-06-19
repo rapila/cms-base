@@ -12,7 +12,8 @@ Priorities
 	> Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
 	> SOLUTION:page_detail delete: function() renamed to deletePage() since it throughs exceptions in all browsers but Firefox
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
-- start example code for permissions in admin, widgets and permission
+  - mini_cms_1, externals etc.
+- start example code for permissions in admin, widgets and permission, @see use_cases_permissions.txt
 - add and sort pages
 - getListContent Limit arguments consistency, array_splice($aResult, $iRowStart, $iRowCount);
 - usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
