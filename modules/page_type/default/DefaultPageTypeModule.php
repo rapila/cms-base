@@ -555,6 +555,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
 		$oCss = $oParser->parse();
+		$this->cleanupCSS($oCss);
 		
 		$sTemplate = $oTemplate->render();
 		
@@ -564,10 +565,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oParser = new TagParser("<body>$sTemplate</body>");
 		$oTag = $oParser->getTag();
 		$this->cleanupContainerStructure($oTag);
-		// $oStyle = new HtmlTag('style');
-		// $oStyle->addParameters(array('scoped', 'scoped'));
-		// $oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
-		// $oTag->appendChild($oStyle);
+		$oStyle = new HtmlTag('style');
+		$oStyle->addParameters(array('scoped' => 'scoped'));
+		$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+		$oTag->appendChild($oStyle);
 		$sResult = $oTag->__toString();
 		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
 		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
@@ -590,6 +591,39 @@ class DefaultPageTypeModule extends PageTypeModule {
 				return null;
 			}
 			$oParent->removeChild($mTag);
+		}
+	}
+	
+	private function cleanupCSS($oCss) {
+		//Change selectors
+		$sContainerClass = '.filled_modules';
+		$aMatches;
+		foreach($oCss->getAllSelectors() as $oSelector) {
+			$aSelector = $oSelector->getSelector();
+			foreach($aSelector as $iKey => $sSelector) {
+				if(preg_match('/\\bhtml\\b.+\\bbody\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
+					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+				}
+				if(preg_match('/\\b(html|body)\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
+					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).$sContainerClass.substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+				} else {
+					$aSelector[$iKey] = "$sContainerClass $sSelector";
+				}
+			}
+			$oSelector->setSelector($aSelector);
+		}
+		
+		//Change values
+		foreach($oCss->getAllValues() as $mValue) {
+			if($mValue instanceof CSSSize && !$mValue->isRelative()) {
+				$mValue->setSize($mValue->getSize()/4);
+			}
+		}
+		
+		//Remove properties
+		foreach($oCss->getAllRuleSets() as $oRuleSet) {
+			// $oRuleSet->removeRule('font-size');
+			$oRuleSet->removeRule('cursor');
 		}
 	}
 

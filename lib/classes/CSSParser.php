@@ -455,7 +455,7 @@ abstract class CSSList {
 		} else if($oElement instanceof CSSRule) {
 			foreach($oElement->getValues() as $aValues) {
 				foreach($aValues as $mValue) {
-					$aResult[] = $aValues;
+					$aResult[] = $mValue;
 				}
 			}
 		}
@@ -563,7 +563,7 @@ abstract class CSSRuleSet {
 	}
 	
 	public function getRules() {
-		return $aRules;
+		return $this->aRules;
 	}
 	
 	public function removeRule($mRule) {
@@ -704,7 +704,7 @@ class CSSSize extends CSSValue {
 	}
 	
 	public function setSize($fSize) {
-	    $this->fSize = $fSize;
+	    $this->fSize = floatval($fSize);
 	}
 
 	public function getSize() {
