@@ -51,8 +51,9 @@ PageTree Widget
 - make custom made checkboxes. all the same but the active checkbox green/red?
 
 CSSParser, adminGetContainers()
+- CSS cleaning for admin containers > why not handle with CSSParser::consumeIfNot(aRules=width, margin, clear, float?)
+	Problem > nested containers... how to?
 - Caching of result > params page_type and template, modification date temp
-- CSS cleaning or transforming for admin > should that not be a callback feature for the Parser, to do this in one go...
 
 Security and Stability!!!!!
 - ResourceInclude make stable, fallback for google lib.

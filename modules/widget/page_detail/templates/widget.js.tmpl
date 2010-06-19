@@ -127,8 +127,13 @@ Widget.types.page_detail = {
 			this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
 
 			// references
-			var count_text = page_data.CountReferences > 0 ? " ("+page_data.CountReferences+")" : '';
-			this._element.find(".references_count").text(count_text);
+			var count_references = page_data.CountReferences;
+			var count_text = count_references > 0 ? " ("+count_references+")" : '';
+			if(count_references == 0) {
+				this._element.find(".page_references").remove();
+			} else {
+				this._element.find(".references_count").text(count_text);
+			}
 
 			// page languages
 			if(page_data.page_languages != undefined) {
@@ -159,7 +164,7 @@ Widget.types.page_detail = {
 					page_properties_container.append(property_container);
 				} 
 			}	else {
-				this._element.find("div.page_properties").remove();
+				this._element.find(".page_properties").remove();
 			}
 		});
 	},
