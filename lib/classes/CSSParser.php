@@ -418,9 +418,71 @@ abstract class CSSList {
 		}
 		return $sResult;
 	}
+	
+	public function getContents() {
+		return $this->aContents;
+	}
+	
+	protected function allSelectors(&$aResult) {
+		foreach($this->aContents as $mContent) {
+			if($mContent instanceof CSSSelector) {
+				$aResult[] = $mContent;
+			} else if($mContent instanceof CSSList) {
+				$mContent->allSelectors($aResult);
+			}
+		}
+	}
+	
+	protected function allRuleSets(&$aResult) {
+		foreach($this->aContents as $mContent) {
+			if($mContent instanceof CSSRuleSet) {
+				$aResult[] = $mContent;
+			} else if($mContent instanceof CSSList) {
+				$mContent->allRuleSets($aResult);
+			}
+		}
+	}
+	
+	protected function allValues($oElement, &$aResult) {
+		if($oElement instanceof CSSList) {
+			foreach($oElement->getContents() as $oContent) {
+				$this->allValues($oContent, $aResult);
+			}
+		} else if($oElement instanceof CSSRuleSet) {
+			foreach($oElement->getRules() as $oRule) {
+				$this->allValues($oRule, $aResult);
+			}
+		} else if($oElement instanceof CSSRule) {
+			foreach($oElement->getValues() as $aValues) {
+				foreach($aValues as $mValue) {
+					$aResult[] = $aValues;
+				}
+			}
+		}
+	}
 }
 
 class CSSDocument extends CSSList {
+	public function getAllSelectors() {
+		$aResult = array();
+		$this->allSelectors($aResult);
+		return $aResult;
+	}
+	
+	public function getAllRuleSets() {
+		$aResult = array();
+		$this->allRuleSets($aResult);
+		return $aResult;
+	}
+	
+	public function getAllValues($oElement = null) {
+		if($oElement === null) {
+			$oElement = $this;
+		}
+		$aResult = array();
+		$this->allValues($oElement, $aResult);
+		return $aResult;
+	}
 }
 
 class CSSMediaQuery extends CSSList {
@@ -498,6 +560,19 @@ abstract class CSSRuleSet {
 	
 	public function addRule(CSSRule $oRule) {
 		$this->aRules[$oRule->getRule()] = $oRule;
+	}
+	
+	public function getRules() {
+		return $aRules;
+	}
+	
+	public function removeRule($mRule) {
+		if($mRule instanceof CSSRule) {
+			$mRule = $mRule->getRule();
+		}
+		if(isset($this->aRules[$mRule])) {
+			unset($this->aRules[$mRule]);
+		}
 	}
 	
 	public function __toString() {
