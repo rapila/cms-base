@@ -618,6 +618,10 @@ class CSSSelector extends CSSRuleSet {
 		}
 	}
 	
+	public function getSelector() {
+		return $this->aSelector;
+	}
+	
 	public function __toString() {
 		$sResult = implode(', ', $this->aSelector).' {';
 		$sResult .= parent::__toString();
