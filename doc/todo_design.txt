@@ -1,4 +1,31 @@
-todo design
+AKTUELL todo design
+*****************************************************************************************************************
+
+Upcoming meeting, requirements
+- Pages implemented with rights and notifications
+- document upload implemented in various environments (ie Richtext, DocumentsAdmin)
+- Permissions and moduleSelect grouping etc implemented
+- dashboard and help discussed, see permissions, special module editors, admin task related to module
+- preview examples and general outline
+- a somewhat clear css and skin strategy
+
+Main discussion points
+- content language handling, general, pages and strings, multilingual custom modules (like mini-cms projects, using strings, tabs)
+- Detail design suggestion, offered but not done yet
+- PageTree and detail improvements, handling configuration, editing, saving, notifications
+- DocumentUpload drag and drop visualisation
+- when is it time to make new icons, css?
+
+CMOS Redesign DOMAIN CMS name
+domain / name diskussion 
+[.ch,.net] ixmos cimos modlo nodos expan axila pumul rondolo rodea
+[.ch] cemos, cimos, macros, mosco, nodi, visca, meira, crealo, pides, pidelo, rondolo, crealo, sinea, vuela, quesea, rapilo, andala, usalo, uselo, llena, llenalo, mosic, momul, momol, abria, abeja, expan, solan, mosic, mosia, mosio, organos, orgos, ormos, mosix, arange, aliq, piragua (kanu), pirana, peca (sommersprosse), tampi (tambien para idiotas), pire, framos, fillme, useme, fillmy, olani, aleni, adeni, abani, aboni
+
+
+
+ARCHIVE todo
+*****************************************************************************************************************
+Meeting 16.4.2010, Preparation and notes
 
 Allgemeiner Eindruck
 - Frage: erkennt man wo man ist?
@@ -26,10 +53,6 @@ Inhaltssprache
 - Ist nicht immer relevant. z.B. Seiten und Texte (internationalisierung)
 - Wo soll sie angezeigt werden und wie wird das Ganze verständlich
 
-CMOS Redesign DOMAIN CMS name
-domain / name diskussion 
-[.ch,.net] ixmos cimos modlo nodos expan axila pumul rondolo rodea
-[.ch] cemos, cimos, macros, mosco, nodi, visca, meira, crealo, pides, pidelo, rondolo, crealo, sinea, vuela, quesea, rapilo, andala, usalo, uselo, llena, llenalo, mosic, momul, momol, abria, abeja, expan, solan, mosic, mosia, mosio, organos, orgos, ormos, mosix, arange, aliq, piragua (kanu), pirana, peca (sommersprosse), tampi (tambien para idiotas), pire, framos, fillme, useme, fillmy, olani, aleni, adeni, abani, aboni
 
 Notizen Besprechung
 - Ankommen beim Baum oder beim Dashboard? Wozu braucht es ein Dashboard. Nur machen wenn es Sinn macht und genaue einfach erstellbare Inhalte hat.

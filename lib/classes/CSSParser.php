@@ -570,7 +570,14 @@ abstract class CSSRuleSet {
 		if($mRule instanceof CSSRule) {
 			$mRule = $mRule->getRule();
 		}
-		if(isset($this->aRules[$mRule])) {
+		if(strrpos($mRule, '-')===strlen($mRule)-strlen('-')) {
+			$sStart = substr($mRule, 0, -1);
+			foreach($this->aRules as $oRule) {
+				if($oRule->getRule() === $sStart || strpos($oRule->getRule(), $mRule) === 0) {
+					unset($this->aRules[$oRule->getRule()]);
+				}
+			}
+		} else if(isset($this->aRules[$mRule])) {
 			unset($this->aRules[$mRule]);
 		}
 	}

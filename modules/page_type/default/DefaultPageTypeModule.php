@@ -616,13 +616,15 @@ class DefaultPageTypeModule extends PageTypeModule {
 		//Change values
 		foreach($oCss->getAllValues() as $mValue) {
 			if($mValue instanceof CSSSize && !$mValue->isRelative()) {
-				$mValue->setSize($mValue->getSize()/4);
+				$mValue->setSize($mValue->getSize()/3);
 			}
 		}
 		
 		//Remove properties
 		foreach($oCss->getAllRuleSets() as $oRuleSet) {
-			// $oRuleSet->removeRule('font-size');
+			$oRuleSet->removeRule('font-');
+			$oRuleSet->removeRule('background-');
+			$oRuleSet->removeRule('list-');
 			$oRuleSet->removeRule('cursor');
 		}
 	}

@@ -8,33 +8,38 @@ Miscellaneous projects
 
 Priorities
 - discuss complete strategy and priorities, timeline of CMOS!
-- important bugs and strategy keywords browsers, ie page_type "default" (unexpected token default Chrome)
-	> Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
-	> SOLUTION:page_detail delete: function() renamed to deletePage() since it throughs exceptions in all browsers but Firefox
+	include projects like Schule Wettingen and more
+- discuss permissions @see use_cases_permissions.txt
+- validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
+- discuss sketch document upload and replace html5 (uploadWidget?), 
+	use case, normal, massupload, examples projects (wills, taylormade, mini-cms), galleries
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
   - mini_cms_1, externals etc.
-- start example code for permissions in admin, widgets and permission, @see use_cases_permissions.txt
-- add and sort pages
-- getListContent Limit arguments consistency, array_splice($aResult, $iRowStart, $iRowCount);
+- timeline and herrmanngerman next @see todo_design
+
+Major bugs & consequences, questions
+- strategy keywords/namespaces browsers, ie page_type "default" (unexpected token default Chrome)
+	keyword delete: SOLUTION:page_detail.delete() renamed to deletePage() since it throws exceptions in all browsers but Firefox
+- Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
+- getListContent Limit arguments consistency
+	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
+- DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
 - usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
 
 PageTypeWidget
-- Keyword "default" error on Chrome, Opera etc. Widget.types.page_type.types.default, how to solve? name change to "standard"
-- sort order of objects does not work properly yet, looks like mysql lock... problem, if ErrorHandler::log() > correct
 - carefully test for reliable behaviour, performance
-- if template and pagetype are the same should that be kind of persistant, not rendered all the time (container name and target ol)
+- adminContainers: if template and pagetype are the same should that be kind of persistant, 
+	not rendered all the time (container name and target ol)
 - implement/sketch journal page type
 
 PageDetail
-- add loading image for various loading times
-- everything does not work on Safari, Opera, Chrome
-- this.loader and toggle_loader do not work properly
+- add loading image for various loading instances
+- check other Browser bugs, @see above
 - check all code that I created
-- delete, cancel, reset buttons should only be visible when ready
-- fix accordion, only one should be open. page_properties should not be visible by default
+- delete, cancel/reset and save buttons should only be visible when ready
 - show content & references tabs only if not new
-- references
-- templates visualisation, choosing from images rather then names
+- references, delete restriction, information, load on click or on delete restriction
+- templates visualisation, choosing from images rather then names, CSS Parser
 - activities show with loader image, ie. save, take away focus from save button
 - how to handle language, language objects, permissions etc
 
@@ -42,16 +47,13 @@ PageTree Widget
 - new page, move page d&d
 - display linktext in page tree (on hover page_title)
 - language change and language page strings and objects
-- highlight initially selected tree element, like root_page of usePath Page
-- open initially selected item all the time if has childen
-- update tree element on save
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
 - discuss subtle highlight of active parent elements to make hierarchy explicit
 - how to visualize is_folder, how to name it best (Untermenu zeigt)
 - make custom made checkboxes. all the same but the active checkbox green/red?
 
-CSSParser, adminGetContainers()
+CSSParser, adminGetContainers(), no major priority, can be done anytime
 - CSS cleaning for admin containers > why not handle with CSSParser::consumeIfNot(aRules=width, margin, clear, float?)
 	Problem > nested containers... how to?
 - Caching of result > params page_type and template, modification date temp
@@ -60,25 +62,18 @@ Security and Stability!!!!!
 - ResourceInclude make stable, fallback for google lib.
 
 Detail
-- highlight save button when any input has changed
-- make save always standout, different then save
+- highlight save button when any input has changed, cancel button should close window if no changes have been entered?
+- make save always standout, different then cancel
 - discuss tabs, icons-"tabs" for references, list / thumbnail views etc
 
 Widget tasks
-- lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin
-- getListContents() array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
-- TODO: re-setting the last selected item after reload should be default functionality
 - sidebar element edit/delete?
 - userNotify > array and links handling for helpful messages (not found)
 	remove on click of other element, maybe close button
 - detail (row) widget, field widget? @see also project management
-- how can we simplify and make more transparent and more effective?
 - testing QUnit
-- PermissionWidget?
-
-Browser fixes & bugs
-- Firefox does not show PagesAdmin pages when "find" mode is on and Firebug is off
-- DumpExporter wirft oft eine JS exception, führt den Export bei neuladen der seite jedoch aus (wahrscheinlich mit FireBug on)
+- how can we simplify and make more transparent and more effective?
+- PermissionWidget? @see use_cases_permissions.txt
 
 SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
@@ -89,7 +84,7 @@ Issues
 - blur on filter change
 - ModuleManager > group, sort etc, handling for getModuleSelect
 - how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
-	this issue concerns module select configuration and rights too.
+	this issue concerns permissions and moduleSelect, @see use_cases_permissions.txt
 - RichtextUtil 	change names like parseInputFromMce to more generic ones for different editors
 
 html and css
@@ -99,8 +94,7 @@ html and css
 
 dashboard, context help
 - if dashboard is a context button I guess it should be in the footer
-- help: in detail, list
-- fix select menu selected
+- help: in detail, list, how to organise ? documentation.mini-cms.ch? how to do?
 - think about the requirements of access rights, modules, categories, altenburg etc, discuss Groups / Users / PagesRight
 
 General topics
@@ -152,7 +146,7 @@ GroupsAdminModule
 - add users of this group
 - discuss future handling of module rights, ie projects, newsletter, news, maybe documents per category etc.
 - discuss handling of users and groups to make it transparent > groups, show users and d&d, users show admin, backend, frontend?
-- is inherit required for Pages or should it alwayls be inherit if somebody can edit or create a page, the should do the same for children
+- is inherit required for Pages or should it always be inherit if somebody can edit or create a page, the should do the same for children
 
 LinkDetail
 - find more elegant version for protocol options
@@ -494,3 +488,12 @@ release-1-devel propel update
 - fill only containers at page_load and make method ->getContainerObjects(); 
 - move containers_content to it's own method widget::content_load(container_name)
 - are DetailWidgets a delegate of a PageTypeWidget or viceversa
+- Keyword "default" error on Chrome, Opera etc. Widget.types.page_type.types.default, how to solve? name change to "standard"
+- sort order of objects does not work properly yet, looks like mysql lock... problem, if ErrorHandler::log() > correct
+- fix accordion, only one should be open. page_properties should not be visible by default
+- lang strings admin strings should overwrite backend strings, or ignore backend strings for new_admin
+- highlight initially selected tree element, like root_page of usePath Page
+- open initially selected item all the time if has childen
+- update tree element on save
+- TODO: re-setting the last selected item after reload should be default functionality
+- fix select menu selected
