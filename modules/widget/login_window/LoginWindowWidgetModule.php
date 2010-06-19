@@ -10,6 +10,7 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 		}
 		$iLoginResult = Session::getSession()->login($sUserName, $sPassword);
 		if(($iLoginResult & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
+			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
 			return array('is_valid' => true);
 		} else if(($iLoginResult & Session::USER_IS_INACTIVE) === Session::USER_IS_INACTIVE) {
 			throw new LocalizedException('flash.login_user_inactive');
