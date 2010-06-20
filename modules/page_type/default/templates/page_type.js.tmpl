@@ -10,9 +10,8 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	edit_object: function(item_to_edit) {
-		console.log('editing', item_to_edit.attr('data-object-id'));
 		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(html, error) {
-			var content = jQuery.parseHTML(html);
+			var content = jQuery(document.createElement('div')).append(jQuery.parseHTML(html));
 			
 			content.dialog();
 		});

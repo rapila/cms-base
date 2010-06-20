@@ -500,13 +500,21 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function adminEdit($iObjectId) {
 		$sLanguageId = AdminManager::getContentLanguage();
-		$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
-		$oLanguageObject = $oContentObject->getLanguageObject($sLanguageId);
-		if($oLanguageObject === null) {
-			$oLanguageObject = new LanguageObject();
-			$oLanguageObject->setLanguageId($sLanguageId);
-			$oLanguageObject->setContentObject($oContentObject);
-			$oLanguageObject->setData(null);
+		$this->oCurrentContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+		$this->oCurrentLanguageObject = $this->oCurrentContentObject->getLanguageObject($sLanguageId);
+		if($this->oCurrentLanguageObject === null) {
+			$this->oCurrentLanguageObject = new LanguageObject();
+			$this->oCurrentLanguageObject->setLanguageId($sLanguageId);
+			$this->oCurrentLanguageObject->setContentObject($this->oCurrentContentObject);
+			$this->oCurrentLanguageObject->setData(null);
+		}
+		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $oLanguageObject);
+		if($this->oModuleInstance instanceof WidgetBasedFrontendModule) {
+			// Do widget stuff…
+		} else {
+			// Construct some HTML
+			$oTemplate = $this->executeEdit();
+			return $oTemplate->render();
 		}
 		return '<span/>gaga'.$oLanguageObject->getId();
 	}
