@@ -3,7 +3,14 @@ Widget.types.page_type.types['default'] = {
 		
 	},
 	
+	remove_object: function(item_to_remove) {
+		this.callPageTypeMethod('removeObject', item_to_remove.attr('data-object-id'), function(error) {
+			item_to_remove.remove();
+		});
+	},
+	
 	handle_admin: function(page_id, container, page_type) {
+		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
 		available_modules.empty();
@@ -16,36 +23,17 @@ Widget.types.page_type.types['default'] = {
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
 			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').css({ float:"right", cursor: "pointer" });
+			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').css({ float:"right", cursor: "pointer" });
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
 				
-				// get target container
-				var get_target_container = function(container_name) {
-					var target_container = null;
-				 	filled_modules_containers.each(function() {
-						var container = jQuery(this);
-						if(container.attr('data-container-name') == container_name) {
-							target_container =  container;
-						}
-					});
-					return target_container;
-				}
-				
-				// remove content objects
-				var remove_object = function(item_to_remove) {
-					page_type.callPageTypeMethod('removeObject', item_to_remove.attr('data-object-id'), function(error) {
-						item_to_remove.remove();
-					});
-				}
-				
 				// add objects to target container
 				jQuery.each(containers, function(container_name, params) {
-					var target = get_target_container(container_name);
+					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 					jQuery.each(params.contents, function(object_id, content) {
-						jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target).prepend(remove_button.clone().click(function() {
-								remove_object(jQuery(this).parent());
-						}));
+						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
+						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li)));
 					});
 				});
 			
@@ -76,9 +64,7 @@ Widget.types.page_type.types['default'] = {
 						item.attr('data-container', target.attr('data-container-name'));
 						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
 							item.attr('data-object-id', object_id);
-							item.prepend(remove_button.clone().click(function() {
-								remove_object(jQuery(this).parent());
-							}));
+							item.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, item)));
 						});
 					}
 				});
