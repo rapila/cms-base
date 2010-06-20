@@ -31,7 +31,7 @@ Widget.types.admin_menu = {
 			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
 		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
 		if(AdminInterface.current_admin_module == "pages" || AdminInterface.current_admin_module == "strings") {
-			this.addLanguageSelector("{{writeSessionAttribute=content_language}}");
+			this.addLanguageSelector(AdminInterface.content_language);
 		}
 	},
 	
@@ -89,12 +89,16 @@ Widget.types.admin_menu = {
 	},
 	
 	addLanguageSelector: function(selected) {
-		var select = jQuery('<select/>').val(selected).addClass('content_language').attr('data-widget-type', 'language_input');
+		var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
 		select.prepareWidget(function(widget) {
 			widget.settings.international_option = false;
 			select.change(function() {
 				widget.setContentLanguage(select.val());
+				AdminInterface.content_language = select.val();
 				Widget.fire('cmos.language_changed', select.val());
+			});
+			widget.handle('prepared', function() {
+				select.val(selected);
 			});
 		});
 		return this.addElement(select, true);
