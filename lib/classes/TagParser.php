@@ -91,6 +91,10 @@ class HtmlTag {
 		return $this->aParameters[$sParameterName];
 	}
 	
+	public function setParameter($sParameterName, $sParameterValue) {
+		$this->aParameters[$sParameterName] = $sParameterValue;
+	}
+	
 	public function hasParameter($sParameterName) {
 		return isset($this->aParameters[$sParameterName]);
 	}

@@ -9,6 +9,15 @@ Widget.types.page_type.types['default'] = {
 		});
 	},
 	
+	edit_object: function(item_to_edit) {
+		console.log('editing', item_to_edit.attr('data-object-id'));
+		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(html, error) {
+			var content = jQuery.parseHTML(html);
+			
+			content.dialog();
+		});
+	},
+	
 	handle_admin: function(page_id, container, page_type) {
 		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
@@ -34,6 +43,7 @@ Widget.types.page_type.types['default'] = {
 					jQuery.each(params.contents, function(object_id, content) {
 						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
 						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li)));
+						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));
 					});
 				});
 			
@@ -65,6 +75,7 @@ Widget.types.page_type.types['default'] = {
 						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
 							item.attr('data-object-id', object_id);
 							item.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, item)));
+							item.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, item)));
 						});
 					}
 				});

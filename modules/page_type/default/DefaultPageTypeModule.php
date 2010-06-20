@@ -269,8 +269,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$this->oCurrentLanguageObject = $this->oCurrentContentObject->getActiveLanguageObjectBe();
 		if($this->oCurrentLanguageObject === null) {
 			$this->oCurrentLanguageObject = new LanguageObject();
-			$this->oCurrentLanguageObject->setCreatedBy(Session::getSession()->getUserId());
-			$this->oCurrentLanguageObject->setCreatedAt(date('c'));
 			$this->oCurrentLanguageObject->setLanguageId(BackendManager::getContentEditLanguage());
 			$this->oCurrentLanguageObject->setContentObject($this->oCurrentContentObject);
 			$this->oCurrentLanguageObject->setData(null);
@@ -500,6 +498,19 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $oContentObject->getId();
 	}
 	
+	public function adminEdit($iObjectId) {
+		$sLanguageId = AdminManager::getContentLanguage();
+		$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+		$oLanguageObject = $oContentObject->getLanguageObject($sLanguageId);
+		if($oLanguageObject === null) {
+			$oLanguageObject = new LanguageObject();
+			$oLanguageObject->setLanguageId($sLanguageId);
+			$oLanguageObject->setContentObject($oContentObject);
+			$oLanguageObject->setData(null);
+		}
+		return '<span/>gaga'.$oLanguageObject->getId();
+	}
+	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
@@ -591,6 +602,12 @@ class DefaultPageTypeModule extends PageTypeModule {
 				return null;
 			}
 			$oParent->removeChild($mTag);
+		} else if($mTag->hasParameter('data-container-name')) {
+			$sStyle = $mTag->getParameter('style');
+			if($sStyle === null) {
+				$sStyle = '';
+			}
+			$mTag->setParameter('style', "margin:0!important;padding:0!important;$sStyle");
 		}
 	}
 	

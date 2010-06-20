@@ -290,7 +290,11 @@ jQuery.extend(jQuery, {
 	parseHTML: function(html) {
 		var element = document.createElement('div');
 		element.innerHTML = html;
-		return jQuery(element.childNodes);
+		var result = jQuery(element.childNodes);
+		result.find('*[data-widget-type]').each(function() {
+			jQuery(this).prepareWidget();
+		});
+		return result;
 	}
 });
 
