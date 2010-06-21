@@ -41,7 +41,7 @@ class ContentObjectTableMap extends TableMap {
 		$this->addColumn('CONTAINER_NAME', 'ContainerName', 'VARCHAR', false, 50, null);
 		$this->addColumn('OBJECT_TYPE', 'ObjectType', 'VARCHAR', false, 50, null);
 		$this->addColumn('CONDITION_SERIALIZED', 'ConditionSerialized', 'BLOB', false, null, null);
-		$this->addColumn('SORT', 'Sort', 'TINYINT', false, 2, null);
+		$this->addColumn('SORT', 'Sort', 'TINYINT', false, 3, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
