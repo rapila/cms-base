@@ -291,7 +291,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oModule = $this->getFrontendModuleInstance();
 		$this->backendCustomJs = $oModule->getJsForBackend();
 		
-		$oTemplate = $this->constructTemplate("content_edit");
+		$oTemplate = $this->constructTemplate('content_edit');
 		$oTemplate->replaceIdentifier('module_info_link', TagWriter::quickTag('a', array('title' => StringPeer::getString('module_info'), 'class' => 'info', 'href' => LinkUtil::link('content', null, array('get_module_info' => 'true')))));
 		$oTemplate->replaceIdentifier('id', $this->oPage->getId());
 		$oTemplate->replaceIdentifier('page_edit_link', LinkUtil::link(array('pages', $this->oPage->getId())));
@@ -509,14 +509,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$this->oCurrentLanguageObject->setData(null);
 		}
 		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $this->oCurrentLanguageObject);
+		$oWidget = null;
 		if($this->oModuleInstance instanceof WidgetBasedFrontendModule) {
-			// Do widget stuff…
+			$oWidget = $this->oModuleInstance->getWidget();
 		} else {
-			// Construct some HTML
-			$oTemplate = $this->executeEdit();
-			return $oTemplate->render();
+			$oWidget = WidgetModule::getWidget('legacy_frontend_module', null, $this->oModuleInstance);
 		}
-		return '<span/>gaga'.$oLanguageObject->getId();
+		return array($oWidget->getModuleName(), $oWidget->getSessionKey());
 	}
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {

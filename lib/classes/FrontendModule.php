@@ -50,6 +50,7 @@ abstract class FrontendModule extends Module {
 	}
 	
 	protected function getData() {
+$this->oLanguageObject->getLanguageId())->getData());
 		if($this->oLanguageObject !== null && $this->oLanguageObject->getData() !== null) {
 			return stream_get_contents($this->oLanguageObject->getData());
 		}
@@ -83,6 +84,10 @@ abstract class FrontendModule extends Module {
 	
 	public static function isDynamic() {
 		return false;
+	}
+	
+	public function getLanguageObject() {
+	    return $this->oLanguageObject;
 	}
 	
 	/**

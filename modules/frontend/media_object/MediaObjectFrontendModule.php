@@ -12,7 +12,7 @@ class MediaObjectFrontendModule extends FrontendModule {
   }
 
   public function renderFrontend() {
-    $aOptions = @unserialize($this->getData());
+    $aOptions = unserialize($this->getData());
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
     foreach($aOptions as $aDocumentInfo) {
       $oDocument = DocumentPeer::retrieveByPK($aDocumentInfo['document_id']);

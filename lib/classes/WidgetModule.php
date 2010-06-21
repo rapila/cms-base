@@ -23,14 +23,16 @@ abstract class WidgetModule extends Module {
 	}
 	
 	public function doWidget() {
-		try {
-			$oTemplate = $this->constructTemplate();
-			$oTemplate->replaceIdentifier('session_key', $this->sPersistentSessionKey);
-			$oTemplate->replaceIdentifier('input_name', $this->sInputName);
-			return $oTemplate;
-		} catch(Exception $e) {
-			return null;
+		$oElement = $this->getElementType();
+		if(!$oElement instanceof TagWriter) {
+			$oElement = new TagWriter($oElement);
 		}
+		$oElement->setParameter('data-widget-type', $this->getModuleName());
+		$oElement->setParameter('data-widget-session', $this->sPersistentSessionKey);
+		if($this->sInputName !== null) {
+			$oElement->setParameter('name', $this->sInputName);
+		}
+		return $oElement->parse();
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
@@ -51,6 +53,10 @@ abstract class WidgetModule extends Module {
 	
 	public function setInputName($sInputName) {
 			$this->sInputName = $sInputName;
+	}
+	
+	public function getElementType() {
+		return $this->sInputName === null ? 'div' : 'input';
 	}
 
 	public function getInputName() {

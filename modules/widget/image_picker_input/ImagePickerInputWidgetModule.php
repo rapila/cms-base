@@ -22,14 +22,10 @@ class ImagePickerInputWidgetModule extends PersistentWidgetModule {
 		self::includeWidgetResources(true, $oResourceIncluder);
 	}
 	
-	public function doWidget() {
-		$this->oImagePicker->doWidget();
-		$oTemplate = $this->constructTemplate();
-		$oTemplate->replaceIdentifier('session_key', $this->oImagePicker->sPersistentSessionKey);
-		$oTemplate->replaceIdentifier('input_name', $this->sInputName);
-		return $oTemplate;
+	public function getElementType() {
+		return new TagWriter('input', array('type' => 'hidden'));
 	}
-	
+
 	public function setAllowedCategories($aAllowedCategories) {
 		$this->aAllowedCategories = $aAllowedCategories;
 	}

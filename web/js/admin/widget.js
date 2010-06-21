@@ -287,13 +287,15 @@ jQuery.extend(jQuery, {
 		}
 	},
 	
-	parseHTML: function(html) {
+	parseHTML: function(html, instanciateWidgets) {
 		var element = document.createElement('div');
 		element.innerHTML = html;
 		var result = jQuery(element.childNodes);
-		result.find('*[data-widget-type]').each(function() {
-			jQuery(this).prepareWidget();
-		});
+		if(instanciateWidgets) {
+			result.find('*[data-widget-type]').each(function() {
+				jQuery(this).prepareWidget();
+			});
+		}
 		return result;
 	}
 });

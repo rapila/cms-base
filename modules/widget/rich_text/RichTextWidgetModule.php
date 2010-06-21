@@ -22,9 +22,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		$oResourceIncluder->addResource('admin/ckeditor/ckeditor.js');
 	}
 	
-	public function doWidget() {
-		$oTemplate = parent::doWidget();
-		$oTemplate->replaceIdentifier('picker_session_key', $this->oImagePickerWidget->getSessionKey());
-		return $oTemplate;
+	public function getElementType() {
+		return new TagWriter('textarea', array('data-widget-picker-session' => $this->oImagePickerWidget->getSessionKey()));
 	}
 }

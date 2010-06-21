@@ -18,13 +18,13 @@ class WidgetJsonFileModule extends FileModule {
 			$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);
 			if($this->sAction == 'widgetInformation') {
 				$aInformation = array();
-        $sWidgetClass::includeResources();
+				$sWidgetClass::includeResources();
 				$aInformation['resources'] = ResourceIncluder::defaultIncluder()->getIncludes()->render();
-        $aInformation['methods'] = WidgetModule::getCustomMethods($sWidgetClass);
+				$aInformation['methods'] = WidgetModule::getCustomMethods($sWidgetClass);
 				$aInformation['is_singleton'] = $sWidgetClass::isSingleton();
 				$aInformation['is_persistent'] = $sWidgetClass::isPersistent();
-        print json_encode($aInformation);
-        return;
+				print json_encode($aInformation);
+				return;
 			}
 			$oWidget = null;
 			if(isset($aRequest['session_key'])) {

@@ -16,6 +16,10 @@ class UserKindInputWidgetModule extends PersistentWidgetModule {
 		}
 		$this->sSelectedUserKind = $sSelectedUserKind;
 	}
+	
+	public function getElementType() {
+		return 'select';
+	}
 
 	public function getSelectedUserKind() {
 		return $this->sSelectedUserKind;

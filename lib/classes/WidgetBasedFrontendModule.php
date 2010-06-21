@@ -1,4 +1,4 @@
 <?php
 interface WidgetBasedFrontendModule {
-	public function renderAdmin();
+	public function getWidget();
 }

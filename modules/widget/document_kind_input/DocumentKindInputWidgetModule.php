@@ -16,6 +16,10 @@ class DocumentKindInputWidgetModule extends PersistentWidgetModule {
 		}
 		$this->sSelectedDocumentKind = $sSelectedDocumentKind;
 	}
+	
+	public function getElementType() {
+		return 'select';
+	}
 
 	public function getSelectedDocumentKind() {
 		return $this->sSelectedDocumentKind;

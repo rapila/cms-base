@@ -130,7 +130,7 @@ CREATE TABLE `objects`
 	`container_name` VARCHAR(50),
 	`object_type` VARCHAR(50),
 	`condition_serialized` LONGBLOB,
-	`sort` TINYINT(2),
+	`sort` TINYINT(3),
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,
