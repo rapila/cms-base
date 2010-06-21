@@ -51,12 +51,6 @@
 	<column name="object_type" type="varchar" size="50" />
 	<column name="condition_serialized" type="blob" required="false" />
 	<column name="sort" type="tinyint" size="3" />
-	<behavior name="sortable">	
-		<parameter name="rank_column" value="sort" />
-		<parameter name="use_scope" value="true" />
-		<parameter name="scope_column" value="page_id" />	 
-		<parameter name="scope_column" value="container_name" />	
-	</behavior>
 </table>
 
 <table name="language_objects" phpName="LanguageObject">

@@ -33,6 +33,7 @@ PageTypeWidget
 - implement/sketch journal page type
 
 PageDetail
+- change names of DefaultPageTypeModule admin methods sortObjects : adminSortObjects, removeObject > adminRemoveObjects
 - add loading image for various loading instances
 - check other Browser bugs, @see above
 - check all code that I created
