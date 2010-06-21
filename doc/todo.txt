@@ -4,6 +4,8 @@ Miscellaneous projects
 	install domain on mini-cms and prepare tests, db, temp db, access rights for test with blaccess
 	Lehrer, Klassen, Events, Galerie, Werkstücke
 - Gems Europe Update HTTP_Request2.php test
+	CSS check: Chrome when developer tools are on, the displayed correctly
+		Opera main navigation not display correctly
 	General check and update
 
 Priorities

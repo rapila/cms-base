@@ -508,7 +508,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$this->oCurrentLanguageObject->setContentObject($this->oCurrentContentObject);
 			$this->oCurrentLanguageObject->setData(null);
 		}
-		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $oLanguageObject);
+		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $this->oCurrentLanguageObject);
 		if($this->oModuleInstance instanceof WidgetBasedFrontendModule) {
 			// Do widget stuff…
 		} else {
