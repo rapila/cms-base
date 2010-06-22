@@ -9,7 +9,13 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 	
 	public function getModuleContent() {
 		$sClass = get_class($this->oFrontendModule);
-		return $sClass::getContentInfo(LanguageObjectPeer::retrieveByPK($this->oFrontendModule->getLanguageObject()->getObjectId(), $this->oFrontendModule->getLanguageObject()->getLanguageId()));
+		// ErrorHandler::log($this->oFrontendModule->renderBackend()->render());
+		return $this->oFrontendModule->renderBackend()->render();
 		// return $this->oFrontendModule->renderFrontend()->render();
 	}
+	
+	public function getBackendContents() {
+		return $this->oFrontendModule->renderBackend()->render();
+	}
+	
 }

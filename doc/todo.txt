@@ -9,6 +9,9 @@ Miscellaneous projects
 	General check and update
 
 Priorities
+- LegacyFrontendModuleWidgetModule renderBackend? define what has to be done where
+- what about preview mode
+- show configuration and conditions in same widget with tabs for new widgets?
 - discuss complete strategy and priorities, timeline of CMOS!
 	include projects like Schule Wettingen and more
 - discuss permissions @see use_cases_permissions.txt
@@ -153,6 +156,9 @@ GroupsAdminModule
 
 LinkDetail
 - find more elegant version for protocol options
+
+LinkList
+- allow Links to be displayed without category, categories and tags how to?
 
 Validation
 - Javascript? how to implement? check required fields in js, rest php

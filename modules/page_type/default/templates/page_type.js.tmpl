@@ -4,7 +4,7 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	remove_object: function(item_to_remove) {
-		this.callPageTypeMethod('removeObject', item_to_remove.attr('data-object-id'), function(error) {
+		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), function(error) {
 			item_to_remove.remove();
 		});
 	},

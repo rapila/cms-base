@@ -531,18 +531,18 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oContentObject->setUpdatedAt(time());
 		}
 		$oContentObject->save();
-		$this->sortObjects($oContentObject, $bSortAsc);
+		$this->adminSortObjects($oContentObject, $bSortAsc);
 		return $oContentObject->getId();
 	}
 		
-	public function sortObjects($oContentObject, $bSortAsc) {
+	private function adminSortObjects($oContentObject, $bSortAsc) {
 		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), null, $bSortAsc) as $i => $oObject) {
 			$oObject->setSort($i);
 			$oObject->save();
 		}
 	}
 	
-	public function removeObject($iObjectId) {
+	public function adminRemoveObject($iObjectId) {
 		return ContentObjectPeer::doDelete($iObjectId);
 	}
 
