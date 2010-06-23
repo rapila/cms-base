@@ -162,7 +162,9 @@ jQuery.extend(Widget, {
 			if(widget.initialize) {
 				widget.initialize();
 			}
-			finishCallback(widget);
+			if(finishCallback) {
+				finishCallback(widget);
+			}
 			if(widget.prepare) {
 				widget.prepare();
 			}

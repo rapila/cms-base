@@ -10,19 +10,10 @@ abstract class PageTypeModule extends Module {
 		$this->oPage = $oPage;
 	}
 	
-	public abstract function display(Template $oTemplate);
-	public abstract function backendDisplay();
-	public abstract function backendSave();
-	public abstract function backendInit();
-	public $backendCustomJs = "";
+	public abstract function display(Template $oTemplate, $bIsPreview = false);
 	
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
 	
-	protected function backendLink($aPath = array(), $aParameters = array()) {
-		array_unshift($aPath, "content");
-		return LinkUtil::link($aPath, 'BackendManager', $aParameters);
-	}
-
 	/**
 	* Returns the class name of the main model that is being modified at the moment by the backend module
 	* Used only to assign tags using the tag panel

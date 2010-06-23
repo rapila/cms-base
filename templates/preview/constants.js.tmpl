@@ -1,0 +1,15 @@
+window.FILE_PREFIX = "{{writeConstantValue=MAIN_DIR_FE}}{{writeManagerPrefix=FileManager}}";
+jQuery(document).ready(function() {
+	window.AdminInterface = {
+		content_language: "{{writeSessionAttribute=content_language}}",
+		translations: {
+			cancelButtonText: "{{writeString=widget.cancel}}",
+			okButtonText: "{{writeString=widget.ok}}"
+		}
+	};
+	
+	window.PreviewInterface = {
+		current_page_id: {{current_page_id}},
+		page_type_widget: "{{page_type_widget_session}}"
+	};
+});

@@ -7,10 +7,10 @@ class FrontendManager extends Manager {
 	public static $CURRENT_PAGE = null;
 	public static $CURRENT_NAVIGATION_ITEM = null;
 	
-	private $oTemplate;
+	protected $oTemplate;
 	private $aPathRequestParams;
 	private $bIsNotFound;
-	private $oPageType;
+	protected $oPageType;
 	private $oRootNavigationItem;
 	
 	const USEPATH_HANDLED_BY_MODULE = 'usepath_handled_by_module';
@@ -24,10 +24,10 @@ class FrontendManager extends Manager {
 		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
 				Session::getSession()->setLanguage(self::usePath());
 		} else {
-			if(!LanguagePeer::languageIsActive(Session::language())) {
+			if(!LanguagePeer::languageIsActive($this->getSessionLanguage())) {
 				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
 			}
-			if(!LanguagePeer::languageIsActive(Session::language())) {
+			if(!LanguagePeer::languageIsActive($this->getSessionLanguage())) {
 				LinkUtil::redirectToManager('', "BackendManager");
 			}
 			LinkUtil::redirectToLanguage();
@@ -42,7 +42,7 @@ class FrontendManager extends Manager {
 		$oMatchingNavigationItem = $this->oRootNavigationItem;
 		 
 		while(self::hasNextPathItem()) {
-			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), $this->getSessionLanguage(), false, true);
 			if($oNextNavigationItem !== null) {
 				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
@@ -65,7 +65,7 @@ class FrontendManager extends Manager {
 		
 		// There may now be new, virtual navigation items. Follow them.
 		while(self::hasNextPathItem()) {
-			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), $this->getSessionLanguage(), false, true);
 			if($oNextNavigationItem !== null) {
 				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
@@ -81,7 +81,7 @@ class FrontendManager extends Manager {
 		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
 		
 		if($oMatchingNavigationItem->isFolder()) {
-			$oFirstChild = $oMatchingNavigationItem->getFirstChild(Session::language(), false, true);
+			$oFirstChild = $oMatchingNavigationItem->getFirstChild($this->getSessionLanguage(), false, true);
 			if($oFirstChild !== null) {
 				LinkUtil::redirectToManager($oFirstChild->getLink());
 			} else {
@@ -106,6 +106,10 @@ class FrontendManager extends Manager {
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
 	
+	protected function getSessionLanguage() {
+		return Session::language();
+	}
+	
 	/**
 	 * render()
 	 */
@@ -120,7 +124,7 @@ class FrontendManager extends Manager {
 		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
 		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, isset($_REQUEST['container_only']) ? array($_REQUEST['container_only']) : null);
 		
-		$bIsDynamic = $bIsDynamic || !Settings::getSetting('general', 'use_full_page_cache', true);
+		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
 		
 		/**
@@ -154,7 +158,7 @@ class FrontendManager extends Manager {
 			$oOutput->render();
 		}
 		
-		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.Session::language();
+		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.$this->getSessionLanguage();
 		if($bIsAjaxRequest) {
 			$sPageIdentifier .= '_'.$_REQUEST['container_only'];
 		}
@@ -190,7 +194,8 @@ class FrontendManager extends Manager {
 		}
 		$this->fillContent();
 		
-		$this->oTemplate->render();
+		$this->renderTemplate();
+		
 		if($oCache !== null) {
 			$oCache->setContents($this->oTemplate->getSentOutput());
 		}
@@ -199,6 +204,14 @@ class FrontendManager extends Manager {
 			ob_end_flush();
 		}
 		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest, $bIsCached));
+	}
+	
+	protected function renderTemplate() {
+		$this->oTemplate->render();
+	}
+	
+	protected function useFullPageCache() {
+		return Settings::getSetting('general', 'use_full_page_cache', true);
 	}
 
 	/**
@@ -217,8 +230,8 @@ class FrontendManager extends Manager {
 	/**
 	 * fillContent()
 	 */
-	private function fillContent() { 
-		$this->oPageType->display($this->oTemplate);
+	protected function fillContent() { 
+		$this->oPageType->display($this->oTemplate, false);
 	}
 			
 	/**

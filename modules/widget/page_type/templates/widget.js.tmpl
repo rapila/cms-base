@@ -1,7 +1,15 @@
 Widget.types.page_type = {
 	initialize: function() {
-		this.setPageType(this.settings.page_type, this.settings.page_id);
-		this.getPageTypeJs(function(js_location) {
+		if(this.settings.page_type) {
+			this.setPageType(this.settings.page_type, this.settings.page_id);
+		} else {
+			this.settings.page_type = this.getPageType();
+		}
+		this.getPageTypeJs(function(js_location, error) {
+			if(error) {
+				Widget.notifyUser('debug', error);
+				return;
+			}
 			jQuery.ajax({
 				url: js_location,
 				dataType: 'script',
@@ -19,7 +27,7 @@ Widget.types.page_type = {
 	},
 	
 	settings: {
-		page_type: 'default',
+		page_type: null,
 		container: null,
 		page_id: null,
 	},

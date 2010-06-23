@@ -24,6 +24,22 @@ Widget.types.page_type.types['default'] = {
 		});
 	},
 	
+	handle_preview: function(page_id, page_type) {
+	//Initialized callback
+		jQuery('div.filled-container').bind('click', function() {
+			var container = jQuery(this);
+			if(container.data('is_editing')) {
+				return;
+			}
+			container.data('is_editing', true);
+			page_type.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
+				Widget.createWithElement(result[0], function(event, widget) {
+					container.empty().append(widget._element);
+				}
+			});
+		});
+	},
+	
 	handle_admin: function(page_id, container, page_type) {
 		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);

@@ -7,14 +7,6 @@ require_once 'model/om/BaseContentObject.php';
  */ 
 class ContentObject extends BaseContentObject {
 	
-	public function getActiveLanguageObject() {
-		return $this->getLanguageObject(Session::language());
-	}
-	
-	public function getActiveLanguageObjectBe() {
-		return $this->getLanguageObject(BackendManager::getContentEditLanguage());
-	}
-	
 	public function getLanguageObject($sLanguageId = null) {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();

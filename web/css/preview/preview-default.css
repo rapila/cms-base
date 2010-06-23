@@ -1,0 +1,7 @@
+.filled-container {
+}
+
+.filled-container:hover {
+	background-color: rgba(167, 167, 167, 0.5);
+	outline: 2px solid #C1C1C1;
+}
