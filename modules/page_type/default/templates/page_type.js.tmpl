@@ -24,10 +24,10 @@ Widget.types.page_type.types['default'] = {
 		//Initialized callback
 		jQuery('div.filled-container').bind('click', function() {
 			var container = jQuery(this);
-			if(container.data('is_editing')) {
+			if(container.is('.editing')) {
 				return;
 			}
-			container.data('is_editing', true);
+			container.addClass('editing');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(event, widget) {
 					container.empty().append(widget._element);
