@@ -46,10 +46,11 @@ jQuery.fn.extend({
 		var result = {};
 		jQuery.each(attributes, function(i, attr) {
 			if(attr.name.match(/\[\]$/)) {
-				if(!result[attr.name]) {
-					result[attr.name] = [];
+				var name = attr.name.substring(0, attr.name.length-2);
+				if(!result[name]) {
+					result[name] = [];
 				}
-				result[attr.name][result[attr.name].length] = attr.value
+				result[name][result[name].length] = attr.value
 			} else {
 				result[attr.name] = attr.value;
 			}

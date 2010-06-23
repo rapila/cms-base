@@ -1,5 +1,11 @@
 Widget.types.legacy_frontend_module = {
 	prepare: function() {
-		this._element.append(jQuery.parseHTML(this.getBackendContents()));
+		this._element.append(jQuery.parseHTML(this.getModuleBackend()));
+		this._element.append(jQuery('<style/>').text(this.getBackendCss));
+		this._element.append(jQuery('<script/>').text(this.getBackendJs));
+	},
+	
+	save: function(callback) {
+		this.saveData(this._element.serializeArrayKV(), callback);
 	}
 }

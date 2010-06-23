@@ -127,6 +127,8 @@ class ErrorHandler {
 			$sResult .= ")";
 		} else if($mToDump === null) {
 			$sResult .= " NULL ";
+		} else if(is_resource($mToDump)) {
+			$sResult .= "resource of type (".get_resource_type($mToDump).")";
 		} else {
 			$sResult .= var_export($mToDump, true);
 		}

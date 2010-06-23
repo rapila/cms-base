@@ -13,7 +13,13 @@ Widget.types.page_type.types['default'] = {
 		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
 			Widget.createWithElement(result[0], function(event, widget) {
 				var content = widget._element;
-				content.dialog();
+				content.dialog({buttons: {
+					'{{writeString=save}}': function() {
+						widget.save(function() {
+							content.dialog('close');
+						});
+					}
+				}});
 			}, result[1]);
 		});
 	},

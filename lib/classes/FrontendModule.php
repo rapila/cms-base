@@ -105,4 +105,24 @@ abstract class FrontendModule extends Module {
 		}
 		return var_export($mData, true);
 	}
+
+	public function __sleep() {
+		if($this->oLanguageObject !== null) {
+			$this->oLanguageObject = $this->oLanguageObject->getId();
+		}
+		return array_keys(get_object_vars($this));
+	}
+	
+	public function __wakeup() {
+		if($this->oLanguageObject !== null) {
+			$sId = explode('_', $this->oLanguageObject);
+			$this->oLanguageObject = LanguageObjectPeer::retrieveByPK($this->oLanguageObject);
+			if($this->oLanguageObject === null) {
+				$this->oLanguageObject = new LanguageObject();
+				$this->oLanguageObject->setObjectId($sId[0]);
+				$this->oLanguageObject->setLanguageId($sId[1]);
+			}
+		}
+	}
+
 }
