@@ -154,7 +154,7 @@ class FrontendManager extends Manager {
 		}
 		
 		if(!$bIsAjaxRequest) {
-			$oOutput = new XHTMLOutput();
+			$oOutput = $this->getXHTMLOutput();
 			$oOutput->render();
 		}
 		
@@ -204,6 +204,10 @@ class FrontendManager extends Manager {
 			ob_end_flush();
 		}
 		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest, $bIsCached));
+	}
+	
+	protected function getXHTMLOutput() {
+		return new XHTMLOutput();
 	}
 	
 	protected function renderTemplate() {

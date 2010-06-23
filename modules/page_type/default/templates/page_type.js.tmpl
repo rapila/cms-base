@@ -31,7 +31,7 @@ Widget.types.page_type.types['default'] = {
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(event, widget) {
 					container.empty().append(widget._element);
-				});
+				}, result[1]);
 			});
 		});
 	},

@@ -1,4 +1,5 @@
 .filled-container {
+	min-height: 3em;
 }
 
 .filled-container:hover {

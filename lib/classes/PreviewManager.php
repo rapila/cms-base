@@ -15,6 +15,10 @@ class PreviewManager extends FrontendManager {
 		// AdminMenuWidgetModule::includeResources();
 	}
 	
+	protected function getXHTMLOutput() {
+		return new XHTMLOutput('html5');
+	}
+	
 	protected function fillContent() {
 		$oPageTypeWidget = WidgetModule::getWidget('page_type');
 		$oPageTypeWidget->setPageTypeModule($this->oPageType);
