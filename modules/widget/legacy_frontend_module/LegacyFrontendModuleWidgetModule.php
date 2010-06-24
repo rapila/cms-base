@@ -7,6 +7,10 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 		$this->oFrontendModule = $oFrontendModule;
 	}
 	
+	public static function includeResources($oResourceIncluder = null) {
+		self::includeWidgetResources(false, $oResourceIncluder);
+	}
+	
 	public function getModuleBackend() {
 		$mResult = $this->oFrontendModule->renderBackend();
 		if($mResult instanceof Template) {

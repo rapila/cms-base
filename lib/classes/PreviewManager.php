@@ -1,6 +1,8 @@
 <?php
 
 class PreviewManager extends FrontendManager {
+	private $sOldSessionLanguage;
+	
 	public function __construct() {
 		parent::__construct();
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', 1.4);
@@ -13,6 +15,27 @@ class PreviewManager extends FrontendManager {
 		LoginWindowWidgetModule::includeResources();
 		// $oAdminMenuWidget = new AdminMenuWidgetModule();
 		// AdminMenuWidgetModule::includeResources();
+	}
+	
+	protected function initLanguage() {
+		$this->sOldSessionLanguage = Session::language();
+		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
+				AdminManager::setContentLanguage(self::usePath());
+		} else {
+			if(!LanguagePeer::languageIsActive(AdminManager::getContentLanguage())) {
+				Session::getSession()->resetAttribute(AdminManager::CONTENT_LANGUAGE_SESSION_KEY);
+			}
+			if(!LanguagePeer::languageIsActive(AdminManager::getContentLanguage())) {
+				LinkUtil::redirectToManager('', "AdminManager");
+			}
+			LinkUtil::redirectToLanguage(true, AdminManager::getContentLanguage());
+		}
+		Session::getSession()->setLanguage(AdminManager::getContentLanguage());
+	}
+	
+	public function render() {
+		parent::render();
+		Session::getSession()->setLanguage($this->sOldSessionLanguage);
 	}
 	
 	protected function getXHTMLOutput() {
@@ -28,10 +51,6 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addCustomJs($oConstants);
 		ResourceIncluder::defaultIncluder()->addResource('preview/preview.js');
 		$this->oPageType->display($this->oTemplate, true);
-	}
-	
-	protected function getSessionLanguage() {
-		return AdminManager::getContentLanguage();
 	}
 	
 	protected function useFullPageCache() {

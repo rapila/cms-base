@@ -10,8 +10,8 @@ class LinkUtil {
 	}
 
 	//redirectToLanguage can only be used if language attribute is still in REQUEST_PATH
-	public static function redirectToLanguage($bNoRedirectIfMultilingual=true, $sLanguageId=null) {
-		if($bNoRedirectIfMultilingual && !Settings::getSetting('general', 'multilingual', true)) {
+	public static function redirectToLanguage($bNoRedirectIfNonMultilingual=true, $sLanguageId=null) {
+		if($bNoRedirectIfNonMultilingual && !Settings::getSetting('general', 'multilingual', true)) {
 			return;
 		}
 		if($sLanguageId == null) {

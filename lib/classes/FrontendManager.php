@@ -21,17 +21,7 @@ class FrontendManager extends Manager {
 		parent::__construct();
 		$this->aPathRequestParams = array();
 		$this->bIsNotFound = false;
-		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
-				Session::getSession()->setLanguage(self::usePath());
-		} else {
-			if(!LanguagePeer::languageIsActive($this->getSessionLanguage())) {
-				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
-			}
-			if(!LanguagePeer::languageIsActive($this->getSessionLanguage())) {
-				LinkUtil::redirectToManager('', "BackendManager");
-			}
-			LinkUtil::redirectToLanguage();
-		}
+		$this->initLanguage();
 
 		// Find requested page
 		$oRootPage = PagePeer::getRootPage();
@@ -42,7 +32,7 @@ class FrontendManager extends Manager {
 		$oMatchingNavigationItem = $this->oRootNavigationItem;
 		 
 		while(self::hasNextPathItem()) {
-			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), $this->getSessionLanguage(), false, true);
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
 			if($oNextNavigationItem !== null) {
 				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
@@ -65,7 +55,7 @@ class FrontendManager extends Manager {
 		
 		// There may now be new, virtual navigation items. Follow them.
 		while(self::hasNextPathItem()) {
-			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), $this->getSessionLanguage(), false, true);
+			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
 			if($oNextNavigationItem !== null) {
 				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
@@ -81,7 +71,7 @@ class FrontendManager extends Manager {
 		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
 		
 		if($oMatchingNavigationItem->isFolder()) {
-			$oFirstChild = $oMatchingNavigationItem->getFirstChild($this->getSessionLanguage(), false, true);
+			$oFirstChild = $oMatchingNavigationItem->getFirstChild(Session::language(), false, true);
 			if($oFirstChild !== null) {
 				LinkUtil::redirectToManager($oFirstChild->getLink());
 			} else {
@@ -106,8 +96,18 @@ class FrontendManager extends Manager {
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
 	
-	protected function getSessionLanguage() {
-		return Session::language();
+	protected function initLanguage() {
+		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
+				Session::getSession()->setLanguage(self::usePath());
+		} else {
+			if(!LanguagePeer::languageIsActive(Session::language())) {
+				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
+			}
+			if(!LanguagePeer::languageIsActive(Session::language())) {
+				LinkUtil::redirectToManager('', "AdminManager");
+			}
+			LinkUtil::redirectToLanguage();
+		}
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class FrontendManager extends Manager {
 			$oOutput->render();
 		}
 		
-		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.$this->getSessionLanguage();
+		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.Session::language();
 		if($bIsAjaxRequest) {
 			$sPageIdentifier .= '_'.$_REQUEST['container_only'];
 		}
