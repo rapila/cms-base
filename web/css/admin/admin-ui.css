@@ -303,6 +303,7 @@ form.page_detail h3.status { padding-left: 0.3em; }
 }
 input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
+input.ui-widget-content.input_short { width: 6em; }
 input.path_input.ui-widget-content:hover { background: url() #ffffff; }
 input.path_input.ui-widget-content:selected { background: url() #ffffff; }
 .page_properties_container span { margin-left: 1em; }
