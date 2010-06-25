@@ -9,11 +9,9 @@ Miscellaneous projects
 	General check and update
 
 Priorities
-- LegacyFrontendModuleWidgetModule renderBackend? define what has to be done where
-- what about preview mode
-- show configuration and conditions in same widget with tabs for new widgets?
-- discuss complete strategy and priorities, timeline of CMOS!
-	include projects like Schule Wettingen and more
+-	CriteriaListWidgetDelegate::FILTER_TYPE_BIT_IS_SET, debug cmos_mini contributor sidebar select if multibit
+- mini-cms_generate > schema.sql > migration.sql add table link_categories Propel Generator Error?
+- check detail widget changes fill_select
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 

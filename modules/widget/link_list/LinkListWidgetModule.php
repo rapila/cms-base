@@ -81,6 +81,7 @@ class LinkListWidgetModule extends WidgetModule {
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
+		$oCriteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID, Criteria::LEFT_JOIN);
 		if($this->iLinkCategoryId && $this->iLinkCategoryId !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $this->iLinkCategoryId);
 		}

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `language_object_history` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 #svn r1624
-ALTER TABLE `rights` CHANGE `user_id` `group_id` INT( 11 ) NOT NULL ;
+ALTER TABLE `rights` CHANGE `user_id` `group_id` INT UNSIGNED NOT NULL ;
 
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups`
@@ -103,7 +103,7 @@ CREATE TABLE `indirect_references`
 )Type=MyISAM;
 
 #svn r1817
-ALTER TABLE `documents` CHANGE `document_category_id` `document_category_id` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `documents` CHANGE `document_category_id` `document_category_id` INT UNSIGNED NULL DEFAULT NULL;
 
 #svn r1938
 ALTER TABLE `document_categories` ADD `is_externally_managed` TINYINT( 1 ) UNSIGNED NOT NULL AFTER `max_width`;
@@ -118,8 +118,8 @@ ALTER TABLE `users` ADD `backend_settings` TEXT NULL DEFAULT NULL AFTER `passwor
 ALTER TABLE `users` ADD `digest_ha1` VARCHAR(32) NULL DEFAULT NULL AFTER `password_recover_hint`;
 
 #svn r2335
-ALTER TABLE `documents` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
-ALTER TABLE `documents` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `documents` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `documents` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
 
 ALTER TABLE `document_categories` ADD `created_at` DATETIME;
 ALTER TABLE `document_categories` ADD `updated_at` DATETIME;
@@ -131,8 +131,8 @@ ALTER TABLE `document_types` ADD `updated_at` DATETIME;
 ALTER TABLE `document_types` ADD `created_by` INTEGER;
 ALTER TABLE `document_types` ADD `updated_by` INTEGER;
 
-ALTER TABLE `groups` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
-ALTER TABLE `groups` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `groups` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `groups` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
 
 ALTER TABLE `indirect_references` ADD `created_at` DATETIME;
 ALTER TABLE `indirect_references` ADD `updated_at` DATETIME;
@@ -144,23 +144,48 @@ ALTER TABLE `languages` ADD `updated_at` DATETIME;
 ALTER TABLE `languages` ADD `created_by` INTEGER;
 ALTER TABLE `languages` ADD `updated_by` INTEGER;
 
-ALTER TABLE `language_objects` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
-ALTER TABLE `language_objects` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `language_objects` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `language_objects` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
 
-ALTER TABLE `language_object_history` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `language_object_history` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `language_object_history` ADD `updated_at` DATETIME;
 ALTER TABLE `language_object_history` ADD `updated_by` INTEGER;
 
-ALTER TABLE `links` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
-ALTER TABLE `links` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `links` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `links` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
+# if document_category_id exists
+ALTER TABLE `links` CHANGE `document_category_id` `link_category_id`  INT UNSIGNED NULL DEFAULT NULL;
+UPDATE `links` SET `link_category_id` = NULL WHERE `links`.`link_category_id` =0;
+# add link_categories if not exist
+DROP TABLE IF EXISTS `link_categories`;
+CREATE TABLE `link_categories`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(80)  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `FI_` (`created_by`),
+	CONSTRAINT ``
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `FI_` (`updated_by`),
+	CONSTRAINT ``
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
 
 ALTER TABLE `objects` ADD `created_at` DATETIME;
 ALTER TABLE `objects` ADD `updated_at` DATETIME;
 ALTER TABLE `objects` ADD `created_by` INTEGER;
 ALTER TABLE `objects` ADD `updated_by` INTEGER;
 
-ALTER TABLE `pages` CHANGE `created_by` `created_by` INT( 11 ) NULL DEFAULT NULL;
-ALTER TABLE `pages` CHANGE `updated_by` `updated_by` INT( 11 ) NULL DEFAULT NULL;
+ALTER TABLE `pages` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `pages` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
 
 ALTER TABLE `page_properties` ADD `created_at` DATETIME;
 ALTER TABLE `page_properties` ADD `updated_at` DATETIME;

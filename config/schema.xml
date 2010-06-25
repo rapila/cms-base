@@ -233,7 +233,7 @@
 	<foreign-key foreignTable="users">
 		<reference local="owner_id" foreign="id" />
 	</foreign-key>
-	<column name="link_category_id" type="integer" required="true" />
+	<column name="link_category_id" type="integer" required="false" />
 	<foreign-key foreignTable="link_categories" onDelete="setnull">
 		<reference local="link_category_id" foreign="id" />
 	</foreign-key>

@@ -54,7 +54,7 @@ class LinksAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		if(LinkPeer::doCount(new Criteria()) > 0) {
+		if(LinkCategoryPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('links.select_all_title'),
