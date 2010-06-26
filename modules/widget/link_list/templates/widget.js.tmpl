@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery('.link_list').each(function() {
+	jQuery('table.link_list').each(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'link', widget, 'setLinkId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
 			widget.handle('list.reloaded', function(event, list_length) {
 				if(list_length === 0) {
 					var search = widget.getSearch();
-					var message = "{{writeParameterizedString=module.link_list.no_results;search=$\{search\};link_category_id=$\{link_category_id\}}}".replace(/\$\{search\}/, search).replace('${link_category_id}', widget.getOption('link_category_id'));
+					var message = "{{writeParameterizedString=widget.link_list.no_result;search=$\{search\};link_category_id=$\{link_category_id\}}}".replace(/\$\{search\}/, search).replace('${link_category_id}', widget.getOption('link_category_id'));
 					Widget.notifyUser('info', message);
 				}
 			}, false, true);

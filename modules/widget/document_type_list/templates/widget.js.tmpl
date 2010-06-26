@@ -1,11 +1,11 @@
 jQuery(document).ready(function() {
-	jQuery('.document_type_list').each(function() {
+	jQuery('table.document_type_list').each(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document_type', widget, 'setTypeId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
 				if(col.identifier === 'delete') {
 					var file_name = widget.cell_for_identifier('extension', row).text();
-					Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeString=document_type.delete_alert}} "+file_name, function(confirmed) {
+					Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeString=widget.document_type.delete_alert}} "+file_name, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
 						}

@@ -8,10 +8,22 @@ Miscellaneous projects
 		Opera main navigation not display correctly
 	General check and update
 
-Priorities
+Bugs & consequences, questions
+- Bug update_row on save in ContributorDetailWidgetModule > line is removed because of different saveData return value?
+	if(setRoleBitmap is executed, then the row is deleted if the bitmap changes)
 -	CriteriaListWidgetDelegate::FILTER_TYPE_BIT_IS_SET, debug cmos_mini contributor sidebar select if multibit
+- Contributor::countProjectsRelatedByClientId() does not work ?
 - mini-cms_generate > schema.sql > migration.sql add table link_categories Propel Generator Error?
+- Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
+- getListContent Limit arguments consistency
+	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
+- DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
+- usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
+
+Priorities
 - check detail widget changes fill_select
+- add page_string attributes to tree > linktext language, active check both on page and page_string!
+- add active checkbox to label??? page_string? design
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 
@@ -19,13 +31,6 @@ Priorities
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
-
-Bugs & consequences, questions
-- Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
-- getListContent Limit arguments consistency
-	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
-- DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
-- usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
 
 PageTypeWidget
 - carefully test for reliable behaviour, performance

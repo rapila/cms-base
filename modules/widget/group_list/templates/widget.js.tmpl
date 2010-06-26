@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery('.group_list').each(function() {
+	jQuery('table.group_list').each(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'group', widget, 'setGroupId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {

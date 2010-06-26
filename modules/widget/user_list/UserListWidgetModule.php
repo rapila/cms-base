@@ -46,7 +46,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('column_name.is_admin');
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('column.language_id');
+				$aResult['heading'] = StringPeer::getString('widget.language');
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('widget.updated_at');

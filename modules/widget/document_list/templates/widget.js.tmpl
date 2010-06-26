@@ -1,6 +1,5 @@
 jQuery(document).ready(function() {
-	var document_list = jQuery('.document_list');
-	document_list.each(function() {
+	jQuery('table.document_list').each(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
@@ -30,7 +29,7 @@ jQuery(document).ready(function() {
 			widget.handle('list.reloaded', function(event, list_length) {
 				if(list_length === 0) {
 					var search = widget.getSearch();
-					var message = "{{writeParameterizedString=module.document_list.no_results;search=$\{search\};category=$\{category\};document_kind=$\{document_kind\}}}".replace(/\$\{search\}/, search).replace('${category}', widget.getOption('document_category_id')).replace('${document_kind}', widget.getOption('document_kind'));
+					var message = "{{writeParameterizedString=widget.document_list.no_result;search=$\{search\};category=$\{category\};document_kind=$\{document_kind\}}}".replace(/\$\{search\}/, search).replace('${category}', widget.getOption('document_category_id')).replace('${document_kind}', widget.getOption('document_kind'));
 					Widget.notifyUser('info', message);
 				}
 			}, false, true);
