@@ -32,7 +32,7 @@ class StringsAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['display_heading'] = false;
+				$aResult['heading'] = StringPeer::getString('widget.string.name_space');
 				break;
 			case 'name_space':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;

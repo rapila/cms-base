@@ -41,7 +41,7 @@ class StringListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.string.string_key');
 				break;
 			case 'text':
-				$aResult['heading'] = StringPeer::getString('string_text');
+				$aResult['heading'] = StringPeer::getString('widget.string.string_text');
 				break;
 			case 'language_id':
 				$aResult['heading'] = StringPeer::getString('widget.language');
