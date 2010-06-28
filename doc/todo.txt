@@ -277,6 +277,7 @@ templates and css
 - ???
 
 CONTINUOUS development strategy
+- error handling, ie module instanciaction, display nice error message, no dump
 - browser check
 	chrome beta does not display confirm alerts properly
 - refactoring whenever needed

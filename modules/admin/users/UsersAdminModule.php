@@ -46,7 +46,7 @@ class UsersAdminModule extends AdminModule {
 	}
 
 	public function getCustomListElements() {
-		if(UserPeer::doCount(new Criteria()) > 0) {
+		if(GroupPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'name' => StringPeer::getString('users.select_all_title'),

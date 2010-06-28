@@ -46,7 +46,7 @@ class StringsAdminModule extends AdminModule {
 	}
 	
 	public static function getCustomListElements() {
-		if(StringPeer::doCount(new Criteria()) > 0) {
+		if(count(StringPeer::getNamespaces()) > 0) {
 		 	return array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('widget.documents.select_all_title'),

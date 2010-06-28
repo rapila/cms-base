@@ -20,10 +20,10 @@ class TextFrontendModule extends FrontendModule {
   }
   
   public function renderBackend() {
-    $tmpl = $this->constructTemplate('main_admin');
-    $tmpl->replaceIdentifier("textarea_id", $this->oRichtextUtil->getAreaName());
-    $tmpl->replaceIdentifier("text", RichtextUtil::parseStorageForBackendOutput($this->getData()));
-    return $tmpl;
+    $oTemplate = $this->constructTemplate('main_admin');
+    $oTemplate->replaceIdentifier("textarea_id", $this->oRichtextUtil->getAreaName());
+    $oTemplate->replaceIdentifier("text", RichtextUtil::parseStorageForBackendOutput($this->getData()));
+    return $oTemplate;
   }
 
   public function getJsForBackend() {
