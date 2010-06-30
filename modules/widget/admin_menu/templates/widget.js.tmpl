@@ -8,11 +8,12 @@ Widget.types.admin_menu = {
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
+		this.activity_indicator = jQuery('<img>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
 		this.addButton("{{writeString=widget.page.preview_linktext}}", function() {
-			
+				//Handle Preview link
 			}.bind(this), false).
 			addButton("{{writeString=widget.page.edit_linktext}}", function() {
-			
+				//Handle Edit link
 			}.bind(this), false).
 			addButton(" ", function() {
 				Widget.create('login_window', function(login_window) {
@@ -26,12 +27,25 @@ Widget.types.admin_menu = {
 			addButton(this.getLoggedInName(), function() {
 			window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
 		}, true).
-			addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module, true).
-			addButton('   ', function() {
+		addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module, true).
+		addButton('   ', function() {
 			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
-		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard'));
+		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard')).
+		addElement(this.activity_indicator, true);
 		if(AdminInterface.current_admin_module == "pages" || AdminInterface.current_admin_module == "strings") {
 			this.addLanguageSelector(AdminInterface.content_language);
+		}
+	},
+	
+	activity: function() {
+		this.activity_indicator.data('usage', this.activity_indicator.data('usage')+1);
+		this.activity_indicator.show();
+	},
+	
+	end_activity: function() {
+		this.activity_indicator.data('usage', this.activity_indicator.data('usage')-1);
+		if(this.activity_indicator.data('usage') <= 0) {
+			this.activity_indicator.hide();
 		}
 	},
 	

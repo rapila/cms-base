@@ -211,6 +211,7 @@ jQuery.extend(Widget, {
 			attributes['session_key'] = widgetId;
 		}
 		var attr_str = JSON.stringify(attributes);
+		var show_activity = Widget.singletons.admin_menu !== undefined;
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
@@ -219,6 +220,11 @@ jQuery.extend(Widget, {
 			async: async,
 			contentType: 'application/json',
 			cache: true,
+			beforeSend: function() {
+				if(show_activity) {
+					Widget.singletons.admin_menu.activity();
+				}
+			},
 			success: function(result) {
 				callback = (callback || Widget.defaultJSONHandler);
 				var error = null;
@@ -237,6 +243,11 @@ jQuery.extend(Widget, {
 					Widget.notifyUser('error', text);
 				} else {
 					Widget.notifyUser('error', error);
+				}
+			},
+			complete: function() {
+				if(show_activity) {
+					Widget.singletons.admin_menu.end_activity();
 				}
 			}
 		});
