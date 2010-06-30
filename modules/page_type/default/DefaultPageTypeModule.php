@@ -277,11 +277,17 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$sCssContents = "";
 		foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
 			if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS) {
+				if(isset($aResource['media'])) {
+					$sCssContents.= "@media {$aResource['media']} {";
+				}
 				if(isset($aResource['file_resource'])) {
 					$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
 				} else {
 					// Absolute link, requires fopen wrappers
 					$sCssContents .= file_get_contents($aResource['location']);
+				}
+				if(isset($aResource['media'])) {
+					$sCssContents.= "}";
 				}
 			}
 		}
