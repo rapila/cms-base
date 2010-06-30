@@ -276,7 +276,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$sCssContents = "";
 		foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
-			if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS) {
+			if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition'])) {
 				if(isset($aResource['media'])) {
 					$sCssContents.= "@media {$aResource['media']} {";
 				}
