@@ -8,6 +8,10 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder === null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addJavaScriptLibrary('prototype', 1.6);
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}
 	

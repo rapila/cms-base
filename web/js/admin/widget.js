@@ -210,9 +210,11 @@ jQuery.extend(Widget, {
 		if(widgetId) {
 			attributes['session_key'] = widgetId;
 		}
+		var attr_str = JSON.stringify(attributes);
+		console.log(attr_str);
 		jQuery.ajax({
 			url: url,
-			data: JSON.stringify(attributes),
+			data: attr_str,
 			type: 'POST',
 			dataType: 'json',
 			async: async,

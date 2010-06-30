@@ -1,8 +1,16 @@
+//Prototype introduces a conflict with JSON.stringify. Resolve here.
+if(Array.prototype.toJSON) {
+	delete Object.prototype.toJSON;
+	delete Array.prototype.toJSON;
+	delete Hash.prototype.toJSON;
+	delete String.prototype.toJSON;
+}
+
 Widget.types.legacy_frontend_module = {
 	prepare: function() {
 		this._element.append(jQuery.parseHTML(this.getModuleBackend()));
-		this._element.append(jQuery('<style/>').text(this.getBackendCss));
-		this._element.append(jQuery('<script/>').text(this.getBackendJs));
+		this._element.append(jQuery('<style/>').text(this.getBackendCss()));
+		this._element.append(jQuery('<script/>').text(this.getBackendJs()));
 	},
 	
 	save: function(callback) {
