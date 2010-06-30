@@ -21,7 +21,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 		
 		// addition related page fields
-		$oPageString = $oPage->getActivePageString();
+		$oPageString = $oPage->getActivePageString(AdminManager::getContentLanguage());
 		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));

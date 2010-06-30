@@ -139,7 +139,7 @@ Widget.types.list = {
 		if(is_widget) {
 			var widget_type = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[0] : metadata.heading_filter;
 			var session_key = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[1] : metadata.heading_filter+'_for_list';
-			Widget.createWithElement(widget_type, function(event, widget) {
+			Widget.createWithElement(widget_type, function(widget) {
 				widget.handle('value-changed', value_changed);
 				widget._element.appendTo(cell);
 			}, session_key);

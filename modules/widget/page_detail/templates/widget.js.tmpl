@@ -23,11 +23,10 @@ Widget.types.page_detail = {
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
-		this.disable_input();
 		this._element.find('label[for]').bind('click', function() {
 			var related_input = widget._element.find("*[name='"+jQuery(this).attr('for')+"']");
 			related_input.focus();
-			if(related_input.is(':checkbox, :radio')) {
+			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
 				related_input.attr('checked', !related_input.attr('checked'));
 			} else {
 				related_input.select();
@@ -63,17 +62,18 @@ Widget.types.page_detail = {
 	},
 	
 	load_page: function(page_id) {
+		this.fire('page.loading', page_id);
 		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
 		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
 		this.fill_data();
-		this.enable_input();
 		if(this.accordion_active() == 1) {
 			this.load_content(contents_container);
 		}
 		page_detail.show();
+		this.fire('page.loaded', page_id);
 	},
 
 	load_content: function(container) {

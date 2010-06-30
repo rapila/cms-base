@@ -42,7 +42,7 @@ Widget.types.detail = {
 		}).find('label[for]').bind('click', function() {
 			var related_input = detail_widget.content.find("*[name='"+jQuery(this).attr('for')+"']");
 			related_input.focus();
-			if(related_input.is(':checkbox, :radio')) {
+			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
 				related_input.attr('checked', !related_input.attr('checked'));
 			} else {
 				related_input.select();

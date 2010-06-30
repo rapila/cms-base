@@ -7,7 +7,7 @@ Widget.types.page_type.types['default'] = {
 	
 	edit_object: function(item_to_edit) {
 		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
-			Widget.createWithElement(result[0], function(event, widget) {
+			Widget.createWithElement(result[0], function(widget) {
 				var content = widget._element;
 				content.dialog({buttons: {
 					'{{writeString=save}}': function() {
@@ -29,7 +29,7 @@ Widget.types.page_type.types['default'] = {
 			}
 			container.addClass('editing');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
-				Widget.createWithElement(result[0], function(event, widget) {
+				Widget.createWithElement(result[0], function(widget) {
 					container.empty().append(widget._element);
 				}, result[1]);
 			});

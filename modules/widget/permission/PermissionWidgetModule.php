@@ -13,6 +13,10 @@ class PermissionWidgetModule extends PersistentWidgetModule {
 		}
 	}
 	
+	public function getMayEditPage($iPageId) {
+		return true;
+	}
+	
 	public static function isSingleton() {
 		return true;
 	}

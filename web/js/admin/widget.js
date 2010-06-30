@@ -135,12 +135,12 @@ jQuery.extend(Widget, {
 			}
 			return Widget.singletons[widgetType];
 		}
+		var widgetInformation = Widget.loadInfo(widgetType)
 		Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation, error) {
 			if(error) {
 				Widget.notifyUser('alert', error.message);
 				return;
 			}
-			var widgetInformation = Widget.loadInfo(widgetType)
 			var widget = new Widget(instanceInformation.session_id, widgetType);
 			//Add php-methods
 			jQuery.each(widgetInformation.methods, function(i, method) {
@@ -169,14 +169,26 @@ jQuery.extend(Widget, {
 				widget.prepare();
 			}
 			widget.fire('prepared', widget, widgetInformation, instanceInformation);
-		});
+		}, !widgetInformation.is_singleton);
+		if(widgetInformation.is_singleton) {
+			return Widget.singletons[widgetType];
+		}
 	},
 	
 	createWithElement: function(widgetType, finishCallback, session) {
-		Widget.create(widgetType, function(widget) {
+		var intermediateCallback = jQuery.noop;
+		if(jQuery.isFunction(session)) {
+			//intermediate callback given → shift session
+			intermediateCallback = finishCallback;
+			finishCallback = session;
+			session = arguments[3];
+		}
+		Widget.create(widgetType, intermediateCallback, function(widget) {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
-			widget.handle('prepared', finishCallback);
-		}, session, arguments[3]);
+			widget.handle('prepared', function(event, widget) {
+				finishCallback(widget);
+			});
+		}, session);
 	},
 	
 	notifyUser: function(severity, message) {
