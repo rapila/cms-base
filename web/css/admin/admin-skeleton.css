@@ -23,7 +23,7 @@ body.login h1 {
   color: #e3ef99;
 }
 #cmos_admin_menu .admin_menu_right .activity_indicator { margin: 4px 6px 0 0; }
-#admin_area, #admin_info_bar, #cmos_admin_menu {
+#admin_area, #admin_info_bar, #cmos_admin_menu, #viewscreen_loader {
   position: absolute;
   overflow: hidden;
   left: 0;
@@ -44,6 +44,17 @@ body.login h1 {
 #admin_main {
   padding: 0px 2px 0 0;
   border-left: 1px solid #d4d8dc;
+}
+#viewscreen_loader {
+  top: 31px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  background-repeat: no-repeat;
+  background-image: url('../../images/admin/loader_big.gif');
+  background-position: center center;
+  z-index: 10001;
 }
 #admin_sidebar {
   left: 0;

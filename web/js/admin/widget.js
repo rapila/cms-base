@@ -196,6 +196,12 @@ jQuery.extend(Widget, {
 		callback(confirm(message));
 	},
 	
+	//Show Ajax loader
+	load: jQuery.noop,
+	
+	//Hide Ajax loader
+	end_load: jQuery.noop,
+	
 	widgetJSON: function(widgetType, widgetId, action, callback, async) {
 		async = !!async;
 		var attributes = arguments[arguments.callee.length] || {};

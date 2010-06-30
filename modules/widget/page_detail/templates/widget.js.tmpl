@@ -12,7 +12,6 @@ Widget.types.page_detail = {
 		
 		this.content_has_been_loaded = false;
 		this.current_page_id = null;
-		this.loader = jQuery('<div>').hide().insertAfter(this._element);
 		
 		// templates
 		var option = jQuery('<option/>');
@@ -65,10 +64,7 @@ Widget.types.page_detail = {
 	
 	load_page: function(page_id) {
 		var page_detail = jQuery('form.page_detail');
-		var page_buttons = jQuery('.infobar_right .cmos-button.ui-button');
 		page_detail.hide();
-		page_buttons.hide();
-		this.toggle_loader(true);
 		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
@@ -77,22 +73,9 @@ Widget.types.page_detail = {
 		if(this.accordion_active() == 1) {
 			this.load_content(contents_container);
 		}
-		this.toggle_loader(false);
 		page_detail.show();
-		page_buttons.show();
 	},
 
-	toggle_loader: function(toggle_active) {
-		if(toggle_active === undefined) {
-			toggle_active = !this.loader.hasClass('ui-loading');
-		}
-		if(toggle_active) {
-			this.loader.addClass('ui-loading').show();
-		} else {
-			this.loader.removeClass('ui-loading').hide();
-		}
-	},
-	
 	load_content: function(container) {
 		var widget = this;
 		if(this.current_page_id === null || this.content_has_been_loaded) {
@@ -113,63 +96,62 @@ Widget.types.page_detail = {
 	},
 	
 	fill_data: function() {
-		this.getPageData(function(page_data) {
-			var widget = this;
-			this.current_page_id = page_data.Id;
-			this._element.find("input[name='name']").val(page_data.Name);
-			this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);
-			this._element.find("input[name='page_title']").val(page_data.active_page_string.PageTitle);
-			this._element.find("input[name='is_inactive']").attr('checked', !page_data.IsInactive);
-			this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
-			this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
-			this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
-			this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
-			this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
-				widget.content_has_been_loaded = false;
-			});
-			this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
-
-			// references
-			var count_references = page_data.CountReferences;
-			var count_text = count_references > 0 ? " ("+count_references+")" : '';
-			if(count_references == 0) {
-				this._element.find(".page_references").remove();
-			} else {
-				this._element.find(".references_count").text(count_text);
-			}
-
-			// page languages
-			if(page_data.page_languages != undefined) {
-				// console.log(page_data.page_languages);
-			}
-			// page_properties
-			if(page_data.page_properties != undefined) {
-				var page_properties_container = this._element.find("div.page_properties");
-				page_properties_container.empty();
-				var default_name = "{{writeString=widget.default}}";
-				for(property_name in page_data.page_properties) {
-					var property_container = jQuery("<div/>");
-					property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
-					for(name in page_data.page_properties[property_name]) {
-						if(name === 'value') {
-							var background_color  ='';
-							if(page_data.page_properties[property_name]['type'] == 'color') {
-								background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
-							}
-							var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
-							var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
-							property_container.append(property_input);
-						}
-						if(name === 'default') {
-							property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));
-						}
-					}
-					page_properties_container.append(property_container);
-				} 
-			}	else {
-				this._element.find(".page_properties").remove();
-			}
+		var page_data = this.getPageData();
+		var widget = this;
+		this.current_page_id = page_data.Id;
+		this._element.find("input[name='name']").val(page_data.Name);
+		this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);
+		this._element.find("input[name='page_title']").val(page_data.active_page_string.PageTitle);
+		this._element.find("input[name='is_inactive']").attr('checked', !page_data.IsInactive);
+		this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
+		this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
+		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
+		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
+		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
+			widget.content_has_been_loaded = false;
 		});
+		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
+
+		// references
+		var count_references = page_data.CountReferences;
+		var count_text = count_references > 0 ? " ("+count_references+")" : '';
+		if(count_references == 0) {
+			this._element.find(".page_references").remove();
+		} else {
+			this._element.find(".references_count").text(count_text);
+		}
+
+		// page languages
+		if(page_data.page_languages != undefined) {
+			// console.log(page_data.page_languages);
+		}
+		// page_properties
+		if(page_data.page_properties != undefined) {
+			var page_properties_container = this._element.find("div.page_properties");
+			page_properties_container.empty();
+			var default_name = "{{writeString=widget.default}}";
+			for(property_name in page_data.page_properties) {
+				var property_container = jQuery("<div/>");
+				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
+				for(name in page_data.page_properties[property_name]) {
+					if(name === 'value') {
+						var background_color  ='';
+						if(page_data.page_properties[property_name]['type'] == 'color') {
+							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
+						}
+						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
+						var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
+						property_container.append(property_input);
+					}
+					if(name === 'default') {
+						property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));
+					}
+				}
+				page_properties_container.append(property_container);
+			} 
+		}	else {
+			this._element.find(".page_properties").remove();
+		}
 	},
 	
 	delete_page: function() {

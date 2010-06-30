@@ -42,7 +42,6 @@ Widget.types.list = {
 		this._element.delegate('.ui-list-cell', 'hover', function(event) {
 			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
 		});
-		this.loader = jQuery('<div>').hide().insertAfter(this._element);
 		this.reload(true);
 	},
 	
@@ -241,6 +240,7 @@ Widget.types.list = {
 	},
 	
 	reload: function(load_heading) {
+		this.fire('list.reloading', load_heading);
 		this._element.hide();
 		this.toggle_loader(true);
 		if(load_heading) {
@@ -271,10 +271,8 @@ Widget.types.list = {
 				jQuery.each(list, function(i, row) {
 					this.insert_row(row);
 				}.bind(this));
-				this.toggle_loader(false);
-			} else {
-				this.toggle_loader(false);
 			}
+			this.toggle_loader(false);
 			this._element.show();
 			if(load_heading) {
 				this.fire('list.loaded', list.length);
@@ -350,13 +348,10 @@ Widget.types.list = {
 	},
 	
 	toggle_loader: function(toggle_active) {
-		if(toggle_active === undefined) {
-			toggle_active = !this.loader.hasClass('ui-loading');
-		}
 		if(toggle_active) {
-			this.loader.addClass('ui-loading').show();
+			Widget.load();
 		} else {
-			this.loader.removeClass('ui-loading').hide();
+			Widget.end_load();
 		}
 	},
 	

@@ -15,9 +15,39 @@ jQuery(document).ready(function() {
 		AdminInterface.content.append(widget._element);
 	}, jQuery.noop);
 	
+	//Init info bar buttons
+	var include = "{{includeTemplate=infobar_button.incl}}";
+	var info_bar_buttons = jQuery().add(
+	jQuery.parseHTML(include).text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
+		page_detail.save();
+	})).add(
+	jQuery.parseHTML(include).text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
+		page_detail.fill_data();
+		page_detail.enable_input();
+	})).add(
+	jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
+		page_detail.delete_page();
+	}));
+	
+	var info_bar = AdminInterface.info_bar.getWidget();
+	info_bar.add_button('add-new-item', function() {
+		Widget.create('page_detail', function(widget) {
+			// console.log(widget);
+			// widget.load_page();
+			widget.save_callback = function() {
+				jQuery('.ui-tree').each(function() {
+					jQuery(this).getWidget().reload();
+				});
+			};
+		});
+	}, 'n', false);
+	info_bar.add_element(info_bar_buttons, true, false);
+	
 	// init main content
 	var click_handler = function(event, element, page_id) {
+		info_bar_buttons.hide();
 		page_detail.load_page(page_id);
+		info_bar_buttons.show();
 		// jQuery("div.accordion").accordion( "activate", 0);
 	};
 	
@@ -29,6 +59,7 @@ jQuery(document).ready(function() {
 			page_tree.add_icon('is-hidden', element);
 		}
 	};
+	
 	
 	Widget.createWithElement('tree', function(event, widget) {
 		page_tree = widget;
@@ -51,29 +82,7 @@ jQuery(document).ready(function() {
 			return item.Id === initial_selection;
 		};
 	}, '{{writeRequestValue=tree_session}}');
-	var info_bar = AdminInterface.info_bar.getWidget();
-	info_bar.add_button('add-new-item', function() {
-		Widget.create('page_detail', function(widget) {
-			// console.log(widget);
-			// widget.load_page();
-			widget.save_callback = function() {
-				jQuery('.ui-tree').each(function() {
-					jQuery(this).getWidget().reload();
-				});
-			};
-		});
-	}, 'n', false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
-		page_detail.save();
-	}), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
-		page_detail.fill_data();
-		page_detail.enable_input();
-	}), true, false).
-	add_element(jQuery("{{includeTemplate=infobar_button.incl}}").text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
-		page_detail.delete_page();
-	}), true, false);
-
+	
 	// init language change
 	Widget.handle('cmos.language_changed', function() {
 		page_tree.update_elements();
