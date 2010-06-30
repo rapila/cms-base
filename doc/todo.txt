@@ -7,6 +7,11 @@ Miscellaneous projects
 	CSS check: Chrome when developer tools are on, the displayed correctly
 		Opera main navigation not display correctly
 	General check and update
+	
+cms_dev Bug  
+- onNavigationItemChildrenRequested second argument not given.
+cmos_mini
+- Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22
 
 Bugs & consequences, questions
 - Bug update_row on save in ContributorDetailWidgetModule > line is removed because of different saveData return value?

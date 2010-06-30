@@ -11,7 +11,7 @@ class LinksAdminModule extends AdminModule {
 	public function __construct() {
 		$this->oListWidget = new LinkListWidgetModule();
 		if(isset($_REQUEST['link_category_id'])) {
-			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['document_category_id']);
+			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['link_category_id']);
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $this->oListWidget->oDelegateProxy->getLinkCategoryId());
 

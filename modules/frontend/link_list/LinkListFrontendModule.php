@@ -38,15 +38,25 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		return $oListTemplate;
 	}
 
-	
 	public function renderBackend() {
 		$aOptions = @unserialize($this->getData());
 		$aListTags = TagPeer::doSelect(TagPeer::getTagsUsedInModelCriteria('Link'));
+		$aListCategories = LinkCategoryPeer::doSelect(new Criteria());
 		$oTemplate = $this->constructTemplate('backend');
-		$oTemplate->replaceIdentifier('tags', TagWriter::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
+		if(count($aListTags) > 0) {
+			$oTemplate->replaceIdentifier('tags', TagWriter::optionsFromObjects($aListTags, 'getName', 'getName', @$aOptions['tags'], false));
+		}
+		if(count($aListCategories) > 0) {
+			$oTemplate->replaceIdentifier('categories', TagWriter::optionsFromObjects($aListCategories, 'getId', 'getName', @$aOptions['categories'], false));
+		}
 		if(isset($aOptions['tags']) && is_array($aOptions['tags'])) {
 			foreach($aOptions['tags'] as $sTagName) {
-				$oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link(array('links'), 'BackendManager', array('selected_tag_name' => $sTagName))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$sTagName.']')));
+				$oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link(array('links'), 'AdminManager', array('selected_tag_name' => $sTagName))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$sTagName.']')));
+			}
+		}
+		if(isset($aOptions['categories']) && is_array($aOptions['categories'])) {
+			foreach($aOptions['categories'] as $iCategoryId) {
+				$oTemplate->replaceIdentifierMultiple('links_edit_link', TagWriter::quickTag('a', array('class' => 'edit_related_link highlight', 'href' => LinkUtil::link(array('links'), 'AdminManager', array('link_category_id' => $iCategoryId))), StringPeer::getString('edit_module', null, null,array('module_name' => StringPeer::getString('links'))).(' ['.$iCategoryId.']')));
 			}
 		}
 		$aListTemplates = BackendManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
@@ -55,7 +65,15 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	} 
 	
 	public function getSaveData() {
-		$_POST['tags'] = is_array($_POST['tags']) ? $_POST['tags'] : array($_POST['tags']);
-		return serialize(array('tags' => $_POST['tags'], 'list_template' => $_POST['list_template']));
+		$aData = array('list_template' => $_POST['list_template']);
+		if(isset($_POST['tags'])) {
+			$_POST['tags'] = is_array($_POST['tags']) ? $_POST['tags'] : array($_POST['tags']);
+			$aData = array_merge($aData, $_POST['tags']);
+		}
+		if(isset($_POST['categories'])) {
+			$_POST['categories'] = is_array($_POST['categories']) ? $_POST['categories'] : array($_POST['categories']);
+			$aData = array_merge($aData, $_POST['categories']);
+		}
+		return serialize($aData);
 	}
 }
