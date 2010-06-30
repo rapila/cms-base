@@ -12,6 +12,7 @@ cms_dev Bug
 - onNavigationItemChildrenRequested second argument not given.
 cmos_mini
 - Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22
+	i guess this was related to the YAML 1.0 declaration
 
 Bugs & consequences, questions
 - Bug update_row on save in ContributorDetailWidgetModule > line is removed because of different saveData return value?
@@ -24,9 +25,10 @@ Bugs & consequences, questions
 	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
 - DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
 - usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
+- sidebar tree highlight css: ui-state-active does not work when level 2 li is active but parent element level one is hovered
 
 Priorities
-- check detail widget changes fill_select
+- check detail widget helper fill_select
 - add page_string attributes to tree > linktext language, active check both on page and page_string!
 - add active checkbox to label??? page_string? design
 - discuss permissions @see use_cases_permissions.txt
