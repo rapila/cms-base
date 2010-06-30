@@ -11,9 +11,11 @@ Miscellaneous projects
 cms_dev Bug  
 - onNavigationItemChildrenRequested second argument not given.
 	i guess this was related to the YAML 1.0 declaration
+	
+BrowserBug important
+- Opera and Chrome do not load sidebar tree and click on sidebar elements don't work
 
 Priorities
-- add page_string attributes to tree > linktext language, active check both on page and page_string!
 - add active checkbox to label??? page_string? design
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
@@ -517,3 +519,4 @@ release-1-devel propel update
 - Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found > update to 10.54 seems to have solved the issue
 - usedWidgets(), what does it do, and is it necessary ? yes, it preloads all widget.js and that's good
 - Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22 > YAML 1.0 declaration removed
+- add page_string attributes to tree > linktext language, active check both on page and page_string!
