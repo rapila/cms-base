@@ -65,10 +65,7 @@ class StringsAdminModule extends AdminModule {
 			$iRowCount = count($aResult);
 		}
 		$aResult = array_merge(self::getCustomListElements(), $aResult);
-		// array_unshift($aResult, self::getCustomListElements());
-		// ErrorHandler::log($aResult);
 		return $aResult;
-		// return array_splice($aResult, $iRowStart, $iRowCount);
 	}
 
 	public function usedWidgets() {

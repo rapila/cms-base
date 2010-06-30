@@ -10,25 +10,9 @@ Miscellaneous projects
 	
 cms_dev Bug  
 - onNavigationItemChildrenRequested second argument not given.
-cmos_mini
-- Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22
 	i guess this was related to the YAML 1.0 declaration
 
-Bugs & consequences, questions
-- Bug update_row on save in ContributorDetailWidgetModule > line is removed because of different saveData return value?
-	if(setRoleBitmap is executed, then the row is deleted if the bitmap changes)
--	CriteriaListWidgetDelegate::FILTER_TYPE_BIT_IS_SET, debug cmos_mini contributor sidebar select if multibit
-- Contributor::countProjectsRelatedByClientId() does not work ?
-- mini-cms_generate > schema.sql > migration.sql add table link_categories Propel Generator Error?
-- Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found
-- getListContent Limit arguments consistency
-	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
-- DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
-- usedWidgets(), what does it do, and is it necessary ? see StringsAdminModule
-- sidebar tree highlight css: ui-state-active does not work when level 2 li is active but parent element level one is hovered
-
 Priorities
-- check detail widget helper fill_select
 - add page_string attributes to tree > linktext language, active check both on page and page_string!
 - add active checkbox to label??? page_string? design
 - discuss permissions @see use_cases_permissions.txt
@@ -83,6 +67,7 @@ Detail
 - discuss tabs, icons-"tabs" for references, list / thumbnail views etc
 
 Widget tasks
+- check session storage of widgets WidgetModule::removeStoredWidgets();
 - sidebar element edit/delete?
 - userNotify > array and links handling for helpful messages (not found)
 	remove on click of other element, maybe close button
@@ -520,3 +505,15 @@ release-1-devel propel update
 - fix select menu selected
 - strategy keywords/namespaces browsers, ie page_type "default" (unexpected token default Chrome)
 	keyword delete: SOLUTION:page_detail.delete() renamed to deletePage() since it throws exceptions in all browsers but Firefox
+- Bug update_row on save in ContributorDetailWidgetModule > line is removed because of different saveData return value?
+	if(setRoleBitmap is executed, then the row is deleted if the bitmap changes)
+-	CriteriaListWidgetDelegate::FILTER_TYPE_BIT_IS_SET, debug cmos_mini contributor sidebar select if multibit
+- Contributor::countProjectsRelatedByClientId() does not work ?
+- mini-cms_generate > schema.sql > migration.sql add table link_categories Propel Generator Error?
+- getListContent Limit arguments consistency
+	array_splice($aResult, $iRowStart, $iRowCount) does not work when custom elements are manually merged
+- DumpExporter wirft mit FireBug on eine JS exception, führt den Export bei neuladen der seite jedoch aus  Lösung, Prototype?
+- check detail widget changes fill_select
+- Opera (or more) Error in ResourceIncluder->addJavaScriptLibrary(): Library version=1.4 not found > update to 10.54 seems to have solved the issue
+- usedWidgets(), what does it do, and is it necessary ? yes, it preloads all widget.js and that's good
+- Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22 > YAML 1.0 declaration removed
