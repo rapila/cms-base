@@ -202,6 +202,12 @@ jQuery.extend(Widget, {
 	//Hide Ajax loader
 	end_load: jQuery.noop,
 	
+	//Show activity indicator
+	activity: jQuery.noop,
+	
+	//Hide activity indicator
+	end_activity: jQuery.noop,
+	
 	widgetJSON: function(widgetType, widgetId, action, callback, async) {
 		async = !!async;
 		var attributes = arguments[arguments.callee.length] || {};
@@ -217,7 +223,6 @@ jQuery.extend(Widget, {
 			attributes['session_key'] = widgetId;
 		}
 		var attr_str = JSON.stringify(attributes);
-		var show_activity = Widget.singletons.admin_menu !== undefined;
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
@@ -227,9 +232,7 @@ jQuery.extend(Widget, {
 			contentType: 'application/json',
 			cache: true,
 			beforeSend: function() {
-				if(show_activity) {
-					Widget.singletons.admin_menu.activity();
-				}
+				Widget.activity();
 			},
 			success: function(result) {
 				callback = (callback || Widget.defaultJSONHandler);
@@ -252,9 +255,7 @@ jQuery.extend(Widget, {
 				}
 			},
 			complete: function() {
-				if(show_activity) {
-					Widget.singletons.admin_menu.end_activity();
-				}
+				Widget.end_activity();
 			}
 		});
 	},

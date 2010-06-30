@@ -117,6 +117,18 @@ jQuery.extend(Widget, {
 		if(window.AdminInterface.loader.data('load-count') <= 0) {
 			window.AdminInterface.loader.hide();
 		}
+	},
+	
+	activity: function() {
+		if(Widget.singletons.admin_menu !== undefined) {
+			Widget.singletons.admin_menu.activity();
+		}
+	}, 
+	
+	end_activity: function() {
+		if(Widget.singletons.admin_menu !== undefined) {
+			Widget.singletons.admin_menu.end_activity();
+		}
 	}
 	
 });

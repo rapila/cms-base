@@ -241,7 +241,6 @@ Widget.types.list = {
 	
 	reload: function(load_heading) {
 		this.fire('list.reloading', load_heading);
-		this._element.hide();
 		this.toggle_loader(true);
 		if(load_heading) {
 			this._element.empty();
@@ -273,7 +272,6 @@ Widget.types.list = {
 				}.bind(this));
 			}
 			this.toggle_loader(false);
-			this._element.show();
 			if(load_heading) {
 				this.fire('list.loaded', list.length);
 			}
