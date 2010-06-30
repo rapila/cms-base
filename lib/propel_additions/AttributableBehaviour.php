@@ -43,6 +43,7 @@ class AttributableBehaviour extends Behavior {
 				$this->addRelation($oUpdateColumn, $oUsersTable, $oUsersId);
 			}
 		}
+		$this->getTable()->doNaming();
 	}
 	
 	private function addRelation($oLocalColumn, $oUsersTable, $oUsersId) {

@@ -102,7 +102,6 @@ Widget.types.detail = {
 			});
 			detail.save_callback = function(returnValue) {
 				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
-				console.log(detail.current_row);
 				list.update_row(detail.current_row, additionalData);
 			};
 		});

@@ -12,7 +12,6 @@ class CriteriaListWidgetDelegate {
 	const SELECT_WITHOUT = '__without';
 	
 	const FILTER_TYPE_IS = 'is';
-	const FILTER_TYPE_BIT_IS_SET = 'is';
 	const FILTER_TYPE_BEGINS = 'begins';
 	const FILTER_TYPE_CONTAINS = 'contains';
 	const FILTER_TYPE_TAG = 'tag';
@@ -123,9 +122,6 @@ class CriteriaListWidgetDelegate {
 			//LIKE criterias are not compatible with $bInverted == true
 			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_BEGINS) {
 				$oCriteria->add($sFilterColumn, "$sFilterValue%", Criteria::LIKE);
-			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_BIT_IS_SET) {
-				$sCustomSql = "(' . $sFilterValue. ' & '.$sFilterColumn.') = ' . $sFilterValue.'";
-				$oCriteria->add($sFilterColumn, $sCustomSql, Criteria::CUSTOM);
 			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_CONTAINS) {
 				$oCriteria->add($sFilterColumn, "%$sFilterValue%", Criteria::LIKE);
 			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_IS_NULL) {
