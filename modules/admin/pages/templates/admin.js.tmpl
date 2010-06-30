@@ -36,7 +36,7 @@ jQuery(document).ready(function() {
 		widget.handle('tree.clicked', click_handler).handle('tree.inserted', icon_handler).handle('tree.updated', icon_handler);
 	}, function(widget) {
 		widget.settings.description_from_item = function(item) {
-			return item.Name;
+			return item.page_string.LinkText;
 		};
 		widget.settings.has_children = function(item) {
 			return item.TreeRight-item.TreeLeft > 1;
@@ -76,6 +76,7 @@ jQuery(document).ready(function() {
 
 	// init language change
 	Widget.handle('cmos.language_changed', function() {
+		page_tree.update_elements();
 		// reload the sidebar and page detail
 	});
 });

@@ -132,6 +132,13 @@ Widget.types.tree = {
 		return parent;
 	},
 	
+	update_elements: function() {
+		var tree = this;
+		tree._element.find('li').each(function() {
+			tree.update_element(jQuery(this));
+		});
+	},
+	
 	add_icon: function(name, element) {
 		var icons = element.children('.ui-icons');
 		icons.append(jQuery('<div/>').addClass('ui-icon ui-icon-'+name));

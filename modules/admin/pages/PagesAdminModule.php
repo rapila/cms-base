@@ -34,19 +34,27 @@ class PagesAdminModule extends AdminModule {
 	}
 	
 	public function listChildren($iId) {
-		$oParentPage = null;
+		$aResult = array();
 		if($iId === null) {
-			return array($this->oRootPage->toArray());
+			$aResult[] = self::propertiesFromPage($this->oRootPage);
 		} else {
 			$oParentPage = PagePeer::retrieveByPK($iId);
+			if($oParentPage !== null) {
+				foreach($oParentPage->getChildren() as $oChild) {
+					$aResult[] = self::propertiesFromPage($oChild);
+				}
+			}
 		}
-		if($oParentPage && $oParentPage->hasChildren()) {
-			return $oParentPage->getChildren()->toArray();
-		}
-		return array();
+		return $aResult;
+	}
+	
+	private static function propertiesFromPage($oPage) {
+		$aResult = $oPage->toArray();
+		$aResult['page_string'] = $oPage->getActivePageString(AdminManager::getContentLanguage())->toArray();
+		return $aResult;
 	}
 	
 	public function loadItem($iId) {
-		return PagePeer::retrieveByPK($iId)->toArray();
+		return self::propertiesFromPage(PagePeer::retrieveByPK($iId));
 	}
 }

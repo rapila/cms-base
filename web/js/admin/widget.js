@@ -211,7 +211,6 @@ jQuery.extend(Widget, {
 			attributes['session_key'] = widgetId;
 		}
 		var attr_str = JSON.stringify(attributes);
-		console.log(attr_str);
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
