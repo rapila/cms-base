@@ -65,7 +65,9 @@ Widget.types.page_detail = {
 	
 	load_page: function(page_id) {
 		var page_detail = jQuery('form.page_detail');
+		var page_buttons = jQuery('.infobar_right .cmos-button.ui-button');
 		page_detail.hide();
+		page_buttons.hide();
 		this.toggle_loader(true);
 		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
@@ -77,6 +79,7 @@ Widget.types.page_detail = {
 		}
 		this.toggle_loader(false);
 		page_detail.show();
+		page_buttons.show();
 	},
 
 	toggle_loader: function(toggle_active) {
