@@ -15,15 +15,6 @@ jQuery.extend(jQuery, {
 	}
 });
 
-Function.prototype.bind = function(context) {
-	var __method = this;
-	var __arguments = jQuery.makeArray(arguments).slice(arguments.callee.length);
-	return function() {
-		var args = __arguments.concat(jQuery.makeArray(arguments));
-		return __method.apply(context, args);
-	};
-};
-
 jQuery.fn.extend({
 	tooltip: function(text) {
 		var tooltip = this.data('tooltip-element');
@@ -40,23 +31,6 @@ jQuery.fn.extend({
 			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
 		});
 	},
-	
-	serializeArrayKV: function() {
-		var attributes = this.serializeArray();
-		var result = {};
-		jQuery.each(attributes, function(i, attr) {
-			if(attr.name.match(/\[\]$/)) {
-				var name = attr.name.substring(0, attr.name.length-2);
-				if(!result[name]) {
-					result[name] = [];
-				}
-				result[name][result[name].length] = attr.value
-			} else {
-				result[attr.name] = attr.value;
-			}
-		});
-		return result;
-	}
 });
 
 jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {

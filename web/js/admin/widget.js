@@ -3,9 +3,39 @@ if(!jQuery.noop) {
 	jQuery.noop = function() {};
 }
 
-var Widget = function(widgetId, widgetType) {
-	this.widgetId = widgetId;
-	this.widgetType = widgetType;
+//Bind method (heavily used)
+Function.prototype.bind = function(context) {
+	var __method = this;
+	var __arguments = jQuery.makeArray(arguments).slice(arguments.callee.length);
+	return function() {
+		var args = __arguments.concat(jQuery.makeArray(arguments));
+		return __method.apply(context, args);
+	};
+};
+
+//Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
+jQuery.fn.extend({
+	serializeArrayKV: function() {
+		var attributes = this.serializeArray();
+		var result = {};
+		jQuery.each(attributes, function(i, attr) {
+			if(attr.name.match(/\[\]$/)) {
+				var name = attr.name.substring(0, attr.name.length-2);
+				if(!result[name]) {
+					result[name] = [];
+				}
+				result[name][result[name].length] = attr.value
+			} else {
+				result[attr.name] = attr.value;
+			}
+		});
+		return result;
+	}
+});
+
+
+//Widget class
+var Widget = function() {
 };
 
 jQuery.extend(Widget.prototype, {
@@ -111,6 +141,35 @@ jQuery.extend(Widget, {
 								head.append(this);
 							}
 						});
+					} else {
+						Widget.types[widgetType] = {}; //An empty widget type… useful if it only exposes PHP methods
+					}
+				}
+				if(Widget.types[widgetType].constructor !== Function) {
+					// Make Widget.types[widgetType] a function
+					var old_type = Widget.types[widgetType]; //must now be defined after including resources
+					Widget.types[widgetType] = function(instanceInformation) {
+						this._widgetInformation = widgetInformation;
+						this._instanceInformation = instanceInformation;
+						this.widgetId = instanceInformation.session_id;
+						this.widgetType = widgetType;
+					};
+					Widget.types[widgetType].prototype = new Widget();
+					//Add PHP methods
+					jQuery.each(widgetInformation.methods, function(i, method) {
+						Widget.types[widgetType].prototype[method] = function() {
+							return this._callMethod.apply(this, [method].concat(jQuery.makeArray(arguments)));
+						};
+					});
+					//Add JS methods (most importantly initialize and prepare)
+					jQuery.extend(Widget.types[widgetType].prototype, old_type);
+					if(!Widget.types[widgetType].prototype.settings) {
+						Widget.types[widgetType].prototype.settings = {};
+					}
+					//Fix – static – types property
+					if(old_type.types) {
+						delete Widget.types[widgetType].prototype.types;
+						Widget.types[widgetType].types = old_type.types;
 					}
 				}
 			}, false);
@@ -141,16 +200,12 @@ jQuery.extend(Widget, {
 				Widget.notifyUser('alert', error.message);
 				return;
 			}
-			var widget = new Widget(instanceInformation.session_id, widgetType);
-			//Add php-methods
-			jQuery.each(widgetInformation.methods, function(i, method) {
-				widget[method] = widget._callMethod.bind(widget, method);
-			});
-			//Add js-methods and other members
-			jQuery.extend(true, widget, Widget.types[widgetType] || {});
-			if(!widget.settings) {
-				widget.settings = {};
-			}
+			var widget = new Widget.types[widgetType](instanceInformation);
+			
+			//Settings need to be mutable without changing globally
+			widget.settings = {};
+			jQuery.extend(true, widget.settings, Widget.types[widgetType].prototype.settings);
+			
 			if(widgetInformation.is_singleton) {
 				Widget.singletons[widgetType] = widget;
 			}
@@ -277,7 +332,7 @@ jQuery.extend(Widget, {
 		if(!Widget.types[widgetType]) {
 			Widget.loadInfo(widgetType);
 		}
-		return Widget.types[widgetType][methodName].apply(window, parameters);
+		return Widget.types[widgetType].prototype[methodName].apply(window, parameters);
 	},
 	
 	fire: function(event) {
