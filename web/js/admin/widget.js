@@ -154,6 +154,7 @@ jQuery.extend(Widget, {
 						this.widgetId = instanceInformation.session_id;
 						this.widgetType = widgetType;
 					};
+					Widget.types[widgetType].prototype.constructor = Widget.types[widgetType];
 					Widget.types[widgetType].prototype = new Widget();
 					//Add PHP methods
 					jQuery.each(widgetInformation.methods, function(i, method) {
@@ -161,8 +162,9 @@ jQuery.extend(Widget, {
 							return this._callMethod.apply(this, [method].concat(jQuery.makeArray(arguments)));
 						};
 					});
-					//Add JS methods (most importantly initialize and prepare)
+					//Add JS methods (including initialize [which is not the constructor] and prepare)
 					jQuery.extend(Widget.types[widgetType].prototype, old_type);
+					//Settings must be present
 					if(!Widget.types[widgetType].prototype.settings) {
 						Widget.types[widgetType].prototype.settings = {};
 					}
@@ -389,14 +391,10 @@ jQuery.extend(jQuery, {
 });
 
 jQuery.fn.extend({
-	getWidget: function() {
-		return this.data('widget');
-	},
-	
 	prepareWidget: function() {
 		var callback = arguments[0] || jQuery.noop;
-		if(this.getWidget()) {
-			callback(this.getWidget());
+		if(this.data('widget')) {
+			callback(this.data('widget'));
 			return this;
 		}
 		var waiting_callbacks = this.data('waiting_prepare_callbacks');

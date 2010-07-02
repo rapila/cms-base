@@ -1,25 +1,24 @@
 jQuery(document).ready(function() {
 	// init main content
-	var group_list = AdminInterface.content.find('table.group_list').getWidget();
-
-	// has no sidebar
-	// init infobar
-	var info_bar = AdminInterface.info_bar.getWidget();
-	info_bar.add_button('add-new-item', function() {
-		Widget.create('group_detail', function(widget) {
-			widget.open();
-			widget.save_callback = function() {
-				jQuery('.group_list.ui-list').each(function() {
-					jQuery(this).getWidget().reload();
+	AdminInterface.content.find('table.group_list').prepareWidget(function(group_list) {
+		// has no sidebar
+		// init infobar
+		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			info_bar.add_button('add-new-item', function() {
+				Widget.create('group_detail', function(widget) {
+					widget.open();
+					widget.save_callback = function() {
+						group_list.reload();
+					};
 				});
-			};
-		});
-	}, 'n', true).add_search_input("{{writeString=search.groups}}", function(search) {
-		if(group_list.setSearch(search)) {
-			group_list.reload();
-		}
-	});;
+			}, 'n', true).add_search_input("{{writeString=search.groups}}", function(search) {
+				if(group_list.setSearch(search)) {
+					group_list.reload();
+				}
+			});;
 	
-	// add row_count_info
-	info_bar.add_row_count_info_for_list(group_list);
+			// add row_count_info
+			info_bar.add_row_count_info_for_list(group_list);
+		});
+	});
 });

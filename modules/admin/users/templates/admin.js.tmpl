@@ -1,58 +1,63 @@
 jQuery(document).ready(function() {
 	// init main content
-	var user_list = AdminInterface.content.find('table.user_list').getWidget();
+	AdminInterface.content.find('table.user_list').prepareWidget(function(user_list) {
+		
+	});
 
 	// init sidebar
-	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
-	sidebar.settings.row_click_active_mode = 'activate';
-	var initial_selection = "{{writeRequestValue=group_id}}";
-	if(initial_selection) {
-		initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
-		sidebar.handle('list.loaded', function() {
-			sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
-		}, true, true);
-	}
+	var sidebar;
+	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
+		sidebar = widget;
+		sidebar.settings.row_click_active_mode = 'activate';
+		var initial_selection = "{{writeRequestValue=group_id}}";
+		if(initial_selection) {
+			initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
+			sidebar.handle('list.loaded', function() {
+				sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
+			}, true, true);
+		}
+		// click handlers
+		sidebar.handle('list.row-click', function(event, row, element) {
+			var group_id = element.data('id');
+			if(!element.hasClass('ui-state-active')) {
+			 	group_id = null;
+			}
+			user_list.setOption('group_id', group_id);
+			user_list.reload();
+		});
+	});
 
 	// init infobar
-	var info_bar = AdminInterface.info_bar.getWidget();
-	info_bar.add_button('add-new-item', function() {
-		Widget.create('user_detail', function(widget) {
-			widget.open();
-			widget.save_callback = function() {
+	AdminInterface.info_bar.prepareWidget(function(info_bar) {
+		info_bar.add_button('add-new-item', function() {
+			Widget.create('user_detail', function(widget) {
+				widget.open();
+				widget.save_callback = function() {
+					user_list.reload();
+				};
+			});
+		}, 'n', true).add_button('add-new-item', function() {
+			Widget.create('group_detail', function(widget) {
+				widget.open();
+				var row_data = sidebar.active_row();
+				if(row_data.length>0) {
+						// TODO: re-setting the last selected item after reload should be default functionality
+					row_data = sidebar.collect_row_data(row_data);
+					sidebar.handle('list.reloaded', function() {
+						sidebar.activate_row(sidebar.row_from_row_data(row_data));
+					}, true);
+				}
+				widget.save_callback = function() {
+					sidebar.reload()
+				};
+			});
+		}).add_search_input("{{writeString=search.users}}", function(search) {
+			if(user_list.setSearch(search)) {
 				user_list.reload();
-			};
-		});
-	}, 'n', true).add_button('add-new-item', function() {
-		Widget.create('group_detail', function(widget) {
-			widget.open();
-			var row_data = sidebar.active_row();
-			if(row_data.length>0) {
-					// TODO: re-setting the last selected item after reload should be default functionality
-				row_data = sidebar.collect_row_data(row_data);
-				sidebar.handle('list.reloaded', function() {
-					sidebar.activate_row(sidebar.row_from_row_data(row_data));
-				}, true);
 			}
-			widget.save_callback = function() {
-				sidebar.reload()
-			};
 		});
-	}).add_search_input("{{writeString=search.users}}", function(search) {
-		if(user_list.setSearch(search)) {
-			user_list.reload();
-		}
+		
+		// add row_count_info
+		info_bar.add_row_count_info_for_list(user_list);
 	});
-
-	// click handlers
-	sidebar.handle('list.row-click', function(event, row, element) {
-		var group_id = element.data('id');
-		if(!element.hasClass('ui-state-active')) {
-		 	group_id = null;
-		}
-		user_list.setOption('group_id', group_id);
-		user_list.reload();
-	});
-	
-	// add row_count_info
-	info_bar.add_row_count_info_for_list(user_list);
 });

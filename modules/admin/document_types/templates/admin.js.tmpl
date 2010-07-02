@@ -1,36 +1,38 @@
 jQuery(document).ready(function() {
 	// init main content
-	var document_type_list = AdminInterface.content.find('table.document_type_list').getWidget();
-
-	// init sidebar
-	var sidebar = AdminInterface.sidebar.find('.ui-list').getWidget();
-	var initial_selection = "{{writeRequestValue=document_kind}}";
-	if(initial_selection) {
-		sidebar.handle('list.loaded', function() {
-			sidebar.activate_row(sidebar.row_from_row_data({document_kind: initial_selection}));
-		}, true, true);
-	}
-	sidebar.settings.row_click_active_mode = 'activate';
-	sidebar.handle('list.row-click', function(event, row, element) {
-		var document_kind = element.data('document_kind');
-		if(!element.hasClass('ui-state-active')) {
-		 	document_kind = null;
-		}
-		document_type_list.setOption('document_kind', document_kind);
-		document_type_list.reload();
-	});	
-	
-	// init infobar
-	var info_bar = AdminInterface.info_bar.getWidget();
-	AdminInterface.info_bar.getWidget().add_button('add-new-item', function() {
-		Widget.create('document_type_detail', function(widget) {
-			widget.open();
-			widget.save_callback = function() {
+	AdminInterface.content.find('table.document_type_list').prepareWidget(function(document_type_list) {
+		// init sidebar
+		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
+			var initial_selection = "{{writeRequestValue=document_kind}}";
+			if(initial_selection) {
+				sidebar.handle('list.loaded', function() {
+					sidebar.activate_row(sidebar.row_from_row_data({document_kind: initial_selection}));
+				}, true, true);
+			}
+			sidebar.settings.row_click_active_mode = 'activate';
+			sidebar.handle('list.row-click', function(event, row, element) {
+				var document_kind = element.data('document_kind');
+				if(!element.hasClass('ui-state-active')) {
+				 	document_kind = null;
+				}
+				document_type_list.setOption('document_kind', document_kind);
 				document_type_list.reload();
-			};
+			});	
 		});
-	}, 'n', true);
+	
+		// init infobar
+		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			info_bar.add_button('add-new-item', function() {
+				Widget.create('document_type_detail', function(widget) {
+					widget.open();
+					widget.save_callback = function() {
+						document_type_list.reload();
+					};
+				});
+			}, 'n', true);
 
-	// add row_count_info
-	info_bar.add_row_count_info_for_list(document_type_list);
+			// add row_count_info
+			info_bar.add_row_count_info_for_list(document_type_list);
+		});
+	});
 });

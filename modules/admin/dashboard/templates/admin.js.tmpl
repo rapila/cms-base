@@ -1,8 +1,8 @@
 jQuery(document).ready(function() {
-	var sidebar = AdminInterface.sidebar;
-	var sidebar_widget = sidebar.find('.ui-list').getWidget();
-	// Widget.handle('cmos.language_changed', widget.reload.bind(widget));
-	sidebar_widget.handle('list.row-click', function(event, row, element) {
-		window.location.pathname = element.data('link');
+	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
+		// Widget.handle('cmos.language_changed', widget.reload.bind(widget));
+		sidebar_widget.handle('list.row-click', function(event, row, element) {
+			window.location.pathname = element.data('link');
+		});
 	});
 });

@@ -1,18 +1,19 @@
 jQuery(document).ready(function() {
 	// init main content
-	var document_category_list = AdminInterface.content.find('table.document_category_list').getWidget();
-
-	// init sidebar
-	var info_bar = AdminInterface.info_bar.getWidget();
-	info_bar.add_button('add-new-item', function() {
-		Widget.create('document_category_detail', function(widget) {
-			widget.open();
-			widget.save_callback = function() {
-				document_category_list.reload();
-			};
+	AdminInterface.content.find('table.document_category_list').prepareWidget(function(document_category_list) {
+		// init sidebar
+		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			info_bar.add_button('add-new-item', function() {
+				Widget.create('document_category_detail', function(widget) {
+					widget.open();
+					widget.save_callback = function() {
+						document_category_list.reload();
+					};
+				});
+			}, 'n', true);
+			
+			// add row_count_info
+			info_bar.add_row_count_info_for_list(document_category_list);
 		});
-	}, 'n', true);
-	
-	// add row_count_info
-	info_bar.add_row_count_info_for_list(document_category_list);
+	});
 });
