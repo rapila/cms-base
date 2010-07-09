@@ -52,6 +52,10 @@
   border-left: 1px solid #f2f2f2;
   padding: 0 1em;
 }
+.ui-widget .status_section fieldset {
+  border: 1px dotted #c0c0c0;
+  padding: 0;
+}
 .ui-widget .status_section select { width: 15em; }
 .ui-widget-header {
   color: #efefef;
