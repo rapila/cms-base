@@ -146,8 +146,10 @@ class Navigation {
 			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
 			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
-			$oTemplate->replaceIdentifier('link', implode('/', $oNavigationItem->getLink()));
-			$oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
+			$oTemplate->replaceIdentifier('link_without_prefix', implode('/', $oNavigationItem->getLink()));
+			$oTemplate->replaceIdentifier('link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
+			// TO decide: include this for backwards compatible reasons?
+			// $oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
 			$oTemplate->replaceIdentifier('level', $iLevel);
 			$oTemplate->replaceIdentifier('is_inactive', $oNavigationItem->isEnabled() ? '' : ' inactive');
 			

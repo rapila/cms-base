@@ -51,7 +51,7 @@ class WidgetJsonFileModule extends FileModule {
 				print json_encode($aInformation);
 			} else if($this->sAction === 'methodCall') {
 				if($oWidget->needsLogin() && !Session::getSession()->isAuthenticated()) {
-					throw new LocalizedException('module.file.widget_json.needs_login');
+					throw new LocalizedException('module.file.widget_json.needs_login', null, 'needs_login');
 				}
 				$sMethodName = isset($aRequest['method']) ? $aRequest['method'] : Manager::usePath();
 				if(!method_exists($oWidget, $sMethodName)) {

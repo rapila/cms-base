@@ -10,3 +10,6 @@ PageTree changes
 - replace Page/PageString::getLongTitle(), identifiers 'long_title' by getPageTitle(), 'page_title'
 - replace Pape/PageString::getTitle(), idendifiers 'title' ??? watch out, getLinkText(), getLinkTextOnly()
 - getTree() is deprecated
+
+Navigation Changes
+- Template identifiers renamed: it is no longer recommended to use relative links (because of breaking the preview manager). To that end, the link identifier has been renamed link_without_prefix and what was previously known as full_link is now just link. How to migrate: if full_link is used: rename to link. If link was used: probably safe. If {{link_prefix}}{{link}} was used: remove link_prefix.

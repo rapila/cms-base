@@ -211,8 +211,6 @@ jQuery.extend(Widget, {
 			if(widgetInformation.is_singleton) {
 				Widget.singletons[widgetType] = widget;
 			}
-			widget._widgetInformation = widgetInformation;
-			widget._instanceInformation = instanceInformation;
 			if(intermediateCallback) {
 				intermediateCallback(widget)
 			}
@@ -306,13 +304,16 @@ jQuery.extend(Widget, {
 			success: function(result) {
 				callback = (callback || Widget.defaultJSONHandler);
 				var error = null;
+				var call_callback = true;
 				if(result && result.exception) {
 					error = result.exception;
-					if(callback.length<2) {
-						Widget.notifyUser('alert', error.message);
-					}
+					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
+					action.shift();
+					var call_callback = exception_handler(error, widgetType, widgetId, action, callback, async, attributes);
 				}
-				callback.call(this, result, error);
+				if(call_callback) {
+					callback.call(this, result, error);
+				}
 			},
 			error: function(request, statusCode, error) {
 				if(statusCode === 'parsererror') {
@@ -353,7 +354,21 @@ jQuery.extend(Widget, {
 	
 	types: {},
 	singletons: {},
-	widgetInformation: {}
+	widgetInformation: {},
+	
+	//Called when a specific type of Exception is thrown in _widgetJSON. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
+	exception_type_handlers: {
+		fallback: function(error, widgetType, widgetId, action, callback, async, attributes) {
+			if(callback.length<2) {
+				Widget.notifyUser('alert', error.message);
+			}
+			return true;
+		},
+		
+		needs_login: function(error, widgetType, widgetId, action, callback, async, attributes) {
+			
+		}
+	}
 });
 
 if(window.console && window.console.log) {
