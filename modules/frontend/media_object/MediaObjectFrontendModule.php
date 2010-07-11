@@ -12,20 +12,21 @@ class MediaObjectFrontendModule extends FrontendModule {
   }
 
   public function renderFrontend() {
-    $aOptions = unserialize($this->getData());
+    $aOptions = @unserialize($this->getData());
     $oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
     foreach($aOptions as $aDocumentInfo) {
       $oDocument = DocumentPeer::retrieveByPK($aDocumentInfo['document_id']);
-      $sMimeType = null;
+      $sMimeType = @$aDocumentInfo['mimetype'];
       $sSrc = null;
       
       if($oDocument !== null) {
         $sSrc = $oDocument->getDisplayUrl();
-        $sMimeType = $oDocument->getMimetype();
+        if(!$sMimeType) {
+          $sMimeType = $oDocument->getMimetype();
+        }
       } else if ((@$aDocumentInfo['url']) != '') {
+        $aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
         $sSrc = @$aDocumentInfo['url'];
-        $aHeaders = get_headers($sSrc, true);
-        $sMimeType = $aHeaders['Content-Type'];
       } else {
         continue;
       }
@@ -59,6 +60,7 @@ class MediaObjectFrontendModule extends FrontendModule {
         $oMediaItemTemplate->replaceIdentifier("url", @$aDocumentInfo['url']);
         $oMediaItemTemplate->replaceIdentifier("width", $aDocumentInfo['width']);
         $oMediaItemTemplate->replaceIdentifier("height", $aDocumentInfo['height']);
+        $oMediaItemTemplate->replaceIdentifier("mimetype", @$aDocumentInfo['mimetype']);
         $this->replaceDocumentOptions($oMediaItemTemplate, (int)$aDocumentInfo['document_id']);
         $oTemplate->replaceIdentifierMultiple("documents", $oMediaItemTemplate);
       }
@@ -74,10 +76,27 @@ class MediaObjectFrontendModule extends FrontendModule {
   public function getSaveData() {
     $aResults = array();
     foreach($_POST['document_id'] as $iKey => $sId) {
-      if($sId === '' && $_POST['url'][$iKey] === '') {
+      if(!$sId && !$_POST['url'][$iKey]) {
         continue;
       }
-      $aResults[] = array("document_id" => $sId, 'url' => $_POST['url'][$iKey], "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey]);
+      if(!$sId && !$_POST['mimetype'][$iKey]) {
+        $bGetHeadersEnabled = ini_get('allow_url_fopen') == '1';
+        if(!StringUtil::startsWith($_POST['url'][$iKey], '/') && !$_POST['mimetype'][$iKey]) {
+          //Relative url, assume it’s from the MAIN_DIR_FE
+          $aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$_POST['url'][$iKey]);
+          $_POST['mimetype'][$iKey] = $aMimeTypes[0];
+        } else {
+          if($bGetHeadersEnabled && !$_POST['mimetype'][$iKey]) {
+            $aHeaders = get_headers($sSrc, true);
+            $sMimeType = $aHeaders['Content-Type'];
+          }
+        }
+      }
+      if(!$sId && !$_POST['mimetype'][$iKey]) {
+        $_POST['mimetype'][$iKey] = 'application/octet-stream';
+      }
+      
+      $aResults[] = array("document_id" => $sId, 'url' => $_POST['url'][$iKey], "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey], "mimetype" => $_POST["mimetype"][$iKey]);
     }
     return serialize($aResults);
   }
