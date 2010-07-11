@@ -366,7 +366,15 @@ jQuery.extend(Widget, {
 		},
 		
 		needs_login: function(error, widgetType, widgetId, action, callback, async, attributes) {
+			Widget.create('login_window', function(login_widget) {
+				login_widget.show();
+				Widget.handle('cmos.logged_in', function(event) {
+					// Re-try the action
+					Widget.widgetJSON(widgetType, widgetId, action, callback, async, attributes);
+				}, true);
+			});
 			
+			return false;
 		}
 	}
 });

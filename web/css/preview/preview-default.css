@@ -14,3 +14,39 @@
 .filled-container.editing {
 	outline: 2px solid #C1C1C1;
 }
+
+.preview_bar {
+	display: block;
+	position: absolute;
+	background-color: #C1C1C1;
+	padding: .5em;
+	z-index: 10;
+}
+
+.preview_bar .ui-icon {
+	float: left;
+	padding: .1em;
+	border: 1px solid white;
+	margin-right: 0.2em;
+	cursor: pointer;
+}
+
+.preview_bar .ui-icon {
+	display: none;
+}
+
+.preview_bar .ui-icon.edit {
+	display: block;
+}
+
+.preview_bar.editing .ui-icon {
+	display: block;
+}
+
+.preview_bar.editing .ui-icon.edit {
+	display: none;
+}
+
+.preview_bar .ui-icon:hover {
+	border-color: #21669b;
+}

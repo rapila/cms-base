@@ -22,7 +22,7 @@ Widget.types.page_type.types['default'] = {
 	
 	handle_preview: function(page_id, page_type) {
 		//Initialized callback
-		jQuery('div.filled-container').bind('click', function() {
+		var edit_handler = function() {
 			var container = jQuery(this);
 			if(container.is('.editing')) {
 				return;
@@ -31,8 +31,39 @@ Widget.types.page_type.types['default'] = {
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(widget) {
 					container.empty().append(widget._element);
+					// Reposition the bar
+					container.data('preview_bar').position_bar();
 				}, result[1]);
 			});
+		};
+		jQuery('div.filled-container').click(edit_handler).each(function() {
+			// Get the container
+			var filled_container = jQuery(this);
+			// Append the preview bar
+			var preview_bar = jQuery.parseHTML('<div class="preview_bar"><div class="ui-icon ui-icon-pencil edit"></div><div class="ui-icon ui-icon-cancel cancel"></div><div class="ui-icon ui-icon-check save"></div></div>').hide().appendTo(document.body);
+			filled_container.data('preview_bar', preview_bar);
+			
+			// Preview bar show/hide stuff
+			preview_bar.position_bar = function() {
+				var offset = filled_container.offset();
+				offset.top += filled_container.height()-3;
+				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left-3)+'px'});
+			};
+			var is_over = 0;
+			filled_container.bind('mouseenter', function() {
+				if(is_over) {
+					return;
+				}
+				preview_bar.show('fast');
+				preview_bar.position_bar();
+				is_over++;
+			});
+			jQuery(document.body).bind('mousemove', function(event) {
+				var target = jQuery(this);
+			});
+			
+			// Button event handlers
+			preview_bar.find('.edit').click(edit_handler.bind(filled_container));
 		});
 	},
 	

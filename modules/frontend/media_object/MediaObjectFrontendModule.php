@@ -2,7 +2,6 @@
 /**
  * @package modules.frontend
  */
-
 include_once('propel/query/Criteria.php');
 
 class MediaObjectFrontendModule extends FrontendModule {
