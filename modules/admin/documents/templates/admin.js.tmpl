@@ -72,8 +72,8 @@ jQuery(document).ready(function() {
 
 		//File upload
 		Widget.create('file_upload', function(file_upload) {
-			file_upload.allow_drag_to(sidebar._element, '.ui-list-row', function(event, target) {
-				
+			file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
+				return {document_category_id: sidebar.collect_row_data(target).id};
 			});
 		});
 	});

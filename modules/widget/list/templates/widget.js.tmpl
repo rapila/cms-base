@@ -109,7 +109,7 @@ Widget.types.list = {
 		}
 		if(metadata.display_type === 'classname') {
 			if(data) {
-				row.addClass(metadata.identifier+'-'+data);
+				row.addClass(metadata.identifier+' '+metadata.identifier+'-'+data);
 			}
 			return null;
 		}
