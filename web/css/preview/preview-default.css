@@ -1,3 +1,16 @@
+#activity-indicator {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	z-index: 90;
+}
+
+.ui-loading {
+	background: transparent url('../../images/preview/loader.gif') no-repeat scroll top left;
+	min-width: 24px;
+	min-height: 24px;
+}
+
 .filled-container {
 	min-height: 3em;
 }
@@ -20,30 +33,29 @@
 	position: absolute;
 	background-color: #C1C1C1;
 	padding: .5em;
-	z-index: 10;
+	z-index: 100;
 }
 
 .preview_bar .ui-icon {
-	float: left;
-	padding: .1em;
+	padding: 1px;
 	border: 1px solid white;
-	margin-right: 0.2em;
+	margin-right: 2px;
 	cursor: pointer;
 }
 
-.preview_bar .ui-icon {
+.preview_bar > div {
+	float: left;
 	display: none;
 }
 
-.preview_bar .ui-icon.edit {
+.preview_bar .ui-icon.edit,
+.preview_bar.editing .ui-icon,
+.preview_bar.loading .ui-loading {
 	display: block;
 }
 
-.preview_bar.editing .ui-icon {
-	display: block;
-}
-
-.preview_bar.editing .ui-icon.edit {
+.preview_bar.editing .ui-icon.edit,
+.preview_bar.loading .ui-icon.edit {
 	display: none;
 }
 

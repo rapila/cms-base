@@ -124,8 +124,12 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return TagWriter::quickTag('div', array('data-object-id' => $oContentObject->getId(), 'data-container' => $oContentObject->getContainerName(), 'class' => 'filled-container'), $sFrontentContents);
 	}
 	
-	protected function getModuleContents($oModule) {
-		return $oModule->renderFrontend();
+	protected function getModuleContents($oModule, $bAllowTemplate = true) {
+		$mResult = $oModule->renderFrontend();
+		if(!$bAllowTemplate && $mResult instanceof Template) {
+			$mResult = $mResult->render();
+		}
+		return $mResult;
 	}
 	
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
@@ -231,6 +235,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 			return array($oWidget->getModuleName(), $oWidget->getSessionKey());
 		}
 		return array($oWidget, null);
+	}
+	
+	public function adminPreview($iObjectId) {
+		$sLanguageId = AdminManager::getContentLanguage();
+		$this->oCurrentContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+		$this->oCurrentLanguageObject = $this->oCurrentContentObject->getLanguageObject($sLanguageId);
+		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $this->oCurrentLanguageObject);
+		return array('preview_contents' => $this->getModuleContents($this->oModuleInstance, false));
 	}
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {

@@ -1,0 +1,61 @@
+(function($) {
+	var originalFix = $.event.fix;
+
+	$.event.fix = function(event) {
+		event = originalFix.call(this, event);
+		if(event.type.indexOf('drag') == 0 || event.type.indexOf('drop') == 0 ) {
+			event.dataTransfer = event.originalEvent.dataTransfer;
+		}
+		return event;
+	}
+})(jQuery);
+
+Widget.types.file_upload = {
+	initialize: function() {
+	},
+	
+	allow_drag_to: function(element, selector, callback) {
+		var file_upload = this;
+		var current_drag_is_file = false;
+		element.bind('dragenter', function(event) {
+			current_drag_is_file = event.dataTransfer.types.contains("Files");
+		}).bind('dragover', function(event) {
+			if(!current_drag_is_file) {
+				return;
+			}
+			element.find(selector).removeClass('ui-state-highlight');
+			var target = jQuery(event.target);
+			if(!target.is(selector)) {
+				return;
+			}
+			target.addClass('ui-state-highlight');
+			event.originalEvent.preventDefault();
+			return false;
+		}).bind('dragleave', function(event) {
+			element.find(selector).removeClass('ui-state-highlight');
+		}).bind('drop', function(event) {
+			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
+				Widget.notifyUser('info', '{{writeString=Gedropptes Element enthält keine Files}}');
+				return false;
+			}
+			var target = jQuery(event.target);
+			
+			var i = 0;
+			for(i=0;i<event.dataTransfer.files.length;i++) {
+				console.log('uploading', event.dataTransfer.files.item(i));
+				file_upload.upload_file(event.dataTransfer.files.item(i));
+			}
+			
+			current_drag_is_file = false;
+			return false;
+		});
+	},
+	
+	upload_file: function(file) {
+		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name};
+		jQuery.extend(options, arguments[1] || {});
+		this.uploadFile(file.getAsBinary(), options, function() {
+			Widget.notifyUser('info', '{{writeString=upload_success}}');
+		});
+	}
+};

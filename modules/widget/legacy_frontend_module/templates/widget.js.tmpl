@@ -15,5 +15,6 @@ Widget.types.legacy_frontend_module = {
 	
 	save: function(callback) {
 		this.saveData(this._element.serializeArrayKV(), callback);
+		return true;
 	}
 }

@@ -22,48 +22,93 @@ Widget.types.page_type.types['default'] = {
 	
 	handle_preview: function(page_id, page_type) {
 		//Initialized callback
-		var edit_handler = function() {
-			var container = jQuery(this);
+		jQuery('div.filled-container').each(function() {
+			// Get the container
+			var filled_container = jQuery(this);
+			// Append the preview bar
+			var preview_bar = jQuery.parseHTML('<div class="preview_bar"><div class="ui-icon ui-icon-pencil edit"></div><div class="ui-icon ui-icon-cancel cancel"></div><div class="ui-icon ui-icon-check save"></div><div class="ui-loading"></div></div>').hide().appendTo(document.body);
+			preview_bar.data('filled_container', filled_container);
+			filled_container.data('preview_bar', preview_bar);
+			
+			// Preview bar show/hide stuff
+			filled_container.position_bar = function() {
+				var offset = filled_container.offset();
+				offset.top += filled_container.height()-3;
+				offset.left = Math.max(offset.left, 0);
+				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left-3)+'px'});
+			};
+			
+			var leave_timeout = null;
+			var leave = function(event) {
+				leave_timeout = window.setTimeout(function() {
+					preview_bar.hide('fast');
+					leave_timeout = null;
+				}, 1000);
+			};
+			
+			filled_container.bind('move', function() {
+				console.log('resized', filled_container);
+			});
+			
+			filled_container.bind('mouseenter', function() {
+				if(leave_timeout) {
+					window.clearTimeout(leave_timeout); leave_timeout = null;
+				}
+				preview_bar.show('fast');
+				filled_container.position_bar();
+			}).bind('mouseleave', leave);
+			
+			preview_bar.bind('mouseenter', function(event) {
+				if(leave_timeout) {
+					window.clearTimeout(leave_timeout); leave_timeout = null;
+				}
+			}).bind('mouseleave', leave);
+		});
+		// Button event handlers
+		var cleanup = function(preview_bar, container) {
+			page_type.callPageTypeMethod('adminPreview', container.attr('data-object-id'), function(result, error) {
+				var elements = jQuery.parseHTML(result.preview_contents);
+				container.empty().append(elements);
+				container.removeClass('editing');
+				preview_bar.removeClass('loading');
+				container.position_bar();
+			});
+		};
+		
+		jQuery('.preview_bar').delegate('.edit', 'click', function() {
+			var preview_bar = jQuery(this).closest('.preview_bar');
+			var container = preview_bar.data('filled_container');
 			if(container.is('.editing')) {
 				return;
 			}
 			container.addClass('editing');
+			preview_bar.addClass('loading');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(widget) {
+					preview_bar.removeClass('loading').addClass('editing');
+					container.data('edit_widget', widget);
 					container.empty().append(widget._element);
 					// Reposition the bar
-					container.data('preview_bar').position_bar();
+					container.position_bar();
 				}, result[1]);
 			});
-		};
-		jQuery('div.filled-container').click(edit_handler).each(function() {
-			// Get the container
-			var filled_container = jQuery(this);
-			// Append the preview bar
-			var preview_bar = jQuery.parseHTML('<div class="preview_bar"><div class="ui-icon ui-icon-pencil edit"></div><div class="ui-icon ui-icon-cancel cancel"></div><div class="ui-icon ui-icon-check save"></div></div>').hide().appendTo(document.body);
-			filled_container.data('preview_bar', preview_bar);
-			
-			// Preview bar show/hide stuff
-			preview_bar.position_bar = function() {
-				var offset = filled_container.offset();
-				offset.top += filled_container.height()-3;
-				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left-3)+'px'});
-			};
-			var is_over = 0;
-			filled_container.bind('mouseenter', function() {
-				if(is_over) {
-					return;
-				}
-				preview_bar.show('fast');
-				preview_bar.position_bar();
-				is_over++;
-			});
-			jQuery(document.body).bind('mousemove', function(event) {
-				var target = jQuery(this);
-			});
-			
-			// Button event handlers
-			preview_bar.find('.edit').click(edit_handler.bind(filled_container));
+		}).delegate('.cancel', 'click', function() {
+			var preview_bar = jQuery(this).closest('.preview_bar');
+			var container = preview_bar.data('filled_container');
+			preview_bar.removeClass('editing').addClass('loading');
+			cleanup(preview_bar, container);
+		}).delegate('.save', 'click', function() {
+			var preview_bar = jQuery(this).closest('.preview_bar');
+			var container = preview_bar.data('filled_container');
+			preview_bar.removeClass('editing').addClass('loading');
+			var widget = container.data('edit_widget');
+			if(!widget) {
+				return;
+			}
+			container.data('edit_widget', null);
+			if(!widget.save(cleanup.bind(this, preview_bar, container))) {
+				preview_bar.removeClass('loading').addClass('editing');
+			}
 		});
 	},
 	
