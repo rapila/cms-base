@@ -6,7 +6,14 @@ class FileUploadWidgetModule extends WidgetModule {
 	
 	public function uploadFile($sFileData, $aOptions) {
 		$sFileData = base64_decode($sFileData);
-		$oDocument = new Document();
+		if($aOptions['document_id']) {
+			$oDocument = DocumentPeer::retrieveByPK($sFileData['document_id']);
+		} else {
+			$oDocument = new Document();
+		}
+		if($oDocument === null) {
+			throw new LocalizedException("widget.file_upload.document_not_found");
+		}
 		$sFileName = $aOptions['name'];
 		$aName = explode('.', $sFileName);
 		$sExtension = null;
@@ -23,6 +30,8 @@ class FileUploadWidgetModule extends WidgetModule {
 		}
 		$oDocument->setData($sFileData);
 		$oDocument->setName($sFileName);
+		$oDocument->setLanguageId($aOptions['language_id']);
+		$oDocument->setIsProtected($aOptions['is_protected']);
 		$oDocument->setDocumentType($oDocumentType);
 		if($aOptions['document_category_id']) {
 			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
