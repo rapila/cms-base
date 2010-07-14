@@ -155,6 +155,7 @@ jQuery.extend(Widget, {
 						this.widgetType = widgetType;
 					};
 					Widget.types[widgetType].prototype.constructor = Widget.types[widgetType];
+					//Setting default properties
 					Widget.types[widgetType].prototype = new Widget();
 					//Add PHP methods
 					jQuery.each(widgetInformation.methods, function(i, method) {
@@ -207,6 +208,9 @@ jQuery.extend(Widget, {
 			//Settings need to be mutable without changing globally
 			widget.settings = {};
 			jQuery.extend(true, widget.settings, Widget.types[widgetType].prototype.settings);
+			
+			//past events must not be shared across instances
+			widget._pastEvents = {};
 			
 			if(widgetInformation.is_singleton) {
 				Widget.singletons[widgetType] = widget;
