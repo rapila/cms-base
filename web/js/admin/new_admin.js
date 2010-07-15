@@ -7,7 +7,6 @@ jQuery.extend(jQuery, {
 			closable: false
 		};
 		jQuery.extend(options, arguments[2] || {});
-		console.log(severity, message, options);
 		
 		var admin_message = jQuery('#admin_message');
 		
@@ -26,9 +25,12 @@ jQuery.extend(jQuery, {
 			}
 		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
-		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>').hide().appendTo(admin_message).data('identifier', options.identifier);
+		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>').hide().appendTo(admin_message).data('identifier', options.identifier);
 		
 		var badge = display.find('.ui-badge').hide();
+		var close_button = display.find('.close-handle').hide();
+		var message_container = display.find('.message');
+		
 		var functions = {
 			element: display,
 			options: options,
@@ -54,21 +56,32 @@ jQuery.extend(jQuery, {
 				if(this.options.timeout) {
 					window.clearTimeout(this.options.timeout);
 				}
+			},
+			set_message: function(message) {
+				if(message.constructor === String) {
+					if(this.options.isHTML) {
+						message_container.html(message);
+					} else {
+						message_container.text(message);
+					}
+				} else {
+					message_container.empty().append(message);
+				}
+			},
+			enable_close_button: function() {
+				close_button.show().click(function() {
+					this.close();
+				}.bind(this));
 			}
 		};
 		
-		var message_container = display.find('.message');
-		if(message.constructor === String) {
-			if(options.isHTML) {
-				message_container.html(message);
-			} else {
-				message_container.text(message);
-			}
-		} else {
-			message_container.append(message);
-		}
+		functions.set_message(message);
 		display.data('functions', functions).show('blind');
 		functions.reset_timeout();
+		if(options.closable) {
+			functions.enable_close_button();
+		}
+		return functions;
 	}
 });
 

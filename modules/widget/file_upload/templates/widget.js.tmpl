@@ -18,7 +18,7 @@ Widget.types.file_upload = {
 		var file_upload = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
-			current_drag_is_file = event.dataTransfer.types.contains("Files");
+			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
 		}).bind('dragover', function(event) {
 			if(!current_drag_is_file) {
 				return;
@@ -55,7 +55,6 @@ Widget.types.file_upload = {
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
-				console.log(error);
 				jQuery('<div/>').text(error.message).dialog();
 			} else {
 				this.do_upload(file, options);
@@ -64,13 +63,19 @@ Widget.types.file_upload = {
 	},
 	
 	do_upload: function(file, options) {
-		this.uploadFile(window.btoa(file.getAsBinary()), options, function(result, error) {
-			if(!error) {
-				Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id});
-				this.fire('{{writeString=file.uploaded}}', result);
-			} else {
-				Widget.notifyUser('alert', error.message);
-			}
-		});
+		var file_uploader = this;
+		var fileReader = new FileReader();
+		fileReader.onload = function() {
+			
+			file_uploader.uploadFile(window.btoa(fileReader.result), options, function(result, error) {
+				if(!error) {
+					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
+					this.fire('{{writeString=file.uploaded}}', result);
+				} else {
+					Widget.notifyUser('alert', error.message);
+				}
+			});
+		};
+		fileReader.readAsBinaryString(file);
 	}
 };

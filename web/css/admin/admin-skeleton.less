@@ -30,18 +30,28 @@ body.login h1 {
 	margin-bottom: 5px;
 }
 
-.ui-notify .ui-badge {
-	display: block;
+.ui-notify .ui-badge,
+.ui-notify .close-handle.ui-icon {
 	float: right;
-	background-color: red;
+	display: block;
 	margin-top: -8px;
 	margin-right: -8px;
-	color: white;
-	padding: 1px 5px;
+}
+
+.ui-notify .ui-badge {
+	background-color: red;
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
 	border-radius: 12px;
 	font-weight: bold;
+	color: white;
+	padding: 1px 5px;
+}
+
+.ui-notify .close-handle.ui-icon {
+	margin-right: 0;
+	margin-top: -12px;
+	cursor: pointer;
 }
 
 #cmos_admin_menu .cmos_logo {
