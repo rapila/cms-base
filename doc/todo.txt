@@ -10,13 +10,17 @@ Miscellaneous projects
 	
 cms_dev Bug  
 - onNavigationItemChildrenRequested second argument not given.
-	i guess this was related to the YAML 1.0 declaration
 	
-BrowserBug important
-- Opera and Chrome do not load sidebar tree and click on sidebar elements don't work
+Bugs in browsers and other sites
+- Safari login send form on return does not work
+- Firefox > cmos_mini/admin/users search no_result error, shows entries but notifies no result, relates to no sidebar elements?
+	there is no notify if one console.log(this, list); in list widget > completeList()
+	if(load_heading) line 275
+- error in cmos_mini LocalJsLibraryFileModule, whatdoes it mean
+	 ([code] => 2, [message] => 'file_get_contents(): php_network_getaddresses: getaddrinfo failed: nodename nor servname provided, or not known', [filename] => '/Users/jmg/Sites/cmos_mini/base/modules/file/local_js_library/LocalJsLibraryFileModule.php', [line] => 25, [context] => ([oCache] => Cache Object: ([bCacheIsNeverOff] => false, [sFilePath] => '/Users/jmg/Sites/cmos_mini/generated/caches/templates/53e3d2bea2fb858a7e0de9a44c0a43f0.cache', [bCacheControlHeaderSent] => true), [oIncluder] => ResourceIncluder Object: ([aIncludedResources] => ([-1] => (), [0] => ([lib_jqueryui] => [...]), [1] => ()), [aCurrentDependencyStack] => ()), [sLibraryVersion] => '1', [bUseCompression] => false, [bUseSsl] => false, [sContents] => '', [sLocation] => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), [referrer] => 'http://cmos_mini/admin/users', [host] => 'cmos_mini', [path] => 'local_js_library/jqueryui'), referer: http://cmos_mini/admin/users
 
 Priorities
-- add active checkbox to label??? page_string? design
+- user groups are not stored anymore in user
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 
@@ -83,6 +87,9 @@ SVN, development and tracking tasks
 - plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
 - remember > lets continue with tracker and get into it or change it.
 - discuss plural classes dir name and new dirs for helper/util, manager, module etc?
+
+RichtextWidget
+- tinymce integration continue? @see tinybrowser
 
 Issues	
 - blur on filter change
@@ -269,6 +276,9 @@ templates and css
 - buttons and icons in lists and detail, how to configure: active, is_inactive, is_protected, delete, add, move etc.
 - theme to be tuned,
 - ???
+
+Performance
+- compression and combine...? @see http://www.symfony-project.org/plugins/sfCombinePlugin
 
 CONTINUOUS development strategy
 - error handling, ie module instanciaction, display nice error message, no dump
@@ -520,3 +530,7 @@ release-1-devel propel update
 - usedWidgets(), what does it do, and is it necessary ? yes, it preloads all widget.js and that's good
 - Invalid argument supplied for foreach() in /Users/jmg/Sites/cmos_mini/base/lib/classes/Settings.php on line 22 > YAML 1.0 declaration removed
 - add page_string attributes to tree > linktext language, active check both on page and page_string!
+- Opera and Chrome do not load sidebar tree and click on sidebar elements don't work
+triboje.com
+media object : get_headers() [<a href='function.get-headers'>function.get-headers</a>]: URL file-access is disabled in the server configuration
+- add active checkbox to label??? page_string? design

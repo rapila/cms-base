@@ -14,23 +14,26 @@ Widget.types.list = {
 			var col_schema = widget.schema_for_col(cellIndex);
 			return [rows.index(row), col_schema, row, cell];
 		};
+		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
 			widget.activate_row(row);
 			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
-		});		
+		});
+		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
 			widget.activate_row(row);
 			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
 		});
-
+		
 		this._element.delegate('.ui-list-cell', 'click', function(event) {
 			if(!widget._element.is('table')) {
 				return;
 			}
 			return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
 		});
+		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
 			var row = jQuery(this);
 			if(widget.settings.row_hover) {
@@ -38,6 +41,7 @@ Widget.types.list = {
 			}
 			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
 		});
+		
 		this._element.delegate('.ui-list-cell', 'hover', function(event) {
 			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
 		});
@@ -108,7 +112,7 @@ Widget.types.list = {
 		}
 		if(metadata.display_type === 'classname') {
 			if(data) {
-				row.addClass(metadata.identifier+' '+metadata.identifier+'-'+data);
+				row.addClass(metadata.identifier+'-'+data);
 			}
 			return null;
 		}

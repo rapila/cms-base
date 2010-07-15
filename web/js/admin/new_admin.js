@@ -129,7 +129,6 @@ jQuery.extend(Widget, {
 		};
 		var dialog_opts = {
 			resizable: false,
-			height: 140,
 			modal: true,
 			buttons: {},
 			close: destroy.bind(dialog, false)
