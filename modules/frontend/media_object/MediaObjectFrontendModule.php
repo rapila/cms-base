@@ -19,11 +19,19 @@ class MediaObjectFrontendModule extends FrontendModule {
 			$sSrc = null;
 			
 			if($oDocument !== null) {
-				$sSrc = $oDocument->getDisplayUrl();
+				$aParameters = array();
+				if(@$aDocumentInfo['max_width']) {
+					$aParameters['max_width'] = $aDocumentInfo['max_width'];
+				}
+				if(@$aDocumentInfo['max_height']) {
+					$aParameters['max_height'] = $aDocumentInfo['max_width'];
+				}
+				
+				$sSrc = $oDocument->getDisplayUrl($aParameters);
 				if(!$sMimeType) {
 					$sMimeType = $oDocument->getMimetype();
 				}
-			} else if ((@$aDocumentInfo['url']) != '') {
+			} else if ((@$aDocumentInfo['url'])) {
 				if(file_exists(MAIN_DIR_FE.$aDocumentInfo['url'])) {
 					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
 				}
@@ -37,10 +45,10 @@ class MediaObjectFrontendModule extends FrontendModule {
 			} catch (Exception $e) {
 				$oSubTemplate = $this->constructTemplate("generic");
 			}
-			if($aDocumentInfo['width'] != '') {
+			if(@$aDocumentInfo['width']) {
 				$oSubTemplate->replaceIdentifier('width', $aDocumentInfo['width']);
 			}
-			if($aDocumentInfo['height'] != '') {
+			if(@$aDocumentInfo['height']) {
 				$oSubTemplate->replaceIdentifier('height', $aDocumentInfo['height']);
 			}
 			$oSubTemplate->replaceIdentifier('src', $sSrc);

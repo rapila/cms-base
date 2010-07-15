@@ -22,6 +22,23 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function preview() {
+		$aOptions = array();
+		$aOptions['document_id'] = $this->iDocumentId;
+		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
+		if($oDocument->getDocumentType()->getDocumentKind() === 'image') {
+			// Objects don’t get displayed otherwise
+			$aOptions['max_width'] = 190;
+			$aOptions['max_height'] = 190;
+		} else {
+			$aOptions['width'] = 190;
+			$aOptions['height'] = 142;
+		}
+		
+		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
+		return $oModule->renderFrontend()->render();
+	}
 		
 	public function saveData($aDocumentData) {
 		if($this->iDocumentId === null) {

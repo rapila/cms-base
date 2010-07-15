@@ -53,12 +53,21 @@ Widget.types.file_upload = {
 	upload_file: function(file) {
 		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type};
 		jQuery.extend(options, arguments[1] || {});
-		console.log("uploading file", file, "with options", options);
+		this.accepts(file.name, file.type, function(result, error) {
+			if(error) {
+				console.log(error);
+				jQuery('<div/>').text(error.message).dialog();
+			} else {
+				this.do_upload(file, options);
+			}
+		});
+	},
+	
+	do_upload: function(file, options) {
 		this.uploadFile(window.btoa(file.getAsBinary()), options, function(result, error) {
-			console.log(result);
 			if(!error) {
-				Widget.notifyUser('info', '{{writeString=upload_success}}');
-				this.fire('file.uploaded', result);
+				Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id});
+				this.fire('{{writeString=file.uploaded}}', result);
 			} else {
 				Widget.notifyUser('alert', error.message);
 			}

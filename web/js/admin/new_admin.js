@@ -1,17 +1,74 @@
 jQuery.extend(jQuery, {
 	postMessage: function(severity, message) {
+		var options = {
+			closeDelay: 10000,
+			identifier: null,
+			isHTML: false,
+			closable: false
+		};
+		jQuery.extend(options, arguments[2] || {});
+		console.log(severity, message, options);
+		
+		var admin_message = jQuery('#admin_message');
+		
+		//Handle messages with identical identifier
+		if(options.identifier) {
+			var is_found = false;
+			admin_message.find('div.ui-notify').each(function() {
+				var notification = jQuery(this);
+				if(notification.data('identifier') === options.identifier) {
+					is_found = true;
+					notification.data('functions').increase_badge_count();
+				}
+			});
+			if(is_found) {
+				return;
+			}
+		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
-		var display = jQuery('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div><span class="ui-icon ui-icon-'+severity+'" /><span class="message"></span></div></div></div>').hide().appendTo("#admin_message");
+		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>').hide().appendTo(admin_message).data('identifier', options.identifier);
+		
+		var badge = display.find('.ui-badge').hide();
+		var functions = {
+			element: display,
+			options: options,
+			close: function() {
+				display.hide('blind', function() {display.remove();});
+			},
+			increase_badge_count: function() {
+				var count = parseInt(badge.text());
+				if(isNaN(count)) {
+					count = 0;
+				}
+				count++;
+				badge.show().text(count);
+				this.reset_timeout();
+			},
+			reset_timeout: function() {
+				this.clear_timeout();
+				if(this.options.closeDelay) {
+					this.options.timeout = window.setTimeout(this.close, this.options.closeDelay);
+				}
+			},
+			clear_timeout: function() {
+				if(this.options.timeout) {
+					window.clearTimeout(this.options.timeout);
+				}
+			}
+		};
+		
 		var message_container = display.find('.message');
 		if(message.constructor === String) {
-			message_container.text(message);
+			if(options.isHTML) {
+				message_container.html(message);
+			} else {
+				message_container.text(message);
+			}
 		} else {
 			message_container.append(message);
 		}
-		display.show('blind');
-		window.setTimeout(function() {
-			display.hide('blind', function() {display.remove();});
-		}, 10000);
+		display.data('functions', functions).show('blind');
+		functions.reset_timeout();
 	}
 });
 

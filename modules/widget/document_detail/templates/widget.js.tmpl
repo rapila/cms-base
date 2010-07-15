@@ -46,7 +46,10 @@ Widget.types.document_detail = {
 			this.content.find(".file_size").text(document_data.FileInfo);
 			this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
 			this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
-			this.content.find(".preview").attr('src', "{{writeLink=display_document;manager=FileManager}}/"+document_data.Id+"?max_width=150");
+			this.content.find(".preview").text('');
+			this.preview(function(result) {
+				this.content.find(".preview").html(result);
+			});
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);

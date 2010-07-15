@@ -1,7 +1,7 @@
 <?php
 class FileUploadWidgetModule extends WidgetModule {
 	public static function isSingleton() {
-		return YES;
+		return true;
 	}
 	
 	public function uploadFile($sFileData, $aOptions) {
@@ -16,27 +16,36 @@ class FileUploadWidgetModule extends WidgetModule {
 		}
 		$sFileName = $aOptions['name'];
 		$aName = explode('.', $sFileName);
+		if(count($aName) > 1) {
+			array_pop($aName);
+			$sFileName = implode('.', $aName);
+		}
+		$oDocument->setData($sFileData);
+		$oDocument->setName($sFileName);
+		$oDocument->setLanguageId($aOptions['language_id']);
+		$oDocument->setIsProtected($aOptions['is_protected']);
+		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
+		if($aOptions['document_category_id']) {
+			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
+		}
+		$oDocument->save();
+		return $oDocument->getId();
+	}
+	
+	public function accepts($sFileName, $sMimeType) {
+		$aName = explode('.', $sFileName);
 		$sExtension = null;
 		if(count($aName) > 1) {
 			$sExtension = array_pop($aName);
 			$sFileName = implode('.', $aName);
 		}
-		$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($aOptions['type']);
+		$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
 		if($oDocumentType === null && $sExtension !== null) {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
 		}
 		if($oDocumentType === null) {
 			throw new LocalizedException("widget.file_upload.document_type_not_found");
 		}
-		$oDocument->setData($sFileData);
-		$oDocument->setName($sFileName);
-		$oDocument->setLanguageId($aOptions['language_id']);
-		$oDocument->setIsProtected($aOptions['is_protected']);
-		$oDocument->setDocumentType($oDocumentType);
-		if($aOptions['document_category_id']) {
-			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
-		}
-		$oDocument->save();
-		return $oDocument->getId();
+		return $oDocumentType->getId();
 	}
 }

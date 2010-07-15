@@ -18,6 +18,19 @@ body.login h1 {
   z-index: 5;
 }
 #admin_message .ui-notify { margin-bottom: 5px; }
+.ui-notify .ui-badge {
+  display: block;
+  float: right;
+  background-color: red;
+  margin-top: -8px;
+  margin-right: -8px;
+  color: white;
+  padding: 1px 5px;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+}
 #cmos_admin_menu .cmos_logo {
   padding: 0.3em 1em;
   color: #e3ef99;

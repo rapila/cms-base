@@ -21,7 +21,6 @@ Widget.types.list = {
 		});		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
-			jQuery('.ui-widget.ui-notify').remove();
 			widget.activate_row(row);
 			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
 		});
