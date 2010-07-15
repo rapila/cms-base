@@ -126,6 +126,11 @@ button.ui-button.ui-state-default {
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
+#admin_sidebar .ui-list li.ui-state-highlight {
+  border: none;
+  background-image: none;
+  border-bottom: 1px solid #d4d8dc;
+}
 #admin_sidebar .ui-tree li li {
   background-image: url('../../images/admin/child_default.gif');
   background-repeat: no-repeat;
