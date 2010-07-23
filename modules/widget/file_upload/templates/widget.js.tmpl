@@ -66,8 +66,9 @@ Widget.types.file_upload = {
 		var file_uploader = this;
 		var fileReader = new FileReader();
 		fileReader.onload = function() {
-			
-			file_uploader.uploadFile(window.btoa(fileReader.result), options, function(result, error) {
+			file_uploader.uploadFile(window.btoa(fileReader.result), options, WidgetJSONOptions.with_upload_progess_callback(function(event) {
+				console.log('uploaded', event);
+			}), function(result, error) {
 				if(!error) {
 					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
 					this.fire('{{writeString=file.uploaded}}', result);

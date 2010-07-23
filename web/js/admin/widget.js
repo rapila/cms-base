@@ -39,18 +39,21 @@ var Widget = function() {
 };
 
 jQuery.extend(Widget.prototype, {
-	_widgetJSON: function(action, callback, async) {
-		var attributes = arguments[arguments.callee.length] || {};
-		return Widget.widgetJSON(this.widgetType, this.widgetId, action, callback, async, attributes);
+	_widgetJSON: function(action, callback, options, attributes) {
+		return Widget.widgetJSON(this.widgetType, this.widgetId, action, callback, options, attributes);
 	},
 	
 	_callMethod: function(name) {
-		var args = jQuery.makeArray(arguments).slice(1);
-		var callback = args.slice(-1)[0];
-		if(jQuery.isFunction(callback)) {
-			args = args.slice(0, -1);
-		} else {
+		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		var callback = args.pop();
+		if(!jQuery.isFunction(callback)) {
+			callback && args.push(callback);
 			callback = Widget.defaultMethodHandler;
+		}
+		var options = args.pop();
+		if(!options || options.constructor !== WidgetJSONOptions) {
+			options && args.push(options);
+			options = new WidgetJSONOptions();
 		}
 		var params = {};
 		if(args.length > 0) {
@@ -58,8 +61,10 @@ jQuery.extend(Widget.prototype, {
 		}
 		var result = null;
 		var error = null;
-		//Make getters and setter synchronous, Char after set or get must be uppercase
-		var is_async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && /[A-Z]/.test(name[3])); 
+		if(options.async) {
+			//Make getters and setter synchronous, Char after set or get must be uppercase
+			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && /[A-Z]/.test(name[3]));
+		}
 		var widget = this;
 		this._widgetJSON(['methodCall', name], function(response, exception) {
 			if(callback.length<2 && exception) {
@@ -68,7 +73,7 @@ jQuery.extend(Widget.prototype, {
 			callback.call(widget, response.result, exception);
 			result = response.result;
 			error = exception;
-		}, is_async, params);
+		}, options, params);
 		if(error && !is_async) {
 			throw error;
 		}
@@ -175,7 +180,7 @@ jQuery.extend(Widget, {
 						Widget.types[widgetType].types = old_type.types;
 					}
 				}
-			}, false);
+			}, WidgetJSONOptions.with_async(false));
 		}
 		return Widget.widgetInformation[widgetType];
 	},
@@ -228,7 +233,7 @@ jQuery.extend(Widget, {
 				widget.prepare();
 			}
 			widget.fire('prepared', widget, widgetInformation, instanceInformation);
-		}, !widgetInformation.is_singleton);
+		}, WidgetJSONOptions.with_async(!widgetInformation.is_singleton));
 		if(widgetInformation.is_singleton) {
 			return Widget.singletons[widgetType];
 		}
@@ -279,8 +284,8 @@ jQuery.extend(Widget, {
 	//Hide activity indicator
 	end_activity: jQuery.noop,
 	
-	widgetJSON: function(widgetType, widgetId, action, callback, async) {
-		async = !!async;
+	widgetJSON: function(widgetType, widgetId, action, callback, options) {
+		options = options || new WidgetJSONOptions();
 		var attributes = arguments[arguments.callee.length] || {};
 		if(!jQuery.isArray(action)) {
 			action = [action];
@@ -299,10 +304,21 @@ jQuery.extend(Widget, {
 			data: attr_str,
 			type: 'POST',
 			dataType: 'json',
-			async: async,
+			async: options.async,
 			contentType: 'application/json',
 			cache: true,
-			beforeSend: function() {
+			beforeSend: function(xmlhttprequest) {
+				if(options.upload_progess_callback || options.download_progress_callback) {
+					xmlhttprequest.onprogress = function(event) {
+						// @todo: not working currently. why?
+						console.log('onprogress', xmlhttprequest.readyState, event);
+						if(xmlhttprequest.readyState <= 2) {
+							(options.upload_progess_callback || jQuery.noop)(event);
+						} else {
+							(options.download_progress_callback || jQuery.noop)(event);
+						}
+					};
+				}
 				Widget.activity();
 			},
 			success: function(result) {
@@ -313,7 +329,7 @@ jQuery.extend(Widget, {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					var call_callback = exception_handler(error, widgetType, widgetId, action, callback, async, attributes);
+					var call_callback = exception_handler(error, widgetType, widgetId, action, callback, options, attributes);
 				}
 				if(call_callback) {
 					callback.call(this, result, error);
@@ -362,19 +378,19 @@ jQuery.extend(Widget, {
 	
 	//Called when a specific type of Exception is thrown in _widgetJSON. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
-		fallback: function(error, widgetType, widgetId, action, callback, async, attributes) {
+		fallback: function(error, widgetType, widgetId, action, callback, options, attributes) {
 			if(callback.length<2) {
 				Widget.notifyUser('alert', error.message);
 			}
 			return true;
 		},
 		
-		needs_login: function(error, widgetType, widgetId, action, callback, async, attributes) {
+		needs_login: function(error, widgetType, widgetId, action, callback, options, attributes) {
 			Widget.create('login_window', function(login_widget) {
 				login_widget.show();
 				Widget.handle('cmos.logged_in', function(event) {
 					// Re-try the action
-					Widget.widgetJSON(widgetType, widgetId, action, callback, async, attributes);
+					Widget.widgetJSON(widgetType, widgetId, action, callback, options, attributes);
 				}, true);
 			});
 			
@@ -394,6 +410,26 @@ if(window.console && window.console.log) {
 		Widget.notifyUser.apply(Widget, args);
 	};
 }
+
+var WidgetJSONOptions = function(options) {
+	jQuery.extend(this, this.options, options || {});
+};
+
+jQuery.extend(WidgetJSONOptions.prototype, {
+	options: {
+		async: true,
+		upload_progess_callback: null,
+		download_progress_callback: null
+	}
+});
+
+jQuery.each(WidgetJSONOptions.prototype.options, function(i, option) {
+	WidgetJSONOptions['with_'+i] = function(value) {
+		var options = {};
+		options[i] = value;
+		return new WidgetJSONOptions(options);
+	};
+});
 
 jQuery.extend(jQuery, {
 	widgetElements: function(type) {
