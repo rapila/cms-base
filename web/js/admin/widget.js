@@ -298,26 +298,44 @@ jQuery.extend(Widget, {
 		if(widgetId) {
 			attributes['session_key'] = widgetId;
 		}
-		var attr_str = JSON.stringify(attributes);
+		var attr_str = attributes;
+		if(attributes.constructor !== String) {
+			if(options.content_type === 'application/json') {
+				attr_str = JSON.stringify(attributes);
+			} else if(options.content_type === 'multipart/form-data') {
+				if(attributes.constructor !== FormData) {
+					attr_str = new FormData();
+					jQuery.each(attributes, function(i, val) {
+						attr_str.append(i, val);
+					});
+				}
+			} else if(options.content_type === 'application/x-www-form-urlencoded') {
+				attr_str = '';
+				jQuery.each(attributes, function(i, val) {
+					if(jQuery.isArray(val)) {
+						jQuery.each(val, function(j, value) {
+							attr_str += encodeURIComponent(i+'[]')+'='+encodeURIComponent(value)+'&';
+						});
+					} else {
+						attr_str += encodeURIComponent(i)+'='+encodeURIComponent(val)+'&';
+					}
+				});
+			}
+		}
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
 			type: 'POST',
 			dataType: 'json',
 			async: options.async,
-			contentType: 'application/json',
+			contentType: options.content_type,
 			cache: true,
 			beforeSend: function(xmlhttprequest) {
-				if(options.upload_progess_callback || options.download_progress_callback) {
-					xmlhttprequest.onprogress = function(event) {
-						// @todo: not working currently. why?
-						console.log('onprogress', xmlhttprequest.readyState, event);
-						if(xmlhttprequest.readyState <= 2) {
-							(options.upload_progess_callback || jQuery.noop)(event);
-						} else {
-							(options.download_progress_callback || jQuery.noop)(event);
-						}
-					};
+				if(options.download_progress_callback) {
+					xmlhttprequest.addEventListener('progress', options.download_progress_callback, false);
+				}
+				if(options.upload_progess_callback) {
+					xmlhttprequest.upload.addEventListener('progress', options.upload_progess_callback, false);
 				}
 				Widget.activity();
 			},
@@ -419,7 +437,8 @@ jQuery.extend(WidgetJSONOptions.prototype, {
 	options: {
 		async: true,
 		upload_progess_callback: null,
-		download_progress_callback: null
+		download_progress_callback: null,
+		content_type: 'application/json'
 	}
 });
 
