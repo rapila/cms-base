@@ -30,7 +30,7 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		return $oListTag->parse();
 	}
 	
-	public function listChildren($mParentData) {
+	public function listChildren($mParentData=null) {
 		return $this->oDelegate->listChildren($mParentData);
 	}
 	
