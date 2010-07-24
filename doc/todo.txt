@@ -8,19 +8,22 @@ Miscellaneous projects
 		Opera main navigation not display correctly
 	General check and update
 	
+PHP 3
+- namespaces and coding standards
+	http://groups.google.com/group/php-standards/web/php-coding-standard
+	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
+	
 cms_dev Bug  
 - onNavigationItemChildrenRequested second argument not given.
 	
 Bugs in browsers and other sites
+- Chrome does not show infobar buttons
 - Safari login send form on return does not work
-- Firefox > cmos_mini/admin/users search no_result error, shows entries but notifies no result, relates to no sidebar elements?
-	there is no notify if one console.log(this, list); in list widget > completeList()
-	if(load_heading) line 275
-- error in cmos_mini LocalJsLibraryFileModule, whatdoes it mean
-	 ([code] => 2, [message] => 'file_get_contents(): php_network_getaddresses: getaddrinfo failed: nodename nor servname provided, or not known', [filename] => '/Users/jmg/Sites/cmos_mini/base/modules/file/local_js_library/LocalJsLibraryFileModule.php', [line] => 25, [context] => ([oCache] => Cache Object: ([bCacheIsNeverOff] => false, [sFilePath] => '/Users/jmg/Sites/cmos_mini/generated/caches/templates/53e3d2bea2fb858a7e0de9a44c0a43f0.cache', [bCacheControlHeaderSent] => true), [oIncluder] => ResourceIncluder Object: ([aIncludedResources] => ([-1] => (), [0] => ([lib_jqueryui] => [...]), [1] => ()), [aCurrentDependencyStack] => ()), [sLibraryVersion] => '1', [bUseCompression] => false, [bUseSsl] => false, [sContents] => '', [sLocation] => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), [referrer] => 'http://cmos_mini/admin/users', [host] => 'cmos_mini', [path] => 'local_js_library/jqueryui'), referer: http://cmos_mini/admin/users
 
 Priorities
-- user groups are not stored anymore in user
+- page tree li ui-state-active: if parent element is hovered, the active background turns transparent!
+- notifyUser search info > how to retrieve names for ids > write windowlevel variables? or retrieve from ie getNameByDocumentCategoryId()?
+- file upload and drag and drop
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 
@@ -28,6 +31,9 @@ Priorities
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
+
+Bugs / good to improve
+- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
 PageTypeWidget
 - carefully test for reliable behaviour, performance
@@ -37,21 +43,16 @@ PageTypeWidget
 
 PageDetail
 - last requested page for leaving pages_admin?
-- change names of DefaultPageTypeModule admin methods sortObjects : adminSortObjects, removeObject > adminRemoveObjects
 - add loading image for various loading instances
-- check other Browser bugs, @see above
 - check all code that I created
-- delete, cancel/reset and save buttons should only be visible when ready
 - show content & references tabs only if not new
 - references, delete restriction, information, load on click or on delete restriction
 - templates visualisation, choosing from images rather then names, CSS Parser
 - activities show with loader image, ie. save, take away focus from save button
 - how to handle language, language objects, permissions etc
-- show curren
 
 PageTree Widget
 - new page, move page d&d
-- display linktext in page tree (on hover page_title)
 - language change and language page strings and objects
 - make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
 - make separate tree style sheet?
@@ -534,3 +535,12 @@ release-1-devel propel update
 triboje.com
 media object : get_headers() [<a href='function.get-headers'>function.get-headers</a>]: URL file-access is disabled in the server configuration
 - add active checkbox to label??? page_string? design
+- Firefox > cmos_mini/admin/users search no_result error, shows entries but notifies no result, relates to no sidebar elements?
+	there is no notify if one console.log(this, list); in list widget > completeList() > NOTE > fixed with pastEvents for sidebar and main_area
+- error in cmos_mini LocalJsLibraryFileModule, whatdoes it mean
+	 ([code] => 2, [message] => 'file_get_contents(): php_network_getaddresses: getaddrinfo failed: nodename nor servname provided, or not known', [filename] => '/Users/jmg/Sites/cmos_mini/base/modules/file/local_js_library/LocalJsLibraryFileModule.php', [line] => 25, [context] => ([oCache] => Cache Object: ([bCacheIsNeverOff] => false, [sFilePath] => '/Users/jmg/Sites/cmos_mini/generated/caches/templates/53e3d2bea2fb858a7e0de9a44c0a43f0.cache', [bCacheControlHeaderSent] => true), [oIncluder] => ResourceIncluder Object: ([aIncludedResources] => ([-1] => (), [0] => ([lib_jqueryui] => [...]), [1] => ()), [aCurrentDependencyStack] => ()), [sLibraryVersion] => '1', [bUseCompression] => false, [bUseSsl] => false, [sContents] => '', [sLocation] => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), [referrer] => 'http://cmos_mini/admin/users', [host] => 'cmos_mini', [path] => 'local_js_library/jqueryui'), referer: http://cmos_mini/admin/users
+	NOTE > php fopen wrappers disabled
+- user groups are not stored anymore in user > FIXED > js 'group_ids[]' translates into PHP $_REQUEST['group_ids]
+- change names of DefaultPageTypeModule admin methods sortObjects : adminSortObjects, removeObject > adminRemoveObjects
+- delete, cancel/reset and save buttons should only be visible when ready
+- display linktext in page tree (on hover page_title)

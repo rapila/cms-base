@@ -93,6 +93,14 @@ Widget.types.detail = {
 		Widget.create(detail_name+"_detail", function(detail) {
 			list.handle('list.row-dblclick', function(event, rowIndex, row) {
 				//Init
+				var cell = jQuery(event.realTarget).closest('.ui-list-cell');
+				var row = cell.closest('.ui-list-row');
+				var cellIndex = row.find('.ui-list-cell').index(cell);
+				var col_schema = list.schema_for_col(cellIndex);
+				if(col_schema.has_function) {
+					return;
+				}
+				
 				detail[idMethod](row.data(idData));
 				detail.current_row = row;
 				detail.fill_data();

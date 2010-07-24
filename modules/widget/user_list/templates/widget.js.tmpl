@@ -16,8 +16,29 @@ jQuery(document).ready(function() {
 			widget.handle('list.reloaded', function(event, list_length) {
 				if(list_length === 0) {
 					var search = widget.getSearch();
-					var message = "{{writeParameterizedString=widget.user_list.no_result;search=$\{search\};group=$\{group\}}}".replace(/\$\{search\}/, search).replace('${group}', widget.getOption('group_id'));
-					Widget.notifyUser('info', message);
+					var group_id = widget.getOption('group_id');
+					var user_kind = widget.getOption('user_kind');
+					var message = "Keine Dateien gefunden mit den folgenden Kriterien<ul>";
+					if(group_id !== '__all') {
+						if(group_id === '__without') {
+							message = message + '<li>keine Benutzergruppe</li>';
+						} else {
+							message = message + '<li>Benutzergruppe "'+group_id+'"</li>';
+						}
+					}
+					if(user_kind !== '__all') {
+						message = message + '<li>Benutzertyp "'+user_kind+'"</li>';
+					}
+					if(search !== null) {
+						message = message + '<li>Suchbegriff "'+search+'"</li>';
+					}
+					message = message + '</ul>';
+					console.log(message, search, group_id, user_kind);
+					
+
+					// var message = "{{writeParameterizedString=widget.user_list.no_result;search=$\{search\};group=$\{group\}}}".replace(/\$\{search\}/, search).replace('${group}', widget.getOption('group_id'));
+					// Widget.notifyUser('info', message);
+					Widget.notifyUser('info', message, {isHTML: true, closable: true});
 				}
 			}, false, true);
 		});

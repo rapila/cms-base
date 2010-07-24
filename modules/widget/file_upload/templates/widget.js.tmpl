@@ -1,6 +1,5 @@
 (function($) {
 	var originalFix = $.event.fix;
-
 	$.event.fix = function(event) {
 		event = originalFix.call(this, event);
 		if(event.type.indexOf('drag') == 0 || event.type.indexOf('drop') == 0 ) {

@@ -404,11 +404,13 @@ table.ui-list .ui-list-cell a {
   list-style: none;
   padding: 0;
   margin: 0;
+  background-color: #728697;
 }
 #admin_sidebar .ui-tree li.ui-state-active {
   list-style: none;
   padding: 0;
   margin: 0;
+  background-color: #728697;
 }
 #admin_sidebar ol {
   padding: 0;
@@ -474,6 +476,10 @@ table.ui-list .ui-list-cell a {
   background-color: #728697;
 }
 #admin_sidebar li.ui-list-row.ui-state-hover {
+  background-image: url();
+  background-color: #728697;
+}
+#admin_sidebar li.ui-state-active {
   background-image: url();
   background-color: #728697;
 }

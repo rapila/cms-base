@@ -1,7 +1,7 @@
 jQuery.extend(jQuery, {
 	postMessage: function(severity, message) {
 		var options = {
-			closeDelay: 10000,
+			closeDelay: 5000,
 			identifier: null,
 			isHTML: false,
 			closable: false

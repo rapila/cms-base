@@ -70,6 +70,7 @@ class DocumentListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.document.is_protected');
 				$aResult['icon_false'] = 'radio-on';
 				$aResult['icon_true'] = 'key';
+        $aResult['has_function'] = true;
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('widget.updated_at');

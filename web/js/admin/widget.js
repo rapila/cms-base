@@ -83,6 +83,9 @@ jQuery.extend(Widget.prototype, {
 	fire: function(eventName, realEvent) {
 		event = jQuery.Event("widget."+eventName);
 		var has_real_event = (realEvent instanceof jQuery.Event);
+		if(has_real_event) {
+			event.realTarget = realEvent.target;
+		}
 		var args = jQuery.makeArray(arguments).slice(has_real_event ? 2 : 1);
 		this._pastEvents[eventName] = [event].concat(args);
 		jQuery(this).trigger(event, args);
