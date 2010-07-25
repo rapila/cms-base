@@ -16,9 +16,11 @@ jQuery(document).ready(function() {
 			});
 			widget.handle('list.reloaded', function(event, list_length) {
 				if(list_length === 0) {
+					var message = "Keine Benutzer gefunden mit den folgenden Kriterien<ul>";
 					var search = widget.getSearch();
-					var message = "Keine Dateien gefunden mit den folgenden Kriterien<ul>";
-					var group_id = widget.getOption('group_id');
+					if(search !== null) {
+						message = message + '<li>Suchbegriff "'+search+'"</li>';
+					}					var group_id = widget.getOption('group_id');
 					if(group_id !== '__all') {
 						if(group_id === '__without') {
 							message = message + '<li>keine Benutzergruppe</li>';
@@ -31,9 +33,6 @@ jQuery(document).ready(function() {
 					if(user_kind !== '__all') {
 						user_kind_name = user_list.find('*[data-widget-type]="kind_kind_input" > [selected]').text();
 						message = message + '<li>Benutzertyp "'+user_kind_name+'"</li>';
-					}
-					if(search !== null) {
-						message = message + '<li>Suchbegriff "'+search+'"</li>';
 					}
 					message = message + '</ul>';
 					Widget.notifyUser('info', message, {isHTML: true, closable: true});
