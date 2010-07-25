@@ -7,7 +7,10 @@ class UserKindInputWidgetModule extends PersistentWidgetModule {
 	private $sSelectedUserKind;
 		
 	public function getUserKinds() {
-		return array('1' => 'Backend User', '2' => 'Frontend User');
+		return array(CriteriaListWidgetDelegate::SELECT_ALL => StringPeer::getString('widget.user_kind.all'),
+		            '1' => StringPeer::getString('widget.user.backend'), 
+		            '2' => StringPeer::getString('widget.user.frontend')
+		            );
 	}
 	
 	public function setSelectedUserKind($sSelectedUserKind) {

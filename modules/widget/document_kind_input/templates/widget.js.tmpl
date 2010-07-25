@@ -5,7 +5,7 @@ Widget.types.document_kind_input = {
 		jQuery.each(document_kinds, function(value, name) {
 			option.clone().text(name).val(value).appendTo(this._element);
 		}.bind(this));
-		option.text("{{writeString=widget.document_kind.all}}").val('').prependTo(this._element);
+		option.text("{{writeString=widget.document_kind.all}}").val('__all').prependTo(this._element);
 		
 		//Add change handler
 		this._element.change(function() {

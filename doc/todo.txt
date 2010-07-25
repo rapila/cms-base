@@ -20,7 +20,6 @@ Bugs
 - Chrome does not show infobar buttons
 - Safari login send form on return does not work
 - file upload and drag and drop Safari and Chrome
-- change input widget to default > ListWidgetModule::Missing argument 2 for ListWidgetModule::setOption()
 - css page tree li ui-state-active: if parent element is hovered, the active background turns transparent!
 - double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
