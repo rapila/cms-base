@@ -164,7 +164,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		return $this->oDelegate->$sName();
 	}
 
-	public function setSearch($sSearch) {
+	public function setSearch($sSearch=null) {
 		if($this->getSearch() == $sSearch) {
 			return false;
 		}
