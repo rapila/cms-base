@@ -1,5 +1,6 @@
 jQuery(document).ready(function() {
-	jQuery('table.document_list').each(function() {
+	var document_list = jQuery('table.document_list');
+	document_list.each(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
@@ -31,17 +32,19 @@ jQuery(document).ready(function() {
 				if(list_length === 0) {
 					var search = widget.getSearch();
 					var document_category_id = widget.getOption('document_category_id');
-					var document_kind = widget.getOption('document_kind');
 					var message = "Keine Dateien gefunden mit den folgenden Kriterien<ul>";
 					if(document_category_id !== '__all') {
 						if(document_category_id === '__without') {
 							message = message + '<li>keine Dokumentenkategorie</li>';
 						} else {
-							message = message + '<li>Dokumentenkategorie "'+document_category_id+'"</li>';
+							var active_category = AdminInterface.sidebar.find('li.ui-state-active').text();
+							message = message + '<li>Dokumentenkategorie "'+active_category+'"</li>';
 						}
 					}
+					var document_kind = widget.getOption('document_kind');
 					if(document_kind !== '__all') {
-						message = message + '<li>Dokumentenart "'+document_kind+'"</li>';
+						document_kind_name = document_list.find('*[data-widget-type]="document_kind_input" > [selected]').text();
+						message = message + '<li>Dokumentenart "'+document_kind_name+'"</li>';
 					}
 					if(search !== null) {
 						message = message + '<li>Suchbegriff "'+search+'"</li>';
