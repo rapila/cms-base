@@ -15,12 +15,14 @@ jQuery(document).ready(function() {
 				}
 			});
 			widget.handle('list.reloaded', function(event, list_length) {
+				// notify search criteria info
 				if(list_length === 0) {
 					var message = "Keine Benutzer gefunden mit den folgenden Kriterien<ul>";
 					var search = widget.getSearch();
 					if(search !== null) {
 						message = message + '<li>Suchbegriff "'+search+'"</li>';
-					}					var group_id = widget.getOption('group_id');
+					}					
+					var group_id = widget.getOption('group_id');
 					if(group_id !== '__all') {
 						if(group_id === '__without') {
 							message = message + '<li>keine Benutzergruppe</li>';

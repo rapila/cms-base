@@ -16,14 +16,16 @@ PHP 3
 cms_dev Bug  
 - onNavigationItemChildrenRequested second argument not given.
 	
-Bugs in browsers and other sites
+Bugs 
 - Chrome does not show infobar buttons
 - Safari login send form on return does not work
+- file upload and drag and drop Safari and Chrome
+- change input widget to default > ListWidgetModule::Missing argument 2 for ListWidgetModule::setOption()
+- css page tree li ui-state-active: if parent element is hovered, the active background turns transparent!
+- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
 Priorities
-- page tree li ui-state-active: if parent element is hovered, the active background turns transparent!
-- notifyUser search info > how to retrieve names for ids > write windowlevel variables? or retrieve from ie getNameByDocumentCategoryId()?
-- file upload and drag and drop
+- notifyUser search info > abstract more, how to, @see document_list and user_list examples?
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 
@@ -31,9 +33,6 @@ Priorities
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
-
-Bugs / good to improve
-- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
 PageTypeWidget
 - carefully test for reliable behaviour, performance
