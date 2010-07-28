@@ -149,7 +149,6 @@ button.ui-button.ui-state-default,
 }
 
 #admin_sidebar .ui-list li.ui-state-hover,
-/*#admin_sidebar .ui-list .ui-state-active li.ui-state-hover,*/
 #admin_sidebar .ui-list li.ui-state-active {
 	.active-sidebar-list-item;
 }
@@ -191,10 +190,13 @@ button.ui-button.ui-state-default,
 		background-color: @background_color_sidebar;
 	}
 }
-#admin_sidebar  .ui-tree  li {
-	border: none !important;
+#admin_sidebar .ui-tree li.ui-state-active {
+	background-color: @sidebar_highlight_color !important;
 }
 
+#admin_sidebar .ui-tree li {
+	border: none !important;
+}
 
 #admin_sidebar > ol.ui-tree > li.ui-state-hover {
 	border-bottom: none !important;

@@ -44,6 +44,7 @@ jQuery(document).ready(function() {
 		
 		// init infobar
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			console.log('prepared', info_bar._element);
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_detail', function(widget) {
 					widget.content.find("select[name='document_category_id']").val(document_list.getOption('document_category_id'));

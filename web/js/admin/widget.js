@@ -499,10 +499,12 @@ jQuery.fn.extend({
 		Widget.create(widget_type, function(widget) {
 			widget_element.data('widget', widget);
 			widget._element = widget_element;
-			jQuery.each(widget_element.data('waiting_prepare_callbacks'), function(i, callback) {
-				callback(widget);
+			widget.handle('prepared', function() {
+				jQuery.each(widget_element.data('waiting_prepare_callbacks'), function(i, callback) {
+					callback(widget);
+				});
+				widget_element.removeData('waiting_prepare_callbacks');
 			});
-			widget_element.removeData('waiting_prepare_callbacks');
 		}, widget_session);
 		return this;
 	}

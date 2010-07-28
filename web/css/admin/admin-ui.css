@@ -115,12 +115,6 @@ button.ui-button.ui-state-default {
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
-#admin_sidebar .ui-list .ui-state-active li.ui-state-hover {
-  border: none;
-  background-color: #728697;
-  background-image: none;
-  border-bottom: 1px solid #d4d8dc;
-}
 #admin_sidebar .ui-list li.ui-state-active {
   border: none;
   background-color: #728697;
@@ -181,6 +175,7 @@ button.ui-button.ui-state-default {
 }
 #admin_sidebar .ui-tree li.ui-state-active ol { background-color: #dfe1e3; }
 #admin_sidebar .ui-tree li.ui-state-active ol li { background-color: #dfe1e3; }
+#admin_sidebar .ui-tree li.ui-state-active { background-color: #728697 !important; }
 #admin_sidebar .ui-tree li { border: none !important; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover {
   border-bottom: none !important;
