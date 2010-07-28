@@ -37,7 +37,6 @@ Widget.types.info_bar = {
 	
 	add_element: function(element, is_right_container, is_before, accesskey) {
 		var appendee = is_right_container ? this.infobar_right : this.infobar_left;
-		console.log(is_right_container, appendee, this.infobar_right);
 		var func = is_before ? element.prependTo : element.appendTo;
 		if(accesskey) {
 			element.attr('accesskey', accesskey);
