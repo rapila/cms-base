@@ -13,8 +13,9 @@ PHP 3
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
 	
-cms_dev Bug  
-- onNavigationItemChildrenRequested second argument not given.
+cms_dev, taylormade Bug/issues  
+- cms_dev onNavigationItemChildrenRequested second argument not given.
+- taylormade cufon.now() slashes?
 	
 Bugs 
 - Chrome does not show infobar buttons

@@ -262,6 +262,10 @@ jQuery.extend(Widget, {
 		alert("Message of severity "+severity+": "+message);
 	},
 	
+	notificationWithIdentifier: function() {
+		return null;
+	},
+	
 	tooltip: function(element, text) {
 		jQuery(element).bind('mouseenter', alert.bind(window, text));
 	},

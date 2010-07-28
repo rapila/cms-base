@@ -28,31 +28,7 @@ jQuery(document).ready(function() {
 					cell.css({cursor: 'pointer'});
 				}
 			});
-			widget.handle('list.reloaded', function(event, list_length) {
-				if(list_length === 0) {
-					var message = "Keine Dateien gefunden mit den folgenden Kriterien<ul>";
-					var search = widget.getSearch();
-					if(search !== null) {
-						message = message + '<li>Suchbegriff "'+search+'"</li>';
-					}
-					var document_category_id = widget.getOption('document_category_id');
-					if(document_category_id !== '__all') {
-						if(document_category_id === '__without') {
-							message = message + '<li>keine Dokumentenkategorie</li>';
-						} else {
-							var active_category = AdminInterface.sidebar.find('li.ui-state-active').text();
-							message = message + '<li>Dokumentenkategorie "'+active_category+'"</li>';
-						}
-					}
-					var document_kind = widget.getOption('document_kind');
-					if(document_kind !== '__all') {
-						document_kind_name = document_list.find('*[data-widget-type]="document_kind_input" > [selected]').text();
-						message = message + '<li>Dokumentenart "'+document_kind_name+'"</li>';
-					}
-					message = message + '</ul>';
-					Widget.notifyUser('info', message, {isHTML: true, closable: true});
-				}
-			}, false, true);
+			AdminInterface.strings.handle_strings_for_list_result('widget.document_list.no_result', ['document_category_id', 'document_kind'], widget);
 		});
 	});
 });

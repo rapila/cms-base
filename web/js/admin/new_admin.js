@@ -1,5 +1,41 @@
-jQuery.extend(jQuery, {
-	postMessage: function(severity, message) {
+jQuery.fn.extend({
+	tooltip: function(text) {
+		var tooltip = this.data('tooltip-element');
+		if(!tooltip) {
+			tooltip = jQuery('<div/>').text(text).addClass('tooltip ui-widget ui-widget-content ui-corner-all').appendTo(document.body);
+			this.data('tooltip-element', tooltip);
+		}
+		this.hover(function(event) {
+			tooltip.show();
+			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
+		}, function() {
+			tooltip.hide();
+		}).mousemove(function(event) {
+			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
+		});
+	},
+});
+
+jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {
+	jQuery(this).addClass('ui-state-hover');
+}).live("mouseout", function() {
+	jQuery(this).removeClass('ui-state-hover');
+}).live("mousedown", function() {
+	jQuery(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
+	if(jQuery(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active')){
+		jQuery(this).removeClass("ui-state-active");
+	}
+	else {
+		jQuery(this).addClass("ui-state-active");
+	}
+}).live('mouseup', function() {
+	if(!jQuery(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button')) {
+		jQuery(this).removeClass("ui-state-active");
+	}
+});
+
+jQuery.extend(Widget, {
+	notifyUser: function(severity, message) {
 		var options = {
 			closeDelay: 5000,
 			identifier: null,
@@ -12,15 +48,10 @@ jQuery.extend(jQuery, {
 		
 		//Handle messages with identical identifier
 		if(options.identifier) {
-			var is_found = false;
-			admin_message.find('div.ui-notify').each(function() {
-				var notification = jQuery(this);
-				if(notification.data('identifier') === options.identifier) {
-					is_found = true;
-					notification.data('functions').increase_badge_count();
-				}
-			});
-			if(is_found) {
+			var prev_message = Widget.notificationWithIdentifier(options.identifier);
+			if(prev_message) {
+				prev_message.data('functions').increase_badge_count();
+				prev_message.data('functions').set_message(message);
 				return;
 			}
 		}
@@ -82,47 +113,20 @@ jQuery.extend(jQuery, {
 			functions.enable_close_button();
 		}
 		return functions;
-	}
-});
-
-jQuery.fn.extend({
-	tooltip: function(text) {
-		var tooltip = this.data('tooltip-element');
-		if(!tooltip) {
-			tooltip = jQuery('<div/>').text(text).addClass('tooltip ui-widget ui-widget-content ui-corner-all').appendTo(document.body);
-			this.data('tooltip-element', tooltip);
-		}
-		this.hover(function(event) {
-			tooltip.show();
-			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
-		}, function() {
-			tooltip.hide();
-		}).mousemove(function(event) {
-			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
-		});
 	},
-});
-
-jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {
-	jQuery(this).addClass('ui-state-hover');
-}).live("mouseout", function() {
-	jQuery(this).removeClass('ui-state-hover');
-}).live("mousedown", function() {
-	jQuery(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
-	if(jQuery(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active')){
-		jQuery(this).removeClass("ui-state-active");
-	}
-	else {
-		jQuery(this).addClass("ui-state-active");
-	}
-}).live('mouseup', function() {
-	if(!jQuery(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button')) {
-		jQuery(this).removeClass("ui-state-active");
-	}
-});
-
-jQuery.extend(Widget, {
-	notifyUser: jQuery.postMessage,
+	
+	notificationWithIdentifier: function(identifier) {
+		var admin_message = jQuery('#admin_message');
+		var result = null
+		admin_message.find('div.ui-notify').each(function() {
+			var notification = jQuery(this);
+			if(notification.data('identifier') === identifier) {
+				result = notification;
+				return false;
+			}
+		});
+		return result;
+	},
 	
 	tooltip: function(element, text) {
 		jQuery(element).tooltip(text);
@@ -172,6 +176,11 @@ jQuery.extend(Widget, {
 		if(Widget.singletons.admin_menu !== undefined) {
 			Widget.singletons.admin_menu.end_activity();
 		}
-	}
-	
+	}	
+});
+
+jQuery(document).ready(function() {
+	Widget.create('string', function(widget) {
+		window.AdminInterface.strings = widget;
+	});
 });

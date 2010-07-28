@@ -1,0 +1,45 @@
+Widget.types.string = {
+	get_string: function() {
+		var result = this.getString.apply(this, arguments);
+		if(result.is_template) {
+			return jQuery.parseHTML(result.string);
+		} else {
+			return document.createTextNode(result.string);
+		}
+	},
+	
+	handle_strings_for_list_result: function(string_key, keys, widget) {
+		var message_id = 'search_message'+widget.widgetId;
+		var strings = this;
+		widget.handle('list.reloaded', function(event, list_length) {
+			if(list_length !== 0) {
+				var prev_message = Widget.notificationWithIdentifier(message_id);
+				prev_message && prev_message.data('functions').close();
+				return;
+			}
+		
+			message = jQuery('<div/>').append(strings.get_string(string_key));
+			var list = jQuery('<ul/>').appendTo(message);
+		
+			var append_message = function(string_detail, parameters) {
+				list.append(jQuery('<li>').append(strings.get_string(string_key+'.'+string_detail, parameters)));
+			};
+		
+			var search = widget.getSearch({search: search});
+			if(search !== null) {
+				append_message('search', {search: search});
+			}
+			jQuery.each(keys, function(i, key) {
+				var option = widget.getOption(key);
+				if(option && option != '__all') {
+					var parameters = {};
+					parameters[key] = option;
+					append_message(key, parameters);
+				}
+			});
+			if(list.children().length > 0) {
+				Widget.notifyUser('info', message, {isHTML: true, closable: true, identifier: message_id});
+			}
+		}, false, true);
+	}
+}
