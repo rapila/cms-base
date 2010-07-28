@@ -1,5 +1,5 @@
 Widget.types.rich_text = {
-	configuration: {
+	settings: {
 		customConfig: '',
 		toolbar_Full: [
 			['Bold','Italic','-','Subscript','Superscript'],
@@ -14,12 +14,12 @@ Widget.types.rich_text = {
 		],
 		skin: "kama",
 		entities: false,
-		baseFloatZIndex: 1000
+		baseFloatZIndex: 1020
 	},
 	
 	prepare: function() {
 		var textarea = this._element.get(0);
-		this.instance = CKEDITOR.replace(textarea, this.configuration);
+		this.instance = CKEDITOR.replace(textarea, this.settings);
 		var rich_text = this;
 		Widget.create('image_picker', function(image_picker) {
 			rich_text.image_picker = image_picker;
@@ -35,6 +35,10 @@ Widget.types.rich_text = {
 				command: 'PickImage'
 			});
 		}, this._element.attr('data-widget-picker-session'));
+	},
+	
+	get_data: function() {
+		return this.instance.getData();
 	},
 	
 	image_select_callback: function(editor, command) {

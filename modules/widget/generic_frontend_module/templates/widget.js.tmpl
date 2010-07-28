@@ -1,0 +1,23 @@
+Widget.types.generic_frontend_module = {
+	prepare: function() {
+		// this.currentData(function(currentData) {
+			// this._element.val(currentData);
+		// });
+		this._element.prepareWidget(function(widget) {
+			console.log(widget);
+			this.internal_widget = widget;
+		}.bind(this));
+	},
+	
+	save: function(callback) {
+		var data = null;
+		
+		switch(this.internal_widget.widgetType) {
+			case 'rich_text': {
+				data = this.internal_widget.get_data() || '';
+			}
+		}
+		
+		this.saveData(data, callback);
+	}
+}

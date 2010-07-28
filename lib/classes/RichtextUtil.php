@@ -32,12 +32,15 @@ class RichtextUtil {
 		return $oRichtextUtil->parseInputFromMce();
 	}
 	
-	public function parseInputFromMce() {
+	public function parseInputFromMce($sInput = null) {
+		if($sInput === null) {
+			$sInput = $_POST[$this->sAreaName];
+		}
 		if($this->mTrackReferences !== null) {
 			// delete all references before saving the tracked ones
 			ReferencePeer::removeReferences($this->mTrackReferences);
 		}
-		$oTagParser = new TagParser("<text>".$_POST[$this->sAreaName]."</text>");
+		$oTagParser = new TagParser("<text>".$sInput."</text>");
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
 		return $oTagParser->getTag()->__toString();
 	}

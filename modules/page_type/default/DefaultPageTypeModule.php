@@ -145,11 +145,25 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 	}
 	
-	//Backend stuff
-	private $oCurrentContentObject = null;
-	private $oCurrentLanguageObject = null;
-	
 	//Admin stuff
+	private $aContentObjects = array();
+	private $aModuleInstances = array();
+	
+	private function contentObjectById($iObjectId) {
+		if(!isset($this->aContentObjects[$iObjectId])) {
+			$this->aContentObjects[$iObjectId] = ContentObjectPeer::retrieveByPK($iObjectId);
+		}
+		return $this->aContentObjects[$iObjectId];
+	}
+	
+	private function moduleInstanceByLanguageObject($oLanguageObject) {
+		$sKey = $oLanguageObject->getId();
+		if(!isset($this->aModuleInstances[$sKey])) {
+			$this->aModuleInstances[$sKey] = FrontendModule::getModuleInstance($oLanguageObject->getContentObject()->getObjectType(), $oLanguageObject);
+		}
+		return $this->aModuleInstances[$sKey];
+	}
+	
 	public function adminListPossibleFrontendModules() {
 		return FrontendModule::listContentModules();
 	}
@@ -216,20 +230,20 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function adminEdit($iObjectId) {
 		$sLanguageId = AdminManager::getContentLanguage();
-		$this->oCurrentContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
-		$this->oCurrentLanguageObject = $this->oCurrentContentObject->getLanguageObject($sLanguageId);
-		if($this->oCurrentLanguageObject === null) {
-			$this->oCurrentLanguageObject = new LanguageObject();
-			$this->oCurrentLanguageObject->setLanguageId($sLanguageId);
-			$this->oCurrentLanguageObject->setContentObject($this->oCurrentContentObject);
-			$this->oCurrentLanguageObject->setData(null);
+		$oCurrentContentObject = $this->contentObjectById($iObjectId);
+		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($sLanguageId);
+		if($oCurrentLanguageObject === null) {
+			$oCurrentLanguageObject = new LanguageObject();
+			$oCurrentLanguageObject->setLanguageId($sLanguageId);
+			$oCurrentLanguageObject->setContentObject($oCurrentContentObject);
+			$oCurrentLanguageObject->setData(null);
 		}
-		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $this->oCurrentLanguageObject);
+		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
 		$oWidget = null;
-		if($this->oModuleInstance instanceof WidgetBasedFrontendModule) {
-			$oWidget = $this->oModuleInstance->getWidget();
+		if($oModuleInstance instanceof WidgetBasedFrontendModule) {
+			$oWidget = $oModuleInstance->getWidget();
 		} else {
-			$oWidget = WidgetModule::getWidget('legacy_frontend_module', null, $this->oModuleInstance);
+			$oWidget = WidgetModule::getWidget('legacy_frontend_module', null, $oModuleInstance);
 		}
 		if($oWidget instanceof WidgetModule) {
 			return array($oWidget->getModuleName(), $oWidget->getSessionKey());
@@ -239,10 +253,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function adminPreview($iObjectId) {
 		$sLanguageId = AdminManager::getContentLanguage();
-		$this->oCurrentContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
-		$this->oCurrentLanguageObject = $this->oCurrentContentObject->getLanguageObject($sLanguageId);
-		$this->oModuleInstance = FrontendModule::getModuleInstance($this->oCurrentContentObject->getObjectType(), $this->oCurrentLanguageObject);
-		return array('preview_contents' => $this->getModuleContents($this->oModuleInstance, false));
+		$oCurrentContentObject = $this->contentObjectById($iObjectId);
+		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($sLanguageId);
+		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
+		return array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
 	}
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {

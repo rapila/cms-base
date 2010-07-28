@@ -329,6 +329,9 @@ jQuery.extend(Widget, {
 				});
 			}
 		}
+		// if(!options.async) {
+		// 	console.log("Warning, sending synchronous XMLHTTPRequest", arguments);
+		// }
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
@@ -364,7 +367,7 @@ jQuery.extend(Widget, {
 				if(statusCode === 'parsererror') {
 					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
 					//This is most likely a PHP error… 
-					Widget.notifyUser('error', text);
+					Widget.notifyUser('error', text, {closable: true, closeDelay: null});
 				} else {
 					Widget.notifyUser('error', error);
 				}

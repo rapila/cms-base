@@ -85,7 +85,7 @@
 #admin_sidebar li.ui-state-hover { font-weight: 700; }
 .ui-dialog .ui-dialog-buttonpane {
   margin-top: 0;
-  background: url("images/ui-bg_highlight-soft_45_2d3238_1x100.png") repeat-x scroll 50% 50% #2d3238 !important;
+  background: url("admin_menu/images/ui-bg_highlight-soft_45_2d3238_1x100.png") repeat-x scroll 50% 50% #2d3238 !important;
   border-top: 0;
 }
 button.ui-button.ui-state-default {
