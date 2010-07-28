@@ -8,7 +8,7 @@ Miscellaneous projects
 		Opera main navigation not display correctly
 	General check and update
 	
-PHP 3
+PHP 5.3
 - namespaces and coding standards
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
