@@ -14,32 +14,7 @@ jQuery(document).ready(function() {
 					event.stopPropagation();
 				}
 			});
-			widget.handle('list.reloaded', function(event, list_length) {
-				// notify search criteria info
-				if(list_length === 0) {
-					var message = "Keine Benutzer gefunden mit den folgenden Kriterien<ul>";
-					var search = widget.getSearch();
-					if(search !== null) {
-						message = message + '<li>Suchbegriff "'+search+'"</li>';
-					}					
-					var group_id = widget.getOption('group_id');
-					if(group_id !== '__all') {
-						if(group_id === '__without') {
-							message = message + '<li>keine Benutzergruppe</li>';
-						} else {
-							var active_group = AdminInterface.sidebar.find('li.ui-state-active').text();
-							message = message + '<li>Benutzergruppe "'+active_group+'"</li>';
-						}
-					}
-					var user_kind = widget.getOption('user_kind');
-					if(user_kind !== '__all') {
-						user_kind_name = user_list.find('*[data-widget-type]="kind_kind_input" > [selected]').text();
-						message = message + '<li>Benutzertyp "'+user_kind_name+'"</li>';
-					}
-					message = message + '</ul>';
-					Widget.notifyUser('info', message, {isHTML: true, closable: true});
-				}
-			}, false, true);
+			AdminInterface.strings.handle_strings_for_list_result('widget.user_list.no_result', ['group_id', 'user_kind'], widget);
 		});
 	});
 });

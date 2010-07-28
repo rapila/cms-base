@@ -15,17 +15,14 @@ PHP 3
 	
 cms_dev, taylormade Bug/issues  
 - cms_dev onNavigationItemChildrenRequested second argument not given.
-- taylormade cufon.now() slashes?
 	
 Bugs 
-- Chrome does not show infobar buttons
 - Safari login send form on return does not work
 - file upload and drag and drop Safari and Chrome
-- css page tree li ui-state-active: if parent element is hovered, the active background turns transparent!
 - double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
 Priorities
-- notifyUser search info > abstract more, how to, @see document_list and user_list examples?
+- notifyUser search info > replace keys by real values
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
 - discuss sketch document upload and replace html5 (uploadWidget?), 
@@ -543,3 +540,6 @@ media object : get_headers() [<a href='function.get-headers'>function.get-header
 - change names of DefaultPageTypeModule admin methods sortObjects : adminSortObjects, removeObject > adminRemoveObjects
 - delete, cancel/reset and save buttons should only be visible when ready
 - display linktext in page tree (on hover page_title)
+- Chrome does not show infobar buttons > callbacks called only when widget prepared
+- css page tree li ui-state-active: if parent element is hovered, the active background turns transparent! >set color for active element to !important
+- taylormade cufon.now() slashes?

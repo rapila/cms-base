@@ -90,7 +90,7 @@ Widget.types.admin_menu = {
 	addModuleSelector: function(selected, is_right_container) {
 		var select = jQuery('<select/>');
 		// select.addClass('ui-state-default');
-		var items = this.getModuleSelector();
+		var items = this.getModuleSelector(selected);
 		jQuery.each(items, function(i, value) {
 			var option = jQuery('<option/>').attr("value", value.name).text(value.title).data('link', value.link);
 			select.append(option);

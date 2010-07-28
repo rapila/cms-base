@@ -3,7 +3,6 @@
  * @package modules.widget
  */
 class AdminMenuWidgetModule extends WidgetModule {
-	
 	public function __construct() {
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/admin_menu.js');
@@ -27,7 +26,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 		return $oTemplate;
 	}
 	
-	public function getModuleSelector() {
+	public function getModuleSelector($sCurrentModuleName) {
 		$aResult = array();
 		// list modules with user right
 		$aUseModules = array('documents','links','users', 'dashboard');
@@ -39,6 +38,9 @@ class AdminMenuWidgetModule extends WidgetModule {
 		}
 		ksort($aResult);
 		array_unshift($aResult, array('name' => '', 'link' => LinkUtil::link(array('pages'), 'AdminManager'), 'title' => 'Verwalten und Administrieren'));
+		if(!in_array($sCurrentModuleName, $aUseModules) && $sCurrentModuleName !== 'pages') {
+			array_push($aResult, array('name' => $sCurrentModuleName, 'link' => LinkUtil::link(array($sCurrentModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sCurrentModuleName)));
+		}
 		return $aResult;
 	}
 }

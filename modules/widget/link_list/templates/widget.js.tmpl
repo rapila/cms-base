@@ -17,26 +17,7 @@ jQuery(document).ready(function() {
 					event.stopPropagation();
 				}				
 			});
-			widget.handle('list.reloaded', function(event, list_length) {
-				if(list_length === 0) {
-					var message = "Keine Links gefunden mit den folgenden Kriterien<ul>";
-					var search = widget.getSearch();
-					if(search !== null) {
-						message = message + '<li>Suchbegriff "'+search+'"</li>';
-					}
-					var category_id = widget.getOption('link_category_id');
-					if(category_id !== '__all') {
-						if(category_id === '__without') {
-							message = message + '<li>keine Linkkategorie</li>';
-						} else {
-							var active_category = AdminInterface.sidebar.find('li.ui-state-active').text();
-							message = message + '<li>Linkkategorie "'+active_category+'"</li>';
-						}
-					}
-					message = message + '</ul>';
-					Widget.notifyUser('info', message, {isHTML: true, closable: true});
-				}
-			}, false, true);
+			AdminInterface.strings.handle_strings_for_list_result('widget.link_list.no_result', ['link_category_id'], widget);
 		});
 	});
 });
