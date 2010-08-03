@@ -7,7 +7,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	private $oImagePickerWidget;
 	private $sModuleContents;
 	
-	public function __construct($sSessionKey = null, $sModuleContents = '') {
+	public function __construct($sSessionKey = null, $sModuleContents = null) {
 		parent::__construct($sSessionKey);
 		$this->oImagePickerWidget = new ImagePickerWidgetModule();
 		$this->oImagePickerWidget->setAllowsMultiselect(true);
