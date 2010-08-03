@@ -7,10 +7,13 @@ class PreviewManager extends FrontendManager {
 		parent::__construct();
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', 1.4);
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);
-		ResourceIncluder::defaultIncluder()->addResource('admin/widget.js');
+		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
+		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		// ResourceIncluder::defaultIncluder()->addResource('admin/new_admin.js');
 		// ResourceIncluder::defaultIncluder()->addResource('admin/admin-skeleton.css');
-		ResourceIncluder::defaultIncluder()->addResource('admin/theme/jquery-ui-1.7.2.custom.css');
+		ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
+		ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
 		$oLoginWindowWidget = new LoginWindowWidgetModule();
 		LoginWindowWidgetModule::includeResources();
 		// $oAdminMenuWidget = new AdminMenuWidgetModule();
