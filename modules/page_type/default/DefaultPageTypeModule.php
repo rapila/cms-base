@@ -214,7 +214,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $aResult;
 	}
 	
-	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort) {
+	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort=0) {
 		foreach($this->oPage->getObjectsForContainer($sContainerName, $iSort) as $oObject) {
 			$oObject->setSort($oObject->getSort()+1);
 			$oObject->save();
