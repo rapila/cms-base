@@ -21,3 +21,5 @@ jQuery(document).ready(function() {
 		page_type.handle_preview();
 	}, window.PreviewInterface.page_type_widget);
 });
+
+Widget.tooltip = jQuery.noop;
