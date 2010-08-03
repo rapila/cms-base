@@ -21,7 +21,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		$oResourceIncluder->startDependencies();
 		ImagePickerWidgetModule::includeResources($oResourceIncluder);
 		self::includeWidgetResources(true, $oResourceIncluder);
-		$oCkEditor = ResourceFinder::findResourceObject(array('web', 'js', 'admin', 'ckeditor'));
+		$oCkEditor = ResourceFinder::findResourceObject(array('web', 'js', 'widget', 'ckeditor'));
 		$oResourceIncluder->addCustomJs('CKEDITOR_BASEPATH = "'.$oCkEditor->getFrontendPath().'/";');
 		$oResourceIncluder->addResource('widget/ckeditor/ckeditor.js');
 	}
