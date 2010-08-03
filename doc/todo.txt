@@ -15,6 +15,8 @@ PHP 5.3
 	
 cms_dev, taylormade Bug/issues  
 - cms_dev onNavigationItemChildrenRequested second argument not given.
+
+taylormade: not_found handling with Filter or @see DocumentDownloadFrontendModule, better without redirecting
 	
 Bugs 
 - Safari login send form on return does not work
@@ -22,6 +24,8 @@ Bugs
 - double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
 Priorities
+- reload list after document upload success
+- edit button in list, if necessary do it on one click
 - notifyUser search info > replace keys by real values
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
