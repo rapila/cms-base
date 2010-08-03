@@ -24,6 +24,9 @@ abstract class WidgetModule extends Module {
 	
 	public function doWidget() {
 		$oElement = $this->getElementType();
+		if($oElement === null) {
+			return null;
+		}
 		if(!$oElement instanceof TagWriter) {
 			$oElement = new TagWriter($oElement);
 		}

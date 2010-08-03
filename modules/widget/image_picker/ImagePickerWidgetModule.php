@@ -28,4 +28,8 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 	public function setAllowedCategories($aAllowedCategories) {
 		$this->aAllowedCategories = $aAllowedCategories;
 	}
+	
+	public function getElementType() {
+		return null;
+	}
 }

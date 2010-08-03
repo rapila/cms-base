@@ -7,7 +7,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	private $oImagePickerWidget;
 	private $sModuleContents;
 	
-	public function __construct($sSessionKey = null, $sModuleContents = null) {
+	public function __construct($sSessionKey = null, $sModuleContents = '') {
 		parent::__construct($sSessionKey);
 		$this->oImagePickerWidget = new ImagePickerWidgetModule();
 		$this->oImagePickerWidget->setAllowsMultiselect(true);
@@ -28,5 +28,9 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	
 	public function getElementType() {
 		return new TagWriter('textarea', array('data-widget-picker-session' => $this->oImagePickerWidget->getSessionKey()));
+	}
+	
+	public function getModuleContents() {
+		return $this->sModuleContents;
 	}
 }

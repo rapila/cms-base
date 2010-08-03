@@ -41,6 +41,9 @@ Widget.types.page_type.types['default'] = {
 			var leave_timeout = null;
 			var leave = function(event) {
 				leave_timeout = window.setTimeout(function() {
+					if(filled_container.is('.editing')) {
+						return;
+					}
 					preview_bar.hide('fast');
 					leave_timeout = null;
 				}, 1000);
@@ -77,6 +80,7 @@ Widget.types.page_type.types['default'] = {
 		
 		jQuery('.preview_bar').delegate('.edit', 'click', function() {
 			var preview_bar = jQuery(this).closest('.preview_bar');
+			preview_bar.show('fast');
 			var container = preview_bar.data('filled_container');
 			if(container.is('.editing')) {
 				return;
@@ -102,11 +106,8 @@ Widget.types.page_type.types['default'] = {
 			var container = preview_bar.data('filled_container');
 			preview_bar.removeClass('editing').addClass('loading');
 			var widget = container.data('edit_widget');
-			if(!widget) {
-				return;
-			}
 			container.data('edit_widget', null);
-			if(!widget.save(cleanup.bind(this, preview_bar, container))) {
+			if(!widget || widget.save(cleanup.bind(this, preview_bar, container)) === false) {
 				preview_bar.removeClass('loading').addClass('editing');
 			}
 		});

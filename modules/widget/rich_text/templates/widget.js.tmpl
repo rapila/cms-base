@@ -18,6 +18,7 @@ Widget.types.rich_text = {
 	},
 	
 	prepare: function() {
+		this._element.text(this.getModuleContents());
 		var textarea = this._element.get(0);
 		this.instance = CKEDITOR.replace(textarea, this.settings);
 		var rich_text = this;
