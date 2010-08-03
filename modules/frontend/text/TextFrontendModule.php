@@ -19,6 +19,9 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	}
 	
 	public function widgetData() {
+	  if($this->oLanguageObject->getData() === null) {
+  	  return null;
+	  }
 		return stream_get_contents($this->oLanguageObject->getData());
 	}
 	
