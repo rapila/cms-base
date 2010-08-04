@@ -13,17 +13,12 @@ PHP 5.3
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
 	
-cms_dev, taylormade Bug/issues  
+cms_dev 
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 
-taylormade: not_found handling with Filter or @see DocumentDownloadFrontendModule, better without redirecting
-	
-Bugs 
-- Safari login send form on return does not work
-- file upload and drag and drop Safari and Chrome
-- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
-
 Priorities
+- QM-Manual Server E-Mail
+- Discuss email, procedutre Schule Altenburg
 - reload list after document upload success
 - edit button in list, if necessary do it on one click
 - notifyUser search info > replace keys by real values
@@ -34,6 +29,12 @@ Priorities
 - module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
+
+Bugs 
+- Safari login send form on return does not work
+- file upload and drag and drop Safari and Chrome
+- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
+
 
 PageTypeWidget
 - carefully test for reliable behaviour, performance
@@ -547,3 +548,4 @@ media object : get_headers() [<a href='function.get-headers'>function.get-header
 - Chrome does not show infobar buttons > callbacks called only when widget prepared
 - css page tree li ui-state-active: if parent element is hovered, the active background turns transparent! >set color for active element to !important
 - taylormade cufon.now() slashes?
+taylormade: not_found handling with Filter or @see DocumentDownloadFrontendModule, better without redirecting
