@@ -18,6 +18,12 @@ class AdminMenuWidgetModule extends WidgetModule {
 		}
 	}
 	
+	public function getModuleConfig() {
+    $oUser = Session::getSession()->getUser();
+    $aSettings = $oUser->getAdminSettings('admin_menu');
+    return $aSettings;
+	}
+	
 	public function doWidget() {
 		$oTemplate = $this->constructTemplate('menu_bar');
 		if(Session::getSession()->isAuthenticated()) {

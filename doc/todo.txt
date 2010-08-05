@@ -17,6 +17,7 @@ cms_dev
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 
 Priorities
+- Arbeiten, 17/18. August?
 - QM-Manual Server E-Mail
 - Discuss email, procedutre Schule Altenburg
 - reload list after document upload success

@@ -8,6 +8,9 @@ Widget.types.admin_menu = {
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
+		console.log('test');
+		var settings = this.getModuleConfig();
+		console.log(settings);
 		this.activity_indicator = jQuery('<img>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
 		this.addButton("{{writeString=widget.page.preview_linktext}}", function() {
 				//Handle Preview link
@@ -116,5 +119,9 @@ Widget.types.admin_menu = {
 			});
 		});
 		return this.addElement(select, true);
+	},
+	
+	predefined_elements: {
+		
 	}
 };

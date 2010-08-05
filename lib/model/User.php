@@ -67,16 +67,16 @@ class User extends BaseUser {
 		return $this->may($oPage, 'view_page');
 	}
 	
-	public function mayUseBackendModule($sBackendModuleName, $bCheckEnabled = true) {
+	public function mayUseAdmimModule($sAdminModuleName, $bCheckEnabled = true) {
 		//Case 1: Module is disabled (this check is not mandatory): deny
-		if($bCheckEnabled && !Module::isModuleEnabled('backend', $sBackendModuleName)) {
+		if($bCheckEnabled && !Module::isModuleEnabled('admin', $sAdminModuleName)) {
 			return false;
 		}
 		//Case 2: User is admin: allow
 		if($this->getIsAdmin()) {
 			return true;
 		}
-		$aModuleInfo = Module::getModuleInfoByTypeAndName('backend', $sBackendModuleName);
+		$aModuleInfo = Module::getModuleInfoByTypeAndName('admin', $sAdminModuleName);
 		$aGroupIds = isset($aModuleInfo['allowed_groups']) ? $aModuleInfo['allowed_groups'] : array();
 		//Cases 3 and 4: No groups defined
 		if(count($aGroupIds) === 0) {
@@ -94,23 +94,24 @@ class User extends BaseUser {
 		return false;
 	}
 	
-	public function getBackendSettingsValue() {
+  public function getAdminSettings($sSection, $mDefaultResult = array()) {
 		if($this->getBackendSettings() !== null) {
-			return unserialize($this->getBackendSettings());
+			$aSections = unserialize($this->getBackendSettings());
+			if(isset($aSections[$sSection])) {
+        return $aSections[$sSection];
+			}
 		}
-		$aResult = array();
-		foreach(SettingsBackendModule::$AVAILABLE_SECTIONS as $sSectionName) {
-			$aResult[$sSectionName] = Settings::getSetting('modules', $sSectionName, array(), 'backend');
-		}
-		//FIXME: Move to where the function is called (should not be here).
-		if(isset($aResult['direct_links'])) {
-			foreach(SettingsBackendModule::$FIXED_MODULE_NAMES as $sExcludedModule) {
-				if(isset($aResult['direct_links'][$sExcludedModule])) {
-					unset($aResult['direct_links'][$sExcludedModule]);
-				}
-			}			 
-		}
-		return $aResult;
+    $mDefaultResult = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
+    return $mDefaultResult;
+	}
+	
+	public function setAdminSettings($sSection, $mValue) {
+		$aSections = array();
+	  if($this->getBackendSettings() !== null) {
+			$aSections = unserialize($this->getBackendSettings());
+	  }
+    $aSections[$sSection] = $mValue;
+    $this->setBackendSettings(serialize($aSections));
 	}
 	
 	public function getGroups($bReturnNamesOnly = false) {

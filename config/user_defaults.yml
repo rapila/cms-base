@@ -1,0 +1,20 @@
+admin_menu:
+  left:
+    - preview
+    - edit
+    -
+      module.pages: {title: '{{writeString=admin.pages.link_title}}'}
+      module.users: {}
+      ~
+      module.documents: {}
+      module.links: {}
+    - dashboard
+  right:
+    - activity
+    - user
+    - logo
+    - logout
+
+rich_text:
+  buttons: [['bold', 'italic', '~'], []]
+  
