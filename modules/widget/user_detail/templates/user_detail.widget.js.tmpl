@@ -40,7 +40,6 @@ Widget.types.user_detail = {
 			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
-			this.content.find("select[id='group_ids']").val(user_data.ActiveUserGroupIds);
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
 		});
 	},

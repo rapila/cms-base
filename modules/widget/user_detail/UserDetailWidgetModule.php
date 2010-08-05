@@ -28,8 +28,8 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		foreach($oUser->getUserGroupsRelatedByUserId() as $oUserGroup) {
 			$oUserGroup->delete();
 		}
-		if(isset($aUserData['group_ids[]'])) {
-			foreach($aUserData['group_ids[]'] as $iGroupId) {
+		if(isset($aUserData['group_ids'])) {
+			foreach($aUserData['group_ids'] as $iGroupId) {
 				$oUserGroup = new UserGroup();
 				$oUserGroup->setGroupId($iGroupId);
 				$oUser->addUserGroupRelatedByUserId($oUserGroup);
