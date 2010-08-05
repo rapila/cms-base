@@ -48,7 +48,7 @@ body.login h1 {
   padding: 0.3em 1em;
   color: #e3ef99;
 }
-#cmos_admin_menu .admin_menu_right .activity_indicator { margin: 0px 7px -3px 0px; }
+#cmos_admin_menu .admin_menu_right .activity_indicator { margin: 4px 6px 0 0; }
 #admin_area, #admin_info_bar, #cmos_admin_menu, #viewscreen_loader {
   position: absolute;
   overflow: hidden;
@@ -88,12 +88,13 @@ body.login h1 {
   padding: 0px 0;
   background-color: #dfe1e3;
 }
-#admin_main { left: 277px; }
 #admin_main {
+  left: 277px;
   right: 0;
   padding-right: 0;
 }
 #cmos_admin_menu .admin_menu_right {
+  left: 277px;
   right: 0;
   padding-right: 0;
 }
@@ -218,18 +219,16 @@ body.login h1 {
   height: 23px;
   margin: 4px 0px;
 }
-#cmos_admin_menu .admin_menu_left { left: 0; }
+#cmos_admin_menu .admin_menu_left {
+  left: 0;
+  width: 277px;
+}
 #cmos_admin_menu .admin_menu_right {
   position: absolute;
   right: 0;
+  left: 277px;
 }
-#cmos_admin_menu .admin_menu_right > * { display: inline-block; }
-#cmos_admin_menu .admin_menu_left > * { display: inline-block; }
-#cmos_admin_menu .cmos-button {
-  margin: 0 0 0 0.7em;
-  padding-left: 1.4em;
-  padding-right: 1.4em;
-}
+#cmos_admin_menu .admin_menu_right * { float: right; }
 #cmos_admin_menu .admin_menu_right span.cmos-button.ui-state-default {
   display: inline-block;
   margin-right: 1em;
@@ -244,9 +243,10 @@ body.login h1 {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   min-width: 20em;
-  line-height: 11px;
+  line-height: 12px;
   text-align: left;
-  margin-left: 0.7em;
+  margin-left: 1px;
+  float: left;
 }
 #cmos_admin_menu .ui-widget { font-size: 12px; }
 #cmos_admin_menu .ui-widget-header { font-size: 12px; }
@@ -259,14 +259,7 @@ body.login h1 {
   color: #000000;
   background-color: white;
   padding-bottom: 0.2em;
-  padding-left: 1.5em;
   margin: 0em 0;
-  background: white url('../../images/admin/info.gif') no-repeat left center;
-}
-#cmos_admin_menu .ui-widget-header select option.separator {
-  border-top: 1px solid #e3ef99;
-  background-image: url();
-  font-size: 3px;
 }
 #cmos_admin_menu .ui-widget-header select option[selected] {
   color: #b8d600 important;
@@ -279,30 +272,21 @@ body.login h1 {
   height: 24px;
   cursor: pointer;
 }
-#cmos_admin_menu button.cmos-button.dashboard {
-  padding: 2px 2px 2px 2px;
-  height: 21px;
-  width: 22px;
-  margin: 0 0 0 0.7em;
-  background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
+#cmos_admin_menu .admin_menu_right .admin-menu-button { float: right; }
+#cmos_admin_menu .admin_menu_left .cmos-button {
+  float: left;
+  margin: 0 0.3em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
 }
-#cmos_admin_menu button.cmos-button.logout_link {
-  padding: 2px 2px 2px 2px;
-  height: 21px;
-  width: 22px;
-  margin: 0 0 0 0.7em;
-  background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
+#cmos_admin_menu .admin_menu_right .dashboard_link {
+  background: transparent url('../../images/admin/dashboard_icon.gif') repeat-y scroll 0 0;
+  float: left;
+  margin-left: 0.5em;
 }
-#cmos_admin_menu button.cmos-button.domain_name { color: blue; }
-#cmos_admin_menu button.cmos-button.dashboard span { display: none; }
-#cmos_admin_menu button.cmos-button.logout_link span { display: none; }
-#cmos_admin_menu button.dashboard:hover { background-image: url('../../images/admin/dashboard_icon_hover.gif'); }
-body.dashboard #cmos_admin_menu button.cmos-button.dashboard { background-image: url('../../images/admin/dashboard_icon_hover.gif'); }
-#cmos_admin_menu button.cmos-button.logout_link {
-  -moz-border-radius: 12px;
-  -webkit-border-radius: 12px;
-  background: transparent url('../../images/admin/logout_icon.gif') no-repeat center;
-}
+#cmos_admin_menu .dashboard_link:hover { background: transparent url('../../images/admin/dashboard_icon_hover.gif') repeat-y scroll 0 0; }
+body.dashboard #cmos_admin_menu .dashboard_link { background: transparent url('../../images/admin/dashboard_icon_hover.gif') repeat-y scroll 0 0; }
+#cmos_admin_menu .logout_link { background: transparent url('../../images/admin/logout_icon.gif') repeat-y scroll 0 0; }
 #cmos_admin_menu > div {
   padding: 0.3em 0.7em;
   border: none;
@@ -396,8 +380,8 @@ table.ui-list .ui-list-cell a {
   border: 0;
   background-color: #e3ef99;
 }
-#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon { background-image: url(admin_menu/images/ui-icons_000000_256x240.png); }
-#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon { background-image: url(admin_menu/images/ui-icons_000000_256x240.png); }
+#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon { background-image: url(theme/images/ui-icons_000000_256x240.png); }
+#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon { background-image: url(theme/images/ui-icons_000000_256x240.png); }
 #admin_main .ui-list td:first-child {
   min-width: 15em;
   padding-left: 5px;

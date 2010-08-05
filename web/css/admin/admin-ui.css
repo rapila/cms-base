@@ -64,7 +64,7 @@
   color: #ffffff;
   padding-bottom: 0px;
 }
-.cmos_alert.ui-dialog-content .ui-icon { background-image: url("admin_menu/images/ui-icons_b8d600_256x240.png"); }
+.cmos_alert.ui-dialog-content .ui-icon { background-image: url("theme/images/ui-icons_b8d600_256x240.png"); }
 .ui-dialog .ui-dialog-titlebar {
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
@@ -72,8 +72,8 @@
   border-width: 0;
   padding: 0.6em 0.8em;
 }
-.ui-state-active .ui-icon { background-image: url("admin_menu/images/ui-icons_000000_256x240.png"); }
-.ui-state-hover .ui-icon { background-image: url("admin_menu/images/ui-icons_000000_256x240.png"); }
+.ui-state-active .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
+.ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
 #admin_sidebar .ui-tree { font-weight: 700; }
 #admin_sidebar .ui-list { font-weight: 700; }
 #admin_sidebar li.ui-state-active { font-weight: 700; }
