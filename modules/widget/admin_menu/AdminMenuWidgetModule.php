@@ -19,9 +19,10 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getModuleConfig() {
-    $oUser = Session::getSession()->getUser();
-    $aSettings = $oUser->getAdminSettings('admin_menu');
-    return $aSettings;
+		$oUser = Session::getSession()->getUser();
+		$aSettings = $oUser->getAdminSettings('admin_menu');
+		ErrorHandler::log($aSettings);
+		return $aSettings;
 	}
 	
 	public function doWidget() {
@@ -32,21 +33,8 @@ class AdminMenuWidgetModule extends WidgetModule {
 		return $oTemplate;
 	}
 	
-	public function getModuleSelector($sCurrentModuleName) {
-		$aResult = array();
-		// list modules with user right
-		$aUseModules = array('documents','links','users', 'dashboard');
-		foreach(AdminModule::listModules() as $sModuleName => $aModuleInformation) {
-			if(!in_array($sModuleName, $aUseModules)) {
-				continue;
-			}
-			$aResult[AdminModule::getDisplayNameByName($sModuleName)] = array('name' => $sModuleName, 'link' => LinkUtil::link(array($sModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sModuleName));
-		}
-		ksort($aResult);
-		array_unshift($aResult, array('name' => '', 'link' => LinkUtil::link(array('pages'), 'AdminManager'), 'title' => 'Verwalten und Administrieren'));
-		if(!in_array($sCurrentModuleName, $aUseModules) && $sCurrentModuleName !== 'pages') {
-			array_push($aResult, array('name' => $sCurrentModuleName, 'link' => LinkUtil::link(array($sCurrentModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sCurrentModuleName)));
-		}
+	public function getModule($sName) {
+		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName));
 		return $aResult;
 	}
 }

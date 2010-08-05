@@ -8,33 +8,36 @@ Widget.types.admin_menu = {
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
-		this.activity_indicator = jQuery('<img>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
-		this.addButton("{{writeString=widget.page.preview_linktext}}", function() {
-				//Handle Preview link
-			}.bind(this), false).
-			addButton("{{writeString=widget.page.edit_linktext}}", function() {
-				//Handle Edit link
-			}.bind(this), false).
-			addButton(" ", function() {
-				Widget.create('login_window', function(login_window) {
-					login_window.logout(function() {
-						this.show();
-					});
-					this.hide();
-				}.bind(this));
-			}.bind(this), true, this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}')).
-			addElement(jQuery("<span/>").text('cmos').attr('class', "cmos_logo"),true).
-			addButton(this.getLoggedInName(), function() {
-			window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
-		}, true).
-		addModuleSelector(window.AdminInterface && AdminInterface.current_admin_module, true).
-		addButton('   ', function() {
-			window.location.href = '{{writeLink=dashboard;manager=AdminManager}}';
-		}, true, this.button_prototype.clone().addClass('dashboard_link').attr('title', 'Dashboard')).
-		addElement(this.activity_indicator, true);
-		if(AdminInterface.current_admin_module == "pages" || AdminInterface.current_admin_module == "strings") {
-			this.addLanguageSelector(AdminInterface.content_language);
-		}
+		this.activity_indicator = jQuery();
+		var admin_menu = this;
+		jQuery.each(this.getModuleConfig(), function(i, config) {
+			var is_right = (i === 'right');
+			jQuery.each(config, function(i, config_item) {
+				var name = null;
+				var args = [];
+				if(jQuery.isArray(config_item)) {
+					name = 'menu';
+					args[0] = config_item;
+				} else if(!config_item) {
+					admin_menu.addSpacer(15, is_right);
+					return;
+				} else {
+					name = config_item.split('.');
+					args = name.slice(1);
+					name = name[0];
+				}
+				var to_add = admin_menu.predefined_elements[name].apply(admin_menu, args);
+				if(to_add.callback) {
+					if(to_add.text) {
+						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element);
+					} else {
+						admin_menu.addElement(to_add.element.click(to_add.callback), is_right);
+					}
+				} else {
+					admin_menu.addElement(to_add.element, is_right);
+				}
+			});
+		});
 	},
 	
 	activity: function() {
@@ -87,21 +90,6 @@ Widget.types.admin_menu = {
 		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;height:100%;"/>'), is_right_container);
 	},
 	
-	addModuleSelector: function(selected, is_right_container) {
-		var select = jQuery('<select/>');
-		// select.addClass('ui-state-default');
-		var items = this.getModuleSelector(selected);
-		jQuery.each(items, function(i, value) {
-			var option = jQuery('<option/>').attr("value", value.name).text(value.title).data('link', value.link);
-			select.append(option);
-		});
-		select.val(selected);
-		select.change(function() {
-			window.location.href = jQuery(this).find(':selected').data('link');
-		});
-		return this.addElement(select, is_right_container);
-	},
-	
 	addLanguageSelector: function(selected) {
 		var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
 		select.prepareWidget(function(widget) {
@@ -119,6 +107,80 @@ Widget.types.admin_menu = {
 	},
 	
 	predefined_elements: {
+		activity: function() {
+			this.activity_indicator = jQuery('<img>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
+			return {element: this.activity_indicator};
+		},
 		
+		menu: function(items) {
+			var admin_menu = this;
+			var result = {};
+			result.element = jQuery('<select/>');
+			jQuery.each(items, function(i, item) {
+				if(!item) {
+					//handle Separator
+					result.element.append(jQuery('<option/>').addClass('separator').data('action', jQuery.noop));
+					return;
+				}
+				var name = item.split('.');
+				var args = name.slice(1);
+				name = name[0];
+				var item_contents = admin_menu.predefined_elements[name].apply(admin_menu, args);
+				var option = jQuery('<option/>').text(item_contents.text).data('action', item_contents.callback);
+				result.element.append(option);
+			});
+			result.callback = function() {
+				jQuery(this).find(':selected').data('action')();
+			};
+			return result;
+		},
+		
+		module: function(module) {
+			var result = {};
+			var module_info = this.getModule(module);
+			result.callback = function() {
+				window.location.href = module_info.link;
+			};
+			result.text = module_info.title;
+			result.element = this.button_prototype.clone().addClass('module_link module'+module).attr('title', module_info.title);
+			return result;
+		},
+		
+		logo: function() {
+			return {element: jQuery("<span/>").text('cmos').attr('class', "cmos_logo")};
+		},
+		
+		preview: function() {
+			return {callback: function() {
+				//Handle Preview link
+			}.bind(this), text: "{{writeString=widget.page.preview_linktext}}"};
+		},
+		
+		edit: function() {
+			return {callback: function() {
+				//Handle Edit link
+			}.bind(this), text: "{{writeString=widget.page.edit_linktext}}"};
+		},
+		
+		logout: function() {
+			var result = {};
+			result.callback = function() {
+				Widget.create('login_window', function(login_window) {
+					login_window.logout(function() {
+						this.show();
+					});
+					this.hide();
+				}.bind(this));
+			}.bind(this);
+			result.text = ' ';
+			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}');
+			return result;
+		},
+		
+		user: function() {
+			return {text: this.getLoggedInName(), callback: function() {
+				window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
+			}};
+		},
 	}
 };

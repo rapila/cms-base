@@ -2,13 +2,14 @@ admin_menu:
   left:
     - preview
     - edit
+    - ~
     -
-      module.pages: {title: '{{writeString=admin.pages.link_title}}'}
-      module.users: {}
-      ~
-      module.documents: {}
-      module.links: {}
-    - dashboard
+      - module.pages
+      - module.users
+      - ~
+      - module.documents
+      - module.links
+    - module.dashboard
   right:
     - activity
     - user
