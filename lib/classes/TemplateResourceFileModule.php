@@ -27,7 +27,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 		} else {
 			header("Content-Type: text/html;charset=utf-8");
 		}
-		$oTemplate = new Template("$this->sModuleType.$this->sResourceType", array(DIRNAME_MODULES, $this->sModuleType, $this->sModuleName, DIRNAME_TEMPLATES), false, true, null, null, $iTemplateFlags);
+		$oTemplate = new Template("$this->sModuleName.$this->sModuleType.$this->sResourceType", array(DIRNAME_MODULES, $this->sModuleType, $this->sModuleName, DIRNAME_TEMPLATES), false, true, null, null, $iTemplateFlags);
 		$oTemplate->render();
 	}
 	
@@ -63,7 +63,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 	
 	public static function getAvailableResource($sModuleName, $sModuleType, $sResourceType, $aParameters) {
 		$sFileModule = str_replace('template_', "{$sModuleType}_", self::getNameByClassName(get_class()));
-		$sFileName = "$sModuleType.$sResourceType.tmpl";
+		$sFileName = "$sModuleName.$sModuleType.$sResourceType.tmpl";
 		if(ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, $sModuleName, DIRNAME_TEMPLATES, "$sFileName")) === null) {
 			return null;
 		}
