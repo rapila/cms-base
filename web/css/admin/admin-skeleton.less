@@ -60,7 +60,7 @@ body.login h1 {
 }
 
 #cmos_admin_menu .admin_menu_right .activity_indicator {
-	margin: 4px 6px 0 0;
+	margin: 0px 7px -3px 0px;
 }
 
 #admin_area, #admin_info_bar, #cmos_admin_menu, #viewscreen_loader {
@@ -108,9 +108,12 @@ body.login h1 {
 	background-color: @background_color_sidebar;
 }
 
+#admin_main {
+	left: @initial_sidebar_width;
+}
+
 #admin_main,
 #cmos_admin_menu .admin_menu_right {
-	left: @initial_sidebar_width;
 	right: 0;
 	padding-right: @side_window_distance;
 }
@@ -284,17 +287,22 @@ body.login h1 {
 
 #cmos_admin_menu .admin_menu_left { 
 	left: 0;
-	width: @initial_sidebar_width;
 }
 
 #cmos_admin_menu .admin_menu_right {
 	position: absolute;
 	right: 0;
-	left: @initial_sidebar_width;
 }
 
-#cmos_admin_menu .admin_menu_right * {
-	float: right;
+#cmos_admin_menu .admin_menu_right > *,
+#cmos_admin_menu .admin_menu_left > * {
+	display: inline-block;
+}
+
+#cmos_admin_menu .cmos-button {
+	margin: 0 0 0 .7em;
+	padding: .2em 1.4em .3em 1.4em;
+	height: 22px;
 }
 
 #cmos_admin_menu .admin_menu_right span.cmos-button.ui-state-default {
@@ -312,10 +320,10 @@ body.login h1 {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	min-width: 20em;
-	line-height: 12px;
+	line-height: 11px;
 	text-align: left;
-	margin-left: 1px;
-	float: left;
+	margin-left: .7em;
+	height: 22px;
 }
 
 #cmos_admin_menu .ui-widget,
@@ -332,8 +340,17 @@ body.login h1 {
 #cmos_admin_menu .ui-widget-header select option	 {
 	color:#000;
 	background-color: white;
-	padding-bottom: .2em;
+	padding:.4em .4em .4em 1.5em;
+	padding-left: 1.5em;
 	margin: 0em 0;
+	background: white url('../../images/admin/info.gif') no-repeat left center;
+
+}
+
+#cmos_admin_menu .ui-widget-header select option.separator {
+	border-top: 1px solid @highlight_color;
+	background-image: url();
+	font-size: 3px;
 }
 
 #cmos_admin_menu .ui-widget-header select option[selected]	 {
@@ -349,30 +366,33 @@ body.login h1 {
 	cursor: pointer;
 }
 
-#cmos_admin_menu .admin_menu_right .admin-menu-button {
-	float: right;
+#cmos_admin_menu button.cmos-button.dashboard,
+#cmos_admin_menu button.cmos-button.logout_link {
+	padding: 2px 2px 2px 2px;
+	height: 21px;
+	width: 22px;
+	margin: 0 0 0 .7em;
+	background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
 }
 
-#cmos_admin_menu .admin_menu_left .cmos-button {
-	float: left;
-	margin: 0 .3em;
-	padding-left: 1.5em;
-	padding-right: 1.5em;
+#cmos_admin_menu button.cmos-button.domain_name {
+	color: blue;
 }
 
-#cmos_admin_menu	.admin_menu_right .dashboard_link {
-	background: transparent url('../../images/admin/dashboard_icon.gif') repeat-y scroll 0 0;
-	float: left;
-	margin-left: .5em;
+#cmos_admin_menu button.cmos-button.dashboard span,
+#cmos_admin_menu button.cmos-button.logout_link span {
+	display: none;
 }
 
-#cmos_admin_menu .dashboard_link:hover,
-body.dashboard #cmos_admin_menu .dashboard_link {
-	background: transparent url('../../images/admin/dashboard_icon_hover.gif') repeat-y scroll 0 0;
+#cmos_admin_menu button.dashboard:hover,
+body.dashboard #cmos_admin_menu button.cmos-button.dashboard {
+	background-image: url('../../images/admin/dashboard_icon_hover.gif');
 }
 
-#cmos_admin_menu .logout_link {
-	background: transparent url('../../images/admin/logout_icon.gif') repeat-y scroll 0 0;
+#cmos_admin_menu button.cmos-button.logout_link {
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	background: transparent url('../../images/admin/logout_icon.gif') no-repeat center;
 }
 
 #cmos_admin_menu > div {
