@@ -1,0 +1,5 @@
+allowed_groups: []
+name: "Users"
+description: "Storage of is_backend_login_enabled and frontend users to handle site permissions globally. Any custom user module should extend the this model"
+website: "http://www.mini-cms.ch/"
+version: 2.0

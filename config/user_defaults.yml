@@ -2,7 +2,6 @@ admin_menu:
   left:
     - preview
     - edit
-    - ~
     -
       - module.pages
       - module.users
@@ -10,10 +9,13 @@ admin_menu:
       - module.documents
       - module.links
     - module.dashboard
+    - ~
+    - ~
+    - domain_name
   right:
     - activity
-    - user
     - logo
+    - user
     - logout
 
 rich_text:

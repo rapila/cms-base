@@ -1,0 +1,5 @@
+allowed_groups: []
+name: "Documents"
+description: "Documents module for uploading and managing all allowed file types"
+website: "http://www.mini-cms.ch/"
+version: 2.0

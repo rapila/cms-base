@@ -1,0 +1,5 @@
+allowed_groups: []
+name: "Links"
+description: "Link storage for multiple use of links (various protocols and mailto) in Richtexts or for displaying lists of links, @see also Link Categories"
+website: "http://www.mini-cms.ch/"
+version: 2.0

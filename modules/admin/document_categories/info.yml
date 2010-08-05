@@ -1,0 +1,5 @@
+allowed_groups: []
+name: "Document Categories"
+description: "Easy categorisation of documents, categories allow specification of i.e. max_width of images"
+website: "http://www.mini-cms.ch/"
+version: 2.0

@@ -1,0 +1,6 @@
+admin_required: true
+allowed_groups: []
+name: "Groups"
+description: "User groups allowing to define specific rights on pages and available modules"
+website: "http://www.mini-cms.ch/"
+version: 2.0

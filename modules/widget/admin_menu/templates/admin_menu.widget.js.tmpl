@@ -4,7 +4,7 @@ Widget.handle('cmos.logged_in', function() {
 
 Widget.types.admin_menu = {
 	prepare: function() {
-		this.button_prototype = jQuery('<a/>').addClass('admin-menu-button');
+		this.button_prototype = jQuery('{{includeTemplate=menu_button.incl}}');
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
@@ -27,6 +27,9 @@ Widget.types.admin_menu = {
 					name = name[0];
 				}
 				var to_add = admin_menu.predefined_elements[name].apply(admin_menu, args);
+				if(!to_add) {
+					return;
+				}
 				if(to_add.callback) {
 					if(to_add.text) {
 						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element);
@@ -42,7 +45,7 @@ Widget.types.admin_menu = {
 	
 	activity: function() {
 		this.activity_indicator.data('usage', this.activity_indicator.data('usage')+1);
-		this.activity_indicator.show();
+		this.activity_indicator.css({display: ''});
 	},
 	
 	end_activity: function() {
@@ -78,16 +81,17 @@ Widget.types.admin_menu = {
 	
 	addButton: function(text, callback, is_right_container, element) {
 		if(!element) {
-			element = jQuery("{{includeTemplate=menu_button.incl}}");
+			element = this.button_prototype.clone();
 		}
 		if(text == null) {
 			text = '';
 		}
-		return this.addElement(element.text(text).click(callback), is_right_container);
+		element.find('.ui-button-text').text(text);
+		return this.addElement(element.click(callback), is_right_container);
 	},
 		
 	addSpacer: function(width, is_right_container) {
-		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;height:100%;"/>'), is_right_container);
+		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
 	},
 	
 	addLanguageSelector: function(selected) {
@@ -119,19 +123,27 @@ Widget.types.admin_menu = {
 			jQuery.each(items, function(i, item) {
 				if(!item) {
 					//handle Separator
-					result.element.append(jQuery('<option/>').addClass('separator').data('action', jQuery.noop));
+					result.element.append(jQuery('<option/>').addClass('separator'));
 					return;
 				}
 				var name = item.split('.');
 				var args = name.slice(1);
 				name = name[0];
 				var item_contents = admin_menu.predefined_elements[name].apply(admin_menu, args);
+				if(!item_contents) {
+					return;
+				}
 				var option = jQuery('<option/>').text(item_contents.text).data('action', item_contents.callback);
 				result.element.append(option);
 			});
-			result.callback = function() {
-				jQuery(this).find(':selected').data('action')();
-			};
+			result.element.bind('change', function() {
+				var selected = jQuery(this).find(':selected');
+				if(selected.is('.separator')) {
+					return false;
+				}
+				selected.data('action')();
+			});
+			result.callback = jQuery.noop;
 			return result;
 		},
 		
@@ -142,8 +154,12 @@ Widget.types.admin_menu = {
 				window.location.href = module_info.link;
 			};
 			result.text = module_info.title;
-			result.element = this.button_prototype.clone().addClass('module_link module'+module).attr('title', module_info.title);
+			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
 			return result;
+		},
+		
+		domain_name: function() {
+			return {element: jQuery("<span/>").text('{{writeSettingValue=name;section=domain_holder}}').attr('class', "domain_name")};
 		},
 		
 		logo: function() {
@@ -172,8 +188,8 @@ Widget.types.admin_menu = {
 					this.hide();
 				}.bind(this));
 			}.bind(this);
-			result.text = ' ';
-			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', '{{writeString=logout_linkname}}');
+			result.text = '{{writeString=logout_linkname}}';
+			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', result.text);
 			return result;
 		},
 		
