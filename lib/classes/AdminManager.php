@@ -103,6 +103,8 @@ class AdminManager extends Manager {
 		foreach($this->oModule->usedWidgets() as $mWidget) {
 			if(!is_string($mWidget)) {
         $mWidget = get_class($mWidget);
+			} else {
+				$mWidget = WidgetModule::getClassNameByName($mWidget);
 			}
       call_user_func(array($mWidget, 'includeResources'), $this->oResourceIncluder);
 		}

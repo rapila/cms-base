@@ -39,7 +39,7 @@ class BackupAdminModule extends AdminModule {
 		return $aResult;
 	}
 	
-	public static function getListContents($iRowStart = 0, $iRowCount = null) {
+	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
 		$aBackupOptions = array('load_from_local' => 'Load from local file', 'backup_to_local' => 'Backup to local file');
 		foreach($aBackupOptions as $sAction => $sActionName) {

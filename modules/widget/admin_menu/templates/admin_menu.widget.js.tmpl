@@ -34,7 +34,10 @@ Widget.types.admin_menu = {
 					if(to_add.text) {
 						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element);
 					} else {
-						admin_menu.addElement(to_add.element.click(to_add.callback), is_right);
+						if(admin_menu.settings.attach_events) {
+							to_add.element.click(to_add.callback);
+						}
+						admin_menu.addElement(to_add.element, is_right);
 					}
 				} else {
 					admin_menu.addElement(to_add.element, is_right);
@@ -87,27 +90,18 @@ Widget.types.admin_menu = {
 			text = '';
 		}
 		element.find('.ui-button-text').text(text);
-		return this.addElement(element.click(callback), is_right_container);
+		if(this.settings.attach_events) {
+			element.click(callback);
+		}
+		return this.addElement(element, is_right_container);
 	},
 		
 	addSpacer: function(width, is_right_container) {
 		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
 	},
 	
-	addLanguageSelector: function(selected) {
-		var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
-		select.prepareWidget(function(widget) {
-			widget.settings.international_option = false;
-			select.change(function() {
-				widget.setContentLanguage(select.val());
-				AdminInterface.content_language = select.val();
-				Widget.fire('cmos.language_changed', select.val());
-			});
-			widget.handle('prepared', function() {
-				select.val(selected);
-			});
-		});
-		return this.addElement(select, true);
+	settings: {
+		attach_events: true
 	},
 	
 	predefined_elements: {
@@ -136,13 +130,15 @@ Widget.types.admin_menu = {
 				var option = jQuery('<option/>').text(item_contents.text).data('action', item_contents.callback);
 				result.element.append(option);
 			});
-			result.element.bind('change', function() {
-				var selected = jQuery(this).find(':selected');
-				if(selected.is('.separator')) {
-					return false;
-				}
-				selected.data('action')();
-			});
+			if(this.settings.attach_events) {
+				result.element.bind('change', function() {
+					var selected = jQuery(this).find(':selected');
+					if(selected.is('.separator')) {
+						return false;
+					}
+					selected.data('action')();
+				});
+			}
 			result.callback = jQuery.noop;
 			return result;
 		},
@@ -156,6 +152,25 @@ Widget.types.admin_menu = {
 			result.text = module_info.title;
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
 			return result;
+		},
+		
+		languages: function() {
+			var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
+			var admin_menu = this;
+			select.prepareWidget(function(widget) {
+				widget.settings.international_option = false;
+				if(admin_menu.settings.attach_events) {
+					select.change(function() {
+						widget.setContentLanguage(select.val());
+						AdminInterface.content_language = select.val();
+						Widget.fire('cmos.language_changed', select.val());
+					});
+				}
+				widget.handle('prepared', function() {
+					select.val(selected);
+				});
+			});
+			return {element: select, callback: jQuery.noop};
 		},
 		
 		domain_name: function() {
