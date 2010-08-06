@@ -234,3 +234,92 @@ ALTER TABLE `page_strings` CHANGE `title` `link_text` VARCHAR( 50 ) CHARACTER SE
 ALTER TABLE `page_strings` CHANGE `long_title` `page_title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 
 UPDATE `objects` SET `condition_serialized` = NULL WHERE `condition_serialized` = '';
+
+#svn r2681 add new tables
+DROP TABLE IF EXISTS `group_roles`;
+CREATE TABLE `group_roles`
+(
+	`group_id` INTEGER  NOT NULL,
+	`role_key` VARCHAR(50)  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`group_id`,`role_key`),
+	CONSTRAINT `group_roles_FK_1`
+		FOREIGN KEY (`group_id`)
+		REFERENCES `groups` (`id`)
+		ON DELETE CASCADE,
+	INDEX `group_roles_FI_2` (`role_key`),
+	CONSTRAINT `group_roles_FK_2`
+		FOREIGN KEY (`role_key`)
+		REFERENCES `roles` (`role_key`)
+		ON DELETE CASCADE,
+	INDEX `group_roles_FI_3` (`created_by`),
+	CONSTRAINT `group_roles_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `group_roles_FI_4` (`updated_by`),
+	CONSTRAINT `group_roles_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles`
+(
+	`role_key` VARCHAR(50)  NOT NULL,
+	`description` VARCHAR(255),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`role_key`),
+	INDEX `roles_FI_1` (`created_by`),
+	CONSTRAINT `roles_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `roles_FI_2` (`updated_by`),
+	CONSTRAINT `roles_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+DROP TABLE IF EXISTS `user_roles`;
+CREATE TABLE `user_roles`
+(
+	`user_id` INTEGER  NOT NULL,
+	`role_key` VARCHAR(50)  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`user_id`,`role_key`),
+	CONSTRAINT `user_roles_FK_1`
+		FOREIGN KEY (`user_id`)
+		REFERENCES `users` (`id`)
+		ON DELETE CASCADE,
+	INDEX `user_roles_FI_2` (`role_key`),
+	CONSTRAINT `user_roles_FK_2`
+		FOREIGN KEY (`role_key`)
+		REFERENCES `roles` (`role_key`)
+		ON DELETE CASCADE,
+	INDEX `user_roles_FI_3` (`created_by`),
+	CONSTRAINT `user_roles_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `user_roles_FI_4` (`updated_by`),
+	CONSTRAINT `user_roles_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+#move rights to roles
+ALTER TABLE `rights` CHANGE `group_id` `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+

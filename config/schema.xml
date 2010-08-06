@@ -117,14 +117,6 @@
 	<behavior name="taggable" />
 </table>
 
-<table name="groups" phpName="Group">
-	<column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" />
-	<column name="name" type="varchar" size="80" />
-	<unique>
-		<unique-column name="name" />
-	</unique>
-</table>
-
 <table name="users_groups" phpName="UserGroup">
 	<column name="user_id" type="integer" required="true" primaryKey="true" />
 	<foreign-key foreignTable="users" onDelete="cascade">
@@ -136,18 +128,53 @@
 	</foreign-key>
 </table>
 
-<table name="rights" phpName="Right">
-	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-	<column name="group_id" type="integer" required="true" />
+<table name="groups" phpName="Group">
+	<column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" />
+	<column name="name" type="varchar" size="80" />
+	<unique>
+		<unique-column name="name" />
+	</unique>
+</table>
+
+<table name="group_roles" phpName="GroupRole">
+	<column name="group_id" type="integer" required="true" primaryKey="true" />
 	<foreign-key foreignTable="groups" onDelete="cascade">
 		<reference local="group_id" foreign="id" />
+	</foreign-key>
+	<column name="role_key" type="varchar" size="50" required="true" primaryKey="true" />
+	<foreign-key foreignTable="roles" onDelete="cascade">
+		<reference local="role_key" foreign="role_key" />
+	</foreign-key>
+</table>
+
+<table name="roles" phpName="Role">
+	<column name="role_key" type="varchar" size="50" required="true" primaryKey="true" />
+	<column name="description" type="varchar" size="255" />
+</table>
+
+<table name="user_roles" phpName="UserRole">
+	<column name="user_id" type="integer" required="true" primaryKey="true" />
+	<foreign-key foreignTable="users" onDelete="cascade">
+		<reference local="user_id" foreign="id" />
+	</foreign-key>
+	<column name="role_key" type="varchar" size="50" required="true" primaryKey="true" />
+	<foreign-key foreignTable="roles" onDelete="cascade">
+		<reference local="role_key" foreign="role_key" />
+	</foreign-key>
+</table>
+
+<table name="rights" phpName="Right">
+	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+	<column name="role_key" type="varchar" size="50" required="true" />
+	<foreign-key foreignTable="roles" onDelete="cascade">
+		<reference local="role_key" foreign="role_key" />
 	</foreign-key>
 	<column name="page_id" type="integer" required="true" />
 	<foreign-key foreignTable="pages" onDelete="cascade">
 		<reference local="page_id" foreign="id" />
 	</foreign-key>
 	<unique>
-		<unique-column name="group_id" />
+		<unique-column name="role_key" />
 		<unique-column name="page_id" />
 		<unique-column name="is_inherited" />
 	</unique>
