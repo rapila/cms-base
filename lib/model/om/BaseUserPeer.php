@@ -465,20 +465,41 @@ abstract class BaseUserPeer {
 		// invalidate objects in StringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		StringPeer::clearInstancePool();
 
+		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserGroupPeer::clearInstancePool();
+
+		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserGroupPeer::clearInstancePool();
+
+		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserGroupPeer::clearInstancePool();
+
 		// invalidate objects in GroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		GroupPeer::clearInstancePool();
 
 		// invalidate objects in GroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		GroupPeer::clearInstancePool();
 
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		UserGroupPeer::clearInstancePool();
+		// invalidate objects in GroupRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		GroupRolePeer::clearInstancePool();
 
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		UserGroupPeer::clearInstancePool();
+		// invalidate objects in GroupRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		GroupRolePeer::clearInstancePool();
 
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		UserGroupPeer::clearInstancePool();
+		// invalidate objects in RolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		RolePeer::clearInstancePool();
+
+		// invalidate objects in RolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		RolePeer::clearInstancePool();
+
+		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserRolePeer::clearInstancePool();
+
+		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserRolePeer::clearInstancePool();
+
+		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserRolePeer::clearInstancePool();
 
 		// invalidate objects in RightPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		RightPeer::clearInstancePool();
@@ -1103,6 +1124,12 @@ abstract class BaseUserPeer {
 			
 			$criteria->add(UserGroupPeer::USER_ID, $obj->getId());
 			$affectedRows += UserGroupPeer::doDelete($criteria, $con);
+
+			// delete related UserRole objects
+			$criteria = new Criteria(UserRolePeer::DATABASE_NAME);
+			
+			$criteria->add(UserRolePeer::USER_ID, $obj->getId());
+			$affectedRows += UserRolePeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -1255,6 +1282,22 @@ abstract class BaseUserPeer {
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
+			// set fkey col in related UserGroup rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(UserGroupPeer::CREATED_BY, $obj->getId());
+			$updateValues->add(UserGroupPeer::CREATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related UserGroup rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(UserGroupPeer::UPDATED_BY, $obj->getId());
+			$updateValues->add(UserGroupPeer::UPDATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
 			// set fkey col in related Group rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
@@ -1271,19 +1314,51 @@ abstract class BaseUserPeer {
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related UserGroup rows to NULL
+			// set fkey col in related GroupRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
-			$selectCriteria->add(UserGroupPeer::CREATED_BY, $obj->getId());
-			$updateValues->add(UserGroupPeer::CREATED_BY, null);
+			$selectCriteria->add(GroupRolePeer::CREATED_BY, $obj->getId());
+			$updateValues->add(GroupRolePeer::CREATED_BY, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related UserGroup rows to NULL
+			// set fkey col in related GroupRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
-			$selectCriteria->add(UserGroupPeer::UPDATED_BY, $obj->getId());
-			$updateValues->add(UserGroupPeer::UPDATED_BY, null);
+			$selectCriteria->add(GroupRolePeer::UPDATED_BY, $obj->getId());
+			$updateValues->add(GroupRolePeer::UPDATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related Role rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(RolePeer::CREATED_BY, $obj->getId());
+			$updateValues->add(RolePeer::CREATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related Role rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(RolePeer::UPDATED_BY, $obj->getId());
+			$updateValues->add(RolePeer::UPDATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related UserRole rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(UserRolePeer::CREATED_BY, $obj->getId());
+			$updateValues->add(UserRolePeer::CREATED_BY, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related UserRole rows to NULL
+			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UserPeer::DATABASE_NAME);
+			$selectCriteria->add(UserRolePeer::UPDATED_BY, $obj->getId());
+			$updateValues->add(UserRolePeer::UPDATED_BY, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

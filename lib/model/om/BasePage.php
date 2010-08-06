@@ -2421,10 +2421,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
-	public function getRightsJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getRightsJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
+		$query->joinWith('Role', $join_behavior);
 
 		return $this->getRights($query, $con);
 	}

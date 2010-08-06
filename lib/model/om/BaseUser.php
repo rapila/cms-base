@@ -214,16 +214,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected $collStringsRelatedByUpdatedBy;
 
 	/**
-	 * @var        array Group[] Collection to store aggregation of Group objects.
-	 */
-	protected $collGroupsRelatedByCreatedBy;
-
-	/**
-	 * @var        array Group[] Collection to store aggregation of Group objects.
-	 */
-	protected $collGroupsRelatedByUpdatedBy;
-
-	/**
 	 * @var        array UserGroup[] Collection to store aggregation of UserGroup objects.
 	 */
 	protected $collUserGroupsRelatedByUserId;
@@ -237,6 +227,51 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @var        array UserGroup[] Collection to store aggregation of UserGroup objects.
 	 */
 	protected $collUserGroupsRelatedByUpdatedBy;
+
+	/**
+	 * @var        array Group[] Collection to store aggregation of Group objects.
+	 */
+	protected $collGroupsRelatedByCreatedBy;
+
+	/**
+	 * @var        array Group[] Collection to store aggregation of Group objects.
+	 */
+	protected $collGroupsRelatedByUpdatedBy;
+
+	/**
+	 * @var        array GroupRole[] Collection to store aggregation of GroupRole objects.
+	 */
+	protected $collGroupRolesRelatedByCreatedBy;
+
+	/**
+	 * @var        array GroupRole[] Collection to store aggregation of GroupRole objects.
+	 */
+	protected $collGroupRolesRelatedByUpdatedBy;
+
+	/**
+	 * @var        array Role[] Collection to store aggregation of Role objects.
+	 */
+	protected $collRolesRelatedByCreatedBy;
+
+	/**
+	 * @var        array Role[] Collection to store aggregation of Role objects.
+	 */
+	protected $collRolesRelatedByUpdatedBy;
+
+	/**
+	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
+	 */
+	protected $collUserRolesRelatedByUserId;
+
+	/**
+	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
+	 */
+	protected $collUserRolesRelatedByCreatedBy;
+
+	/**
+	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
+	 */
+	protected $collUserRolesRelatedByUpdatedBy;
 
 	/**
 	 * @var        array Right[] Collection to store aggregation of Right objects.
@@ -1170,15 +1205,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			$this->collStringsRelatedByUpdatedBy = null;
 
-			$this->collGroupsRelatedByCreatedBy = null;
-
-			$this->collGroupsRelatedByUpdatedBy = null;
-
 			$this->collUserGroupsRelatedByUserId = null;
 
 			$this->collUserGroupsRelatedByCreatedBy = null;
 
 			$this->collUserGroupsRelatedByUpdatedBy = null;
+
+			$this->collGroupsRelatedByCreatedBy = null;
+
+			$this->collGroupsRelatedByUpdatedBy = null;
+
+			$this->collGroupRolesRelatedByCreatedBy = null;
+
+			$this->collGroupRolesRelatedByUpdatedBy = null;
+
+			$this->collRolesRelatedByCreatedBy = null;
+
+			$this->collRolesRelatedByUpdatedBy = null;
+
+			$this->collUserRolesRelatedByUserId = null;
+
+			$this->collUserRolesRelatedByCreatedBy = null;
+
+			$this->collUserRolesRelatedByUpdatedBy = null;
 
 			$this->collRightsRelatedByCreatedBy = null;
 
@@ -1524,22 +1573,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collGroupsRelatedByCreatedBy !== null) {
-				foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collGroupsRelatedByUpdatedBy !== null) {
-				foreach ($this->collGroupsRelatedByUpdatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			if ($this->collUserGroupsRelatedByUserId !== null) {
 				foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1558,6 +1591,78 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			if ($this->collUserGroupsRelatedByUpdatedBy !== null) {
 				foreach ($this->collUserGroupsRelatedByUpdatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collGroupsRelatedByCreatedBy !== null) {
+				foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collGroupsRelatedByUpdatedBy !== null) {
+				foreach ($this->collGroupsRelatedByUpdatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collGroupRolesRelatedByCreatedBy !== null) {
+				foreach ($this->collGroupRolesRelatedByCreatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collGroupRolesRelatedByUpdatedBy !== null) {
+				foreach ($this->collGroupRolesRelatedByUpdatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collRolesRelatedByCreatedBy !== null) {
+				foreach ($this->collRolesRelatedByCreatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collRolesRelatedByUpdatedBy !== null) {
+				foreach ($this->collRolesRelatedByUpdatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collUserRolesRelatedByUserId !== null) {
+				foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collUserRolesRelatedByCreatedBy !== null) {
+				foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collUserRolesRelatedByUpdatedBy !== null) {
+				foreach ($this->collUserRolesRelatedByUpdatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1935,22 +2040,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					}
 				}
 
-				if ($this->collGroupsRelatedByCreatedBy !== null) {
-					foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collGroupsRelatedByUpdatedBy !== null) {
-					foreach ($this->collGroupsRelatedByUpdatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
 				if ($this->collUserGroupsRelatedByUserId !== null) {
 					foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -1969,6 +2058,78 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 				if ($this->collUserGroupsRelatedByUpdatedBy !== null) {
 					foreach ($this->collUserGroupsRelatedByUpdatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collGroupsRelatedByCreatedBy !== null) {
+					foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collGroupsRelatedByUpdatedBy !== null) {
+					foreach ($this->collGroupsRelatedByUpdatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collGroupRolesRelatedByCreatedBy !== null) {
+					foreach ($this->collGroupRolesRelatedByCreatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collGroupRolesRelatedByUpdatedBy !== null) {
+					foreach ($this->collGroupRolesRelatedByUpdatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collRolesRelatedByCreatedBy !== null) {
+					foreach ($this->collRolesRelatedByCreatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collRolesRelatedByUpdatedBy !== null) {
+					foreach ($this->collRolesRelatedByUpdatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collUserRolesRelatedByUserId !== null) {
+					foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collUserRolesRelatedByCreatedBy !== null) {
+					foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collUserRolesRelatedByUpdatedBy !== null) {
+					foreach ($this->collUserRolesRelatedByUpdatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2595,18 +2756,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getGroupsRelatedByCreatedBy() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addGroupRelatedByCreatedBy($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getGroupsRelatedByUpdatedBy() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addGroupRelatedByUpdatedBy($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getUserGroupsRelatedByUserId() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addUserGroupRelatedByUserId($relObj->copy($deepCopy));
@@ -2622,6 +2771,60 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			foreach ($this->getUserGroupsRelatedByUpdatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addUserGroupRelatedByUpdatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getGroupsRelatedByCreatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addGroupRelatedByCreatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getGroupsRelatedByUpdatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addGroupRelatedByUpdatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getGroupRolesRelatedByCreatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addGroupRoleRelatedByCreatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getGroupRolesRelatedByUpdatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addGroupRoleRelatedByUpdatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getRolesRelatedByCreatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addRoleRelatedByCreatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getRolesRelatedByUpdatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addRoleRelatedByUpdatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getUserRolesRelatedByUserId() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserRoleRelatedByUserId($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getUserRolesRelatedByCreatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserRoleRelatedByCreatedBy($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getUserRolesRelatedByUpdatedBy() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserRoleRelatedByUpdatedBy($relObj->copy($deepCopy));
 				}
 			}
 
@@ -5034,224 +5237,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collGroupsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupsRelatedByCreatedBy()
-	 */
-	public function clearGroupsRelatedByCreatedBy()
-	{
-		$this->collGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collGroupsRelatedByCreatedBy collection to an empty array (like clearcollGroupsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupsRelatedByCreatedBy()
-	{
-		$this->collGroupsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collGroupsRelatedByCreatedBy->setModel('Group');
-	}
-
-	/**
-	 * Gets an array of Group objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Group[] List of Group objects
-	 * @throws     PropelException
-	 */
-	public function getGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initGroupsRelatedByCreatedBy();
-			} else {
-				$collGroupsRelatedByCreatedBy = GroupQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupsRelatedByCreatedBy;
-				}
-				$this->collGroupsRelatedByCreatedBy = $collGroupsRelatedByCreatedBy;
-			}
-		}
-		return $this->collGroupsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Group objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Group objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = GroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupsRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Group object to this object
-	 * through the Group foreign key attribute.
-	 *
-	 * @param      Group $l Group
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRelatedByCreatedBy(Group $l)
-	{
-		if ($this->collGroupsRelatedByCreatedBy === null) {
-			$this->initGroupsRelatedByCreatedBy();
-		}
-		if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collGroupsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupsRelatedByUpdatedBy()
-	 */
-	public function clearGroupsRelatedByUpdatedBy()
-	{
-		$this->collGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collGroupsRelatedByUpdatedBy collection to an empty array (like clearcollGroupsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupsRelatedByUpdatedBy()
-	{
-		$this->collGroupsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collGroupsRelatedByUpdatedBy->setModel('Group');
-	}
-
-	/**
-	 * Gets an array of Group objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Group[] List of Group objects
-	 * @throws     PropelException
-	 */
-	public function getGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initGroupsRelatedByUpdatedBy();
-			} else {
-				$collGroupsRelatedByUpdatedBy = GroupQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupsRelatedByUpdatedBy;
-				}
-				$this->collGroupsRelatedByUpdatedBy = $collGroupsRelatedByUpdatedBy;
-			}
-		}
-		return $this->collGroupsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Group objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Group objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = GroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupsRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Group object to this object
-	 * through the Group foreign key attribute.
-	 *
-	 * @param      Group $l Group
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRelatedByUpdatedBy(Group $l)
-	{
-		if ($this->collGroupsRelatedByUpdatedBy === null) {
-			$this->initGroupsRelatedByUpdatedBy();
-		}
-		if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-	/**
 	 * Clears out the collUserGroupsRelatedByUserId collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -5654,6 +5639,1162 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collGroupsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupsRelatedByCreatedBy()
+	 */
+	public function clearGroupsRelatedByCreatedBy()
+	{
+		$this->collGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collGroupsRelatedByCreatedBy collection to an empty array (like clearcollGroupsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupsRelatedByCreatedBy()
+	{
+		$this->collGroupsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collGroupsRelatedByCreatedBy->setModel('Group');
+	}
+
+	/**
+	 * Gets an array of Group objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Group[] List of Group objects
+	 * @throws     PropelException
+	 */
+	public function getGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initGroupsRelatedByCreatedBy();
+			} else {
+				$collGroupsRelatedByCreatedBy = GroupQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupsRelatedByCreatedBy;
+				}
+				$this->collGroupsRelatedByCreatedBy = $collGroupsRelatedByCreatedBy;
+			}
+		}
+		return $this->collGroupsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Group objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Group objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = GroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Group object to this object
+	 * through the Group foreign key attribute.
+	 *
+	 * @param      Group $l Group
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addGroupRelatedByCreatedBy(Group $l)
+	{
+		if ($this->collGroupsRelatedByCreatedBy === null) {
+			$this->initGroupsRelatedByCreatedBy();
+		}
+		if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+	}
+
+	/**
+	 * Clears out the collGroupsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupsRelatedByUpdatedBy()
+	 */
+	public function clearGroupsRelatedByUpdatedBy()
+	{
+		$this->collGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collGroupsRelatedByUpdatedBy collection to an empty array (like clearcollGroupsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupsRelatedByUpdatedBy()
+	{
+		$this->collGroupsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collGroupsRelatedByUpdatedBy->setModel('Group');
+	}
+
+	/**
+	 * Gets an array of Group objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Group[] List of Group objects
+	 * @throws     PropelException
+	 */
+	public function getGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initGroupsRelatedByUpdatedBy();
+			} else {
+				$collGroupsRelatedByUpdatedBy = GroupQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupsRelatedByUpdatedBy;
+				}
+				$this->collGroupsRelatedByUpdatedBy = $collGroupsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collGroupsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Group objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Group objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = GroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Group object to this object
+	 * through the Group foreign key attribute.
+	 *
+	 * @param      Group $l Group
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addGroupRelatedByUpdatedBy(Group $l)
+	{
+		if ($this->collGroupsRelatedByUpdatedBy === null) {
+			$this->initGroupsRelatedByUpdatedBy();
+		}
+		if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+	}
+
+	/**
+	 * Clears out the collGroupRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupRolesRelatedByCreatedBy()
+	 */
+	public function clearGroupRolesRelatedByCreatedBy()
+	{
+		$this->collGroupRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collGroupRolesRelatedByCreatedBy collection to an empty array (like clearcollGroupRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupRolesRelatedByCreatedBy()
+	{
+		$this->collGroupRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collGroupRolesRelatedByCreatedBy->setModel('GroupRole');
+	}
+
+	/**
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 * @throws     PropelException
+	 */
+	public function getGroupRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initGroupRolesRelatedByCreatedBy();
+			} else {
+				$collGroupRolesRelatedByCreatedBy = GroupRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupRolesRelatedByCreatedBy;
+				}
+				$this->collGroupRolesRelatedByCreatedBy = $collGroupRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collGroupRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related GroupRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related GroupRole objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = GroupRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
+	 *
+	 * @param      GroupRole $l GroupRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addGroupRoleRelatedByCreatedBy(GroupRole $l)
+	{
+		if ($this->collGroupRolesRelatedByCreatedBy === null) {
+			$this->initGroupRolesRelatedByCreatedBy();
+		}
+		if (!$this->collGroupRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collGroupRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupRolesRelatedByUpdatedBy()
+	 */
+	public function clearGroupRolesRelatedByUpdatedBy()
+	{
+		$this->collGroupRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collGroupRolesRelatedByUpdatedBy collection to an empty array (like clearcollGroupRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupRolesRelatedByUpdatedBy()
+	{
+		$this->collGroupRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collGroupRolesRelatedByUpdatedBy->setModel('GroupRole');
+	}
+
+	/**
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 * @throws     PropelException
+	 */
+	public function getGroupRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initGroupRolesRelatedByUpdatedBy();
+			} else {
+				$collGroupRolesRelatedByUpdatedBy = GroupRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupRolesRelatedByUpdatedBy;
+				}
+				$this->collGroupRolesRelatedByUpdatedBy = $collGroupRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collGroupRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related GroupRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related GroupRole objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = GroupRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
+	 *
+	 * @param      GroupRole $l GroupRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addGroupRoleRelatedByUpdatedBy(GroupRole $l)
+	{
+		if ($this->collGroupRolesRelatedByUpdatedBy === null) {
+			$this->initGroupRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collGroupRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRolesRelatedByCreatedBy()
+	 */
+	public function clearRolesRelatedByCreatedBy()
+	{
+		$this->collRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collRolesRelatedByCreatedBy collection to an empty array (like clearcollRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initRolesRelatedByCreatedBy()
+	{
+		$this->collRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collRolesRelatedByCreatedBy->setModel('Role');
+	}
+
+	/**
+	 * Gets an array of Role objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Role[] List of Role objects
+	 * @throws     PropelException
+	 */
+	public function getRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initRolesRelatedByCreatedBy();
+			} else {
+				$collRolesRelatedByCreatedBy = RoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRolesRelatedByCreatedBy;
+				}
+				$this->collRolesRelatedByCreatedBy = $collRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Role objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Role objects.
+	 * @throws     PropelException
+	 */
+	public function countRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = RoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Role object to this object
+	 * through the Role foreign key attribute.
+	 *
+	 * @param      Role $l Role
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addRoleRelatedByCreatedBy(Role $l)
+	{
+		if ($this->collRolesRelatedByCreatedBy === null) {
+			$this->initRolesRelatedByCreatedBy();
+		}
+		if (!$this->collRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+	}
+
+	/**
+	 * Clears out the collRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRolesRelatedByUpdatedBy()
+	 */
+	public function clearRolesRelatedByUpdatedBy()
+	{
+		$this->collRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collRolesRelatedByUpdatedBy collection to an empty array (like clearcollRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initRolesRelatedByUpdatedBy()
+	{
+		$this->collRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collRolesRelatedByUpdatedBy->setModel('Role');
+	}
+
+	/**
+	 * Gets an array of Role objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Role[] List of Role objects
+	 * @throws     PropelException
+	 */
+	public function getRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initRolesRelatedByUpdatedBy();
+			} else {
+				$collRolesRelatedByUpdatedBy = RoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRolesRelatedByUpdatedBy;
+				}
+				$this->collRolesRelatedByUpdatedBy = $collRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Role objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Role objects.
+	 * @throws     PropelException
+	 */
+	public function countRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = RoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Role object to this object
+	 * through the Role foreign key attribute.
+	 *
+	 * @param      Role $l Role
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addRoleRelatedByUpdatedBy(Role $l)
+	{
+		if ($this->collRolesRelatedByUpdatedBy === null) {
+			$this->initRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+	}
+
+	/**
+	 * Clears out the collUserRolesRelatedByUserId collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRolesRelatedByUserId()
+	 */
+	public function clearUserRolesRelatedByUserId()
+	{
+		$this->collUserRolesRelatedByUserId = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRolesRelatedByUserId collection.
+	 *
+	 * By default this just sets the collUserRolesRelatedByUserId collection to an empty array (like clearcollUserRolesRelatedByUserId());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUserRolesRelatedByUserId()
+	{
+		$this->collUserRolesRelatedByUserId = new PropelObjectCollection();
+		$this->collUserRolesRelatedByUserId->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRolesRelatedByUserId($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUserId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUserId) {
+				// return empty collection
+				$this->initUserRolesRelatedByUserId();
+			} else {
+				$collUserRolesRelatedByUserId = UserRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUserId($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRolesRelatedByUserId;
+				}
+				$this->collUserRolesRelatedByUserId = $collUserRolesRelatedByUserId;
+			}
+		}
+		return $this->collUserRolesRelatedByUserId;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRolesRelatedByUserId(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUserId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUserId) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUserId($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRolesRelatedByUserId);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addUserRoleRelatedByUserId(UserRole $l)
+	{
+		if ($this->collUserRolesRelatedByUserId === null) {
+			$this->initUserRolesRelatedByUserId();
+		}
+		if (!$this->collUserRolesRelatedByUserId->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRolesRelatedByUserId[]= $l;
+			$l->setUserRelatedByUserId($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserRolesRelatedByUserId from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesRelatedByUserIdJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getUserRolesRelatedByUserId($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRolesRelatedByCreatedBy()
+	 */
+	public function clearUserRolesRelatedByCreatedBy()
+	{
+		$this->collUserRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collUserRolesRelatedByCreatedBy collection to an empty array (like clearcollUserRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUserRolesRelatedByCreatedBy()
+	{
+		$this->collUserRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collUserRolesRelatedByCreatedBy->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initUserRolesRelatedByCreatedBy();
+			} else {
+				$collUserRolesRelatedByCreatedBy = UserRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRolesRelatedByCreatedBy;
+				}
+				$this->collUserRolesRelatedByCreatedBy = $collUserRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collUserRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addUserRoleRelatedByCreatedBy(UserRole $l)
+	{
+		if ($this->collUserRolesRelatedByCreatedBy === null) {
+			$this->initUserRolesRelatedByCreatedBy();
+		}
+		if (!$this->collUserRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getUserRolesRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRolesRelatedByUpdatedBy()
+	 */
+	public function clearUserRolesRelatedByUpdatedBy()
+	{
+		$this->collUserRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collUserRolesRelatedByUpdatedBy collection to an empty array (like clearcollUserRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUserRolesRelatedByUpdatedBy()
+	{
+		$this->collUserRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collUserRolesRelatedByUpdatedBy->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initUserRolesRelatedByUpdatedBy();
+			} else {
+				$collUserRolesRelatedByUpdatedBy = UserRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRolesRelatedByUpdatedBy;
+				}
+				$this->collUserRolesRelatedByUpdatedBy = $collUserRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collUserRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addUserRoleRelatedByUpdatedBy(UserRole $l)
+	{
+		if ($this->collUserRolesRelatedByUpdatedBy === null) {
+			$this->initUserRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collUserRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getUserRolesRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
 	 * Clears out the collRightsRelatedByCreatedBy collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -5779,10 +6920,10 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
-	public function getRightsRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getRightsRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
+		$query->joinWith('Role', $join_behavior);
 
 		return $this->getRightsRelatedByCreatedBy($query, $con);
 	}
@@ -5938,10 +7079,10 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array Right[] List of Right objects
 	 */
-	public function getRightsRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getRightsRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
+		$query->joinWith('Role', $join_behavior);
 
 		return $this->getRightsRelatedByUpdatedBy($query, $con);
 	}
@@ -8480,16 +9621,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collGroupsRelatedByCreatedBy) {
-				foreach ((array) $this->collGroupsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collGroupsRelatedByUpdatedBy) {
-				foreach ((array) $this->collGroupsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collUserGroupsRelatedByUserId) {
 				foreach ((array) $this->collUserGroupsRelatedByUserId as $o) {
 					$o->clearAllReferences($deep);
@@ -8502,6 +9633,51 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			}
 			if ($this->collUserGroupsRelatedByUpdatedBy) {
 				foreach ((array) $this->collUserGroupsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupsRelatedByCreatedBy) {
+				foreach ((array) $this->collGroupsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupsRelatedByUpdatedBy) {
+				foreach ((array) $this->collGroupsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupRolesRelatedByCreatedBy) {
+				foreach ((array) $this->collGroupRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupRolesRelatedByUpdatedBy) {
+				foreach ((array) $this->collGroupRolesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRolesRelatedByCreatedBy) {
+				foreach ((array) $this->collRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRolesRelatedByUpdatedBy) {
+				foreach ((array) $this->collRolesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRolesRelatedByUserId) {
+				foreach ((array) $this->collUserRolesRelatedByUserId as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRolesRelatedByCreatedBy) {
+				foreach ((array) $this->collUserRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRolesRelatedByUpdatedBy) {
+				foreach ((array) $this->collUserRolesRelatedByUpdatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -8623,11 +9799,18 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->collLanguagesRelatedByUpdatedBy = null;
 		$this->collStringsRelatedByCreatedBy = null;
 		$this->collStringsRelatedByUpdatedBy = null;
-		$this->collGroupsRelatedByCreatedBy = null;
-		$this->collGroupsRelatedByUpdatedBy = null;
 		$this->collUserGroupsRelatedByUserId = null;
 		$this->collUserGroupsRelatedByCreatedBy = null;
 		$this->collUserGroupsRelatedByUpdatedBy = null;
+		$this->collGroupsRelatedByCreatedBy = null;
+		$this->collGroupsRelatedByUpdatedBy = null;
+		$this->collGroupRolesRelatedByCreatedBy = null;
+		$this->collGroupRolesRelatedByUpdatedBy = null;
+		$this->collRolesRelatedByCreatedBy = null;
+		$this->collRolesRelatedByUpdatedBy = null;
+		$this->collUserRolesRelatedByUserId = null;
+		$this->collUserRolesRelatedByCreatedBy = null;
+		$this->collUserRolesRelatedByUpdatedBy = null;
 		$this->collRightsRelatedByCreatedBy = null;
 		$this->collRightsRelatedByUpdatedBy = null;
 		$this->collDocumentsRelatedByOwnerId = null;

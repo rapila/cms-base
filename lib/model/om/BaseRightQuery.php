@@ -7,7 +7,7 @@
  * 
  *
  * @method     RightQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     RightQuery orderByGroupId($order = Criteria::ASC) Order by the group_id column
+ * @method     RightQuery orderByRoleKey($order = Criteria::ASC) Order by the role_key column
  * @method     RightQuery orderByPageId($order = Criteria::ASC) Order by the page_id column
  * @method     RightQuery orderByIsInherited($order = Criteria::ASC) Order by the is_inherited column
  * @method     RightQuery orderByMayEditPageDetails($order = Criteria::ASC) Order by the may_edit_page_details column
@@ -21,7 +21,7 @@
  * @method     RightQuery orderByUpdatedBy($order = Criteria::ASC) Order by the updated_by column
  *
  * @method     RightQuery groupById() Group by the id column
- * @method     RightQuery groupByGroupId() Group by the group_id column
+ * @method     RightQuery groupByRoleKey() Group by the role_key column
  * @method     RightQuery groupByPageId() Group by the page_id column
  * @method     RightQuery groupByIsInherited() Group by the is_inherited column
  * @method     RightQuery groupByMayEditPageDetails() Group by the may_edit_page_details column
@@ -38,9 +38,9 @@
  * @method     RightQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     RightQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     RightQuery leftJoinGroup($relationAlias = '') Adds a LEFT JOIN clause to the query using the Group relation
- * @method     RightQuery rightJoinGroup($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Group relation
- * @method     RightQuery innerJoinGroup($relationAlias = '') Adds a INNER JOIN clause to the query using the Group relation
+ * @method     RightQuery leftJoinRole($relationAlias = '') Adds a LEFT JOIN clause to the query using the Role relation
+ * @method     RightQuery rightJoinRole($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Role relation
+ * @method     RightQuery innerJoinRole($relationAlias = '') Adds a INNER JOIN clause to the query using the Role relation
  *
  * @method     RightQuery leftJoinPage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Page relation
  * @method     RightQuery rightJoinPage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Page relation
@@ -56,7 +56,7 @@
  *
  * @method     Right findOne(PropelPDO $con = null) Return the first Right matching the query
  * @method     Right findOneById(int $id) Return the first Right filtered by the id column
- * @method     Right findOneByGroupId(int $group_id) Return the first Right filtered by the group_id column
+ * @method     Right findOneByRoleKey(string $role_key) Return the first Right filtered by the role_key column
  * @method     Right findOneByPageId(int $page_id) Return the first Right filtered by the page_id column
  * @method     Right findOneByIsInherited(boolean $is_inherited) Return the first Right filtered by the is_inherited column
  * @method     Right findOneByMayEditPageDetails(boolean $may_edit_page_details) Return the first Right filtered by the may_edit_page_details column
@@ -70,7 +70,7 @@
  * @method     Right findOneByUpdatedBy(int $updated_by) Return the first Right filtered by the updated_by column
  *
  * @method     array findById(int $id) Return Right objects filtered by the id column
- * @method     array findByGroupId(int $group_id) Return Right objects filtered by the group_id column
+ * @method     array findByRoleKey(string $role_key) Return Right objects filtered by the role_key column
  * @method     array findByPageId(int $page_id) Return Right objects filtered by the page_id column
  * @method     array findByIsInherited(boolean $is_inherited) Return Right objects filtered by the is_inherited column
  * @method     array findByMayEditPageDetails(boolean $may_edit_page_details) Return Right objects filtered by the may_edit_page_details column
@@ -209,34 +209,27 @@ abstract class BaseRightQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the group_id column
+	 * Filter the query on the role_key column
 	 * 
-	 * @param     int|array $groupId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $roleKey The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    RightQuery The current query, for fluid interface
 	 */
-	public function filterByGroupId($groupId = null, $comparison = null)
+	public function filterByRoleKey($roleKey = null, $comparison = null)
 	{
-		if (is_array($groupId)) {
-			$useMinMax = false;
-			if (isset($groupId['min'])) {
-				$this->addUsingAlias(RightPeer::GROUP_ID, $groupId['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
-			}
-			if (isset($groupId['max'])) {
-				$this->addUsingAlias(RightPeer::GROUP_ID, $groupId['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
-			}
-			if ($useMinMax) {
-				return $this;
-			}
+		if (is_array($roleKey)) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
+		} elseif (preg_match('/[\%\*]/', $roleKey)) {
+			$roleKey = str_replace('*', '%', $roleKey);
+			if (null === $comparison) {
+				$comparison = Criteria::LIKE;
+			}
 		}
-		return $this->addUsingAlias(RightPeer::GROUP_ID, $groupId, $comparison);
+		return $this->addUsingAlias(RightPeer::ROLE_KEY, $roleKey, $comparison);
 	}
 
 	/**
@@ -497,31 +490,31 @@ abstract class BaseRightQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related Group object
+	 * Filter the query by a related Role object
 	 *
-	 * @param     Group $group  the related object to use as filter
+	 * @param     Role $role  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    RightQuery The current query, for fluid interface
 	 */
-	public function filterByGroup($group, $comparison = null)
+	public function filterByRole($role, $comparison = null)
 	{
 		return $this
-			->addUsingAlias(RightPeer::GROUP_ID, $group->getId(), $comparison);
+			->addUsingAlias(RightPeer::ROLE_KEY, $role->getRoleKey(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the Group relation
+	 * Adds a JOIN clause to the query using the Role relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    RightQuery The current query, for fluid interface
 	 */
-	public function joinGroup($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinRole($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('Group');
+		$relationMap = $tableMap->getRelation('Role');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -536,14 +529,14 @@ abstract class BaseRightQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'Group');
+			$this->addJoinObject($join, 'Role');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the Group relation Group object
+	 * Use the Role relation Role object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -551,13 +544,13 @@ abstract class BaseRightQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    GroupQuery A secondary query class using the current class as primary query
+	 * @return    RoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useRoleQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
-			->joinGroup($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'Group', 'GroupQuery');
+			->joinRole($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Role', 'RoleQuery');
 	}
 
 	/**

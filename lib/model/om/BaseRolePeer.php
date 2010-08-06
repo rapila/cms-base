@@ -1,28 +1,28 @@
 <?php
 
 /**
- * Base static class for performing query and update operations on the 'groups' table.
+ * Base static class for performing query and update operations on the 'roles' table.
  *
  * 
  *
  * @package    propel.generator.model.om
  */
-abstract class BaseGroupPeer {
+abstract class BaseRolePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'mini_cms';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'groups';
+	const TABLE_NAME = 'roles';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'Group';
+	const OM_CLASS = 'Role';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'model.Group';
+	const CLASS_DEFAULT = 'model.Role';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'GroupTableMap';
+	const TM_CLASS = 'RoleTableMap';
 	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
@@ -30,29 +30,29 @@ abstract class BaseGroupPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the ID field */
-	const ID = 'groups.ID';
+	/** the column name for the ROLE_KEY field */
+	const ROLE_KEY = 'roles.ROLE_KEY';
 
-	/** the column name for the NAME field */
-	const NAME = 'groups.NAME';
+	/** the column name for the DESCRIPTION field */
+	const DESCRIPTION = 'roles.DESCRIPTION';
 
 	/** the column name for the CREATED_AT field */
-	const CREATED_AT = 'groups.CREATED_AT';
+	const CREATED_AT = 'roles.CREATED_AT';
 
 	/** the column name for the UPDATED_AT field */
-	const UPDATED_AT = 'groups.UPDATED_AT';
+	const UPDATED_AT = 'roles.UPDATED_AT';
 
 	/** the column name for the CREATED_BY field */
-	const CREATED_BY = 'groups.CREATED_BY';
+	const CREATED_BY = 'roles.CREATED_BY';
 
 	/** the column name for the UPDATED_BY field */
-	const UPDATED_BY = 'groups.UPDATED_BY';
+	const UPDATED_BY = 'roles.UPDATED_BY';
 
 	/**
-	 * An identiy map to hold any loaded instances of Group objects.
+	 * An identiy map to hold any loaded instances of Role objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array Group[]
+	 * @var        array Role[]
 	 */
 	public static $instances = array();
 
@@ -64,11 +64,11 @@ abstract class BaseGroupPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_PHPNAME => array ('RoleKey', 'Description', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('roleKey', 'description', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ROLE_KEY, self::DESCRIPTION, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ROLE_KEY', 'DESCRIPTION', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('role_key', 'description', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
@@ -79,11 +79,11 @@ abstract class BaseGroupPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::CREATED_AT => 2, self::UPDATED_AT => 3, self::CREATED_BY => 4, self::UPDATED_BY => 5, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'CREATED_AT' => 2, 'UPDATED_AT' => 3, 'CREATED_BY' => 4, 'UPDATED_BY' => 5, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'created_at' => 2, 'updated_at' => 3, 'created_by' => 4, 'updated_by' => 5, ),
+		BasePeer::TYPE_PHPNAME => array ('RoleKey' => 0, 'Description' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('roleKey' => 0, 'description' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
+		BasePeer::TYPE_COLNAME => array (self::ROLE_KEY => 0, self::DESCRIPTION => 1, self::CREATED_AT => 2, self::UPDATED_AT => 3, self::CREATED_BY => 4, self::UPDATED_BY => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ROLE_KEY' => 0, 'DESCRIPTION' => 1, 'CREATED_AT' => 2, 'UPDATED_AT' => 3, 'CREATED_BY' => 4, 'UPDATED_BY' => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('role_key' => 0, 'description' => 1, 'created_at' => 2, 'updated_at' => 3, 'created_by' => 4, 'updated_by' => 5, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
@@ -133,12 +133,12 @@ abstract class BaseGroupPeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. GroupPeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. RolePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(GroupPeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(RolePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -156,15 +156,15 @@ abstract class BaseGroupPeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(GroupPeer::ID);
-			$criteria->addSelectColumn(GroupPeer::NAME);
-			$criteria->addSelectColumn(GroupPeer::CREATED_AT);
-			$criteria->addSelectColumn(GroupPeer::UPDATED_AT);
-			$criteria->addSelectColumn(GroupPeer::CREATED_BY);
-			$criteria->addSelectColumn(GroupPeer::UPDATED_BY);
+			$criteria->addSelectColumn(RolePeer::ROLE_KEY);
+			$criteria->addSelectColumn(RolePeer::DESCRIPTION);
+			$criteria->addSelectColumn(RolePeer::CREATED_AT);
+			$criteria->addSelectColumn(RolePeer::UPDATED_AT);
+			$criteria->addSelectColumn(RolePeer::CREATED_BY);
+			$criteria->addSelectColumn(RolePeer::UPDATED_BY);
 		} else {
-			$criteria->addSelectColumn($alias . '.ID');
-			$criteria->addSelectColumn($alias . '.NAME');
+			$criteria->addSelectColumn($alias . '.ROLE_KEY');
+			$criteria->addSelectColumn($alias . '.DESCRIPTION');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 			$criteria->addSelectColumn($alias . '.CREATED_BY');
@@ -188,21 +188,21 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -220,7 +220,7 @@ abstract class BaseGroupPeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     Group
+	 * @return     Role
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -228,7 +228,7 @@ abstract class BaseGroupPeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = GroupPeer::doSelect($critcopy, $con);
+		$objects = RolePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -245,7 +245,7 @@ abstract class BaseGroupPeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return GroupPeer::populateObjects(GroupPeer::doSelectStmt($criteria, $con));
+		return RolePeer::populateObjects(RolePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -263,12 +263,12 @@ abstract class BaseGroupPeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -286,14 +286,14 @@ abstract class BaseGroupPeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      Group $value A Group object.
+	 * @param      Role $value A Role object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Group $obj, $key = null)
+	public static function addInstanceToPool(Role $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getId();
+				$key = (string) $obj->getRoleKey();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -307,18 +307,18 @@ abstract class BaseGroupPeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A Group object or a primary key value.
+	 * @param      mixed $value A Role object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof Group) {
-				$key = (string) $value->getId();
+			if (is_object($value) && $value instanceof Role) {
+				$key = (string) $value->getRoleKey();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Group object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Role object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -333,7 +333,7 @@ abstract class BaseGroupPeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     Group Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     Role Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -357,16 +357,19 @@ abstract class BaseGroupPeer {
 	}
 	
 	/**
-	 * Method to invalidate the instance pool of all tables related to groups
+	 * Method to invalidate the instance pool of all tables related to roles
 	 * by a foreign key with ON DELETE CASCADE
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		UserGroupPeer::clearInstancePool();
-
 		// invalidate objects in GroupRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		GroupRolePeer::clearInstancePool();
+
+		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		UserRolePeer::clearInstancePool();
+
+		// invalidate objects in RightPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		RightPeer::clearInstancePool();
 
 	}
 
@@ -400,7 +403,7 @@ abstract class BaseGroupPeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return (int) $row[$startcol];
+		return (string) $row[$startcol];
 	}
 	
 	/**
@@ -415,11 +418,11 @@ abstract class BaseGroupPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = GroupPeer::getOMClass(false);
+		$cls = RolePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = GroupPeer::getInstanceFromPool($key))) {
+			$key = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = RolePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -428,7 +431,7 @@ abstract class BaseGroupPeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				GroupPeer::addInstanceToPool($obj, $key);
+				RolePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -441,21 +444,21 @@ abstract class BaseGroupPeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (Group object, last column rank)
+	 * @return     array (Role object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = GroupPeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = GroupPeer::getInstanceFromPool($key))) {
+		$key = RolePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = RolePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + GroupPeer::NUM_COLUMNS;
+			$col = $startcol + RolePeer::NUM_COLUMNS;
 		} else {
-			$cls = GroupPeer::OM_CLASS;
+			$cls = RolePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			GroupPeer::addInstanceToPool($obj, $key);
+			RolePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
@@ -477,14 +480,14 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -493,10 +496,10 @@ abstract class BaseGroupPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -527,14 +530,14 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -543,10 +546,10 @@ abstract class BaseGroupPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(GroupPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -561,11 +564,11 @@ abstract class BaseGroupPeer {
 
 
 	/**
-	 * Selects a collection of Group objects pre-filled with their User objects.
+	 * Selects a collection of Role objects pre-filled with their User objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Group objects.
+	 * @return     array Array of Role objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -578,28 +581,28 @@ abstract class BaseGroupPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		GroupPeer::addSelectColumns($criteria);
-		$startcol = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		RolePeer::addSelectColumns($criteria);
+		$startcol = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
 		UserPeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = GroupPeer::getInstanceFromPool($key1))) {
+			$key1 = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = RolePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = GroupPeer::getOMClass(false);
+				$cls = RolePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				GroupPeer::addInstanceToPool($obj1, $key1);
+				RolePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
 			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -614,8 +617,8 @@ abstract class BaseGroupPeer {
 					UserPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (Group) to $obj2 (User)
-				$obj2->addGroupRelatedByCreatedBy($obj1);
+				// Add the $obj1 (Role) to $obj2 (User)
+				$obj2->addRoleRelatedByCreatedBy($obj1);
 
 			} // if joined row was not null
 
@@ -627,11 +630,11 @@ abstract class BaseGroupPeer {
 
 
 	/**
-	 * Selects a collection of Group objects pre-filled with their User objects.
+	 * Selects a collection of Role objects pre-filled with their User objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Group objects.
+	 * @return     array Array of Role objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -644,28 +647,28 @@ abstract class BaseGroupPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		GroupPeer::addSelectColumns($criteria);
-		$startcol = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		RolePeer::addSelectColumns($criteria);
+		$startcol = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
 		UserPeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(GroupPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = GroupPeer::getInstanceFromPool($key1))) {
+			$key1 = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = RolePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = GroupPeer::getOMClass(false);
+				$cls = RolePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				GroupPeer::addInstanceToPool($obj1, $key1);
+				RolePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
 			$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -680,8 +683,8 @@ abstract class BaseGroupPeer {
 					UserPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (Group) to $obj2 (User)
-				$obj2->addGroupRelatedByUpdatedBy($obj1);
+				// Add the $obj1 (Role) to $obj2 (User)
+				$obj2->addRoleRelatedByUpdatedBy($obj1);
 
 			} // if joined row was not null
 
@@ -709,14 +712,14 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -725,12 +728,12 @@ abstract class BaseGroupPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
-		$criteria->addJoin(GroupPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -744,12 +747,12 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Selects a collection of Group objects pre-filled with all related objects.
+	 * Selects a collection of Role objects pre-filled with all related objects.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Group objects.
+	 * @return     array Array of Role objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -762,8 +765,8 @@ abstract class BaseGroupPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		RolePeer::addSelectColumns($criteria);
+		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		UserPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
@@ -771,25 +774,25 @@ abstract class BaseGroupPeer {
 		UserPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
-		$criteria->addJoin(GroupPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+		$criteria->addJoin(RolePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = GroupPeer::getInstanceFromPool($key1))) {
+			$key1 = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = RolePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = GroupPeer::getOMClass(false);
+				$cls = RolePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				GroupPeer::addInstanceToPool($obj1, $key1);
+				RolePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 			// Add objects for joined User rows
@@ -806,8 +809,8 @@ abstract class BaseGroupPeer {
 					UserPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 loaded
 
-				// Add the $obj1 (Group) to the collection in $obj2 (User)
-				$obj2->addGroupRelatedByCreatedBy($obj1);
+				// Add the $obj1 (Role) to the collection in $obj2 (User)
+				$obj2->addRoleRelatedByCreatedBy($obj1);
 			} // if joined row not null
 
 			// Add objects for joined User rows
@@ -824,8 +827,8 @@ abstract class BaseGroupPeer {
 					UserPeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (Group) to the collection in $obj3 (User)
-				$obj3->addGroupRelatedByUpdatedBy($obj1);
+				// Add the $obj1 (Role) to the collection in $obj3 (User)
+				$obj3->addRoleRelatedByUpdatedBy($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
@@ -852,14 +855,14 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -868,7 +871,7 @@ abstract class BaseGroupPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -900,14 +903,14 @@ abstract class BaseGroupPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupPeer::addSelectColumns($criteria);
+			RolePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -916,7 +919,7 @@ abstract class BaseGroupPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -932,12 +935,12 @@ abstract class BaseGroupPeer {
 
 
 	/**
-	 * Selects a collection of Group objects pre-filled with all related objects except UserRelatedByCreatedBy.
+	 * Selects a collection of Role objects pre-filled with all related objects except UserRelatedByCreatedBy.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Group objects.
+	 * @return     array Array of Role objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -952,25 +955,25 @@ abstract class BaseGroupPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		RolePeer::addSelectColumns($criteria);
+		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = GroupPeer::getInstanceFromPool($key1))) {
+			$key1 = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = RolePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = GroupPeer::getOMClass(false);
+				$cls = RolePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				GroupPeer::addInstanceToPool($obj1, $key1);
+				RolePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 			$results[] = $obj1;
@@ -981,12 +984,12 @@ abstract class BaseGroupPeer {
 
 
 	/**
-	 * Selects a collection of Group objects pre-filled with all related objects except UserRelatedByUpdatedBy.
+	 * Selects a collection of Role objects pre-filled with all related objects except UserRelatedByUpdatedBy.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Group objects.
+	 * @return     array Array of Role objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -1001,25 +1004,25 @@ abstract class BaseGroupPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		RolePeer::addSelectColumns($criteria);
+		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = GroupPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = GroupPeer::getInstanceFromPool($key1))) {
+			$key1 = RolePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = RolePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = GroupPeer::getOMClass(false);
+				$cls = RolePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				GroupPeer::addInstanceToPool($obj1, $key1);
+				RolePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 			$results[] = $obj1;
@@ -1045,10 +1048,10 @@ abstract class BaseGroupPeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseGroupPeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseGroupPeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseRolePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseRolePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new GroupTableMap());
+	    $dbMap->addTableObject(new RoleTableMap());
 	  }
 	}
 
@@ -1065,13 +1068,13 @@ abstract class BaseGroupPeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? GroupPeer::CLASS_DEFAULT : GroupPeer::OM_CLASS;
+		return $withPrefix ? RolePeer::CLASS_DEFAULT : RolePeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Group or Criteria object.
+	 * Method perform an INSERT on the database, given a Role or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Group object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or Role object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1080,17 +1083,13 @@ abstract class BaseGroupPeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from Group object
-		}
-
-		if ($criteria->containsKey(GroupPeer::ID) && $criteria->keyContainsValue(GroupPeer::ID) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.GroupPeer::ID.')');
+			$criteria = $values->buildCriteria(); // build Criteria from Role object
 		}
 
 
@@ -1112,9 +1111,9 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Group or Criteria object.
+	 * Method perform an UPDATE on the database, given a Role or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Group object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or Role object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1123,7 +1122,7 @@ abstract class BaseGroupPeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -1131,15 +1130,15 @@ abstract class BaseGroupPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(GroupPeer::ID);
-			$value = $criteria->remove(GroupPeer::ID);
+			$comparison = $criteria->getComparison(RolePeer::ROLE_KEY);
+			$value = $criteria->remove(RolePeer::ROLE_KEY);
 			if ($value) {
-				$selectCriteria->add(GroupPeer::ID, $value, $comparison);
+				$selectCriteria->add(RolePeer::ROLE_KEY, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(RolePeer::TABLE_NAME);
 			}
 
-		} else { // $values is Group object
+		} else { // $values is Role object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -1151,27 +1150,27 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the groups table.
+	 * Method to DELETE all rows from the roles table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupPeer::doOnDeleteCascade(new Criteria(GroupPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(GroupPeer::TABLE_NAME, $con, GroupPeer::DATABASE_NAME);
+			$affectedRows += RolePeer::doOnDeleteCascade(new Criteria(RolePeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(RolePeer::TABLE_NAME, $con, RolePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			GroupPeer::clearInstancePool();
-			GroupPeer::clearRelatedInstancePool();
+			RolePeer::clearInstancePool();
+			RolePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1181,9 +1180,9 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Group or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a Role or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or Group object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or Role object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -1194,18 +1193,18 @@ abstract class BaseGroupPeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Group) { // it's a model object
+		} elseif ($values instanceof Role) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(GroupPeer::ID, (array) $values, Criteria::IN);
+			$criteria->add(RolePeer::ROLE_KEY, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -1217,23 +1216,23 @@ abstract class BaseGroupPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupPeer::doOnDeleteCascade($criteria, $con);
+			$affectedRows += RolePeer::doOnDeleteCascade($criteria, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
 			if ($values instanceof Criteria) {
-				GroupPeer::clearInstancePool();
-			} elseif ($values instanceof Group) { // it's a model object
-				GroupPeer::removeInstanceFromPool($values);
+				RolePeer::clearInstancePool();
+			} elseif ($values instanceof Role) { // it's a model object
+				RolePeer::removeInstanceFromPool($values);
 			} else { // it's a primary key, or an array of pks
 				foreach ((array) $values as $singleval) {
-					GroupPeer::removeInstanceFromPool($singleval);
+					RolePeer::removeInstanceFromPool($singleval);
 				}
 			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			GroupPeer::clearRelatedInstancePool();
+			RolePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1261,44 +1260,50 @@ abstract class BaseGroupPeer {
 		$affectedRows = 0;
 
 		// first find the objects that are implicated by the $criteria
-		$objects = GroupPeer::doSelect($criteria, $con);
+		$objects = RolePeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-
-			// delete related UserGroup objects
-			$criteria = new Criteria(UserGroupPeer::DATABASE_NAME);
-			
-			$criteria->add(UserGroupPeer::GROUP_ID, $obj->getId());
-			$affectedRows += UserGroupPeer::doDelete($criteria, $con);
 
 			// delete related GroupRole objects
 			$criteria = new Criteria(GroupRolePeer::DATABASE_NAME);
 			
-			$criteria->add(GroupRolePeer::GROUP_ID, $obj->getId());
+			$criteria->add(GroupRolePeer::ROLE_KEY, $obj->getRoleKey());
 			$affectedRows += GroupRolePeer::doDelete($criteria, $con);
+
+			// delete related UserRole objects
+			$criteria = new Criteria(UserRolePeer::DATABASE_NAME);
+			
+			$criteria->add(UserRolePeer::ROLE_KEY, $obj->getRoleKey());
+			$affectedRows += UserRolePeer::doDelete($criteria, $con);
+
+			// delete related Right objects
+			$criteria = new Criteria(RightPeer::DATABASE_NAME);
+			
+			$criteria->add(RightPeer::ROLE_KEY, $obj->getRoleKey());
+			$affectedRows += RightPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
 
 	/**
-	 * Validates all modified columns of given Group object.
+	 * Validates all modified columns of given Role object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      Group $obj The object to validate.
+	 * @param      Role $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Group $obj, $cols = null)
+	public static function doValidate(Role $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(GroupPeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(GroupPeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(RolePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(RolePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -1314,31 +1319,31 @@ abstract class BaseGroupPeer {
 
 		}
 
-		return BasePeer::doValidate(GroupPeer::DATABASE_NAME, GroupPeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(RolePeer::DATABASE_NAME, RolePeer::TABLE_NAME, $columns);
 	}
 
 	/**
 	 * Retrieve a single object by pkey.
 	 *
-	 * @param      int $pk the primary key.
+	 * @param      string $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     Group
+	 * @return     Role
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = GroupPeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = RolePeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(GroupPeer::DATABASE_NAME);
-		$criteria->add(GroupPeer::ID, $pk);
+		$criteria = new Criteria(RolePeer::DATABASE_NAME);
+		$criteria->add(RolePeer::ROLE_KEY, $pk);
 
-		$v = GroupPeer::doSelect($criteria, $con);
+		$v = RolePeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -1354,23 +1359,23 @@ abstract class BaseGroupPeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(GroupPeer::DATABASE_NAME);
-			$criteria->add(GroupPeer::ID, $pks, Criteria::IN);
-			$objs = GroupPeer::doSelect($criteria, $con);
+			$criteria = new Criteria(RolePeer::DATABASE_NAME);
+			$criteria->add(RolePeer::ROLE_KEY, $pks, Criteria::IN);
+			$objs = RolePeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseGroupPeer
+} // BaseRolePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseGroupPeer::buildTableMap();
+BaseRolePeer::buildTableMap();
 

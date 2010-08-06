@@ -1,33 +1,27 @@
 <?php
 
 /**
- * Base class that represents a row from the 'rights' table.
+ * Base class that represents a row from the 'roles' table.
  *
  * 
  *
  * @package    propel.generator.model.om
  */
-abstract class BaseRight extends BaseObject  implements Persistent
+abstract class BaseRole extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'RightPeer';
+  const PEER = 'RolePeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        RightPeer
+	 * @var        RolePeer
 	 */
 	protected static $peer;
-
-	/**
-	 * The value for the id field.
-	 * @var        int
-	 */
-	protected $id;
 
 	/**
 	 * The value for the role_key field.
@@ -36,52 +30,10 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	protected $role_key;
 
 	/**
-	 * The value for the page_id field.
-	 * @var        int
+	 * The value for the description field.
+	 * @var        string
 	 */
-	protected $page_id;
-
-	/**
-	 * The value for the is_inherited field.
-	 * Note: this column has a database default value of: true
-	 * @var        boolean
-	 */
-	protected $is_inherited;
-
-	/**
-	 * The value for the may_edit_page_details field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $may_edit_page_details;
-
-	/**
-	 * The value for the may_edit_page_contents field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $may_edit_page_contents;
-
-	/**
-	 * The value for the may_delete field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $may_delete;
-
-	/**
-	 * The value for the may_create_children field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $may_create_children;
-
-	/**
-	 * The value for the may_view_page field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $may_view_page;
+	protected $description;
 
 	/**
 	 * The value for the created_at field.
@@ -108,16 +60,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	protected $updated_by;
 
 	/**
-	 * @var        Role
-	 */
-	protected $aRole;
-
-	/**
-	 * @var        Page
-	 */
-	protected $aPage;
-
-	/**
 	 * @var        User
 	 */
 	protected $aUserRelatedByCreatedBy;
@@ -126,6 +68,21 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * @var        User
 	 */
 	protected $aUserRelatedByUpdatedBy;
+
+	/**
+	 * @var        array GroupRole[] Collection to store aggregation of GroupRole objects.
+	 */
+	protected $collGroupRoles;
+
+	/**
+	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
+	 */
+	protected $collUserRoles;
+
+	/**
+	 * @var        array Right[] Collection to store aggregation of Right objects.
+	 */
+	protected $collRights;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -142,42 +99,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-		$this->is_inherited = true;
-		$this->may_edit_page_details = false;
-		$this->may_edit_page_contents = false;
-		$this->may_delete = false;
-		$this->may_create_children = false;
-		$this->may_view_page = false;
-	}
-
-	/**
-	 * Initializes internal state of BaseRight object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Get the [id] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * Get the [role_key] column value.
 	 * 
 	 * @return     string
@@ -188,73 +109,13 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [page_id] column value.
+	 * Get the [description] column value.
 	 * 
-	 * @return     int
+	 * @return     string
 	 */
-	public function getPageId()
+	public function getDescription()
 	{
-		return $this->page_id;
-	}
-
-	/**
-	 * Get the [is_inherited] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getIsInherited()
-	{
-		return $this->is_inherited;
-	}
-
-	/**
-	 * Get the [may_edit_page_details] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getMayEditPageDetails()
-	{
-		return $this->may_edit_page_details;
-	}
-
-	/**
-	 * Get the [may_edit_page_contents] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getMayEditPageContents()
-	{
-		return $this->may_edit_page_contents;
-	}
-
-	/**
-	 * Get the [may_delete] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getMayDelete()
-	{
-		return $this->may_delete;
-	}
-
-	/**
-	 * Get the [may_create_children] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getMayCreateChildren()
-	{
-		return $this->may_create_children;
-	}
-
-	/**
-	 * Get the [may_view_page] column value.
-	 * 
-	 * @return     boolean
-	 */
-	public function getMayViewPage()
-	{
-		return $this->may_view_page;
+		return $this->description;
 	}
 
 	/**
@@ -354,30 +215,10 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Set the value of [id] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->id !== $v) {
-			$this->id = $v;
-			$this->modifiedColumns[] = RightPeer::ID;
-		}
-
-		return $this;
-	} // setId()
-
-	/**
 	 * Set the value of [role_key] column.
 	 * 
 	 * @param      string $v new value
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function setRoleKey($v)
 	{
@@ -387,166 +228,38 @@ abstract class BaseRight extends BaseObject  implements Persistent
 
 		if ($this->role_key !== $v) {
 			$this->role_key = $v;
-			$this->modifiedColumns[] = RightPeer::ROLE_KEY;
-		}
-
-		if ($this->aRole !== null && $this->aRole->getRoleKey() !== $v) {
-			$this->aRole = null;
+			$this->modifiedColumns[] = RolePeer::ROLE_KEY;
 		}
 
 		return $this;
 	} // setRoleKey()
 
 	/**
-	 * Set the value of [page_id] column.
+	 * Set the value of [description] column.
 	 * 
-	 * @param      int $v new value
-	 * @return     Right The current object (for fluent API support)
+	 * @param      string $v new value
+	 * @return     Role The current object (for fluent API support)
 	 */
-	public function setPageId($v)
+	public function setDescription($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
-		if ($this->page_id !== $v) {
-			$this->page_id = $v;
-			$this->modifiedColumns[] = RightPeer::PAGE_ID;
-		}
-
-		if ($this->aPage !== null && $this->aPage->getId() !== $v) {
-			$this->aPage = null;
+		if ($this->description !== $v) {
+			$this->description = $v;
+			$this->modifiedColumns[] = RolePeer::DESCRIPTION;
 		}
 
 		return $this;
-	} // setPageId()
-
-	/**
-	 * Set the value of [is_inherited] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setIsInherited($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->is_inherited !== $v || $this->isNew()) {
-			$this->is_inherited = $v;
-			$this->modifiedColumns[] = RightPeer::IS_INHERITED;
-		}
-
-		return $this;
-	} // setIsInherited()
-
-	/**
-	 * Set the value of [may_edit_page_details] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setMayEditPageDetails($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->may_edit_page_details !== $v || $this->isNew()) {
-			$this->may_edit_page_details = $v;
-			$this->modifiedColumns[] = RightPeer::MAY_EDIT_PAGE_DETAILS;
-		}
-
-		return $this;
-	} // setMayEditPageDetails()
-
-	/**
-	 * Set the value of [may_edit_page_contents] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setMayEditPageContents($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->may_edit_page_contents !== $v || $this->isNew()) {
-			$this->may_edit_page_contents = $v;
-			$this->modifiedColumns[] = RightPeer::MAY_EDIT_PAGE_CONTENTS;
-		}
-
-		return $this;
-	} // setMayEditPageContents()
-
-	/**
-	 * Set the value of [may_delete] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setMayDelete($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->may_delete !== $v || $this->isNew()) {
-			$this->may_delete = $v;
-			$this->modifiedColumns[] = RightPeer::MAY_DELETE;
-		}
-
-		return $this;
-	} // setMayDelete()
-
-	/**
-	 * Set the value of [may_create_children] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setMayCreateChildren($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->may_create_children !== $v || $this->isNew()) {
-			$this->may_create_children = $v;
-			$this->modifiedColumns[] = RightPeer::MAY_CREATE_CHILDREN;
-		}
-
-		return $this;
-	} // setMayCreateChildren()
-
-	/**
-	 * Set the value of [may_view_page] column.
-	 * 
-	 * @param      boolean $v new value
-	 * @return     Right The current object (for fluent API support)
-	 */
-	public function setMayViewPage($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->may_view_page !== $v || $this->isNew()) {
-			$this->may_view_page = $v;
-			$this->modifiedColumns[] = RightPeer::MAY_VIEW_PAGE;
-		}
-
-		return $this;
-	} // setMayViewPage()
+	} // setDescription()
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
@@ -583,7 +296,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 					)
 			{
 				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
-				$this->modifiedColumns[] = RightPeer::CREATED_AT;
+				$this->modifiedColumns[] = RolePeer::CREATED_AT;
 			}
 		} // if either are not null
 
@@ -595,7 +308,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
@@ -632,7 +345,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 					)
 			{
 				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
-				$this->modifiedColumns[] = RightPeer::UPDATED_AT;
+				$this->modifiedColumns[] = RolePeer::UPDATED_AT;
 			}
 		} // if either are not null
 
@@ -643,7 +356,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * Set the value of [created_by] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function setCreatedBy($v)
 	{
@@ -653,7 +366,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 
 		if ($this->created_by !== $v) {
 			$this->created_by = $v;
-			$this->modifiedColumns[] = RightPeer::CREATED_BY;
+			$this->modifiedColumns[] = RolePeer::CREATED_BY;
 		}
 
 		if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
@@ -667,7 +380,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * Set the value of [updated_by] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function setUpdatedBy($v)
 	{
@@ -677,7 +390,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 
 		if ($this->updated_by !== $v) {
 			$this->updated_by = $v;
-			$this->modifiedColumns[] = RightPeer::UPDATED_BY;
+			$this->modifiedColumns[] = RolePeer::UPDATED_BY;
 		}
 
 		if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
@@ -697,30 +410,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->is_inherited !== true) {
-				return false;
-			}
-
-			if ($this->may_edit_page_details !== false) {
-				return false;
-			}
-
-			if ($this->may_edit_page_contents !== false) {
-				return false;
-			}
-
-			if ($this->may_delete !== false) {
-				return false;
-			}
-
-			if ($this->may_create_children !== false) {
-				return false;
-			}
-
-			if ($this->may_view_page !== false) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -743,19 +432,12 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	{
 		try {
 
-			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->role_key = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->page_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->is_inherited = ($row[$startcol + 3] !== null) ? (boolean) $row[$startcol + 3] : null;
-			$this->may_edit_page_details = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
-			$this->may_edit_page_contents = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-			$this->may_delete = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
-			$this->may_create_children = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
-			$this->may_view_page = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->created_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-			$this->updated_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->created_by = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->updated_by = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+			$this->role_key = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+			$this->description = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->created_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->updated_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->created_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+			$this->updated_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -764,10 +446,10 @@ abstract class BaseRight extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 13; // 13 = RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating Right object", $e);
+			throw new PropelException("Error populating Role object", $e);
 		}
 	}
 
@@ -787,12 +469,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aRole !== null && $this->role_key !== $this->aRole->getRoleKey()) {
-			$this->aRole = null;
-		}
-		if ($this->aPage !== null && $this->page_id !== $this->aPage->getId()) {
-			$this->aPage = null;
-		}
 		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
 			$this->aUserRelatedByCreatedBy = null;
 		}
@@ -822,13 +498,13 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(RightPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = RightPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = RolePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -838,10 +514,14 @@ abstract class BaseRight extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aRole = null;
-			$this->aPage = null;
 			$this->aUserRelatedByCreatedBy = null;
 			$this->aUserRelatedByUpdatedBy = null;
+			$this->collGroupRoles = null;
+
+			$this->collUserRoles = null;
+
+			$this->collRights = null;
+
 		} // if (deep)
 	}
 
@@ -861,14 +541,14 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(RightPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				RightQuery::create()
+				RoleQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -903,7 +583,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(RightPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
@@ -913,19 +593,19 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// extended_timestampable behavior
-				if (!$this->isColumnModified(RightPeer::CREATED_AT)) {
+				if (!$this->isColumnModified(RolePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
-				if (!$this->isColumnModified(RightPeer::UPDATED_AT)) {
+				if (!$this->isColumnModified(RolePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
-					if (!$this->isColumnModified(RightPeer::CREATED_BY)) {
+					if (!$this->isColumnModified(RolePeer::CREATED_BY)) {
 						$this->setCreatedBy(Session::getSession()->getUser()->getId());
 					}
-					if (!$this->isColumnModified(RightPeer::UPDATED_BY)) {
+					if (!$this->isColumnModified(RolePeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
 				}
@@ -933,13 +613,13 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// extended_timestampable behavior
-				if ($this->isModified() && !$this->isColumnModified(RightPeer::UPDATED_AT)) {
+				if ($this->isModified() && !$this->isColumnModified(RolePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
-					if ($this->isModified() && !$this->isColumnModified(RightPeer::UPDATED_BY)) {
+					if ($this->isModified() && !$this->isColumnModified(RolePeer::UPDATED_BY)) {
 						$this->setUpdatedBy(Session::getSession()->getUser()->getId());
 					}
 				}
@@ -952,7 +632,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				RightPeer::addInstanceToPool($this);
+				RolePeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -986,20 +666,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aRole !== null) {
-				if ($this->aRole->isModified() || $this->aRole->isNew()) {
-					$affectedRows += $this->aRole->save($con);
-				}
-				$this->setRole($this->aRole);
-			}
-
-			if ($this->aPage !== null) {
-				if ($this->aPage->isModified() || $this->aPage->isNew()) {
-					$affectedRows += $this->aPage->save($con);
-				}
-				$this->setPage($this->aPage);
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
 					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
@@ -1014,27 +680,43 @@ abstract class BaseRight extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = RightPeer::ID;
-			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
 					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(RightPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.RightPeer::ID.')');
-					}
-
 					$pk = BasePeer::doInsert($criteria, $con);
 					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
 					$this->setNew(false);
 				} else {
-					$affectedRows += RightPeer::doUpdate($this, $con);
+					$affectedRows += RolePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			}
+
+			if ($this->collGroupRoles !== null) {
+				foreach ($this->collGroupRoles as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collUserRoles !== null) {
+				foreach ($this->collUserRoles as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collRights !== null) {
+				foreach ($this->collRights as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
 			}
 
 			$this->alreadyInSave = false;
@@ -1108,18 +790,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aRole !== null) {
-				if (!$this->aRole->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aRole->getValidationFailures());
-				}
-			}
-
-			if ($this->aPage !== null) {
-				if (!$this->aPage->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aPage->getValidationFailures());
-				}
-			}
-
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
@@ -1133,10 +803,34 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			}
 
 
-			if (($retval = RightPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = RolePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collGroupRoles !== null) {
+					foreach ($this->collGroupRoles as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collUserRoles !== null) {
+					foreach ($this->collUserRoles as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collRights !== null) {
+					foreach ($this->collRights as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 
 			$this->alreadyInValidation = false;
@@ -1156,7 +850,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = RightPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = RolePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -1172,42 +866,21 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				return $this->getId();
-				break;
-			case 1:
 				return $this->getRoleKey();
 				break;
+			case 1:
+				return $this->getDescription();
+				break;
 			case 2:
-				return $this->getPageId();
-				break;
-			case 3:
-				return $this->getIsInherited();
-				break;
-			case 4:
-				return $this->getMayEditPageDetails();
-				break;
-			case 5:
-				return $this->getMayEditPageContents();
-				break;
-			case 6:
-				return $this->getMayDelete();
-				break;
-			case 7:
-				return $this->getMayCreateChildren();
-				break;
-			case 8:
-				return $this->getMayViewPage();
-				break;
-			case 9:
 				return $this->getCreatedAt();
 				break;
-			case 10:
+			case 3:
 				return $this->getUpdatedAt();
 				break;
-			case 11:
+			case 4:
 				return $this->getCreatedBy();
 				break;
-			case 12:
+			case 5:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1232,29 +905,16 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
-		$keys = RightPeer::getFieldNames($keyType);
+		$keys = RolePeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getId(),
-			$keys[1] => $this->getRoleKey(),
-			$keys[2] => $this->getPageId(),
-			$keys[3] => $this->getIsInherited(),
-			$keys[4] => $this->getMayEditPageDetails(),
-			$keys[5] => $this->getMayEditPageContents(),
-			$keys[6] => $this->getMayDelete(),
-			$keys[7] => $this->getMayCreateChildren(),
-			$keys[8] => $this->getMayViewPage(),
-			$keys[9] => $this->getCreatedAt(),
-			$keys[10] => $this->getUpdatedAt(),
-			$keys[11] => $this->getCreatedBy(),
-			$keys[12] => $this->getUpdatedBy(),
+			$keys[0] => $this->getRoleKey(),
+			$keys[1] => $this->getDescription(),
+			$keys[2] => $this->getCreatedAt(),
+			$keys[3] => $this->getUpdatedAt(),
+			$keys[4] => $this->getCreatedBy(),
+			$keys[5] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
-			if (null !== $this->aRole) {
-				$result['Role'] = $this->aRole->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-			if (null !== $this->aPage) {
-				$result['Page'] = $this->aPage->toArray($keyType, $includeLazyLoadColumns, true);
-			}
 			if (null !== $this->aUserRelatedByCreatedBy) {
 				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
 			}
@@ -1277,7 +937,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = RightPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = RolePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -1293,42 +953,21 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				$this->setId($value);
-				break;
-			case 1:
 				$this->setRoleKey($value);
 				break;
+			case 1:
+				$this->setDescription($value);
+				break;
 			case 2:
-				$this->setPageId($value);
-				break;
-			case 3:
-				$this->setIsInherited($value);
-				break;
-			case 4:
-				$this->setMayEditPageDetails($value);
-				break;
-			case 5:
-				$this->setMayEditPageContents($value);
-				break;
-			case 6:
-				$this->setMayDelete($value);
-				break;
-			case 7:
-				$this->setMayCreateChildren($value);
-				break;
-			case 8:
-				$this->setMayViewPage($value);
-				break;
-			case 9:
 				$this->setCreatedAt($value);
 				break;
-			case 10:
+			case 3:
 				$this->setUpdatedAt($value);
 				break;
-			case 11:
+			case 4:
 				$this->setCreatedBy($value);
 				break;
-			case 12:
+			case 5:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1353,21 +992,14 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = RightPeer::getFieldNames($keyType);
+		$keys = RolePeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setRoleKey($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setPageId($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setIsInherited($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setMayEditPageDetails($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setMayEditPageContents($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setMayDelete($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setMayCreateChildren($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setMayViewPage($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setCreatedBy($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setUpdatedBy($arr[$keys[12]]);
+		if (array_key_exists($keys[0], $arr)) $this->setRoleKey($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setDescription($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedBy($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedBy($arr[$keys[5]]);
 	}
 
 	/**
@@ -1377,21 +1009,14 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(RightPeer::DATABASE_NAME);
+		$criteria = new Criteria(RolePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(RightPeer::ID)) $criteria->add(RightPeer::ID, $this->id);
-		if ($this->isColumnModified(RightPeer::ROLE_KEY)) $criteria->add(RightPeer::ROLE_KEY, $this->role_key);
-		if ($this->isColumnModified(RightPeer::PAGE_ID)) $criteria->add(RightPeer::PAGE_ID, $this->page_id);
-		if ($this->isColumnModified(RightPeer::IS_INHERITED)) $criteria->add(RightPeer::IS_INHERITED, $this->is_inherited);
-		if ($this->isColumnModified(RightPeer::MAY_EDIT_PAGE_DETAILS)) $criteria->add(RightPeer::MAY_EDIT_PAGE_DETAILS, $this->may_edit_page_details);
-		if ($this->isColumnModified(RightPeer::MAY_EDIT_PAGE_CONTENTS)) $criteria->add(RightPeer::MAY_EDIT_PAGE_CONTENTS, $this->may_edit_page_contents);
-		if ($this->isColumnModified(RightPeer::MAY_DELETE)) $criteria->add(RightPeer::MAY_DELETE, $this->may_delete);
-		if ($this->isColumnModified(RightPeer::MAY_CREATE_CHILDREN)) $criteria->add(RightPeer::MAY_CREATE_CHILDREN, $this->may_create_children);
-		if ($this->isColumnModified(RightPeer::MAY_VIEW_PAGE)) $criteria->add(RightPeer::MAY_VIEW_PAGE, $this->may_view_page);
-		if ($this->isColumnModified(RightPeer::CREATED_AT)) $criteria->add(RightPeer::CREATED_AT, $this->created_at);
-		if ($this->isColumnModified(RightPeer::UPDATED_AT)) $criteria->add(RightPeer::UPDATED_AT, $this->updated_at);
-		if ($this->isColumnModified(RightPeer::CREATED_BY)) $criteria->add(RightPeer::CREATED_BY, $this->created_by);
-		if ($this->isColumnModified(RightPeer::UPDATED_BY)) $criteria->add(RightPeer::UPDATED_BY, $this->updated_by);
+		if ($this->isColumnModified(RolePeer::ROLE_KEY)) $criteria->add(RolePeer::ROLE_KEY, $this->role_key);
+		if ($this->isColumnModified(RolePeer::DESCRIPTION)) $criteria->add(RolePeer::DESCRIPTION, $this->description);
+		if ($this->isColumnModified(RolePeer::CREATED_AT)) $criteria->add(RolePeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(RolePeer::UPDATED_AT)) $criteria->add(RolePeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(RolePeer::CREATED_BY)) $criteria->add(RolePeer::CREATED_BY, $this->created_by);
+		if ($this->isColumnModified(RolePeer::UPDATED_BY)) $criteria->add(RolePeer::UPDATED_BY, $this->updated_by);
 
 		return $criteria;
 	}
@@ -1406,30 +1031,30 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(RightPeer::DATABASE_NAME);
-		$criteria->add(RightPeer::ID, $this->id);
+		$criteria = new Criteria(RolePeer::DATABASE_NAME);
+		$criteria->add(RolePeer::ROLE_KEY, $this->role_key);
 
 		return $criteria;
 	}
 
 	/**
 	 * Returns the primary key for this object (row).
-	 * @return     int
+	 * @return     string
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getId();
+		return $this->getRoleKey();
 	}
 
 	/**
-	 * Generic method to set the primary key (id column).
+	 * Generic method to set the primary key (role_key column).
 	 *
-	 * @param      int $key Primary key.
+	 * @param      string $key Primary key.
 	 * @return     void
 	 */
 	public function setPrimaryKey($key)
 	{
-		$this->setId($key);
+		$this->setRoleKey($key);
 	}
 
 	/**
@@ -1438,7 +1063,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getId();
+		return null === $this->getRoleKey();
 	}
 
 	/**
@@ -1447,27 +1072,46 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of Right (or compatible) type.
+	 * @param      object $copyObj An object of Role (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setRoleKey($this->role_key);
-		$copyObj->setPageId($this->page_id);
-		$copyObj->setIsInherited($this->is_inherited);
-		$copyObj->setMayEditPageDetails($this->may_edit_page_details);
-		$copyObj->setMayEditPageContents($this->may_edit_page_contents);
-		$copyObj->setMayDelete($this->may_delete);
-		$copyObj->setMayCreateChildren($this->may_create_children);
-		$copyObj->setMayViewPage($this->may_view_page);
+		$copyObj->setDescription($this->description);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 		$copyObj->setCreatedBy($this->created_by);
 		$copyObj->setUpdatedBy($this->updated_by);
 
+		if ($deepCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+
+			foreach ($this->getGroupRoles() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addGroupRole($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getUserRoles() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserRole($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getRights() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addRight($relObj->copy($deepCopy));
+				}
+			}
+
+		} // if ($deepCopy)
+
+
 		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 	}
 
 	/**
@@ -1479,7 +1123,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     Right Clone of current object.
+	 * @return     Role Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -1498,119 +1142,21 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     RightPeer
+	 * @return     RolePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new RightPeer();
+			self::$peer = new RolePeer();
 		}
 		return self::$peer;
-	}
-
-	/**
-	 * Declares an association between this object and a Role object.
-	 *
-	 * @param      Role $v
-	 * @return     Right The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setRole(Role $v = null)
-	{
-		if ($v === null) {
-			$this->setRoleKey(NULL);
-		} else {
-			$this->setRoleKey($v->getRoleKey());
-		}
-
-		$this->aRole = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Role object, it will not be re-added.
-		if ($v !== null) {
-			$v->addRight($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated Role object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     Role The associated Role object.
-	 * @throws     PropelException
-	 */
-	public function getRole(PropelPDO $con = null)
-	{
-		if ($this->aRole === null && (($this->role_key !== "" && $this->role_key !== null))) {
-			$this->aRole = RoleQuery::create()->findPk($this->role_key);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aRole->addRights($this);
-			 */
-		}
-		return $this->aRole;
-	}
-
-	/**
-	 * Declares an association between this object and a Page object.
-	 *
-	 * @param      Page $v
-	 * @return     Right The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setPage(Page $v = null)
-	{
-		if ($v === null) {
-			$this->setPageId(NULL);
-		} else {
-			$this->setPageId($v->getId());
-		}
-
-		$this->aPage = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Page object, it will not be re-added.
-		if ($v !== null) {
-			$v->addRight($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated Page object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     Page The associated Page object.
-	 * @throws     PropelException
-	 */
-	public function getPage(PropelPDO $con = null)
-	{
-		if ($this->aPage === null && ($this->page_id !== null)) {
-			$this->aPage = PageQuery::create()->findPk($this->page_id);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aPage->addRights($this);
-			 */
-		}
-		return $this->aPage;
 	}
 
 	/**
 	 * Declares an association between this object and a User object.
 	 *
 	 * @param      User $v
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
 	public function setUserRelatedByCreatedBy(User $v = null)
@@ -1626,7 +1172,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the User object, it will not be re-added.
 		if ($v !== null) {
-			$v->addRightRelatedByCreatedBy($this);
+			$v->addRoleRelatedByCreatedBy($this);
 		}
 
 		return $this;
@@ -1649,7 +1195,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addRightsRelatedByCreatedBy($this);
+			   $this->aUserRelatedByCreatedBy->addRolesRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1659,7 +1205,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 * Declares an association between this object and a User object.
 	 *
 	 * @param      User $v
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
 	public function setUserRelatedByUpdatedBy(User $v = null)
@@ -1675,7 +1221,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the User object, it will not be re-added.
 		if ($v !== null) {
-			$v->addRightRelatedByUpdatedBy($this);
+			$v->addRoleRelatedByUpdatedBy($this);
 		}
 
 		return $this;
@@ -1698,10 +1244,562 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addRightsRelatedByUpdatedBy($this);
+			   $this->aUserRelatedByUpdatedBy->addRolesRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Clears out the collGroupRoles collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupRoles()
+	 */
+	public function clearGroupRoles()
+	{
+		$this->collGroupRoles = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupRoles collection.
+	 *
+	 * By default this just sets the collGroupRoles collection to an empty array (like clearcollGroupRoles());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupRoles()
+	{
+		$this->collGroupRoles = new PropelObjectCollection();
+		$this->collGroupRoles->setModel('GroupRole');
+	}
+
+	/**
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Role is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 * @throws     PropelException
+	 */
+	public function getGroupRoles($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRoles) {
+				// return empty collection
+				$this->initGroupRoles();
+			} else {
+				$collGroupRoles = GroupRoleQuery::create(null, $criteria)
+					->filterByRole($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupRoles;
+				}
+				$this->collGroupRoles = $collGroupRoles;
+			}
+		}
+		return $this->collGroupRoles;
+	}
+
+	/**
+	 * Returns the number of related GroupRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related GroupRole objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupRoles(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRoles) {
+				return 0;
+			} else {
+				$query = GroupRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByRole($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupRoles);
+		}
+	}
+
+	/**
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
+	 *
+	 * @param      GroupRole $l GroupRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addGroupRole(GroupRole $l)
+	{
+		if ($this->collGroupRoles === null) {
+			$this->initGroupRoles();
+		}
+		if (!$this->collGroupRoles->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRoles[]= $l;
+			$l->setRole($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related GroupRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getGroupRoles($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related GroupRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getGroupRoles($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related GroupRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getGroupRoles($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserRoles collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRoles()
+	 */
+	public function clearUserRoles()
+	{
+		$this->collUserRoles = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRoles collection.
+	 *
+	 * By default this just sets the collUserRoles collection to an empty array (like clearcollUserRoles());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUserRoles()
+	{
+		$this->collUserRoles = new PropelObjectCollection();
+		$this->collUserRoles->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Role is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRoles($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRoles) {
+				// return empty collection
+				$this->initUserRoles();
+			} else {
+				$collUserRoles = UserRoleQuery::create(null, $criteria)
+					->filterByRole($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRoles;
+				}
+				$this->collUserRoles = $collUserRoles;
+			}
+		}
+		return $this->collUserRoles;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRoles(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRoles) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByRole($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRoles);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addUserRole(UserRole $l)
+	{
+		if ($this->collUserRoles === null) {
+			$this->initUserRoles();
+		}
+		if (!$this->collUserRoles->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRoles[]= $l;
+			$l->setRole($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related UserRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesJoinUserRelatedByUserId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUserId', $join_behavior);
+
+		return $this->getUserRoles($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related UserRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getUserRoles($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related UserRoles from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getUserRoles($query, $con);
+	}
+
+	/**
+	 * Clears out the collRights collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRights()
+	 */
+	public function clearRights()
+	{
+		$this->collRights = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRights collection.
+	 *
+	 * By default this just sets the collRights collection to an empty array (like clearcollRights());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initRights()
+	{
+		$this->collRights = new PropelObjectCollection();
+		$this->collRights->setModel('Right');
+	}
+
+	/**
+	 * Gets an array of Right objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Role is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @throws     PropelException
+	 */
+	public function getRights($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRights || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRights) {
+				// return empty collection
+				$this->initRights();
+			} else {
+				$collRights = RightQuery::create(null, $criteria)
+					->filterByRole($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRights;
+				}
+				$this->collRights = $collRights;
+			}
+		}
+		return $this->collRights;
+	}
+
+	/**
+	 * Returns the number of related Right objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Right objects.
+	 * @throws     PropelException
+	 */
+	public function countRights(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRights || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRights) {
+				return 0;
+			} else {
+				$query = RightQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByRole($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRights);
+		}
+	}
+
+	/**
+	 * Method called to associate a Right object to this object
+	 * through the Right foreign key attribute.
+	 *
+	 * @param      Right $l Right
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addRight(Right $l)
+	{
+		if ($this->collRights === null) {
+			$this->initRights();
+		}
+		if (!$this->collRights->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRights[]= $l;
+			$l->setRole($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related Rights from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getRights($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related Rights from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getRights($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Role is new, it will return
+	 * an empty collection; or if this Role has previously
+	 * been saved, it will retrieve related Rights from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Role.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getRights($query, $con);
 	}
 
 	/**
@@ -1709,15 +1807,8 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	 */
 	public function clear()
 	{
-		$this->id = null;
 		$this->role_key = null;
-		$this->page_id = null;
-		$this->is_inherited = null;
-		$this->may_edit_page_details = null;
-		$this->may_edit_page_contents = null;
-		$this->may_delete = null;
-		$this->may_create_children = null;
-		$this->may_view_page = null;
+		$this->description = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
@@ -1725,7 +1816,6 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
-		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
 	}
@@ -1742,10 +1832,26 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collGroupRoles) {
+				foreach ((array) $this->collGroupRoles as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRoles) {
+				foreach ((array) $this->collUserRoles as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRights) {
+				foreach ((array) $this->collRights as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
-		$this->aRole = null;
-		$this->aPage = null;
+		$this->collGroupRoles = null;
+		$this->collUserRoles = null;
+		$this->collRights = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
 	}
@@ -1755,11 +1861,11 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	/**
 	 * Mark the current object so that the update date doesn't get updated during next save
 	 *
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function keepUpdateDateUnchanged()
 	{
-		$this->modifiedColumns[] = RightPeer::UPDATED_AT;
+		$this->modifiedColumns[] = RolePeer::UPDATED_AT;
 		return $this;
 	}
 	
@@ -1806,11 +1912,11 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	/**
 	 * Mark the current object so that the updated user doesn't get updated during next save
 	 *
-	 * @return     Right The current object (for fluent API support)
+	 * @return     Role The current object (for fluent API support)
 	 */
 	public function keepUpdateUserUnchanged()
 	{
-		$this->modifiedColumns[] = RightPeer::UPDATED_BY;
+		$this->modifiedColumns[] = RolePeer::UPDATED_BY;
 		return $this;
 	}
 
@@ -1825,4 +1931,4 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
-} // BaseRight
+} // BaseRole

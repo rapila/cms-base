@@ -75,9 +75,9 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	protected $collUserGroups;
 
 	/**
-	 * @var        array Right[] Collection to store aggregation of Right objects.
+	 * @var        array GroupRole[] Collection to store aggregation of GroupRole objects.
 	 */
-	protected $collRights;
+	protected $collGroupRoles;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -513,7 +513,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			$this->aUserRelatedByUpdatedBy = null;
 			$this->collUserGroups = null;
 
-			$this->collRights = null;
+			$this->collGroupRoles = null;
 
 		} // if (deep)
 	}
@@ -704,8 +704,8 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collRights !== null) {
-				foreach ($this->collRights as $referrerFK) {
+			if ($this->collGroupRoles !== null) {
+				foreach ($this->collGroupRoles as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -809,8 +809,8 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 					}
 				}
 
-				if ($this->collRights !== null) {
-					foreach ($this->collRights as $referrerFK) {
+				if ($this->collGroupRoles !== null) {
+					foreach ($this->collGroupRoles as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1080,9 +1080,9 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getRights() as $relObj) {
+			foreach ($this->getGroupRoles() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addRight($relObj->copy($deepCopy));
+					$copyObj->addGroupRole($relObj->copy($deepCopy));
 				}
 			}
 
@@ -1414,36 +1414,36 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collRights collection
+	 * Clears out the collGroupRoles collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addRights()
+	 * @see        addGroupRoles()
 	 */
-	public function clearRights()
+	public function clearGroupRoles()
 	{
-		$this->collRights = null; // important to set this to NULL since that means it is uninitialized
+		$this->collGroupRoles = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collRights collection.
+	 * Initializes the collGroupRoles collection.
 	 *
-	 * By default this just sets the collRights collection to an empty array (like clearcollRights());
+	 * By default this just sets the collGroupRoles collection to an empty array (like clearcollGroupRoles());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initRights()
+	public function initGroupRoles()
 	{
-		$this->collRights = new PropelObjectCollection();
-		$this->collRights->setModel('Right');
+		$this->collGroupRoles = new PropelObjectCollection();
+		$this->collGroupRoles->setModel('GroupRole');
 	}
 
 	/**
-	 * Gets an array of Right objects which contain a foreign key that references this object.
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
 	 *
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
@@ -1453,44 +1453,44 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
 	 * @throws     PropelException
 	 */
-	public function getRights($criteria = null, PropelPDO $con = null)
+	public function getGroupRoles($criteria = null, PropelPDO $con = null)
 	{
-		if(null === $this->collRights || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRights) {
+		if(null === $this->collGroupRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRoles) {
 				// return empty collection
-				$this->initRights();
+				$this->initGroupRoles();
 			} else {
-				$collRights = RightQuery::create(null, $criteria)
+				$collGroupRoles = GroupRoleQuery::create(null, $criteria)
 					->filterByGroup($this)
 					->find($con);
 				if (null !== $criteria) {
-					return $collRights;
+					return $collGroupRoles;
 				}
-				$this->collRights = $collRights;
+				$this->collGroupRoles = $collGroupRoles;
 			}
 		}
-		return $this->collRights;
+		return $this->collGroupRoles;
 	}
 
 	/**
-	 * Returns the number of related Right objects.
+	 * Returns the number of related GroupRole objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related Right objects.
+	 * @return     int Count of related GroupRole objects.
 	 * @throws     PropelException
 	 */
-	public function countRights(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countGroupRoles(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if(null === $this->collRights || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRights) {
+		if(null === $this->collGroupRoles || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRoles) {
 				return 0;
 			} else {
-				$query = RightQuery::create(null, $criteria);
+				$query = GroupRoleQuery::create(null, $criteria);
 				if($distinct) {
 					$query->distinct();
 				}
@@ -1499,25 +1499,25 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 					->count($con);
 			}
 		} else {
-			return count($this->collRights);
+			return count($this->collGroupRoles);
 		}
 	}
 
 	/**
-	 * Method called to associate a Right object to this object
-	 * through the Right foreign key attribute.
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
 	 *
-	 * @param      Right $l Right
+	 * @param      GroupRole $l GroupRole
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRight(Right $l)
+	public function addGroupRole(GroupRole $l)
 	{
-		if ($this->collRights === null) {
-			$this->initRights();
+		if ($this->collGroupRoles === null) {
+			$this->initGroupRoles();
 		}
-		if (!$this->collRights->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRights[]= $l;
+		if (!$this->collGroupRoles->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRoles[]= $l;
 			$l->setGroup($this);
 		}
 	}
@@ -1528,7 +1528,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this Group is new, it will return
 	 * an empty collection; or if this Group has previously
-	 * been saved, it will retrieve related Rights from storage.
+	 * been saved, it will retrieve related GroupRoles from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
@@ -1537,14 +1537,14 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
 	 */
-	public function getRightsJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getGroupRolesJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
 
-		return $this->getRights($query, $con);
+		return $this->getGroupRoles($query, $con);
 	}
 
 
@@ -1553,7 +1553,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this Group is new, it will return
 	 * an empty collection; or if this Group has previously
-	 * been saved, it will retrieve related Rights from storage.
+	 * been saved, it will retrieve related GroupRoles from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
@@ -1562,14 +1562,14 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
 	 */
-	public function getRightsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getGroupRolesJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$query = RightQuery::create(null, $criteria);
+		$query = GroupRoleQuery::create(null, $criteria);
 		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
 
-		return $this->getRights($query, $con);
+		return $this->getGroupRoles($query, $con);
 	}
 
 
@@ -1578,7 +1578,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this Group is new, it will return
 	 * an empty collection; or if this Group has previously
-	 * been saved, it will retrieve related Rights from storage.
+	 * been saved, it will retrieve related GroupRoles from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
@@ -1587,14 +1587,14 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
 	 */
-	public function getRightsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getGroupRolesJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$query = RightQuery::create(null, $criteria);
+		$query = GroupRoleQuery::create(null, $criteria);
 		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
 
-		return $this->getRights($query, $con);
+		return $this->getGroupRoles($query, $con);
 	}
 
 	/**
@@ -1632,15 +1632,15 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collRights) {
-				foreach ((array) $this->collRights as $o) {
+			if ($this->collGroupRoles) {
+				foreach ((array) $this->collGroupRoles as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
 		$this->collUserGroups = null;
-		$this->collRights = null;
+		$this->collGroupRoles = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
 	}

@@ -2,7 +2,7 @@
 
 
 /**
- * This class defines the structure of the 'rights' table.
+ * This class defines the structure of the 'roles' table.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    propel.generator.model.map
  */
-class RightTableMap extends TableMap {
+class RoleTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'model.map.RightTableMap';
+	const CLASS_NAME = 'model.map.RoleTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -30,21 +30,14 @@ class RightTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('rights');
-		$this->setPhpName('Right');
-		$this->setClassname('Right');
+		$this->setName('roles');
+		$this->setPhpName('Role');
+		$this->setClassname('Role');
 		$this->setPackage('model');
-		$this->setUseIdGenerator(true);
+		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-		$this->addForeignKey('ROLE_KEY', 'RoleKey', 'VARCHAR', 'roles', 'ROLE_KEY', true, 50, null);
-		$this->addForeignKey('PAGE_ID', 'PageId', 'INTEGER', 'pages', 'ID', true, null, null);
-		$this->addColumn('IS_INHERITED', 'IsInherited', 'BOOLEAN', false, 1, true);
-		$this->addColumn('MAY_EDIT_PAGE_DETAILS', 'MayEditPageDetails', 'BOOLEAN', false, 1, false);
-		$this->addColumn('MAY_EDIT_PAGE_CONTENTS', 'MayEditPageContents', 'BOOLEAN', false, 1, false);
-		$this->addColumn('MAY_DELETE', 'MayDelete', 'BOOLEAN', false, 1, false);
-		$this->addColumn('MAY_CREATE_CHILDREN', 'MayCreateChildren', 'BOOLEAN', false, 1, false);
-		$this->addColumn('MAY_VIEW_PAGE', 'MayViewPage', 'BOOLEAN', false, 1, false);
+		$this->addPrimaryKey('ROLE_KEY', 'RoleKey', 'VARCHAR', true, 50, null);
+		$this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 255, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
@@ -57,10 +50,11 @@ class RightTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Role', 'Role', RelationMap::MANY_TO_ONE, array('role_key' => 'role_key', ), 'CASCADE', null);
-    $this->addRelation('Page', 'Page', RelationMap::MANY_TO_ONE, array('page_id' => 'id', ), 'CASCADE', null);
     $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
     $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+    $this->addRelation('GroupRole', 'GroupRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
+    $this->addRelation('UserRole', 'UserRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
+    $this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
 	} // buildRelations()
 
 	/**
@@ -77,4 +71,4 @@ class RightTableMap extends TableMap {
 		);
 	} // getBehaviors()
 
-} // RightTableMap
+} // RoleTableMap

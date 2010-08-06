@@ -678,7 +678,7 @@ abstract class BaseLinkQuery extends ModelCriteria
 	 *
 	 * @return    LinkQuery The current query, for fluid interface
 	 */
-	public function joinLinkCategory($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinLinkCategory($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkCategory');
@@ -713,7 +713,7 @@ abstract class BaseLinkQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkCategoryQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useLinkCategoryQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLinkCategory($relationAlias, $joinType)

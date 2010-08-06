@@ -36,9 +36,9 @@
  * @method     GroupQuery rightJoinUserGroup($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserGroup relation
  * @method     GroupQuery innerJoinUserGroup($relationAlias = '') Adds a INNER JOIN clause to the query using the UserGroup relation
  *
- * @method     GroupQuery leftJoinRight($relationAlias = '') Adds a LEFT JOIN clause to the query using the Right relation
- * @method     GroupQuery rightJoinRight($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Right relation
- * @method     GroupQuery innerJoinRight($relationAlias = '') Adds a INNER JOIN clause to the query using the Right relation
+ * @method     GroupQuery leftJoinGroupRole($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRole relation
+ * @method     GroupQuery rightJoinGroupRole($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRole relation
+ * @method     GroupQuery innerJoinGroupRole($relationAlias = '') Adds a INNER JOIN clause to the query using the GroupRole relation
  *
  * @method     Group findOne(PropelPDO $con = null) Return the first Group matching the query
  * @method     Group findOneById(int $id) Return the first Group filtered by the id column
@@ -521,31 +521,31 @@ abstract class BaseGroupQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related Right object
+	 * Filter the query by a related GroupRole object
 	 *
-	 * @param     Right $right  the related object to use as filter
+	 * @param     GroupRole $groupRole  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    GroupQuery The current query, for fluid interface
 	 */
-	public function filterByRight($right, $comparison = null)
+	public function filterByGroupRole($groupRole, $comparison = null)
 	{
 		return $this
-			->addUsingAlias(GroupPeer::ID, $right->getGroupId(), $comparison);
+			->addUsingAlias(GroupPeer::ID, $groupRole->getGroupId(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the Right relation
+	 * Adds a JOIN clause to the query using the GroupRole relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    GroupQuery The current query, for fluid interface
 	 */
-	public function joinRight($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupRole($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('Right');
+		$relationMap = $tableMap->getRelation('GroupRole');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -560,14 +560,14 @@ abstract class BaseGroupQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'Right');
+			$this->addJoinObject($join, 'GroupRole');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the Right relation Right object
+	 * Use the GroupRole relation GroupRole object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -575,13 +575,13 @@ abstract class BaseGroupQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    RightQuery A secondary query class using the current class as primary query
+	 * @return    GroupRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useRightQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupRoleQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
-			->joinRight($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'Right', 'RightQuery');
+			->joinGroupRole($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'GroupRole', 'GroupRoleQuery');
 	}
 
 	/**

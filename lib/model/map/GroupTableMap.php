@@ -53,7 +53,7 @@ class GroupTableMap extends TableMap {
     $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
     $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
     $this->addRelation('UserGroup', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'group_id', ), 'CASCADE', null);
-    $this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'group_id', ), 'CASCADE', null);
+    $this->addRelation('GroupRole', 'GroupRole', RelationMap::ONE_TO_MANY, array('id' => 'group_id', ), 'CASCADE', null);
 	} // buildRelations()
 
 	/**
