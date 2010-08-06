@@ -320,6 +320,9 @@ CREATE TABLE `user_roles`
 		ON DELETE SET NULL
 )Type=MyISAM;
 
-#move rights to roles
-ALTER TABLE `rights` CHANGE `group_id` `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
-
+#add new foreign key for roles to rights
+ALTER TABLE `rights` DROP INDEX rights_U_1;
+ALTER TABLE `rights` ADD `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `group_id`;
+-- after mini_cms_migrate_groups_to_roles.sh
+ALTER TABLE `rights` DROP COLUMN `group_id`;
+ALTER TABLE `rights` ADD UNIQUE KEY `rights_U_1` (`role_key`, `page_id`, `is_inherited`);

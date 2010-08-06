@@ -11,6 +11,5 @@
  * @package model
  */ 
 class RightPeer extends BaseRightPeer {
-
 }
 

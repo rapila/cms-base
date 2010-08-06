@@ -1,4 +1,4 @@
-allowed_groups: []
+allowed_roles: []
 name: "Strings"
 description: "Storage of static strings, i.e. meta description, meta keywords site title and more"
 website: "http://www.mini-cms.ch/"

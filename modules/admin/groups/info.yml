@@ -1,5 +1,5 @@
 admin_required: true
-allowed_groups: []
+allowed_roles: []
 name: "Groups"
 description: "User groups allowing to define specific rights on pages and available modules"
 website: "http://www.mini-cms.ch/"

@@ -16,18 +16,6 @@ class User extends BaseUser {
 		return strtolower(substr($this->getFirstName(),0,1).substr($this->getLastName(),0,1));
 	}
 
-	public function may($oPage, $sRightName) {
-		if($this->getIsAdmin()) {
-			return true;
-		}
-		foreach($this->getGroups() as $oGroup) {
-			if($oGroup->may($oPage, $sRightName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public function getUserKind() {
 		return $this->getIsBackendLoginEnabled();
 	}
@@ -47,6 +35,26 @@ class User extends BaseUser {
 		return $this->getId() === Session::getSession()->getUserId();
 	}
 
+	public function may($oPage, $sRightName) {
+		if($this->getIsAdmin()) {
+			return true;
+		}
+		//Aquire alls roles the user is in (direct as well as group roles)
+		
+		//FIXME: possible optimization: get all roles using getRoles(false) and getGroups() foreach getRoles() and consolidate
+		foreach($this->getRoles() as $oRole) {
+			if($oRole->may($oPage, $sRightName)) {
+				return true;
+			}
+		}
+		foreach($this->getGroups() as $oGroup) {
+			if($oGroup->may($oPage, $sRightName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function mayEditPageDetails($oPage) {
 		return $this->may($oPage, 'edit_page_details');
 	}
@@ -77,7 +85,7 @@ class User extends BaseUser {
 			return true;
 		}
 		$aModuleInfo = Module::getModuleInfoByTypeAndName('admin', $sAdminModuleName);
-		$aGroupIds = isset($aModuleInfo['allowed_groups']) ? $aModuleInfo['allowed_groups'] : array();
+		$aGroupIds = isset($aModuleInfo['allowed_roles']) ? $aModuleInfo['allowed_roles'] : array();
 		//Cases 3 and 4: No groups defined
 		if(count($aGroupIds) === 0) {
 			//Case 3: Access to module is unrestricted: allow
@@ -85,10 +93,13 @@ class User extends BaseUser {
 			return !(@$aModuleInfo['admin_required']);
 		}
 		//Case 5: Access is restricted to certain groups: allow if in group
-		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
-			if(in_array($oUserGroup->getGroupId(), $aGroupIds)) {
-				return true;
-			}
+		if(in_array($this->getRoles(true), $aGroupIds)) {
+			return true;
+		}
+		foreach($this->getGroups() as $oGroup) {
+		  if(in_array($oGroup->getRoles(true), $aGroupIds)) {
+		    return true;
+	    }
 		}
 		//Case 6: User is not in allowed groups
 		return false;
@@ -122,6 +133,19 @@ class User extends BaseUser {
 				$aResult[] = $oGroupUser->getGroup();
 			} else {
 				$aResult[] = $oGroupUser->getGroup()->getName();
+			}
+		}
+		return $aResult;
+	}
+	
+	public function getRoles($bReturnNamesOnly = false) {
+		$aResult = array();
+    $aUserRoles = $bReturnNamesOnly ? $this->getUserRolesRelatedByUserId() : $this->getUserRolesRelatedByUserIdJoinRole();
+		foreach($aUserRoles as $oUserRole) {
+			if($bReturnNamesOnly) {
+				$aResult[] = $oUserRole->getRoleKey();
+			} else {
+				$aResult[] = $oUserRole->getRole();
 			}
 		}
 		return $aResult;

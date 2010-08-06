@@ -1,4 +1,4 @@
-allowed_groups: []
+allowed_roles: []
 name: "Documents"
 description: "Documents module for uploading and managing all allowed file types"
 website: "http://www.mini-cms.ch/"

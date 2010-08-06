@@ -19,10 +19,8 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getModuleConfig() {
-		// @todo check users permission for module
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
-		ErrorHandler::log($aSettings);
 		return $aSettings;
 	}
 	
@@ -35,7 +33,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getModule($sName) {
-		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName));
+		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName), 'may' => Session::getSession()->getUser()->mayUseAdmimModule($sName));
 		return $aResult;
 	}
 }

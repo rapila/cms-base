@@ -1,4 +1,4 @@
-allowed_groups: []
+allowed_roles: []
 name: "Document Types"
 description: "Reference table for allowed document types with mimetype and extension"
 website: "http://www.mini-cms.ch/"

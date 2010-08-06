@@ -39,7 +39,7 @@ class ModuleManagerBackendModule extends BackendModule {
     
     if($this->sModuleType === 'backend') {
       $oBackendModuleTemplate = $this->constructTemplate('backend_module_detail_info');
-      $oBackendModuleTemplate->replaceIdentifier('allowed_groups', TagWriter::optionsFromObjects(GroupPeer::doSelect(new Criteria()), null, null, @$aModuleInfo['allowed_groups'], array()));
+      $oBackendModuleTemplate->replaceIdentifier('allowed_roles', TagWriter::optionsFromObjects(GroupPeer::doSelect(new Criteria()), null, null, @$aModuleInfo['allowed_roles'], array()));
       $oTemplate->replaceIdentifier('backend_module_detail_info', $oBackendModuleTemplate, null, Template::LEAVE_IDENTIFIERS);
     }
     $oTemplate->replaceIdentifier('display_name', $sDisplayName);
@@ -57,8 +57,8 @@ class ModuleManagerBackendModule extends BackendModule {
     
     $aInfo['enabled'] = isset($_POST['enabled']) || @$aModuleInfo['required'];
     $aInfo['admin_required'] = isset($_POST['admin_required']);
-    if(isset($_POST['allowed_groups'])) {
-      $aInfo['allowed_groups'] = $_POST['allowed_groups'];
+    if(isset($_POST['allowed_roles'])) {
+      $aInfo['allowed_roles'] = $_POST['allowed_roles'];
     }
     require_once("spyc/Spyc.php");
     $sInfoFilePath = SITE_DIR.'/'.DIRNAME_MODULES;

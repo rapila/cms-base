@@ -148,6 +148,9 @@ Widget.types.admin_menu = {
 		module: function(module) {
 			var result = {};
 			var module_info = this.getModule(module);
+			if(!module_info.may) {
+				return null;
+			}
 			result.callback = function() {
 				window.location.href = module_info.link;
 			};
