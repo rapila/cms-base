@@ -12,17 +12,16 @@ class Flash {
 	
 	public function __construct($aArrayToCheck = null) {
 		$this->aMessages = array();
+		$this->setArrayToCheck($aArrayToCheck);
+	}
+	
+	public function setArrayToCheck($aArrayToCheck = null) {
 		if(is_array($aArrayToCheck)) {
 			$this->aArrayToCheck = $aArrayToCheck;
 			$this->bArrayIsManual = true;
 		} else {
 			$this->aArrayToCheck = $_POST;
 		}
-	}
-	
-	public function setArrayToCheck($aArrayToCheck) {
-			$this->aArrayToCheck = $aArrayToCheck;
-			$this->bArrayIsManual = true;
 	}
 	
 	public function addMessage($sName, $mParameters = true) {

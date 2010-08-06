@@ -62,6 +62,9 @@ abstract class TemplateResourceFileModule extends FileModule {
 	}
 	
 	public static function getAvailableResource($sModuleName, $sModuleType, $sResourceType, $aParameters) {
+		if($aParameters === null) {
+			$aParameters = array();
+		}
 		$sFileModule = str_replace('template_', "{$sModuleType}_", self::getNameByClassName(get_class()));
 		$sFileName = "$sModuleName.$sModuleType.$sResourceType.tmpl";
 		if(ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, $sModuleName, DIRNAME_TEMPLATES, "$sFileName")) === null) {

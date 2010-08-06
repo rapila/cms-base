@@ -40,7 +40,7 @@ var Widget = function() {
 
 jQuery.extend(Widget.prototype, {
 	_widgetJSON: function(action, callback, options, attributes) {
-		return Widget.widgetJSON(this.widgetType, this.widgetId, action, callback, options, attributes);
+		return Widget.widgetJSON(this.widgetType, this, action, callback, options, attributes);
 	},
 	
 	_callMethod: function(name) {
@@ -303,7 +303,7 @@ jQuery.extend(Widget, {
 			url += '/'+encodeURIComponent(urlPart);
 		});
 		if(widgetId) {
-			attributes['session_key'] = widgetId;
+			attributes['session_key'] = widgetId.widgetId || widgetId;
 		}
 		var attr_str = attributes;
 		if(attributes.constructor !== String) {
@@ -423,6 +423,14 @@ jQuery.extend(Widget, {
 			});
 			
 			return false;
+		},
+		
+		ValidationException: function(error, widgetType, widgetId, action, callback, options, attributes) {
+			if(widgetId.detail_widget) {
+				widgetId.detail_widget.validate_with(error.parameters);
+				return false;
+			}
+			return true;
 		}
 	}
 });

@@ -60,7 +60,7 @@ class WidgetJsonFileModule extends FileModule {
 				print json_encode(array("result" => call_user_func_array(array($oWidget, $sMethodName), isset($aRequest['method_parameters']) ? $aRequest['method_parameters'] : array())));
 			}
 		} catch (LocalizedException $ex) {
-			print json_encode(array('exception' => array('message' => $ex->getLocalizedMessage(), 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'exception_type' => $ex->getExceptionType())));
+			print json_encode(array('exception' => array('message' => $ex->getLocalizedMessage(), 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'parameters' => $ex->getMessageParameters(), 'exception_type' => $ex->getExceptionType())));
 		} catch (Exception $ex) {
 			print json_encode(array('exception' => array('message' => "Exception when trying to execute the last action {$ex->getMessage()}", 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'exception_type' => get_class($ex))));
 		}

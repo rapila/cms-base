@@ -164,6 +164,7 @@ Widget.types.admin_menu = {
 			var admin_menu = this;
 			select.prepareWidget(function(widget) {
 				widget.settings.international_option = false;
+			}, function(widget) {
 				if(admin_menu.settings.attach_events) {
 					select.change(function() {
 						widget.setContentLanguage(select.val());

@@ -11,11 +11,7 @@ Widget.types.detail = {
 		}
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
-		var save_button_handler = function() {
-			if(detail_widget.settings.save_callback()) {
-				detail_widget.content.dialog('close');
-			}
-		};		
+		var save_button_handler = this.settings.save_callback;
 		var cancel_callback = function() {
 			detail_widget.content.dialog('close');
 		};
@@ -51,6 +47,23 @@ Widget.types.detail = {
 		this.select();
 		this.has_dialog = true;
 	},
+	
+	close: function() {
+		this.content.dialog('close');
+	},
+	
+	clear_validation: function() {
+		this.content.find('.error_display').remove();
+	},
+	
+	validate_with: function(errors) {
+		this.clear_validation();
+		var detail = this;
+		jQuery.each(errors, function(key, message) {
+			detail.content.find('.validate-'+key).after(jQuery.parseHTML(message));
+		});
+	},
+	
 	has_dialog: false,
 	content: null,
 	

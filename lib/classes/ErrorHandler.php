@@ -9,10 +9,13 @@ class ErrorHandler {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
 		}
+		$aTrace = debug_backtrace();
+		array_shift($aTrace); //Remove ErrorHandler::handleError call;
 		$aError = array("code" => $iErrorNumber,
 										"message" => $sErrorString,
 										"filename" => $sErrorFile,
 										"line" => $iErrorLine,
+										"trace" => $aTrace,
 										"context" => $aErrorContext);
 		self::handle($aError);
 		if(self::shouldContinue($iErrorNumber)) {

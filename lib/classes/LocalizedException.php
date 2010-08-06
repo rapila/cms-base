@@ -8,6 +8,9 @@ class LocalizedException extends Exception {
 	
 	public function __construct($sMessageKey, $aMessageParameters = null, $sExceptionType = null, $iCode = 0, $sDefaultLanguageId = null) {
 		$this->sMessageKey = $sMessageKey;
+		if($sExceptionType === null) {
+			$sExceptionType = get_class($this);
+		}
 		$this->sExceptionType = $sExceptionType;
 		if($aMessageParameters === null) {
 			$aMessageParameters = array();
@@ -19,6 +22,10 @@ class LocalizedException extends Exception {
 	
 	public function getLocalizedMessage($sLanguageId = null) {
 		return StringPeer::getString($this->sMessageKey, $sLanguageId, null, $this->aMessageParameters);
+	}
+	
+	public function getMessageParameters() {
+		return $this->aMessageParameters;
 	}
 	
 	public function getExceptionType() {

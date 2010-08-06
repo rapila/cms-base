@@ -14,7 +14,7 @@ Widget.types.user_detail = {
 			}
 			this.content.find("select[name='language_id']").prepareWidget(function(widget) {
 				widget.settings.international_option = false;
-			});
+			}, jQuery.noop);
 			this.content.find("select[name='group_ids[]']").prepareWidget();
 		}.bind(this));
 	},
@@ -38,6 +38,8 @@ Widget.types.user_detail = {
 			this.content.find("select[name='group_ids[]']").val(user_data.ActiveUserGroupIds);
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);
 			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
+			this.content.find("input[name='password']").val('');
+			this.content.find("input[name='password_confirm']").val('');
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
@@ -45,8 +47,10 @@ Widget.types.user_detail = {
 	},
 	
 	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
-		return true;
+		this.saveData(this.content.serializeArrayKV(), function() {
+			this.close();
+			this.save_callback();
+		}.bind(this));
 	},
 	
 	close: function() {

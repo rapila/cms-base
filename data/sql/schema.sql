@@ -28,13 +28,13 @@ CREATE TABLE `pages`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `pages_FI_1` (`created_by`),
+	CONSTRAINT `pages_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `pages_FI_2` (`updated_by`),
+	CONSTRAINT `pages_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -64,13 +64,13 @@ CREATE TABLE `page_properties`
 		FOREIGN KEY (`page_id`)
 		REFERENCES `pages` (`id`)
 		ON DELETE CASCADE,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `page_properties_FI_2` (`created_by`),
+	CONSTRAINT `page_properties_FK_2`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `page_properties_FI_3` (`updated_by`),
+	CONSTRAINT `page_properties_FK_3`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -104,13 +104,13 @@ CREATE TABLE `page_strings`
 	CONSTRAINT `page_strings_FK_2`
 		FOREIGN KEY (`language_id`)
 		REFERENCES `languages` (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `page_strings_FI_3` (`created_by`),
+	CONSTRAINT `page_strings_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `page_strings_FI_4` (`updated_by`),
+	CONSTRAINT `page_strings_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -141,13 +141,13 @@ CREATE TABLE `objects`
 		FOREIGN KEY (`page_id`)
 		REFERENCES `pages` (`id`)
 		ON DELETE CASCADE,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `objects_FI_2` (`created_by`),
+	CONSTRAINT `objects_FK_2`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `objects_FI_3` (`updated_by`),
+	CONSTRAINT `objects_FK_3`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -178,13 +178,13 @@ CREATE TABLE `language_objects`
 	CONSTRAINT `language_objects_FK_2`
 		FOREIGN KEY (`language_id`)
 		REFERENCES `languages` (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `language_objects_FI_3` (`created_by`),
+	CONSTRAINT `language_objects_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `language_objects_FI_4` (`updated_by`),
+	CONSTRAINT `language_objects_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -216,13 +216,13 @@ CREATE TABLE `language_object_history`
 	CONSTRAINT `language_object_history_FK_2`
 		FOREIGN KEY (`language_id`)
 		REFERENCES `languages` (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `language_object_history_FI_3` (`created_by`),
+	CONSTRAINT `language_object_history_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `language_object_history_FI_4` (`updated_by`),
+	CONSTRAINT `language_object_history_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -245,13 +245,13 @@ CREATE TABLE `languages`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `languages_FI_1` (`created_by`),
+	CONSTRAINT `languages_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `languages_FI_2` (`updated_by`),
+	CONSTRAINT `languages_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -277,13 +277,13 @@ CREATE TABLE `strings`
 	CONSTRAINT `strings_FK_1`
 		FOREIGN KEY (`language_id`)
 		REFERENCES `languages` (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `strings_FI_2` (`created_by`),
+	CONSTRAINT `strings_FK_2`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `strings_FI_3` (`updated_by`),
+	CONSTRAINT `strings_FK_3`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -324,35 +324,6 @@ CREATE TABLE `users`
 )Type=MyISAM;
 
 #-----------------------------------------------------------------------------
-#-- groups
-#-----------------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `groups`;
-
-
-CREATE TABLE `groups`
-(
-	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(80),
-	`created_at` DATETIME,
-	`updated_at` DATETIME,
-	`created_by` INTEGER,
-	`updated_by` INTEGER,
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `groups_U_1` (`name`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
-		FOREIGN KEY (`created_by`)
-		REFERENCES `users` (`id`)
-		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
-		FOREIGN KEY (`updated_by`)
-		REFERENCES `users` (`id`)
-		ON DELETE SET NULL
-)Type=MyISAM;
-
-#-----------------------------------------------------------------------------
 #-- users_groups
 #-----------------------------------------------------------------------------
 
@@ -377,13 +348,144 @@ CREATE TABLE `users_groups`
 		FOREIGN KEY (`group_id`)
 		REFERENCES `groups` (`id`)
 		ON DELETE CASCADE,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `users_groups_FI_3` (`created_by`),
+	CONSTRAINT `users_groups_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `users_groups_FI_4` (`updated_by`),
+	CONSTRAINT `users_groups_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- groups
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `groups`;
+
+
+CREATE TABLE `groups`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(80),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `groups_U_1` (`name`),
+	INDEX `groups_FI_1` (`created_by`),
+	CONSTRAINT `groups_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `groups_FI_2` (`updated_by`),
+	CONSTRAINT `groups_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- group_roles
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `group_roles`;
+
+
+CREATE TABLE `group_roles`
+(
+	`group_id` INTEGER  NOT NULL,
+	`role_key` VARCHAR(50)  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`group_id`,`role_key`),
+	CONSTRAINT `group_roles_FK_1`
+		FOREIGN KEY (`group_id`)
+		REFERENCES `groups` (`id`)
+		ON DELETE CASCADE,
+	INDEX `group_roles_FI_2` (`role_key`),
+	CONSTRAINT `group_roles_FK_2`
+		FOREIGN KEY (`role_key`)
+		REFERENCES `roles` (`role_key`)
+		ON DELETE CASCADE,
+	INDEX `group_roles_FI_3` (`created_by`),
+	CONSTRAINT `group_roles_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `group_roles_FI_4` (`updated_by`),
+	CONSTRAINT `group_roles_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- roles
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `roles`;
+
+
+CREATE TABLE `roles`
+(
+	`role_key` VARCHAR(50)  NOT NULL,
+	`description` VARCHAR(255),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`role_key`),
+	INDEX `roles_FI_1` (`created_by`),
+	CONSTRAINT `roles_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `roles_FI_2` (`updated_by`),
+	CONSTRAINT `roles_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+)Type=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- user_roles
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_roles`;
+
+
+CREATE TABLE `user_roles`
+(
+	`user_id` INTEGER  NOT NULL,
+	`role_key` VARCHAR(50)  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`user_id`,`role_key`),
+	CONSTRAINT `user_roles_FK_1`
+		FOREIGN KEY (`user_id`)
+		REFERENCES `users` (`id`)
+		ON DELETE CASCADE,
+	INDEX `user_roles_FI_2` (`role_key`),
+	CONSTRAINT `user_roles_FK_2`
+		FOREIGN KEY (`role_key`)
+		REFERENCES `roles` (`role_key`)
+		ON DELETE CASCADE,
+	INDEX `user_roles_FI_3` (`created_by`),
+	CONSTRAINT `user_roles_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `user_roles_FI_4` (`updated_by`),
+	CONSTRAINT `user_roles_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -399,7 +501,7 @@ DROP TABLE IF EXISTS `rights`;
 CREATE TABLE `rights`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`group_id` INTEGER  NOT NULL,
+	`role_key` VARCHAR(50)  NOT NULL,
 	`page_id` INTEGER  NOT NULL,
 	`is_inherited` TINYINT(1) default 1,
 	`may_edit_page_details` TINYINT(1) default 0,
@@ -412,23 +514,23 @@ CREATE TABLE `rights`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `rights_U_1` (`group_id`, `page_id`, `is_inherited`),
+	UNIQUE KEY `rights_U_1` (`role_key`, `page_id`, `is_inherited`),
 	CONSTRAINT `rights_FK_1`
-		FOREIGN KEY (`group_id`)
-		REFERENCES `groups` (`id`)
+		FOREIGN KEY (`role_key`)
+		REFERENCES `roles` (`role_key`)
 		ON DELETE CASCADE,
 	INDEX `rights_FI_2` (`page_id`),
 	CONSTRAINT `rights_FK_2`
 		FOREIGN KEY (`page_id`)
 		REFERENCES `pages` (`id`)
 		ON DELETE CASCADE,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `rights_FI_3` (`created_by`),
+	CONSTRAINT `rights_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `rights_FI_4` (`updated_by`),
+	CONSTRAINT `rights_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -476,13 +578,13 @@ CREATE TABLE `documents`
 		FOREIGN KEY (`document_category_id`)
 		REFERENCES `document_categories` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `documents_FI_5` (`created_by`),
+	CONSTRAINT `documents_FK_5`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `documents_FI_6` (`updated_by`),
+	CONSTRAINT `documents_FK_6`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -506,13 +608,13 @@ CREATE TABLE `document_types`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `document_types_FI_1` (`created_by`),
+	CONSTRAINT `document_types_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `document_types_FI_2` (`updated_by`),
+	CONSTRAINT `document_types_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -538,13 +640,13 @@ CREATE TABLE `document_categories`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `document_categories_FI_1` (`created_by`),
+	CONSTRAINT `document_categories_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `document_categories_FI_2` (`updated_by`),
+	CONSTRAINT `document_categories_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -567,13 +669,13 @@ CREATE TABLE `tags`
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `tags_U_1` (`name`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `tags_FI_1` (`created_by`),
+	CONSTRAINT `tags_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `tags_FI_2` (`updated_by`),
+	CONSTRAINT `tags_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -600,13 +702,13 @@ CREATE TABLE `tag_instances`
 		FOREIGN KEY (`tag_id`)
 		REFERENCES `tags` (`id`)
 		ON DELETE CASCADE,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `tag_instances_FI_2` (`created_by`),
+	CONSTRAINT `tag_instances_FK_2`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `tag_instances_FI_3` (`updated_by`),
+	CONSTRAINT `tag_instances_FK_3`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -627,7 +729,7 @@ CREATE TABLE `links`
 	`description` VARCHAR(255),
 	`language_id` VARCHAR(3),
 	`owner_id` INTEGER  NOT NULL,
-	`link_category_id` INTEGER  NOT NULL,
+	`link_category_id` INTEGER,
 	`is_private` TINYINT(1) default 0,
 	`is_inactive` TINYINT(1) default 0,
 	`created_at` DATETIME,
@@ -648,13 +750,13 @@ CREATE TABLE `links`
 		FOREIGN KEY (`link_category_id`)
 		REFERENCES `link_categories` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `links_FI_4` (`created_by`),
+	CONSTRAINT `links_FK_4`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `links_FI_5` (`updated_by`),
+	CONSTRAINT `links_FK_5`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -676,13 +778,13 @@ CREATE TABLE `link_categories`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `link_categories_FI_1` (`created_by`),
+	CONSTRAINT `link_categories_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `link_categories_FI_2` (`updated_by`),
+	CONSTRAINT `link_categories_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
@@ -708,13 +810,13 @@ CREATE TABLE `indirect_references`
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `indirect_references_U_1` (`from_id`, `from_model_name`, `to_id`, `to_model_name`),
-	INDEX `FI_` (`created_by`),
-	CONSTRAINT ``
+	INDEX `indirect_references_FI_1` (`created_by`),
+	CONSTRAINT `indirect_references_FK_1`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
-	CONSTRAINT ``
+	INDEX `indirect_references_FI_2` (`updated_by`),
+	CONSTRAINT `indirect_references_FK_2`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
