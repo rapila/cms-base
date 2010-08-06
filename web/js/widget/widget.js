@@ -485,16 +485,22 @@ jQuery.extend(jQuery, {
 jQuery.fn.extend({
 	prepareWidget: function() {
 		var callback = arguments[0] || jQuery.noop;
+		var intermediateCallback = jQuery.noop;
+		if(arguments[1]) {
+			callback = arguments[1];
+			intermediateCallback = arguments[0];
+		}
 		if(this.data('widget')) {
 			callback(this.data('widget'));
 			return this;
 		}
 		var waiting_callbacks = this.data('waiting_prepare_callbacks');
 		if(waiting_callbacks !== null) {
-			waiting_callbacks[waiting_callbacks.length] = callback;
+			waiting_callbacks.intermediate.push(intermediateCallback);
+			waiting_callbacks.ending.push(callback);
 			return;
 		}
-		waiting_callbacks = [callback];
+		waiting_callbacks = {intermediate:[intermediateCallback], ending: [callback]};
 		this.data('waiting_prepare_callbacks', waiting_callbacks);
 		var widget_type = this.attr('data-widget-type');
 		var widget_session = this.attr('data-widget-session');
@@ -502,8 +508,11 @@ jQuery.fn.extend({
 		Widget.create(widget_type, function(widget) {
 			widget_element.data('widget', widget);
 			widget._element = widget_element;
+			jQuery.each(widget_element.data('waiting_prepare_callbacks').intermediate, function(i, callback) {
+				callback(widget);
+			});
 			widget.handle('prepared', function() {
-				jQuery.each(widget_element.data('waiting_prepare_callbacks'), function(i, callback) {
+				jQuery.each(widget_element.data('waiting_prepare_callbacks').ending, function(i, callback) {
 					callback(widget);
 				});
 				widget_element.removeData('waiting_prepare_callbacks');
