@@ -45,7 +45,7 @@ body.login h1 {
   cursor: pointer;
 }
 #cmos_admin_menu .cmos_logo {
-  padding: 0.3em 1em;
+  padding: 0.3em 1em 0.3em 0.3em;
   color: #e3ef99;
 }
 #cmos_admin_menu .admin_menu_right .activity_indicator { margin: 0px 7px -3px 0px; }
@@ -259,10 +259,9 @@ body.login h1 {
 #cmos_admin_menu .ui-widget-header select option {
   color: #000000;
   background-color: white;
-  padding: 0.4em 0.4em 0.4em 1.5em;
+  padding: 0.2em 0.3em 0.2em 1.5em;
   padding-left: 1.5em;
   margin: 0em 0;
-  background: white url('../../images/admin/info.gif') no-repeat left center;
 }
 #cmos_admin_menu .ui-widget-header select option.separator {
   border-top: 1px solid #e3ef99;
@@ -294,7 +293,7 @@ body.login h1 {
   margin: 0 0 0 0.7em;
   background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
 }
-#cmos_admin_menu button.cmos-button.domain_name { color: blue; }
+#cmos_admin_menu span.domain_name { color: #dddddd; }
 #cmos_admin_menu button.cmos-button.dashboard span { display: none; }
 #cmos_admin_menu button.cmos-button.logout_link span { display: none; }
 #cmos_admin_menu button.dashboard:hover { background-image: url('../../images/admin/dashboard_icon_hover.gif'); }

@@ -9,11 +9,9 @@ admin_menu:
       - module.documents
       - module.links
     - module.dashboard
-    - ~
-    - ~
-    - domain_name
   right:
     - activity
+    - domain_name
     - logo
     - user
     - logout
