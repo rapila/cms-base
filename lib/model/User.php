@@ -101,6 +101,7 @@ class User extends BaseUser {
         return $aSections[$sSection];
 			}
 		}
+    // @todo check users permission for module
     $mDefaultResult = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
     return $mDefaultResult;
 	}

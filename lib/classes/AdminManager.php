@@ -15,6 +15,7 @@ class AdminManager extends Manager {
 		if($this->sModuleName === null) {
 			$this->sModuleName = self::DEFAULT_MODULE;
 		}
+		// @todo check users permission for module
 		$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
 		$this->oResourceIncluder = ResourceIncluder::defaultIncluder();
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {

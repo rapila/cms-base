@@ -19,6 +19,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getModuleConfig() {
+		// @todo check users permission for module
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
 		ErrorHandler::log($aSettings);

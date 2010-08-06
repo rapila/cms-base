@@ -17,11 +17,46 @@ cms_dev
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 
 Priorities
-- Arbeiten, 17/18. August?
-- QM-Manual Server E-Mail
-- Discuss email, procedutre Schule Altenburg
-- reload list after document upload success
-- edit button in list, if necessary do it on one click
+- Timeline production RC, feature freeze
+  what requirements does it contain? 
+	- click, dblclick handling in sidebar/main must be clear, @see General handling
+	- document upload, 
+	- drag and drop positions, sort, change category
+	- new page, drag and drop
+	- document category edit, max_width etc
+	- migration of most important backend modules
+	- preview, text, documents, link, outline, spec of inline custom module editing
+	- language handling > menubar or in all modules (strings, custom modules) and pages where languages are available
+	- templates css parsing
+	- richtext editor configurable per site, module (includeTemplate)
+	- css clean css, prepared for skins
+	- dashboard, last edits, for users with no page right, but ie news, classes (school), events, galleries
+	- user rights > roles, discuss use cases Altenburg school etc
+	what is nice to have
+	- menu configurator user stored
+	- dashboard, nice or required?
+	- Plugins Newsletter, Journal, WebDav, ClientProject etc. migrate, redesign
+	- ckeditor/tinymce, config per user db store
+	- discuss mini-cms scripts / Propel generator part of cms instead of local server installation
+
+- Arbeiten, 17/18. August? CSS mit Erni
+	- QM-Manual Server E-Mail
+	- Discuss email, procedure Schule Altenburg
+	- Naturfreunde, strategy. What are we doing, what is our focus
+
+Details
+- settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
+- should current module always be shown in current selector, of if it is part of another environment, should be redirected?
+- link preview and edit button, when to highlight, persistent last edit page handling
+- what happens when a document category is edited that is content of page language_object, should it effect last edit page/preview
+- file upload
+	- implement upload "traditional" and d&d for detail
+	- reload list after document upload success
+	- testing, max limits etc
+- list / thumbnail view for files
+- users and rights, permission (widget)
+	- introduce roles, discuss use cases and
+- form validation, how to, move to yaml config?
 - notifyUser search info > replace keys by real values
 - discuss permissions @see use_cases_permissions.txt
 - validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
@@ -36,6 +71,11 @@ Bugs
 - file upload and drag and drop Safari and Chrome
 - double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
 
+General handling
+- dblclick click standards transparency, buttons: i.e edit on click, default edit dblclick: 
+- highlight save when detail modified
+- handle go away if detail is not saved
+- users might want quick links (menu config)
 
 PageTypeWidget
 - carefully test for reliable behaviour, performance
@@ -46,12 +86,12 @@ PageTypeWidget
 PageDetail
 - last requested page for leaving pages_admin?
 - add loading image for various loading instances
-- check all code that I created
 - show content & references tabs only if not new
 - references, delete restriction, information, load on click or on delete restriction
 - templates visualisation, choosing from images rather then names, CSS Parser
 - activities show with loader image, ie. save, take away focus from save button
 - how to handle language, language objects, permissions etc
+- page preview, set online.
 
 PageTree Widget
 - new page, move page d&d
