@@ -18,10 +18,14 @@ class DocumentListWidgetModule extends WidgetModule {
 	}
 
 	public function doWidget() {
+		return parent::doWidget();
+	}
+	
+	public function getElementType() {
 		$aTagAttributes = array('class' => 'document_list');
 		$oListTag = new TagWriter('table', $aTagAttributes);
 		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		return new TagWriter('div', array(), $this->oListWidget->doWidget());
 	}
 
 	public function toggleIsInactive($aRowData) {

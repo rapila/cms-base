@@ -81,7 +81,7 @@ jQuery.extend(Widget.prototype, {
 	},
 	
 	fire: function(eventName, realEvent) {
-		event = jQuery.Event("widget."+eventName);
+		var event = jQuery.Event("widget."+eventName);
 		var has_real_event = (realEvent instanceof jQuery.Event);
 		if(has_real_event) {
 			event.realTarget = realEvent.target;
@@ -386,13 +386,25 @@ jQuery.extend(Widget, {
 		return Widget.types[widgetType].prototype[methodName].apply(window, parameters);
 	},
 	
-	fire: function(event) {
-		jQuery(Widget).triggerHandler("Widget."+event, jQuery.makeArray(arguments).slice(1));
+	fire: function(eventName) {
+		var event = jQuery.Event("Widget."+eventName);
+		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		this._pastEvents[eventName] = [event].concat(args);
+		jQuery(Widget).triggerHandler(event, args);
 	},
 	
-	handle: function(event, handler, isOnce) {
+	handle: function(event, handler, isOnce, fireIfPast) {
+		if(fireIfPast && this._pastEvents[event]) {
+			handler.apply(this, this._pastEvents[event]);
+			if(isOnce) {
+				return this;
+			}
+		}
 		jQuery(Widget)[isOnce ? 'one' : 'bind']("Widget."+event, handler.bind(this));
+		return this;
 	},
+	
+	_pastEvents: {},
 	
 	defaultJSONHandler: jQuery.noop,
 	

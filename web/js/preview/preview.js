@@ -20,6 +20,10 @@ jQuery(document).ready(function() {
 	}, function(page_type) {
 		page_type.handle_preview();
 	}, window.PreviewInterface.page_type_widget);
+	
+	Widget.createWithElement('admin_menu', function(widget) {
+		widget._element.appendTo(document.body);
+	});
 });
 
 Widget.tooltip = jQuery.noop;

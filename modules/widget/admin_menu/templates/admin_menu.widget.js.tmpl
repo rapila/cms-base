@@ -1,7 +1,3 @@
-Widget.handle('cmos.logged_in', function() {
-	Widget.create('admin_menu').show();
-});
-
 Widget.types.admin_menu = {
 	prepare: function() {
 		this.button_prototype = jQuery('{{includeTemplate=menu_button.incl}}');
@@ -44,6 +40,7 @@ Widget.types.admin_menu = {
 				}
 			});
 		});
+		Widget.handle('cmos.logged_in', this.show.bind(this), true, true);
 	},
 	
 	activity: function() {

@@ -1,0 +1,47 @@
+Widget.types.documents_view = {
+	initialize: function() {
+		this.document_category_id = this.getInitialDocumentCategoryId();
+		this.search_string = this.getInitialSearchString();
+		this.document_kind = this.getInitialDocumentKind();
+		this.thumbnail_size = this.getInitialThumbnailSize();
+		
+		this._element = jQuery('<div/>').tabs();
+		var documents_view = this;
+		jQuery.each(this.settings.panels, function(i, item) {
+			var widget_name = null;
+			if(item === 'list') {
+				widget_name = 'document_list';
+			} else if(item === 'detail') {
+				widget_name = 'image_picker';
+				// widget_name = 'document_detail_view';
+			}
+			if(widget_name !== null) {
+				Widget.createWithElement(widget_name, function(widget) {
+					documents_view._element.tabs('add', '#'+item, item);
+					//TODO append the widget._element to the tab view
+				});
+			}
+		});
+	},
+	
+	set_document_category_id: function(id) {
+		this.document_category_id = id;
+	},
+	
+	set_search_string: function(string) {
+		this.search_string = string;
+	},
+	
+	set_document_kind: function(kind) {
+		this.document_kind = kind;
+	},
+	
+	set_thumbnail_size: function(size) {
+		this.thumbnail_size = size;
+	},
+	
+	settings: {
+		panels: ['list', 'thumbnail'],
+		allow_document_kind_change: true
+	}
+};
