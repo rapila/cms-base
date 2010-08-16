@@ -7,7 +7,7 @@ class FileUploadWidgetModule extends WidgetModule {
 	public function uploadFile($sFileData, $aOptions) {
 		$sFileData = base64_decode($sFileData);
 		if($aOptions['document_id']) {
-			$oDocument = DocumentPeer::retrieveByPK($sFileData['document_id']);
+			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
 		} else {
 			$oDocument = new Document();
 		}
@@ -21,14 +21,17 @@ class FileUploadWidgetModule extends WidgetModule {
 			$sFileName = implode('.', $aName);
 		}
 		$oDocument->setData($sFileData);
-		$oDocument->setName($sFileName);
-		$oDocument->setLanguageId($aOptions['language_id']);
-		$oDocument->setIsProtected($aOptions['is_protected']);
-		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
-		if($aOptions['document_category_id']) {
-			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
+    // $oDocument->setData($sFileData);
+		if($oDocument->isNew()) {
+  		$oDocument->setName($sFileName);
+  		$oDocument->setLanguageId($aOptions['language_id']);
+  		$oDocument->setIsProtected($aOptions['is_protected']);
+  		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
+  		if($aOptions['document_category_id']) {
+  			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
+  		}
 		}
-		$oDocument->save();
+    $oDocument->save();
 		return $oDocument->getId();
 	}
 	
@@ -44,7 +47,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
 		}
 		if($oDocumentType === null) {
-			throw new LocalizedException("widget.file_upload.document_type_not_found");
+			throw new LocalizedException("widget.file_upload.document_type_not_found", array('document_type' => $sExtension));
 		}
 		return $oDocumentType->getId();
 	}

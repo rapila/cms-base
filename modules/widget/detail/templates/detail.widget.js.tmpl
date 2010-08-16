@@ -60,7 +60,10 @@ Widget.types.detail = {
 		this.clear_validation();
 		var detail = this;
 		jQuery.each(errors, function(key, message) {
-			detail.content.find('.validate-'+key).after(jQuery.parseHTML(message));
+			if(message.constructor === String) {
+				message = jQuery.parseHTML(message);
+			}
+			detail.content.find('.validate-'+key).after(message);
 		});
 	},
 	

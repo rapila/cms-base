@@ -54,7 +54,7 @@ Widget.types.file_upload = {
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
-				jQuery('<div/>').text(error.message).dialog();
+				options.error ? options.error(error) : jQuery('<div/>').text(error.message).dialog();
 			} else {
 				this.do_upload(file, options);
 			}
@@ -76,10 +76,10 @@ Widget.types.file_upload = {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
 					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
-					this.fire('{{writeString=file.uploaded}}', result);
+					this.fire('file.uploaded', result);
 					options.callback(result);
 				} else {
-					Widget.notifyUser('alert', error.message);
+					options.error ? options.error(error) : Widget.notifyUser('alert', error.message);
 				}
 			});
 		};

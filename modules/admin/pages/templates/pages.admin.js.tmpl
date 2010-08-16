@@ -73,7 +73,7 @@ jQuery(document).ready(function() {
 	
 	Widget.createWithElement('tree', function(widget) {
 		widget.settings.description_from_item = function(item) {
-			return item.page_string.LinkText;
+			return item.Name;
 		};
 		widget.settings.has_children = function(item) {
 			return item.TreeRight-item.TreeLeft > 1;

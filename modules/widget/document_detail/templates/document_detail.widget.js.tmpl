@@ -3,6 +3,7 @@ Widget.types.document_detail = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
+			this.current_detail_id = null;
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
 				width: 550,
@@ -12,6 +13,37 @@ Widget.types.document_detail = {
 			widget.content = this.content;
 			this.content.find("select[name='document_category_id']").prepareWidget();
 			this.content.find("select[name='language_id']").prepareWidget();
+			
+			var document_detail = this;
+			Widget.create('file_upload', function(uploader) {
+				document_detail.uploader = uploader;
+			});
+
+			this.upload_button = this.content.find("button.do_upload").button().hide().click(function(event) {
+				document_detail.upload_button.button('disable');
+				document_detail.file_upload.attr('disabled', true);
+				var file = document_detail.file_upload[0].files[0];
+				document_detail.uploader.upload_file(file, {document_id: document_detail.current_detail_id, callback: function() {
+					this.error();
+					//TODO: reload list row and info part of detail
+				}, error: function(error) {
+					document_detail.upload_button.button('enable');
+					document_detail.file_upload.attr('disabled', false);
+					document_detail.upload_button.hide();
+					if(error) {
+						document_detail.detail_widget.validate_with({upload: jQuery('<div class="error_display"/>').text(error.message)});
+					}
+				}});
+			});
+			this.file_upload = this.content.find("input[name='file_upload']").change(function(event) {
+				document_detail.detail_widget.clear_validation();
+				var files = this.files;
+				if(files.length === 1) {
+					document_detail.upload_button.show();
+				} else {
+					document_detail.upload_button.hide();
+				}
+			});
 			if(this.auto_open) {
 				this.open();
 			}
@@ -53,6 +85,7 @@ Widget.types.document_detail = {
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);
+			this.current_detail_id = document_data.Id;
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.document}}"+' '+document_data.Name);
 			this.detail_widget.set_is_loading(false);
 		});
