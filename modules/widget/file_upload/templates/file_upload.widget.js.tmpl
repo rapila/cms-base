@@ -50,7 +50,7 @@ Widget.types.file_upload = {
 	},
 	
 	upload_file: function(file) {
-		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type};
+		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop};
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
@@ -77,6 +77,7 @@ Widget.types.file_upload = {
 					notification.enable_close_button();
 					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
 					this.fire('{{writeString=file.uploaded}}', result);
+					options.callback(result);
 				} else {
 					Widget.notifyUser('alert', error.message);
 				}
