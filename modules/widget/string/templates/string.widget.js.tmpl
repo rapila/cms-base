@@ -20,7 +20,6 @@ Widget.types.string = {
 		
 			message = jQuery('<div/>').append(strings.get_string(string_key));
 			var list = jQuery('<ul/>').appendTo(message);
-		
 			var append_message = function(string_detail, parameters) {
 				list.append(jQuery('<li>').append(strings.get_string(string_key+'.'+string_detail, parameters)));
 			};

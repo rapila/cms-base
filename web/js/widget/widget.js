@@ -291,7 +291,7 @@ jQuery.extend(Widget, {
 	//Hide activity indicator
 	end_activity: jQuery.noop,
 	
-	widgetJSON: function(widgetType, widgetId, action, callback, options) {
+	widgetJSON: function(widgetType, widgetOrId, action, callback, options) {
 		options = options || new WidgetJSONOptions();
 		var attributes = arguments[arguments.callee.length] || {};
 		if(!jQuery.isArray(action)) {
@@ -302,8 +302,8 @@ jQuery.extend(Widget, {
 		jQuery.each(action, function(i, urlPart) {
 			url += '/'+encodeURIComponent(urlPart);
 		});
-		if(widgetId) {
-			attributes['session_key'] = widgetId.widgetId || widgetId;
+		if(widgetOrId) {
+			attributes['session_key'] = widgetOrId.widgetId !== undefined ? widgetOrId.widgetId : widgetOrId;
 		}
 		var attr_str = attributes;
 		if(attributes.constructor !== String) {
@@ -357,7 +357,7 @@ jQuery.extend(Widget, {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					var call_callback = exception_handler(error, widgetType, widgetId, action, callback, options, attributes);
+					var call_callback = exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
 				}
 				if(call_callback) {
 					callback.call(this, result, error);
@@ -406,28 +406,28 @@ jQuery.extend(Widget, {
 	
 	//Called when a specific type of Exception is thrown in _widgetJSON. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
-		fallback: function(error, widgetType, widgetId, action, callback, options, attributes) {
+		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			if(callback.length<2) {
 				Widget.notifyUser('alert', error.message);
 			}
 			return true;
 		},
 		
-		needs_login: function(error, widgetType, widgetId, action, callback, options, attributes) {
+		needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			Widget.create('login_window', function(login_widget) {
 				login_widget.show();
 				Widget.handle('cmos.logged_in', function(event) {
 					// Re-try the action
-					Widget.widgetJSON(widgetType, widgetId, action, callback, options, attributes);
+					Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
 				}, true);
 			});
 			
 			return false;
 		},
 		
-		ValidationException: function(error, widgetType, widgetId, action, callback, options, attributes) {
-			if(widgetId.detail_widget) {
-				widgetId.detail_widget.validate_with(error.parameters);
+		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
+			if(widgetOrId.detail_widget) {
+				widgetOrId.detail_widget.validate_with(error.parameters);
 				return false;
 			}
 			return true;

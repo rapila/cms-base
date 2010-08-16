@@ -49,6 +49,14 @@ class Group extends BaseGroup {
 		return $aResult;
 	}
 	
+	public function getRolesInfo() {
+	  $aRoles = self::getRoles(true);
+	  if(count($aRoles) > 0) {
+	    return implode(', ', $aRoles);
+	  }
+	  return null;
+	}
+	
 	public function addUser($oUser) {
 		if($this->containsUser($oUser)) {
 			return;

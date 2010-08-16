@@ -20,7 +20,7 @@ class GroupListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'user_link_data', 'delete');
+		return array('id', 'name', 'roles_info', 'user_link_data', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -33,6 +33,9 @@ class GroupListWidgetModule extends WidgetModule {
 			case 'user_link_data':
 				$aResult['heading'] = StringPeer::getString('widget.group.user_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
+				break;
+			case 'roles_info':
+				$aResult['heading'] = StringPeer::getString('widget.group.roles');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

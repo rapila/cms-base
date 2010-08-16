@@ -4,10 +4,10 @@ admin_menu:
     - edit
     -
       - module.pages
-      - module.users
-      - ~
       - module.documents
       - module.links
+      - ~
+      - module.users
     - module.dashboard
   right:
     - activity

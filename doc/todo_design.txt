@@ -1,5 +1,9 @@
 AKTUELL todo design
 *****************************************************************************************************************
+Notiz Treffen 13. August 2010 HerrmannGermann
+- Pages Detail, Inhalt, Sprache
+- on edit > preview
+- labels, is_activ, content config in lang tab
 
 Upcoming meeting, requirements
 - Pages implemented with rights and notifications
@@ -20,7 +24,6 @@ CMOS Redesign DOMAIN CMS name
 domain / name diskussion 
 [.ch,.net] ixmos cimos modlo nodos expan axila pumul rondolo rodea
 [.ch] cemos, cimos, macros, mosco, nodi, visca, meira, crealo, pides, pidelo, rondolo, crealo, sinea, vuela, quesea, rapilo, andala, usalo, uselo, llena, llenalo, mosic, momul, momol, abria, abeja, expan, solan, mosic, mosia, mosio, organos, orgos, ormos, mosix, arange, aliq, piragua (kanu), pirana, peca (sommersprosse), tampi (tambien para idiotas), pire, framos, fillme, useme, fillmy, olani, aleni, adeni, abani, aboni
-
 
 
 ARCHIVE todo
