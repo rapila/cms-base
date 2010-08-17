@@ -504,6 +504,9 @@ jQuery.extend(jQuery, {
 
 jQuery.fn.extend({
 	prepareWidget: function() {
+		if(this.length == 0) {
+			return;
+		}
 		var callback = arguments[0] || jQuery.noop;
 		var intermediateCallback = jQuery.noop;
 		if(arguments[1]) {
@@ -515,12 +518,12 @@ jQuery.fn.extend({
 			return this;
 		}
 		var waiting_callbacks = this.data('waiting_prepare_callbacks');
-		if(waiting_callbacks !== null) {
+		if(waiting_callbacks) {
 			waiting_callbacks.intermediate.push(intermediateCallback);
 			waiting_callbacks.ending.push(callback);
 			return;
 		}
-		waiting_callbacks = {intermediate:[intermediateCallback], ending: [callback]};
+		waiting_callbacks = {intermediate: [intermediateCallback], ending: [callback]};
 		this.data('waiting_prepare_callbacks', waiting_callbacks);
 		var widget_type = this.attr('data-widget-type');
 		var widget_session = this.attr('data-widget-session');

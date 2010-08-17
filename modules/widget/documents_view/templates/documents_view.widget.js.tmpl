@@ -1,26 +1,36 @@
 Widget.types.documents_view = {
-	initialize: function() {
+	prepare: function() {
 		this.document_category_id = this.getInitialDocumentCategoryId();
 		this.search_string = this.getInitialSearchString();
 		this.document_kind = this.getInitialDocumentKind();
 		this.thumbnail_size = this.getInitialThumbnailSize();
 		
-		this._element = jQuery('<div/>').tabs();
+		console.log(this);
+		
+		this._element.append('<ul/>');
+		this._element.tabs({
+			add: function(event, ui) {
+				var panel = jQuery(ui.panel);
+				var tab = jQuery(ui.tab);
+				var item = tab.attr('href').substring(1);
+				var widget_name = null;
+				if(item === 'list') {
+					widget_name = 'document_list';
+				} else if(item === 'thumbnail') {
+					widget_name = 'image_picker';
+					// widget_name = 'document_detail_view';
+				}
+				if(widget_name !== null) {
+					Widget.createWithElement(widget_name, function(widget) {
+						panel.append(widget._element);
+						// TODO append the widget._element to the tab view
+					});
+				}
+			}
+		});
 		var documents_view = this;
 		jQuery.each(this.settings.panels, function(i, item) {
-			var widget_name = null;
-			if(item === 'list') {
-				widget_name = 'document_list';
-			} else if(item === 'detail') {
-				widget_name = 'image_picker';
-				// widget_name = 'document_detail_view';
-			}
-			if(widget_name !== null) {
-				Widget.createWithElement(widget_name, function(widget) {
-					documents_view._element.tabs('add', '#'+item, item);
-					//TODO append the widget._element to the tab view
-				});
-			}
+			documents_view._element.tabs('add', '#'+item, item, 0);
 		});
 	},
 	
