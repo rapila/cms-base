@@ -31,6 +31,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 			// Objects don’t get displayed otherwise
 			$aOptions['max_width'] = 190;
 			$aOptions['max_height'] = 190;
+			$aOptions['force_refresh'] = true;
 		} else {
 			$aOptions['width'] = 190;
 			$aOptions['height'] = 142;

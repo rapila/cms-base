@@ -1,0 +1,26 @@
+ixmos/cmos css work
+
+well structured, slim..
+
+prepared for skins/themes (jQuery-UI, CMOS)
+
+structure
+1.
+- jquery_ui.css
+- jquery-ui.overwrite.css (merge in final version?)
+2.
+- widget.css ?
+  (notififications, buttons?, admin)
+3.
+- admin.css / preview.css
+4.
+- context widget.css.tmpl
+  (ie admin_menu)
+
+milestones
+
+budget
+
+Richtlinien, Coding convention, naming convention
+1. ids only for postitioning of main element (admin), skeleton
+2. jQuery ui overwrite

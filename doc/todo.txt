@@ -18,8 +18,6 @@ cms_dev
 - info: file_get_contents development environment
 - errorHandler php_error.php. - anstatt, fatal error, exiting > Mitteilung > der Server wird zur Zeit unterhalten, bitte.....
 
-
-
 BUG
 Firefox too much recursion
 [Break on this error] attr_str = JSON.stringify(attributes); 
