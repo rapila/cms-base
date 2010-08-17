@@ -13,23 +13,30 @@ Widget.types.file_upload = {
 	initialize: function() {
 	},
 	
-	allow_drag_to: function(element, selector, callback) {
+	allow_drag_to: function(element, selector, callback, single_file_only) {
 		var file_upload = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
 			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
+			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
+				current_drag_is_file = false;
+			}
 			if(!selector) {
 				element.addClass('ui-state-highlight');
 			}
 		}).bind('dragover', function(event) {
-			if(!selector || !current_drag_is_file) {
+			if(!selector) {
+				event.originalEvent.preventDefault();
+				return false;
+			}
+			if(!current_drag_is_file) {
 				return;
 			}
-			element.find(selector).removeClass('ui-state-highlight');
 			var target = jQuery(event.target);
 			if(!target.is(selector)) {
 				return;
 			}
+			element.find(selector).removeClass('ui-state-highlight');
 			target.addClass('ui-state-highlight');
 			event.originalEvent.preventDefault();
 			return false;
@@ -40,6 +47,9 @@ Widget.types.file_upload = {
 				element.removeClass('ui-state-highlight');
 			}
 		}).bind('drop', function(event) {
+			if(single_file_only && event.dataTransfer.files.length > 1) {
+				return false;
+			}
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
 				Widget.notifyUser('info', '{{writeString=Gedropptes Element enthält keine Files}}');
 				return false;
@@ -82,6 +92,7 @@ Widget.types.file_upload = {
 				if(!error) {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
+					notification.reset_timeout(3000);
 					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
 					this.fire('file.uploaded', result);
 					options.callback(result);

@@ -21,19 +21,24 @@ Widget.types.document_detail = {
 				document_detail.file_upload.attr('disabled', false);
 				document_detail.upload_button.hide();
 				if(error) {
-					document_detail.detail_widget.validate_with({upload: jQuery('<div class="error_display"/>').text(error.message)});
+					document_detail.detail_widget.validate_with({upload: jQuery('<div class="ui-state-error error_display"/>').text(error.message)});
 				}
 			};
-			var upload_success = function() {
+			var upload_success = function(result) {
 				upload_error();
-				document_detail.fill_data(true);
+				var is_new = document_detail.current_detail_id === null;
+				if(is_new) {
+					document_detail.setDocumentId(result);
+				}
+				document_detail.fill_data(!is_new);
 				//TODO: reload list row and info part of detail
 			};
 			
 			this.uploader = Widget.create('file_upload');
-			this.uploader.allow_drag_to(document_detail, null, function(target) {
+			this.uploader.allow_drag_to(document_detail.content.find('.status_section'), null, function(target) {
+				// console.log(document_detail.current_detail_id, upload_success,upload_error):
 				return {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error};
-			});
+			}, true);
 
 			this.upload_button = this.content.find("button.do_upload").button().hide().click(function(event) {
 				document_detail.upload_button.button('disable');
@@ -75,7 +80,8 @@ Widget.types.document_detail = {
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);
-			if(is_upload_only === undefined) {
+			this.content.find(".file_size").text(document_data.FileInfo);
+			if(!is_upload_only) {
 				if(document_data.DocumentCategoryId === null) {
 					document_data.DocumentCategoryId = '';
 				}
@@ -89,7 +95,6 @@ Widget.types.document_detail = {
 				this.content.find("textarea[name='description']").val(document_data.Description);
 				this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
 				this.content.find("select[name='language_id']").val(document_data.LanguageId);
-				this.content.find(".file_size").text(document_data.FileInfo);
 				this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
 				this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
 				this.current_detail_id = document_data.Id;

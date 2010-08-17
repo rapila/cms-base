@@ -1,3 +1,7 @@
+.ui-corner-all {
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
 .ui-selectable-helper { z-index: 4000 !important; }
 .ui-notify {
   margin-left: auto;
@@ -332,7 +336,7 @@ div.container {
   min-height: 300px;
   float: left;
   background-color: white;
-/*  border: 1px red solid;*/
+  border: 1px red solid;
   font-size: 4px;
 }
 .page_detail .available_modules {

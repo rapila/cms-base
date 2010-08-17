@@ -77,7 +77,10 @@ jQuery.extend(Widget, {
 				badge.show().text(count);
 				this.reset_timeout();
 			},
-			reset_timeout: function() {
+			reset_timeout: function(closeDelay) {
+				if(closeDelay !== undefined) {
+					this.options.closeDelay = closeDelay;
+				}
 				this.clear_timeout();
 				if(this.options.closeDelay) {
 					this.options.timeout = window.setTimeout(this.close, this.options.closeDelay);

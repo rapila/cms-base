@@ -21,12 +21,11 @@ class FileUploadWidgetModule extends WidgetModule {
 			$sFileName = implode('.', $aName);
 		}
 		$oDocument->setData($sFileData);
-    // $oDocument->setData($sFileData);
+		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
 		if($oDocument->isNew()) {
   		$oDocument->setName($sFileName);
   		$oDocument->setLanguageId($aOptions['language_id']);
   		$oDocument->setIsProtected($aOptions['is_protected']);
-  		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
   		if($aOptions['document_category_id']) {
   			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
   		}

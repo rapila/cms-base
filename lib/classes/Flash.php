@@ -154,7 +154,7 @@ class Flash {
 			$aParameters = $this->aMessages[$sName];
 		}
 		$this->aMessages[$sName] = false;
-		$oTag = new TagWriter('div', array('class' => 'error_display'), StringPeer::getString("flash.$sName", null, null, $aParameters));
+		$oTag = new TagWriter('div', array('class' => 'ui-state-error error_display'), StringPeer::getString("flash.$sName", null, null, $aParameters));
 		return $oTag->parse();
 	}
 	
