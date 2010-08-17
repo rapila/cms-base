@@ -18,8 +18,11 @@ Widget.types.file_upload = {
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
 			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
+			if(!selector) {
+				element.addClass('ui-state-highlight');
+			}
 		}).bind('dragover', function(event) {
-			if(!current_drag_is_file) {
+			if(!selector || !current_drag_is_file) {
 				return;
 			}
 			element.find(selector).removeClass('ui-state-highlight');
@@ -31,7 +34,11 @@ Widget.types.file_upload = {
 			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
-			element.find(selector).removeClass('ui-state-highlight');
+			if(selector) {
+				element.find(selector).removeClass('ui-state-highlight');
+			} else {
+				element.removeClass('ui-state-highlight');
+			}
 		}).bind('drop', function(event) {
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
 				Widget.notifyUser('info', '{{writeString=Gedropptes Element enthält keine Files}}');
