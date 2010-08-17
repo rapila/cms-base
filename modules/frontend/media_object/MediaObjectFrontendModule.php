@@ -26,13 +26,16 @@ class MediaObjectFrontendModule extends FrontendModule {
 				if(@$aDocumentInfo['max_height']) {
 					$aParameters['max_height'] = $aDocumentInfo['max_width'];
 				}
+				if(@$aDocumentInfo['force_refresh']) {
+          $aParameters['refresh'] = time();
+				}
 				
 				$sSrc = $oDocument->getDisplayUrl($aParameters);
 				if(!$sMimeType) {
 					$sMimeType = $oDocument->getMimetype();
 				}
 			} else if ((@$aDocumentInfo['url'])) {
-				if(file_exists(MAIN_DIR_FE.$aDocumentInfo['url'])) {
+				if(file_exists(MAIN_DIR.'/'.$aDocumentInfo['url'])) {
 					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
 				}
 				$sSrc = @$aDocumentInfo['url'];
