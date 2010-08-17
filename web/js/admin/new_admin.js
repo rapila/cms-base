@@ -178,9 +178,3 @@ jQuery.extend(Widget, {
 		}
 	}	
 });
-
-jQuery(document).ready(function() {
-	Widget.create('string', function(widget) {
-		window.AdminInterface.strings = widget;
-	});
-});

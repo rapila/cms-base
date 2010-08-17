@@ -7,6 +7,7 @@ jQuery(document).ready(function() {
 		loader: jQuery('#viewscreen_loader').hide().data('load-count', 0),
 		current_admin_module: {{current_admin_module;defaultValue=null;templateFlag=JAVASCRIPT_ESCAPE}},
 		content_language: "{{writeSessionAttribute=content_language}}",
+		strings: Widget.create('string'),
 		translations: {
 			cancelButtonText: "{{writeString=widget.cancel}}",
 			okButtonText: "{{writeString=widget.ok}}"
