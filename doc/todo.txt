@@ -27,6 +27,7 @@ and lots more
 row_count error > update count on no entries
 
 Priorities
+- Validierungen gemäss Beispiel, z.B. User.
 - Roles and Groups > RoleAdminModule? Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - Timeline production RC, feature freeze
   what requirements does it contain? 
