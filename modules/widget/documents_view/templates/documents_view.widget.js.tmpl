@@ -1,10 +1,13 @@
 Widget.types.documents_view = {
-	prepare: function() {
+	initialize: function() {
 		this.document_category_id = this.getInitialDocumentCategoryId();
 		this.search_string = this.getInitialSearchString();
 		this.document_kind = this.getInitialDocumentKind();
 		this.thumbnail_size = this.getInitialThumbnailSize();
-				
+	},
+	
+	prepare: function() {
+		
 		this._element.append('<ul/>');
 		this._element.tabs({
 			add: function(event, ui) {
@@ -15,13 +18,12 @@ Widget.types.documents_view = {
 				if(item === 'list') {
 					widget_name = 'document_list';
 				} else if(item === 'thumbnail') {
-					widget_name = 'image_picker';
-					// widget_name = 'document_detail_view';
+					// widget_name = 'image_picker';
+					widget_name = 'document_thumbnail_view';
 				}
 				if(widget_name !== null) {
 					Widget.createWithElement(widget_name, function(widget) {
 						panel.append(widget._element);
-						// TODO append the widget._element to the tab view
 					});
 				}
 			}

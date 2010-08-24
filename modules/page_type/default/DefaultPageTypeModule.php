@@ -2,6 +2,9 @@
 /**
 	* @package modules.page_type
 	*/
+
+require_once("CSSParser.php");
+
 class DefaultPageTypeModule extends PageTypeModule {
 	
 	private $oFrontendTemplate;
