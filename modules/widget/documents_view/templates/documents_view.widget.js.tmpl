@@ -1,53 +1,113 @@
 Widget.types.documents_view = {
 	initialize: function() {
-		this.document_category_id = this.getInitialDocumentCategoryId();
-		this.search_string = this.getInitialSearchString();
-		this.document_kind = this.getInitialDocumentKind();
-		this.thumbnail_size = this.getInitialThumbnailSize();
+		this.settings.document_category_id = this.getInitialDocumentCategoryId();
+		this.settings.search_string = this.getInitialSearchString();
+		this.settings.document_kind = this.getInitialDocumentKind();
+		this.settings.thumbnail_size = this.getInitialThumbnailSize();
 	},
 	
 	prepare: function() {
-		
+		var documents_view = this;
 		this._element.append('<ul/>');
-		this._element.tabs({
+		var tabs_settings = {
 			add: function(event, ui) {
 				var panel = jQuery(ui.panel);
 				var tab = jQuery(ui.tab);
 				var item = tab.attr('href').substring(1);
-				var widget_name = null;
-				if(item === 'list') {
-					widget_name = 'document_list';
-				} else if(item === 'thumbnail') {
-					// widget_name = 'image_picker';
-					widget_name = 'document_thumbnail_view';
+				if(documents_view.tab_views[item]) {
+					tab.data('documents_view', documents_view.tab_views[item]);
+					tab.data('panel', panel);
 				}
-				if(widget_name !== null) {
-					Widget.createWithElement(widget_name, function(widget) {
-						panel.append(widget._element);
-					});
+			},
+			show: function(event, ui) {
+				var tab = jQuery(ui.tab);
+				documents_view.active_tab = tab;
+				if(!tab.data('documents_view')) {
+					return;
+				}
+				if(!tab.data('widget')) {
+					documents_view.init_tab(tab);
+				} else {
+					tab.data('widget').reload();
 				}
 			}
-		});
-		var documents_view = this;
+		};
+		this._element.tabs(tabs_settings);
 		jQuery.each(this.settings.panels, function(i, item) {
 			documents_view._element.tabs('add', '#'+item, item, 0);
 		});
+		tabs_settings.show(null, {tab: this.active_tab});
+	},
+	
+	init_tab: function(tab) {
+		var type = tab.data('documents_view');
+		var panel = tab.data('panel');
+		var widget_name = type.widget_name;
+		var documents_view = this;
+		Widget.createWithElement(widget_name, function(widget) {
+			tab.data('widget', widget);
+			documents_view.configure_tab(tab);
+		}, function(widget) {
+			panel.append(widget._element);
+		});
+	},
+	
+	configure_tab: function(tab) {
+		var type = tab.data('documents_view');
+		type.configure.call(this, tab.data('widget'));
+	},
+	
+	reload: function() {
+		this.active_tab.data('widget').reload();
 	},
 	
 	set_document_category_id: function(id) {
-		this.document_category_id = id;
+		this.settings.document_category_id = id;
 	},
 	
 	set_search_string: function(string) {
-		this.search_string = string;
+		this.settings.search_string = string;
 	},
 	
 	set_document_kind: function(kind) {
-		this.document_kind = kind;
+		this.settings.document_kind = kind;
 	},
 	
 	set_thumbnail_size: function(size) {
-		this.thumbnail_size = size;
+		this.settings.thumbnail_size = size;
+	},
+	
+	tab_views: {
+		list: {
+			widget_name: 'document_list',
+			configure: function(widget) {
+				// This is not the list widget, it’s only the document_list widget. You can’t use setOption on that.
+				// FIXME: Find a way to do this elegantly
+				// if(this.settings.document_category_id) {
+				// 	widget.setOption('document_category_id', this.settings.document_category_id);
+				// }
+				// if(this.settings.search_string) {
+				// 	widget.setOption('search_string', this.settings.search_string);
+				// }
+				// if(this.settings.document_kind) {
+				// 	widget.setOption('document_kind', this.settings.document_kind);
+				// }
+			}
+		},
+		thumbnail: {
+			widget_name: 'document_thumbnail_view',
+			configure: function(widget) {
+				if(this.settings.document_category_id) {
+					widget.setDocumentCategoryId(this.settings.document_category_id);
+				}
+				if(this.settings.document_kind) {
+					widget.setDocumentKind(this.settings.document_kind);
+				}
+				if(this.settings.thumbnail_size) {
+					widget.settings.thumbnail_size = this.settings.thumbnail_size;
+				}
+			}
+		},
 	},
 	
 	settings: {

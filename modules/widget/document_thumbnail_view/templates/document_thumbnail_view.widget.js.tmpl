@@ -4,77 +4,61 @@ Widget.types.document_thumbnail_view = {
 	},
 	
 	prepare: function() {
-		
+		this.reload();
 	},
 	
-	set_callback: function(callback) {
-		this.callback = callback;
-	},
-	
-	open_chooser: function() {
-		if(!this.list_element) {
-			this.listImages(function(result, error) {
-				if(error) {
-					return;
-				}
-				this.list_element = jQuery('<div/>');
-				var picker_object = this;
-				jQuery.each(result, function() {
-					var document_id = this.id;
-					var url = picker_object.document_url_from_id(document_id, 50);
-					var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-image-picker-image');
-					image.children('img').attr({src: url, width: '50'});
-					image.data('document_id', document_id);
-					Widget.tooltip(image, this.name);
-					image.hover(function() {
-						image.addClass('ui-state-hover');
-					}, function() {
-						image.removeClass('ui-state-hover');
-					});
-					picker_object.list_element.append(image);
+	reload: function() {
+		this._element.empty();
+		this.listImages(function(result) {
+			var picker_object = this;
+			var px_size = ''+this.settings.thumbnail_size+'px';
+			jQuery.each(result, function() {
+				var document_id = this.id;
+				var doc = jQuery('<div></div>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
+				doc.css({width: px_size, height: px_size});
+				doc.data('document_id', document_id);
+				Widget.tooltip(doc, this.name);
+				doc.hover(function() {
+					doc.addClass('ui-state-hover');
+				}, function() {
+					doc.removeClass('ui-state-hover');
 				});
-				var buttons = {};
-				if(this.getAllowsMultiselect()) {
-					this.list_element.selectable({
-						selecting: function(event, ui) {
-							jQuery(ui.selecting).addClass('ui-state-active');
-						},
-						unselecting: function(event, ui) {
-							jQuery(ui.unselecting).removeClass('ui-state-active');
-						},
-						filter: "> div",
-						stop: function() {
-							//Change button active state
-						}
-					});
-					buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
-						var selected = picker_object.list_element.children('.ui-selected');
-						if(selected.length > 0) {
-							var collection = [];
-							selected.each(function() {
-								collection[collection.length] = jQuery(this).data('document_id');
-							});
-							selected.removeClass('ui-selected ui-state-active');
-							picker_object.callback.apply(picker_object, collection);
-						}
-						picker_object.list_element.dialog('close');
-					};
-				} else {
-					this.list_element.children('div').bind('click', function() {
-						var document_id = jQuery(this).data('document_id');
-						picker_object.callback(document_id);
-						picker_object.list_element.dialog('close');
-					});
-				}
-				this.list_element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600});
+				picker_object._element.append(doc);
 			});
-			return;
-		}
-		this.list_element.dialog('open');
-	}, 
-	
-	remove_picture: function() {
-		this.callback();
+			var buttons = {};
+			if(this.settings.allows_multiselect) {
+				this._element.selectable({
+					selecting: function(event, ui) {
+						jQuery(ui.selecting).addClass('ui-state-active');
+					},
+					unselecting: function(event, ui) {
+						jQuery(ui.unselecting).removeClass('ui-state-active');
+					},
+					filter: "> div",
+					stop: function() {
+						//FIXME: Change button active state, add selected ids to document_ids
+						var document_ids = [];
+						picker_object.fire('selected', document_ids, ui.selected);
+					}
+				});
+				buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
+					var selected = picker_object._element.children('.ui-selected');
+					if(selected.length > 0) {
+						var collection = [];
+						selected.each(function() {
+							collection[collection.length] = jQuery(this).data('document_id');
+						});
+						selected.removeClass('ui-selected ui-state-active');
+						picker_object.callback.apply(picker_object, collection);
+					}
+				};
+			} else {
+				this._element.children('div').bind('click', function() {
+					var document_id = jQuery(this).data('document_id');
+					picker_object.fire('clicked', this, document_id);
+				});
+			}
+		});
 	},
 	
 	document_url_from_id: function(document_id, image_width) {
@@ -82,6 +66,7 @@ Widget.types.document_thumbnail_view = {
 	},
 	
 	settings: {
-		allows_multiselect: true
+		allows_multiselect: true,
+		thumbnail_size: 50
 	}
 };

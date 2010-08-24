@@ -11,7 +11,7 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 		$this->iInitialDocumentCategoryId = CriteriaListWidgetDelegate::SELECT_ALL;
 		$this->sInitialSearchString = null;
 		$this->sInitialDocumentKind = CriteriaListWidgetDelegate::SELECT_ALL;
-		$this->iInitialThumbnailSize = 80;
+		$this->iInitialThumbnailSize = 160;
 	}
 	
 	public function setInitialDocumentCategoryId($iInitialDocumentCategoryId) {

@@ -4,17 +4,17 @@
  */
 class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	
-	private $aAllowedCategories = null;
+	private $iDocumentCategoryId = null;
 	private $sDocumentKind = null;
 	
 	private $bInitialAllowsMultiselect = false;
 	
 	public function listImages() {
 		$oCriteria = new Criteria();
-		if($this->aAllowedCategories !== null) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->aAllowedCategories, Criteria::IN);
+		if($this->iDocumentCategoryId !== null && $this->iDocumentCategoryId !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->iDocumentCategoryId);
 		}
-		if($this->sDocumentKind !== null) {
+		if($this->sDocumentKind !== null && $this->sDocumentKind !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($this->sDocumentKind)), Criteria::IN);
 		}
 		$aDocuments = DocumentPeer::doSelect($oCriteria);
@@ -37,11 +37,15 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	    return $this->sDocumentKind;
 	}
 	
-	public function setAllowedCategories($aAllowedCategories) {
-		$this->aAllowedCategories = $aAllowedCategories;
+	public function setDocumentCategoryId($iDocumentCategoryId) {
+	    $this->iDocumentCategoryId = $iDocumentCategoryId;
 	}
-	
+
+	public function getDocumentCategoryId() {
+	    return $this->iDocumentCategoryId;
+	}
+		
 	public function getElementType() {
-		return null;
+		return 'div';
 	}
 }

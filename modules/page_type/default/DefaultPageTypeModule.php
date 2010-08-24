@@ -3,7 +3,8 @@
 	* @package modules.page_type
 	*/
 
-require_once("CSSParser.php");
+
+require_once("cssparser/CSSParser.php");
 
 class DefaultPageTypeModule extends PageTypeModule {
 	
