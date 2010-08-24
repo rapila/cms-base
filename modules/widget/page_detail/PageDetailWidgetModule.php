@@ -14,6 +14,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function setPageId($iPageId) {
 		$this->iPageId = (int) $iPageId;
+    Session::getSession()->setAttribute('persistent_page_id', $this->iPageId);
 	}
 	
 	public function getPageData() {

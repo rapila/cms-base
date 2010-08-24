@@ -4,9 +4,7 @@ Widget.types.documents_view = {
 		this.search_string = this.getInitialSearchString();
 		this.document_kind = this.getInitialDocumentKind();
 		this.thumbnail_size = this.getInitialThumbnailSize();
-		
-		console.log(this);
-		
+				
 		this._element.append('<ul/>');
 		this._element.tabs({
 			add: function(event, ui) {

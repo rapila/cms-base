@@ -186,13 +186,14 @@ Widget.types.admin_menu = {
 		
 		preview: function() {
 			return {callback: function() {
-				//Handle Preview link
 			}.bind(this), text: "{{writeString=widget.page.preview_linktext}}"};
 		},
 		
 		edit: function() {
 			return {callback: function() {
-				//Handle Edit link
+				if(AdminInterface.current_admin_module != 'pages') {
+					window.location.href="/admin/pages";
+				}
 			}.bind(this), text: "{{writeString=widget.page.edit_linktext}}"};
 		},
 		

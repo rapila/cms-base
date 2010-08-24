@@ -13,8 +13,12 @@ class PagesAdminModule extends AdminModule {
 		$this->oTreeWidget->setDelegate($this);
 		$this->oTreeWidget->setOrdered(true);
 		$oInitialPage = $this->oRootPage;
+    // ErrorHandler::log(Manager::hasNextPathItem(), Session::getSession()->hasAttribute('persistent_page_id'));
 		if(Manager::hasNextPathItem()) {
 			$oInitialPage = PagePeer::retrieveByPK(Manager::usePath());
+			Session::getSession()->setAttribute('persistent_page_id', $oInitialPage->getId());
+		} else if(Session::getSession()->hasAttribute('persistent_page_id')) {
+      $oInitialPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'tree_session', $this->oTreeWidget->getSessionKey());
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'initial_page_id', $oInitialPage->getId());

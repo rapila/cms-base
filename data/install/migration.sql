@@ -326,3 +326,7 @@ ALTER TABLE `rights` ADD `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf
 -- after mini_cms_migrate_groups_to_roles.sh
 ALTER TABLE `rights` DROP COLUMN `group_id`;
 ALTER TABLE `rights` ADD UNIQUE KEY `rights_U_1` (`role_key`, `page_id`, `is_inherited`);
+
+#2697
+ALTER TABLE `documents` ADD `original_name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `name` ,
+ADD INDEX ( `original_name` );

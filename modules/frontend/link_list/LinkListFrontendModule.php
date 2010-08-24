@@ -10,7 +10,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
 		$oCriteria = new Criteria();
-		$bOneTagnameOnly = true;
+		$bOneTagnameOnly = false;
 		if(isset($aOptions['tags']) && is_array($aOptions['tags']) && (count($aOptions['tags']) > 0)) {
 			$aLinks = LinkPeer::getLinksByTagName($aOptions['tags']);
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
@@ -20,7 +20,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
 			if($bOneTagnameOnly) {
-				$oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
+        $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
 			}
 			foreach($aLinks as $i => $oLink) {
 				$oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);

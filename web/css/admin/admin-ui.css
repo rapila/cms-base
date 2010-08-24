@@ -185,6 +185,8 @@ button.ui-button.ui-state-default {
 #cmos_admin_menu .cmos-button.ui-state-default { background: url() transparent; }
 .ui-state-default { background: url() transparent; }
 .ui-widget-content .ui-state-default { background: url() transparent; }
+#cmos_admin_menu .cmos-button.ui-state-hover { color: #e3ef99; }
+#cmos_admin_menu .cmos-button.ui-state-active { color: #e3ef99; }
 #admin_sidebar li.ui-state-active { color: white; }
 #admin_sidebar span.sidebar_input_save {
   display: none;

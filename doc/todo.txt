@@ -8,25 +8,17 @@ Miscellaneous projects
 		Opera main navigation not display correctly
 	General check and update
 	
-PHP 5.3
-- namespaces and coding standards
-	http://groups.google.com/group/php-standards/web/php-coding-standard
-	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
+extend documents with original_name
 	
-cms_dev 
-- cms_dev onNavigationItemChildrenRequested second argument not given.
-- info: file_get_contents development environment
-- errorHandler php_error.php. - anstatt, fatal error, exiting > Mitteilung > der Server wird zur Zeit unterhalten, bitte.....
-
-BUG
-Firefox too much recursion
-[Break on this error] attr_str = JSON.stringify(attributes); 
-Safari > admin menu does not show
-Dok Kategorie und Lang Selector do not show
-and lots more
-row_count error > update count on no entries
+DIVERSES
+1 qm-manual
+2 schule altenburg planung
+	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
+6 Bug-Tracking / Wiki > Assembla, GitHub ?
 
 Priorities
+- cmos_mini > projects file_upload. discuss more generic file_upload widget
+- admin_menu edit preview handle persistent detail id
 - Validierungen gemäss Beispiel, z.B. User.
 - Roles and Groups > RoleAdminModule? Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - Timeline production RC, feature freeze
@@ -55,6 +47,15 @@ Priorities
 	- QM-Manual Server E-Mail
 	- Discuss email, procedure Schule Altenburg
 	- Naturfreunde, strategy. What are we doing, what is our focus
+
+PHP 5.3
+- namespaces and coding standards
+	http://groups.google.com/group/php-standards/web/php-coding-standard
+	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
+	
+cms_dev 
+- cms_dev onNavigationItemChildrenRequested second argument not given.
+- info: file_get_contents development environment
 
 Details
 - settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
@@ -602,3 +603,17 @@ media object : get_headers() [<a href='function.get-headers'>function.get-header
 - css page tree li ui-state-active: if parent element is hovered, the active background turns transparent! >set color for active element to !important
 - taylormade cufon.now() slashes?
 taylormade: not_found handling with Filter or @see DocumentDownloadFrontendModule, better without redirecting
+BUG
+Firefox too much recursion
+[Break on this error] attr_str = JSON.stringify(attributes); 
+Safari > admin menu does not show
+Dok Kategorie und Lang Selector do not show
+and lots more
+row_count error > update count on no entries
+3 taylormade
+- per HTTP runtergeladener Dump hat beim importieren mit dem MysqlDumpImporter auf ersten Blick keinen Fehler geworfen (ausser max_allowed_packet).
+	Deutet das auf einen Fehler in unserem MysqlDumpExporter hin?
+- Safari width does not work properly js! i.e. http://cms_taylormade/de/corporate-identity/
+- improve IE 7 css, image jumping...
+- errorHandler php_error.php. - anstatt, fatal error, exiting > Mitteilung > der Server wird zur Zeit unterhalten, bitte.....
+4 Rights fix minicms test ftp Altenburg, how to?
