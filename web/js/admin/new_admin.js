@@ -108,7 +108,6 @@ jQuery.extend(Widget, {
 				}.bind(this));
 			}
 		};
-		
 		functions.set_message(message);
 		display.data('functions', functions).show('blind');
 		functions.reset_timeout();

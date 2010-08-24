@@ -188,6 +188,8 @@ button.ui-button.ui-state-default {
 #cmos_admin_menu .cmos-button.ui-state-hover { color: #e3ef99; }
 #cmos_admin_menu .cmos-button.ui-state-active { color: #e3ef99; }
 #admin_sidebar li.ui-state-active { color: white; }
+.ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
+.ui-widget-content .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
 #admin_sidebar span.sidebar_input_save {
   display: none;
   height: 16px;
@@ -310,6 +312,7 @@ form.page_detail h3.status { padding-left: 0.3em; }
 input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
 input.ui-widget-content.input_short { width: 6em; }
+input.ui-widget-content.autowidth { width: auto !important; }
 input.path_input.ui-widget-content:hover { background: url() #ffffff; }
 input.path_input.ui-widget-content:selected { background: url() #ffffff; }
 .page_properties_container span { margin-left: 1em; }
@@ -338,23 +341,22 @@ div.container {
   min-height: 300px;
   float: left;
   background-color: white;
-  border: 1px red solid;
+  border: 1px #b5b5b5 solid;
   font-size: 4px;
 }
 .page_detail .available_modules {
   min-width: 100px;
   max-width: 250px;
-  margin: 12px 0 0 1em;
+  margin: 12px 24px 0 0;
   min-height: 150px;
   padding: 0;
   float: left;
-  background-color: #f2f2f2;
 }
 .page_detail .filled_modules ol.template-container {
   display: block;
   min-height: 100px !important;
   width: 190px !important;
-  border: 1px solid red !important;
+  border: 1px solid #797979 !important;
 }
 .page_detail .available_modules li {
   list-style: none inside;
@@ -363,7 +365,7 @@ div.container {
   padding: 4px 6px;
   border-radius: 3px;
   border: 1px solid #999999;
-  margin-bottom: 4px;
+  margin: 2px;
 }
 .page_detail .filled_modules ol.template-container li {
   list-style: none inside;
@@ -372,7 +374,8 @@ div.container {
   padding: 4px 6px;
   border-radius: 3px;
   border: 1px solid #999999;
-  margin-bottom: 4px;
+  margin: 2px;
 }
+.page_detail .available_modules li { background-color: #f2f2f2; }
 .page_detail .filled_modules ol.template-container li { font-size: 12px; }
 .page_detail .template-container-description { font-size: 12px; }

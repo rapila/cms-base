@@ -131,7 +131,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
 		// validate post values / fetch most with js
 		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
-		$this->oPage->setIsInactive(!isset($aPageData['is_inactive']));
+		$this->oPage->setIsInactive(!isset($aPageData['global_is_inactive']));
 		$this->oPage->setIsHidden(isset($aPageData['is_hidden']));
 		$this->oPage->setIsFolder(isset($aPageData['is_folder']));
 		$this->oPage->setIsProtected(isset($aPageData['is_protected']));
@@ -158,6 +158,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oPageString->setPageTitle($aPageData['page_title']);
 		$oPageString->setLinkText($aPageData['link_text'] ? $aPageData['link_text'] : null);
+		$oPageString->setIsInactive(isset($aPageData['is_inactive']));
 		$oPageString->save();
 	}
 	

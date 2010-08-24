@@ -22,7 +22,7 @@ Widget.types.file_upload = {
 				current_drag_is_file = false;
 			}
 			if(!selector) {
-				element.addClass('ui-state-highlight');
+				element.addClass('ui-state-droppable');
 			}
 		}).bind('dragover', function(event) {
 			if(!selector) {
@@ -36,15 +36,15 @@ Widget.types.file_upload = {
 			if(!target.is(selector)) {
 				return;
 			}
-			element.find(selector).removeClass('ui-state-highlight');
-			target.addClass('ui-state-highlight');
+			element.find(selector).removeClass('ui-state-droppable');
+			target.addClass('ui-state-droppable');
 			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
 			if(selector) {
-				element.find(selector).removeClass('ui-state-highlight');
+				element.find(selector).removeClass('ui-state-droppable');
 			} else {
-				element.removeClass('ui-state-highlight');
+				element.removeClass('ui-state-droppable');
 			}
 		}).bind('drop', function(event) {
 			if(single_file_only && event.dataTransfer.files.length > 1) {

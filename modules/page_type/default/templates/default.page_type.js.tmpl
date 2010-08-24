@@ -115,8 +115,8 @@ Widget.types.page_type.types['default'] = {
 	
 	handle_admin: function(page_id, container, page_type) {
 		var pt_default = this;
-		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
+		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		available_modules.empty();
 		filled_modules.empty();
 		

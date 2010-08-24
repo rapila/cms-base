@@ -5,16 +5,11 @@ Widget.types.page_type = {
 		} else {
 			this.settings.page_type = this.getPageType();
 		}
-		this.getPageTypeJs(function(js_location, error) {
-			if(error) {
-				Widget.notifyUser('debug', error);
-				return;
-			}
-			jQuery.ajax({
-				url: js_location,
-				dataType: 'script',
-				async: false
-			});
+		var js_location = this.getPageTypeJs();
+		jQuery.ajax({
+			url: js_location,
+			dataType: 'script',
+			async: false
 		});
 	},
 	

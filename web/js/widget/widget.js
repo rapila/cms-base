@@ -74,7 +74,7 @@ jQuery.extend(Widget.prototype, {
 			result = response.result;
 			error = exception;
 		}, options, params);
-		if(error && !is_async) {
+		if(error && !options.async) {
 			throw error;
 		}
 		return result;

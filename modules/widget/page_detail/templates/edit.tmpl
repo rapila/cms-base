@@ -3,7 +3,7 @@
 	<h3 class="status">Status</h3>
 		<label style="margin: 1em 1em 1em .5em">Seitenlink</label><a class="page_href" style="font-family:Courier;"></a>
 		<label for="name" style="margin-left:4em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" /><br />
-		<input type="checkbox" name="is_inactive" value="1" /><label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label> 
+		<input type="checkbox" name="global_is_inactive" value="1" /><label class="for_checkbox" for="global_is_inactive">{{writeString=widget.page.global_active}}</label> 
 		<input type="checkbox" name="is_hidden" value="1" /><label for="is_hidden" class="for_checkbox">{{writeString=widget.page.hidden}}</label> 
 		<input type="checkbox" name="is_protected" value="1" /><label for="is_protected" class="for_checkbox">{{writeString=widget.page.protected}}</label> 
 		<input type="checkbox" name="is_folder" value="1" /><label for="is_folder" class="for_checkbox">{{writeString=widget.page.folder}}</label> 
@@ -19,16 +19,16 @@
 		<h3 class="page_properties"><a href="#">{{writeString=widget.page.label.properties}}</a></h3>
 		<div class="inner_wrapper page_properties">
 		</div>
-		<h3><a href="#">Labels</a></h3>
-		<div class="inner_wrapper">		
-			<label for="page_title">{{writeString=widget.page.page_title}}</label>
-			<input type="text" name="page_title" class="ui-widget-content input_long" /><br />
-			<label for="link_text">{{writeString=widget.page.link_text}}</label>
-			<input type="text" name="link_text" class="ui-widget-content" /><br />
-		</div>
 		<h3><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
-		<div class="inner_wrapper contents_container">
-			<!-- Page type -->
+		<div class="inner_wrapper contents_container">		
+			<label for="link_text">{{writeString=widget.page.link_text}}</label>
+			<input type="text" name="link_text" class="ui-widget-content autowidth" />
+			<input type="text" name="page_title" class="ui-widget-content input_long" /><label for="page_title">{{writeString=widget.page.page_title}}</label><br />
+
+			<input type="checkbox" name="is_inactive" value="1" /><label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label>
+			<div class="contents">
+				<!-- Page type -->
+			</div>
 		</div>
 		<h3 class="page_references"><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
 		<div class="inner_wrapper page_references">

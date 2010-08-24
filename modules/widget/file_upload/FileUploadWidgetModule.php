@@ -22,6 +22,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		}
 		$oDocument->setData($sFileData);
 		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
+		$oDocument->setOriginalName($aOptions['name']);
 		if($oDocument->isNew()) {
   		$oDocument->setName($sFileName);
   		$oDocument->setLanguageId($aOptions['language_id']);

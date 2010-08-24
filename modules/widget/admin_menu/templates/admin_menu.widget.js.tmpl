@@ -28,7 +28,7 @@ Widget.types.admin_menu = {
 				}
 				if(to_add.callback) {
 					if(to_add.text) {
-						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element);
+						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
 					} else {
 						if(admin_menu.settings.attach_events) {
 							to_add.element.click(to_add.callback);
@@ -36,7 +36,11 @@ Widget.types.admin_menu = {
 						admin_menu.addElement(to_add.element, is_right);
 					}
 				} else {
-					admin_menu.addElement(to_add.element, is_right);
+					if(to_add.text) {
+						admin_menu.addButton(to_add.text, jQuery.noop, is_right, to_add.element, to_add);
+					} else {
+						admin_menu.addElement(to_add.element, is_right);
+					}
 				}
 			});
 		});
@@ -79,9 +83,13 @@ Widget.types.admin_menu = {
 		return this;
 	},
 	
-	addButton: function(text, callback, is_right_container, element) {
+	addButton: function(text, callback, is_right_container, element, attributes) {
 		if(!element) {
 			element = this.button_prototype.clone();
+		}
+		attributes = attributes || {};
+		if(attributes.is_active) {
+			element.addClass('ui-state-active');
 		}
 		if(text == null) {
 			text = '';
@@ -190,11 +198,15 @@ Widget.types.admin_menu = {
 		},
 		
 		edit: function() {
-			return {callback: function() {
-				if(AdminInterface.current_admin_module != 'pages') {
-					window.location.href="/admin/pages";
-				}
-			}.bind(this), text: "{{writeString=widget.page.edit_linktext}}"};
+			var result = {text: "{{writeString=widget.page.edit_linktext}}"};
+			if(AdminInterface.current_admin_module == 'pages') {
+				result.is_active = true;
+			} else {
+				result.callback = function() {
+					window.location = '{{writeLink=pages;manager=AdminManager}}';
+				};
+			}
+			return result;
 		},
 		
 		logout: function() {

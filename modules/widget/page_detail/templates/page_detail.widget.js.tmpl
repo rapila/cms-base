@@ -7,7 +7,7 @@ Widget.types.page_detail = {
 			if(!ui.newContent.is('.contents_container')) {
 				return;
 			}
-			widget.load_content(widget._element.find('.contents_container'));
+			widget.load_content(ui.newContent.find('.contents'));
 		});
 		
 		this.content_has_been_loaded = false;
@@ -52,24 +52,27 @@ Widget.types.page_detail = {
 	
 	accordion_active: function() {
 		var accordion_headers = this._element.find('div.accordion h3');
-		var index;
+		var result = null;
 		accordion_headers.each(function(i, element) {
-			if(jQuery(element).hasClass('ui-state-active')) {
-				index = i;
+			element = jQuery(element);
+			if(element.hasClass('ui-state-active')) {
+				result = element;
+				return false;
 			}
 		});
-		return index;
+		return result;
 	},
 	
 	load_page: function(page_id) {
 		this.fire('page.loading', page_id);
 		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
-		var contents_container = this._element.find('div.contents_container');
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
 		this.fill_data();
-		if(this.accordion_active() == 3) {
+		var active_accordion_title = this.accordion_active();
+		if(active_accordion_title.next().is('.contents_container')) {
+			var contents_container = active_accordion_title.next().find('.contents');
 			this.load_content(contents_container);
 		}
 		page_detail.show();
@@ -99,10 +102,12 @@ Widget.types.page_detail = {
 		var page_data = this.getPageData();
 		var widget = this;
 		this.current_page_id = page_data.Id;
+		console.log(page_data.active_page_string.IsInactive, page_data.IsInactive);
 		this._element.find("input[name='name']").val(page_data.Name);
 		this._element.find("input[name='link_text']").val(page_data.active_page_string.LinkTextOnly);
 		this._element.find("input[name='page_title']").val(page_data.active_page_string.PageTitle);
-		this._element.find("input[name='is_inactive']").attr('checked', !page_data.IsInactive);
+		this._element.find("input[name='global_is_inactive']").attr('checked', !page_data.IsInactive);
+		this._element.find("input[name='is_inactive']").attr('checked', !page_data.active_page_string.IsInactive);
 		this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
 		this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
 		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);

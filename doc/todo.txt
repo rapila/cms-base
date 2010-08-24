@@ -7,9 +7,7 @@ Miscellaneous projects
 	CSS check: Chrome when developer tools are on, the displayed correctly
 		Opera main navigation not display correctly
 	General check and update
-	
-extend documents with original_name
-	
+
 DIVERSES
 1 qm-manual
 2 schule altenburg planung
@@ -17,10 +15,13 @@ DIVERSES
 6 Bug-Tracking / Wiki > Assembla, GitHub ?
 
 Priorities
-- cmos_mini > projects file_upload. discuss more generic file_upload widget
-- admin_menu edit preview handle persistent detail id
-- Validierungen gemäss Beispiel, z.B. User.
-- Roles and Groups > RoleAdminModule? Roles can be "empty" ie defined by module, or page rights, are always single intentional
+- page_detail, add is_active to pagestring
+- page_detail, swap position of modules and d&d area
+- cmos_mini projects file_upload
+- documents add original name 
+- validate implement like user_detail
+- user rights roles and groups > RoleAdminModule? 
+	Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - Timeline production RC, feature freeze
   what requirements does it contain? 
 	- click, dblclick handling in sidebar/main must be clear, @see General handling
@@ -42,11 +43,6 @@ Priorities
 	- Plugins Newsletter, Journal, WebDav, ClientProject etc. migrate, redesign
 	- ckeditor/tinymce, config per user db store
 	- discuss mini-cms scripts / Propel generator part of cms instead of local server installation
-
-- Arbeiten, 17/18. August? CSS mit Erni
-	- QM-Manual Server E-Mail
-	- Discuss email, procedure Schule Altenburg
-	- Naturfreunde, strategy. What are we doing, what is our focus
 
 PHP 5.3
 - namespaces and coding standards
@@ -617,3 +613,9 @@ row_count error > update count on no entries
 - improve IE 7 css, image jumping...
 - errorHandler php_error.php. - anstatt, fatal error, exiting > Mitteilung > der Server wird zur Zeit unterhalten, bitte.....
 4 Rights fix minicms test ftp Altenburg, how to?
+- cmos_mini > projects file_upload. discuss more generic file_upload widget
+- admin_menu edit preview handle persistent detail id
+- Arbeiten, 17/18. August? CSS mit Erni
+	- QM-Manual Server E-Mail
+	- Discuss email, procedure Schule Altenburg
+	- Naturfreunde, strategy. What are we doing, what is our focus

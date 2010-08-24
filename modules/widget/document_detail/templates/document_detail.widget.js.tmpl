@@ -81,6 +81,8 @@ Widget.types.document_detail = {
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);
 			this.content.find(".file_size").text(document_data.FileInfo);
+			this.content.find(".original_name").text(document_data.OriginalName);
+			
 			if(!is_upload_only) {
 				if(document_data.DocumentCategoryId === null) {
 					document_data.DocumentCategoryId = '';
