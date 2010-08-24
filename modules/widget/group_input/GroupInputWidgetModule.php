@@ -1,5 +1,7 @@
 <?php
-
+/**
+* @package modules.widget
+*/
 class GroupInputWidgetModule extends WidgetModule {
 	
 	public function getGroups() {

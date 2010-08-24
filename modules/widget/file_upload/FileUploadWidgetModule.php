@@ -1,4 +1,8 @@
 <?php
+
+/**
+* @package modules.widget
+*/
 class FileUploadWidgetModule extends WidgetModule {
 	public static function isSingleton() {
 		return true;

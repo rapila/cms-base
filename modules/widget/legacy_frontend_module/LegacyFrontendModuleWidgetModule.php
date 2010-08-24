@@ -1,4 +1,7 @@
 <?php
+/**
+* @package modules.widget
+*/
 class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	

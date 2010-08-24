@@ -9,13 +9,14 @@ Widget.types.document_thumbnail_view = {
 	
 	reload: function() {
 		this._element.empty();
-		this.listImages(function(result) {
+		this.listImages(this.settings.thumbnail_size, function(result) {
 			var picker_object = this;
 			var px_size = ''+this.settings.thumbnail_size+'px';
 			jQuery.each(result, function() {
 				var document_id = this.id;
 				var doc = jQuery('<div></div>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
 				doc.css({width: px_size, height: px_size});
+				doc.html(this.preview);
 				doc.data('document_id', document_id);
 				Widget.tooltip(doc, this.name);
 				doc.hover(function() {
@@ -36,6 +37,7 @@ Widget.types.document_thumbnail_view = {
 					},
 					filter: "> div",
 					stop: function() {
+						
 						//FIXME: Change button active state, add selected ids to document_ids
 						var document_ids = [];
 						picker_object.fire('selected', document_ids, ui.selected);

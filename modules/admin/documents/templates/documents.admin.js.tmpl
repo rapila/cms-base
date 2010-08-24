@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	// init main content
-	AdminInterface.content.find('table.document_list').prepareWidget(function(document_list) {
+	AdminInterface.content.find('div[data-widget-type="documents_view"]').prepareWidget(function(documents_view) {
 		// init sidebar
 		var sidebar;
 		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
@@ -9,7 +9,12 @@ jQuery(document).ready(function() {
 			//File upload
 			Widget.create('file_upload', function(file_upload) {
 				file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
-					return {document_category_id: sidebar.collect_row_data(target).id};
+					var document_category_id = sidebar.collect_row_data(target).id;
+					return {document_category_id: document_category_id, callback: function() {
+						if(documents_view.settings.document_category_id == '__all' || documents_view.settings.document_category_id == document_category_id) {
+							documents_view.reload();
+						}
+					}};
 				});
 			});
 		
@@ -31,12 +36,15 @@ jQuery(document).ready(function() {
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var document_category_id = element.data('document_category_id');
 				if(!element.hasClass('ui-state-active')) {
-					// handle highlight of default element or initial selection
-				 	document_category_id = null;
+					// TODO: handle highlight of default element or initial selection
+					document_category_id = null;
 				}
-				document_list.setOption('document_category_id', document_category_id);
-				document_list.reload();
-
+				//DECIDE: Allow this to achieve a quick reload via re-click?
+				if(documents_view.settings.document_category_id != document_category_id) {
+					documents_view.set_document_category_id(document_category_id);
+					documents_view.reload();
+				}
+				
 				jQuery('#new_sidebar_input').remove();
 			});
 		});
@@ -45,11 +53,11 @@ jQuery(document).ready(function() {
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_detail', function(widget) {
-					widget.content.find("select[name='document_category_id']").val(document_list.getOption('document_category_id'));
+					widget.content.find("select[name='document_category_id']").val(documents_view.settings.document_category_id);
 					widget.content.find("select[name='language_id']").val('');
 					widget.open();
 					widget.save_callback = function() {
-						document_list.reload();
+						documents_view.reload();
 					};
 				});
 			}, 'n', true).add_button('add-new-item', function() {
@@ -70,12 +78,13 @@ jQuery(document).ready(function() {
 			}).add_button('action', function() {
 					alert('action example: delete all currently shown documents');
 			}).add_search_input("{{writeString=search.file}}", function(search) {
-				if(document_list.setSearch(search)) {
-					document_list.reload();
+				if(documents_view.set_search_string(search)) {
+					documents_view.reload();
 				}
 			});
 			// add row_count_info
-			info_bar.add_row_count_info_for_list(document_list);
+			// FIXME: Find elegant way to do this…
+			// info_bar.add_row_count_info_for_list(document_list);
 		});
 	});
 });

@@ -23,22 +23,26 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public function preview() {
+	public static function documentPreview($iDocumentId, $iSize) {
 		$aOptions = array();
-		$aOptions['document_id'] = $this->iDocumentId;
-		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
+		$aOptions['document_id'] = $iDocumentId;
+		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
 		if($oDocument->getDocumentType()->getDocumentKind() === 'image') {
 			// Objects don’t get displayed otherwise
-			$aOptions['max_width'] = 190;
-			$aOptions['max_height'] = 190;
+			$aOptions['max_width'] = $iSize;
+			$aOptions['max_height'] = $iSize;
 			$aOptions['force_refresh'] = true;
 		} else {
-			$aOptions['width'] = 190;
-			$aOptions['height'] = 142;
+			$aOptions['width'] = $iSize;
+			$aOptions['height'] = $iSize*0.747;
 		}
 		
 		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
 		return $oModule->renderFrontend()->render();
+	}
+	
+	public function preview() {
+		return self::documentPreview($this->iDocumentId, 190);
 	}
 		
 	public function saveData($aDocumentData) {

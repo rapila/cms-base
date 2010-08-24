@@ -1,4 +1,7 @@
 <?php
+/**
+* @package modules.widget
+*/
 class PageTypeWidgetModule extends PersistentWidgetModule {
 	private $sPageType;
 	private $oPageType;

@@ -28,7 +28,10 @@ Widget.types.documents_view = {
 				if(!tab.data('widget')) {
 					documents_view.init_tab(tab);
 				} else {
-					tab.data('widget').reload();
+					//Returns true if anything’s changed since the last time
+					if(documents_view.configure_tab(tab)) {
+						tab.data('widget').reload();
+					}
 				}
 			}
 		};
@@ -46,6 +49,7 @@ Widget.types.documents_view = {
 		var documents_view = this;
 		Widget.createWithElement(widget_name, function(widget) {
 			tab.data('widget', widget);
+			type.init.call(this, tab.data('widget'));
 			documents_view.configure_tab(tab);
 		}, function(widget) {
 			panel.append(widget._element);
@@ -54,7 +58,7 @@ Widget.types.documents_view = {
 	
 	configure_tab: function(tab) {
 		var type = tab.data('documents_view');
-		type.configure.call(this, tab.data('widget'));
+		return type.configure.call(this, tab.data('widget'));
 	},
 	
 	reload: function() {
@@ -63,23 +67,30 @@ Widget.types.documents_view = {
 	
 	set_document_category_id: function(id) {
 		this.settings.document_category_id = id;
+		this.configure_tab(this.active_tab);
 	},
 	
 	set_search_string: function(string) {
 		this.settings.search_string = string;
+		this.configure_tab(this.active_tab);
 	},
 	
 	set_document_kind: function(kind) {
 		this.settings.document_kind = kind;
+		this.configure_tab(this.active_tab);
 	},
 	
 	set_thumbnail_size: function(size) {
 		this.settings.thumbnail_size = size;
+		this.configure_tab(this.active_tab);
 	},
 	
 	tab_views: {
 		list: {
 			widget_name: 'document_list',
+			init: function(widget) {
+				
+			},
 			configure: function(widget) {
 				// This is not the list widget, it’s only the document_list widget. You can’t use setOption on that.
 				// FIXME: Find a way to do this elegantly
@@ -96,16 +107,22 @@ Widget.types.documents_view = {
 		},
 		thumbnail: {
 			widget_name: 'document_thumbnail_view',
+			init: function(widget) {
+				widget.settings.allows_multiselect = true;
+			},
 			configure: function(widget) {
+				var changed = false;
 				if(this.settings.document_category_id) {
-					widget.setDocumentCategoryId(this.settings.document_category_id);
+					changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
 				}
 				if(this.settings.document_kind) {
-					widget.setDocumentKind(this.settings.document_kind);
+					changed = widget.setDocumentKind(this.settings.document_kind) || changed;
 				}
 				if(this.settings.thumbnail_size) {
+					changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size || changed;
 					widget.settings.thumbnail_size = this.settings.thumbnail_size;
 				}
+				return changed;
 			}
 		},
 	},

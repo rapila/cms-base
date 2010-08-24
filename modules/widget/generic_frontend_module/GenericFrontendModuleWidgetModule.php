@@ -1,4 +1,7 @@
 <?php
+/**
+* @package modules.widget
+*/
 class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $oInternalWidget;

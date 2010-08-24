@@ -1,5 +1,7 @@
 <?php
-
+/**
+* @package modules.widget
+*/
 class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	private $iInitialDocumentCategoryId;
 	private $sInitialSearchString;
