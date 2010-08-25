@@ -303,18 +303,14 @@ form.page_detail h3 a {
 	color: #666;
 }
 
-form.page_detail label {
-	display: inline-block;
-}
-
 form.page_detail label.for_checkbox {
 	margin-right: 2em;
 	padding-left:.2em;
 }
-
-.inner_wrapper label {
-	width: 120px;
+.page_detail .group_label {
+	float: left;
 }
+
 form.page_detail h3.ui-state-default a, 
 form.page_detail h3.ui-state-default a:link,
 form.page_detail h3.ui-state-default a:visited,
@@ -382,6 +378,7 @@ div.container {
 .contents_container {
 /*	min-height: 30px;*/
 }
+
 .contents_container h4 {
 	margin: 0;
 	padding: .2em 0;
@@ -389,7 +386,7 @@ div.container {
 
 .page_detail {
 	.filled_modules {
-		margin-top: 12px;
+		margin-top: 24px;
 		width: 500px;
 		min-height: 300px;
 		float:left;
@@ -401,11 +398,12 @@ div.container {
 	.available_modules {
 		min-width: 100px;
 		max-width: 250px;
-		margin: 12px 24px 0 0;
+		margin: 24px 24px 0 0;
 		min-height: 150px;
 		padding: 0;
 		float:left;
 	}
+	
 	.filled_modules ol.template-container {
 		display: block;
 		min-height: 100px !important;
@@ -422,6 +420,7 @@ div.container {
 		border-radius: 3px;
 		border: 1px solid #999;
 		margin: 2px;
+		min-width: 100px;
 	}
 	
 	.available_modules li {

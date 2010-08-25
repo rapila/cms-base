@@ -14,7 +14,12 @@ DIVERSES
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
 6 Bug-Tracking / Wiki > Assembla, GitHub ?
 
+Bug SERVER?
+   [message] => Undefined index:  HTTP_HOST
+   [filename] => /home/httpd/vhosts/taylormade.ch/httpdocs/base/lib/classes/LinkUtil.php
+
 Priorities
+- migration tasks linktext > pagetitle > reverse priority
 - page_detail, add is_active to pagestring
 - page_detail, swap position of modules and d&d area
 - cmos_mini projects file_upload

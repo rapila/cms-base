@@ -323,7 +323,7 @@ body.dashboard #cmos_admin_menu button.cmos-button.dashboard { background-image:
   font-size: 0.7em !important;
 }
 input {
-  padding: 0.2em;
+  padding: 0.3em;
   margin-bottom: 0.4em;
 }
 input[type=checkbox] { padding: 0 !important; }
@@ -333,6 +333,7 @@ label {
   font-family: Arial;
   font-size: 0.95em;
   display: block;
+  padding-bottom: 0.1em;
   margin-top: 0.8em;
 }
 .status_section label {
@@ -343,7 +344,9 @@ ui-widget { font-size: 0.5em; }
 select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
   border-color: #dfdfdf;
   width: 21.5em;
+  padding: 0.2em;
 }
+select.ui-widget-content { padding: 0.1em; }
 select.ui-widget-content:hover { border-color: #b5b5b5; }
 select.ui-widget-content:focus { border-color: #b5b5b5; }
 input.ui-widget-content:hover { border-color: #b5b5b5; }

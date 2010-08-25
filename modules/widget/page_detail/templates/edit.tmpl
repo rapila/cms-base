@@ -11,21 +11,32 @@
 	<div class="accordion">
 		<h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
 		<div class="inner_wrapper">
-			<label for="template_name">{{writeString=widget.page.template_name}}</label>
-			<select name="template_name" class="ui-widget-content input_short"></select><br />
-			<label for="page_type">{{writeString=widget.page.page_type}}</label>
-			<select name="page_type" class="ui-widget-content input_short"></select><br />
+			<div class="group_label">
+				<label for="template_name">{{writeString=widget.page.template_name}}</label>
+				<select name="template_name" class="ui-widget-content input_short"></select>
+			</div>
+			<div class="group_label">
+				<label for="page_type">{{writeString=widget.page.page_type}}</label>
+				<select name="page_type" class="ui-widget-content input_short"></select>
+			</div>
 		</div>
 		<h3 class="page_properties"><a href="#">{{writeString=widget.page.label.properties}}</a></h3>
 		<div class="inner_wrapper page_properties">
 		</div>
 		<h3><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
 		<div class="inner_wrapper contents_container">		
-			<label for="link_text">{{writeString=widget.page.link_text}}</label>
-			<input type="text" name="link_text" class="ui-widget-content autowidth" />
-			<input type="text" name="page_title" class="ui-widget-content input_long" /><label for="page_title">{{writeString=widget.page.page_title}}</label><br />
-
-			<input type="checkbox" name="is_inactive" value="1" /><label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label>
+			<div class="group_label">
+				<label for="link_text">{{writeString=widget.page.link_text}}</label>
+				<input type="text" name="link_text" class="ui-widget-content autowidth" />
+			</div>
+			<div class="group_label">
+				<label for="page_title" class="autowidth">{{writeString=widget.page.page_title}}</label>
+				<input type="text" name="page_title" class="ui-widget-content input_long" />
+			</div>
+			<div class="group_label">
+				<label class="for_checkbox" for="is_inactive">{{writeString=widget.page.active}}</label>			
+				<input type="checkbox" name="is_inactive" value="1" />
+			</div><br style="clear:both;" />
 			<div class="contents">
 				<!-- Page type -->
 			</div>

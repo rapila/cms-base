@@ -158,7 +158,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oPageString->setPageTitle($aPageData['page_title']);
 		$oPageString->setLinkText($aPageData['link_text'] ? $aPageData['link_text'] : null);
-		$oPageString->setIsInactive(isset($aPageData['is_inactive']));
+		$oPageString->setIsInactive(!isset($aPageData['is_inactive']));
+		ErrorHandler::log($oPageString);
 		$oPageString->save();
 	}
 	
