@@ -92,17 +92,17 @@ Widget.types.documents_view = {
 				
 			},
 			configure: function(widget) {
-				// This is not the list widget, it’s only the document_list widget. You can’t use setOption on that.
-				// FIXME: Find a way to do this elegantly
-				// if(this.settings.document_category_id) {
-				// 	widget.setOption('document_category_id', this.settings.document_category_id);
-				// }
-				// if(this.settings.search_string) {
-				// 	widget.setOption('search_string', this.settings.search_string);
-				// }
-				// if(this.settings.document_kind) {
-				// 	widget.setOption('document_kind', this.settings.document_kind);
-				// }
+				var changed = false;
+				if(this.settings.document_category_id) {
+					changed = widget.setOption('document_category_id', this.settings.document_category_id) || changed;
+				}
+				if(this.settings.search_string) {
+					changed = widget.setOption('search_string', this.settings.search_string) || changed;
+				}
+				if(this.settings.document_kind) {
+					changed = widget.setOption('document_kind', this.settings.document_kind) || changed;
+				}
+				return changed;
 			}
 		},
 		thumbnail: {
@@ -119,7 +119,7 @@ Widget.types.documents_view = {
 					changed = widget.setDocumentKind(this.settings.document_kind) || changed;
 				}
 				if(this.settings.thumbnail_size) {
-					changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size || changed;
+					changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size;
 					widget.settings.thumbnail_size = this.settings.thumbnail_size;
 				}
 				return changed;

@@ -2,7 +2,7 @@
 /**
  * @package modules.widget
  */
-class DocumentListWidgetModule extends WidgetModule {
+class DocumentListWidgetModule extends PersistentWidgetModule {
 
 	private $oListWidget;
 	public $oDelegateProxy;
@@ -10,6 +10,7 @@ class DocumentListWidgetModule extends WidgetModule {
 	private $oDocumentKindFilter;
 	
 	public function __construct() {
+		parent::__construct();
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name", "asc");
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
@@ -119,6 +120,14 @@ class DocumentListWidgetModule extends WidgetModule {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
+	}
+	
+	public function setOption($sName, $mValue) {
+		if($this->oListWidget->getOption($sName) == $mValue) {
+			return false;
+		}
+		$this->oListWidget->setOption($sName, $mValue);
+		return true;
 	}
 	
 	public function getCriteria() {
