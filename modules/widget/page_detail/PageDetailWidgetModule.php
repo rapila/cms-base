@@ -116,6 +116,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function deletePage() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
+    if(!Session::getSession()->getUser()->mayDelete($this->oPage)) {
+	    // return authentication exception?
+	  }
 		ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
 		// check if user may delete page, or maybe just set inactive the current language
 		
@@ -129,6 +132,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 
 	public function saveData($aPageData) {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
+	  if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
+	    // return authentication exception?
+	  }
 		// validate post values / fetch most with js
 		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
 		$this->oPage->setIsInactive(!isset($aPageData['global_is_inactive']));

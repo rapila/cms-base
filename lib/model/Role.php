@@ -23,7 +23,7 @@ class Role extends BaseRole {
 	* here the PagesBackendModule quickFix would throw the error
 	*/
 	private function rightFits($oRight, $oPage, $sMethodName) {
-		if($oRight->getPage() !== null && $oPage->getId() === $oRight->getPage()->getid()) {
+		if($oRight->getPage() !== null && $oPage->getId() === $oRight->getPage()->getId()) {
 			return call_user_func(array($oRight, $sMethodName));
 		}
 		if($oRight->getIsInherited() && $oPage->getParent() !== null) {

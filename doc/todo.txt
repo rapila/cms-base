@@ -13,12 +13,15 @@ DIVERSES
 2 schule altenburg planung
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
 6 Bug-Tracking / Wiki > Assembla, GitHub ?
-
-Bug SERVER?
-   [message] => Undefined index:  HTTP_HOST
+Bug 
+- [message] => Undefined index:   SERVER[HTTP_HOST]
    [filename] => /home/httpd/vhosts/taylormade.ch/httpdocs/base/lib/classes/LinkUtil.php
+- taylormade effects, Failed to load source for: 
+- document_list Widget.types[widgetType] is not a constructor
 
 Priorities
+- document_list video not autoplay
+- page_detail template edit handle dynamically page_properties, template & page_type for admin only etc
 - migration tasks linktext > pagetitle > reverse priority
 - page_detail, add is_active to pagestring
 - page_detail, swap position of modules and d&d area
