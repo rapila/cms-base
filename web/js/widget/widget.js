@@ -364,12 +364,15 @@ jQuery.extend(Widget, {
 				}
 			},
 			error: function(request, statusCode, error) {
+				var error_object = {message: error, exception_type: statusCode};
 				if(statusCode === 'parsererror') {
 					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
-					//This is most likely a PHP error… 
-					Widget.notifyUser('error', text, {closable: true, closeDelay: null});
-				} else {
-					Widget.notifyUser('error', error);
+					error_object.message = text;
+				}
+				var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
+				action.shift();
+				if(exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes)) {
+					callback.call(this, {}, error_object);
 				}
 			},
 			complete: function() {

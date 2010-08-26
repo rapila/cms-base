@@ -97,7 +97,10 @@ Widget.types.file_upload = {
 					this.fire('file.uploaded', result);
 					options.callback(result);
 				} else {
-					options.error ? options.error(error) : Widget.notifyUser('alert', error.message);
+					notification.enable_close_button();
+					notification.reset_timeout(3000);
+					notification.set_severity('error');
+					options.error ? options.error(error) : notification.set_message(error.message);
 				}
 			});
 		};

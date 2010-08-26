@@ -68,6 +68,10 @@ jQuery.extend(Widget, {
 			close: function() {
 				display.hide('blind', function() {display.remove();});
 			},
+			set_severity: function(severity) {
+				var new_highlight = severity == 'info' ? 'highlight' : 'error';
+				display.find('.ui-state-'+highlight).removeClass('ui-state-'+highlight).addClass('ui-state-'+new_highlight);
+			},
 			increase_badge_count: function() {
 				var count = parseInt(badge.text());
 				if(isNaN(count)) {
