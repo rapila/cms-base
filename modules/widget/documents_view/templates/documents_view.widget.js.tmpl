@@ -15,14 +15,14 @@ Widget.types.documents_view = {
 				var tab = jQuery(ui.tab);
 				var item = tab.attr('href').substring(1);
 				if(documents_view.tab_views[item]) {
-					tab.data('documents_view', documents_view.tab_views[item]);
+					tab.data('type', documents_view.tab_views[item]);
 					tab.data('panel', panel);
 				}
 			},
 			show: function(event, ui) {
 				var tab = jQuery(ui.tab);
 				documents_view.active_tab = tab;
-				if(!tab.data('documents_view')) {
+				if(!tab.data('type')) {
 					return;
 				}
 				if(!tab.data('widget')) {
@@ -43,7 +43,7 @@ Widget.types.documents_view = {
 	},
 	
 	init_tab: function(tab) {
-		var type = tab.data('documents_view');
+		var type = tab.data('type');
 		var panel = tab.data('panel');
 		var widget_name = type.widget_name;
 		var documents_view = this;
@@ -57,7 +57,7 @@ Widget.types.documents_view = {
 	},
 	
 	configure_tab: function(tab) {
-		var type = tab.data('documents_view');
+		var type = tab.data('type');
 		return type.configure.call(this, tab.data('widget'));
 	},
 	
@@ -103,6 +103,9 @@ Widget.types.documents_view = {
 					changed = widget.setOption('document_kind', this.settings.document_kind) || changed;
 				}
 				return changed;
+			},
+			append_document: function(widget, document_id) {
+				widget.get_list().append_row_with_data({id: document_id});
 			}
 		},
 		thumbnail: {
@@ -123,8 +126,17 @@ Widget.types.documents_view = {
 					widget.settings.thumbnail_size = this.settings.thumbnail_size;
 				}
 				return changed;
+			},
+			append_document: function(widget, document_id) {
+				
 			}
 		},
+	},
+	
+	append_document: function(document_id) {
+		var type = this.active_tab.data('type');
+		var widget = this.active_tab.data('widget');
+		type.append_document(widget, document_id);
 	},
 	
 	settings: {

@@ -229,6 +229,14 @@ Widget.types.list = {
 		});
 	},
 	
+	append_row_with_data: function(rowData) {
+		this.rowFromData(rowData, function(row_contents) {
+			if(row_contents !== null) {
+				this.insert_row(row_contents);
+			}
+		});
+	},
+	
 	headings: function() {
 		var result = {};
 		jQuery.each(this.schema, function(i, column) {
@@ -244,7 +252,7 @@ Widget.types.list = {
 	},
 	
 	reload: function(load_heading) {
-		this.fire('list.reloading', load_heading);
+		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
 		if(load_heading) {
 			this._element.empty();
@@ -277,9 +285,9 @@ Widget.types.list = {
 			}
 			this.toggle_loader(false);
 			if(load_heading) {
-				this.fire('list.loaded', list.length);
+				this.fire('loaded', list.length);
 			}
-			this.fire('list.reloaded', list.length);
+			this.fire('reloaded', list.length);
 		});
 	},
 	

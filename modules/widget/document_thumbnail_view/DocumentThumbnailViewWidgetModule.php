@@ -9,7 +9,7 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	
 	private $bInitialAllowsMultiselect = false;
 	
-	public function listImages($iThumbnailSize) {
+	public function listDocuments($iThumbnailSize) {
 		$oCriteria = new Criteria();
 		if($this->iDocumentCategoryId !== null && $this->iDocumentCategoryId !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->iDocumentCategoryId);
@@ -20,9 +20,21 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 		$aDocuments = DocumentPeer::doSelect($oCriteria);
 		$aResults = array();
 		foreach($aDocuments as $oDocument) {
-			$aResults[] = array('name' => $oDocument->getName(), 'description' => $oDocument->getDescription(), 'id' => $oDocument->getId(), 'preview' => DocumentDetailWidgetModule::documentPreview($oDocument->getId(), $iThumbnailSize));
+			$aResults[] = $this->rowData($oDocument, $iThumbnailSize);
 		}
 		return $aResults;
+	}
+	
+	private function rowData($oDocument, $iThumbnailSize) {
+		return array('name' => $oDocument->getName(), 'description' => $oDocument->getDescription(), 'id' => $oDocument->getId(), 'preview' => $this->thumbnail($oDocument->getId()));
+	}
+	
+	public function listSingleDocument($iDocumentId, $iThumbnailSize) {
+		return $this->rowData(DocumentPeer::retrieveByPK($iDocumentId), $iThumbnailSize);
+	}
+	
+	public function thumbnail($iDocumentId, $iThumbnailSize) {
+		DocumentDetailWidgetModule::documentPreview($iDocumentId, $iThumbnailSize);
 	}
 		
 	public function setInitialAllowsMultiselect($bInitialAllowsMultiselect) {

@@ -8,10 +8,11 @@ Widget.types.string = {
 		}
 	},
 	
-	handle_strings_for_list_result: function(string_key, keys, widget) {
+	handle_strings_for_list_result: function(string_key, keys, widget, option_getter) {
+		option_getter = option_getter || 'getOption';
 		var message_id = 'search_message'+widget.widgetId;
 		var strings = this;
-		widget.handle('list.reloaded', function(event, list_length) {
+		widget.handle('reloaded', function(event, list_length) {
 			if(list_length !== 0) {
 				var prev_message = Widget.notificationWithIdentifier(message_id);
 				prev_message && prev_message.data('functions').close();
@@ -29,7 +30,7 @@ Widget.types.string = {
 				append_message('search', {search: search});
 			}
 			jQuery.each(keys, function(i, key) {
-				var option = widget.getOption(key);
+				var option = widget[option_getter](key);
 				if(option && option != '__all') {
 					var parameters = {};
 					parameters[key] = option;

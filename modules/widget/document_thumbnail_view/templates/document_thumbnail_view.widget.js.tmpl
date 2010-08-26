@@ -8,8 +8,9 @@ Widget.types.document_thumbnail_view = {
 	},
 	
 	reload: function() {
+		Widget.load();
 		this._element.empty();
-		this.listImages(this.settings.thumbnail_size, function(result) {
+		this.listDocuments(this.settings.thumbnail_size, function(result) {
 			var picker_object = this;
 			var px_size = ''+this.settings.thumbnail_size+'px';
 			jQuery.each(result, function() {
@@ -60,6 +61,7 @@ Widget.types.document_thumbnail_view = {
 					picker_object.fire('clicked', this, document_id);
 				});
 			}
+			Widget.end_load();
 		});
 	},
 	

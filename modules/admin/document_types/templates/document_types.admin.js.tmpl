@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 			var initial_selection = "{{writeRequestValue=document_kind}}";
 			if(initial_selection) {
-				sidebar.handle('list.loaded', function() {
+				sidebar.handle('loaded', function() {
 					sidebar.activate_row(sidebar.row_from_row_data({document_kind: initial_selection}));
 				}, true, true);
 			}
