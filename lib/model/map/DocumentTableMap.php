@@ -38,6 +38,7 @@ class DocumentTableMap extends TableMap {
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
 		$this->addColumn('NAME', 'Name', 'VARCHAR', false, 100, null);
+		$this->addColumn('ORIGINAL_NAME', 'OriginalName', 'VARCHAR', false, 100, null);
 		$this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 255, null);
 		$this->addForeignKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR', 'languages', 'ID', false, 3, null);
 		$this->addForeignKey('OWNER_ID', 'OwnerId', 'INTEGER', 'users', 'ID', true, null, null);

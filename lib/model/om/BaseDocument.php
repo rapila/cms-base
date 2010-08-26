@@ -36,6 +36,12 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	protected $name;
 
 	/**
+	 * The value for the original_name field.
+	 * @var        string
+	 */
+	protected $original_name;
+
+	/**
 	 * The value for the description field.
 	 * @var        string
 	 */
@@ -208,6 +214,16 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Get the [original_name] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getOriginalName()
+	{
+		return $this->original_name;
 	}
 
 	/**
@@ -471,6 +487,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 		return $this;
 	} // setName()
+
+	/**
+	 * Set the value of [original_name] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setOriginalName($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->original_name !== $v) {
+			$this->original_name = $v;
+			$this->modifiedColumns[] = DocumentPeer::ORIGINAL_NAME;
+		}
+
+		return $this;
+	} // setOriginalName()
 
 	/**
 	 * Set the value of [description] column.
@@ -869,18 +905,19 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->description = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->language_id = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->owner_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->document_type_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->document_category_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->is_private = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
-			$this->is_inactive = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->is_protected = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->created_by = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-			$this->updated_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+			$this->original_name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->description = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->language_id = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->owner_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->document_type_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->document_category_id = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+			$this->is_private = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
+			$this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
+			$this->is_protected = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
+			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->created_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+			$this->updated_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -889,7 +926,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 14; // 14 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 15; // 15 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Document object", $e);
@@ -1352,42 +1389,45 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				return $this->getName();
 				break;
 			case 2:
-				return $this->getDescription();
+				return $this->getOriginalName();
 				break;
 			case 3:
-				return $this->getLanguageId();
+				return $this->getDescription();
 				break;
 			case 4:
-				return $this->getOwnerId();
+				return $this->getLanguageId();
 				break;
 			case 5:
-				return $this->getDocumentTypeId();
+				return $this->getOwnerId();
 				break;
 			case 6:
-				return $this->getDocumentCategoryId();
+				return $this->getDocumentTypeId();
 				break;
 			case 7:
-				return $this->getIsPrivate();
+				return $this->getDocumentCategoryId();
 				break;
 			case 8:
-				return $this->getIsInactive();
+				return $this->getIsPrivate();
 				break;
 			case 9:
-				return $this->getIsProtected();
+				return $this->getIsInactive();
 				break;
 			case 10:
-				return $this->getData();
+				return $this->getIsProtected();
 				break;
 			case 11:
-				return $this->getCreatedAt();
+				return $this->getData();
 				break;
 			case 12:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 13:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 14:
+				return $this->getCreatedBy();
+				break;
+			case 15:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1416,19 +1456,20 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
-			$keys[2] => $this->getDescription(),
-			$keys[3] => $this->getLanguageId(),
-			$keys[4] => $this->getOwnerId(),
-			$keys[5] => $this->getDocumentTypeId(),
-			$keys[6] => $this->getDocumentCategoryId(),
-			$keys[7] => $this->getIsPrivate(),
-			$keys[8] => $this->getIsInactive(),
-			$keys[9] => $this->getIsProtected(),
-			$keys[10] => ($includeLazyLoadColumns) ? $this->getData() : null,
-			$keys[11] => $this->getCreatedAt(),
-			$keys[12] => $this->getUpdatedAt(),
-			$keys[13] => $this->getCreatedBy(),
-			$keys[14] => $this->getUpdatedBy(),
+			$keys[2] => $this->getOriginalName(),
+			$keys[3] => $this->getDescription(),
+			$keys[4] => $this->getLanguageId(),
+			$keys[5] => $this->getOwnerId(),
+			$keys[6] => $this->getDocumentTypeId(),
+			$keys[7] => $this->getDocumentCategoryId(),
+			$keys[8] => $this->getIsPrivate(),
+			$keys[9] => $this->getIsInactive(),
+			$keys[10] => $this->getIsProtected(),
+			$keys[11] => ($includeLazyLoadColumns) ? $this->getData() : null,
+			$keys[12] => $this->getCreatedAt(),
+			$keys[13] => $this->getUpdatedAt(),
+			$keys[14] => $this->getCreatedBy(),
+			$keys[15] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguage) {
@@ -1487,42 +1528,45 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->setName($value);
 				break;
 			case 2:
-				$this->setDescription($value);
+				$this->setOriginalName($value);
 				break;
 			case 3:
-				$this->setLanguageId($value);
+				$this->setDescription($value);
 				break;
 			case 4:
-				$this->setOwnerId($value);
+				$this->setLanguageId($value);
 				break;
 			case 5:
-				$this->setDocumentTypeId($value);
+				$this->setOwnerId($value);
 				break;
 			case 6:
-				$this->setDocumentCategoryId($value);
+				$this->setDocumentTypeId($value);
 				break;
 			case 7:
-				$this->setIsPrivate($value);
+				$this->setDocumentCategoryId($value);
 				break;
 			case 8:
-				$this->setIsInactive($value);
+				$this->setIsPrivate($value);
 				break;
 			case 9:
-				$this->setIsProtected($value);
+				$this->setIsInactive($value);
 				break;
 			case 10:
-				$this->setData($value);
+				$this->setIsProtected($value);
 				break;
 			case 11:
-				$this->setCreatedAt($value);
+				$this->setData($value);
 				break;
 			case 12:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 13:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 14:
+				$this->setCreatedBy($value);
+				break;
+			case 15:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1551,19 +1595,20 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setDescription($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setLanguageId($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setOwnerId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setDocumentTypeId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDocumentCategoryId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIsPrivate($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsInactive($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsProtected($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setData($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedBy($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedBy($arr[$keys[14]]);
+		if (array_key_exists($keys[2], $arr)) $this->setOriginalName($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setLanguageId($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setOwnerId($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setDocumentTypeId($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setDocumentCategoryId($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIsPrivate($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setIsProtected($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setData($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedBy($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedBy($arr[$keys[15]]);
 	}
 
 	/**
@@ -1577,6 +1622,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(DocumentPeer::ID)) $criteria->add(DocumentPeer::ID, $this->id);
 		if ($this->isColumnModified(DocumentPeer::NAME)) $criteria->add(DocumentPeer::NAME, $this->name);
+		if ($this->isColumnModified(DocumentPeer::ORIGINAL_NAME)) $criteria->add(DocumentPeer::ORIGINAL_NAME, $this->original_name);
 		if ($this->isColumnModified(DocumentPeer::DESCRIPTION)) $criteria->add(DocumentPeer::DESCRIPTION, $this->description);
 		if ($this->isColumnModified(DocumentPeer::LANGUAGE_ID)) $criteria->add(DocumentPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(DocumentPeer::OWNER_ID)) $criteria->add(DocumentPeer::OWNER_ID, $this->owner_id);
@@ -1652,6 +1698,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setName($this->name);
+		$copyObj->setOriginalName($this->original_name);
 		$copyObj->setDescription($this->description);
 		$copyObj->setLanguageId($this->language_id);
 		$copyObj->setOwnerId($this->owner_id);
@@ -2009,6 +2056,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	{
 		$this->id = null;
 		$this->name = null;
+		$this->original_name = null;
 		$this->description = null;
 		$this->language_id = null;
 		$this->owner_id = null;

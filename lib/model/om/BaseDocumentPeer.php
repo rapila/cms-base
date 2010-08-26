@@ -25,7 +25,7 @@ abstract class BaseDocumentPeer {
 	const TM_CLASS = 'DocumentTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 15;
+	const NUM_COLUMNS = 16;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 1;
@@ -35,6 +35,9 @@ abstract class BaseDocumentPeer {
 
 	/** the column name for the NAME field */
 	const NAME = 'documents.NAME';
+
+	/** the column name for the ORIGINAL_NAME field */
+	const ORIGINAL_NAME = 'documents.ORIGINAL_NAME';
 
 	/** the column name for the DESCRIPTION field */
 	const DESCRIPTION = 'documents.DESCRIPTION';
@@ -91,12 +94,12 @@ abstract class BaseDocumentPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Description', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'description', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::DOCUMENT_TYPE_ID, self::DOCUMENT_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::IS_PROTECTED, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'description', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::ORIGINAL_NAME, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::DOCUMENT_TYPE_ID, self::DOCUMENT_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::IS_PROTECTED, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'ORIGINAL_NAME', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'original_name', 'description', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -106,12 +109,12 @@ abstract class BaseDocumentPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Description' => 2, 'LanguageId' => 3, 'OwnerId' => 4, 'DocumentTypeId' => 5, 'DocumentCategoryId' => 6, 'IsPrivate' => 7, 'IsInactive' => 8, 'IsProtected' => 9, 'Data' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, 'CreatedBy' => 13, 'UpdatedBy' => 14, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'languageId' => 3, 'ownerId' => 4, 'documentTypeId' => 5, 'documentCategoryId' => 6, 'isPrivate' => 7, 'isInactive' => 8, 'isProtected' => 9, 'data' => 10, 'createdAt' => 11, 'updatedAt' => 12, 'createdBy' => 13, 'updatedBy' => 14, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::DESCRIPTION => 2, self::LANGUAGE_ID => 3, self::OWNER_ID => 4, self::DOCUMENT_TYPE_ID => 5, self::DOCUMENT_CATEGORY_ID => 6, self::IS_PRIVATE => 7, self::IS_INACTIVE => 8, self::IS_PROTECTED => 9, self::DATA => 10, self::CREATED_AT => 11, self::UPDATED_AT => 12, self::CREATED_BY => 13, self::UPDATED_BY => 14, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'DESCRIPTION' => 2, 'LANGUAGE_ID' => 3, 'OWNER_ID' => 4, 'DOCUMENT_TYPE_ID' => 5, 'DOCUMENT_CATEGORY_ID' => 6, 'IS_PRIVATE' => 7, 'IS_INACTIVE' => 8, 'IS_PROTECTED' => 9, 'DATA' => 10, 'CREATED_AT' => 11, 'UPDATED_AT' => 12, 'CREATED_BY' => 13, 'UPDATED_BY' => 14, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'language_id' => 3, 'owner_id' => 4, 'document_type_id' => 5, 'document_category_id' => 6, 'is_private' => 7, 'is_inactive' => 8, 'is_protected' => 9, 'data' => 10, 'created_at' => 11, 'updated_at' => 12, 'created_by' => 13, 'updated_by' => 14, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'DocumentTypeId' => 6, 'DocumentCategoryId' => 7, 'IsPrivate' => 8, 'IsInactive' => 9, 'IsProtected' => 10, 'Data' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, 'CreatedBy' => 14, 'UpdatedBy' => 15, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'languageId' => 4, 'ownerId' => 5, 'documentTypeId' => 6, 'documentCategoryId' => 7, 'isPrivate' => 8, 'isInactive' => 9, 'isProtected' => 10, 'data' => 11, 'createdAt' => 12, 'updatedAt' => 13, 'createdBy' => 14, 'updatedBy' => 15, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::ORIGINAL_NAME => 2, self::DESCRIPTION => 3, self::LANGUAGE_ID => 4, self::OWNER_ID => 5, self::DOCUMENT_TYPE_ID => 6, self::DOCUMENT_CATEGORY_ID => 7, self::IS_PRIVATE => 8, self::IS_INACTIVE => 9, self::IS_PROTECTED => 10, self::DATA => 11, self::CREATED_AT => 12, self::UPDATED_AT => 13, self::CREATED_BY => 14, self::UPDATED_BY => 15, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'ORIGINAL_NAME' => 2, 'DESCRIPTION' => 3, 'LANGUAGE_ID' => 4, 'OWNER_ID' => 5, 'DOCUMENT_TYPE_ID' => 6, 'DOCUMENT_CATEGORY_ID' => 7, 'IS_PRIVATE' => 8, 'IS_INACTIVE' => 9, 'IS_PROTECTED' => 10, 'DATA' => 11, 'CREATED_AT' => 12, 'UPDATED_AT' => 13, 'CREATED_BY' => 14, 'UPDATED_BY' => 15, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'original_name' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'document_type_id' => 6, 'document_category_id' => 7, 'is_private' => 8, 'is_inactive' => 9, 'is_protected' => 10, 'data' => 11, 'created_at' => 12, 'updated_at' => 13, 'created_by' => 14, 'updated_by' => 15, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -185,6 +188,7 @@ abstract class BaseDocumentPeer {
 		if (null === $alias) {
 			$criteria->addSelectColumn(DocumentPeer::ID);
 			$criteria->addSelectColumn(DocumentPeer::NAME);
+			$criteria->addSelectColumn(DocumentPeer::ORIGINAL_NAME);
 			$criteria->addSelectColumn(DocumentPeer::DESCRIPTION);
 			$criteria->addSelectColumn(DocumentPeer::LANGUAGE_ID);
 			$criteria->addSelectColumn(DocumentPeer::OWNER_ID);
@@ -200,6 +204,7 @@ abstract class BaseDocumentPeer {
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NAME');
+			$criteria->addSelectColumn($alias . '.ORIGINAL_NAME');
 			$criteria->addSelectColumn($alias . '.DESCRIPTION');
 			$criteria->addSelectColumn($alias . '.LANGUAGE_ID');
 			$criteria->addSelectColumn($alias . '.OWNER_ID');

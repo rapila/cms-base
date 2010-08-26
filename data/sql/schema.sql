@@ -547,6 +547,7 @@ CREATE TABLE `documents`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(100),
+	`original_name` VARCHAR(100),
 	`description` VARCHAR(255),
 	`language_id` VARCHAR(3),
 	`owner_id` INTEGER  NOT NULL,

@@ -8,6 +8,7 @@
  *
  * @method     DocumentQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     DocumentQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     DocumentQuery orderByOriginalName($order = Criteria::ASC) Order by the original_name column
  * @method     DocumentQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     DocumentQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     DocumentQuery orderByOwnerId($order = Criteria::ASC) Order by the owner_id column
@@ -24,6 +25,7 @@
  *
  * @method     DocumentQuery groupById() Group by the id column
  * @method     DocumentQuery groupByName() Group by the name column
+ * @method     DocumentQuery groupByOriginalName() Group by the original_name column
  * @method     DocumentQuery groupByDescription() Group by the description column
  * @method     DocumentQuery groupByLanguageId() Group by the language_id column
  * @method     DocumentQuery groupByOwnerId() Group by the owner_id column
@@ -69,6 +71,7 @@
  * @method     Document findOne(PropelPDO $con = null) Return the first Document matching the query
  * @method     Document findOneById(int $id) Return the first Document filtered by the id column
  * @method     Document findOneByName(string $name) Return the first Document filtered by the name column
+ * @method     Document findOneByOriginalName(string $original_name) Return the first Document filtered by the original_name column
  * @method     Document findOneByDescription(string $description) Return the first Document filtered by the description column
  * @method     Document findOneByLanguageId(string $language_id) Return the first Document filtered by the language_id column
  * @method     Document findOneByOwnerId(int $owner_id) Return the first Document filtered by the owner_id column
@@ -85,6 +88,7 @@
  *
  * @method     array findById(int $id) Return Document objects filtered by the id column
  * @method     array findByName(string $name) Return Document objects filtered by the name column
+ * @method     array findByOriginalName(string $original_name) Return Document objects filtered by the original_name column
  * @method     array findByDescription(string $description) Return Document objects filtered by the description column
  * @method     array findByLanguageId(string $language_id) Return Document objects filtered by the language_id column
  * @method     array findByOwnerId(int $owner_id) Return Document objects filtered by the owner_id column
@@ -246,6 +250,30 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(DocumentPeer::NAME, $name, $comparison);
+	}
+
+	/**
+	 * Filter the query on the original_name column
+	 * 
+	 * @param     string $originalName The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    DocumentQuery The current query, for fluid interface
+	 */
+	public function filterByOriginalName($originalName = null, $comparison = null)
+	{
+		if (is_array($originalName)) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		} elseif (preg_match('/[\%\*]/', $originalName)) {
+			$originalName = str_replace('*', '%', $originalName);
+			if (null === $comparison) {
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(DocumentPeer::ORIGINAL_NAME, $originalName, $comparison);
 	}
 
 	/**
