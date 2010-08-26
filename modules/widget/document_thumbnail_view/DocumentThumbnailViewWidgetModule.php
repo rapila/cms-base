@@ -26,15 +26,15 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private function rowData($oDocument, $iThumbnailSize) {
-		return array('name' => $oDocument->getName(), 'description' => $oDocument->getDescription(), 'id' => $oDocument->getId(), 'preview' => $this->thumbnail($oDocument->getId()));
+		return array('name' => $oDocument->getName(), 'description' => $oDocument->getDescription(), 'id' => $oDocument->getId(), 'preview' => $this->thumbnail($oDocument->getId(), $iThumbnailSize));
 	}
 	
-	public function listSingleDocument($iDocumentId, $iThumbnailSize) {
+	public function singleDocument($iDocumentId, $iThumbnailSize) {
 		return $this->rowData(DocumentPeer::retrieveByPK($iDocumentId), $iThumbnailSize);
 	}
 	
 	public function thumbnail($iDocumentId, $iThumbnailSize) {
-		DocumentDetailWidgetModule::documentPreview($iDocumentId, $iThumbnailSize);
+		return DocumentDetailWidgetModule::documentPreview($iDocumentId, $iThumbnailSize);
 	}
 		
 	public function setInitialAllowsMultiselect($bInitialAllowsMultiselect) {

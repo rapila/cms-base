@@ -12,20 +12,8 @@ Widget.types.document_thumbnail_view = {
 		this._element.empty();
 		this.listDocuments(this.settings.thumbnail_size, function(result) {
 			var picker_object = this;
-			var px_size = ''+this.settings.thumbnail_size+'px';
 			jQuery.each(result, function() {
-				var document_id = this.id;
-				var doc = jQuery('<div></div>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
-				doc.css({width: px_size, height: px_size});
-				doc.html(this.preview);
-				doc.data('document_id', document_id);
-				Widget.tooltip(doc, this.name);
-				doc.hover(function() {
-					doc.addClass('ui-state-hover');
-				}, function() {
-					doc.removeClass('ui-state-hover');
-				});
-				picker_object._element.append(doc);
+				picker_object.insert_thumbnail(this);
 			});
 			var buttons = {};
 			if(this.settings.allows_multiselect) {
@@ -62,6 +50,28 @@ Widget.types.document_thumbnail_view = {
 				});
 			}
 			Widget.end_load();
+		});
+	},
+	
+	insert_thumbnail: function(theDocument) {
+		var px_size = ''+this.settings.thumbnail_size+'px';
+		var document_id = theDocument.id;
+		var doc = jQuery('<div></div>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
+		doc.css({width: px_size, height: px_size});
+		doc.html(theDocument.preview);
+		doc.data('document_id', document_id);
+		Widget.tooltip(doc, theDocument.name);
+		doc.hover(function() {
+			doc.addClass('ui-state-hover');
+		}, function() {
+			doc.removeClass('ui-state-hover');
+		});
+		this._element.append(doc);
+	},
+	
+	append_thumbnail_with_document_id: function(document_id) {
+		this.singleDocument(document_id, this.settings.thumbnail_size, function(theDocument) {
+			this.insert_thumbnail(theDocument);
 		});
 	},
 	
