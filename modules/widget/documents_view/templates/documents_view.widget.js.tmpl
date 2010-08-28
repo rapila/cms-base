@@ -63,6 +63,7 @@ Widget.types.documents_view = {
 	
 	reload: function() {
 		this.active_tab.data('widget').reload();
+		jQuery('.ui-tabs-panel').focus();
 	},
 	
 	set_document_category_id: function(id) {

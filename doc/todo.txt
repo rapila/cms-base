@@ -31,6 +31,7 @@ Priorities
 - cmos_mini projects file_upload
 - validate implement like user_detail
 - user rights roles and groups > RoleAdminModule? 
+- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - Timeline production RC, feature freeze
   what requirements does it contain? 
