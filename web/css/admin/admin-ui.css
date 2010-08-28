@@ -344,7 +344,7 @@ div.container {
   font-size: 4px;
 }
 .page_detail .available_modules {
-  min-width: 100px;
+  min-width: 125px;
   max-width: 250px;
   margin: 24px 24px 0 0;
   min-height: 150px;
@@ -365,7 +365,6 @@ div.container {
   border-radius: 3px;
   border: 1px solid #999999;
   margin: 2px;
-  min-width: 100px;
 }
 .page_detail .filled_modules ol.template-container li {
   list-style: none inside;
@@ -375,8 +374,37 @@ div.container {
   border-radius: 3px;
   border: 1px solid #999999;
   margin: 2px;
-  min-width: 100px;
 }
 .page_detail .available_modules li { background-color: #f2f2f2; }
 .page_detail .filled_modules ol.template-container li { font-size: 12px; }
 .page_detail .template-container-description { font-size: 12px; }
+.ui-state-droppable {
+  border: 0 solid #b8d600;
+  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
+  color: #5b595b;
+  cursor: pointer;
+}
+.ui-widget-content .ui-state-droppable {
+  border: 0 solid #b8d600;
+  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
+  color: #5b595b;
+  cursor: pointer;
+}
+.ui-state-droppable a {
+  color: #5b595b;
+  cursor: pointer;
+}
+.ui-widget-content .ui-state-droppable a {
+  color: #5b595b;
+  cursor: pointer;
+}
+.ui-state-droppable .ui-icon { background-image: url('../../images/admin/ui-state-droppable.png'); }
+tr.ui-list-headrow th.file_info {
+  text-align: right;
+  padding-right: 2em;
+}
+table.ui-list td.file_info {
+  text-align: right;
+  padding-right: 2em;
+}
+tr.ui-list-headrow th.file_info { padding-right: 1em; }

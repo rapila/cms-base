@@ -70,6 +70,7 @@ body.login h1 {
 #admin_main {
   padding: 0px 2px 0 0;
   border-left: 1px solid #d4d8dc;
+  overflow-y: scroll;
 }
 #viewscreen_loader {
   top: 31px;
@@ -359,23 +360,6 @@ table.ui-list {
   margin: 0;
   padding: 0;
 }
-th.ui-list-heading.sortable span {
-  color: #444444;
-  padding-right: 1em;
-}
-th.ui-list-heading.sortable { cursor: pointer; }
-.ui-sortable, .ui-draggable { cursor: move; }
-th.ui-list-heading.sortable.asc span {
-  background-image: url('../../images/admin/sort_desc.png');
-  background-position: right;
-  background-repeat: no-repeat;
-}
-th.ui-list-heading.sortable.desc span {
-  background-image: url('../../images/admin/sort_desc.png');
-  background-position: right;
-  background-repeat: no-repeat;
-}
-th.ui-list-heading.sortable.desc span { background-image: url('../../images/admin/sort_asc.png'); }
 table.ui-list {
   border-collapse: collapse;
   border-spacing: 0;
@@ -566,11 +550,7 @@ th.ui-list-heading select {
   background-color: transparent;
   margin: 0;
 }
-th.ui-list-heading.sortable span {
-  color: #444444;
-  padding-right: 1em;
-}
-th.ui-list-heading.sortable { cursor: pointer; }
+.ui-sortable, .ui-draggable, .ui-state-droppable { cursor: move; }
 th.ui-list-heading.sortable.asc span {
   background-image: url('../../images/admin/sort_desc.png');
   background-position: right;
@@ -582,6 +562,11 @@ th.ui-list-heading.sortable.desc span {
   background-repeat: no-repeat;
 }
 th.ui-list-heading.sortable.desc span { background-image: url('../../images/admin/sort_asc.png'); }
+th.ui-list-heading.sortable span {
+  color: #444444;
+  padding-right: 1em;
+}
+th.ui-list-heading.sortable { cursor: pointer; }
 #admin_sidebar .ui-list th { line-height: 14px; }
 #admin_sidebar input {
   padding: 0 0 0 0;
@@ -597,3 +582,4 @@ th.ui-list-heading.sortable.desc span { background-image: url('../../images/admi
   background-color: #000000;
   padding: 0 !important;
 }
+.ui-tabs a { cursor: pointer !important; }

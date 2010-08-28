@@ -29,15 +29,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		
 		// page properties are displayed if added to template
 		$mAvailableProperties = $this->getAvailablePageProperties($oPage);
-		if($mAvailableProperties !== null) {
+		if(count($mAvailableProperties) > 0) {
 			$aResult['page_properties'] = $mAvailableProperties;
 			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 		}
 		
-		$aLanguages = LanguagePeer::getLanguagesAssoc();
-		if(count($aLanguages) > 1) {
-			$aResult['page_languages'] = $aLanguages;
-		}
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
 		$aResult['CountReferences'] = count($mReferences);
@@ -98,7 +94,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	private function getAvailablePageProperties($oPage) {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
 		if(count($aAvailablePageProperties) === null) {
-			return null;
+			return array();
 		}
 		$aResult = array();
 		$aSetProperties=array();
@@ -165,7 +161,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPageString->setPageTitle($aPageData['page_title']);
 		$oPageString->setLinkText($aPageData['link_text'] ? $aPageData['link_text'] : null);
 		$oPageString->setIsInactive(!isset($aPageData['is_inactive']));
-		ErrorHandler::log($oPageString);
 		$oPageString->save();
 	}
 	

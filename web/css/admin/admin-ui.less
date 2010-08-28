@@ -396,7 +396,7 @@ div.container {
 	}
 
 	.available_modules {
-		min-width: 100px;
+		min-width: 125px;
 		max-width: 250px;
 		margin: 24px 24px 0 0;
 		min-height: 150px;
@@ -420,7 +420,6 @@ div.container {
 		border-radius: 3px;
 		border: 1px solid #999;
 		margin: 2px;
-		min-width: 100px;
 	}
 	
 	.available_modules li {
@@ -431,6 +430,24 @@ div.container {
 	.template-container-description {
 		font-size: 12px;
 	}
+	
+
 }
 
+/* Interaction Cues addition
+----------------------------------*/
+.ui-state-droppable, .ui-widget-content .ui-state-droppable {border: 0 solid #b8d600; background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat; color: #5b595b;  cursor: pointer;}
+.ui-state-droppable a, .ui-widget-content .ui-state-droppable a { color: #5b595b; cursor: pointer;}
+/* states and images addition */
+.ui-state-droppable .ui-icon {background-image: url('../../images/admin/ui-state-droppable.png'); }
+
+tr.ui-list-headrow th.file_info, 
+table.ui-list td.file_info {
+	text-align: right;
+	padding-right: 2em;
+}
+
+tr.ui-list-headrow th.file_info {
+	padding-right: 1.0em;
+}
 

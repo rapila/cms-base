@@ -46,7 +46,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'document_kind', 'file_info', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
+		return array('id', 'name', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -55,6 +55,9 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('name');
 				break;
+			case 'file_info':
+				$aResult['heading'] = StringPeer::getString('file.info');
+				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
 				$aResult['has_data'] = true;
@@ -62,9 +65,6 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;			
-			case 'file_info':
-				$aResult['heading'] = StringPeer::getString('file.info');
-				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('label_list.file_category_list');
 				break;

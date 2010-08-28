@@ -86,6 +86,11 @@ Widget.types.page_detail = {
 		}
 		container.empty();
 		this.content_has_been_loaded = 1;
+		Widget.createWithElement('language_tabs', function(language_tabs) {
+			console.log(language_tabs._element);
+			container.append(language_tabs._element);
+		});
+
 		Widget.create('page_type', function(page_type) {
 			//Intermediate callback
 			page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
@@ -125,15 +130,13 @@ Widget.types.page_detail = {
 			this._element.find(".references_count").text(count_text);
 		}
 
-		// page languages
-		if(page_data.page_languages != undefined) {
-			// console.log(page_data.page_languages);
-		}
 		// page_properties
-		console.log(page_data.page_properties);
+		var page_properties_container = this._element.find("div.page_properties");
+		var page_properties_header = this._element.find("h3.page_properties");
+
 		if(page_data.page_properties != undefined) {
-			var page_properties_container = this._element.find("div.page_properties");
-			page_properties_container.empty();
+			page_properties_container.empty().show();
+			page_properties_header.show();
 			var default_name = "{{writeString=widget.default}}";
 			for(property_name in page_data.page_properties) {
 				var property_container = jQuery("<div/>");
@@ -155,7 +158,8 @@ Widget.types.page_detail = {
 				page_properties_container.append(property_container);
 			} 
 		}	else {
-			this._element.find(".page_properties").remove();
+			page_properties_header.hide();
+			page_properties_container.hide();
 		}
 	},
 	

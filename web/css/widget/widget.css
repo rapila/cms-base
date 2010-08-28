@@ -5,11 +5,5 @@
   vertical-align: middle;
   text-align: center;
 }
-
-.ui-image-picker-image.ui-placeholder {
-  vertical-align: middle;
-  text-align: center;
-}
-
 .ui-image-picker-image.ui-widget-content { border: none; }
 .ui-placeholder { background-color: #d3d3d3; }

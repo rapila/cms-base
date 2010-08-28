@@ -1,0 +1,35 @@
+Widget.types.language_tabs = {
+	prepare: function() {
+		var language_tabs = this;
+		var current_language = null;
+		this._element.append('<ul/>').tabs({
+			add: function(event, ui) {
+				var tab = jQuery(ui.tab);
+				tab.data('language_id', current_language);
+				language_tabs.fire('tab.created', tab);
+			},
+			
+			show: function(event, ui) {
+				var tab = jQuery(ui.tab);
+				var language_id = tab.data('language_id');
+				if(!language_id) {
+					window.setTimeout(arguments.callee.bind(this, event, ui), 100);
+					return;
+				}
+				if(tab.data('initialized')) {
+					return;
+				}
+				tab.data('initialized', true);
+				console.log('tab.selected', language_id, jQuery(ui.panel));
+				language_tabs.fire('tab.selected', language_id, jQuery(ui.panel));
+			}
+		});
+		
+		var languages = this.getLanguages();
+		jQuery.each(languages, function(language_id, localized_name) {
+			current_language = language_id;
+			console.log('add', language_tabs, "#"+language_id, localized_name);
+			language_tabs._element.tabs('add', "#"+language_id, localized_name);
+		});
+	}
+};

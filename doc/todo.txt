@@ -12,21 +12,23 @@ DIVERSES
 1 qm-manual
 2 schule altenburg planung
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
-6 Bug-Tracking / Wiki > Assembla, GitHub ?
+3 Bug-Tracking / Wiki > Assembla, GitHub ?
 Bug 
 - [message] => Undefined index:   SERVER[HTTP_HOST]
    [filename] => /home/httpd/vhosts/taylormade.ch/httpdocs/base/lib/classes/LinkUtil.php
-- taylormade effects, Failed to load source for: 
-- document_list Widget.types[widgetType] is not a constructor
+- taylormade effects: ajax kills animation. how to register events
+- document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
+- cms_dev onNavigationItemChildrenRequested second argument not given.
+
+ErrorHandler
+- maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 Priorities
+- document_thumbnail_view: tooltip only works after clicking once on a thumbnail
 - document_list video not autoplay
-- page_detail template edit handle dynamically page_properties, template & page_type for admin only etc
-- migration tasks linktext > pagetitle > reverse priority
 - page_detail, add is_active to pagestring
 - page_detail, swap position of modules and d&d area
 - cmos_mini projects file_upload
-- documents add original name 
 - validate implement like user_detail
 - user rights roles and groups > RoleAdminModule? 
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
@@ -51,15 +53,17 @@ Priorities
 	- Plugins Newsletter, Journal, WebDav, ClientProject etc. migrate, redesign
 	- ckeditor/tinymce, config per user db store
 	- discuss mini-cms scripts / Propel generator part of cms instead of local server installation
+	
+Migration Tasks
+- documents original_name added: migration.sql
+- pages update linktext > pagetitle > reverse priority 1. update link_text = null > page_title, 2. update page_title where link_text = page_title set to null
+
 
 PHP 5.3
 - namespaces and coding standards
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
 	
-cms_dev 
-- cms_dev onNavigationItemChildrenRequested second argument not given.
-- info: file_get_contents development environment
 
 Details
 - settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
@@ -627,3 +631,5 @@ row_count error > update count on no entries
 	- QM-Manual Server E-Mail
 	- Discuss email, procedure Schule Altenburg
 	- Naturfreunde, strategy. What are we doing, what is our focus
+- page_detail template edit handle dynamically page_properties, template & page_type for admin only etc
+- info: file_get_contents development environment

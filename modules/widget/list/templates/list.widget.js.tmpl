@@ -123,6 +123,7 @@ Widget.types.list = {
 				display_type = 'boolean';
 			}
 		}
+		into.addClass(metadata.identifier);
 		// add isHeading for adding span for sortable
 		Widget.types.list.types[display_type](into, data, metadata, isHeading);
 		if(isHeading && metadata.heading_filter) {
@@ -381,7 +382,7 @@ Widget.types.list = {
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
 				column = jQuery('<span>').appendTo(column);
-			}
+			} 
 			column.text(data == null ? '-' : data);
 		},
 		
