@@ -14,11 +14,12 @@ DIVERSES
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
 3 Bug-Tracking / Wiki > Assembla, GitHub ?
 Bug 
-- [message] => Undefined index:   SERVER[HTTP_HOST]
+- [message] => Undefined index:   SERVER[HTTP_HOST], HTTP_USER_AGENT deuten auf Serveränderungen zu
    [filename] => /home/httpd/vhosts/taylormade.ch/httpdocs/base/lib/classes/LinkUtil.php
 - taylormade effects: ajax kills animation. how to register events
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - cms_dev onNavigationItemChildrenRequested second argument not given.
+- SVN access admin issues for Roger and others, how to
 
 ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
@@ -30,10 +31,58 @@ Priorities
 - page_detail, swap position of modules and d&d area
 - cmos_mini projects file_upload
 - validate implement like user_detail
-- user rights roles and groups > RoleAdminModule? 
+- user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
-- Timeline production RC, feature freeze
+
+PageDetail
+- language tabs
+	load language sensitive content all the time? Or should languages be available, copyable etc?
+	language sensitive: page_strings, contents, references!
+- templates visualisation, choosing from images rather then names, CSS Parser
+- visualise activities, whenever something is loaded, ie on tab?
+- page preview before set online, how to do?
+- make custom made checkboxes. all the same but the active checkbox green/red?
+
+PageTypeWidget
+- adminContainers: if template and pagetype are the same should that be kind of persistant, 
+	not rendered all the time (container name and target ol)
+- implement other page types for testing and improving page type handling
+
+PageTree Widget
+- new page, move page d&d
+- how to visualize is_folder, how to name it best (Untermenu zeigt)
+- how to visualise is_inactive (page_string) and global_is_inactive (page)	
+
+Rights, Groups and Roles
+- module_rights should be configurable in site/config/rights (don't touch base info.yml, just use for presets)
+- module_rights, add option to restrict to category and/or owner?
+- restrict rights to language, only texts for example for lang text editor?
+- should we think of, make a rights package, so one sees at a glance all the settings?
+
+Categories general
+- Categories that are shown on pages (language_objects) should display that information.
+
+FileUpload, DocumentDetail and other related details
+- dynamic upload/replace label for file_upload
+- @see Browser Issues
+
+DocumentCategories and general category issues (links, projects etc)
+- add select for category restriction> like image, is_office_doc, video etc. On select show option (ie. max_width, max_height, max_upload_size)
+- add document category type for convenience and clearity. Users should implicitly know (user friendly)
+- edit category, how to, maybe better sliding from sidebar footer
+- delete category
+	- if count > 0? how to handle (action option of deleting all related entries)
+
+DocumentTypes
+- is_office_doc: is this needed or deprecated > remove
+- need to change anything here?
+
+Migration Tasks
+- documents original_name added: migration.sql
+- pages update linktext > pagetitle > reverse priority 1. update link_text = null > page_title, 2. update page_title where link_text = page_title set to null
+
+CMOS Timeline and feature freeze for RC/1 release
   what requirements does it contain? 
 	- click, dblclick handling in sidebar/main must be clear, @see General handling
 	- document upload, 
@@ -54,23 +103,17 @@ Priorities
 	- Plugins Newsletter, Journal, WebDav, ClientProject etc. migrate, redesign
 	- ckeditor/tinymce, config per user db store
 	- discuss mini-cms scripts / Propel generator part of cms instead of local server installation
-	
-Migration Tasks
-- documents original_name added: migration.sql
-- pages update linktext > pagetitle > reverse priority 1. update link_text = null > page_title, 2. update page_title where link_text = page_title set to null
-
 
 PHP 5.3
 - namespaces and coding standards
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
 	
-
-Details
+DetailWidget general
+- save, delete, create etc permissions, try a general handling with event listening? or implement in each Detailwidget?
+- highlight save button when any input has changed, cancel button should close window if no changes have been entered?
+- make save always standout, different then cancel
 - settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
-- should current module always be shown in current selector, of if it is part of another environment, should be redirected?
-- link preview and edit button, when to highlight, persistent last edit page handling
-- what happens when a document category is edited that is content of page language_object, should it effect last edit page/preview
 - file upload
 	- implement upload "traditional" and d&d for detail
 	- reload list after document upload success
@@ -88,41 +131,28 @@ Details
   - mini_cms_1, externals etc.
 - timeline and herrmanngerman next @see todo_design
 
-Bugs 
-- Safari login send form on return does not work
-- file upload and drag and drop Safari and Chrome
-- double click on active buttons in list (is_protected) does toggle twice but display result of first toggle only
+ListWidget general
+- what happens when module category is chosen that is used in a page, should it effect last edit page/preview
 
-General handling
+Browser Issues 
+- Safari login send form on return does not work
+- Safari and Chrome 
+	- file upload and upload with drag and drop does not work
+	- css top position document list view
+- double click on active buttons in list (is_protected) does not display the result correctly (stores correctly, but not displays correctly)
+
+General handling issues
 - dblclick click standards transparency, buttons: i.e edit on click, default edit dblclick: 
 - highlight save when detail modified
 - handle go away if detail is not saved
 - users might want quick links (menu config)
-
-PageTypeWidget
-- carefully test for reliable behaviour, performance
-- adminContainers: if template and pagetype are the same should that be kind of persistant, 
-	not rendered all the time (container name and target ol)
-- implement/sketch journal page type
-
-PageDetail
-- last requested page for leaving pages_admin?
-- add loading image for various loading instances
-- show content & references tabs only if not new
-- references, delete restriction, information, load on click or on delete restriction
-- templates visualisation, choosing from images rather then names, CSS Parser
-- activities show with loader image, ie. save, take away focus from save button
-- how to handle language, language objects, permissions etc
-- page preview, set online.
-
-PageTree Widget
-- new page, move page d&d
-- language change and language page strings and objects
-- make ajax-loader on loading tree data (ie on has_children icon?) and also on loading page_detail (like lists)
-- make separate tree style sheet?
-- discuss subtle highlight of active parent elements to make hierarchy explicit
-- how to visualize is_folder, how to name it best (Untermenu zeigt)
-- make custom made checkboxes. all the same but the active checkbox green/red?
+- context menu > edit sidebar item ie document category etc 
+		http://www.javascripttoolbox.com/lib/contextmenu/
+		http://beckelman.net/demos/jQueryListViewWithContextMenu/Default.aspx
+- avoid multiple loading of same widget
+- remove alerts on reload of pages, don't stack the same alert
+- remove save_callback: jQuery.noop etc statements
+- MiniCMS Redesign DOMAIN and software names @see todo_design.txt
 
 CSSParser, adminGetContainers(), no major priority, can be done anytime
 - CSS cleaning for admin containers > why not handle with CSSParser::consumeIfNot(aRules=width, margin, clear, float?)
@@ -131,11 +161,6 @@ CSSParser, adminGetContainers(), no major priority, can be done anytime
 
 Security and Stability!!!!!
 - ResourceInclude make stable, fallback for google lib.
-
-Detail
-- highlight save button when any input has changed, cancel button should close window if no changes have been entered?
-- make save always standout, different then cancel
-- discuss tabs, icons-"tabs" for references, list / thumbnail views etc
 
 Widget tasks
 - check session storage of widgets WidgetModule::removeStoredWidgets();
@@ -148,48 +173,55 @@ Widget tasks
 - PermissionWidget? @see use_cases_permissions.txt
 - d&d, sortable and assign to category or tag etc
 
-SVN, development and tracking tasks
-- plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
-- remember > lets continue with tracker and get into it or change it.
-- discuss plural classes dir name and new dirs for helper/util, manager, module etc?
-
 RichtextWidget
 - tinymce integration continue? @see tinybrowser
+- change names like parseInputFromMce to more generic ones for different editors
 
-Issues	
+AdminMenu	
 - blur on filter change
 - ModuleManager > group, sort etc, handling for getModuleSelect
 - how to include modules in moduleSelect when they are active but not in the reduced moduleSelect array
 	this issue concerns permissions and moduleSelect, @see use_cases_permissions.txt
-- RichtextUtil 	change names like parseInputFromMce to more generic ones for different editors
+- for Preview, Admin, Login, more?
+- required and user related admin_menu elements
+	- required: 
+		[logo cmos] > replace by custom logo (domain)?
+		User, Logout, dashboard, settings
+	- context sensitive
+	 	[modul-selector]
+- edit / preview button. how does it function in context of pages and admin modules
+- selects gruppieren, trennlinien, unterauswahl, multiple selects possible?
 
-html and css
+Html/css
 - Css and Skins, discuss how to clean up and make skinable
 - check table, ul, heading valid and appropriate elements (heading ul, tbody, thead, tfoot?)
 - lang string strategy so I can clean up effectively
 
-dashboard, context help
-- if dashboard is a context button I guess it should be in the footer
+Dashboard, context help
+- HerrmannGermann insist there is only ONE dashboard, not one per module?????
+- contexts like last edited entries etc should be handled differently in that case
 - help: in detail, list, how to organise ? documentation.mini-cms.ch? how to do?
 - think about the requirements of access rights, modules, categories, altenburg etc, discuss Groups / Users / PagesRight
 
-General topics
-- content language should always be displayed in tabs, depending on context in pages, strings, wherever?
-	does it need a language selector in menu_bar
-- context menu > edit sidebar item ie document category etc 
-		http://www.javascripttoolbox.com/lib/contextmenu/
-		http://beckelman.net/demos/jQueryListViewWithContextMenu/Default.aspx
-- avoid multiple loading of same widget
-- remove alerts on reload of pages, don't stack the same alert
-- remove save_callback: jQuery.noop etc statements
-- MiniCMS Redesign DOMAIN and software names @see todo_design.txt
+Help / Online documentation
+- help issues should be handled in one remote location. Content Management is always done in a remote environment, isn't it?
+
+SVN, development and tracking tasks
+- plugins organise, just change trunk > use new admin ie. newsletter, make new project_management?
+- remember > lets continue with tracker and get into it or change it.
+- discuss plural classes dir name and new dirs for helper/util, manager, module etc?
+Version cleanup
+- plug journal > PropelPDO for version _minicms_1.0_plugins
+- svn external management how to find out all propedits for site
+- what's wrong with gems st?
+
 
 ListWidgets
 - cols, solution for align/valign attributes
 - delete handling / from list. discuss is_inactive as "temp deleted", delete currently selected category (with documents/documents etc)
 - list inline editing, required ? how to implement?
 - start and length limit & offset, when and how to use
-- add sort field where helpful (documents, and links if category, same for projects? visual sort)
+- add sort field where required: any visual sort requirement like images: in documents (per category) or ie "projects"
 
 DetailWidget
 - open detail widget if requested > users?id=5: current user > maybe show detail widget in current module
@@ -206,14 +238,8 @@ DetailWidget
 	event listener, observer pattern, needs to be implemented
 - delete from detail
 
-SpecialWidgets
-- do we need specific row (detail) widgets, inline field in row, or row editing, depends where the event change is?
-- do we need field widget? are InputWidgets field widgeds? inline field editing
-
-DocumentDetail
-- file upload with jQuery UI? http://www.uploadify.com/demo/
-- label_fileupload dynamisch hochladen / ersetzen
-- html5, d&d
+Row- and FieldWidgets
+- special inline requirements, ie for rights, module rights and more
 
 UsersAdminModule
 - is_inactive handling by removing password?
@@ -224,34 +250,16 @@ GroupsAdminModule
 - discuss handling of users and groups to make it transparent > groups, show users and d&d, users show admin, backend, frontend?
 - is inherit required for Pages or should it always be inherit if somebody can edit or create a page, the should do the same for children
 
-LinkDetail
-- find more elegant version for protocol options
-
-LinkList
-- allow Links to be displayed without category, categories and tags how to?
-
-Validation
+Validation, PHP and Javascript
 - Javascript? how to implement? check required fields in js, rest php
 
 Search options
 - How should search be handled - within current criteria, show "more" if category is chosen
-- Search Dom elements?
+- Search Dom elements, simple search word highlighting?
 - search words should be handled as separate words, in quotes looking for entire string
-- simple search word highlighting?
-- indicate sidebar active option that result is only part of selection, on click all are shown again
 
 Login/Logout
-	what happens on failed login, default login page with infos?
-
-Admin-Menu
-- should not slide in admin
-- es kann verschiedene Admin-Menus geben: Preview, Admin, Login, mehr?
-- je nach Rechte und Manager werden buttons, selectors, icons zusammenstellen
-	- gleiche [logo cmos]
-	- verschiedene [modul-selector, edit, preview, user_name, logout, dashboard]
-- html / css wie?
-- edit / preview button. how does it function in context of pages and admin modules
-- selects gruppieren, trennlinien, unterauswahl etc.
+- login widget, login page for more infos on fail?
 
 LinkAdminModule
 - tags in sidebar: discuss handling, drag and drop to tag, d&d in general
@@ -262,43 +270,28 @@ LinkAdminModule
 - add url validation?
 - discuss detail container for states and info?
 
-DocumentAdminModule
-- categories in sidebar handling: add [without category] sidebar link
-- add document updoad. Make new document uplaod class that works seamlessly from any upload (custom modules, richtext)
-- integrate mass upload? seamless functioning of documents
-- discuss detail container for states and info?
+LinkDetail
+- find more elegant version for protocol options
 
-Categories, type, kind... & tags
-- Document categories. How to show options [all, without category]
-- design / usability issue: how to choose images only: by kind
-- Categories or tags that are shown on pages should display that information.
+LinkList
+- allow Links to be displayed without category, categories and tags how to?
 
-DocumentCategories
-- test link to documents and documents criteria ? bug in results and category highlight?
-- add select for category restriction> like image, is_office_doc, video etc. On select show option (ie. max_width, max_height, max_upload_size)
-- delete if count > 0? how to handle (action option of deleting all documents related, in documents or in category?)
-- show link to related documents
-- remove is_inactive....
-- should we add created/updated?
+Tags
+- how to use them. Make concept. how to visualise and use effectively
+- modify RelatedModule to make it more configurable and less static
 
-DocumentTypes
-- is_office_doc: is this needed or deprecated > remove
-- need to change anything here?
+LanguageTabsWidget
+- PageDetail, Strings, custom modules
 
 LanguagesAdminModule
-- do inline editing in list since there is not a lot of info
+- do inline editing in list since there is not a lot of info.
+- add link to language contexts like pages, strings to make languages more rich
 - do allow to add language name string to String from language if language is missing?
 - don't allow language to be deleted if default one, or if content already exists, delete language objects?
 
 Propel 1.5 upgrade changes
 - discuss migration of Peer methods or new conventions for Query (like always return Criteria instead of result)
 - naming conventions?
-
-languages: content_language=language,  interface_language
-- handle languages in AdminModule
-- refactor code in String Modules or wherever used
-- languages selector should only be seen if necessary, probably not in menubar, but in context (tabs) of module (ie Strings, Pages, etc?)
-- language_chooser future, language should only be displayed if page is available at language
 
 BackupAdminModule
 - should load and backup be in same module, advantage, disadvantage
@@ -315,9 +308,6 @@ Active / inactive
 - reconsider naming of booleans to be intuitivly clear. how to?
 - probably documents, links etc should not have a is_inactive because they are not automatically displayed any way. is confusing for users
 
-bugtracking/features issue
-- diese todos in den bug-feature tracker? wie das effizient machen?
-
 Misc
 - list booleans replace by jQuery-UI icons > active, inactive
 - ajax loader implement
@@ -327,20 +317,6 @@ Misc
 - sidebar parameter should be added called from external url: like category or tags or page 
 User infos
 - create and modify user and date? make accessible? where? info icon?
-
-Category vs tag issue
-- tags have to be very clear, how to. 
-- "persistent tags" / soft categories...
-- question: do people have to know about background technologies?
-
-templates and css
-- ui styles, should cmos-button not be ui-button as well
-- widget specific, ie. dialog property width / height / min / max
-- mark and remove active list state on detail open
-- font-size: how to? list vs dialog in Links
-- buttons and icons in lists and detail, how to configure: active, is_inactive, is_protected, delete, add, move etc.
-- theme to be tuned,
-- ???
 
 Performance
 - compression and combine...? @see http://www.symfony-project.org/plugins/sfCombinePlugin
@@ -356,18 +332,10 @@ CONTINUOUS development strategy
 - parallel development of newsletter and client/project module as plugin in new_admin, how to
 - what about project management etc see graffle?
 
-Version cleanup
-- plug journal > PropelPDO for version _minicms_1.0_plugins
-- svn external management how to find out all propedits for site
-- what's wrong with gems st?
-
 Sites done remote and 
 - taylormade.ch ✓ r2446
 - remcom.ch ✓ backup done r2446
 - kathleenwills.com ✓ r2446
-
-Sites done locally 
-	last update and remote migration.sql check always needs to be done
 - svenja.ch ✓
 - walo-deuber.ch ✓
 - mini-cms.ch ✓
@@ -375,15 +343,15 @@ Sites done locally
 - vagabunt.ch ✓
 - myplacement.ch ✓
 - mosaics.ch ✓
+- butti.ch ✓
+	check local FLV.php changes, PrettyPhoto
+- gcgroup.ch ✓
 
 Sites to check something
 - summercampsombor.ch ✓
 	exclude camp-sites!
 - gems-europe.com ✓
 	check HTTP/Request2.php and ShopItemImpl
-- butti.ch ✓
-	check local FLV.php changes, PrettyPhoto
-- gcgroup.ch ✓
 	what happened to google analytics?	var pageTracker = _gat._getTracker("UA-10691002-1"); pageTracker._trackPageview();
 - cgcmac.ch ✓
 	newsletter plugin check 
@@ -634,3 +602,12 @@ row_count error > update count on no entries
 	- Naturfreunde, strategy. What are we doing, what is our focus
 - page_detail template edit handle dynamically page_properties, template & page_type for admin only etc
 - info: file_get_contents development environment
+- last requested page for leaving pages_admin?
+	does it need a language selector in menu_bar
+- categories in sidebar handling: add [without category] sidebar link
+- add document updoad. Make new document uplaod class that works seamlessly from any upload (custom modules, richtext)
+- integrate mass upload? seamless functioning of documents
+- discuss detail container for states and info?
+- show link to related documents
+- remove is_inactive....
+- should we add created/updated?
