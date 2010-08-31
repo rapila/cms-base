@@ -14,8 +14,6 @@ DIVERSES
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
 3 Bug-Tracking / Wiki > Assembla, GitHub ?
 Bug 
-- [message] => Undefined index:   SERVER[HTTP_HOST], HTTP_USER_AGENT deuten auf Serveränderungen zu
-   [filename] => /home/httpd/vhosts/taylormade.ch/httpdocs/base/lib/classes/LinkUtil.php
 - taylormade effects: ajax kills animation. how to register events
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - cms_dev onNavigationItemChildrenRequested second argument not given.
@@ -23,6 +21,14 @@ Bug
 
 ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
+
+BUGBUGBUG release-1.0-devel
+- check handling of prototype.js, cache and file_get_contents. 
+	butti.ch. tonnenweise error emails diesbezueglich, obwohl es auf auto steht 
+- Check module: safe_mode is deprecated, allow_url_fopen: should we have it on, consequences
+	@see http://www.metanet.ch/support/statusmeldungen/meldungen/sperrung-php-parameter-allow_url_fopen
+- Undefined index:   SERVER[HTTP_HOST] (LinkUtil, taylormade.ch), HTTP_USER_AGENT (LoginManager, z.B. vagabunt.ch) deuten auf Serveränderungen zu
+- new Blob in Massupload
 
 Priorities
 - document_thumbnail_view: tooltip only works after clicking once on a thumbnail
