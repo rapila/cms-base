@@ -119,6 +119,7 @@ Widget.types.page_type.types['default'] = {
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		available_modules.empty();
 		filled_modules.empty();
+		container.append('<br clear="both" />');
 		
 		// get containers before filling the objects
 		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
@@ -137,7 +138,12 @@ Widget.types.page_type.types['default'] = {
 					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 					jQuery.each(params.contents, function(object_id, content) {
 						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
-						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li)));
+						var remove_botton = remove_button.clone();
+						if(!content.content_info) {
+							li.addClass('language_object_emty');
+							remove_botton.addClass('delete_inactive');
+						}
+						li.prepend(remove_botton.click(pt_default.remove_object.bind(page_type, li)));
 						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));
 					});
 				});

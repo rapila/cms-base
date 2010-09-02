@@ -8,13 +8,16 @@ Miscellaneous projects
 		Opera main navigation not display correctly
 	General check and update
 
-DIVERSES
-1 qm-manual
-2 schule altenburg planung
+Todo
+1 discuss future shops, meaning of a page type
+2	update cgcmac.ch > newsletter
+	make release-1.0-plugin
+3 schule altenburg planung
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
-3 Bug-Tracking / Wiki > Assembla, GitHub ?
-Bug 
-- taylormade effects: ajax kills animation. how to register events
+4 taylormade effects: ajax kills animation. how to register events
+6 Bug-Tracking / Wiki > Assembla, GitHub ?
+
+BUG!
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to
@@ -22,29 +25,22 @@ Bug
 ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
-BUGBUGBUG release-1.0-devel
-- check handling of prototype.js, cache and file_get_contents. 
-	butti.ch. tonnenweise error emails diesbezueglich, obwohl es auf auto steht 
-- Check module: safe_mode is deprecated, allow_url_fopen: should we have it on, consequences
-	@see http://www.metanet.ch/support/statusmeldungen/meldungen/sperrung-php-parameter-allow_url_fopen
-- Undefined index:   SERVER[HTTP_HOST] (LinkUtil, taylormade.ch), HTTP_USER_AGENT (LoginManager, z.B. vagabunt.ch) deuten auf Serveränderungen zu
-- new Blob in Massupload
-
 Priorities
-- document_thumbnail_view: tooltip only works after clicking once on a thumbnail
+- document list widget search does not function
+- thumbnail view with without category does not work
+- check Safari and Chrome listh header css with CssEdit
 - document_list video not autoplay
-- page_detail, add is_active to pagestring
-- page_detail, swap position of modules and d&d area
-- cmos_mini projects file_upload
 - validate implement like user_detail
 - user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
+- cmos_mini projects file_upload
 
 PageDetail
 - language tabs
 	load language sensitive content all the time? Or should languages be available, copyable etc?
 	language sensitive: page_strings, contents, references!
+- page_detail, add is_active to pagestring
 - templates visualisation, choosing from images rather then names, CSS Parser
 - visualise activities, whenever something is loaded, ie on tab?
 - page preview before set online, how to do?
@@ -141,7 +137,6 @@ ListWidget general
 - what happens when module category is chosen that is used in a page, should it effect last edit page/preview
 
 Browser Issues 
-- Safari login send form on return does not work
 - Safari and Chrome 
 	- file upload and upload with drag and drop does not work
 	- css top position document list view
@@ -617,3 +612,14 @@ row_count error > update count on no entries
 - show link to related documents
 - remove is_inactive....
 - should we add created/updated?
+BUGBUGBUG release-1.0-devel
+- check handling of prototype.js, cache and file_get_contents. 
+	butti.ch. tonnenweise error emails diesbezueglich, obwohl es auf auto steht 
+- Check module: safe_mode is deprecated, allow_url_fopen: should we have it on, consequences
+	@see http://www.metanet.ch/support/statusmeldungen/meldungen/sperrung-php-parameter-allow_url_fopen
+- new Blob in Massupload
+1 qm-manual > make search info, inform platzhalter, 
+	final work revise how-to-do-manual
+5 Gems revise ?
+- document_thumbnail_view: tooltip only works after clicking once on a thumbnail
+- Safari login send form on return does not work

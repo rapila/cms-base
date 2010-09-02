@@ -61,11 +61,11 @@ class StringUtil {
 	}
 
 	public static function endsWith($str, $end) {
-		return strrpos($str, $end)===strlen($str)-strlen($end);
+		return substr($str, -strlen($end)) === $end;
 	}
 
 	public static function startsWith($str, $start) {
-		return strpos($str, $start)===0;
+		return substr($str, 0, strlen($start)) === $start;
 	}
 
 	public static function truncate($sText, $iLength=20, $sPostfix="…", $iTolerance=3) {

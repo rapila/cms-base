@@ -11,9 +11,9 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 		$this->oPageType = $oPageType;
 	}
 	
-	public function setPageType($sPageType, $iPageId) {
+	public function setPageType($sPageType, $iPageId, $sLanguageId = null) {
 		$this->sPageType = $sPageType;
-		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, PagePeer::retrieveByPK($iPageId));
+		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, PagePeer::retrieveByPK($iPageId), $sLanguageId);
 	}
 	
 	public function getPageType() {

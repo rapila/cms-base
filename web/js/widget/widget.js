@@ -252,6 +252,7 @@ jQuery.extend(Widget, {
 		}
 		Widget.create(widgetType, intermediateCallback, function(widget) {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
+			widget.fire('element_set', widget._element);
 			widget.handle('prepared', function(event, widget) {
 				finishCallback(widget);
 			});

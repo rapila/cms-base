@@ -22,9 +22,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 		
 		// addition related page fields
-		$oPageString = $oPage->getActivePageString(AdminManager::getContentLanguage());
-		$aResult['active_page_string'] = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
-		$aResult['active_page_string']['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
 		
 		// page properties are displayed if added to template
@@ -41,6 +38,20 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_references'] = $mReferences;
 		}
 		return $aResult;
+	}
+	
+	public function getLanguageData($sLanguageId) {
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$oPageString = $oPage->getPageStringByLanguage($sLanguageId);
+		if($oPageString === null) {
+		  $oPageString = new PageString();
+		  $oPageString->setLanguageId($sLanguageId);
+		  $oPageString->setIsInactive(true);
+		  $oPage->addPageString($oPageString);
+		}
+		$aResult = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
+		$aResult['LinkTextOnly'] = $oPageString->getLinkTextOnly();
+    return $aResult;
 	}
 	
  /** 
@@ -153,15 +164,21 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private function handlePageStrings($aPageData) {
-		$oPageString = $this->oPage->getActivePageString();	
-		if($oPageString === null) {
-			$oPageString = new PageString();
-			$this->oPage->addPageString($oPageString); 
-		}
-		$oPageString->setPageTitle($aPageData['page_title']);
-		$oPageString->setLinkText($aPageData['link_text'] ? $aPageData['link_text'] : null);
-		$oPageString->setIsInactive(!isset($aPageData['is_inactive']));
-		$oPageString->save();
+	  if(isset($aPageData['edited_languages'])) {
+	    foreach($aPageData['edited_languages'] as $sLanguageId) {
+    		$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId);	
+    		if($oPageString === null) {
+    			$oPageString = new PageString();
+    			$oPageString->setLanguageId($sLanguageId);
+    			$this->oPage->addPageString($oPageString); 
+    		}
+    		$oPageString->setPageTitle($aPageData['page_title_'.$sLanguageId] ? $aPageData['page_title_'.$sLanguageId] : null);
+    		$oPageString->setLinkText($aPageData['link_text_'.$sLanguageId] ? $aPageData['link_text_'.$sLanguageId] : null);
+    		$bIsActive = $oPageString->getPageTitle() !== null ? !isset($aPageData['is_inactive_'.$sLanguageId]) : true;
+    		$oPageString->setIsInactive($bIsActive);
+    		$oPageString->save();
+	    }
+	  }
 	}
 	
 	private function handleLanguageObjects($aPageData) {

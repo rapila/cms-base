@@ -281,21 +281,21 @@ form.page_detail h3.status {
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail .ui-state-active a {
+form.page_detail h3.ui-state-active a {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail .ui-state-active a:link {
+form.page_detail h3.ui-state-active a:link {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail .ui-state-active a:visited {
+form.page_detail h3.ui-state-active a:visited {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
@@ -378,6 +378,16 @@ div.container {
 .page_detail .available_modules li { background-color: #f2f2f2; }
 .page_detail .filled_modules ol.template-container li { font-size: 12px; }
 .page_detail .template-container-description { font-size: 12px; }
+.page_detail .filled_modules ol.template-container li.language_object_emty { border-style: dotted; }
+.page_detail div.ui-widget-content { border: 0; }
+.page_detail .ui-tabs-nav .ui-state-active a { margin-top: -1px; }
+.page_detail .ui-tabs-nav .ui-state-active {
+  position: relative;
+  top: 1px;
+}
+.page_detail .ui-tabs-nav .ui-state-active a { color: black; }
+.page_detail .ui-tabs .ui-tabs-nav li a { padding: 0.5em 1.5em 0.2em; }
+.ui-icon-trash.delete_inactive { background-image: url(''); }
 .ui-state-droppable {
   border: 0 solid #b8d600;
   background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
@@ -408,3 +418,22 @@ table.ui-list td.file_info {
   padding-right: 2em;
 }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
+.ui-accordion .ui-accordion-content.contents_container { padding: 0; }
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
+  padding: 0;
+  border-color: #cccdcf;
+}
+.ui-tabs-nav.ui-widget-header {
+  padding-left: 26px;
+  background: #ebedef url('');
+}
+form.page_detail .ui-tabs-nav li.ui-state-active { background-color: #ffffff; }
+form.page_detail .ui-tabs-nav li {
+  margin: 2px 2px 0 2px;
+  border-color: #cccdcf;
+}
+form.page_detail .ui-tabs-panel .panel_content {
+  border-top: 1px #cccdcf solid;
+  padding: 0 0 20px 26px;
+  margin-left: 0;
+}

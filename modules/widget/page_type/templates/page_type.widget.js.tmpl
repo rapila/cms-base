@@ -1,7 +1,7 @@
 Widget.types.page_type = {
 	initialize: function() {
 		if(this.settings.page_type) {
-			this.setPageType(this.settings.page_type, this.settings.page_id);
+			this.setPageType(this.settings.page_type, this.settings.page_id, this.settings.language_id);
 		} else {
 			this.settings.page_type = this.getPageType();
 		}
@@ -24,7 +24,8 @@ Widget.types.page_type = {
 	settings: {
 		page_type: null,
 		container: null,
-		page_id: null
+		page_id: null,
+		language_id: null
 	},
 	
 	types: {}

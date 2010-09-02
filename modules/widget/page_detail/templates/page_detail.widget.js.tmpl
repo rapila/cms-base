@@ -1,14 +1,21 @@
+jQuery.fn.extend({
+	internationalize: function(language_id) {
+		var name = this.attr('name');
+		this.attr('name', name+'_'+language_id);
+		return this;
+	}
+});
+
 Widget.types.page_detail = {
 	prepare: function() {
 		var widget = this;
-		var page_data = null;
 		this.accordion = jQuery(this._element.find('div.accordion')).
 		accordion({active: 0, autoHeight: false, clearStyle: true}).
 		bind('accordionchangestart', function(event, ui) {
 			if(!ui.newContent.is('.contents_container')) {
 				return;
 			}
-			widget.load_content(ui.newContent.find('.contents'));
+			widget.load_content(ui.newContent);
 		});
 		
 		this.content_has_been_loaded = false;
@@ -73,9 +80,8 @@ Widget.types.page_detail = {
 		this.fill_data();
 		var active_accordion_title = this.accordion_active();
 		if(active_accordion_title.next().is('.contents_container')) {
-			var contents_container = active_accordion_title.next().find('.contents');
+			var contents_container = active_accordion_title.next();
 			this.load_content(contents_container);
-
 		}
 		page_detail.show();
 		this.fire('page.loaded', page_id);
@@ -87,45 +93,56 @@ Widget.types.page_detail = {
 			return;
 		}
 		container.empty();
+		
 		this.content_has_been_loaded = 1;
-		Widget.createWithElement('language_tabs', function(language_tabs) {
-			// console.log(language_tabs._element);
-			container.append(language_tabs._element);
+		Widget.createWithElement('language_tabs', function(widget) {
+			widget.handle('element_set', function(event, element) {
+				container.append(element);
+			});
+		}, function(language_tabs) {
+			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
+				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_language}}'));
+				var language_data = widget.getLanguageData(language_id);
+				tab_content.find("input[name='edited_languages[]']").val(language_id);
+				tab_content.find("input[name='link_text']").internationalize(language_id).val(language_data.LinkTextOnly);
+				tab_content.find("input[name='page_title']").internationalize(language_id).val(language_data.PageTitle);
+				tab_content.find("input[name='is_inactive']").internationalize(language_id).attr('checked', !language_data.IsInactive);
+				
+				var panel_content = tab_content.find('.panel_content');
+				
+				Widget.create('page_type', function(page_type) {
+					//Intermediate callback
+					page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
+					page_type.settings.container = panel_content;
+					page_type.settings.page_id = widget.current_page_id;
+					page_type.settings.language_id = language_id;
+				}, function(page_type) {
+					//Initialized callback
+					page_type.handle_admin();
+					widget.content_has_been_loaded = true;
+				});
+			}, false, true);
 		});
 
-		Widget.create('page_type', function(page_type) {
-			//Intermediate callback
-			page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
-			page_type.settings.container = container;
-			page_type.settings.page_id = widget.current_page_id;
-		}, function(page_type) {
-			//Initialized callback
-			page_type.handle_admin();
-			widget.content_has_been_loaded = true;
-		});
 	},
 	
 	fill_data: function() {
 		var widget = this;
-		this.page_data = this.getPageData()
-		console.log(this.page_data);
-		this.current_page_id = this.page_data.Id;
-		this._element.find("input[name='name']").val(this.page_data.Name);
-		this._element.find("input[name='global_is_inactive']").attr('checked', !this.page_data.IsInactive);
-		this._element.find("input[name='link_text']").val(this.page_data.active_page_string.LinkTextOnly);
-		this._element.find("input[name='page_title']").val(this.page_data.active_page_string.PageTitle);
-		this._element.find("input[name='is_inactive']").attr('checked', !this.page_data.active_page_string.IsInactive);
-		this._element.find("input[name='is_folder']").attr('checked', this.page_data.IsFolder);
-		this._element.find("input[name='is_hidden']").attr('checked', this.page_data.IsHidden);
-		this._element.find("input[name='is_protected']").attr('checked', this.page_data.IsProtected);
-		this._element.find("select[name='template_name']").val(this.page_data.TemplateName == null ? "" : this.page_data.TemplateName);
-		this._element.find("select[name='page_type']").val(this.page_data.PageType == null ? "" : this.page_data.PageType).change(function() {
+		var page_data = this.getPageData()
+		this.current_page_id = page_data.Id;
+		this._element.find("input[name='name']").val(page_data.Name);
+		this._element.find("input[name='global_is_inactive']").attr('checked', !page_data.IsInactive);
+		this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
+		this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
+		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
+		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
+		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
 			widget.content_has_been_loaded = false;
 		});
-		this._element.find(".page_href").text(this.page_data.PageHref).attr('href', this.page_data.PageHref);
+		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
 
 		// references
-		var count_references = this.page_data.CountReferences;
+		var count_references = page_data.CountReferences;
 		var count_text = count_references > 0 ? " ("+count_references+")" : '';
 		if(count_references == 0) {
 			this._element.find(".page_references").remove();
@@ -137,30 +154,30 @@ Widget.types.page_detail = {
 		var page_properties_container = this._element.find("div.page_properties");
 		var page_properties_header = this._element.find("h3.page_properties");
 
-		if(this.page_data.page_properties != undefined) {
+		if(page_data.page_properties != undefined) {
 			page_properties_container.empty().show();
 			page_properties_header.show();
 			var default_name = "{{writeString=widget.default}}";
-			for(property_name in this.page_data.page_properties) {
+			for(property_name in page_data.page_properties) {
 				var property_container = jQuery("<div/>");
-				property_container.append(jQuery('<label/>').text(property_name.substring(this.page_data.NameSpace.length)).attr("for", property_name));
-				for(name in this.page_data.page_properties[property_name]) {
+				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
+				for(name in page_data.page_properties[property_name]) {
 					if(name === 'value') {
-						var background_color  ='';
-						if(this.page_data.page_properties[property_name]['type'] == 'color') {
-							background_color = this.page_data.page_properties[property_name][name] != '' ? this.page_data.page_properties[property_name][name] : this.page_data.page_properties[property_name]['default']
+						var background_color	='';
+						if(page_data.page_properties[property_name]['type'] == 'color') {
+							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
 						}
-						var type_class = this.page_data.page_properties[property_name]['type'] ? ' '+this.page_data.page_properties[property_name]['type'] : '';
-						var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": this.page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
+						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
+						var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
 						property_container.append(property_input);
 					}
 					if(name === 'default') {
-						property_container.append(jQuery('<span/>').text(default_name+": "+this.page_data.page_properties[property_name][name]));
+						property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));
 					}
 				}
 				page_properties_container.append(property_container);
 			} 
-		}	else {
+		} else {
 			page_properties_header.hide();
 			page_properties_container.hide();
 		}
