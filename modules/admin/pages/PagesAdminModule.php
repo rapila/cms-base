@@ -8,17 +8,24 @@ class PagesAdminModule extends AdminModule {
 	private $oRootPage;
 	
 	public function __construct() {
-		$this->oRootPage = PagePeer::getRootPage();
+		try {
+			$this->oRootPage = PagePeer::getRootPage();
+		} catch (Exception $e) {
+				$this->oRootPage = PagePeer::initialiseRootPage();
+		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
 		$this->oTreeWidget->setOrdered(true);
-		$oInitialPage = $this->oRootPage;
+		$oInitialPage = null;
     // ErrorHandler::log(Manager::hasNextPathItem(), Session::getSession()->hasAttribute('persistent_page_id'));
 		if(Manager::hasNextPathItem()) {
 			$oInitialPage = PagePeer::retrieveByPK(Manager::usePath());
 			Session::getSession()->setAttribute('persistent_page_id', $oInitialPage->getId());
 		} else if(Session::getSession()->hasAttribute('persistent_page_id')) {
       $oInitialPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+		}
+		if($oInitialPage === null) {
+			$oInitialPage = $this->oRootPage;
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'tree_session', $this->oTreeWidget->getSessionKey());
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'initial_page_id', $oInitialPage->getId());
