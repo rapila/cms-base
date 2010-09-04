@@ -25,11 +25,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
 		
 		// page properties are displayed if added to template
-		$mAvailableProperties = $this->getAvailablePageProperties($oPage);
-		if(count($mAvailableProperties) > 0) {
-			$aResult['page_properties'] = $mAvailableProperties;
-			$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
-		}
+		$mAvailableProperties = array();
+		try {
+			$this->getAvailablePageProperties($oPage);
+			if(count($mAvailableProperties) > 0) {
+				$aResult['page_properties'] = $mAvailableProperties;
+				$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
+			}
+		} catch(Exception $e) {}
 		
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
@@ -73,6 +76,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult[$i]['name'] = StringUtil::makeReadableName($sTemplateName);
 		}
 		$aResult[$i+1]['value'] = "";
+		$aResult[$i+1]['is_default'] = true;
 		$aResult[$i+1]['name'] = StringPeer::getString('widget.default');
 		krsort($aResult);
 		return $aResult;

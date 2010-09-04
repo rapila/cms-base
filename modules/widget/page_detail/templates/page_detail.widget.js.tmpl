@@ -25,7 +25,7 @@ Widget.types.page_detail = {
 		var option = jQuery('<option/>');
 		var template_select = this._element.find("select[name='template_name']");
 		jQuery.each(this.getFrontendTemplates(), function(i, template) {
-			option.clone().text(template.name).attr('value', template.value).appendTo(template_select);
+			option.clone().text(template.name).attr('value', template.value).appendTo(template_select).addClass(template.is_default ? 'default' : '');
 		}.bind(this));
 		var page_type_select = this._element.find("select[name='page_type']");
 		jQuery.each(this.getPageTypes(), function(i, page_type) {

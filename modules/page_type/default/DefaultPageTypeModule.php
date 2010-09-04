@@ -366,7 +366,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		foreach($mTag->getChildren() as $mChild) {
 			$this->cleanupContainerStructure($mChild, $mTag);
 		}
-		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name') && $oParent->getParameter('class') != 'template-container-description') {
+		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name') && ($oParent === null || $oParent->getParameter('class') != 'template-container-description')) {
 			if($oParent === null) {
 				return null;
 			}

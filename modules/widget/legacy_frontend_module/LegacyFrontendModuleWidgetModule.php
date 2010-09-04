@@ -14,6 +14,7 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
+		$oResourceIncluder->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		$oResourceIncluder->addJavaScriptLibrary('prototype', 1.6);
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}

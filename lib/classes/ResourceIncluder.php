@@ -44,6 +44,7 @@ class ResourceIncluder {
 	private static $IE_CONDITIONAL = null;
 	
 	private $aIncludedResources;
+	private $aReverseDependencies;
 	private $aCurrentDependencyStack;
 	
 	public static function namedIncluder($sName) {
@@ -60,6 +61,7 @@ class ResourceIncluder {
 	public function __construct() {
 		$this->clearIncludedResources();
 		$this->aCurrentDependencyStack = array();
+		$this->aReverseDependencies = array();
 	}
 	
 	private function findTemplateNameForLocation($sLocation) {
@@ -94,14 +96,10 @@ class ResourceIncluder {
 	}
 	
 	private function containsResource($sIdentifier) {
-		if(isset($this->aIncludedResources[self::PRIORITY_FIRST][$sIdentifier])) {
-			return self::PRIORITY_FIRST;
-		}
-		if(isset($this->aIncludedResources[self::PRIORITY_NORMAL][$sIdentifier])) {
-			return self::PRIORITY_NORMAL;
-		}
-		if(isset($this->aIncludedResources[self::PRIORITY_LAST][$sIdentifier])) {
-			return self::PRIORITY_LAST;
+		foreach($this->aIncludedResources as $iPriority => $aResources) {
+			if(isset($aResources[$sIdentifier])) {
+				return $iPriority;
+			}
 		}
 		return false;
 	}
@@ -113,12 +111,14 @@ class ResourceIncluder {
 	public function addResourceEndingDependency($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false) {
 		$this->addResource($mLocation, $sTemplateName, $sIdentifier, $aExtraInfo, $iPriority, $sIeCondition, $bIncludeAll, true);
 	}
-
 	
-	public function addResource($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false, $bEndsDependencyList = false) {
+	public function addResource($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = null, $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false, $bEndsDependencyList = false) {
 		//Not allowed
 		if($bIncludeAll && $sIdentifier !== null) {
 			$sIdentifier = null;
+		}
+		if($aExtraInfo === null) {
+			$aExtraInfo = array();
 		}
 		$sResourcePrefix = self::RESOURCE_PREFIX_EXTERNAL;
 		$mFileResource = null;
@@ -323,6 +323,15 @@ class ResourceIncluder {
 	public function addCustomCss($mCustomJs, $iPriority = self::PRIORITY_NORMAL) {
 		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomJs), $iPriority);
 	}
+	
+	public function addReverseDependency($sIdentifier, $bIsBefore = false) {
+		$aArgs = func_get_args();
+		array_shift($aArgs);array_shift($aArgs);
+		if(!isset($this->aReverseDependencies[$sIdentifier])) {
+			$this->aReverseDependencies[$sIdentifier] = array('before' => array(), 'after' => array());
+		}
+		$this->aReverseDependencies[$sIdentifier][$bIsBefore ? 'before' : 'after'][] = $aArgs;
+	}
 
 	public function getIncludedResources() {
 			return $this->aIncludedResources;
@@ -349,6 +358,7 @@ class ResourceIncluder {
 	}
 	
 	public function getIncludes($bPrintNewlines = true) {
+		$this->cleanupReverseDependencies();
 		$iTemplateFlags = 0;
 		if(!$bPrintNewlines) {
 			$iTemplateFlags = Template::NO_NEWLINE;
@@ -377,6 +387,33 @@ class ResourceIncluder {
 			}
 		}
 		return $oTemplate;
+	}
+	
+	private function cleanupReverseDependencies() {
+		foreach($this->aReverseDependencies as $sDependee => $aDependencies) {
+			$iPriority = $this->containsResource($sDependee);
+			if($iPriority === false) {
+				continue;
+			}
+			foreach($aDependencies['before'] as $aDependency) {
+				for($i=0;$i<4;$i++) {
+					if(!isset($aDependency[$i])) {
+						$aDependency[$i] = null;
+					}
+				}
+				$aDependency[4] = $iPriority-1; // 4th Parameter to addResource: Priority
+				call_user_func_array(array($this, 'addResource'), $aDependency);
+			}
+			foreach($aDependencies['after'] as $aDependency) {
+				for($i=0;$i<4;$i++) {
+					if(!isset($aDependency[$i])) {
+						$aDependency[$i] = null;
+					}
+				}
+				$aDependency[4] = $iPriority+1; // 4th Parameter to addResource: Priority
+				call_user_func_array(array($this, 'addResource'), $aDependency);
+			}
+		}
 	}
 	
 	public function addResourceFromTemplateIdentifier($oIdentifier) {

@@ -5,6 +5,7 @@ class PreviewManager extends FrontendManager {
 	
 	public function __construct() {
 		parent::__construct();
+		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', 1.4);
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
