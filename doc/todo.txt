@@ -18,6 +18,9 @@ Todo
 6 Bug-Tracking / Wiki > Assembla, GitHub ?
 
 BUG!
+- cms_wills hidden inputs
+- fassx show custom recipients js
+- qm-manual exception catch
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to

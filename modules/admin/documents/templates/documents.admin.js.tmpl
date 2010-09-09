@@ -62,18 +62,7 @@ jQuery(document).ready(function() {
 				});
 			}, 'n', true).add_button('add-new-item', function() {
 				Widget.create('sidebar_input', function(widget) {
-					widget.add_new_sidebar_input("{{writeString=widget.document_category.default_name}}", 'DocumentCategory', function() {
-						var row_data = sidebar.active_row();
-						if(row_data.length>0) {
-							// TODO: re-setting the last selected item after reload should be default functionality
-							row_data = sidebar.collect_row_data(row_data);
-							sidebar.handle('reloaded', function() {
-								sidebar.activate_row(sidebar.row_from_row_data(row_data));
-							}, true);
-						}
-						sidebar.reload();
-						Widget.fire('cmos.document_categories_changed');
-					});
+					widget.add_new_sidebar_input("{{writeString=widget.document_category.default_name}}", 'DocumentCategory', sidebar);
 				});
 			}).add_button('action', function() {
 					alert('action example: delete all currently shown documents');

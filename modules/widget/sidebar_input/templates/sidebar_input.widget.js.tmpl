@@ -18,6 +18,15 @@ Widget.types.sidebar_input = {
 			var widget = cleanup_callback;
 			cleanup_callback = function() {
 				//Here comes the function that is now in links and documents admin modules
+				var row_data = widget.active_row();
+				if(row_data.length>0) {
+						// TODO: re-setting the last selected item after reload should be default functionality
+					row_data = widget.collect_row_data(row_data);
+					widget.handle('reloaded', function() {
+						widget.activate_row(widget.row_from_row_data(row_data));
+					}, true);
+				}
+				widget.reload();
 			};
 		}
 		var new_input_container = jQuery('<div/>').attr('id', 'new_sidebar_input').addClass('ui-list-row');
