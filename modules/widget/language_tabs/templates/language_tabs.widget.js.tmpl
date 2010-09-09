@@ -22,6 +22,7 @@ Widget.types.language_tabs = {
 					language_tabs.fire('tab.created', language_id, jQuery(ui.panel));
 					tab.data('initialized', true);
 				}
+				language_tabs.updateContentLanguage(language_id);
 				language_tabs.fire('tab.selected', language_id, jQuery(ui.panel));
 			}
 		};
