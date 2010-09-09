@@ -21,16 +21,27 @@ class PreviewManager extends FrontendManager {
 	
 	protected function initLanguage() {
 		$this->sOldSessionLanguage = Session::language();
-		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
+		if(self::hasNextPathItem() && LanguagePeer::languageExists(self::peekNextPathItem())) {
 				AdminManager::setContentLanguage(self::usePath());
+				LinkUtil::redirectToLanguage(false, AdminManager::getContentLanguage());
 		} else {
-			if(!LanguagePeer::languageIsActive(AdminManager::getContentLanguage())) {
+			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
+				AdminManager::setContentLanguage($this->sOldSessionLanguage);
+			}
+			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				Session::getSession()->resetAttribute(AdminManager::CONTENT_LANGUAGE_SESSION_KEY);
 			}
-			if(!LanguagePeer::languageIsActive(AdminManager::getContentLanguage())) {
+			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
+				AdminManager::setContentLanguage(Settings::getSetting('session_default', Session::SESSION_LANGUAGE_KEY, 'en'));
+			}
+			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
+				$sLanguageId = 
+				
+				AdminManager::setContentLanguage();
+			}
+			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				LinkUtil::redirectToManager('', "AdminManager");
 			}
-			LinkUtil::redirectToLanguage(true, AdminManager::getContentLanguage());
 		}
 		Session::getSession()->setLanguage(AdminManager::getContentLanguage());
 	}
@@ -56,6 +67,10 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	protected function useFullPageCache() {
+		return false;
+	}
+	
+	public static function shouldIncludeLanguageInLink() {
 		return false;
 	}
 }
