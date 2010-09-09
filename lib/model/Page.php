@@ -170,6 +170,9 @@ class Page extends BasePage {
 		if($sLanguageId !== null) {
 			$oCriteria->joinPageString();
 			$oCriteria->add(PageStringPeer::LANGUAGE_ID, $sLanguageId);
+			if(!$bIncludeDisabled) {
+			  $oCriteria->add(PageStringPeer::IS_INACTIVE, false);
+			}
 		}
 		return $this->getChildren($oCriteria);
 	}
