@@ -72,7 +72,7 @@ Widget.types.page_detail = {
 	},
 	
 	load_page: function(page_id) {
-		this.fire('page.loading', page_id);
+		this.fire('loading', page_id);
 		var page_detail = jQuery('form.page_detail');
 		page_detail.hide();
 		this.content_has_been_loaded = false;
@@ -84,7 +84,7 @@ Widget.types.page_detail = {
 			this.load_content(contents_container);
 		}
 		page_detail.show();
-		this.fire('page.loaded', page_id);
+		this.fire('loaded', page_id);
 	},
 
 	load_content: function(container) {
@@ -183,8 +183,9 @@ Widget.types.page_detail = {
 		}
 	},
 	
-	delete_page: function() {
-		this.deletePage();
+	delete_page: function(callback) {
+		this.disable_input();
+		this.deletePage(callback);
 	},
 	
 	save: function() {

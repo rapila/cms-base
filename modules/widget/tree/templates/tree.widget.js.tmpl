@@ -24,6 +24,10 @@ Widget.types.tree = {
 		element.addClass('ui-state-active');
 	},
 	
+	remove_element_with_data: function(data) {
+		this.element_with_data(data).remove();
+	},
+	
 	current_element: function() {
 		return this._element.find('li.ui-state-active');
 	},

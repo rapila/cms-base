@@ -9,11 +9,11 @@ jQuery(document).ready(function() {
 	Widget.createWithElement('page_detail', function(widget) {
 		//Add event handlers in intermediate callback
 		page_detail = widget;
-		page_detail.handle('page.loading', function() {
+		page_detail.handle('loading', function() {
 			info_bar_buttons.hide();
 			page_detail.disable_input();
 		});
-		page_detail.handle('page.loaded', function() {
+		page_detail.handle('loaded', function() {
 			if(permission_widget.getMayEditPage(page_detail.current_page_id)) {
 				info_bar_buttons.show();
 				page_detail.enable_input();
@@ -40,7 +40,9 @@ jQuery(document).ready(function() {
 		page_detail.enable_input();
 	})).add(
 	jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
-		page_detail.delete_page();
+		page_detail.delete_page(function(page_id) {
+			page_tree.remove_element_with_data(page_id);
+		});
 	}));
 	
 	//Info bar stuff
