@@ -40,9 +40,7 @@ jQuery(document).ready(function() {
 		page_detail.enable_input();
 	})).add(
 	jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
-		page_detail.delete_page(function(page_id) {
-			page_tree.remove_element_with_data(page_id);
-		});
+		page_detail.delete_page(page_tree.remove_element_with_data.bind(page_tree));
 	}));
 	
 	//Info bar stuff
@@ -95,7 +93,7 @@ jQuery(document).ready(function() {
 	}, function(widget) {
 		page_tree = widget;
 		AdminInterface.sidebar.append(widget._element);
-		widget.handle('tree.clicked', click_handler).handle('tree.inserted', icon_handler).handle('updated', icon_handler);
+		widget.handle('tree_item.activated', click_handler).handle('tree_item.inserted', icon_handler).handle('updated', icon_handler);
 	}, '{{writeRequestValue=tree_session}}');
 	
 	// init language change

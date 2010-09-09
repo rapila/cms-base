@@ -9,7 +9,6 @@ Widget.types.tree = {
 			}
 			var element = jQuery(this);
 			widget.activate(element);
-			widget.fire('tree.clicked', element, widget.settings.data_from_element(element));
 		});	
 		this._element.delegate('.ui-tree li', 'hover', function(event) {
 			var element = jQuery(this);
@@ -22,10 +21,25 @@ Widget.types.tree = {
 	activate: function(element) {
 		this._element.find('li').removeClass('ui-state-active');
 		element.addClass('ui-state-active');
+		this.fire('tree_item.activated', element, this.settings.data_from_element(element));
+	},
+	
+	parent_of: function(element) {
+		if(element.parent()[0] === this._element[0]) {
+			return null;
+		}
+		return element.parent().closest('li');
 	},
 	
 	remove_element_with_data: function(data) {
-		this.element_with_data(data).remove();
+		var element = this.element_with_data(data);
+		var parent = this.parent_of(element);
+		var is_selected = element.is('.ui-state-active');
+		element.remove();
+		this.update_element(parent);
+		if(is_selected) {
+			this.activate(parent);
+		}
 	},
 	
 	current_element: function() {
@@ -57,6 +71,10 @@ Widget.types.tree = {
 		this.loadItem(data, function(item) {
 			var icons = element.children('.ui-icons').empty();
 			var name = element.children('span').text(this.settings.description_from_item(item));
+			var opener = element.children('.tree-opener').removeClass('no-children');
+			if(!this.settings.has_children(item)) {
+				opener.addClass('no-children').removeClass('opened closed');
+			}
 			this.fire('updated', element, item);
 		});
 	},
@@ -66,7 +84,6 @@ Widget.types.tree = {
 	* @param element the element to reload
 	*/
 	reload_element: function(element) {
-		console.log('reload_element', element);
 		this.update_element(element);
 		opener = element.children('.tree-opener');
 		var sub_list = element.find(this.settings.tag_name);
@@ -158,7 +175,7 @@ Widget.types.tree = {
 		if(this.settings.is_active(child)) {
 			this.activate(element);
 		}
-		this.fire('tree.inserted', element, child);
+		this.fire('tree_item.inserted', element, child);
 		return parent;
 	},
 	
