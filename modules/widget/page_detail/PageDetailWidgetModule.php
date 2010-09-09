@@ -149,7 +149,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			throw new NotPermittedException('may_create_children');
 	  }
 		$oPage = new Page();
-		$oPage->setName($sPageName);
+		$oPage->setName(StringUtil::normalize($sPageName));
 		$oPage->setIsInactive(false);
 		$oPage->insertAsLastChildOf($oParentPage);
 		return $oPage->save();
