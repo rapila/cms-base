@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 			// sidebar list row click
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var document_category_id = element.data('document_category_id');
-				if(!element.hasClass('ui-state-active')) {
+				if(!element.is('.ui-state-active')) {
 					// TODO: handle highlight of default element or initial selection
 					document_category_id = null;
 				}

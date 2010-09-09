@@ -76,7 +76,7 @@ Widget.types.info_bar = {
 		this.add_element(search_input, true, false, 'f');
 		var clear_button = this.button_prototype.clone().addClass('search_field_reset').hide();
 		this.add_element(clear_button, true).add_button('search_button', function() {
-			if(search_input.hasClass('default_state')) {
+			if(search_input.is('.default_state')) {
 				Widget.notifyUser('info', "{{writeString=widget.not_applicable.add_search_word}}");
 				return;
 			}
@@ -90,7 +90,7 @@ Widget.types.info_bar = {
 			jQuery(this).hide();
 		});
 		return search_input.focus(function() {
-			if(search_input.hasClass('default_state')) {
+			if(search_input.is('.default_state')) {
 				search_input.removeClass('default_state').val('');
 			}
 		}).blur(function() {

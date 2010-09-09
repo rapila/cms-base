@@ -164,7 +164,7 @@ Widget.types.list = {
 			into.addClass(this.sort[1]);
 		}
 		into.click(function(){
-			widget.setOrderColumnSort(metadata.field_name, into.hasClass('asc') ? 'desc' : 'asc');
+			widget.setOrderColumnSort(metadata.field_name, into.is('.asc') ? 'desc' : 'asc');
 			widget.reload();
 		});
 	},

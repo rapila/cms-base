@@ -13,7 +13,7 @@ jQuery(document).ready(function() {
 			sidebar.settings.row_click_active_mode = 'toggle';
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var name_space = element.data('name_space');
-				if(!element.hasClass('ui-state-active')) {
+				if(!element.is('.ui-state-active')) {
 				 	name_space = null;
 				}
 				string_list.setOption('name_space', name_space);

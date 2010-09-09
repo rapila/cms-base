@@ -11,6 +11,10 @@
  * @package model
  */ 
 class LanguagePeer extends BaseLanguagePeer {
+	
+	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
+		return StringPeer::getString("language.".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
+	}
 
 	public static function languageIsActive($sLanguageId) {
 		$sLanguage = LanguagePeer::retrieveByPK($sLanguageId);
@@ -68,11 +72,15 @@ class LanguagePeer extends BaseLanguagePeer {
 		return self::doCount(new Criteria()) === 0;
 	}
 
-	public static function getBackendLanguages() {
+	public static function getAdminLanguages() {
 		$aLanguages = array();
-		foreach(ResourceFinder::getFolderContents(MAIN_DIR.'/resources/lang/') as $sLanguage => $sPath) {
-			$sName = substr($sLanguage, 0, 2);
-			$aLanguages[] = $sName;
+		// get language ini files to provide available user_language choice
+		$aLanguageFiles = ResourceFinder::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_BASE_ONLY));
+		foreach($aLanguageFiles as $sKey => $sValue) {
+			if(StringUtil::endsWith($sKey, '.ini')) {
+				$sLanguageId = substr($sKey, 0, -4);	
+				$aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId);
+			}
 		}
 		return $aLanguages;
 	}

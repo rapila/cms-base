@@ -11,7 +11,6 @@ Widget.types.sidebar_input = {
 			var model_name = save_callback;
 			save_callback = function(name, cleanup_callback) {
 				this.createEntry(model_name, name, cleanup_callback);
-				new_input_container.remove();
 			}.bind(this);
 		}
 		if(cleanup_callback.constructor === Widget.types.list) {
@@ -55,6 +54,7 @@ Widget.types.sidebar_input = {
 			if(sidebar_input.val() === default_value) {
 				return false;
 			}
+			new_input_container.remove();
 			save_callback(sidebar_input.val(), cleanup_callback);
 		});
 		return this;

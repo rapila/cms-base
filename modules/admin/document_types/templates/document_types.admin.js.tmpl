@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
 			sidebar.settings.row_click_active_mode = 'activate';
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var document_kind = element.data('document_kind');
-				if(!element.hasClass('ui-state-active')) {
+				if(!element.is('.ui-state-active')) {
 				 	document_kind = null;
 				}
 				document_type_list.setOption('document_kind', document_kind);

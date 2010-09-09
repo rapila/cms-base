@@ -61,7 +61,7 @@ class PagesAdminModule extends AdminModule {
 	
 	private static function propertiesFromPage($oPage) {
 		$aResult = $oPage->toArray();
-		$aResult['page_string'] = $oPage->getActivePageString(AdminManager::getContentLanguage())->toArray();
+		// $aResult['page_string'] = $oPage->getActivePageString(AdminManager::getContentLanguage())->toArray();
 		return $aResult;
 	}
 	

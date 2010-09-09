@@ -14,6 +14,7 @@ Widget.types.user_detail = {
 			}
 			this.content.find("select[name='language_id']").prepareWidget(function(widget) {
 				widget.settings.international_option = false;
+				widget.settings.use_admin_languages = true;
 			}, jQuery.noop);
 			this.content.find("select[name='group_ids[]']").prepareWidget();
 		}.bind(this));

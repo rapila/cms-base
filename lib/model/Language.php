@@ -8,7 +8,7 @@ require_once 'model/om/BaseLanguage.php';
  */ 
 class Language extends BaseLanguage {
 	public function getLanguageName($sLanguageId = null) {
-		return StringPeer::getString("language.".$this->getId(), $sLanguageId, $this->getId());
+		return LanguagePeer::getLanguageName($this->getId(), $sLanguageId);
 	}
 	
 	public function getName() {

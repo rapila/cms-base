@@ -61,7 +61,7 @@ function init_tags() {
 function init_save_buttons() {
   $$('#detail button[type=submit]').each(function(submit) {
     Event.observe(submit.up('form'), 'submit', function(event) {
-      if(submit.hasAttribute('class') && submit.getAttribute('class') !== '' && !submit.hasClass('save')) {
+      if(submit.hasAttribute('class') && submit.getAttribute('class') !== '' && !submit.is('.save')) {
         return;
       }
       submit.addClassName('active');

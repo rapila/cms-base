@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		sidebar.settings.row_click_active_mode = 'toggle';
 		sidebar.handle('list.row-click', function(event, row, element) {
 			var action = element.data('action');
-			if(!element.hasClass('ui-state-active')) {
+			if(!element.is('.ui-state-active')) {
 			 	action = null;
 			}
 			sidebar.setOption('action', action);

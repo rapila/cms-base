@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
 			
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var link_category_id = element.data('link_category_id');
-				if(!element.hasClass('ui-state-active')) {
+				if(!element.is('.ui-state-active')) {
 					// handle initial_selection for custom elements
 				 	link_category_id = null;
 				}

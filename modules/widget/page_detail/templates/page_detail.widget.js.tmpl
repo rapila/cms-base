@@ -63,7 +63,7 @@ Widget.types.page_detail = {
 		var result = null;
 		accordion_headers.each(function(i, element) {
 			element = jQuery(element);
-			if(element.hasClass('ui-state-active')) {
+			if(element.is('.ui-state-active')) {
 				result = element;
 				return false;
 			}

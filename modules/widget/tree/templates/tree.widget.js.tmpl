@@ -24,6 +24,14 @@ Widget.types.tree = {
 		element.addClass('ui-state-active');
 	},
 	
+	current_element: function() {
+		return this._element.find('li.ui-state-active');
+	},
+	
+	current_element_data: function() {
+		return this.settings.data_from_element(this.current_element());
+	},
+	
 	all_pages: function() {
 		return jQuery('#admin_sidebar').find('li');
 	},
@@ -43,12 +51,30 @@ Widget.types.tree = {
 	update_element: function(element) {
 		var data = arguments[1] || this.settings.data_from_element(element);
 		this.loadItem(data, function(item) {
-			var icons = element.children('.ui-icons');
-			var name = element.children('span');
-			icons.empty();
-			name.text(this.settings.description_from_item(item));
-			this.fire('tree.updated', element, item);
+			var icons = element.children('.ui-icons').empty();
+			var name = element.children('span').text(this.settings.description_from_item(item));
+			this.fire('updated', element, item);
 		});
+	},
+	
+	/**
+	* Reloads the children of a given element (li) as well as its properties. The item retains its open/closed state
+	* @param element the element to reload
+	* @param force whether to reload even if the sub-list has never been opened.
+	*/
+	reload_element: function(element, force) {
+		this.update_element(element);
+		opener = element.children('.tree-opener');
+		var sub_list = element.find(this.settings.tag_name).show();
+		if(sub_list.length === 0 && !force) {
+			return;
+		}
+		sub_list.remove();
+		if(opener.is('.opened')) {
+			opener.removeClass('opened').addClass('closed');
+			//Reload immediately
+			this.open(element, opener);
+		}
 	},
 	
 	reload: function() {
@@ -58,8 +84,8 @@ Widget.types.tree = {
 	
 	open: function(element, opener) {
 		opener = opener || element.children('.tree-opener');
-		if(opener.hasClass('opened')) {
-			return;
+		if(opener.is('.opened')) {
+			return false;
 		}
 		opener.removeClass('closed ui-icon-triangle-1-e').addClass('opened ui-icon-triangle-1-s');
 		var sub_list = element.find(this.settings.tag_name).show();
@@ -70,7 +96,7 @@ Widget.types.tree = {
 	
 	close: function(element, opener) {
 		opener = opener || element.children('.tree-opener');
-		if(opener.hasClass('closed')) {
+		if(opener.is('.closed')) {
 			return;
 		}
 		opener.removeClass('opened ui-icon-triangle-1-s').addClass('closed ui-icon-triangle-1-e');
@@ -111,7 +137,7 @@ Widget.types.tree = {
 				if(jQuery(event.target).closest(this.settings.tag_name)[0] !== element.closest(this.settings.tag_name)[0]) {
 					return;
 				}
-				if(opener.hasClass('opened') && jQuery(event.target)[0] === opener[0]) {
+				if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
 					this.close(element, opener);
 				} else {
 					this.open(element, opener);

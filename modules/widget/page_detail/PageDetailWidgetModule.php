@@ -140,6 +140,16 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			// check whether backend user is allowed to delete whole branches
 		}
 	}
+	
+	public function createPage($iParentId, $sPageName) {
+		if($iParentId === null) {
+			$iParentId = $this->iPageId;
+		}
+		$oPage = new Page();
+		$oPage->setName($sPageName);
+		$oPage->insertAsLastChildOf(PagePeer::retrieveByPK($iParentId));
+		return $oPage->save();
+	}
 
 	public function saveData($aPageData) {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
