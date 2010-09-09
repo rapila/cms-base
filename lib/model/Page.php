@@ -9,9 +9,6 @@ class Page extends BasePage {
 	const DELETE_NOT_ALLOWED_CODE = 11;
 	const REFERENCE_EXISTS_CODE = 44;
 	
-	private $bIsActive = null;
-	private $bIsRoot = null;
-	
 	private $aFullPathArray = null;
 	
 	public function getChildByName($sName) {
