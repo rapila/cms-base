@@ -60,18 +60,18 @@ Widget.types.tree = {
 	/**
 	* Reloads the children of a given element (li) as well as its properties. The item retains its open/closed state
 	* @param element the element to reload
-	* @param force whether to reload even if the sub-list has never been opened.
 	*/
-	reload_element: function(element, force) {
+	reload_element: function(element) {
+		console.log('reload_element', element);
 		this.update_element(element);
 		opener = element.children('.tree-opener');
-		var sub_list = element.find(this.settings.tag_name).show();
-		if(sub_list.length === 0 && !force) {
+		var sub_list = element.find(this.settings.tag_name);
+		if(sub_list.length === 0 && !opener.is('.no-children')) {
 			return;
 		}
 		sub_list.remove();
-		if(opener.is('.opened')) {
-			opener.removeClass('opened').addClass('closed');
+		if(opener.is('.opened') || opener.is('.no-children')) {
+			opener.removeClass('opened no-children').addClass('closed');
 			//Reload immediately
 			this.open(element, opener);
 		}

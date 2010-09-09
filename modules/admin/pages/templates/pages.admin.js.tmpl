@@ -50,10 +50,9 @@ jQuery(document).ready(function() {
 				sidebar_input.add_new_sidebar_input(null, function(name, cleanup_callback) {
 					//This is the save callback
 					var page_id = page_tree.current_element_data();
-					page_detail.createPage(page_id, name, cleanup_callback);
-				}, function() {
-					//Saving sucessful… update the tree
-					page_tree.update_element(page_tree.current_element());
+					page_detail.createPage(page_id, name, cleanup_callback.bind(this, page_id));
+				}, function(page_id) {
+					page_tree.reload_element(page_tree.element_with_data(page_id));
 				});
 			});
 		}, 'n', false);
