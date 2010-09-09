@@ -87,7 +87,7 @@ CREATE TABLE `page_strings`
 (
 	`page_id` INTEGER  NOT NULL,
 	`language_id` VARCHAR(3)  NOT NULL,
-	`is_inactive` TINYINT(1) default 0,
+	`is_inactive` TINYINT(1) default 1,
 	`link_text` VARCHAR(50) default '',
 	`page_title` VARCHAR(255)  NOT NULL,
 	`keywords` VARCHAR(255),

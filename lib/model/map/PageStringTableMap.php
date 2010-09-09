@@ -38,7 +38,7 @@ class PageStringTableMap extends TableMap {
 		// columns
 		$this->addForeignPrimaryKey('PAGE_ID', 'PageId', 'INTEGER' , 'pages', 'ID', true, null, null);
 		$this->addForeignPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR' , 'languages', 'ID', true, 3, null);
-		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
+		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, true);
 		$this->addColumn('LINK_TEXT', 'LinkText', 'VARCHAR', false, 50, '');
 		$this->addColumn('PAGE_TITLE', 'PageTitle', 'VARCHAR', true, 255, null);
 		$this->addColumn('KEYWORDS', 'Keywords', 'VARCHAR', false, 255, null);

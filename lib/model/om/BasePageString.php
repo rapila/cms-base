@@ -37,7 +37,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the is_inactive field.
-	 * Note: this column has a database default value of: false
+	 * Note: this column has a database default value of: true
 	 * @var        boolean
 	 */
 	protected $is_inactive;
@@ -127,7 +127,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
-		$this->is_inactive = false;
+		$this->is_inactive = true;
 		$this->link_text = '';
 	}
 
@@ -581,7 +581,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->is_inactive !== false) {
+			if ($this->is_inactive !== true) {
 				return false;
 			}
 
