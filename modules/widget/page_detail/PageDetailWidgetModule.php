@@ -134,20 +134,24 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			throw new NotPermittedException('delete_pagetree_enable');
 	  }
 	  if($oPage->isRoot()) {
-			throw new NotPermittedException('delete_root_page');
+			throw new LocalizedException('exception.delete_root_page');
 	  }
     $oPage->delete();
     return $this->iPageId;
 	}
 	
 	public function createPage($iParentId, $sPageName) {
-		if($iParentId === null) {
-			$iParentId = $this->iPageId;
+	  $oParentPage = PagePeer::retrieveByPK($iParentId);
+		if($oParentPage == null) {
+			$oParentPage = PagePeer::getRootPage();
 		}
+	  if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
+			throw new NotPermittedException('may_create_children');
+	  }
 		$oPage = new Page();
 		$oPage->setName($sPageName);
 		$oPage->setIsInactive(false);
-		$oPage->insertAsLastChildOf(PagePeer::retrieveByPK($iParentId));
+		$oPage->insertAsLastChildOf($oParentPage);
 		return $oPage->save();
 	}
 
