@@ -128,17 +128,16 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	public function deletePage() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
     if(!Session::getSession()->getUser()->mayDelete($this->oPage)) {
-	    // return authentication exception?
+			throw new NotPermittedException('may_delete_page');
 	  }
-		ErrorHandler::log($this->iPageId, ReferencePeer::countReferences($oPage), $oPage->hasChildren());
-		// check if user may delete page, or maybe just set inactive the current language
-		
-		if(ReferencePeer::countReferences($oPage)) {
-			// check whether page is referenced else where, recursive?
-		}
-		if($oPage->hasChildren()) {
-			// check whether backend user is allowed to delete whole branches
-		}
+	  if($oPage->hasChildren()) {
+			throw new NotPermittedException('delete_pagetree_enable');
+	  }
+	  if($oPage->isRoot()) {
+			throw new NotPermittedException('delete_root_page');
+	  }
+    $oPage->delete();
+    return $this->iPageId;
 	}
 	
 	public function createPage($iParentId, $sPageName) {
@@ -147,6 +146,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oPage = new Page();
 		$oPage->setName($sPageName);
+		$oPage->setIsInactive(false);
 		$oPage->insertAsLastChildOf(PagePeer::retrieveByPK($iParentId));
 		return $oPage->save();
 	}

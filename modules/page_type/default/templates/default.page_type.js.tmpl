@@ -135,6 +135,7 @@ Widget.types.page_type.types['default'] = {
 				
 				// add objects to target container
 				jQuery.each(containers, function(container_name, params) {
+					console.log(container_name, params);
 					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 					jQuery.each(params.contents, function(object_id, content) {
 						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
