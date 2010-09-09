@@ -25,14 +25,15 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
 		
 		// page properties are displayed if added to template
-		$mAvailableProperties = array();
 		try {
-			$this->getAvailablePageProperties($oPage);
+			$mAvailableProperties = $this->getAvailablePageProperties($oPage);
 			if(count($mAvailableProperties) > 0) {
 				$aResult['page_properties'] = $mAvailableProperties;
 				$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 			}
-		} catch(Exception $e) {}
+		} catch(Exception $e) {
+			ErrorHandler::handleException($e);
+		}
 		
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
@@ -108,7 +109,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	*/	
 	private function getAvailablePageProperties($oPage) {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
-		if(count($aAvailablePageProperties) === null) {
+		if(count($aAvailablePageProperties) === 0) {
 			return array();
 		}
 		$aResult = array();
