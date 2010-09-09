@@ -29,6 +29,7 @@ ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 Priorities
+- page_tree BUG, how to save default Template? null or "default", check createPage php and js, PageDetailWidgetModule::getFrontendTemplates() and saveData?
 - document list widget search does not function
 - thumbnail view with without category does not work
 - check Safari and Chrome listh header css with CssEdit
