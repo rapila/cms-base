@@ -17,34 +17,34 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function setInitialDocumentCategoryId($iInitialDocumentCategoryId) {
-	    $this->iInitialDocumentCategoryId = $iInitialDocumentCategoryId;
+    $this->iInitialDocumentCategoryId = $iInitialDocumentCategoryId;
 	}
 
 	public function getInitialDocumentCategoryId() {
-	    return $this->iInitialDocumentCategoryId;
+    return $this->iInitialDocumentCategoryId;
 	}
-	
+
 	public function setInitialSearchString($sInitialSearchString) {
-	    $this->sInitialSearchString = $sInitialSearchString;
+    $this->sInitialSearchString = $sInitialSearchString;
 	}
 
 	public function getInitialSearchString() {
-	    return $this->sInitialSearchString;
+    return $this->sInitialSearchString;
 	}
-	
+
 	public function setInitialDocumentKind($sInitialDocumentKind) {
-	    $this->sInitialDocumentKind = $sInitialDocumentKind;
+    $this->sInitialDocumentKind = $sInitialDocumentKind;
 	}
 
 	public function getInitialDocumentKind() {
-	    return $this->sInitialDocumentKind;
+    return $this->sInitialDocumentKind;
 	}
-	
+
 	public function setInitialThumbnailSize($iInitialThumbnailSize) {
-	    $this->iInitialThumbnailSize = $iInitialThumbnailSize;
+    $this->iInitialThumbnailSize = $iInitialThumbnailSize;
 	}
 
 	public function getInitialThumbnailSize() {
-	    return $this->iInitialThumbnailSize;
+    return $this->iInitialThumbnailSize;
 	}
 }
