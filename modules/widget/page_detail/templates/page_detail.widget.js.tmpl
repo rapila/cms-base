@@ -79,8 +79,9 @@ Widget.types.page_detail = {
 		this.setPageId(page_id);
 		this.fill_data();
 		var active_accordion_title = this.accordion_active();
+		var contents_container = this._element.find('div.accordion .contents_container');
+		contents_container.empty();
 		if(active_accordion_title.next().is('.contents_container')) {
-			var contents_container = active_accordion_title.next();
 			this.load_content(contents_container);
 		}
 		page_detail.show();
@@ -89,12 +90,12 @@ Widget.types.page_detail = {
 
 	load_content: function(container) {
 		var widget = this;
-		if(this.current_page_id === null || this.content_has_been_loaded) {
+		if(this.current_page_id === null || this.content_has_been_loaded === true) {
 			return;
 		}
-		container.empty();
 		
-		this.content_has_been_loaded = 1;
+		this.content_has_been_loaded = true;
+		
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.handle('element_set', function(event, element) {
 				container.append(element);
@@ -119,7 +120,6 @@ Widget.types.page_detail = {
 				}, function(page_type) {
 					//Initialized callback
 					page_type.handle_admin();
-					widget.content_has_been_loaded = true;
 				});
 			}, false, true);
 		});
@@ -179,8 +179,8 @@ Widget.types.page_detail = {
 			} 
 		} else {
 			page_properties_header.hide();
-			page_properties_container.hide();
 		}
+		page_properties_container.hide();
 	},
 	
 	delete_page: function(callback) {

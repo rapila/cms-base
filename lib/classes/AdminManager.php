@@ -21,6 +21,10 @@ class AdminManager extends Manager {
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
 			self::setContentLanguage($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY]);
 		}
+		if(Session::getSession()->isAuthenticated()) {
+			$oUser = Session::getSession()->getUser();
+			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
+		}
 	}
 	
 	public function getModuleName() {

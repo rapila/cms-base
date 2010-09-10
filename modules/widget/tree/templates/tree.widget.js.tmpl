@@ -2,12 +2,23 @@ Widget.types.tree = {
 	prepare: function() {
 		var widget = this;
 		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
-
+		
+		//Item click handler
 		this._element.delegate('.ui-tree li', 'click', function(event) {
+			// Open the item
+			var element = jQuery(this);
+			var opener = element.children('.tree-opener');
+			if(!opener.is('.no-children')) {
+				if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
+					widget.close(element, opener);
+				} else {
+					widget.open(element, opener);
+				}
+			}
 			if(jQuery(event.target).is('.tree-opener')) {
 				return;
 			}
-			var element = jQuery(this);
+			// Select it
 			widget.activate(element);
 		});	
 		this._element.delegate('.ui-tree li', 'hover', function(event) {
@@ -154,16 +165,6 @@ Widget.types.tree = {
 		if(this.settings.has_children(child)) {
 			opener.removeClass('no-children');
 			opener.addClass('ui-icon-triangle-1-e closed');
-			element.click(function(event) {
-				if(jQuery(event.target).closest(this.settings.tag_name)[0] !== element.closest(this.settings.tag_name)[0]) {
-					return;
-				}
-				if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
-					this.close(element, opener);
-				} else {
-					this.open(element, opener);
-				}
-			}.bind(this));
 		}
 		element.prepend(icons);
 		element.prepend(opener);
