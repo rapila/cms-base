@@ -176,7 +176,11 @@ class CriteriaListWidgetDelegate {
 		}
 		$oCriterion = null;
 		foreach($aRowData as $sRowDataColumnName => $mRowValue) {
-			$sColumnName = constant("$this->sPeerClassName::".strtoupper($sRowDataColumnName));
+			$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sRowDataColumnName);
+			if(isset($aMetadata['field_name'])) {
+				$sRowDataColumnName = $aMetadata['field_name'];
+			}
+			$sColumnName = @constant("$this->sPeerClassName::".strtoupper($sRowDataColumnName));
 			if($sColumnName !== null) {
 				$oCriteria->addAnd($sColumnName, $mRowValue);
 			}
