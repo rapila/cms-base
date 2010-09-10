@@ -29,7 +29,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$mAvailableProperties = $this->getAvailablePageProperties($oPage);
 			if(count($mAvailableProperties) > 0) {
 				$aResult['page_properties'] = $mAvailableProperties;
-				$aResult['NameSpace'] = self::PAGE_PROPERTY_NS;
 			}
 		} catch(Exception $e) {
 			ErrorHandler::handleException($e);

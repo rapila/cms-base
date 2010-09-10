@@ -32,8 +32,9 @@ Widget.types.detail = {
 			buttons: buttons
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
-				// check if is textarea or whatever
+				// TODO: check if is textarea or whatever
 				save_button_handler();
+				return false;
 			}
 		}).find('label[for]').bind('click', function() {
 			var related_input = detail_widget.content.find("*[name='"+jQuery(this).attr('for')+"']");
@@ -63,7 +64,7 @@ Widget.types.detail = {
 			if(message.constructor === String) {
 				message = jQuery.parseHTML(message);
 			}
-			detail.content.find('.validate-'+key).after(message);
+			detail.content.find('.validate-'+key.escapeSelector()).after(message);
 		});
 	},
 	
@@ -127,6 +128,7 @@ Widget.types.detail = {
 			detail.save_callback = function(returnValue) {
 				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
 				list.update_row(detail.current_row, additionalData);
+				detail.close();
 			};
 		});
 	},

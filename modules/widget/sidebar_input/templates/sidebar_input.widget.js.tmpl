@@ -16,7 +16,6 @@ Widget.types.sidebar_input = {
 		if(cleanup_callback.constructor === Widget.types.list) {
 			var widget = cleanup_callback;
 			cleanup_callback = function() {
-				//Here comes the function that is now in links and documents admin modules
 				var row_data = widget.active_row();
 				if(row_data.length>0) {
 						// TODO: re-setting the last selected item after reload should be default functionality

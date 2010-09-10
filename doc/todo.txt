@@ -21,7 +21,6 @@ BUG!
 - cms_wills hidden inputs
 - fassx show custom recipients js
 - qm-manual exception catch
-- document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to
 
@@ -29,14 +28,17 @@ ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 Priorities
+- name_space and pageProperty ? name_space in strings? Rafi
+- document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - page_tree BUG, how to save default Template? null or "default", check createPage php and js, PageDetailWidgetModule::getFrontendTemplates() and saveData?
-- document list widget search does not function
-- thumbnail view with without category does not work
-- check Safari and Chrome listh header css with CssEdit
-- document_list video not autoplay
+- naming convention, functionality and hierarchy of widgets with views, @see documents
+- document_list search and count_info do not work
+- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
+- language handling, implement language tabs in string
+- page_strings: add optional description and keywords 
+- document_list thumbnail_view autoplay false
 - validate implement like user_detail
 - user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
-- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - cmos_mini projects file_upload
 
@@ -203,6 +205,10 @@ Html/css
 - lang string strategy so I can clean up effectively
 
 Dashboard, context help
+- Pages ie. should
+	should have clear info about handling main content languages, set online or not
+	overview over all states of all pages
+	should show and link to meta.description and meta.keywords
 - HerrmannGermann insist there is only ONE dashboard, not one per module?????
 - contexts like last edited entries etc should be handled differently in that case
 - help: in detail, list, how to organise ? documentation.mini-cms.ch? how to do?

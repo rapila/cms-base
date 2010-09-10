@@ -13,6 +13,11 @@ Function.prototype.bind = function(context) {
 	};
 };
 
+// escapses all selector meta chars
+String.prototype.escapeSelector = function() {
+	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/, "\\$1");
+};
+
 //Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
 jQuery.fn.extend({
 	serializeArrayKV: function() {

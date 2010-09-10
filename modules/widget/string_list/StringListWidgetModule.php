@@ -21,7 +21,7 @@ class StringListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'language', 'string_key', 'text', 'language_id', 'delete');
+		return array('id', 'string_key', 'text', 'languages_available', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -32,18 +32,13 @@ class StringListWidgetModule extends WidgetModule {
 				$aResult['field_name'] = 'string_key';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
-			case 'language':
-				$aResult['heading'] = false;
-				$aResult['field_name'] = 'language_id';
-				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
-				break;
 			case 'string_key':
 				$aResult['heading'] = StringPeer::getString('widget.string.string_key');
 				break;
 			case 'text':
 				$aResult['heading'] = StringPeer::getString('widget.string.string_text');
 				break;
-			case 'language_id':
+			case 'languages_available':
 				$aResult['heading'] = StringPeer::getString('widget.language');
 				break;
 			case 'delete':
@@ -72,10 +67,12 @@ class StringListWidgetModule extends WidgetModule {
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		$oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
+    // $oCriteria->setDistinct();
+    // $oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
 		if($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(StringPeer::STRING_KEY, "{$this->oDelegateProxy->getNameSpace()}.%", Criteria::LIKE);
 		}
+		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
 		return $oCriteria;
 	}
 }

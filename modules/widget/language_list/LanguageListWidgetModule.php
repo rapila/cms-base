@@ -38,7 +38,7 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('language_id');
+				$aResult['heading'] = StringPeer::getString('widget.language_id');
 				$aResult['field_name'] = 'id';
 				break;
 			case 'name':

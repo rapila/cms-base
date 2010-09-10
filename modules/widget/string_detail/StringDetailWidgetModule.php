@@ -3,32 +3,88 @@
  * @package modules.widget
  */
 class StringDetailWidgetModule extends PersistentWidgetModule {
-	private $iStringId = null;
-	// handle language_id differently (content edit Language)
-	private $sLanguageId = 'de';
+	private $sStringId = null;
 	
-	public function setStringId($iStringId) {
-		$this->iStringId = $iStringId;
+	public function setStringId($sStringId) {
+		$this->sStringId = $sStringId;
 	}
 	
 	public function getStringData() {
-		return StringPeer::retrieveByPK($this->sLanguageId, $this->iStringId)->toArray();
+		$oCriteria = new Criteria();
+		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
+		$oCriteria->add(StringPeer::STRING_KEY, $this->sStringId);
+		
+		return StringPeer::doSelectOne($oCriteria)->toArray();
+	}
+	
+	public function getTextFor($sLanguageId) {
+		$oString = StringPeer::retrieveByPK($sLanguageId, $this->sStringId);
+		if($oString === null) {
+			return '';
+		}
+		return $oString->getText();
+	}
+	
+	private function validate($aStringData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aStringData);
+		$oFlash->checkForValue('string_key');
+		if($this->sStringId !== null && $this->sStringId !== $aStringData['string_key']) {
+			if(StringQuery::create()->filterByStringKey($aStringData['string_key'])->count() > 0) {
+				$oFlash->addMessage('string.exists');
+			}
+		}
+		$oFlash->finishReporting();
 	}
 	
 	public function saveData($aStringData) {
-		if($this->iStringId === null) {
-			$oString = new String();
-		} else {
-			if($aStringData['string_key_old'] !== $aStringData['string_key']) {
-				StringPeer::doDelete(array($this->sLanguageId,  $aStringData['string_key_old']));
-				$oString = new String();
+		$this->validate($aStringData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+		
+		$oConnection = Propel::getConnection(StringPeer::DATABASE_NAME);
+		
+		foreach(LanguagePeer::getLanguages() as $oLanguage) {
+			$oUpdateCriteria = new Criteria();
+			$oUpdateCriteria->add(StringPeer::LANGUAGE_ID, $oLanguage->getId());
+			$oUpdateCriteria->add(StringPeer::STRING_KEY, $this->sStringId);
+			
+			if(isset($aStringData['text_'.$oLanguage->getId()])) {
+				$sText = trim($aStringData['text_'.$oLanguage->getId()]);
+				
+				$oString = StringPeer::retrieveByPK($oLanguage->getId(), $this->sStringId);
+				
+				if($sText === '') {
+					if($oString !== null) {
+						$oString->delete();
+					}
+					continue;
+				}
+				
+				if($oString === null) {
+					$oString = new String();
+					$oString->setLanguageId($oLanguage->getId());
+					$oString->setStringKey($aStringData['string_key']);
+				} else if ($this->sStringId !== null && $this->sStringId !== $aStringData['string_key']) {
+					$oString->setStringKey($aStringData['string_key']);
+					BasePeer::doUpdate($oUpdateCriteria, $oString->buildCriteria(), $oConnection);
+				}
+				
+				$oString->setText($sText);
+				$oString->save();
 			} else {
-				$oString = StringPeer::retrieveByPK($this->sLanguageId,  $this->iStringId);
+				$oString = StringPeer::retrieveByPK($oLanguage->getId(), $this->sStringId);
+				if($oString === null) {
+					continue;
+				}
+				if($this->sStringId !== null && $this->sStringId !== $aStringData['string_key']) {
+					$oString->setStringKey($aStringData['string_key']);
+					BasePeer::doUpdate($oUpdateCriteria, $oString->buildCriteria(), $oConnection);
+				}
 			}
 		}
-		$oString->setLanguageId($this->sLanguageId);
-		$oString->setStringKey($aStringData['string_key']);
-		$oString->setText($aStringData['text']);
-		return array('saved' => $oString->save(), 'string_key' => $oString->getStringKey());
+		$this->sStringId = $aStringData['string_key'];
+		return array('string_key' => $this->sStringId);
 	}
 }

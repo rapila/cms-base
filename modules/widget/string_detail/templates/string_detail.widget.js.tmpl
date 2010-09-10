@@ -24,10 +24,24 @@ Widget.types.string_detail = {
 	},
 	
 	fill_data: function() {
+		var string_detail = this;
+		var language_content = this.content.find('.strings');
 		this.getStringData(function(string_data) {
+			language_content.empty();
+			Widget.createWithElement('language_tabs', function(widget) {
+				widget.handle('element_set', function(event, element) {
+					language_content.append(element);
+				});
+			}, function(language_tabs) {
+				language_tabs.handle('tab.created', function(event, language_id, tab_content) {
+					var textarea = jQuery.parseHTML('{{includeTemplate=edit_language}}');
+					textarea.attr('name', textarea.attr('name')+language_id);
+					textarea.val(string_detail.getTextFor(language_id));
+					tab_content.append(textarea);
+				}, false, true);
+			});
 			this.string_key_old = string_data.StringKey;
 			this.content.find("input[name='string_key']").val(string_data.StringKey);
-			this.content.find("textarea[name='text']").val(string_data.Text);
 			this.detail_widget.set_title(this.detail_widget.settings.title = string_data.StringKey);
 		});
 	},
