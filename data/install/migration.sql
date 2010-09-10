@@ -9,7 +9,7 @@ ALTER TABLE `languages` ADD `sort` TINYINT(1)  NOT NULL AFTER `is_active`;
 ALTER TABLE `users` CHANGE `password` `password` VARCHAR(144) NULL DEFAULT NULL;
 
 #svn r1115
-ALTER TABLE `page_strings` ADD `keywords` VARCHAR(255)  NOT NULL AFTER `long_title`;
+ALTER TABLE `page_strings` ADD `keywords` VARCHAR(255)  AFTER `long_title`;
 UPDATE `strings` SET `string_key` = "meta.description" WHERE `string_key` = "meta_description";
 UPDATE `strings` SET `string_key` = "meta.keywords" WHERE `string_key` = "meta_keywords";
 
@@ -327,6 +327,9 @@ ALTER TABLE `rights` ADD `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf
 ALTER TABLE `rights` DROP COLUMN `group_id`;
 ALTER TABLE `rights` ADD UNIQUE KEY `rights_U_1` (`role_key`, `page_id`, `is_inherited`);
 
-#2697
+#svn r2697
 ALTER TABLE `documents` ADD `original_name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `name` ,
 ADD INDEX ( `original_name` );
+
+#svn r2744
+ALTER TABLE `page_strings` ADD `description` VARCHAR(255)  AFTER `keywords`;

@@ -44,6 +44,10 @@ class VirtualNavigationItem extends NavigationItem {
 		return $this->sLinkText;
 	}
 	
+	public function getDescription($sLanguageId = null) {
+		return null;
+	}
+	
 	public function getName() {
 		return $this->sName;
 	}

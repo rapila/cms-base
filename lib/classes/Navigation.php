@@ -145,6 +145,7 @@ class Navigation {
 			$oTemplate->replaceIdentifier('name', $oNavigationItem->getName());
 			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
 			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
+			$oTemplate->replaceIdentifier('description', $oNavigationItem->getDescription());
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
 			$oTemplate->replaceIdentifier('link_without_prefix', implode('/', $oNavigationItem->getLink()));
 			$oTemplate->replaceIdentifier('link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
