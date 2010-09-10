@@ -91,6 +91,7 @@ CREATE TABLE `page_strings`
 	`link_text` VARCHAR(50) default '',
 	`page_title` VARCHAR(255)  NOT NULL,
 	`keywords` VARCHAR(255),
+	`description` VARCHAR(255),
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,

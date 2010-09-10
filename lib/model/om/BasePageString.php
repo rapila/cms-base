@@ -62,6 +62,12 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	protected $keywords;
 
 	/**
+	 * The value for the description field.
+	 * @var        string
+	 */
+	protected $description;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -199,6 +205,16 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getKeywords()
 	{
 		return $this->keywords;
+	}
+
+	/**
+	 * Get the [description] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
 	}
 
 	/**
@@ -426,6 +442,26 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	} // setKeywords()
 
 	/**
+	 * Set the value of [description] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     PageString The current object (for fluent API support)
+	 */
+	public function setDescription($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->description !== $v) {
+			$this->description = $v;
+			$this->modifiedColumns[] = PageStringPeer::DESCRIPTION;
+		}
+
+		return $this;
+	} // setDescription()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -617,10 +653,11 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$this->link_text = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->page_title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->keywords = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-			$this->created_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-			$this->updated_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->description = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->created_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->updated_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+			$this->created_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->updated_by = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -629,7 +666,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 10; // 10 = PageStringPeer::NUM_COLUMNS - PageStringPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 11; // 11 = PageStringPeer::NUM_COLUMNS - PageStringPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating PageString object", $e);
@@ -1047,15 +1084,18 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				return $this->getKeywords();
 				break;
 			case 6:
-				return $this->getCreatedAt();
+				return $this->getDescription();
 				break;
 			case 7:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 8:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 9:
+				return $this->getCreatedBy();
+				break;
+			case 10:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1088,10 +1128,11 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$keys[3] => $this->getLinkText(),
 			$keys[4] => $this->getPageTitle(),
 			$keys[5] => $this->getKeywords(),
-			$keys[6] => $this->getCreatedAt(),
-			$keys[7] => $this->getUpdatedAt(),
-			$keys[8] => $this->getCreatedBy(),
-			$keys[9] => $this->getUpdatedBy(),
+			$keys[6] => $this->getDescription(),
+			$keys[7] => $this->getCreatedAt(),
+			$keys[8] => $this->getUpdatedAt(),
+			$keys[9] => $this->getCreatedBy(),
+			$keys[10] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aPage) {
@@ -1156,15 +1197,18 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->setKeywords($value);
 				break;
 			case 6:
-				$this->setCreatedAt($value);
+				$this->setDescription($value);
 				break;
 			case 7:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 8:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 9:
+				$this->setCreatedBy($value);
+				break;
+			case 10:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1197,10 +1241,11 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if (array_key_exists($keys[3], $arr)) $this->setLinkText($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setPageTitle($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setKeywords($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setCreatedBy($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setUpdatedBy($arr[$keys[9]]);
+		if (array_key_exists($keys[6], $arr)) $this->setDescription($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setCreatedBy($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setUpdatedBy($arr[$keys[10]]);
 	}
 
 	/**
@@ -1218,6 +1263,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PageStringPeer::LINK_TEXT)) $criteria->add(PageStringPeer::LINK_TEXT, $this->link_text);
 		if ($this->isColumnModified(PageStringPeer::PAGE_TITLE)) $criteria->add(PageStringPeer::PAGE_TITLE, $this->page_title);
 		if ($this->isColumnModified(PageStringPeer::KEYWORDS)) $criteria->add(PageStringPeer::KEYWORDS, $this->keywords);
+		if ($this->isColumnModified(PageStringPeer::DESCRIPTION)) $criteria->add(PageStringPeer::DESCRIPTION, $this->description);
 		if ($this->isColumnModified(PageStringPeer::CREATED_AT)) $criteria->add(PageStringPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(PageStringPeer::UPDATED_AT)) $criteria->add(PageStringPeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(PageStringPeer::CREATED_BY)) $criteria->add(PageStringPeer::CREATED_BY, $this->created_by);
@@ -1296,6 +1342,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$copyObj->setLinkText($this->link_text);
 		$copyObj->setPageTitle($this->page_title);
 		$copyObj->setKeywords($this->keywords);
+		$copyObj->setDescription($this->description);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 		$copyObj->setCreatedBy($this->created_by);
@@ -1549,6 +1596,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$this->link_text = null;
 		$this->page_title = null;
 		$this->keywords = null;
+		$this->description = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;

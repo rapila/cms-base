@@ -42,6 +42,7 @@ class PageStringTableMap extends TableMap {
 		$this->addColumn('LINK_TEXT', 'LinkText', 'VARCHAR', false, 50, '');
 		$this->addColumn('PAGE_TITLE', 'PageTitle', 'VARCHAR', true, 255, null);
 		$this->addColumn('KEYWORDS', 'Keywords', 'VARCHAR', false, 255, null);
+		$this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 255, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);

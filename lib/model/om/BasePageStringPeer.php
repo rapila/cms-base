@@ -25,7 +25,7 @@ abstract class BasePageStringPeer {
 	const TM_CLASS = 'PageStringTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 10;
+	const NUM_COLUMNS = 11;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -47,6 +47,9 @@ abstract class BasePageStringPeer {
 
 	/** the column name for the KEYWORDS field */
 	const KEYWORDS = 'page_strings.KEYWORDS';
+
+	/** the column name for the DESCRIPTION field */
+	const DESCRIPTION = 'page_strings.DESCRIPTION';
 
 	/** the column name for the CREATED_AT field */
 	const CREATED_AT = 'page_strings.CREATED_AT';
@@ -76,12 +79,12 @@ abstract class BasePageStringPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('PageId', 'LanguageId', 'IsInactive', 'LinkText', 'PageTitle', 'Keywords', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('pageId', 'languageId', 'isInactive', 'linkText', 'pageTitle', 'keywords', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::PAGE_ID, self::LANGUAGE_ID, self::IS_INACTIVE, self::LINK_TEXT, self::PAGE_TITLE, self::KEYWORDS, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('PAGE_ID', 'LANGUAGE_ID', 'IS_INACTIVE', 'LINK_TEXT', 'PAGE_TITLE', 'KEYWORDS', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('page_id', 'language_id', 'is_inactive', 'link_text', 'page_title', 'keywords', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('PageId', 'LanguageId', 'IsInactive', 'LinkText', 'PageTitle', 'Keywords', 'Description', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('pageId', 'languageId', 'isInactive', 'linkText', 'pageTitle', 'keywords', 'description', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::PAGE_ID, self::LANGUAGE_ID, self::IS_INACTIVE, self::LINK_TEXT, self::PAGE_TITLE, self::KEYWORDS, self::DESCRIPTION, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('PAGE_ID', 'LANGUAGE_ID', 'IS_INACTIVE', 'LINK_TEXT', 'PAGE_TITLE', 'KEYWORDS', 'DESCRIPTION', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('page_id', 'language_id', 'is_inactive', 'link_text', 'page_title', 'keywords', 'description', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
 
 	/**
@@ -91,12 +94,12 @@ abstract class BasePageStringPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('PageId' => 0, 'LanguageId' => 1, 'IsInactive' => 2, 'LinkText' => 3, 'PageTitle' => 4, 'Keywords' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, 'CreatedBy' => 8, 'UpdatedBy' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('pageId' => 0, 'languageId' => 1, 'isInactive' => 2, 'linkText' => 3, 'pageTitle' => 4, 'keywords' => 5, 'createdAt' => 6, 'updatedAt' => 7, 'createdBy' => 8, 'updatedBy' => 9, ),
-		BasePeer::TYPE_COLNAME => array (self::PAGE_ID => 0, self::LANGUAGE_ID => 1, self::IS_INACTIVE => 2, self::LINK_TEXT => 3, self::PAGE_TITLE => 4, self::KEYWORDS => 5, self::CREATED_AT => 6, self::UPDATED_AT => 7, self::CREATED_BY => 8, self::UPDATED_BY => 9, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('PAGE_ID' => 0, 'LANGUAGE_ID' => 1, 'IS_INACTIVE' => 2, 'LINK_TEXT' => 3, 'PAGE_TITLE' => 4, 'KEYWORDS' => 5, 'CREATED_AT' => 6, 'UPDATED_AT' => 7, 'CREATED_BY' => 8, 'UPDATED_BY' => 9, ),
-		BasePeer::TYPE_FIELDNAME => array ('page_id' => 0, 'language_id' => 1, 'is_inactive' => 2, 'link_text' => 3, 'page_title' => 4, 'keywords' => 5, 'created_at' => 6, 'updated_at' => 7, 'created_by' => 8, 'updated_by' => 9, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('PageId' => 0, 'LanguageId' => 1, 'IsInactive' => 2, 'LinkText' => 3, 'PageTitle' => 4, 'Keywords' => 5, 'Description' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, 'CreatedBy' => 9, 'UpdatedBy' => 10, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('pageId' => 0, 'languageId' => 1, 'isInactive' => 2, 'linkText' => 3, 'pageTitle' => 4, 'keywords' => 5, 'description' => 6, 'createdAt' => 7, 'updatedAt' => 8, 'createdBy' => 9, 'updatedBy' => 10, ),
+		BasePeer::TYPE_COLNAME => array (self::PAGE_ID => 0, self::LANGUAGE_ID => 1, self::IS_INACTIVE => 2, self::LINK_TEXT => 3, self::PAGE_TITLE => 4, self::KEYWORDS => 5, self::DESCRIPTION => 6, self::CREATED_AT => 7, self::UPDATED_AT => 8, self::CREATED_BY => 9, self::UPDATED_BY => 10, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('PAGE_ID' => 0, 'LANGUAGE_ID' => 1, 'IS_INACTIVE' => 2, 'LINK_TEXT' => 3, 'PAGE_TITLE' => 4, 'KEYWORDS' => 5, 'DESCRIPTION' => 6, 'CREATED_AT' => 7, 'UPDATED_AT' => 8, 'CREATED_BY' => 9, 'UPDATED_BY' => 10, ),
+		BasePeer::TYPE_FIELDNAME => array ('page_id' => 0, 'language_id' => 1, 'is_inactive' => 2, 'link_text' => 3, 'page_title' => 4, 'keywords' => 5, 'description' => 6, 'created_at' => 7, 'updated_at' => 8, 'created_by' => 9, 'updated_by' => 10, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
 
 	/**
@@ -174,6 +177,7 @@ abstract class BasePageStringPeer {
 			$criteria->addSelectColumn(PageStringPeer::LINK_TEXT);
 			$criteria->addSelectColumn(PageStringPeer::PAGE_TITLE);
 			$criteria->addSelectColumn(PageStringPeer::KEYWORDS);
+			$criteria->addSelectColumn(PageStringPeer::DESCRIPTION);
 			$criteria->addSelectColumn(PageStringPeer::CREATED_AT);
 			$criteria->addSelectColumn(PageStringPeer::UPDATED_AT);
 			$criteria->addSelectColumn(PageStringPeer::CREATED_BY);
@@ -185,6 +189,7 @@ abstract class BasePageStringPeer {
 			$criteria->addSelectColumn($alias . '.LINK_TEXT');
 			$criteria->addSelectColumn($alias . '.PAGE_TITLE');
 			$criteria->addSelectColumn($alias . '.KEYWORDS');
+			$criteria->addSelectColumn($alias . '.DESCRIPTION');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 			$criteria->addSelectColumn($alias . '.CREATED_BY');
