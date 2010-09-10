@@ -153,6 +153,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPage->setName(StringUtil::normalize($sPageName));
 		$oPageString = new PageString();
 		$oPageString->setLanguageId(AdminManager::getContentLanguage());
+		$oPageString->setLinkText(null);
 		$oPageString->setPageTitle($sPageName);
 		$oPage->addPageString($oPageString);
 		$oPage->setPageType('default');
