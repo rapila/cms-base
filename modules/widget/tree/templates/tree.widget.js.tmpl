@@ -84,6 +84,7 @@ Widget.types.tree = {
 			var name = element.children('span').text(this.settings.description_from_item(item));
 			var opener = element.children('.tree-opener').removeClass('no-children');
 			if(!this.settings.has_children(item)) {
+				element.removeClass('opened');
 				opener.addClass('no-children').removeClass('opened closed');
 			}
 			this.fire('updated', element, item);
@@ -119,6 +120,7 @@ Widget.types.tree = {
 		if(opener.is('.opened')) {
 			return false;
 		}
+		element.addClass('opened');
 		opener.removeClass('closed ui-icon-triangle-1-e').addClass('opened ui-icon-triangle-1-s');
 		var sub_list = element.find(this.settings.tag_name).show();
 		if(sub_list.length === 0) {
@@ -131,6 +133,7 @@ Widget.types.tree = {
 		if(opener.is('.closed')) {
 			return;
 		}
+		element.removeClass('opened');
 		opener.removeClass('opened ui-icon-triangle-1-s').addClass('closed ui-icon-triangle-1-e');
 		element.find(this.settings.tag_name).hide();
 	},

@@ -36,14 +36,14 @@
   margin-right: 5px;
 }
 #admin_sidebar .ui-tree li span { display: block; }
-.ui-state-hover .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
-.ui-state-active .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
-.ui-state-hover .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
-.ui-state-active .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
 #admin_sidebar .ui-tree .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_default.png') no-repeat; }
 .ui-state-default .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_default.png') no-repeat; }
 #admin_sidebar .ui-tree .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_default.png') no-repeat; }
 .ui-state-default .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_default.png') no-repeat; }
+.ui-state-hover .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
+.ui-state-active .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/protected_active.png') no-repeat; }
+.ui-state-hover .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
+.ui-state-active .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
 .ui-widget .status_section {
   font-family: Arial;
   margin-top: 1em;
@@ -160,6 +160,17 @@ button.ui-button.ui-state-default {
   background-repeat: no-repeat;
   background-position: bottom left;
 }
+#admin_sidebar .ui-tree li.opened:last-child {
+  background-image: url('../../images/admin/child_last_opener.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+#admin_sidebar .ui-tree li.ui-state-hover.opened:last-child {
+  background-image: url('../../images/admin/child_last_opener.gif');
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+#admin_sidebar .ui-tree li.opened:last-child > ol { background-image: none; }
 #admin_sidebar .ui-tree li.ui-state-hover {
   background-color: #728697;
   background-image: none;
