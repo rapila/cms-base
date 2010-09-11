@@ -11,8 +11,8 @@
  * @method     PageStringQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method     PageStringQuery orderByLinkText($order = Criteria::ASC) Order by the link_text column
  * @method     PageStringQuery orderByPageTitle($order = Criteria::ASC) Order by the page_title column
- * @method     PageStringQuery orderByKeywords($order = Criteria::ASC) Order by the keywords column
- * @method     PageStringQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     PageStringQuery orderByMetaKeywords($order = Criteria::ASC) Order by the meta_keywords column
+ * @method     PageStringQuery orderByMetaDescription($order = Criteria::ASC) Order by the meta_description column
  * @method     PageStringQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     PageStringQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     PageStringQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -23,8 +23,8 @@
  * @method     PageStringQuery groupByIsInactive() Group by the is_inactive column
  * @method     PageStringQuery groupByLinkText() Group by the link_text column
  * @method     PageStringQuery groupByPageTitle() Group by the page_title column
- * @method     PageStringQuery groupByKeywords() Group by the keywords column
- * @method     PageStringQuery groupByDescription() Group by the description column
+ * @method     PageStringQuery groupByMetaKeywords() Group by the meta_keywords column
+ * @method     PageStringQuery groupByMetaDescription() Group by the meta_description column
  * @method     PageStringQuery groupByCreatedAt() Group by the created_at column
  * @method     PageStringQuery groupByUpdatedAt() Group by the updated_at column
  * @method     PageStringQuery groupByCreatedBy() Group by the created_by column
@@ -56,8 +56,8 @@
  * @method     PageString findOneByIsInactive(boolean $is_inactive) Return the first PageString filtered by the is_inactive column
  * @method     PageString findOneByLinkText(string $link_text) Return the first PageString filtered by the link_text column
  * @method     PageString findOneByPageTitle(string $page_title) Return the first PageString filtered by the page_title column
- * @method     PageString findOneByKeywords(string $keywords) Return the first PageString filtered by the keywords column
- * @method     PageString findOneByDescription(string $description) Return the first PageString filtered by the description column
+ * @method     PageString findOneByMetaKeywords(string $meta_keywords) Return the first PageString filtered by the meta_keywords column
+ * @method     PageString findOneByMetaDescription(string $meta_description) Return the first PageString filtered by the meta_description column
  * @method     PageString findOneByCreatedAt(string $created_at) Return the first PageString filtered by the created_at column
  * @method     PageString findOneByUpdatedAt(string $updated_at) Return the first PageString filtered by the updated_at column
  * @method     PageString findOneByCreatedBy(int $created_by) Return the first PageString filtered by the created_by column
@@ -68,8 +68,8 @@
  * @method     array findByIsInactive(boolean $is_inactive) Return PageString objects filtered by the is_inactive column
  * @method     array findByLinkText(string $link_text) Return PageString objects filtered by the link_text column
  * @method     array findByPageTitle(string $page_title) Return PageString objects filtered by the page_title column
- * @method     array findByKeywords(string $keywords) Return PageString objects filtered by the keywords column
- * @method     array findByDescription(string $description) Return PageString objects filtered by the description column
+ * @method     array findByMetaKeywords(string $meta_keywords) Return PageString objects filtered by the meta_keywords column
+ * @method     array findByMetaDescription(string $meta_description) Return PageString objects filtered by the meta_description column
  * @method     array findByCreatedAt(string $created_at) Return PageString objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return PageString objects filtered by the updated_at column
  * @method     array findByCreatedBy(int $created_by) Return PageString objects filtered by the created_by column
@@ -299,51 +299,51 @@ abstract class BasePageStringQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the keywords column
+	 * Filter the query on the meta_keywords column
 	 * 
-	 * @param     string $keywords The value to use as filter.
+	 * @param     string $metaKeywords The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function filterByKeywords($keywords = null, $comparison = null)
+	public function filterByMetaKeywords($metaKeywords = null, $comparison = null)
 	{
-		if (is_array($keywords)) {
+		if (is_array($metaKeywords)) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
-		} elseif (preg_match('/[\%\*]/', $keywords)) {
-			$keywords = str_replace('*', '%', $keywords);
+		} elseif (preg_match('/[\%\*]/', $metaKeywords)) {
+			$metaKeywords = str_replace('*', '%', $metaKeywords);
 			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(PageStringPeer::KEYWORDS, $keywords, $comparison);
+		return $this->addUsingAlias(PageStringPeer::META_KEYWORDS, $metaKeywords, $comparison);
 	}
 
 	/**
-	 * Filter the query on the description column
+	 * Filter the query on the meta_description column
 	 * 
-	 * @param     string $description The value to use as filter.
+	 * @param     string $metaDescription The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function filterByDescription($description = null, $comparison = null)
+	public function filterByMetaDescription($metaDescription = null, $comparison = null)
 	{
-		if (is_array($description)) {
+		if (is_array($metaDescription)) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
-		} elseif (preg_match('/[\%\*]/', $description)) {
-			$description = str_replace('*', '%', $description);
+		} elseif (preg_match('/[\%\*]/', $metaDescription)) {
+			$metaDescription = str_replace('*', '%', $metaDescription);
 			if (null === $comparison) {
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(PageStringPeer::DESCRIPTION, $description, $comparison);
+		return $this->addUsingAlias(PageStringPeer::META_DESCRIPTION, $metaDescription, $comparison);
 	}
 
 	/**

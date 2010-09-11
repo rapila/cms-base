@@ -56,16 +56,16 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	protected $page_title;
 
 	/**
-	 * The value for the keywords field.
+	 * The value for the meta_keywords field.
 	 * @var        string
 	 */
-	protected $keywords;
+	protected $meta_keywords;
 
 	/**
-	 * The value for the description field.
+	 * The value for the meta_description field.
 	 * @var        string
 	 */
-	protected $description;
+	protected $meta_description;
 
 	/**
 	 * The value for the created_at field.
@@ -198,23 +198,23 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [keywords] column value.
+	 * Get the [meta_keywords] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getKeywords()
+	public function getMetaKeywords()
 	{
-		return $this->keywords;
+		return $this->meta_keywords;
 	}
 
 	/**
-	 * Get the [description] column value.
+	 * Get the [meta_description] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getDescription()
+	public function getMetaDescription()
 	{
-		return $this->description;
+		return $this->meta_description;
 	}
 
 	/**
@@ -422,44 +422,44 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	} // setPageTitle()
 
 	/**
-	 * Set the value of [keywords] column.
+	 * Set the value of [meta_keywords] column.
 	 * 
 	 * @param      string $v new value
 	 * @return     PageString The current object (for fluent API support)
 	 */
-	public function setKeywords($v)
+	public function setMetaKeywords($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->keywords !== $v) {
-			$this->keywords = $v;
-			$this->modifiedColumns[] = PageStringPeer::KEYWORDS;
+		if ($this->meta_keywords !== $v) {
+			$this->meta_keywords = $v;
+			$this->modifiedColumns[] = PageStringPeer::META_KEYWORDS;
 		}
 
 		return $this;
-	} // setKeywords()
+	} // setMetaKeywords()
 
 	/**
-	 * Set the value of [description] column.
+	 * Set the value of [meta_description] column.
 	 * 
 	 * @param      string $v new value
 	 * @return     PageString The current object (for fluent API support)
 	 */
-	public function setDescription($v)
+	public function setMetaDescription($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->description !== $v) {
-			$this->description = $v;
-			$this->modifiedColumns[] = PageStringPeer::DESCRIPTION;
+		if ($this->meta_description !== $v) {
+			$this->meta_description = $v;
+			$this->modifiedColumns[] = PageStringPeer::META_DESCRIPTION;
 		}
 
 		return $this;
-	} // setDescription()
+	} // setMetaDescription()
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -652,8 +652,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$this->is_inactive = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
 			$this->link_text = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->page_title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->keywords = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->description = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->meta_keywords = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->meta_description = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->created_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->updated_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
 			$this->created_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
@@ -1081,10 +1081,10 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				return $this->getPageTitle();
 				break;
 			case 5:
-				return $this->getKeywords();
+				return $this->getMetaKeywords();
 				break;
 			case 6:
-				return $this->getDescription();
+				return $this->getMetaDescription();
 				break;
 			case 7:
 				return $this->getCreatedAt();
@@ -1127,8 +1127,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$keys[2] => $this->getIsInactive(),
 			$keys[3] => $this->getLinkText(),
 			$keys[4] => $this->getPageTitle(),
-			$keys[5] => $this->getKeywords(),
-			$keys[6] => $this->getDescription(),
+			$keys[5] => $this->getMetaKeywords(),
+			$keys[6] => $this->getMetaDescription(),
 			$keys[7] => $this->getCreatedAt(),
 			$keys[8] => $this->getUpdatedAt(),
 			$keys[9] => $this->getCreatedBy(),
@@ -1194,10 +1194,10 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->setPageTitle($value);
 				break;
 			case 5:
-				$this->setKeywords($value);
+				$this->setMetaKeywords($value);
 				break;
 			case 6:
-				$this->setDescription($value);
+				$this->setMetaDescription($value);
 				break;
 			case 7:
 				$this->setCreatedAt($value);
@@ -1240,8 +1240,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if (array_key_exists($keys[2], $arr)) $this->setIsInactive($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setLinkText($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setPageTitle($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setKeywords($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDescription($arr[$keys[6]]);
+		if (array_key_exists($keys[5], $arr)) $this->setMetaKeywords($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setMetaDescription($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setCreatedBy($arr[$keys[9]]);
@@ -1262,8 +1262,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PageStringPeer::IS_INACTIVE)) $criteria->add(PageStringPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(PageStringPeer::LINK_TEXT)) $criteria->add(PageStringPeer::LINK_TEXT, $this->link_text);
 		if ($this->isColumnModified(PageStringPeer::PAGE_TITLE)) $criteria->add(PageStringPeer::PAGE_TITLE, $this->page_title);
-		if ($this->isColumnModified(PageStringPeer::KEYWORDS)) $criteria->add(PageStringPeer::KEYWORDS, $this->keywords);
-		if ($this->isColumnModified(PageStringPeer::DESCRIPTION)) $criteria->add(PageStringPeer::DESCRIPTION, $this->description);
+		if ($this->isColumnModified(PageStringPeer::META_KEYWORDS)) $criteria->add(PageStringPeer::META_KEYWORDS, $this->meta_keywords);
+		if ($this->isColumnModified(PageStringPeer::META_DESCRIPTION)) $criteria->add(PageStringPeer::META_DESCRIPTION, $this->meta_description);
 		if ($this->isColumnModified(PageStringPeer::CREATED_AT)) $criteria->add(PageStringPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(PageStringPeer::UPDATED_AT)) $criteria->add(PageStringPeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(PageStringPeer::CREATED_BY)) $criteria->add(PageStringPeer::CREATED_BY, $this->created_by);
@@ -1341,8 +1341,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$copyObj->setIsInactive($this->is_inactive);
 		$copyObj->setLinkText($this->link_text);
 		$copyObj->setPageTitle($this->page_title);
-		$copyObj->setKeywords($this->keywords);
-		$copyObj->setDescription($this->description);
+		$copyObj->setMetaKeywords($this->meta_keywords);
+		$copyObj->setMetaDescription($this->meta_description);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 		$copyObj->setCreatedBy($this->created_by);
@@ -1595,8 +1595,8 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$this->is_inactive = null;
 		$this->link_text = null;
 		$this->page_title = null;
-		$this->keywords = null;
-		$this->description = null;
+		$this->meta_keywords = null;
+		$this->meta_description = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
