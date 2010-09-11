@@ -38,8 +38,8 @@
 	<column name="is_inactive" type="boolean" size="1" default="1" />
 	<column name="link_text" type="varchar" size="50" default="" />
 	<column name="page_title" type="varchar" size="255" required="true" />
-	<column name="keywords" type="varchar" size="255" required="false" />
-	<column name="description" type="varchar" size="255" required="false" />
+	<column name="meta_keywords" type="varchar" size="255" required="false" />
+	<column name="meta_description" type="varchar" size="255" required="false" />
 </table>
 
 <table name="objects" phpName="ContentObject">

@@ -107,8 +107,8 @@ Widget.types.page_detail = {
 				tab_content.find("input[name='edited_languages[]']").val(language_id);
 				tab_content.find("input[name='link_text']").internationalize(language_id).val(language_data.LinkTextOnly);
 				tab_content.find("input[name='page_title']").internationalize(language_id).val(language_data.PageTitle);
-				tab_content.find("input[name='description']").internationalize(language_id).val(language_data.Description);
-				tab_content.find("input[name='keywords']").internationalize(keywords).val(language_data.Keywords);
+				tab_content.find("input[name='meta_description']").internationalize(language_id).val(language_data.MetaDescription);
+				tab_content.find("input[name='meta_keywords']").internationalize(language_id).val(language_data.MetaKeywords);
 				tab_content.find("input[name='is_inactive']").internationalize(language_id).attr('checked', !language_data.IsInactive);
 				
 				var panel_content = tab_content.find('.panel_content');
