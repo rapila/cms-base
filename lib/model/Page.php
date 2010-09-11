@@ -39,6 +39,16 @@ class Page extends BasePage {
 		return $oResult;
 	}
 	
+	public function getConsolidatedDescription($sLanguageId = null) {
+		if($sLanguageId == null) {
+			$sLanguageId = Session::language();
+		}
+		$aDescription = array();
+		$aDescription[] = StringPeer::getString('meta.description', null, '');
+		$aDescription[] = $this->getActivePageString()->getMetaDescription();
+		return implode(', ', $aDescription);
+	}
+	
 	public function getConsolidatedKeywords($sLanguageId = null) {
 		if($sLanguageId == null) {
 			$sLanguageId = Session::language();
@@ -52,8 +62,7 @@ class Page extends BasePage {
 		}
 		$aKeywords[] = $aTags;
 		$aKeywords[] = Settings::getSetting('frontend', 'keywords', '');
-		$aKeywords[] = $this->getActivePageString()->getKeywords();
-		
+		$aKeywords[] = $this->getActivePageString()->getMetaKeywords();
 		$aResult = array();
 		
 		foreach($aKeywords as $iKey => $mKeywords) {

@@ -70,7 +70,7 @@ class PageNavigationItem extends NavigationItem {
 	}
 	
 	public function getDescription($sLanguageId = null) {
-		return $this->oMe->getActivePageString($sLanguageId)->getDescription();
+		return $this->oMe->getActivePageString($sLanguageId)->getMetaDescription();
 	}
 	
 	public function getName() {

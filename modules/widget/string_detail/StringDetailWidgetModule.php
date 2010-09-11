@@ -13,8 +13,11 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		$oCriteria = new Criteria();
 		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
 		$oCriteria->add(StringPeer::STRING_KEY, $this->sStringId);
-		
-		return StringPeer::doSelectOne($oCriteria)->toArray();
+		$oString = StringPeer::doSelectOne($oCriteria);
+		if($oString === null) {
+			$oString = new String();
+		}
+		return $oString->toArray();
 	}
 	
 	public function getTextFor($sLanguageId) {
@@ -39,7 +42,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function saveData($aStringData) {
 		$this->validate($aStringData);
-		if(!Flash::noErrors()) {
+		if(!Flash::noErrors($aStringData)) {
 			throw new ValidationException();
 		}
 		
@@ -52,7 +55,6 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			
 			if(isset($aStringData['text_'.$oLanguage->getId()])) {
 				$sText = trim($aStringData['text_'.$oLanguage->getId()]);
-				
 				$oString = StringPeer::retrieveByPK($oLanguage->getId(), $this->sStringId);
 				
 				if($sText === '') {
@@ -70,7 +72,6 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 					$oString->setStringKey($aStringData['string_key']);
 					BasePeer::doUpdate($oUpdateCriteria, $oString->buildCriteria(), $oConnection);
 				}
-				
 				$oString->setText($sText);
 				$oString->save();
 			} else {

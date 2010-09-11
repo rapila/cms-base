@@ -198,6 +198,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
     		}
     		$oPageString->setPageTitle($aPageData['page_title_'.$sLanguageId] ? $aPageData['page_title_'.$sLanguageId] : null);
     		$oPageString->setLinkText($aPageData['link_text_'.$sLanguageId] ? $aPageData['link_text_'.$sLanguageId] : null);
+    		$oPageString->setMetaDescription($aPageData['meta_description_'.$sLanguageId] ? $aPageData['meta_description_'.$sLanguageId] : null);
+    		$oPageString->setMetaKeywords($aPageData['meta_keywords_'.$sLanguageId] ? $aPageData['meta_keywords_'.$sLanguageId] : null);
     		$bIsActive = $oPageString->getPageTitle() !== null ? !isset($aPageData['is_inactive_'.$sLanguageId]) : true;
     		$oPageString->setIsInactive($bIsActive);
     		$oPageString->save();
