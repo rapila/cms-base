@@ -334,6 +334,6 @@ ADD INDEX ( `original_name` );
 #svn r2744
 ALTER TABLE `page_strings` ADD `description` VARCHAR(255)  AFTER `keywords`;
 
-#svn r2748
-ALTER TABLE `page_strings` CHANGE `keywords` `meta_keywords` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
-ALTER TABLE `page_strings` CHANGE `description` `meta_description` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+#svn r2751
+ALTER TABLE `page_strings` CHANGE `keywords` `meta_keywords` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `page_strings` CHANGE `description` `meta_description` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
