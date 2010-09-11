@@ -162,7 +162,7 @@ Widget.types.page_detail = {
 			var default_name = "{{writeString=widget.default}}";
 			for(property_name in page_data.page_properties) {
 				var property_container = jQuery("<div/>");
-				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.NameSpace.length)).attr("for", property_name));
+				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.PagePropertyNameSpace.length)).attr("for", property_name));
 				for(name in page_data.page_properties[property_name]) {
 					if(name === 'value') {
 						var background_color	='';

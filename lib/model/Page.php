@@ -40,10 +40,10 @@ class Page extends BasePage {
 	}
 	
 	public function getDescription($sLanguageId = null) {
-		if($sLocalDescription = $this->getActivePageString()->getMetaDescription()) {
+		if($sLocalDescription = $this->getActivePageString($sLanguageId)->getMetaDescription()) {
 			return $sLocalDescription;
 		}
-		return StringPeer::getString('meta.description', null, '');
+		return StringPeer::getString('meta.description', $sLanguageId, '');
 	}
 	
 	public function getConsolidatedKeywords($sLanguageId = null) {
