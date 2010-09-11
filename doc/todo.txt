@@ -28,14 +28,12 @@ ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 Priorities
-- name_space and pageProperty ? name_space in strings? Rafi
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
-- page_tree BUG, how to save default Template? null or "default", check createPage php and js, PageDetailWidgetModule::getFrontendTemplates() and saveData?
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 - document_list search and count_info do not work
+- opened should be only on element and openener div should have the class opener, so .opened .opener could be defined in css
+- StringDetail new should display  1 lanugage Text or display full range of tabs
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
-- language handling, implement language tabs in string
-- page_strings: add optional description and keywords 
 - document_list thumbnail_view autoplay false
 - validate implement like user_detail
 - user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
@@ -633,3 +631,7 @@ BUGBUGBUG release-1.0-devel
 5 Gems revise ?
 - document_thumbnail_view: tooltip only works after clicking once on a thumbnail
 - Safari login send form on return does not work
+- name_space and pageProperty ? name_space in strings? Rafi
+- page_tree BUG, how to save default Template? null or "default", check createPage php and js, PageDetailWidgetModule::getFrontendTemplates() and saveData?
+- language handling, implement language tabs in string
+- page_strings: add optional description and keywords 

@@ -39,14 +39,11 @@ class Page extends BasePage {
 		return $oResult;
 	}
 	
-	public function getConsolidatedDescription($sLanguageId = null) {
-		if($sLanguageId == null) {
-			$sLanguageId = Session::language();
+	public function getDescription($sLanguageId = null) {
+		if($sLocalDescription = $this->getActivePageString()->getMetaDescription()) {
+			return $sLocalDescription;
 		}
-		$aDescription = array();
-		$aDescription[] = StringPeer::getString('meta.description', null, '');
-		$aDescription[] = $this->getActivePageString()->getMetaDescription();
-		return implode(', ', $aDescription);
+		return StringPeer::getString('meta.description', null, '');
 	}
 	
 	public function getConsolidatedKeywords($sLanguageId = null) {

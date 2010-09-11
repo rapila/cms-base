@@ -3,7 +3,7 @@ Widget.types.tree = {
 		var widget = this;
 		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
 		
-		//Item click handler
+		// Item click handler
 		this._element.delegate('.ui-tree li', 'click', function(event) {
 			// Open the item
 			var element = jQuery(this);
