@@ -121,7 +121,15 @@ Widget.types.page_detail = {
 					page_type.settings.language_id = language_id;
 				}, function(page_type) {
 					//Initialized callback
-					page_type.handle_admin();
+					if(language_data.IsInactive) {
+						page_type.handle_admin();
+					} else {
+						var content_configuration = jQuery('label.content_configuration').addClass('load_page_configuration').attr('style', 'text-decoration:underline;cursor:pointer;');
+						content_configuration.click(function() {
+							page_type.handle_admin();
+							content_configuration.addClass('configuration_open');
+						});
+					}
 				});
 			}, false, true);
 		});
