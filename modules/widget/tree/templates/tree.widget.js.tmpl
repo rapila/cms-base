@@ -152,11 +152,11 @@ Widget.types.tree = {
 			parent = this._element;
 		}
 		if(parent.is('li')) {
-			if(parent.find(this.settings.tag_name).length > 0) {
-				parent = parent.find(this.settings.tag_name);
+			if(parent.children(this.settings.tag_name).length > 0) {
+				parent = parent.children(this.settings.tag_name);
 			} else {
 				var new_parent = jQuery(document.createElement(this.settings.tag_name));
-				new_parent.addClass(this._element.get(0).className).addClass("tree_level_"+child.TreeLevel);
+				new_parent.addClass(this._element[0].className).addClass("tree_level_"+child.TreeLevel);
 				parent = new_parent.appendTo(parent);
 			}
 		}
