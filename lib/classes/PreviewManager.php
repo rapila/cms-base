@@ -4,6 +4,10 @@ class PreviewManager extends FrontendManager {
 	private $sOldSessionLanguage;
 	
 	public function __construct() {
+		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
+			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => 'true')));
+		}
+		
 		parent::__construct();
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', 1.4);
