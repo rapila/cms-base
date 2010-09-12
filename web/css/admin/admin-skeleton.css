@@ -44,12 +44,7 @@ body.login h1 {
   margin-top: -12px;
   cursor: pointer;
 }
-#cmos_admin_menu .cmos_logo {
-  padding: 0.3em 1em 0.3em 0.3em;
-  color: #e3ef99;
-}
-#cmos_admin_menu .admin_menu_right .activity_indicator { margin: 0px 7px -3px 0px; }
-#admin_area, #admin_info_bar, #cmos_admin_menu, #viewscreen_loader {
+#admin_area, #admin_info_bar, #viewscreen_loader {
   position: absolute;
   overflow: hidden;
   left: 0;
@@ -91,10 +86,6 @@ body.login h1 {
 }
 #admin_main { left: 277px; }
 #admin_main {
-  right: 0;
-  padding-right: 0;
-}
-#cmos_admin_menu .admin_menu_right {
   right: 0;
   padding-right: 0;
 }
@@ -192,127 +183,6 @@ body.login h1 {
   margin-left: -24px;
   z-index: 1;
   border-right: 0;
-}
-#cmos_admin_menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  font-size: 13px;
-  height: 31px;
-  color: #ffffff;
-  z-index: 100;
-}
-#cmos_admin_menu .ui-widget-header {
-  height: 31px;
-  padding: 0;
-}
-#cmos_admin_menu .admin_menu_right {
-  position: absolute;
-  top: 0;
-  height: 23px;
-  margin: 4px 0px;
-}
-#cmos_admin_menu .admin_menu_left {
-  position: absolute;
-  top: 0;
-  height: 23px;
-  margin: 4px 0px;
-}
-#cmos_admin_menu .admin_menu_left { left: 0; }
-#cmos_admin_menu .admin_menu_right {
-  position: absolute;
-  right: 0;
-}
-#cmos_admin_menu .admin_menu_right > * { display: inline-block; }
-#cmos_admin_menu .admin_menu_left > * { display: inline-block; }
-#cmos_admin_menu .cmos-button {
-  margin: 0 0 0 0.7em;
-  padding: 0.2em 1.4em 0.3em 1.4em;
-  height: 22px;
-}
-#cmos_admin_menu .admin_menu_right span.cmos-button.ui-state-default {
-  display: inline-block;
-  margin-right: 1em;
-}
-#cmos_admin_menu .ui-widget-header select {
-  background-color: transparent !important;
-  border: #000000 1px solid;
-  border-color: #000000 #555555 #666666 #555555;
-  padding: 0.2em 0.1em 0em 2em;
-  color: #e3ef99;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  min-width: 20em;
-  line-height: 11px;
-  text-align: left;
-  margin-left: 0.7em;
-  height: 22px;
-}
-#cmos_admin_menu .ui-widget { font-size: 12px; }
-#cmos_admin_menu .ui-widget-header { font-size: 12px; }
-#cmos_admin_menu .ui-widget-header select { font-size: 12px; }
-#cmos_admin_menu .ui-widget-header select.content_language {
-  min-width: 10em !important;
-  padding-left: 0.2em;
-}
-#cmos_admin_menu .ui-widget-header select option {
-  color: #000000;
-  background-color: #ebedef;
-  padding: 0.2em 0.3em 0.2em 1.5em;
-  padding-left: 1.5em;
-  margin: 0em 0;
-}
-#cmos_admin_menu .ui-widget-header select option:hover { background-color: red !important; }
-#cmos_admin_menu .ui-widget-header select option.separator {
-  border-top: 1px solid #e3ef99;
-  font-size: 3px;
-}
-#cmos_admin_menu .ui-widget-header select option[selected] {
-  color: #b8d600 important;
-  background-color: #b8d600;
-  padding-bottom: 0;
-}
-#cmos_admin_menu .admin-menu-button {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-}
-#cmos_admin_menu button.cmos-button.dashboard {
-  padding: 2px 2px 2px 2px;
-  height: 21px;
-  width: 22px;
-  margin: 0 0 0 0.7em;
-  background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
-}
-#cmos_admin_menu button.cmos-button.logout_link {
-  padding: 2px 2px 2px 2px;
-  height: 21px;
-  width: 22px;
-  margin: 0 0 0 0.7em;
-  background: transparent url('../../images/admin/dashboard_icon.gif') no-repeat center;
-}
-#cmos_admin_menu span.domain_name { color: #dddddd; }
-#cmos_admin_menu button.cmos-button.dashboard span { display: none; }
-#cmos_admin_menu button.cmos-button.logout_link span { display: none; }
-#cmos_admin_menu button.dashboard:hover { background-image: url('../../images/admin/dashboard_icon_hover.gif'); }
-body.dashboard #cmos_admin_menu button.cmos-button.dashboard { background-image: url('../../images/admin/dashboard_icon_hover.gif'); }
-#cmos_admin_menu button.cmos-button.logout_link {
-  -moz-border-radius: 12px;
-  -webkit-border-radius: 12px;
-  background: transparent url('../../images/admin/logout_icon.gif') no-repeat center;
-}
-#cmos_admin_menu > div {
-  padding: 0.3em 0.7em;
-  border: none;
-  border-bottom: 1px solid #d4d8dc;
-}
-.cmos-button {
-  padding: 0.2em 0.2em 0.1em 0.2em;
-  margin-right: 0.2em;
-  cursor: pointer;
 }
 .tooltip {
   position: absolute;

@@ -36,4 +36,10 @@ class AdminMenuWidgetModule extends WidgetModule {
 		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName), 'may' => Session::getSession()->getUser()->mayUseAdmimModule($sName));
 		return $aResult;
 	}
+	
+	public function getPreviewLink() {
+		$oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+		$aPath = $oPage ? $oPage->getFullPathArray() : array();
+		return LinkUtil::link($aPath, 'PreviewManager', array(), false);
+	}
 }

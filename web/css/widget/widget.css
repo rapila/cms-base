@@ -7,3 +7,8 @@
 }
 .ui-image-picker-image.ui-widget-content { border: none; }
 .ui-placeholder { background-color: #d3d3d3; }
+.cmos-button {
+  padding: 0.2em 0.2em 0.1em 0.2em;
+  margin-right: 0.2em;
+  cursor: pointer;
+}

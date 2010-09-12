@@ -193,8 +193,12 @@ Widget.types.admin_menu = {
 		},
 		
 		preview: function() {
-			return {callback: function() {
-			}.bind(this), text: "{{writeString=widget.page.preview_linktext}}"};
+			var result = {text: "{{writeString=widget.page.preview_linktext}}"};
+			var admin_menu = this;
+			result.callback = function() {
+				window.location = admin_menu.getPreviewLink();
+			};
+			return result;
 		},
 		
 		edit: function() {

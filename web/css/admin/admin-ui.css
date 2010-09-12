@@ -193,11 +193,6 @@ button.ui-button.ui-state-default {
 }
 #admin_sidebar > ol.ui-tree li.ui-state-active li.ui-state-hover { background-color: #728697; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active { background-color: #728697; }
-#cmos_admin_menu .cmos-button.ui-state-default { background: url() transparent; }
-.ui-state-default { background: url() transparent; }
-.ui-widget-content .ui-state-default { background: url() transparent; }
-#cmos_admin_menu .cmos-button.ui-state-hover { color: #e3ef99; }
-#cmos_admin_menu .cmos-button.ui-state-active { color: #e3ef99; }
 #admin_sidebar li.ui-state-active { color: white; }
 .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
 .ui-widget-content .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
