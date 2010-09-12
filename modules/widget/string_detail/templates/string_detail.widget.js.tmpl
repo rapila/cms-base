@@ -10,17 +10,23 @@ Widget.types.string_detail = {
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
-				this.open();
+				this.open(true);
 			}
 		}.bind(this));
 	},
 	
-	open: function() {
+	open: function(requires_data) {
+		// console.log('test string_detail', requires_data, !this.detail_widget);
+		var requires_data = requires_data;
 		if(!this.detail_widget) {
 			this.auto_open = true;
 			return false;
 		}
-		this.detail_widget.open();
+		// console.log(requires_data, this);
+		this.detail_widget.open(requires_data);
+		if(requires_data) {
+			this.fill_data();
+		}
 	},
 	
 	fill_data: function() {

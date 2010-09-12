@@ -3,7 +3,8 @@ Widget.types.detail = {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
 	
-	open: function() {
+	open: function(requires_data) {
+		// console.log('test detail', requires_data, this);
 		if(this.has_dialog) {
 			this.content.dialog('open');
 			this.select();

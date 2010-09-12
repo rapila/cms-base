@@ -28,6 +28,7 @@ ErrorHandler
 - maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 Priorities
+- string_detail/strings_admin open() requires data? auto_open etc ? is called twice?
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 - document_list search and count_info do not work
