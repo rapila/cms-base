@@ -36,11 +36,6 @@ jQuery(document).ready(function() {
 				}
 			});
 	
-			// init language change
-			Widget.handle('cmos.language_changed', function() {
-				string_list.reload();
-			});
-	
 			// add row_count_info
 			info_bar.add_row_count_info_for_list(string_list);
 		});
