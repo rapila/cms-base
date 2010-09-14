@@ -22,9 +22,10 @@ Widget.types.language_tabs = {
 					language_tabs.fire('tab.created', language_id, jQuery(ui.panel));
 					tab.data('initialized', true);
 				}
-				// language_tabs.updateContentLanguage(language_id, function() {
-				// 		Widget.fire('cmos.language_changed');
-				// 	});
+				console.log('ui.panel', ui.panel.childNodes);
+				language_tabs.updateContentLanguage(language_id, function() {
+					Widget.fire('cmos.language_changed');
+				});
 				language_tabs.fire('tab.selected', language_id, jQuery(ui.panel));
 			}
 		};
@@ -36,10 +37,5 @@ Widget.types.language_tabs = {
 			language_tabs._element.tabs('add', "#"+language_id, localized_name);
 		});
 		tab_config.show(null, this.initial_tab);
-	}, 
-	
-	settings: {
-		update_content_language: false
 	}
-
 };

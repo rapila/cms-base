@@ -3,9 +3,11 @@ Widget.types.detail = {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
 	
-	open: function(requires_data) {
+	open: function(requires_data, enclosing_widget) {
 		// as a second argument the widget is required for filling the data
-		if(requires_data) {
+		console.log(requires_data, arguments);
+		if(requires_data && enclosing_widget && enclosing_widget instanceof Widget) {
+			console.log(requires_data, arguments);
 			arguments[1].fill_data();
 		}
 

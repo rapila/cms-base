@@ -1,6 +1,6 @@
 Widget.types.string_detail = {
 	initialize: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
 			jQuery.extend(widget.settings, {
@@ -10,25 +10,27 @@ Widget.types.string_detail = {
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
-				this.open(true, this);
+				this.open(this.auto_open.requires_data, this);
 			}
 		}.bind(this));
 	},
 	
-	open: function(requires_data, widget) {
-		var requires_data = requires_data;
+	open: function(requires_data) {
 		if(!this.detail_widget) {
-			this.auto_open = true;
+			this.auto_open = {requires_data: requires_data};
 			return false;
 		}
-		this.detail_widget.open(requires_data, widget);
+		this.detail_widget.open();
+		if(requires_data) {
+			this.fill_data();
+		}
 	},
 	
 	fill_data: function() {
 		var string_detail = this;
-		var language_content = this.content.find('.strings');
+		var language_content = this.content.find('.edit_language_content');
+		language_content.empty();
 		this.getStringData(function(string_data) {
-			language_content.empty();
 			Widget.createWithElement('language_tabs', function(widget) {
 				widget.handle('element_set', function(event, element) {
 					language_content.append(element);
