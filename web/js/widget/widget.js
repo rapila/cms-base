@@ -13,7 +13,7 @@ Function.prototype.bind = function(context) {
 	};
 };
 
-// escapses all selector meta chars
+// escapes all selector meta chars
 String.prototype.escapeSelector = function() {
 	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/, "\\$1");
 };
@@ -37,7 +37,6 @@ jQuery.fn.extend({
 		return result;
 	}
 });
-
 
 //Widget class
 var Widget = function() {
@@ -125,6 +124,13 @@ jQuery.extend(Widget.prototype, {
 });
 
 jQuery.extend(Widget, {
+	uuid: function() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    	var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    	return v.toString(16);
+		}).toUpperCase();
+	},
+	
 	loadInfo: function(widgetType) {
 		if(!Widget.widgetInformation[widgetType]) {
 			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(widgetInformation, error) {

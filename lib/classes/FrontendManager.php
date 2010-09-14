@@ -64,6 +64,8 @@ class FrontendManager extends Manager {
 				break;
 			}
 		}
+		
+		
 		// See if anything has changed
 		if(self::$CURRENT_NAVIGATION_ITEM !== $oMatchingNavigationItem && self::$CURRENT_NAVIGATION_ITEM instanceof PageNavigationItem) {
 			self::$CURRENT_NAVIGATION_ITEM->setCurrent(false); //It is, however, still active
@@ -92,6 +94,7 @@ class FrontendManager extends Manager {
 				self::$CURRENT_PAGE = $oLoginPage;
 			}
 		}
+		// Util::dumpAll($this->bIsNotFound);
 		
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
@@ -147,6 +150,7 @@ class FrontendManager extends Manager {
 				die(StringPeer::getString('page.not_found'));
 			}
 			self::$CURRENT_PAGE = $oPage;
+			self::$CURRENT_NAVIGATION_ITEM = PageNavigationItem::navigationItemForPage($oPage);
 			
 			//Set correct page type of 404 page
 			$sPageType = self::$CURRENT_PAGE->getPageType();

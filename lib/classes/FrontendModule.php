@@ -7,7 +7,7 @@ abstract class FrontendModule extends Module {
 	protected $aPath;
 	protected $iId;
 	
-	public function __construct($oLanguageObject=null, $aPath=null, $iId = 1) {
+	public function __construct($oLanguageObject = null, $aPath = null, $iId = 1) {
 		if($oLanguageObject instanceof LanguageObject) {
 			$this->oLanguageObject = $oLanguageObject;
 		} else {

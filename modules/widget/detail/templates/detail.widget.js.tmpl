@@ -5,7 +5,6 @@ Widget.types.detail = {
 	
 	open: function(requires_data, enclosing_widget) {
 		// as a second argument the widget is required for filling the data
-		console.log(requires_data, arguments);
 		if(requires_data && enclosing_widget && enclosing_widget instanceof Widget) {
 			console.log(requires_data, arguments);
 			arguments[1].fill_data();
