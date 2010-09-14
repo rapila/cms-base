@@ -4,7 +4,12 @@ Widget.types.detail = {
 	},
 	
 	open: function(requires_data) {
-		// console.log('test detail', requires_data, this);
+		console.log('test detail', arguments, requires_data, this);
+		if(requires_data) {
+			arguments[1].fill_data();
+			//this.fill_data();
+		}
+
 		if(this.has_dialog) {
 			this.content.dialog('open');
 			this.select();

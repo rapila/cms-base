@@ -28,6 +28,12 @@ class ContentObject extends BaseContentObject {
 		return $this->getLanguageObjectsByLanguage($sLanguageId) !== null;
 	}
 	
+	public function hasLanguageFilled($sLanguageId) {
+		foreach($this->getLanguageObjectsByLanguage($sLanguageId) as $oLangObj) {
+			var_dump($oLangObj);
+		}
+	}
+	
 	public function getObjectTypeName($sLanguageId=null) {
 		return FrontendModule::getDisplayNameByName($this->getObjectType(), $sLanguageId);
 	}

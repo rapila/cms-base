@@ -294,7 +294,7 @@ class Page extends BasePage {
 		}
 		return $this->getContentObjects($oCrit);
 	}
-
+	
 	public function countObjectsForContainer($sContainerName) {
 		return $this->countContentObjects($this->getObjectsForContainerCriteria($sContainerName));
 	}

@@ -29,6 +29,8 @@ ErrorHandler
 
 Priorities
 - string_detail/strings_admin open() requires data? auto_open etc ? is called twice?
+	call fill_data from detail or from string_detail widget?
+	language_tabs updateContentLanguage and Widget.fire('cmos.language_changed') DISCUSS
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 - document_list search and count_info do not work

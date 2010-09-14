@@ -114,14 +114,15 @@ Widget.types.page_detail = {
 				var panel_content = tab_content.find('.panel_content');
 				
 				Widget.create('page_type', function(page_type) {
-					//Intermediate callback
+					//	Intermediate callback
 					page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
 					page_type.settings.container = panel_content;
 					page_type.settings.page_id = widget.current_page_id;
 					page_type.settings.language_id = language_id;
 				}, function(page_type) {
-					//Initialized callback
-					if(language_data.IsInactive) {
+					// Initialized callback
+					// show content config options: IsInactive, HasLanguageObjectsFilled
+					if(!language_data.HasLanguageObjectsFilled) {
 						page_type.handle_admin();
 					} else {
 						var content_configuration = jQuery('label.content_configuration').addClass('load_page_configuration').attr('style', 'text-decoration:underline;cursor:pointer;');
