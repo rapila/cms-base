@@ -49,10 +49,6 @@ Widget.types.page_type.types['default'] = {
 				}, 1000);
 			};
 			
-			filled_container.bind('move', function() {
-				console.log('resized', filled_container);
-			});
-			
 			filled_container.bind('mouseenter', function() {
 				if(leave_timeout) {
 					window.clearTimeout(leave_timeout); leave_timeout = null;

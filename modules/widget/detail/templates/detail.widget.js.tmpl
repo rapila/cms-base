@@ -4,10 +4,9 @@ Widget.types.detail = {
 	},
 	
 	open: function(requires_data) {
-		console.log('test detail', arguments, requires_data, this);
+		// as a second argument the widget is required for filling the data
 		if(requires_data) {
 			arguments[1].fill_data();
-			//this.fill_data();
 		}
 
 		if(this.has_dialog) {

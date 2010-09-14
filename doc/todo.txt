@@ -27,16 +27,18 @@ ErrorHandler
 
 Priorities
 - newsletter plugin trunk release check
-- string_detail/strings_admin open() requires data? auto_open etc ? is called twice?
+- string_detail/strings_admin open() requires data? auto_open etc ?
 	call fill_data from detail or from string_detail widget?
+	save_callback/close
 	language_tabs updateContentLanguage and Widget.fire('cmos.language_changed') DISCUSS
+	should display one Text (1 lang) or display full range of tabs
 - page_detail double loading? and action buttons load issue
 - page_detail language_objects, added one in english, does not appear in german
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 - document_list search and count_info do not work
+- search notify with parameter strings instead of keys
 - opened should be only on element and openener div should have the class opener, so .opened .opener could be defined in css
-- StringDetail new should display  1 lanugage Text or display full range of tabs
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 - document_list thumbnail_view autoplay false
 - validate implement like user_detail
