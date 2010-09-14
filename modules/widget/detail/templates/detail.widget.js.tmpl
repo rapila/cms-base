@@ -3,13 +3,7 @@ Widget.types.detail = {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
 	
-	open: function(requires_data, enclosing_widget) {
-		// as a second argument the widget is required for filling the data
-		if(requires_data && enclosing_widget && enclosing_widget instanceof Widget) {
-			console.log(requires_data, arguments);
-			arguments[1].fill_data();
-		}
-
+	open: function(requires_data) {
 		if(this.has_dialog) {
 			this.content.dialog('open');
 			this.select();
@@ -17,7 +11,12 @@ Widget.types.detail = {
 		}
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
-		var save_button_handler = this.settings.save_callback;
+		var save_button_handler = function() {
+			detail_widget.settings.save_callback.apply(this, arguments);
+			if(detail_widget.settings.auto_close_on_save) {
+				detail_widget.close();
+			}
+		};
 		var cancel_callback = function() {
 			detail_widget.content.dialog('close');
 		};
@@ -93,6 +92,10 @@ Widget.types.detail = {
 	},
 	
 	set_title: function(title) {
+		if(!title) {
+			return;
+		}
+		this.settings.title = title;
 		this.content.dialog('option', 'title', title);
 	}, 
 	
@@ -134,7 +137,6 @@ Widget.types.detail = {
 			detail.save_callback = function(returnValue) {
 				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
 				list.update_row(detail.current_row, additionalData);
-				detail.close();
 			};
 		});
 	},
@@ -146,6 +148,7 @@ Widget.types.detail = {
 		resizable: true,
 		closeOnEscape: true,
 		has_cancel_button: true,
+		auto_close_on_save: true,
 		cancel_callback: jQuery.noop,
 		save_callback: jQuery.noop,
 		select: "input:eq(0)",

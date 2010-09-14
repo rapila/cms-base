@@ -1,6 +1,6 @@
 Widget.types.string_detail = {
 	initialize: function() {
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.init_content();
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget;
 			jQuery.extend(widget.settings, {
@@ -10,42 +10,51 @@ Widget.types.string_detail = {
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
-				this.open(this.auto_open.requires_data, this);
+				this.open();
 			}
 		}.bind(this));
 	},
 	
-	open: function(requires_data) {
+	open: function() {
 		if(!this.detail_widget) {
-			this.auto_open = {requires_data: requires_data};
+			this.auto_open = true;
 			return false;
 		}
 		this.detail_widget.open();
-		if(requires_data) {
-			this.fill_data();
-		}
 	},
 	
 	fill_data: function() {
 		var string_detail = this;
-		var language_content = this.content.find('.edit_language_content');
-		language_content.empty();
 		this.getStringData(function(string_data) {
-			Widget.createWithElement('language_tabs', function(widget) {
-				widget.handle('element_set', function(event, element) {
-					language_content.append(element);
-				});
-			}, function(language_tabs) {
-				language_tabs.handle('tab.created', function(event, language_id, tab_content) {
-					var textarea = jQuery.parseHTML('{{includeTemplate=edit_language}}');
-					textarea.attr('name', textarea.attr('name')+language_id);
-					textarea.val(string_detail.getTextFor(language_id));
-					tab_content.append(textarea);
-				}, false, true);
-			});
 			this.string_key_old = string_data.StringKey;
 			this.content.find("input[name='string_key']").val(string_data.StringKey);
-			this.detail_widget.set_title(this.detail_widget.settings.title = string_data.StringKey);
+			this.detail_widget.set_title(string_data.StringKey);
+		});
+		if(!this.language_tabs) {
+			this.init_content();
+		} else {
+			jQuery.each(this.language_tabs.all_panels(), function(language_id, panel) {
+				panel.find('textarea').val(string_detail.getTextFor(language_id));
+			});
+		}
+	},
+	
+	init_content: function() {
+		var string_detail = this;
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		var language_content = this.content.find('.edit_language_content');
+		Widget.createWithElement('language_tabs', function(widget) {
+			string_detail.language_tabs = widget;
+			widget.handle('element_set', function(event, element) {
+				language_content.append(element);
+			});
+		}, function(language_tabs) {
+			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
+				var textarea = jQuery.parseHTML('{{includeTemplate=edit_language}}');
+				textarea.attr('name', textarea.attr('name')+language_id);
+				textarea.val(string_detail.getTextFor(language_id));
+				tab_content.append(textarea);
+			}, false, true);
 		});
 	},
 	
