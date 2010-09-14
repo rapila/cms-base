@@ -9,34 +9,27 @@ Miscellaneous projects
 	General check and update
 
 Todo
-1 discuss future shops, meaning of a page type
-2	update cgcmac.ch > newsletter
-	make release-1.0-plugin
-3 schule altenburg planung
+1 schule altenburg planung
 	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
+2 Kampagne Seite Svenja, Abklärungen
+3	update cgcmac.ch > newsletter
+	make release-1.0-plugin
 4 taylormade effects: ajax kills animation. how to register events
-5 Kampagne Seite Svenja, Abklärungen
-6 Bug-Tracking / Wiki > Assembla, GitHub ?
+5 Bug-Tracking / Wiki > Assembla, GitHub ?
+
+ErrorHandler
+- maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
 
 BUG!
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to
 
-ErrorHandler
-- maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
-
 Priorities
-- newsletter plugin trunk release check
-- string_detail/strings_admin open() requires data? auto_open etc ?
-	call fill_data from detail or from string_detail widget?
-	save_callback/close
-	language_tabs updateContentLanguage and Widget.fire('cmos.language_changed') DISCUSS
-	should display one Text (1 lang) or display full range of tabs
-- page_detail double loading? and action buttons load issue
-- page_detail language_objects, added one in english, does not appear in german
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
+- page_detail double loading? and action buttons load issue
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 - document_list search and count_info do not work
+- page_detail language_objects, added one in english, does not appear in german
 - search notify with parameter strings instead of keys
 - opened should be only on element and openener div should have the class opener, so .opened .opener could be defined in css
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
@@ -50,7 +43,6 @@ PageDetail
 - language tabs
 	load language sensitive content all the time? Or should languages be available, copyable etc?
 	language sensitive: page_strings, contents, references!
-- page_detail, add is_active to pagestring
 - templates visualisation, choosing from images rather then names, CSS Parser
 - visualise activities, whenever something is loaded, ie on tab?
 - page preview before set online, how to do?
@@ -644,3 +636,10 @@ BUGBUGBUG release-1.0-devel
 - cms_wills hidden inputs
 - fassx show custom recipients js
 - qm-manual exception catch
+- newsletter plugin trunk release check
+- string_detail/strings_admin open() requires data? auto_open etc ?
+	call fill_data from detail or from string_detail widget?
+	save_callback/close
+	language_tabs updateContentLanguage and Widget.fire('cmos.language_changed') DISCUSS
+	should display one Text (1 lang) or display full range of tabs
+- page_detail, add is_active to pagestring

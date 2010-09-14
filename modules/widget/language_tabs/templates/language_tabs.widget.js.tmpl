@@ -54,7 +54,9 @@ Widget.types.language_tabs = {
 		var result = {};
 		this._element.find('.ui-tabs-nav li a').each(function() {
 			var tab = jQuery(this);
-			result[tab.data('language_id')] = tab.data('panel');
+			if(tab.data('panel')) {
+				result[tab.data('language_id')] = tab.data('panel');
+			}
 		});
 		return result;
 	}
