@@ -2,11 +2,10 @@ Widget.types.group_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
+			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=group.create}}",
-				width: 400,
-				save_callback: this.save.bind(this)
+				width: 400
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
@@ -30,11 +29,6 @@ Widget.types.group_detail = {
 		});
 	},
 	
-	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
-		return true;
-	},
-
 	close: function() {
 		this.detail_widget.close();
 		this.close_callback();

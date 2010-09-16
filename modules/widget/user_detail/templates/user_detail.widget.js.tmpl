@@ -2,11 +2,10 @@ Widget.types.user_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
+			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
-				width: 600,
-				save_callback: this.save.bind(this)
+				width: 600
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
@@ -46,14 +45,7 @@ Widget.types.user_detail = {
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
 		});
 	},
-	
-	save: function() {
-		this.saveData(this.content.serializeArrayKV(), function() {
-			this.close();
-			this.save_callback();
-		}.bind(this));
-	},
-	
+		
 	close: function() {
 		this.detail_widget.close();
 		this.close_callback();

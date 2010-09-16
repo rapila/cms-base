@@ -34,7 +34,7 @@ Newsletter schema und Funktionen
 - 
 
 Priorities
-- strings: uncaught exception prior to initialization on string_detail
+- strings: create new sidebar_changed? implemented
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 	delete, search & count_info don't  work
 

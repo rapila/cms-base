@@ -2,11 +2,10 @@ Widget.types.document_category_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
+			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=widget.document_category.create}}",
-				width: 530,
-				save_callback: this.save.bind(this)
+				width: 530
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
@@ -32,11 +31,6 @@ Widget.types.document_category_detail = {
 			this.content.find("span[class='detail_id']").text(category_data.Id);
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
 		});
-	},
-	
-	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
-		return true;
 	},
 
 	close: function() {
