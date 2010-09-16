@@ -116,8 +116,8 @@ jQuery.extend(Widget.prototype, {
 				}
 			}
 			jQuery(this)[isOnce ? 'one' : 'bind']("widget."+eventName, handler.bind(this));
-			return this;
 		}.bind(this));
+		return this;
 	},
 	
 	_pastEvents: {},
@@ -416,13 +416,15 @@ jQuery.extend(Widget, {
 	},
 	
 	handle: function(event, handler, isOnce, fireIfPast) {
-		if(fireIfPast && this._pastEvents[event]) {
-			handler.apply(this, this._pastEvents[event]);
-			if(isOnce) {
-				return this;
+		jQuery.each(event.split(/\s+/), function(i, eventName) {
+			if(fireIfPast && this._pastEvents[eventName]) {
+				handler.apply(this, this._pastEvents[eventName]);
+				if(isOnce) {
+					return this;
+				}
 			}
-		}
-		jQuery(Widget)[isOnce ? 'one' : 'bind']("Widget."+event, handler.bind(this));
+			jQuery(Widget)[isOnce ? 'one' : 'bind']("Widget."+eventName, handler.bind(this));
+		}.bind(this));
 		return this;
 	},
 	
