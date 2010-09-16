@@ -170,7 +170,7 @@ Widget.types.page_detail = {
 				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.PagePropertyNameSpace.length)).attr("for", property_name));
 				for(name in page_data.page_properties[property_name]) {
 					if(name === 'value') {
-						var background_color	='';
+						var background_color ='';
 						if(page_data.page_properties[property_name]['type'] == 'color') {
 							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
 						}

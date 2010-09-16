@@ -139,7 +139,7 @@ jQuery.extend(Widget, {
 				Widget.widgetInformation[widgetType] = widgetInformation;
 				if(!Widget.types[widgetType]) {
 					if(widgetInformation.resources !== '') {
-						var resources = jQuery(widgetInformation.resources);
+						var resources = jQuery.parseHTML(widgetInformation.resources);
 						var head = jQuery('head');
 						//Add scripts
 						resources.filter('script').each(function() {
@@ -162,42 +162,47 @@ jQuery.extend(Widget, {
 								head.append(this);
 							}
 						});
-					} else {
+					}
+					if(!Widget.types[widgetType]){
 						Widget.types[widgetType] = {}; //An empty widget type… useful if it only exposes PHP methods
-					}
-				}
-				if(Widget.types[widgetType].constructor !== Function) {
-					// Make Widget.types[widgetType] a function
-					var old_type = Widget.types[widgetType]; //must now be defined after including resources
-					Widget.types[widgetType] = function(instanceInformation) {
-						this._widgetInformation = widgetInformation;
-						this._instanceInformation = instanceInformation;
-						this.widgetId = instanceInformation.session_id;
-						this.widgetType = widgetType;
-					};
-					Widget.types[widgetType].prototype.constructor = Widget.types[widgetType];
-					//Setting default properties
-					Widget.types[widgetType].prototype = new Widget();
-					//Add PHP methods
-					jQuery.each(widgetInformation.methods, function(i, method) {
-						Widget.types[widgetType].prototype[method] = function() {
-							return this._callMethod.apply(this, [method].concat(jQuery.makeArray(arguments)));
-						};
-					});
-					//Add JS methods (including initialize [which is not the constructor] and prepare)
-					jQuery.extend(Widget.types[widgetType].prototype, old_type);
-					//Settings must be present
-					if(!Widget.types[widgetType].prototype.settings) {
-						Widget.types[widgetType].prototype.settings = {};
-					}
-					//Fix – static – types property
-					if(old_type.types) {
-						delete Widget.types[widgetType].prototype.types;
-						Widget.types[widgetType].types = old_type.types;
 					}
 				}
 			}, WidgetJSONOptions.with_async(false));
 		}
+		
+		//If the widget is not yet a function… (its Constructor not the Function constructor)
+		if(Widget.types[widgetType].constructor !== Function) {
+			var widgetInformation = Widget.widgetInformation[widgetType];
+			//…make Widget.types[widgetType] a function
+			var old_type = Widget.types[widgetType]; //must now be defined after including resources
+			Widget.types[widgetType] = function(instanceInformation) {
+				this._widgetInformation = widgetInformation;
+				this._instanceInformation = instanceInformation;
+				this.widgetId = instanceInformation.session_id;
+				this.widgetType = widgetType;
+			};
+			//Setting default properties
+			Widget.types[widgetType].prototype = new Widget();
+			Widget.types[widgetType].prototype.constructor = Widget.types[widgetType];
+			//Add PHP methods
+			jQuery.each(widgetInformation.methods, function(i, method) {
+				Widget.types[widgetType].prototype[method] = function() {
+					return this._callMethod.apply(this, [method].concat(jQuery.makeArray(arguments)));
+				};
+			});
+			//Add JS methods (including initialize [which is not the constructor] and prepare)
+			jQuery.extend(Widget.types[widgetType].prototype, old_type);
+			//Settings must be present
+			if(!Widget.types[widgetType].prototype.settings) {
+				Widget.types[widgetType].prototype.settings = {};
+			}
+			//Fix – static – types property
+			if(old_type.types) {
+				delete Widget.types[widgetType].prototype.types;
+				Widget.types[widgetType].types = old_type.types;
+			}
+		}
+		
 		return Widget.widgetInformation[widgetType];
 	},
 	
@@ -225,7 +230,6 @@ jQuery.extend(Widget, {
 				return;
 			}
 			var widget = new Widget.types[widgetType](instanceInformation);
-			widget.constructor = Widget.types[widgetType];
 			
 			//Settings need to be mutable without changing globally
 			widget.settings = {};

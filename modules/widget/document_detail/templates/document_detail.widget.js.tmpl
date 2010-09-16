@@ -34,7 +34,6 @@ Widget.types.document_detail = {
 			};
 			
 			this.uploader = Widget.create('file_upload');
-			console.log('created uploader', uploader);
 			this.uploader.allow_drag_to(document_detail.content, null, function(target) {
 				// console.log(document_detail.current_detail_id, upload_success,upload_error):
 				return {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error};
