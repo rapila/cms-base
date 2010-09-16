@@ -17,10 +17,12 @@ class PagesAdminModule extends AdminModule {
 		$this->oTreeWidget->setDelegate($this);
 		$this->oTreeWidget->setOrdered(true);
 		$oInitialPage = null;
-    // ErrorHandler::log(Manager::hasNextPathItem(), Session::getSession()->hasAttribute('persistent_page_id'));
+
 		if(Manager::hasNextPathItem()) {
 			$oInitialPage = PagePeer::retrieveByPK(Manager::usePath());
-			Session::getSession()->setAttribute('persistent_page_id', $oInitialPage->getId());
+			if($oInitialPage !== null) {
+				Session::getSession()->setAttribute('persistent_page_id', $oInitialPage->getId());
+			}
 		} else if(Session::getSession()->hasAttribute('persistent_page_id')) {
       $oInitialPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
 		}

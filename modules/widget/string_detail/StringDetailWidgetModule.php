@@ -4,6 +4,7 @@
  */
 class StringDetailWidgetModule extends PersistentWidgetModule {
 	private $sStringId = null;
+	const SIDEBAR_CHANGED = 'sidebar_changed';
 	
 	public function setStringId($sStringId) {
 		$this->sStringId = $sStringId;
@@ -45,9 +46,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors($aStringData)) {
 			throw new ValidationException();
 		}
-		
-		$oConnection = Propel::getConnection(StringPeer::DATABASE_NAME);
-		
+		$oConnection = Propel::getConnection();
 		foreach(LanguagePeer::getLanguages() as $oLanguage) {
 			$oUpdateCriteria = new Criteria();
 			$oUpdateCriteria->add(StringPeer::LANGUAGE_ID, $oLanguage->getId());
@@ -85,7 +84,23 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 				}
 			}
 		}
+		// check sidebar reload criteria
+		$sNameSpaceOld = StringPeer::getNameSpaceFromStringKey($this->sStringId);
+		$sNameSpaceNew = StringPeer::getNameSpaceFromStringKey($aStringData['string_key']);
+		
+		// if both are the same the sidebar is not effected
+		$bSidebarHasChanged = false;
+		if($sNameSpaceOld !== $sNameSpaceNew) {
+			// if there was an old name space then we have to check whether it was the last string with this namespace
+			if($sNameSpaceOld !== null && !StringPeer::nameSpaceExists($sNameSpaceOld)) {
+				$bSidebarHasChanged = true;
+			}
+			// if the new exits only once it has been created and the sidebar needs to be relaoded
+			if($sNameSpaceNew !== null && StringPeer::countNameSpaceByName($sNameSpaceNew) === 1) {
+				$bSidebarHasChanged = true;
+			}
+		}
 		$this->sStringId = $aStringData['string_key'];
-		return array('string_key' => $this->sStringId);
+		return array('string_key' => $this->sStringId, self::SIDEBAR_CHANGED => $bSidebarHasChanged);
 	}
 }

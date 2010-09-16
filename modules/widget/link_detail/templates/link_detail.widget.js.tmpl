@@ -5,8 +5,7 @@ Widget.types.link_detail = {
 			this.detail_widget = widget;
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
-				width: 530,
-				save_callback: this.save.bind(this)
+				width: 530
 			});
 			widget.content = this.content;
 			this.content.find("select[name='link_category_id']").prepareWidget();
@@ -31,6 +30,7 @@ Widget.types.link_detail = {
 			}
 			this.content.find("input[name='name']").val(link_data.Name);
 			this.content.find("input[name='url']").val(link_data.Url);
+			console.log(link_data.LinkCategoryId);
 			this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
 			this.content.find("textarea[name='description']").val(link_data.Description);
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
@@ -38,11 +38,6 @@ Widget.types.link_detail = {
 			this.content.find(".created_info").text(link_data.CreatedInfo);
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 		});
-	},
-	
-	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
-		return true;
 	},
 	
 	close: function() {

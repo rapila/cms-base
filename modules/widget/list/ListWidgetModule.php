@@ -93,7 +93,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function deleteRow($aRowData) {
-		$this->oDelegate->deleteRow($aRowData);
+		return $this->oDelegate->deleteRow($aRowData);
 	}	
 
 	public function toggleBoolean($aRowData, $sBooleanName='is_inactive') {

@@ -190,6 +190,8 @@ Widget.types.list = {
 		this.deleteRow(rowData, function(result, error) {
 			if(!error) {
 				row.remove();
+				this.fire('row.deleted', result);
+				console.log(this);
 			} else {
 				Widget.notifyUser('error', error.message);
 			}
@@ -221,12 +223,15 @@ Widget.types.list = {
 			row = this.row_from_number(row);
 		}
 		var rowData = this.collect_row_data(row);
+		
 		jQuery.extend(rowData, (additonalData || {}));
 		this.rowFromData(rowData, function(row_contents) {
+			var newRow = null;
 			if(row_contents !== null) {
-				this.insert_row(row_contents, false, row);
+				newRow = this.insert_row(row_contents, false, row);
 			}
 			row.remove();
+			this.fire('row.updated', additonalData, newRow, rowData);
 		});
 	},
 	

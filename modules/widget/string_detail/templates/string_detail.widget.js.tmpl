@@ -2,11 +2,10 @@ Widget.types.string_detail = {
 	initialize: function() {
 		this.init_content();
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
+			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
-				width: 600,
-				save_callback: this.save.bind(this)
+				width: 600
 			});
 			widget.content = this.content;
 			if(this.auto_open) {
@@ -26,7 +25,6 @@ Widget.types.string_detail = {
 	fill_data: function() {
 		var string_detail = this;
 		this.getStringData(function(string_data) {
-			this.string_key_old = string_data.StringKey;
 			this.content.find("input[name='string_key']").val(string_data.StringKey);
 			this.detail_widget.set_title(string_data.StringKey);
 		});
@@ -56,13 +54,6 @@ Widget.types.string_detail = {
 				tab_content.append(textarea);
 			}, false, true);
 		});
-	},
-	
-	save: function() {
-		var form_data = this.content.serializeArrayKV();
-		form_data.string_key_old = this.string_key_old;
-		this.saveData(form_data, this.save_callback);
-		return true;
 	},
 	
 	close: function() {

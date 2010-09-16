@@ -108,14 +108,16 @@ jQuery.extend(Widget.prototype, {
 	},
 	
 	handle: function(event, handler, isOnce, fireIfPast) {
-		if(fireIfPast && this._pastEvents[event]) {
-			handler.apply(this, this._pastEvents[event]);
-			if(isOnce) {
-				return this;
+		jQuery.each(event.split(/\s+/), function(i, eventName) {
+			if(fireIfPast && this._pastEvents[eventName]) {
+				handler.apply(this, this._pastEvents[eventName]);
+				if(isOnce) {
+					return this;
+				}
 			}
-		}
-		jQuery(this)[isOnce ? 'one' : 'bind']("widget."+event, handler.bind(this));
-		return this;
+			jQuery(this)[isOnce ? 'one' : 'bind']("widget."+eventName, handler.bind(this));
+			return this;
+		}.bind(this));
 	},
 	
 	_pastEvents: {},

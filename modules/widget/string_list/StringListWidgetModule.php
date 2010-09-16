@@ -51,6 +51,15 @@ class StringListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 	
+	public function deleteRow($aRowData, $oCriteria) {
+		$bResult = false;
+		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['string_key']);
+		if(StringPeer::doDelete($oCriteria) && $sNameSpace !== null) {
+			$bResult = !StringPeer::nameSpaceExists($sNameSpace);
+		}
+		return array(StringDetailWidgetModule::SIDEBAR_CHANGED => $bResult);
+	}
+	
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'name_space') {
 			return StringPeer::STRING_KEY;

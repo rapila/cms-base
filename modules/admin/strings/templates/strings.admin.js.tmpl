@@ -19,6 +19,14 @@ jQuery(document).ready(function() {
 				string_list.setOption('name_space', name_space);
 				string_list.reload();
 			});
+		
+			//Add handlers for changed namespaces
+			string_list.handle('row.updated row.deleted', function(event, returnedResult) {
+				console.log(arguments);
+				if(returnedResult.sidebar_changed) {
+					sidebar.reload();
+				}
+			});
 		});
 
 		// init info bar

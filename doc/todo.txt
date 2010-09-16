@@ -36,12 +36,11 @@ Newsletter schema und Funktionen
 Priorities
 - strings: uncaught exception prior to initialization on string_detail
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
-- page_detail double loading on first load? and action buttons load issue
-	pages.admin.js 		// widget.load_page(initial_selection);
+	delete, search & count_info don't  work
 
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 	document_thumbnail_view.js can easily be abstracted for general thumbnail views?
-- document_list search and count_info do not work
+- link_detail, unselected link_category does not work properly
 - page_detail language_objects, added one in english, does not appear in german
 - search notify with parameter strings instead of keys
 - opened should be only on element and openener div should have the class opener, so .opened .opener could be defined in css
@@ -656,3 +655,5 @@ BUGBUGBUG release-1.0-devel
 	language_tabs updateContentLanguage and Widget.fire('cmos.language_changed') DISCUSS
 	should display one Text (1 lang) or display full range of tabs
 - page_detail, add is_active to pagestring
+- page_detail double loading on first load? and action buttons load issue
+	pages.admin.js 		// widget.load_page(initial_selection);

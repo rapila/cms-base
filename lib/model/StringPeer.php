@@ -141,13 +141,31 @@ EOT;
 		$oCriteria->add($oSearchCriterion);
 	}
 
-  public static function getStringsByStringKey($sStringKey, $sExcludeLang=true) {
-    $oCriteria = new Criteria();
-    $oCriteria->add(self::STRING_KEY, $sStringKey);
-    if($sExcludeLang) {
-      $oCriteria->add(self::LANGUAGE_ID, $sExcludeLang, Criteria::NOT_EQUAL);
-    }
-    return self::doSelect($oCriteria);
-  }
+	public static function getStringsByStringKey($sStringKey, $sExcludeLang=true) {
+		$oCriteria = new Criteria();
+		$oCriteria->add(self::STRING_KEY, $sStringKey);
+		if($sExcludeLang) {
+			$oCriteria->add(self::LANGUAGE_ID, $sExcludeLang, Criteria::NOT_EQUAL);
+		}
+		return self::doSelect($oCriteria);
+	}
+	
+	public static function nameSpaceExists($sNameSpace) {
+		return self::countNameSpaceByName($sNameSpace) > 0;
+	}
+	
+	public static function countNameSpaceByName($sNameSpace) {
+		$oCriteria = new Criteria();
+		$oCriteria->add(StringPeer::STRING_KEY, "$sNameSpace.%", Criteria::LIKE);
+		return self::doCount($oCriteria);
+	}
+
+	public static function getNameSpaceFromStringKey($sStringKey) {
+		$aParts = explode('.', $sStringKey);
+		if(count($aParts) > 1) {
+			return $aParts[0];
+		}
+		return null;
+	}
 }
 

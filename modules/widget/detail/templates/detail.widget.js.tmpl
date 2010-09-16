@@ -3,28 +3,32 @@ Widget.types.detail = {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
 	
+	set_instance: function(instance) {
+		this.instance = instance;
+		this.settings.save_callback = function() {
+			instance.saveData(instance.content.serializeArrayKV(), function() {
+				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
+				instance.close();
+			});
+		};
+		this.settings.cancel_callback = instance.close.bind(instance);
+		return this;
+	},
+	
 	open: function() {
 		if(this.has_dialog) {
+			this.clear_validation();
 			this.content.dialog('open');
 			this.select();
 			return;
 		}
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
-		var save_button_handler = function() {
-			detail_widget.settings.save_callback.apply(this, arguments);
-			if(detail_widget.settings.auto_close_on_save) {
-				detail_widget.close();
-			}
-		};
-		var cancel_callback = function() {
-			detail_widget.content.dialog('close');
-		};
 		var buttons = {
-			"{{writeString=widget.save}}": save_button_handler
+			"{{writeString=widget.save}}": this.settings.save_callback
 		};
 		if(this.settings.has_cancel_button) {
-			buttons["{{writeString=widget.cancel}}"] = cancel_callback;
+			buttons["{{writeString=widget.cancel}}"] = this.settings.cancel_callback;
 		}
 		this.content.dialog({
 			title: this.settings.title,
@@ -38,7 +42,7 @@ Widget.types.detail = {
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
 				// TODO: check if is textarea or whatever
-				save_button_handler();
+				detail_widget.settings.save_callback();
 				return false;
 			}
 		}).find('label[for]').bind('click', function() {

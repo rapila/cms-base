@@ -180,8 +180,9 @@ class CriteriaListWidgetDelegate {
 			if(isset($aMetadata['field_name'])) {
 				$sRowDataColumnName = $aMetadata['field_name'];
 			}
-			$sColumnName = @constant("$this->sPeerClassName::".strtoupper($sRowDataColumnName));
-			if($sColumnName !== null) {
+			$sConstant = "$this->sPeerClassName::".strtoupper($sRowDataColumnName);
+			if(defined($sConstant)) {
+				$sColumnName = constant($sConstant);
 				$oCriteria->addAnd($sColumnName, $mRowValue);
 			}
 		}
@@ -197,7 +198,11 @@ class CriteriaListWidgetDelegate {
 	}
 	
 	public function deleteRow($aRowData) {
-		call_user_func(array($this->sPeerClassName, 'doDelete'), $this->criteriaFromRowData($aRowData));
+		$oCriteria = $this->criteriaFromRowData($aRowData);
+		if(method_exists($this->oCriteriaDelegate, 'deleteRow')) {
+			return $this->oCriteriaDelegate->deleteRow($aRowData, $oCriteria);
+		}
+		return call_user_func(array($this->sPeerClassName, 'doDelete'), $oCriteria);
 	}
 	
 	public function rowFromData($aRowData) {

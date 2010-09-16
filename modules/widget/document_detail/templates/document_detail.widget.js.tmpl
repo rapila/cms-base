@@ -2,13 +2,12 @@ Widget.types.document_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget;
+			this.detail_widget = widget.set_instance(this);
 			this.current_detail_id = null;
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=create}}",
 				width: 550,
-				dialogClass: "document_detail",
-				save_callback: this.save.bind(this),
+				dialogClass: "document_detail"
 			});
 			widget.content = this.content;
 			this.content.find("select[name='document_category_id']").prepareWidget();
@@ -35,6 +34,7 @@ Widget.types.document_detail = {
 			};
 			
 			this.uploader = Widget.create('file_upload');
+			console.log('created uploader', uploader);
 			this.uploader.allow_drag_to(document_detail.content, null, function(target) {
 				// console.log(document_detail.current_detail_id, upload_success,upload_error):
 				return {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error};
@@ -104,11 +104,6 @@ Widget.types.document_detail = {
 			}
 			this.detail_widget.set_is_loading(false);
 		});
-	},
-	
-	save: function() {
-		this.saveData(this.content.serializeArrayKV(), this.save_callback);
-		return true;
 	},
 	
 	close: function() {
