@@ -3,7 +3,8 @@ Widget.types.detail = {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
 	
-	open: function(requires_data) {
+	open: function() {
+		 alert('initialize');
 		if(this.has_dialog) {
 			this.content.dialog('open');
 			this.select();
@@ -103,11 +104,9 @@ Widget.types.detail = {
 		if(is_loading) {
 			this.loader.show();
 			this.content.children().css("visibility", "hidden");
-			// this.content.children().hide();
 		} else {
 			this.loader.hide();
 			this.content.children().css("visibility", "visible");
-			// this.content.children().show();
 		}
 	},
 	

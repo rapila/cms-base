@@ -23,11 +23,24 @@ ErrorHandler
 BUG!
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to
+- SVN full access Thomas
+
+Newsletter Plugin
+Entwicklung und Dokumentation von Plugins
+- PHPDocumentor : @package / @subpackage (plugin.newsletter, module.admin)
+	@subpackage requirements: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_tags.subpackage.pkg.html
+- separate Plugin Documentation? mit Liste?
+Newsletter schema und Funktionen
+- 
 
 Priorities
+- strings: uncaught exception prior to initialization on string_detail
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
-- page_detail double loading? and action buttons load issue
+- page_detail double loading on first load? and action buttons load issue
+	pages.admin.js 		// widget.load_page(initial_selection);
+
 - naming convention, functionality and hierarchy of widgets with views, @see documents
+	document_thumbnail_view.js can easily be abstracted for general thumbnail views?
 - document_list search and count_info do not work
 - page_detail language_objects, added one in english, does not appear in german
 - search notify with parameter strings instead of keys
