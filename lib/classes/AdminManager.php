@@ -24,6 +24,10 @@ class AdminManager extends Manager {
 		if(Session::getSession()->isAuthenticated()) {
 			$oUser = Session::getSession()->getUser();
 			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
+			if(isset($_REQUEST['preview']) && $_REQUEST['preview'] == 'true') {
+				//@todo: change to use referring page
+				LinkUtil::redirect(LinkUtil::link(array(), 'PreviewManager'));
+			}
 		}
 	}
 	
