@@ -33,7 +33,7 @@ domain_holder:
   name:   'Mini-CMS'
   email:  'info@mini-cms.ch'
 
-backend:
+admin:
   title: 'CMOS Admin — {{module_name}}'
   inherit_children_enable: true
   delete_pagetree_enable: true

@@ -64,6 +64,9 @@ Widget.types.page_type.types['default'] = {
 			preview_bar.addClass('loading');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(widget) {
+					if(widget.setObjectId) {
+						widget.setObjectId(container.attr('data-object-id'));
+					}
 					preview_bar.removeClass('loading').addClass('editing');
 					container.data('edit_widget', widget);
 					container.empty().append(widget._element);
@@ -99,6 +102,9 @@ Widget.types.page_type.types['default'] = {
 		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
 			Widget.createWithElement(result[0], function(widget) {
 				var content = widget._element;
+				if(widget.setObjectId) {
+					widget.setObjectId(item_to_edit.attr('data-object-id'));
+				}
 				content.dialog({buttons: {
 					'{{writeString=save}}': function() {
 						widget.save(function() {

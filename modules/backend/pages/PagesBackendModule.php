@@ -24,8 +24,8 @@ class PagesBackendModule extends BackendModule {
 			}
 			if($this->oPage !== null) {
 				BackendManager::setCurrentPage($this->oPage);
-				$this->bMayDeletePageTree = Settings::getSetting('backend', 'delete_pagetree_enable', false) === true;
-				$this->bMayDeleteMoveOrphans = Settings::getSetting('backend', 'inherit_children_enable', false) === true;
+				$this->bMayDeletePageTree = Settings::getSetting('admin', 'delete_pagetree_enable', false) === true;
+				$this->bMayDeleteMoveOrphans = Settings::getSetting('admin', 'inherit_children_enable', false) === true;
 				return;
 			}
 		}
@@ -180,14 +180,14 @@ class PagesBackendModule extends BackendModule {
 			$sConfirmText = null;
 			$sOnAction = 'onsubmit';
 			if(Session::getSession()->getUser()->mayDelete($this->oPage)) {
-				if($this->oPage->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
+				if($this->oPage->hasChildren() && !Settings::getSetting('admin','delete_pagetree_enable', false)) {
 					$sAction = $this->oPage->hasChildren() ? $this->link($this->oPage->getId()) : '';
 					$sConfirmText = StringPeer::getString('page.delete_has_children', null, null, array('name' => $this->oPage->getPageTitle()));
 					$sOnAction = 'onclick';
 					$sDeleteTemplate = "delete_button_inactive";
-				} elseif($this->oPage->hasChildren() && Settings::getSetting('backend','inherit_children_enable', false)) {
+				} elseif($this->oPage->hasChildren() && Settings::getSetting('admin','inherit_children_enable', false)) {
 					$sConfirmText = 'Diese Seite '.$this->oPage->getLinkText().' hat Kinder, diese werden dem Elternelement übergeben';
-					if(Settings::getSetting('backend','delete_pagetree_enable', false)) {
+					if(Settings::getSetting('admin','delete_pagetree_enable', false)) {
 						$sConfirmText = 'Diese Seite '.$this->oPage->getLinkText().' hat Kinder!';
 					}
 				}
@@ -200,7 +200,7 @@ class PagesBackendModule extends BackendModule {
 				$oDeleteTemplate->replaceIdentifier("delete_label", StringPeer::getString('page.delete_label'));
 				$aDeleteOptions = array();
 				if (Session::getSession()->getUser()->getIsAdmin()) {
-					if (Settings::getSetting('backend','delete_pagetree_enable', false)) {
+					if (Settings::getSetting('admin','delete_pagetree_enable', false)) {
 						$aDeleteOptions[self::ON_DELETE_CHILDREN_INHERIT] = "vererben!";
 						$aDeleteOptions[self::ON_DELETE_CHILDREN_DELETE]	= "ganzer Ast löschen!";
 						if($this->oPage->hasChildren()) { 
@@ -247,7 +247,7 @@ class PagesBackendModule extends BackendModule {
 		$oTemplate->replaceIdentifier("is_folder", $sIsFolder, null, Template::NO_HTML_ESCAPE);
 		
 		// page properties, if are set in backend.yml or if they exist
-		if(Settings::getSetting('backend', 'page_properties_allow', false) || (count($this->oPage->getPageProperties()) > 0)) {
+		if(Settings::getSetting('admin', 'page_properties_allow', false) || (count($this->oPage->getPageProperties()) > 0)) {
 			$oPropertyTemplate = $this->constructTemplate("properties");
 			
 			//Properties

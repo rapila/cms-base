@@ -51,6 +51,9 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	public function render() {
+		if(!$this->bIsNotFound) {
+			Session::getSession()->setAttribute('persistent_page_id', self::$CURRENT_PAGE->getId());
+		}
 		parent::render();
 		Session::getSession()->setLanguage($this->sOldSessionLanguage);
 	}

@@ -15,7 +15,8 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	}
 	
 	public function getWidget() {
-		return WidgetModule::getWidget('generic_frontend_module', null, $this, WidgetModule::getWidget('rich_text', null, $this->widgetData()));
+		$oRichTextWidget = WidgetModule::getWidget('rich_text', null, $this->widgetData());
+		return WidgetModule::getWidget('generic_frontend_module', null, $this, $oRichTextWidget);
 	}
 	
 	public function widgetData() {

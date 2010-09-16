@@ -219,7 +219,7 @@ class DocumentsBackendModule extends BackendModule {
 
   private function mayNotDelete() {
     return !Session::getSession()->getUser()->getIsAdmin()
-            && Settings::getSetting('backend', 'document_delete_allow_from_creator_only', false)
+            && Settings::getSetting('admin', 'document_delete_allow_from_creator_only', false)
             && Session::getSession()->getUserId() !== $this->oDocument->getOwnerId()
             && UserPeer::userExists($this->oDocument->getOwnerId());
   }

@@ -12,7 +12,7 @@ class GetLinkArrayFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 
-		$this->aDisabledSections = Settings::getSetting('backend', 'link_array_disabled', array());
+		$this->aDisabledSections = Settings::getSetting('admin', 'link_array_disabled', array());
 		$this->aDisabledSections = is_array($this->aDisabledSections) ? $this->aDisabledSections : array();
 	}
 		

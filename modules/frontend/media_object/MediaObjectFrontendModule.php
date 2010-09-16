@@ -108,7 +108,6 @@ class MediaObjectFrontendModule extends FrontendModule {
 			if(!$sId && !$_POST['mimetype'][$iKey]) {
 				$_POST['mimetype'][$iKey] = 'application/octet-stream';
 			}
-			ErrorHandler::log($_POST);
 			$aResults[] = array("document_id" => $sId, 'url' => $sSrc, "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey], "mimetype" => $_POST["mimetype"][$iKey]);
 		}
 		return serialize($aResults);

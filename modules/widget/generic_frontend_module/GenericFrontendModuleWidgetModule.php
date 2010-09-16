@@ -15,6 +15,12 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 			$this->oInternalWidget = WidgetModule::getWidget($mInternalWidget);
 		}
 	}
+		
+	public function setObjectId($iObjectId) {
+		if(method_exists($this->oInternalWidget, 'setObjectId')) {
+			$this->oInternalWidget->setObjectId($iObjectId);
+		}
+	}
 	
 	public function currentData() {
 		return $this->oFrontendModule->widgetData();

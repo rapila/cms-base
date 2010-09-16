@@ -9,7 +9,7 @@ class FrontendManager extends Manager {
 	
 	protected $oTemplate;
 	private $aPathRequestParams;
-	private $bIsNotFound;
+	protected $bIsNotFound;
 	protected $oPageType;
 	private $oRootNavigationItem;
 	
@@ -130,12 +130,6 @@ class FrontendManager extends Manager {
 		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
 		
-		/**
-		* @todo check & discuss experimental usepath_handled_by module
-		*/
-		if(in_array(self::USEPATH_HANDLED_BY_MODULE, $aAllowedParams)) {
-			$bParamsNotAllowed = false;
-		}
 		$this->bIsNotFound = $this->bIsNotFound || $bParamsNotAllowed;
 		
 		if($this->bIsNotFound) {

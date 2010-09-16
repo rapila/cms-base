@@ -356,7 +356,7 @@ class Page extends BasePage {
 	}
 
 	public function delete(PropelPDO $con = null) {
-		if($this->hasChildren() && !Settings::getSetting('backend','delete_pagetree_enable', false)) {
+		if($this->hasChildren() && !Settings::getSetting('admin','delete_pagetree_enable', false)) {
 			throw new Exception('Pages with children are not allowed to be deleted', self::DELETE_NOT_ALLOWED_CODE);
 		}
 		return parent::delete($con);

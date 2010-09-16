@@ -21,7 +21,7 @@ class RichtextUtil {
 		self::$RICHTEXT_INDEX++;
 		
 		if($aSettings === null) {
-			$aSettings = Settings::getSetting('backend', 'text_module', array());
+			$aSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aSettings = $aSettings;
 	}

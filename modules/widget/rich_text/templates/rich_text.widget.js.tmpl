@@ -20,6 +20,8 @@ Widget.types.rich_text = {
 	prepare: function() {
 		this._element.text(this.getModuleContents());
 		var textarea = this._element.get(0);
+		this.settings.contentsCss = this.getCssUrls();
+		this.settings.stylesSet = this.getStyles();
 		var instance = this.instance = CKEDITOR.replace(textarea, this.settings);
 		var picker_session = this._element.attr('data-widget-picker-session');
 		if(picker_session) {

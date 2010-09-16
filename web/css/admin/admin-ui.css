@@ -360,7 +360,6 @@ div.container {
 .page_detail .filled_modules ol.template-container {
   display: block;
   min-height: 100px !important;
-  width: 190px !important;
   border: 1px solid #797979 !important;
 }
 .page_detail .available_modules li {
@@ -371,6 +370,7 @@ div.container {
   border-radius: 3px;
   border: 1px solid #999999;
   margin: 2px;
+  text-align: left;
 }
 .page_detail .filled_modules ol.template-container li {
   list-style: none inside;
@@ -380,6 +380,7 @@ div.container {
   border-radius: 3px;
   border: 1px solid #999999;
   margin: 2px;
+  text-align: left;
 }
 .page_detail .available_modules li {
   background-color: #f2f2f2;

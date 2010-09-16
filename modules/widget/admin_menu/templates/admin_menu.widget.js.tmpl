@@ -1,11 +1,24 @@
 Widget.types.admin_menu = {
 	prepare: function() {
-		this.button_prototype = jQuery('{{includeTemplate=menu_button.incl}}');
+		this.button_prototype = jQuery.parseHTML('{{includeTemplate=menu_button.incl}}');
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
 		this.activity_indicator = jQuery();
 		var admin_menu = this;
+		
+		if(window.PreviewInterface) {
+			var maximizer = jQuery.parseHTML('{{includeTemplate=maximizer.incl}}').hide();
+			maximizer.click(function() {
+				maximizer.hide();
+				admin_menu.show();
+			});
+			maximizer.appendTo(document.body);
+			this.addButton('minimize', function() {
+				admin_menu.hide();
+				maximizer.show();
+			});
+		}
 		jQuery.each(this.getModuleConfig(), function(i, config) {
 			var is_right = (i === 'right');
 			jQuery.each(config, function(i, config_item) {
@@ -60,17 +73,13 @@ Widget.types.admin_menu = {
 	},
 	
 	show: function() {
-		if(window.AdminInterface) {
-			return this._element.show();
-		}
 		this._element.show();
-		// this._element.show('slide', {direction: 'up'});
+		if(window.PreviewInterface) {
+			jQuery('html').css({marginTop: '30px'});
+		}
 	},
 	
 	hide: function() {
-		if(window.AdminInterface) {
-			return this._element.hide();
-		}
 		this._element.hide();
 	},
 	

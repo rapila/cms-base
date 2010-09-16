@@ -58,7 +58,7 @@ Widget.types.image_picker = {
 						picker_object.list_element.dialog('close');
 					});
 				}
-				this.list_element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600});
+				this.list_element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
 			});
 			return;
 		}
