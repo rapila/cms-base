@@ -73,8 +73,6 @@ Widget.types.page_detail = {
 	
 	load_page: function(page_id) {
 		this.fire('loading', page_id);
-		var page_detail = jQuery('form.page_detail');
-		page_detail.hide();
 		this.content_has_been_loaded = false;
 		this.setPageId(page_id);
 		this.fill_data();
@@ -84,7 +82,6 @@ Widget.types.page_detail = {
 		if(active_accordion_title.next().is('.contents_container')) {
 			this.load_content(contents_container);
 		}
-		page_detail.show();
 		this.fire('loaded', page_id);
 	},
 
@@ -191,6 +188,10 @@ Widget.types.page_detail = {
 			page_properties_header.hide();
 		}
 		page_properties_container.hide();
+	},
+	
+	current_page_name: function() {
+		return this._element.find("input[name='name']").val();
 	},
 	
 	delete_page: function(callback) {

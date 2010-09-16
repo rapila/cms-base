@@ -10,14 +10,16 @@ jQuery(document).ready(function() {
 		//Add event handlers in intermediate callback
 		page_detail = widget;
 		page_detail.handle('loading', function() {
+			Widget.load();
 			info_bar_buttons.hide();
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
 			if(permission_widget.getMayEditPage(page_detail.current_page_id)) {
-				info_bar_buttons.show();
 				page_detail.enable_input();
+				info_bar_buttons.show();
 			}
+			Widget.end_load();
 		});
 		page_detail.handle('saved', function(event) {
 			var page_id = page_detail.current_page_id;
@@ -25,6 +27,7 @@ jQuery(document).ready(function() {
 			page_tree.update_element(element, page_id);
 		});
 	}, function(widget) {
+		widget.disable_input();
 		AdminInterface.content.append(widget._element);
 		
 		// widget.load_page(initial_selection);
@@ -41,7 +44,12 @@ jQuery(document).ready(function() {
 		page_detail.enable_input();
 	})).add(
 	jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
-		page_detail.delete_page(page_tree.remove_element_with_data.bind(page_tree));
+		Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, page_detail.current_page_name()), function(confirmed) {
+			if(confirmed) {
+				page_detail.delete_page(page_tree.remove_element_with_data.bind(page_tree));
+			}
+		});
+		
 	}));
 	
 	//Info bar stuff
