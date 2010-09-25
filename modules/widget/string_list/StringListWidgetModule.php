@@ -36,10 +36,10 @@ class StringListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.string.string_key');
 				break;
 			case 'text':
-				$aResult['heading'] = StringPeer::getString('widget.string.string_text');
+				$aResult['heading'] = StringPeer::getString('widget.string.string_text').' ('.AdminManager::getContentLanguage().')';
 				break;
 			case 'languages_available':
-				$aResult['heading'] = StringPeer::getString('widget.language');
+				$aResult['heading'] = StringPeer::getString('widget.languages_filled');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

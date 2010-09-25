@@ -34,6 +34,10 @@ Newsletter schema und Funktionen
 - 
 
 Priorities
+- svn/git wiki
+- schema.sql missing in base
+- page_detail: accordion should open ? always content
+- document_list: update_row on d&d detail > file info
 - strings: create new sidebar_changed? implemented
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 	delete, search & count_info don't  work
@@ -50,6 +54,9 @@ Priorities
 - user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
 	Roles can be "empty" ie defined by module, or page rights, are always single intentional
 - cmos_mini projects file_upload
+
+overall Details
+- activity indicator does not work properly, on delete for example (stack?)
 
 PageDetail
 - language tabs

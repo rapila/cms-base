@@ -13,11 +13,25 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$oLanguage = LanguagePeer::retrieveByPK($this->sLanguageId);
 		$aResult = $oLanguage->toArray();
 		$aResult['LanguageName'] = $oLanguage->getLanguageName();
+		$sLanguageKey = LanguagePeer::STATIC_STRING_NAMESPACE.'.'.$this->sLanguageId;
+		if(StringPeer::staticStringExists($sLanguageKey, $this->sLanguageId) === false) {
+			$sMessage = StringPeer::getString('widget.check_static_strings', AdminManager::getContentLanguage(), 'Please check strings', $aParameters= array('string_key' => $sLanguageKey));
+			$aResult['LanguageStringMissing'] = $sMessage;
+		}
 		return $aResult;
 	}
 	
+	private function validate($aLanguageData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aLanguageData);
+		$oFlash->checkForLength('language_id', 2, 2, 'widget.language_id');
+		$oFlash->finishReporting();
+	}
+
+	
 	public function saveData($aLanguageData) {
-		if($aLanguageData !== $this->sLanguageId) {
+		// string key is changed if a existing Language string_key is changed
+		if($aLanguageData['language_id'] !== $this->sLanguageId) {
 			$this->sLanguageId = $aLanguageData['language_id'];
 		}
 		$oLanguage = LanguagePeer::retrieveByPK($this->sLanguageId);
@@ -25,6 +39,11 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 			$oLanguage = new Language();
 			$oLanguage->setId($aLanguageData['language_id']);
 		}
+		$this->validate($aLanguageData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+
 		$oLanguage->setIsActive(isset($aLanguageData['is_active']));
 		return $oLanguage->save();
 	}

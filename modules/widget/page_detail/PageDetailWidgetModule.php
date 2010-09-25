@@ -56,6 +56,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['HasLanguageObjectsFilled'] = $oPageString->hasLanguageObjectsFilled($sLanguageId);
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), $sLanguageId));
 
     return $aResult;
 	}

@@ -58,6 +58,10 @@ class StringPeer extends BaseStringPeer {
 		return null;
 	}
 	
+	public static function staticStringExists($sKey, $sLanguageId) {
+		return self::getStaticString($sKey, $sLanguageId) !== null;
+	}
+	
 	public static function getString($sKey, $sLanguageId=null, $sDefaultValue=null, $aParameters=null, $bMayReturnTemplate=false, $iFlags=0) {
 		if(!is_string($sDefaultValue)) {
 			$sDefaultValue = "Translation missing: $sKey";
@@ -141,11 +145,14 @@ EOT;
 		$oCriteria->add($oSearchCriterion);
 	}
 
-	public static function getStringsByStringKey($sStringKey, $sExcludeLang=true) {
+	public static function getStringsByStringKey($sStringKey, $sExcludeLang=true, $bOrderByLanguage=false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::STRING_KEY, $sStringKey);
 		if($sExcludeLang) {
 			$oCriteria->add(self::LANGUAGE_ID, $sExcludeLang, Criteria::NOT_EQUAL);
+		}
+		if($bOrderByLanguage) {
+			$oCriteria->addAscendingOrderByColumn(self::LANGUAGE_ID);
 		}
 		return self::doSelect($oCriteria);
 	}

@@ -1,8 +1,9 @@
 <form>
-	<div class="status_section">
+	<div class="status_section" style="width:10em;">
 		<input type="checkbox" name="is_active" value="1" />
 		<label for="is_active">{{writeString=is_active}}</label><br />
 	</div>
-	<label for="language_id">{{writeString=language}}</label>
-	<input type="text" name="language_id" class="ui-widget-content" /><br />
+	<label for="language_id">{{writeString=widget.language_id_detail_label}}</label>
+	<input type="text" name="language_id" class="ui-widget-content" maxlegth="2" style="width:2em;"/><br class="validate-widget.language_id" />
+	<div class="check_static_strings" style="display:none;"></div>
 </form>

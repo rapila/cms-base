@@ -1,8 +1,8 @@
 <form class="page_detail">
 	<div class="status_section">
 	<h3 class="status">Status</h3>
-		<label style="margin: 1em 1em 1em .5em">Seitenlink</label><a class="page_href" style="font-family:Courier;"></a>
-		<label for="name" style="margin-left:4em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" /><br />
+		<label for="name" style="padding-left:.4em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" />
+		<a class="page_href" style="font-family:Courier;"></a><br />
 		<input type="checkbox" name="global_is_inactive" value="1" /><label class="for_checkbox" for="global_is_inactive">{{writeString=widget.page.global_active}}</label> 
 		<input type="checkbox" name="is_hidden" value="1" /><label for="is_hidden" class="for_checkbox">{{writeString=widget.page.hidden}}</label> 
 		<input type="checkbox" name="is_protected" value="1" /><label for="is_protected" class="for_checkbox">{{writeString=widget.page.protected}}</label> 
@@ -10,7 +10,7 @@
 	</div>
 	<div class="accordion">
 		<h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
-		<div class="inner_wrapper">
+		<div class="accordion_content">
 			<div class="group_label">
 				<label for="template_name">{{writeString=widget.page.template_name}}</label>
 				<select name="template_name" class="ui-widget-content input_short"></select>
@@ -20,14 +20,14 @@
 				<select name="page_type" class="ui-widget-content input_short"></select>
 			</div>
 		</div>
-		<h3 class="page_properties"><a href="#">{{writeString=widget.page.label.properties}}</a></h3>
-		<div class="inner_wrapper page_properties">
+		<h3 class="page_properties" style="display:none;"><a href="#">{{writeString=widget.page.label.properties}}</a></h3>
+		<div class="page_properties" style="display:none;">
 		</div>
-		<h3><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
-		<div class="inner_wrapper contents_container">		
+		<h3 class="content_tab"><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
+		<div class="contents_container">		
 		</div>
-		<h3 class="page_references"><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
-		<div class="inner_wrapper page_references">
+		<h3 class="page_references" style="display:none;"><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
+		<div class="page_references" style="display:none;">
 		</div>
-</div>	
+	</div>	
 </form>

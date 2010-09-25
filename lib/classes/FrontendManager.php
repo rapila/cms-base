@@ -30,7 +30,7 @@ class FrontendManager extends Manager {
 		}
 		$this->oRootNavigationItem = PageNavigationItem::navigationItemForPage($oRootPage);
 		$oMatchingNavigationItem = $this->oRootNavigationItem;
-		 
+
 		while(self::hasNextPathItem()) {
 			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
 			if($oNextNavigationItem !== null) {
@@ -64,7 +64,6 @@ class FrontendManager extends Manager {
 				break;
 			}
 		}
-		
 		
 		// See if anything has changed
 		if(self::$CURRENT_NAVIGATION_ITEM !== $oMatchingNavigationItem && self::$CURRENT_NAVIGATION_ITEM instanceof PageNavigationItem) {

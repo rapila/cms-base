@@ -2,7 +2,8 @@ jQuery(document).ready(function() {
 	// init main content
 	AdminInterface.content.find('table.string_list').prepareWidget(function(string_list) {
 		// init sidebar
-		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
+
+		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 			var initial_selection = "{{writeRequestValue=name_space}}";
 			if(initial_selection) {
 				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
@@ -19,10 +20,13 @@ jQuery(document).ready(function() {
 				string_list.setOption('name_space', name_space);
 				string_list.reload();
 			});
+			
+			sidebar.handle('list_updated', function(event) {
+				
+			});
 		
 			//Add handlers for changed namespaces
 			string_list.handle('row.updated row.deleted', function(event, returnedResult) {
-				console.log(arguments);
 				if(returnedResult.sidebar_changed) {
 					sidebar.reload();
 				}
@@ -36,6 +40,10 @@ jQuery(document).ready(function() {
 					widget.open();
 					widget.save_callback = function(result, error) {
 						string_list.reload();
+						if(result.sidebar_changed) {
+							console.log('sidebar', sidebar);
+							// sidebar.reload();
+						}
 					};
 				});
 			}, 'n', true).add_search_input("{{writeString=search.strings}}", function(search) {

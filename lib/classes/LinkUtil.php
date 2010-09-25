@@ -89,8 +89,10 @@ class LinkUtil {
 			$bIncludeLanguage = call_user_func(array($mManager, 'shouldIncludeLanguageInLink'));
 		}
 
-		if($bIncludeLanguage) {
+		if($bIncludeLanguage === true) {
 			array_unshift($mPath, Session::language());
+		} elseif(is_string($bIncludeLanguage)) {
+			array_unshift($mPath, $bIncludeLanguage);
 		}
 
 		foreach($mPath as $iKey => $sValue) {
