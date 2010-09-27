@@ -29,9 +29,7 @@ Widget.types.language_detail = {
 			this.content.find("input[name='is_active']").attr('checked', language_data.IsActive);
 			this.detail_widget.set_title(this.detail_widget.settings.title = language_data.LanguageName);
 			if(language_data.LanguageStringMissing) {
-				var message = this.detail_widget.content.find('div.check_static_strings').text(language_data.LanguageStringMissing);
-				console.log(message);
-				message.show();
+				this.detail_widget.content.find('div.check_static_strings').text(language_data.LanguageStringMissing).show();
 			}
 		});
 	},
