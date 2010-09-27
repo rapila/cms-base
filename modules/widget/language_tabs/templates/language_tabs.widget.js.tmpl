@@ -9,7 +9,8 @@ Widget.types.language_tabs = {
 				if(language_tabs.initial_tab === null) {
 					language_tabs.initial_tab = {tab: jQuery(ui.tab), panel: jQuery(ui.panel)};
 				}
-				tab.data('language_id', current_language);
+				var class_tab = jQuery.inArray(current_language,language_tabs.settings.active_languages) != -1 ? 'tab_content_active' : 'tab_content_inactive';
+				tab.data('language_id', current_language).addClass(class_tab);
 			},
 			
 			show: function(event, ui) {
@@ -63,5 +64,9 @@ Widget.types.language_tabs = {
 	
 	set_needs_update: function() {
 		
+	},
+	
+	settings: {
+		active_languages: []
 	}
 };

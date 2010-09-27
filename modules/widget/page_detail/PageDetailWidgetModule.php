@@ -22,8 +22,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 		
 		// addition related page fields
-		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));
-		
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));	
+			
 		// page properties are displayed if added to template
 		try {
 			$mAvailableProperties = $this->getAvailablePageProperties($oPage);
@@ -42,6 +42,17 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['page_references'] = $mReferences;
 		}
 		return $aResult;
+	}
+	
+	public function getActiveLanguages() {
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$aActiveStrings = array();
+		foreach($oPage->getPageStrings() as $oPageString) {
+			if($oPageString->getIsInactive() === false) {
+				$aActiveStrings[] = $oPageString->getLanguageId();
+			}
+		}
+		return $aActiveStrings;
 	}
 	
 	public function getLanguageData($sLanguageId) {
