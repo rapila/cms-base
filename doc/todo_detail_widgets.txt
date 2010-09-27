@@ -1,0 +1,4 @@
+Detail widgets
+
+- discuss generic rights rights check for module actions like 
+	saveData, createPage, deletePage, discuss naming convention, pro and cons

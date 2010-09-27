@@ -1,5 +1,32 @@
 AKTUELL todo design
 *****************************************************************************************************************
+Notiz Treffen 27. September 2010 HerrmannGermann
+- Detail designs!
+- PageDetail
+	- Buttons
+	- Filled Containers
+- Newsletter Plugin, Dashboard!
+  wir brauchen ein Dashboard, das Context Sensitive ist. Newsletter sollte, wie auch andere Module und einen Link haben. Der Rest wie Subscriber_groups rsp. Subscribers, import etc.
+- Drag&Drop Icons/Highlight
+- AdminMenu select handling
+- UserDetail Groups Roles
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Notiz Treffen 13. August 2010 HerrmannGermann
 - Pages Detail, Inhalt, Sprache
 - on edit > preview

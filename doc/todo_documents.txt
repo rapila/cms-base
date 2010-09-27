@@ -1,0 +1,3 @@
+Documents
+- clean up views, make thumbnail view work in the same way (same criteria delegate)
+- edit, drag and drop (if a document category is chosen)

@@ -34,13 +34,15 @@ Newsletter schema und Funktionen
 - 
 
 Priorities
+- Dashboard Context Widget? > $this->sContext = Manager::usePath(); > getWidget->showContextTasks()
 - svn/git wiki
-- schema.sql missing in base
+- schema.sql missing in base, handling all
 - page_detail: accordion should open ? always content
 - document_list: update_row on d&d detail > file info
 - strings: create new sidebar_changed? implemented
 - document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
 	delete, search & count_info don't  work
+- checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)
 
 - naming convention, functionality and hierarchy of widgets with views, @see documents
 	document_thumbnail_view.js can easily be abstracted for general thumbnail views?

@@ -7,8 +7,8 @@
 
 .ui-loading {
 	background: transparent url('../../images/preview/loader.gif') no-repeat scroll top left;
-	min-width: 24px;
-	min-height: 24px;
+	min-width: 17px;
+	min-height: 17px;
 }
 
 .filled-container {
@@ -25,21 +25,20 @@
 
 .filled-container:hover,
 .filled-container.editing {
-	outline: 2px solid #C1C1C1;
+	outline: 1px solid #C1C1C1;
 }
 
 .preview_bar {
+	padding: 1px;
 	display: block;
 	position: absolute;
 	background-color: #C1C1C1;
-	padding: .5em;
 	z-index: 100;
 }
 
 .preview_bar .ui-icon {
 	padding: 1px;
 	border: 1px solid white;
-	margin-right: 2px;
 	cursor: pointer;
 }
 

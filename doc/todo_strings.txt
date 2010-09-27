@@ -1,0 +1,3 @@
+StringDetail
+
+- language_tabs highlight/update active language
