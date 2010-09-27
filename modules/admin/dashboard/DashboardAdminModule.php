@@ -5,14 +5,21 @@
 class DashboardAdminModule extends AdminModule {
 		
 	private $oModuleListWidget;
+	private $sContext;
 	
 	public function __construct() {
 		$this->oModuleListWidget = new ListWidgetModule();
 		$this->oModuleListWidget->setDelegate($this);
+		$this->sContext = Manager::usePath();
 	}
 	
 	public function sidebarContent() {
 		return $this->oModuleListWidget->doWidget();
+	}
+	
+	public function mainContent() {
+		// display context dashboard widget, make default actions if exist, like context modules (group modules)
+		// @see dashboard_todo.txt
 	}
 	
 	public function getColumnIdentifiers() {
@@ -51,9 +58,6 @@ class DashboardAdminModule extends AdminModule {
 			$iRowCount = count($aResult);
 		}
 		return array_splice($aResult, $iRowStart, $iRowCount);
-	}
-
-	public function mainContent() {
 	}
 	
 	public function usedWidgets() {
