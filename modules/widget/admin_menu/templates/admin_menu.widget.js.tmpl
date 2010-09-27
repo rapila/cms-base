@@ -7,18 +7,18 @@ Widget.types.admin_menu = {
 		this.activity_indicator = jQuery();
 		var admin_menu = this;
 		
-		if(window.PreviewInterface) {
-			var maximizer = jQuery.parseHTML('{{includeTemplate=maximizer.incl}}').hide();
-			maximizer.click(function() {
-				maximizer.hide();
-				admin_menu.show();
-			});
-			maximizer.appendTo(document.body);
-			this.addButton('minimize', function() {
-				admin_menu.hide();
-				maximizer.show();
-			});
-		}
+		// if(window.PreviewInterface) {
+		// 	var maximizer = jQuery.parseHTML('{{includeTemplate=maximizer.incl}}').hide();
+		// 	maximizer.click(function() {
+		// 		maximizer.hide();
+		// 		admin_menu.show();
+		// 	});
+		// 	maximizer.appendTo(document.body);
+		// 	this.addButton('minimize', function() {
+		// 		admin_menu.hide();
+		// 		maximizer.show();
+		// 	});
+		// }
 		jQuery.each(this.getModuleConfig(), function(i, config) {
 			var is_right = (i === 'right');
 			jQuery.each(config, function(i, config_item) {
@@ -166,7 +166,8 @@ Widget.types.admin_menu = {
 				return null;
 			}
 			result.callback = function() {
-				window.location.href = module_info.link;
+				var link = module != 'dashboard' ? module_info.link : module_info.link+"/"+AdminInterface.current_admin_module;
+				window.location.href = link;
 			};
 			result.text = module_info.title;
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
@@ -198,7 +199,7 @@ Widget.types.admin_menu = {
 		},
 		
 		logo: function() {
-			return {element: jQuery("<span/>").text('@ cmos').attr('class', "cmos_logo")};
+			return {element: jQuery("<span/>").text('@ rapila').attr('class', "cmos_logo")};
 		},
 		
 		preview: function() {
@@ -241,6 +242,6 @@ Widget.types.admin_menu = {
 			return {text: this.getLoggedInName(), callback: function() {
 				window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
 			}};
-		},
+		}
 	}
 };
