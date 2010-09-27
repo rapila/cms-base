@@ -191,7 +191,6 @@ Widget.types.list = {
 			if(!error) {
 				row.remove();
 				this.fire('row.deleted', result);
-				console.log(this);
 			} else {
 				Widget.notifyUser('error', error.message);
 			}
