@@ -62,6 +62,15 @@ Widget.types.language_tabs = {
 		return result;
 	},
 	
+	all_tabs: function() {
+		var result = {};
+		this._element.find('.ui-tabs-nav li a').each(function() {
+			var tab = jQuery(this);
+			result[tab.data('language_id')] = tab;
+		});
+		return result;
+	},
+	
 	set_needs_update: function() {
 		
 	},

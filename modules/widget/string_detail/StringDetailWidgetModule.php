@@ -21,6 +21,17 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		return $oString->toArray();
 	}
 	
+	public function getActiveLanguages() {
+		if($this->sStringId === null) {
+			return null;
+		}
+		$aResult = array();
+		foreach(StringPeer::getStringsByStringKey($this->sStringId) as $oString) {
+			$aResult[] = $oString->getLanguageId();
+		}
+		return $aResult;
+	}
+	
 	public function getTextFor($sLanguageId) {
 		$oString = StringPeer::retrieveByPK($sLanguageId, $this->sStringId);
 		if($oString === null) {

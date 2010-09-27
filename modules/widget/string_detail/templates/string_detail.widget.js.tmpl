@@ -24,6 +24,9 @@ Widget.types.string_detail = {
 	
 	fill_data: function() {
 		var string_detail = this;
+		// get active strings and make sure the correct ones are highlighted
+		var active_languages = string_detail.getActiveLanguages();		
+		
 		this.getStringData(function(string_data) {
 			this.content.find("input[name='string_key']").val(string_data.StringKey);
 			this.detail_widget.set_title(string_data.StringKey);
@@ -31,6 +34,16 @@ Widget.types.string_detail = {
 		if(!this.language_tabs) {
 			this.init_content();
 		} else {
+			jQuery.each(this.language_tabs.all_tabs(), function(language_id, tab) {
+				console.log(language_id, active_languages, jQuery.inArray(language_id,active_languages) != -1);
+				if(jQuery.inArray(language_id,active_languages) != -1) {
+					tab.addClass('tab_content_active');
+					tab.removeClass('tab_content_inactive');
+				} else {
+					tab.addClass('tab_content_inactive');
+					tab.removeClass('tab_content_active');
+				}
+			});			
 			jQuery.each(this.language_tabs.all_panels(), function(language_id, panel) {
 				panel.find('textarea').val(string_detail.getTextFor(language_id));
 			});
