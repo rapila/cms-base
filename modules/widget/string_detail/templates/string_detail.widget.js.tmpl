@@ -35,7 +35,6 @@ Widget.types.string_detail = {
 			this.init_content();
 		} else {
 			jQuery.each(this.language_tabs.all_tabs(), function(language_id, tab) {
-				console.log(language_id, active_languages, jQuery.inArray(language_id,active_languages) != -1);
 				if(jQuery.inArray(language_id,active_languages) != -1) {
 					tab.addClass('tab_content_active');
 					tab.removeClass('tab_content_inactive');

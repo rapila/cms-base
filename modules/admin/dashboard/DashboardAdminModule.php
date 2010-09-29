@@ -5,21 +5,21 @@
 class DashboardAdminModule extends AdminModule {
 		
 	private $oModuleListWidget;
-	private $sContext;
+	private $oDashboardTasks;
 	
 	public function __construct() {
 		$this->oModuleListWidget = new ListWidgetModule();
 		$this->oModuleListWidget->setDelegate($this);
-		$this->sContext = Manager::usePath();
+		$this->oDashboardTasks = new DashboardTasksWidgetModule();
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', Manager::usePath());
 	}
 	
 	public function sidebarContent() {
-		return $this->oModuleListWidget->doWidget();
+		// return $this->oModuleListWidget->doWidget();
 	}
 	
 	public function mainContent() {
-		// display context dashboard widget, make default actions if exist, like context modules (group modules)
-		// @see dashboard_todo.txt
+		return $this->oDashboardTasks->doWidget();
 	}
 	
 	public function getColumnIdentifiers() {

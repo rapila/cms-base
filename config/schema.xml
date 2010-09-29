@@ -211,6 +211,7 @@
 	<column name="is_private" type="boolean" size="1" default="0" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
+	<column name="sort" type="integer" />
 	<column name="data" type="blob" lazyLoad="true" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />

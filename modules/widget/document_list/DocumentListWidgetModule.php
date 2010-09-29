@@ -46,7 +46,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
+		return array('id', 'name', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -54,6 +54,9 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 		switch($sColumnIdentifier) {
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('name');
+				break;
+			case 'sort':
+				$aResult['heading'] = StringPeer::getString('widget.sort');
 				break;
 			case 'file_info':
 				$aResult['heading'] = StringPeer::getString('file.info');

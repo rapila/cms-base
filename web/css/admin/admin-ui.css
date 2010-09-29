@@ -51,7 +51,7 @@
   font-family: Arial;
   margin-top: 1em;
   padding-right: 2em;
-  width: 16em;
+  width: 16.2em;
   float: right;
   border-left: 1px solid #f2f2f2;
   padding: 0 1em;
@@ -197,8 +197,7 @@ button.ui-button.ui-state-default {
 #admin_sidebar > ol.ui-tree li.ui-state-active li.ui-state-hover { background-color: #728697; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active { background-color: #728697; }
 #admin_sidebar li.ui-state-active { color: white; }
-.ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
-.ui-widget-content .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
+#admin_sidebar .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
 #admin_sidebar span.sidebar_input_save {
   display: none;
   height: 16px;
@@ -365,17 +364,27 @@ input.ui-widget-content.autowidth { width: auto !important; }
 .page_detail .filled_modules ol.template-container li.language_object_emty { border-style: dotted; }
 .page_detail div.ui-widget-content { border: 0; }
 .ui-icon-trash.delete_inactive { background-image: url(''); }
-.ui-state-droppable {
+#admin_sidebar .ui-state-droppable {
   border: 0 solid #b8d600;
   background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
   color: #5b595b;
   cursor: pointer;
 }
-.ui-widget-content .ui-state-droppable {
-  border: 0 solid #b8d600;
-  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
-  color: #5b595b;
+.document_detail .preview {
+  margin-left: -1px;
+  border: 1px dashed #dddddd;
+  background-color: #fbfbfb;
+}
+.document_detail .ui-state-droppable .preview {
+  border: 1px solid #b8d600;
   cursor: pointer;
+}
+.document_detail .preview .droppable_info {
+  display: block;
+  line-height: 1.6em;
+  min-height: 7em;
+  padding: 2em 1em;
+  color: #bebebe;
 }
 .ui-state-droppable a {
   color: #5b595b;
@@ -394,6 +403,15 @@ table.ui-list td.file_info {
   text-align: right;
   padding-right: 2em;
 }
+tr.ui-list-headrow th.sort {
+  text-align: right;
+  padding-right: 2em;
+}
+table.ui-list td.sort {
+  text-align: right;
+  padding-right: 2em;
+}
+tr.ui-list-headrow th.sort { padding-right: 0em; }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
 .ui-accordion .ui-accordion-content.contents_container { padding: 0; }
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {

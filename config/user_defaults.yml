@@ -19,3 +19,11 @@ admin_menu:
 rich_text:
   buttons: [['bold', 'italic', '~'], []]
   
+dashboard:
+  documents:
+    - document_types
+    - document_categories
+  users:
+    - user_groups
+    # - user_roles
+  

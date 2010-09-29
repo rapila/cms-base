@@ -1,11 +1,11 @@
 <form>
 	<div class="status_section">
-		<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
-		<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span><br />
-	<label for="link_category_id">{{writeString=widget.link_category}}</label>
-	<select name="link_category_id" class="ui-widget-content" data-widget-type="link_category_input"></select><br />
-		<label for="is_inactive">{{writeString=is_inactive}}</label><br />
-		<input type="checkbox" name="is_inactive" value="1" /><br />
+		<div class="hide_if_not_saved">
+			<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
+			<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span>
+		</div>
+		<label for="link_category_id">{{writeString=widget.link_category}}</label>
+		<select name="link_category_id" class="ui-widget-content" data-widget-type="link_category_input"></select><br />
 	</div>
 	<label for="name">{{writeString=name}}</label>
 	<input type="text" name="name" class="ui-widget-content" /><br />

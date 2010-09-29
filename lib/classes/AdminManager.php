@@ -4,7 +4,6 @@ class AdminManager extends Manager {
 	
 	const DEFAULT_MODULE = 'dashboard';
   const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
-	
 	private $sModuleName;
 	private $oModule;
 	private $oResourceIncluder;

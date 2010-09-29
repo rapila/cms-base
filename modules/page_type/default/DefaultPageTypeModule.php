@@ -182,6 +182,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
 		asort($aContainers);
 		$aResult = array();
+
 		foreach($aContainers as $oContainer) {
 			if($oContainer->hasParameter('autofill')) {
 				continue;

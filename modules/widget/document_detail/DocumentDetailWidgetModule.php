@@ -51,6 +51,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
+		ErrorHandler::log(array('document_data', $aDocumentData));
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);

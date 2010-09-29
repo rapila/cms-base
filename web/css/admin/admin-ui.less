@@ -67,7 +67,7 @@
 	font-family: Arial;
 	margin-top: 1em;
 	padding-right: 2em;
-	width:16em;
+	width:16.2em;
 	float:right;
 	border-left: 1px solid #f2f2f2;
 	padding:0 1em;
@@ -231,8 +231,7 @@ button.ui-button.ui-state-default,
 	color: white;
 }
 
-.ui-state-droppable, 
-.ui-widget-content .ui-state-droppable	 {
+#admin_sidebar .ui-state-droppable {
 	background-image: url('../../images/admin/ui-state-droppable.png');
 }
 
@@ -411,7 +410,22 @@ input.ui-widget-content.autowidth {
 
 /* Interaction Cues addition
 ----------------------------------*/
-.ui-state-droppable, .ui-widget-content .ui-state-droppable {border: 0 solid #b8d600; background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat; color: #5b595b;  cursor: pointer;}
+#admin_sidebar .ui-state-droppable {border: 0 solid #b8d600; background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat; color: #5b595b;  cursor: pointer;}
+.document_detail .preview {
+	margin-left: -1px;
+	border: 1px dashed #DDD; 
+	background-color: #FBFBFB;
+}
+
+.document_detail .ui-state-droppable .preview {border: 1px solid #b8d600;  cursor: pointer;}
+.document_detail .preview .droppable_info {
+	display: block;
+	line-height: 1.6em;
+	min-height: 7em;
+	padding: 2em 1em;
+	color: #BEBEBE;
+}
+
 .ui-state-droppable a, .ui-widget-content .ui-state-droppable a { color: #5b595b; cursor: pointer;}
 /* states and images addition */
 .ui-state-droppable .ui-icon {background-image: url('../../images/admin/ui-state-droppable.png'); }
@@ -420,6 +434,16 @@ tr.ui-list-headrow th.file_info,
 table.ui-list td.file_info {
 	text-align: right;
 	padding-right: 2em;
+}
+
+tr.ui-list-headrow th.sort, 
+table.ui-list td.sort {
+	text-align: right;
+	padding-right: 2em;
+}
+
+tr.ui-list-headrow th.sort {
+	padding-right: 0em;
 }
 
 tr.ui-list-headrow th.file_info {

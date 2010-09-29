@@ -35,7 +35,6 @@ Widget.types.document_detail = {
 			
 			this.uploader = Widget.create('file_upload');
 			this.uploader.allow_drag_to(document_detail.content, null, function(target) {
-				// console.log(document_detail.current_detail_id, upload_success,upload_error):
 				return {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error};
 			}, true);
 
@@ -55,17 +54,20 @@ Widget.types.document_detail = {
 				}
 			});
 			if(this.auto_open) {
-				this.open();
+				this.open(true);
 			}
 		}.bind(this));
 	},
 	
-	open: function() {
+	open: function(is_new) {
 		if(!this.detail_widget) {
 			this.auto_open = true;
 			return false;
 		}
 		this.detail_widget.open();
+		if(is_new) {
+			this.detail_widget.content.find('div.hide_if_not_saved').hide();
+		}
 		this.detail_widget.content.find('input[name=name]').focus();
 	},
 	
@@ -76,6 +78,7 @@ Widget.types.document_detail = {
 			this.preview(function(result) {
 				this.content.find(".preview").html(result);
 			});
+			this.detail_widget.content.find('div.hide_if_not_saved').show();
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find(".detail_id").text(document_data.Id);

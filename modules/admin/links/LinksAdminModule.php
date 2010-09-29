@@ -31,15 +31,14 @@ class LinksAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('link_category_id', 'title', 'magic_column');
+		return array('link_category_id', 'name', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
-			case 'title':
+			case 'name':
 				$aResult['heading'] = StringPeer::getString('widget.links.sidebar_heading');
-				$aResult['field_name'] = 'name';
 				break;
 			case 'link_category_id':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -57,7 +56,7 @@ class LinksAdminModule extends AdminModule {
 		if(LinkCategoryPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('links.select_all_title'),
+							'title' => StringPeer::getString('widget.sidebar.select_all'),
 							'magic_column' => 'all'),
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
 							'title' => StringPeer::getString('links.select_without_title'),

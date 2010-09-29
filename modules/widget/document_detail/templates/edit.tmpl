@@ -2,12 +2,17 @@
 	<label for="file_upload">{{writeString=widget.document.file_upload}}</label>
 	<input type="file" name="file_upload" class="ui-widget-content" /><button type="button" class="do_upload validate-upload">{{writeString=widget.document.file_upload}}</button><br />
 	<div class="status_section">
-		<div class="preview"></div>
-		<label>{{writeString=widget.document.info}}:</label><br /><span class="file_size status"></span><br />
-		<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
-		<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span><br />
-		<label>ID:</label><span class="detail_id">{{id}}</span><br />
-		<label>{{writeString=widget.document.original_name}}</label><span class="original_name"></span>
+		<div class="preview">
+		  <div class="droppable_info">{{writeString=widget.draganddrop}}<br />{{writeString=widget.draganddrop.hint}}
+		  </div>
+		</div>
+		<div class="hide_if_not_saved">
+  		<label>{{writeString=widget.document.info}}:</label><br /><span class="file_size status"></span><br />
+  		<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
+  		<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span><br />
+  		<label>ID:</label><span class="detail_id">{{id}}</span><br />
+  		<label>{{writeString=widget.document.original_name}}</label><span class="original_name"></span>
+		</div>
 	</div>
 	<label for="name">{{writeString=name}}</label>
 	<input type="text" name="name" class="ui-widget-content" /><br />
