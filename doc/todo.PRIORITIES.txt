@@ -1,14 +1,16 @@
 PRIORITAETEN:
 
-1. Drag & Drop
-		@see 
-		- todo_pages.txt
-		- todo_documents (links etc)
-2. file_upload widget bug in document detail
-3. if rfp
+1. RFP Priorities and Planning in General
 		- SVN > groups work_pool, tm
 		- FrontendUsers, Users, Rights
 		- NewsletterPlugin
+2. Version 2 Drag & Drop
+		@see 
+		- todo_pages.txt
+		- todo_documents (links etc)
+3. file_upload widget bug in document detail
+4. Recommendation, no migration tasks, no github etc for now
+
 
 SVN, Wiki, Name, Tracking!
 Feature Freeze @FEATURE FREEZE
