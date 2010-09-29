@@ -1,0 +1,21 @@
+Users
+MyProfile: profile, settings and info
+
+Rights:
+- page rights, module rights (info.yml, settings), presets in hard_coded info.yml should be storable and changeable in database table?
+	or should be configurable in site/config/rights (don't touch base info.yml, just use for presets?)
+
+Language:
+- rights in language context: page mainly
+
+Roles & Groups
+- manage roles
+- manage groups by drag&drop (multiple on save)
+
+Options:
+- module_rights: add option to restrict to category and/or owner?
+
+PermissionWidget? 
+- @see use_cases_permissions.txt
+- event handler, make genereric save, delete handling in Widget or where?
+

@@ -1,113 +1,31 @@
+PRIORITAETEN:
+
+1. Drag & Drop
+		@see 
+		- todo_pages.txt
+		- todo_documents (links etc)
+2. file_upload widget bug in document detail
+3. if rfp
+		- SVN > groups work_pool, tm
+		- FrontendUsers, Users, Rights
+		- NewsletterPlugin
+
+SVN, Wiki, Name, Tracking!
+Feature Freeze @FEATURE FREEZE
+
 Miscellaneous projects
 - Schule Altenburg > server requirements for (windows servers, access rights)
 	Synchronisation, shell_exec, Exporte
 	install domain on mini-cms and prepare tests, db, temp db, access rights for test with blaccess
 	Lehrer, Klassen, Events, Galerie, Werkstücke
-- Gems Europe Update HTTP_Request2.php test
-	CSS check: Chrome when developer tools are on, the displayed correctly
-		Opera main navigation not display correctly
-	General check and update
+- taylormade effects: ajax kills animation. how to register events
 
-Todo
-1 schule altenburg planung
-	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
-2 Kampagne Seite Svenja, Abklärungen
-3	update cgcmac.ch > newsletter
-	make release-1.0-plugin
-4 taylormade effects: ajax kills animation. how to register events
-5 Bug-Tracking / Wiki > Assembla, GitHub ?
-
-ErrorHandler
-- maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
-
-BUG!
+Bugs!
 - cms_dev onNavigationItemChildrenRequested second argument not given.
 - SVN access admin issues for Roger and others, how to
 - SVN full access Thomas
 
-Newsletter Plugin
-Entwicklung und Dokumentation von Plugins
-- PHPDocumentor : @package / @subpackage (plugin.newsletter, module.admin)
-	@subpackage requirements: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_tags.subpackage.pkg.html
-- separate Plugin Documentation? mit Liste?
-Newsletter schema und Funktionen
-- 
-
-Priorities
-- Dashboard Context Widget? > $this->sContext = Manager::usePath(); > getWidget->showContextTasks()
-- svn/git wiki
-- schema.sql missing in base, handling all
-- page_detail: accordion should open ? always content
-- document_list: update_row on d&d detail > file info
-- strings: create new sidebar_changed? implemented
-- document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
-	delete, search & count_info don't  work
-- checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)
-
-- naming convention, functionality and hierarchy of widgets with views, @see documents
-	document_thumbnail_view.js can easily be abstracted for general thumbnail views?
-- link_detail, unselected link_category does not work properly
-- page_detail language_objects, added one in english, does not appear in german
-- search notify with parameter strings instead of keys
-- opened should be only on element and openener div should have the class opener, so .opened .opener could be defined in css
-- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
-- document_list thumbnail_view autoplay false
-- validate implement like user_detail
-- user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
-	Roles can be "empty" ie defined by module, or page rights, are always single intentional
-- cmos_mini projects file_upload
-
-overall Details
-- activity indicator does not work properly, on delete for example (stack?)
-
-PageDetail
-- language tabs
-	load language sensitive content all the time? Or should languages be available, copyable etc?
-	language sensitive: page_strings, contents, references!
-- templates visualisation, choosing from images rather then names, CSS Parser
-- visualise activities, whenever something is loaded, ie on tab?
-- page preview before set online, how to do?
-- make custom made checkboxes. all the same but the active checkbox green/red?
-
-PageTypeWidget
-- adminContainers: if template and pagetype are the same should that be kind of persistant, 
-	not rendered all the time (container name and target ol)
-- implement other page types for testing and improving page type handling
-
-PageTree Widget
-- new page, move page d&d
-- how to visualize is_folder, how to name it best (Untermenu zeigt)
-- how to visualise is_inactive (page_string) and global_is_inactive (page)	
-
-Rights, Groups and Roles
-- module_rights should be configurable in site/config/rights (don't touch base info.yml, just use for presets)
-- module_rights, add option to restrict to category and/or owner?
-- restrict rights to language, only texts for example for lang text editor?
-- should we think of, make a rights package, so one sees at a glance all the settings?
-
-Categories general
-- Categories that are shown on pages (language_objects) should display that information.
-
-FileUpload, DocumentDetail and other related details
-- dynamic upload/replace label for file_upload
-- @see Browser Issues
-
-DocumentCategories and general category issues (links, projects etc)
-- add select for category restriction> like image, is_office_doc, video etc. On select show option (ie. max_width, max_height, max_upload_size)
-- add document category type for convenience and clearity. Users should implicitly know (user friendly)
-- edit category, how to, maybe better sliding from sidebar footer
-- delete category
-	- if count > 0? how to handle (action option of deleting all related entries)
-
-DocumentTypes
-- is_office_doc: is this needed or deprecated > remove
-- need to change anything here?
-
-Migration Tasks
-- documents original_name added: migration.sql
-- pages update linktext > pagetitle > reverse priority 1. update link_text = null > page_title, 2. update page_title where link_text = page_title set to null
-
-CMOS Timeline and feature freeze for RC/1 release
+FEATURE FREEZE for RC/1 release
   what requirements does it contain? 
 	- click, dblclick handling in sidebar/main must be clear, @see General handling
 	- document upload, 
@@ -134,68 +52,10 @@ PHP 5.3
 	http://groups.google.com/group/php-standards/web/php-coding-standard
 	http://groups.google.com/group/php-standards/web/psr-0-final-proposal
 	
-DetailWidget general
-- save, delete, create etc permissions, try a general handling with event listening? or implement in each Detailwidget?
-- highlight save button when any input has changed, cancel button should close window if no changes have been entered?
-- make save always standout, different then cancel
-- settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
-- file upload
-	- implement upload "traditional" and d&d for detail
-	- reload list after document upload success
-	- testing, max limits etc
-- list / thumbnail view for files
-- users and rights, permission (widget)
-	- introduce roles, discuss use cases and
-- form validation, how to, move to yaml config?
-- notifyUser search info > replace keys by real values
-- discuss permissions @see use_cases_permissions.txt
-- validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
-- discuss sketch document upload and replace html5 (uploadWidget?), 
-	use case, normal, massupload, examples projects (wills, taylormade, mini-cms), galleries
-- module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
-  - mini_cms_1, externals etc.
-- timeline and herrmanngerman next @see todo_design
-
-ListWidget general
-- what happens when module category is chosen that is used in a page, should it effect last edit page/preview
-
 Browser Issues 
 - Safari and Chrome 
 	- file upload and upload with drag and drop does not work
 	- css top position document list view
-- double click on active buttons in list (is_protected) does not display the result correctly (stores correctly, but not displays correctly)
-
-General handling issues
-- dblclick click standards transparency, buttons: i.e edit on click, default edit dblclick: 
-- highlight save when detail modified
-- handle go away if detail is not saved
-- users might want quick links (menu config)
-- context menu > edit sidebar item ie document category etc 
-		http://www.javascripttoolbox.com/lib/contextmenu/
-		http://beckelman.net/demos/jQueryListViewWithContextMenu/Default.aspx
-- avoid multiple loading of same widget
-- remove alerts on reload of pages, don't stack the same alert
-- remove save_callback: jQuery.noop etc statements
-- MiniCMS Redesign DOMAIN and software names @see todo_design.txt
-
-CSSParser, adminGetContainers(), no major priority, can be done anytime
-- CSS cleaning for admin containers > why not handle with CSSParser::consumeIfNot(aRules=width, margin, clear, float?)
-	Problem > nested containers... how to?
-- Caching of result > params page_type and template, modification date temp
-
-Security and Stability!!!!!
-- ResourceInclude make stable, fallback for google lib.
-
-Widget tasks
-- check session storage of widgets WidgetModule::removeStoredWidgets();
-- sidebar element edit/delete?
-- userNotify > array and links handling for helpful messages (not found)
-	remove on click of other element, maybe close button
-- detail (row) widget, field widget? @see also project management
-- testing QUnit
-- how can we simplify and make more transparent and more effective?
-- PermissionWidget? @see use_cases_permissions.txt
-- d&d, sortable and assign to category or tag etc
 
 RichtextWidget
 - tinymce integration continue? @see tinybrowser
@@ -666,3 +526,115 @@ BUGBUGBUG release-1.0-devel
 - page_detail, add is_active to pagestring
 - page_detail double loading on first load? and action buttons load issue
 	pages.admin.js 		// widget.load_page(initial_selection);
+- Gems Europe Update HTTP_Request2.php test
+	CSS check: Chrome when developer tools are on, the displayed correctly
+		Opera main navigation not display correctly
+	General check and update
+Todo
+1 schule altenburg planung
+	was müssen wir für die Vorbereitung noch wissen ? Server, DB, etc
+2 Kampagne Seite Svenja, Abklärungen
+3	update cgcmac.ch > newsletter
+	make release-1.0-plugin
+5 Bug-Tracking / Wiki > Assembla, GitHub ?
+
+ErrorHandler
+- maintenance.php does not work, because one can't debug how to solve, with error_php? debug user? 
+- svn/git wiki
+- schema.sql missing in base, handling all
+- page_detail: accordion should open ? always content
+- document_list: update_row on d&d detail > file info, show row_count_info
+- document_list Widget.types[widgetType] is not a constructor OFTEN: NEEDS TO BE DEBUGGED
+	delete, search & count_info don't  work
+
+- link_detail, unselected link_category does not work properly
+- link_detail, unselected link_category does not work properly
+- document_list thumbnail_view autoplay false
+- validate implement like user_detail
+- user rights roles and groups > RoleAdminModule? @see Rights, Groups and Roles
+	Roles can be "empty" ie defined by module, or page rights, are always single intentional
+Priorities
+
+overall Details
+
+PageDetail
+- language tabs
+	load language sensitive content all the time? Or should languages be available, copyable etc?
+
+PageTypeWidget
+- adminContainers: if template and pagetype are the same should that be kind of persistant, 
+	not rendered all the time (container name and target ol)
+
+PageTree Widget
+- new page, move page d&d
+- how to visualize is_folder, how to name it best (Untermenu zeigt)
+- how to visualise is_inactive (page_string) and global_is_inactive (page)	
+Rights, Groups and Roles
+- restrict rights to language, only texts for example for lang text editor?
+- should we think of, make a rights package, so one sees at a glance all the settings?
+
+Categories general
+- Categories that are shown on pages (language_objects) should display that information.
+
+FileUpload, DocumentDetail and other related details
+- dynamic upload/replace label for file_upload
+- @see Browser IssuesDocumentCategories and general category issues (links, projects etc)
+- add select for category restriction> like image, is_office_doc, video etc. On select show option (ie. max_width, max_height, max_upload_size)
+- add document category type for convenience and clearity. Users should implicitly know (user friendly)
+- edit category, how to, maybe better sliding from sidebar footer
+- delete category
+	- if count > 0? how to handle (action option of deleting all related entries)
+
+DocumentTypes
+- need to change anything here?
+Migration Tasks
+- documents original_name added: migration.sql
+- pages update linktext > pagetitle > reverse priority 1. update link_text = null > page_title, 2. update page_title where link_text = page_title set to null
+DetailWidget general
+- save, delete, create etc permissions, try a general handling with event listening? or implement in each Detailwidget?
+- make save always standout, different then cancel
+- settings, check rights in User/AdminMenu for set/getAdminSettings, decide on permission handling for all security sensitive actions, discuss automatic mechanisms
+- file upload
+	- implement upload "traditional" and d&d for detail
+	- reload list after document upload success
+	- testing, max limits etc
+- list / thumbnail view for files
+- users and rights, permission (widget)
+	- introduce roles, discuss use cases and
+- form validation, how to, move to yaml config?
+- notifyUser search info > replace keys by real values
+- discuss permissions @see use_cases_permissions.txt
+- validation discuss and sketch (Flash, Propel validator, widget/notify requirements)
+- discuss sketch document upload and replace html5 (uploadWidget?), 
+	use case, normal, massupload, examples projects (wills, taylormade, mini-cms), galleries
+- module, site versioning strategy for continuous development of modules, plugins, example sites (mini-cms, mosaics, taylormade)
+  - mini_cms_1, externals etc.
+- timeline and herrmanngerman next @see todo_design
+
+General handling issues
+- dblclick click standards transparency, buttons: i.e edit on click, default edit dblclick: 
+- highlight save when detail modified
+- handle go away if detail is not saved
+- users might want quick links (menu config)
+- avoid multiple loading of same widget
+- remove alerts on reload of pages, don't stack the same alert
+- remove save_callback: jQuery.noop etc statements
+- MiniCMS Redesign DOMAIN and software names @see todo_design.txt
+
+CSSParser, adminGetContainers(), no major priority, can be done anytime
+- CSS cleaning for admin containers > why not handle with CSSParser::consumeIfNot(aRules=width, margin, clear, float?)
+- Caching of result > params page_type and template, modification date temp
+
+Security and Stability!!!!!
+- ResourceInclude make stable, fallback for google lib.
+
+
+Widget tasks
+- check session storage of widgets WidgetModule::removeStoredWidgets();
+- sidebar element edit/delete?
+- userNotify > array and links handling for helpful messages (not found)
+	remove on click of other element, maybe close button
+- detail (row) widget, field widget? @see also project management
+- testing QUnit
+- how can we simplify and make more transparent and more effective?
+- d&d, sortable and assign to category or tag etc

@@ -1,0 +1,6 @@
+List Widget
+
+check all click and dblclick events 
+
+Sort:
+- display sort column if any sidebar element is selected, how to do

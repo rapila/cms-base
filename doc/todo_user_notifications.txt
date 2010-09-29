@@ -1,0 +1,17 @@
+User notifications :
+
+activity indicator 
+- does not work properly, on delete for example (stack?)
+
+search not found
+- parameter strings instead of keys/ids
+- no cloud, just simple text info appearance like
+	Es wurde keine Eintrag mit dem Begriff "searchtext" gefunden.
+	Bitte Deine Vorauswahl Dateikategorie "category_name" und Dateityp "Bilder" überprüfen
+
+validation exceptions
+- highlight (red) in label (append span)
+
+file_upload notification: 
+- list: display activity (and uploaded file name?) in document preview area or do nothing at all (is visible)
+- detail: show in preview of detail window

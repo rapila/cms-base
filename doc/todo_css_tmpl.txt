@@ -1,7 +1,10 @@
 ixmos/cmos css work
 
-well structured, slim..
+Browser issues
+- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 
+
+General Infos
 prepared for skins/themes (jQuery-UI, CMOS)
 
 structure

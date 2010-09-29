@@ -1,0 +1,3 @@
+TESTING issues
+- all click and dblclick behaviours
+- Richtext handling

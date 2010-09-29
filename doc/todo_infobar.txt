@@ -1,0 +1,7 @@
+Infobar
+
+actions?
+
+icons
+- add (if option)
+- delete if item is selected (-), show alert window (delete item /and with content?)

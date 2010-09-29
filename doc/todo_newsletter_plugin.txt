@@ -1,0 +1,7 @@
+Newsletter Plugin
+
+Entwicklung und Dokumentation von Plugins
+- PHPDocumentor : @package / @subpackage (plugin.newsletter, module.admin)
+	@subpackage requirements: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_tags.subpackage.pkg.html
+- separate Plugin Documentation? mit Liste?
+Newsletter schema und Funktionen

@@ -24,3 +24,6 @@ use_cases permission related:
 	> selection of allowed modules, grouping and sorting of modules
 	> user settings
 	
+MY_PROFILE
+- current session user should have link to page where he can see all the options, settings, rights
+	

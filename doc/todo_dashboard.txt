@@ -1,5 +1,9 @@
 Dashboard
-?
+- context_module, see js request context_module pass to dashboard_tasks.widget
+- css include? bug?
+- texts how to?
+- discuss idea
+- milestone add context help, screenvideo etc.
 
 
 Dashboard Context

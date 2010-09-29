@@ -1,4 +1,21 @@
 Detail widgets
+- validation: 
+	DISCUSS: in field if empty, in label if field content is not valid > ALWAYS in label (append span in label)
 
-- discuss generic rights rights check for module actions like 
+- widget new_item create: document_detail and link_detail are handled differently????
+
+- selects 
+	unselected in new detail do not work properly
+	- link_detail: link_category
+	- document_detail: language_id select
+	preselect category in document, link if set in sidebar?
+
+- generic rights check for module actions (DISCUSS)
 	saveData, createPage, deletePage, discuss naming convention, pro and cons
+
+- BUTTON highlight (if changed content?)
+	close_window: alert if modified and not saved
+	
+- checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)?
+
+	

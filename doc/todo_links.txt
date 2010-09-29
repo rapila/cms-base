@@ -1,0 +1,4 @@
+Links
+
+list:
+- magic names don't work, discuss method names in general and make relationsship more transparent for dummies

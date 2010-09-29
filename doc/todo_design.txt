@@ -1,15 +1,58 @@
 AKTUELL todo design
 *****************************************************************************************************************
 Notiz Treffen 27. September 2010 HerrmannGermann
-- Detail designs!
+
+
+Resulate Sitzung
+- Sprache Baum
+- Eingabe Feld
+- Template (und Konfiguration), Status, Beschreibung, Konfiguration
+- Subscriber importieren etc in action menu
+- senden Knopf auf Newsletter
+- Fehler validierung (label, rot. rahmen rot)
+- d&d highlight rahmen um Bildbereich
+- sortierung, visuelles sortierfeld, mit Linie
+
+Grosse Bilddateien mit System synchron zu webinhalten verwalten???? Kaum möglich, klares Konzept, klare Strukturen
+
+
+
+
+
+
+
+
+Stand:
+- technisch, vieles ist noch nicht gestaltet
+	- Details : alle Detailansichten, siehe auch unten
+	- Preview etc.
+	- PageDetail Herausforderungen Tree
+		- Name/Linktext : Vorschlag: wenn Einsprachig, dann Linktext
+		- font-size
+	
+Detail designs!
 - PageDetail
 	- Buttons
 	- Filled Containers
-- Newsletter Plugin, Dashboard!
-  wir brauchen ein Dashboard, das Context Sensitive ist. Newsletter sollte, wie auch andere Module und einen Link haben. Der Rest wie Subscriber_groups rsp. Subscribers, import etc.
-- Drag&Drop Icons/Highlight
-- AdminMenu select handling
+- Newsletter Plugin
+- Dashboard! AdminMenu select handling
+  wir brauchen ein Dashboard, das Context Sensitive ist. 
+	Newsletter sollte, wie auch andere komplexere Module nur einen Link haben. 
+	Der Rest wie Subscriber_groups rsp. Subscribers, import etc. in Dashboard
 - UserDetail Groups Roles
+
+Special:
+- Notifications 
+	- validation
+	- search not found
+- Drag&Drop Icons/Highlight
+
+Name:
+CMOS Redesign DOMAIN CMS name
+domain / name diskussion 
+[.ch,.net] rapila ixmos cimos modlo nodos expan axila pumul rondolo rodea
+[.ch] cemos, cimos, macros, mosco, nodi, visca, meira, crealo, pides, pidelo, rondolo, crealo, sinea, vuela, quesea, rapilo, andala, usalo, uselo, llena, llenalo, mosic, momul, momol, abria, abeja, expan, solan, mosic, mosia, mosio, organos, orgos, ormos, mosix, arange, aliq, piragua (kanu), pirana, peca (sommersprosse), tampi (tambien para idiotas), pire, framos, fillme, useme, fillmy, olani, aleni, adeni, abani, aboni
+[.la] rapi.la
 
 
 
@@ -47,11 +90,7 @@ Main discussion points
 - DocumentUpload drag and drop visualisation
 - when is it time to make new icons, css?
 
-CMOS Redesign DOMAIN CMS name
-domain / name diskussion 
-[.ch,.net] ixmos cimos modlo nodos expan axila pumul rondolo rodea
-[.ch] cemos, cimos, macros, mosco, nodi, visca, meira, crealo, pides, pidelo, rondolo, crealo, sinea, vuela, quesea, rapilo, andala, usalo, uselo, llena, llenalo, mosic, momul, momol, abria, abeja, expan, solan, mosic, mosia, mosio, organos, orgos, ormos, mosix, arange, aliq, piragua (kanu), pirana, peca (sommersprosse), tampi (tambien para idiotas), pire, framos, fillme, useme, fillmy, olani, aleni, adeni, abani, aboni
-[.la] rapi.la
+
 
 
 ARCHIVE todo

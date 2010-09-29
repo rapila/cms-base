@@ -1,3 +1,2 @@
 language_tabs: 
-- implement correctly language_tabs.settings.active_languages handling
-	- StringDetail
+- check and test correct language_tabs.settings.active_languages handling
