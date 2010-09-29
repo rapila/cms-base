@@ -1,0 +1,40 @@
+Widget.types.role_detail = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget.set_instance(this);
+			jQuery.extend(widget.settings, {
+				title: "{{writeString=role.create}}",
+				width: 400
+			});
+			widget.content = this.content;
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+	},
+	
+	fill_data: function() {
+		this.getRoleData(function(role_data) {
+			this.content.find("input[name='role_key']").val(role_data.RoleKey);
+			this.content.find("input[name='description']").val(role_data.Description);
+			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);
+		});
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

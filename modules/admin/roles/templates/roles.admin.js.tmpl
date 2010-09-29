@@ -1,0 +1,24 @@
+jQuery(document).ready(function() {
+	// init main content
+	AdminInterface.content.find('table.roles_list').prepareWidget(function(role_list) {
+		// has no sidebar
+		// init infobar
+		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			info_bar.add_button('add-new-item', function() {
+				Widget.create('group_detail', function(widget) {
+					widget.open();
+					widget.save_callback = function() {
+						role_list.reload();
+					};
+				});
+			}, 'n', true).add_search_input("{{writeString=search.groups}}", function(search) {
+				if(role_list.setSearch(search)) {
+					role_list.reload();
+				}
+			});;
+	
+			// add row_count_info
+			info_bar.add_row_count_info_for_list(role_list);
+		});
+	});
+});
