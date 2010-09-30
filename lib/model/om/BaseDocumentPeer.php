@@ -25,7 +25,7 @@ abstract class BaseDocumentPeer {
 	const TM_CLASS = 'DocumentTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 16;
+	const NUM_COLUMNS = 17;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 1;
@@ -63,6 +63,9 @@ abstract class BaseDocumentPeer {
 	/** the column name for the IS_PROTECTED field */
 	const IS_PROTECTED = 'documents.IS_PROTECTED';
 
+	/** the column name for the SORT field */
+	const SORT = 'documents.SORT';
+
 	/** the column name for the DATA field */
 	const DATA = 'documents.DATA';
 
@@ -94,12 +97,12 @@ abstract class BaseDocumentPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::ORIGINAL_NAME, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::DOCUMENT_TYPE_ID, self::DOCUMENT_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::IS_PROTECTED, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'ORIGINAL_NAME', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'original_name', 'description', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Sort', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'sort', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::ORIGINAL_NAME, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::DOCUMENT_TYPE_ID, self::DOCUMENT_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::IS_PROTECTED, self::SORT, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'ORIGINAL_NAME', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'SORT', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'original_name', 'description', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'sort', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -109,12 +112,12 @@ abstract class BaseDocumentPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'DocumentTypeId' => 6, 'DocumentCategoryId' => 7, 'IsPrivate' => 8, 'IsInactive' => 9, 'IsProtected' => 10, 'Data' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, 'CreatedBy' => 14, 'UpdatedBy' => 15, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'languageId' => 4, 'ownerId' => 5, 'documentTypeId' => 6, 'documentCategoryId' => 7, 'isPrivate' => 8, 'isInactive' => 9, 'isProtected' => 10, 'data' => 11, 'createdAt' => 12, 'updatedAt' => 13, 'createdBy' => 14, 'updatedBy' => 15, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::ORIGINAL_NAME => 2, self::DESCRIPTION => 3, self::LANGUAGE_ID => 4, self::OWNER_ID => 5, self::DOCUMENT_TYPE_ID => 6, self::DOCUMENT_CATEGORY_ID => 7, self::IS_PRIVATE => 8, self::IS_INACTIVE => 9, self::IS_PROTECTED => 10, self::DATA => 11, self::CREATED_AT => 12, self::UPDATED_AT => 13, self::CREATED_BY => 14, self::UPDATED_BY => 15, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'ORIGINAL_NAME' => 2, 'DESCRIPTION' => 3, 'LANGUAGE_ID' => 4, 'OWNER_ID' => 5, 'DOCUMENT_TYPE_ID' => 6, 'DOCUMENT_CATEGORY_ID' => 7, 'IS_PRIVATE' => 8, 'IS_INACTIVE' => 9, 'IS_PROTECTED' => 10, 'DATA' => 11, 'CREATED_AT' => 12, 'UPDATED_AT' => 13, 'CREATED_BY' => 14, 'UPDATED_BY' => 15, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'original_name' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'document_type_id' => 6, 'document_category_id' => 7, 'is_private' => 8, 'is_inactive' => 9, 'is_protected' => 10, 'data' => 11, 'created_at' => 12, 'updated_at' => 13, 'created_by' => 14, 'updated_by' => 15, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'DocumentTypeId' => 6, 'DocumentCategoryId' => 7, 'IsPrivate' => 8, 'IsInactive' => 9, 'IsProtected' => 10, 'Sort' => 11, 'Data' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, 'CreatedBy' => 15, 'UpdatedBy' => 16, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'languageId' => 4, 'ownerId' => 5, 'documentTypeId' => 6, 'documentCategoryId' => 7, 'isPrivate' => 8, 'isInactive' => 9, 'isProtected' => 10, 'sort' => 11, 'data' => 12, 'createdAt' => 13, 'updatedAt' => 14, 'createdBy' => 15, 'updatedBy' => 16, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::ORIGINAL_NAME => 2, self::DESCRIPTION => 3, self::LANGUAGE_ID => 4, self::OWNER_ID => 5, self::DOCUMENT_TYPE_ID => 6, self::DOCUMENT_CATEGORY_ID => 7, self::IS_PRIVATE => 8, self::IS_INACTIVE => 9, self::IS_PROTECTED => 10, self::SORT => 11, self::DATA => 12, self::CREATED_AT => 13, self::UPDATED_AT => 14, self::CREATED_BY => 15, self::UPDATED_BY => 16, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'ORIGINAL_NAME' => 2, 'DESCRIPTION' => 3, 'LANGUAGE_ID' => 4, 'OWNER_ID' => 5, 'DOCUMENT_TYPE_ID' => 6, 'DOCUMENT_CATEGORY_ID' => 7, 'IS_PRIVATE' => 8, 'IS_INACTIVE' => 9, 'IS_PROTECTED' => 10, 'SORT' => 11, 'DATA' => 12, 'CREATED_AT' => 13, 'UPDATED_AT' => 14, 'CREATED_BY' => 15, 'UPDATED_BY' => 16, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'original_name' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'document_type_id' => 6, 'document_category_id' => 7, 'is_private' => 8, 'is_inactive' => 9, 'is_protected' => 10, 'sort' => 11, 'data' => 12, 'created_at' => 13, 'updated_at' => 14, 'created_by' => 15, 'updated_by' => 16, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -197,6 +200,7 @@ abstract class BaseDocumentPeer {
 			$criteria->addSelectColumn(DocumentPeer::IS_PRIVATE);
 			$criteria->addSelectColumn(DocumentPeer::IS_INACTIVE);
 			$criteria->addSelectColumn(DocumentPeer::IS_PROTECTED);
+			$criteria->addSelectColumn(DocumentPeer::SORT);
 			$criteria->addSelectColumn(DocumentPeer::CREATED_AT);
 			$criteria->addSelectColumn(DocumentPeer::UPDATED_AT);
 			$criteria->addSelectColumn(DocumentPeer::CREATED_BY);
@@ -213,6 +217,7 @@ abstract class BaseDocumentPeer {
 			$criteria->addSelectColumn($alias . '.IS_PRIVATE');
 			$criteria->addSelectColumn($alias . '.IS_INACTIVE');
 			$criteria->addSelectColumn($alias . '.IS_PROTECTED');
+			$criteria->addSelectColumn($alias . '.SORT');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 			$criteria->addSelectColumn($alias . '.CREATED_BY');

@@ -47,6 +47,7 @@ class DocumentTableMap extends TableMap {
 		$this->addColumn('IS_PRIVATE', 'IsPrivate', 'BOOLEAN', false, 1, false);
 		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
 		$this->addColumn('IS_PROTECTED', 'IsProtected', 'BOOLEAN', false, 1, false);
+		$this->addColumn('SORT', 'Sort', 'INTEGER', false, null, null);
 		$this->addColumn('DATA', 'Data', 'BLOB', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);

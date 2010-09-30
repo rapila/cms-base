@@ -93,6 +93,12 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	protected $is_protected;
 
 	/**
+	 * The value for the sort field.
+	 * @var        int
+	 */
+	protected $sort;
+
+	/**
 	 * The value for the data field.
 	 * @var        resource
 	 */
@@ -304,6 +310,16 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	public function getIsProtected()
 	{
 		return $this->is_protected;
+	}
+
+	/**
+	 * Get the [sort] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getSort()
+	{
+		return $this->sort;
 	}
 
 	/**
@@ -685,6 +701,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	} // setIsProtected()
 
 	/**
+	 * Set the value of [sort] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setSort($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->sort !== $v) {
+			$this->sort = $v;
+			$this->modifiedColumns[] = DocumentPeer::SORT;
+		}
+
+		return $this;
+	} // setSort()
+
+	/**
 	 * Set the value of [data] column.
 	 * 
 	 * @param      resource $v new value
@@ -914,10 +950,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$this->is_private = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
 			$this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
 			$this->is_protected = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
-			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->created_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->updated_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->sort = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -926,7 +963,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 15; // 15 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 16; // 16 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Document object", $e);
@@ -1416,18 +1453,21 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				return $this->getIsProtected();
 				break;
 			case 11:
-				return $this->getData();
+				return $this->getSort();
 				break;
 			case 12:
-				return $this->getCreatedAt();
+				return $this->getData();
 				break;
 			case 13:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 14:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 15:
+				return $this->getCreatedBy();
+				break;
+			case 16:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1465,11 +1505,12 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$keys[8] => $this->getIsPrivate(),
 			$keys[9] => $this->getIsInactive(),
 			$keys[10] => $this->getIsProtected(),
-			$keys[11] => ($includeLazyLoadColumns) ? $this->getData() : null,
-			$keys[12] => $this->getCreatedAt(),
-			$keys[13] => $this->getUpdatedAt(),
-			$keys[14] => $this->getCreatedBy(),
-			$keys[15] => $this->getUpdatedBy(),
+			$keys[11] => $this->getSort(),
+			$keys[12] => ($includeLazyLoadColumns) ? $this->getData() : null,
+			$keys[13] => $this->getCreatedAt(),
+			$keys[14] => $this->getUpdatedAt(),
+			$keys[15] => $this->getCreatedBy(),
+			$keys[16] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguage) {
@@ -1555,18 +1596,21 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->setIsProtected($value);
 				break;
 			case 11:
-				$this->setData($value);
+				$this->setSort($value);
 				break;
 			case 12:
-				$this->setCreatedAt($value);
+				$this->setData($value);
 				break;
 			case 13:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 14:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 15:
+				$this->setCreatedBy($value);
+				break;
+			case 16:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1604,11 +1648,12 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if (array_key_exists($keys[8], $arr)) $this->setIsPrivate($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setIsProtected($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setData($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setCreatedBy($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[11], $arr)) $this->setSort($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setData($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
 	}
 
 	/**
@@ -1631,6 +1676,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->isColumnModified(DocumentPeer::IS_PRIVATE)) $criteria->add(DocumentPeer::IS_PRIVATE, $this->is_private);
 		if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) $criteria->add(DocumentPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) $criteria->add(DocumentPeer::IS_PROTECTED, $this->is_protected);
+		if ($this->isColumnModified(DocumentPeer::SORT)) $criteria->add(DocumentPeer::SORT, $this->sort);
 		if ($this->isColumnModified(DocumentPeer::DATA)) $criteria->add(DocumentPeer::DATA, $this->data);
 		if ($this->isColumnModified(DocumentPeer::CREATED_AT)) $criteria->add(DocumentPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(DocumentPeer::UPDATED_AT)) $criteria->add(DocumentPeer::UPDATED_AT, $this->updated_at);
@@ -1707,6 +1753,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$copyObj->setIsPrivate($this->is_private);
 		$copyObj->setIsInactive($this->is_inactive);
 		$copyObj->setIsProtected($this->is_protected);
+		$copyObj->setSort($this->sort);
 		$copyObj->setData($this->data);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
@@ -2065,6 +2112,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->is_private = null;
 		$this->is_inactive = null;
 		$this->is_protected = null;
+		$this->sort = null;
 		$this->data = null;
 		$this->created_at = null;
 		$this->updated_at = null;

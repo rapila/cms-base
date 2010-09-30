@@ -25,7 +25,7 @@ abstract class BaseLinkPeer {
 	const TM_CLASS = 'LinkTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 13;
+	const NUM_COLUMNS = 14;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -50,6 +50,9 @@ abstract class BaseLinkPeer {
 
 	/** the column name for the LINK_CATEGORY_ID field */
 	const LINK_CATEGORY_ID = 'links.LINK_CATEGORY_ID';
+
+	/** the column name for the SORT field */
+	const SORT = 'links.SORT';
 
 	/** the column name for the IS_PRIVATE field */
 	const IS_PRIVATE = 'links.IS_PRIVATE';
@@ -85,12 +88,12 @@ abstract class BaseLinkPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Url', 'Description', 'LanguageId', 'OwnerId', 'LinkCategoryId', 'IsPrivate', 'IsInactive', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'url', 'description', 'languageId', 'ownerId', 'linkCategoryId', 'isPrivate', 'isInactive', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::URL, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::LINK_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'URL', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'LINK_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'url', 'description', 'language_id', 'owner_id', 'link_category_id', 'is_private', 'is_inactive', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Url', 'Description', 'LanguageId', 'OwnerId', 'LinkCategoryId', 'Sort', 'IsPrivate', 'IsInactive', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'url', 'description', 'languageId', 'ownerId', 'linkCategoryId', 'sort', 'isPrivate', 'isInactive', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::URL, self::DESCRIPTION, self::LANGUAGE_ID, self::OWNER_ID, self::LINK_CATEGORY_ID, self::SORT, self::IS_PRIVATE, self::IS_INACTIVE, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'URL', 'DESCRIPTION', 'LANGUAGE_ID', 'OWNER_ID', 'LINK_CATEGORY_ID', 'SORT', 'IS_PRIVATE', 'IS_INACTIVE', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'url', 'description', 'language_id', 'owner_id', 'link_category_id', 'sort', 'is_private', 'is_inactive', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
 	);
 
 	/**
@@ -100,12 +103,12 @@ abstract class BaseLinkPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'LinkCategoryId' => 6, 'IsPrivate' => 7, 'IsInactive' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, 'CreatedBy' => 11, 'UpdatedBy' => 12, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'languageId' => 4, 'ownerId' => 5, 'linkCategoryId' => 6, 'isPrivate' => 7, 'isInactive' => 8, 'createdAt' => 9, 'updatedAt' => 10, 'createdBy' => 11, 'updatedBy' => 12, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::URL => 2, self::DESCRIPTION => 3, self::LANGUAGE_ID => 4, self::OWNER_ID => 5, self::LINK_CATEGORY_ID => 6, self::IS_PRIVATE => 7, self::IS_INACTIVE => 8, self::CREATED_AT => 9, self::UPDATED_AT => 10, self::CREATED_BY => 11, self::UPDATED_BY => 12, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'URL' => 2, 'DESCRIPTION' => 3, 'LANGUAGE_ID' => 4, 'OWNER_ID' => 5, 'LINK_CATEGORY_ID' => 6, 'IS_PRIVATE' => 7, 'IS_INACTIVE' => 8, 'CREATED_AT' => 9, 'UPDATED_AT' => 10, 'CREATED_BY' => 11, 'UPDATED_BY' => 12, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'link_category_id' => 6, 'is_private' => 7, 'is_inactive' => 8, 'created_at' => 9, 'updated_at' => 10, 'created_by' => 11, 'updated_by' => 12, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'LanguageId' => 4, 'OwnerId' => 5, 'LinkCategoryId' => 6, 'Sort' => 7, 'IsPrivate' => 8, 'IsInactive' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, 'CreatedBy' => 12, 'UpdatedBy' => 13, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'languageId' => 4, 'ownerId' => 5, 'linkCategoryId' => 6, 'sort' => 7, 'isPrivate' => 8, 'isInactive' => 9, 'createdAt' => 10, 'updatedAt' => 11, 'createdBy' => 12, 'updatedBy' => 13, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::URL => 2, self::DESCRIPTION => 3, self::LANGUAGE_ID => 4, self::OWNER_ID => 5, self::LINK_CATEGORY_ID => 6, self::SORT => 7, self::IS_PRIVATE => 8, self::IS_INACTIVE => 9, self::CREATED_AT => 10, self::UPDATED_AT => 11, self::CREATED_BY => 12, self::UPDATED_BY => 13, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'URL' => 2, 'DESCRIPTION' => 3, 'LANGUAGE_ID' => 4, 'OWNER_ID' => 5, 'LINK_CATEGORY_ID' => 6, 'SORT' => 7, 'IS_PRIVATE' => 8, 'IS_INACTIVE' => 9, 'CREATED_AT' => 10, 'UPDATED_AT' => 11, 'CREATED_BY' => 12, 'UPDATED_BY' => 13, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'language_id' => 4, 'owner_id' => 5, 'link_category_id' => 6, 'sort' => 7, 'is_private' => 8, 'is_inactive' => 9, 'created_at' => 10, 'updated_at' => 11, 'created_by' => 12, 'updated_by' => 13, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
 	);
 
 	/**
@@ -184,6 +187,7 @@ abstract class BaseLinkPeer {
 			$criteria->addSelectColumn(LinkPeer::LANGUAGE_ID);
 			$criteria->addSelectColumn(LinkPeer::OWNER_ID);
 			$criteria->addSelectColumn(LinkPeer::LINK_CATEGORY_ID);
+			$criteria->addSelectColumn(LinkPeer::SORT);
 			$criteria->addSelectColumn(LinkPeer::IS_PRIVATE);
 			$criteria->addSelectColumn(LinkPeer::IS_INACTIVE);
 			$criteria->addSelectColumn(LinkPeer::CREATED_AT);
@@ -198,6 +202,7 @@ abstract class BaseLinkPeer {
 			$criteria->addSelectColumn($alias . '.LANGUAGE_ID');
 			$criteria->addSelectColumn($alias . '.OWNER_ID');
 			$criteria->addSelectColumn($alias . '.LINK_CATEGORY_ID');
+			$criteria->addSelectColumn($alias . '.SORT');
 			$criteria->addSelectColumn($alias . '.IS_PRIVATE');
 			$criteria->addSelectColumn($alias . '.IS_INACTIVE');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');

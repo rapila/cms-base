@@ -13,6 +13,7 @@
  * @method     LinkQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     LinkQuery orderByOwnerId($order = Criteria::ASC) Order by the owner_id column
  * @method     LinkQuery orderByLinkCategoryId($order = Criteria::ASC) Order by the link_category_id column
+ * @method     LinkQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method     LinkQuery orderByIsPrivate($order = Criteria::ASC) Order by the is_private column
  * @method     LinkQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method     LinkQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -27,6 +28,7 @@
  * @method     LinkQuery groupByLanguageId() Group by the language_id column
  * @method     LinkQuery groupByOwnerId() Group by the owner_id column
  * @method     LinkQuery groupByLinkCategoryId() Group by the link_category_id column
+ * @method     LinkQuery groupBySort() Group by the sort column
  * @method     LinkQuery groupByIsPrivate() Group by the is_private column
  * @method     LinkQuery groupByIsInactive() Group by the is_inactive column
  * @method     LinkQuery groupByCreatedAt() Group by the created_at column
@@ -66,6 +68,7 @@
  * @method     Link findOneByLanguageId(string $language_id) Return the first Link filtered by the language_id column
  * @method     Link findOneByOwnerId(int $owner_id) Return the first Link filtered by the owner_id column
  * @method     Link findOneByLinkCategoryId(int $link_category_id) Return the first Link filtered by the link_category_id column
+ * @method     Link findOneBySort(int $sort) Return the first Link filtered by the sort column
  * @method     Link findOneByIsPrivate(boolean $is_private) Return the first Link filtered by the is_private column
  * @method     Link findOneByIsInactive(boolean $is_inactive) Return the first Link filtered by the is_inactive column
  * @method     Link findOneByCreatedAt(string $created_at) Return the first Link filtered by the created_at column
@@ -80,6 +83,7 @@
  * @method     array findByLanguageId(string $language_id) Return Link objects filtered by the language_id column
  * @method     array findByOwnerId(int $owner_id) Return Link objects filtered by the owner_id column
  * @method     array findByLinkCategoryId(int $link_category_id) Return Link objects filtered by the link_category_id column
+ * @method     array findBySort(int $sort) Return Link objects filtered by the sort column
  * @method     array findByIsPrivate(boolean $is_private) Return Link objects filtered by the is_private column
  * @method     array findByIsInactive(boolean $is_inactive) Return Link objects filtered by the is_inactive column
  * @method     array findByCreatedAt(string $created_at) Return Link objects filtered by the created_at column
@@ -368,6 +372,37 @@ abstract class BaseLinkQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(LinkPeer::LINK_CATEGORY_ID, $linkCategoryId, $comparison);
+	}
+
+	/**
+	 * Filter the query on the sort column
+	 * 
+	 * @param     int|array $sort The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    LinkQuery The current query, for fluid interface
+	 */
+	public function filterBySort($sort = null, $comparison = null)
+	{
+		if (is_array($sort)) {
+			$useMinMax = false;
+			if (isset($sort['min'])) {
+				$this->addUsingAlias(LinkPeer::SORT, $sort['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($sort['max'])) {
+				$this->addUsingAlias(LinkPeer::SORT, $sort['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(LinkPeer::SORT, $sort, $comparison);
 	}
 
 	/**

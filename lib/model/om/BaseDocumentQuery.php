@@ -17,6 +17,7 @@
  * @method     DocumentQuery orderByIsPrivate($order = Criteria::ASC) Order by the is_private column
  * @method     DocumentQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method     DocumentQuery orderByIsProtected($order = Criteria::ASC) Order by the is_protected column
+ * @method     DocumentQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method     DocumentQuery orderByData($order = Criteria::ASC) Order by the data column
  * @method     DocumentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     DocumentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -34,6 +35,7 @@
  * @method     DocumentQuery groupByIsPrivate() Group by the is_private column
  * @method     DocumentQuery groupByIsInactive() Group by the is_inactive column
  * @method     DocumentQuery groupByIsProtected() Group by the is_protected column
+ * @method     DocumentQuery groupBySort() Group by the sort column
  * @method     DocumentQuery groupByData() Group by the data column
  * @method     DocumentQuery groupByCreatedAt() Group by the created_at column
  * @method     DocumentQuery groupByUpdatedAt() Group by the updated_at column
@@ -80,6 +82,7 @@
  * @method     Document findOneByIsPrivate(boolean $is_private) Return the first Document filtered by the is_private column
  * @method     Document findOneByIsInactive(boolean $is_inactive) Return the first Document filtered by the is_inactive column
  * @method     Document findOneByIsProtected(boolean $is_protected) Return the first Document filtered by the is_protected column
+ * @method     Document findOneBySort(int $sort) Return the first Document filtered by the sort column
  * @method     Document findOneByData(resource $data) Return the first Document filtered by the data column
  * @method     Document findOneByCreatedAt(string $created_at) Return the first Document filtered by the created_at column
  * @method     Document findOneByUpdatedAt(string $updated_at) Return the first Document filtered by the updated_at column
@@ -97,6 +100,7 @@
  * @method     array findByIsPrivate(boolean $is_private) Return Document objects filtered by the is_private column
  * @method     array findByIsInactive(boolean $is_inactive) Return Document objects filtered by the is_inactive column
  * @method     array findByIsProtected(boolean $is_protected) Return Document objects filtered by the is_protected column
+ * @method     array findBySort(int $sort) Return Document objects filtered by the sort column
  * @method     array findByData(resource $data) Return Document objects filtered by the data column
  * @method     array findByCreatedAt(string $created_at) Return Document objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return Document objects filtered by the updated_at column
@@ -466,6 +470,37 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			$is_protected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(DocumentPeer::IS_PROTECTED, $isProtected, $comparison);
+	}
+
+	/**
+	 * Filter the query on the sort column
+	 * 
+	 * @param     int|array $sort The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    DocumentQuery The current query, for fluid interface
+	 */
+	public function filterBySort($sort = null, $comparison = null)
+	{
+		if (is_array($sort)) {
+			$useMinMax = false;
+			if (isset($sort['min'])) {
+				$this->addUsingAlias(DocumentPeer::SORT, $sort['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($sort['max'])) {
+				$this->addUsingAlias(DocumentPeer::SORT, $sort['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(DocumentPeer::SORT, $sort, $comparison);
 	}
 
 	/**
