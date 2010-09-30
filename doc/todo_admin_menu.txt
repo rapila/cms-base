@@ -1,1 +1,3 @@
-experimental current_module added if not in user_defaults
+AdminMenu
+
+- add current_module added if not in user_defaults

@@ -16,7 +16,7 @@ class LinksAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'link_category_id', $this->oListWidget->oDelegateProxy->getLinkCategoryId());
 
 		$this->oSidebarWidget = new ListWidgetModule();
-		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
 		
 		$this->oInputWidget = new SidebarInputWidgetModule();
@@ -56,10 +56,10 @@ class LinksAdminModule extends AdminModule {
 		if(LinkCategoryPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('widget.sidebar.select_all'),
+							'name' => StringPeer::getString('widget.sidebar.select_all'),
 							'magic_column' => 'all'),
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'title' => StringPeer::getString('links.select_without_title'),
+							'name' => StringPeer::getString('links.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

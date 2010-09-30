@@ -3,5 +3,6 @@ Infobar
 actions?
 
 icons
-- add (if option)
-- delete if item is selected (-), show alert window (delete item /and with content?)
+- add button (if option)
+- edit(?) button, delete button (-) if item is selected, 
+	show alert window (delete item /and with content?)

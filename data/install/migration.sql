@@ -337,3 +337,7 @@ ALTER TABLE `page_strings` ADD `description` VARCHAR(255)  AFTER `keywords`;
 #svn r2751
 ALTER TABLE `page_strings` CHANGE `keywords` `meta_keywords` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 ALTER TABLE `page_strings` CHANGE `description` `meta_description` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+#svn r2799
+ALTER TABLE `documents` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `document_category_id`;
+ALTER TABLE `links` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `link_category_id`;

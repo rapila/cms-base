@@ -6,16 +6,6 @@ detail
 - document_type_id: file upload with browse button does not work properly Error Handling, only add_item/new?
 - return on detail with file_upload replace should not close window and show new uploaded file
 
-
-document_types
-- allow add new document type on upload if has permissions
-	validate document_type @see todo_user_notifications > exception display error at/around file_info / browse? DISCUSS
-
-drag & drop 
-- multiple upload: show activity_symbol (big) in center of page AND if possible filename changeing
-- list: drag sort, highlight top line of hovered list item, last one add dummy list item?
-- category change: highlight category like file upload
-
 list / views
 - clean up views, make thumbnail view work in the same way (same criteria delegate)
 - sort column: visible only if category is chosen, AdminModule::customCss()
@@ -26,6 +16,15 @@ list / views
 - document_list thumbnail_view AUTOPLAY FALSE
 - double click on is_protected (i.e) in list does not display the result correctly (stores correctly, but not displays correctly)
 	handle with timeout? so row can be updated
+
+document_types
+- allow add new document type on upload if has permissions
+	validate document_type @see todo_user_notifications > exception display error at/around file_info / browse? DISCUSS
+
+drag & drop 
+- multiple upload: show activity_symbol (big) in center of page AND if possible filename changeing
+- list: drag sort, highlight top line of hovered list item, last one add dummy list item?
+- category change: highlight category like file upload
 
 sidebar: document_categories:
 - is_office_doc: is this needed or deprecated > remove

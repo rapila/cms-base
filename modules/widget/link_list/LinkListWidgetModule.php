@@ -30,12 +30,15 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'url', 'description', 'category_name', 'updated_at_formatted', 'delete');
+		return array('id', 'name', 'sort', 'url', 'description', 'category_name', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
+			case 'sort':
+				$aResult['heading'] = StringPeer::getString('widget.sort');
+				break;
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('name');
 				break;

@@ -267,6 +267,7 @@
 	<foreign-key foreignTable="link_categories" onDelete="setnull">
 		<reference local="link_category_id" foreign="id" />
 	</foreign-key>
+	<column name="sort" type="integer" />
 	<column name="is_private" type="boolean" size="1" default="0" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />

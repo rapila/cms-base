@@ -472,15 +472,33 @@ table.ui-list .ui-list-cell a {
 	background-image: url(../../images/admin/folder_open.png);
 }
 
-#admin_sidebar ul.ui-list li.ui-list-row.magic_column-all,
-#admin_sidebar ul.ui-list li.ui-list-row.magic_column-without {
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.magic_column-all,
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.magic_column-without {
 	font-style: oblique;
 	background-image: url(../../images/admin/folder_magic.png);
 	background-repeat: none;
 }
 
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active.magic_column-all,
-#admin_sidebar ul.ui-list li.ui-list-row.ui-state-active.magic_column-without {
+
+#admin_sidebar ul.ui-list li.ui-list-row {
+	padding-left: 5px;
+}
+
+#admin_sidebar li.ui-list-row.magic_column-all,
+#admin_sidebar li.ui-list-row.magic_column-without {
+	font-style: oblique;
+	color: #555555;
+}
+
+#admin_sidebar li.ui-list-row.magic_column-all.ui-state-active,
+#admin_sidebar li.ui-list-row.magic_column-without.ui-state-active,
+#admin_sidebar li.ui-list-row.magic_column-all.ui-state-hover,
+#admin_sidebar li.ui-list-row.magic_column-without.ui-state-hover {
+	color: #FFF;
+}
+
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active.magic_column-all,
+#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active.magic_column-without {
 	font-style: oblique;
 	background-image: url(../../images/admin/folder_magic_open.png);
 	background-repeat: none;

@@ -2,7 +2,8 @@ Detail widgets
 - validation: 
 	DISCUSS: in field if empty, in label if field content is not valid > ALWAYS in label (append span in label)
 
-- widget new_item create: document_detail and link_detail are handled differently????
+- new_item/create: 
+	document_detail and link_detail are handled differently????
 
 - selects 
 	unselected in new detail do not work properly
@@ -14,7 +15,7 @@ Detail widgets
 	saveData, createPage, deletePage, discuss naming convention, pro and cons
 
 - BUTTON highlight (if changed content?)
-	close_window: alert if modified and not saved
+	close_window: alert if modified and not saved > test save action with propel modified info?
 	
 - checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)?
 

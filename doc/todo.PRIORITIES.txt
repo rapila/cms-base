@@ -1,6 +1,6 @@
 PRIORITAETEN:
 
-1. RFP Priorities and Planning in General
+1. RFP-Projekt Priorities and Planning in General
 		- SVN > groups work_pool, tm
 		- FrontendUsers, Users, Rights
 		- NewsletterPlugin
@@ -10,6 +10,7 @@ PRIORITAETEN:
 		- todo_documents (links etc)
 3. file_upload widget bug in document detail
 4. Recommendation, no migration tasks, no github etc for now
+5. Domainname? why not mosaics-project.ch?
 
 
 SVN, Wiki, Name, Tracking!
