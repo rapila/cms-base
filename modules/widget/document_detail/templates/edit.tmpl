@@ -14,14 +14,16 @@
   		<label>{{writeString=widget.document.original_name}}</label><span class="original_name"></span>
 		</div>
 	</div>
-	<label for="name">{{writeString=name}}</label>
-	<input type="text" name="name" class="ui-widget-content" /><br />
-	<label for="description">{{writeString=description}}</label>
-	<textarea rows="2" cols="30" name="description" class="ui-widget-content"></textarea>
-	<label for="document_category_id">{{writeString=widget.document.document_category}}</label>
-	<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
-	<label for="language_id">{{writeString=widget.language}}</label>
-	<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
-	<label for="is_protected">{{writeString=is_protected}}</label>	
-	<input type="checkbox" name="is_protected" value="1" /><br />
+	<div class="hide_if_not_saved">
+		<label for="name">{{writeString=name}}</label>
+		<input type="text" name="name" class="ui-widget-content" /><br />
+		<label for="description">{{writeString=description}}</label>
+		<textarea rows="2" cols="30" name="description" class="ui-widget-content"></textarea>
+		<label for="document_category_id">{{writeString=widget.document.document_category}}</label>
+		<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
+		<label for="language_id">{{writeString=widget.language}}</label>
+		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
+		<label for="is_protected">{{writeString=is_protected}}</label>	
+		<input type="checkbox" name="is_protected" value="1" /><br />
+	</div>
 </form>

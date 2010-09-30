@@ -49,7 +49,6 @@
 .ui-state-active .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/hidden_active.png') no-repeat; }
 .ui-widget .status_section {
   font-family: Arial;
-  margin-top: 1em;
   padding-right: 2em;
   width: 16.2em;
   float: right;
@@ -416,7 +415,13 @@ table.ui-list td.sort {
 tr.ui-list-headrow th.sort { padding-right: 0em; }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
 .ui-accordion .ui-accordion-content.contents_container { padding: 0; }
+.users fieldset {
+  padding: 0;
+  border: 1px #999999 solid;
+}
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
   padding: 0;
   border-color: #cccdcf;
 }
+label span.error_display::before { content: ' '; }
+label span.error_display { color: red; }

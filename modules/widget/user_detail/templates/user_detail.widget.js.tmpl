@@ -1,6 +1,7 @@
 Widget.types.user_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
@@ -15,7 +16,12 @@ Widget.types.user_detail = {
 				widget.settings.international_option = false;
 				widget.settings.use_admin_languages = true;
 			}, jQuery.noop);
-			this.content.find("select[name='group_ids[]']").prepareWidget();
+			this.content.find("div.user_groups_section").prepareWidget(function(widget) {
+				this.user_groups = widget;
+			}.bind(this));
+			this.content.find("div.user_roles_section").prepareWidget(function(widget) {
+				this.user_roles = widget;
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -25,6 +31,7 @@ Widget.types.user_detail = {
 			return false;
 		}
 		this.detail_widget.open();
+		this.detail_widget.content.find('input[name=first_name]').focus();
 	},
 	
 	fill_data: function() {
@@ -35,13 +42,15 @@ Widget.types.user_detail = {
 			this.content.find("input[name='email']").val(user_data.Email);
 			this.content.find("select[name='language_id']").val(user_data.LanguageId);
 			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
-			this.content.find("select[name='group_ids[]']").val(user_data.ActiveUserGroupIds);
+			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
+			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);
 			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
 			this.content.find("input[name='password']").val('');
 			this.content.find("input[name='password_confirm']").val('');
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
+			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
 		});
 	},

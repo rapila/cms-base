@@ -20,6 +20,13 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['UpdatedInfo'] = $oLink->getUpdatedAtFormatted().' / '.($oLink->getUserRelatedByUpdatedBy() ? $oLink->getUserRelatedByUpdatedBy()->getUserName() : '');
 		return $aResult;
 	}
+	private function validate($aLinkData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aLinkData);
+		$oFlash->checkForValue('name', 'name_required');
+		$oFlash->checkForValue('url', 'url_required');
+		$oFlash->finishReporting();
+	}
 	
 	public function saveData($aLinkData) {
 		if($this->iLinkId === null) {
@@ -27,6 +34,11 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oLink = LinkPeer::retrieveByPK($this->iLinkId);
 		}
+		$this->validate($aLinkData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+
 		$oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($aLinkData['url']));
 		$oLink->setName($aLinkData['name']);
 		$oLink->setLinkCategoryId($aLinkData['link_category_id']);

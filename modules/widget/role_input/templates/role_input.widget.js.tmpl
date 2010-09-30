@@ -1,11 +1,11 @@
-Widget.types.group_input = {
+Widget.types.role_input = {
 	prepare: function() {
 		var input = jQuery('<input/>').attr('type', 'checkbox');
-		var groups = this.getGroups();
+		var roles = this.getRoles();
 		var fieldset = this._element.find('fieldset');
-		jQuery.each(groups, function(i, group) {
-			input.clone().attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
-			jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(fieldset);
+		jQuery.each(roles, function(i, role) {
+			input.clone().attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);
+			jQuery('<label/>').attr('for', 'role_keys[]').text(role.description).appendTo(fieldset);
 			jQuery('<br/>').appendTo(fieldset);
 		}.bind(this));
 	},
@@ -21,7 +21,7 @@ Widget.types.group_input = {
 		jQuery.each(values, function(i, value) {
 			value_obj[value] = true;
 		});
-		this._element.find("input[name='group_ids[]']").each(function(checkbox) {
+		this._element.find("input[name='role_keys[]']").each(function(checkbox) {
 			jQuery(checkbox).attr('checked', !!value_obj[checkbox.value]);
 		});
 	}

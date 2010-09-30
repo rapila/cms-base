@@ -3,23 +3,35 @@
 		<input type="checkbox" name="is_admin" value="1" /><label for="is_admin">{{writeString=is_admin}}</label><br />
 		<input type="checkbox" name="is_backend_login_enabled" value="1" /><label for="is_backend_login_enabled">{{writeString=widget.user.is_backend_login_enabled}}</label><br />
 		<input type="checkbox" name="is_inactive" value="1" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
-		<label for="group_ids[]" >{{writeString=widget.user.groups}}</label>
-		<select name="group_ids[]" multiple="multiple" style="height:auto;" class="ui-widget-content" data-widget-type="group_input"></select><br />
-		<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
-		<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span><br />
+		<div class="hide_if_not_saved">
+			<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
+			<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span>
+		</div>
 	</div>
-	<label for="first_name">{{writeString=first_name}}<span class="validate-first_name" style="color:red;"></span></label>
+	<label for="first_name" class="validate-first_name_required">{{writeString=first_name}}</label>
 	<input type="text" name="first_name" class="ui-widget-content" /><br />
-	<label for="last_name">{{writeString=last_name}}</label>
+	<label for="last_name" class="validate-last_name_required">{{writeString=last_name}}</label>
 	<input type="text" name="last_name" class="ui-widget-content" /><br />
-	<label for="username">{{writeString=user_name}}</label>
+	<label for="username" class="validate-username_required validate-user_name_exists">{{writeString=user_name}}</label>
 	<input type="text" name="username" class="ui-widget-content" /><br />
-	<label for="email">{{writeString=email}}</label>
+	<label for="email" class="validate-email" >{{writeString=email}}</label>
 	<input type="text" name="email" class="ui-widget-content" /><br />
 	<label for="language_id">{{writeString=widget.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
-	<label for="password">{{writeString=password}}</label>
-	<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
-	<label for="password_confirm">{{writeString=password_confirm}}</label>
-	<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" /><br />
+	<div class="hide_if_saved"
+		<label for="password">{{writeString=password}}</label>
+		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
+		<label for="password_confirm">{{writeString=password_confirm}}</label>
+		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
+	</div>
+	<div class="user_roles_section" data-widget-type="role_input">
+		<label>Benutzer-Rollen</label><br />
+		<fieldset>
+		</fieldset>
+	</div>
+	<div class="user_groups_section" data-widget-type="group_input">
+		<label>Benutzer-Gruppen</label><br />
+		<fieldset>
+		</fieldset>
+	</div>
 </form>

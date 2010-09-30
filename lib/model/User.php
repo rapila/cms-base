@@ -176,8 +176,16 @@ class User extends BaseUser {
 			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
 		}
 		return $aResult;
-	}
+	}	
 	
+	public function getActiveUserRoleKeys() {
+		$aResult = array();
+		foreach($this->getUserRolesRelatedByUserId() as $oUserRole) {
+			$aResult[] = $oUserRole->getRoleKey();
+		}
+		return $aResult;
+	}
+
 	public function hasGroup($mGroup) {
 		if($mGroup instanceof Group) {
 			$mGroup = $mGroup->getId();

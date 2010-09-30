@@ -11,20 +11,30 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function getUserData() {
 		$oUser = UserPeer::retrieveByPK($this->iUserId);
-		$aResult = $oUser->toArray();
-		$aResult['FullName'] = $oUser->getFullName();
-		$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
-		$aResult['CreatedInfo'] = $oUser->getCreatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByCreatedBy() == null ? "" : $oUser->getUserRelatedByCreatedBy()->getUserName());
-		$aResult['UpdatedInfo'] = $oUser->getUpdatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByUpdatedBy() == null ? "" : $oUser->getUserRelatedByUpdatedBy()->getUserName());
-		return $aResult;
+		if(Session::getSession()->getUser()->mayEditUser($oUser)) {
+			$aResult = $oUser->toArray();
+			$aResult['FullName'] = $oUser->getFullName();
+
+			if($oUser->isSessionUser() === false) {
+				if(GroupPeer::doCount(new Criteria())) {
+					$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
+				}
+				if(RolePeer::doCount(new Criteria())) {
+					$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
+				}
+			}
+			$aResult['CreatedInfo'] = $oUser->getCreatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByCreatedBy() == null ? "" : $oUser->getUserRelatedByCreatedBy()->getUserName());
+			$aResult['UpdatedInfo'] = $oUser->getUpdatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByUpdatedBy() == null ? "" : $oUser->getUserRelatedByUpdatedBy()->getUserName());
+			return $aResult;
+		}		
 	}
 
 	private function validate($aUserData, $oUser) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aUserData);
-		$oFlash->checkForValue('username');
-		$oFlash->checkForValue('first_name');
-		$oFlash->checkForValue('last_name');
+		$oFlash->checkForValue('username', 'username_required');
+		$oFlash->checkForValue('first_name', 'first_name_required');
+		$oFlash->checkForValue('last_name', 'last_name_required');
 		$oFlash->checkForEmail('email');
 		if($oUser->isNew() || $aUserData['username'] !== $oUser->getUserName()) {
 			if(UserPeer::getUserByUserName($aUserData['username']) !== null) {
@@ -89,6 +99,16 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 				$oUserGroup = new UserGroup();
 				$oUserGroup->setGroupId($iGroupId);
 				$oUser->addUserGroupRelatedByUserId($oUserGroup);
+			}
+			//Roles
+			foreach($oUser->getUserRolesRelatedByUserId() as $oUserRole) {
+				$oUserRole->delete();
+			}
+			$aRequestedRoles = isset($aUserData['role_keys']) ? $aUserData['role_keys'] : array();
+			foreach($aRequestedRoleKeys as $sRoleKey) {
+				$sRoleKey = new UserGroup();
+				$sRoleKey->setRoleKey($sRoleId);
+				$oUser->addUserRoleRelatedByUserId($sRoleKey);
 			}
 		}
 		
