@@ -13,7 +13,7 @@ class DocumentTypesAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_kind', $this->oListWidget->oDelegateProxy->getDocumentKind());
 
 		$this->oSideBarWidget = new ListWidgetModule();
-		$this->oSideBarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSideBarWidget->setListTag(new TagWriter('ul'));
 		$this->oSideBarWidget->setDelegate($this);
 	}
 	

@@ -12,7 +12,7 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oListWidget = new DocumentsViewWidgetModule();
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
-		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->setInitialDocumentCategoryId($_REQUEST['document_category_id']);

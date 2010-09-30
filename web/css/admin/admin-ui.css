@@ -405,12 +405,12 @@ table.ui-list td.file_info {
 }
 tr.ui-list-headrow th.sort {
   text-align: right;
-  padding-right: 2em;
+  padding-right: 1em;
   color: #999999;
 }
 table.ui-list td.sort {
   text-align: right;
-  padding-right: 2em;
+  padding-right: 1em;
   color: #999999;
 }
 tr.ui-list-headrow th.sort { padding-right: 0em; }

@@ -1,7 +1,7 @@
 sidebar:
 - edit sidebar items: document_categories
 - context actions: 
-	- delete all, delete by category
+	- delete all, delete by category, @see links
 	- edit related modules if required, @see todo_dashboard
 	
 - context menu > edit sidebar item ie document category etc 

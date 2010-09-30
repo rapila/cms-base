@@ -12,7 +12,7 @@ class StringsAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'name_space', $this->oListWidget->oDelegateProxy->getNameSpace());
 
 		$this->oSidebarWidget = new ListWidgetModule();
-		$this->oSidebarWidget->setListTag(new TagWriter('ul', array('class' => 'use_sidebar_icons')));
+		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate($this);
 	}
 	
