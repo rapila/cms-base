@@ -3,12 +3,12 @@
 define("XHTML_TEMPLATE_LANGUAGE_IDENTIFIER", TemplateIdentifier::constructIdentifier("language"));
 define("XHTML_TEMPLATE_CHARSET_IDENTIFIER", TemplateIdentifier::constructIdentifier("charset"));
 
-define("DOCTYPE_HTML_4_STRICT", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
-define("DOCTYPE_HTML_4_TRANSITIONAL", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
-define("DOCTYPE_HTML_5", "<!DOCTYPE HTML>\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
-define("DOCTYPE_XHTML_STRICT", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
-define("DOCTYPE_XHTML_TRANSITIONAL", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
-define("DOCTYPE_XHTML_5", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE HTML>\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\">\n");
+define("DOCTYPE_HTML_4_STRICT", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
+define("DOCTYPE_HTML_4_TRANSITIONAL", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
+define("DOCTYPE_HTML_5", "<!DOCTYPE HTML>\n<html lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
+define("DOCTYPE_XHTML_STRICT", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
+define("DOCTYPE_XHTML_TRANSITIONAL", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
+define("DOCTYPE_XHTML_5", "<?xml version=\"1.0\" encoding=\"".XHTML_TEMPLATE_CHARSET_IDENTIFIER."\" ?>\n<!DOCTYPE HTML>\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".XHTML_TEMPLATE_LANGUAGE_IDENTIFIER."\"{{identifierContex=start;name=className}} class=\"{{className}}\"{{identifierContex=end;name=className}}>\n");
 
 
 class XHTMLOutput {
@@ -25,13 +25,15 @@ class XHTMLOutput {
 	private $sLanguage;
 	private $sSetting;
 	private $bPrintDoctype;
+	private $sClassName;
 	
-	public function __construct($sSetting = null, $bPrintDoctype = true) {
+	public function __construct($sSetting = null, $bPrintDoctype = true, $sClassName = null) {
 		$this->sContentType = "text/html";
 		$this->sLanguage = Session::language();
 		$this->sCharset = Settings::getSetting("encoding", "browser", "utf-8");
 		$this->sSetting = $sSetting;
 		$this->bPrintDoctype = $bPrintDoctype;
+		$this->sClassName = $sClassName;
 		if($this->sSetting === null) {
 			$this->sSetting = Settings::getSetting('frontend', 'doctype', 'none');
 		}
@@ -99,6 +101,7 @@ class XHTMLOutput {
 		$oTemplate = new Template($sDoctype, null, true, true);
 		$oTemplate->replaceIdentifier('language', $this->sLanguage);
 		$oTemplate->replaceIdentifier('charset', $this->sCharset);
+		$oTemplate->replaceIdentifier('className', $this->sClassName);
 		$oTemplate->render();
 	}
 	

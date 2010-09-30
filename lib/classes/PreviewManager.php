@@ -17,6 +17,9 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
+		
+		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		
 		$oLoginWindowWidget = new LoginWindowWidgetModule();
 		LoginWindowWidgetModule::includeResources();
     $oAdminMenuWidget = new AdminMenuWidgetModule();
@@ -59,7 +62,7 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	protected function getXHTMLOutput() {
-		return new XHTMLOutput('html5');
+		return new XHTMLOutput('html5', true, 'preview');
 	}
 	
 	protected function fillContent() {
