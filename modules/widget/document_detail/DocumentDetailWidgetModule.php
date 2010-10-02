@@ -44,6 +44,13 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	public function preview() {
 		return self::documentPreview($this->iDocumentId, 190);
 	}
+	
+	private function validate($aDocumentData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aDocumentData);
+		$oFlash->checkForValue('name', 'name_required');
+		$oFlash->finishReporting();
+	}
 		
 	public function saveData($aDocumentData) {
 		if($this->iDocumentId === null) {
@@ -51,7 +58,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
-		ErrorHandler::log(array('document_data', $aDocumentData));
+		$this->validate($aDocumentData);
+		if(!Flash::noErrors($aDocumentData)) {
+			throw new ValidationException();
+		}
+
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);

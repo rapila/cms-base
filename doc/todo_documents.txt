@@ -23,6 +23,7 @@ document_types
 
 drag & drop 
 - multiple upload: show activity_symbol (big) in center of page AND if possible filename changeing
+	fix display select document_category 
 - list: drag sort, highlight top line of hovered list item, last one add dummy list item?
 - category change: highlight category like file upload
 

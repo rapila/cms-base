@@ -24,7 +24,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 	private function validate($aLanguageData) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aLanguageData);
-		$oFlash->checkForLength('language_id', 2, 2, 'widget.language_id');
+		$oFlash->checkForLength('language_id', 2, 2, 'language_id_required');
 		$oFlash->finishReporting();
 	}
 

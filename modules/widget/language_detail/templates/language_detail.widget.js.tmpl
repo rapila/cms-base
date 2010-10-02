@@ -27,7 +27,7 @@ Widget.types.language_detail = {
 		this.getLanguageData(function(language_data) {
 			this.content.find("input[name='language_id']").val(language_data.Id);
 			this.content.find("input[name='is_active']").attr('checked', language_data.IsActive);
-			this.detail_widget.set_title(this.detail_widget.settings.title = language_data.LanguageName);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.content_language}}"+language_data.LanguageName);
 			if(language_data.LanguageStringMissing) {
 				this.detail_widget.content.find('div.check_static_strings').text(language_data.LanguageStringMissing).show();
 			}
