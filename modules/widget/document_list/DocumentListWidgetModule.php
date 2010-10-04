@@ -8,6 +8,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	public $oDelegateProxy;
 	private $iDocumentCategoryId;
 	private $oDocumentKindFilter;
+	private $oLanguageFilter;
 	
 	public function __construct() {
 		parent::__construct();
@@ -16,6 +17,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->iDocumentCategoryId = null;
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
+		$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 	}
 
 	public function doWidget() {

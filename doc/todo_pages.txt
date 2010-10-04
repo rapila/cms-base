@@ -13,7 +13,7 @@ detail:
 - handle active accordion intelligently	
 - References: how to handle. save notifications easy links
 
-Configuration
+configuration
 - fix bug (missing language_object or blob null?), handle objects without language_objects
 - Display content_info if exists?
 - allowed_modules are not handled anymore
@@ -29,6 +29,7 @@ language sensitive: page_strings, description, configuration, references!
 
 page_types:
 - implement other page types for testing and improving page type handling
+- handle inherit, display empty only if inherit is set, change name: stop inheritance
 	
 tree:
 - new page add in tree (if no major hazzle)

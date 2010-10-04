@@ -1,0 +1,8 @@
+Site prototype
+
+cleanup 
+	site/config.yml
+	templates
+	
+add missing files if...
+- preview-....css file in css/preview with comments for suggestions

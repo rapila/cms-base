@@ -28,8 +28,11 @@ Widget.types.language_detail = {
 			this.content.find("input[name='language_id']").val(language_data.Id);
 			this.content.find("input[name='is_active']").attr('checked', language_data.IsActive);
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.content_language}}"+language_data.LanguageName);
+			var language_missing = this.detail_widget.content.find('div.check_static_strings');
 			if(language_data.LanguageStringMissing) {
-				this.detail_widget.content.find('div.check_static_strings').text(language_data.LanguageStringMissing).show();
+				language_missing.text(language_data.LanguageStringMissing).show();
+			} else {
+				language_missing.text('').hide();
 			}
 		});
 	},

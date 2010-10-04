@@ -20,6 +20,7 @@ list / views
 document_types
 - allow add new document type on upload if has permissions
 	validate document_type @see todo_user_notifications > exception display error at/around file_info / browse? DISCUSS
+- IMPORT doc types if new? automatically or dialog import or manage
 
 drag & drop 
 - multiple upload: show activity_symbol (big) in center of page AND if possible filename changeing

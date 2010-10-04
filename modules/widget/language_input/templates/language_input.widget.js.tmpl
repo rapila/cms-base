@@ -1,5 +1,6 @@
 Widget.types.language_input = {
 	prepare: function() {
+		// wrap select name language_id if option return_options_only is set to false
 		var option = jQuery('<option/>');
 		var languages = this.getLanguages(this.settings.use_admin_languages);
 		jQuery.each(languages, function(i, language) {
@@ -12,6 +13,7 @@ Widget.types.language_input = {
 	
 	settings: {
 		international_option: "{{writeString=widget.language.international}}",
-		use_admin_languages: false
+		use_admin_languages: false,
+		return_options_only: true
 	}
 };

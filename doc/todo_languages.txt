@@ -1,2 +1,5 @@
+language_input filter for all language sensitive module lists
+- add and handle settings: return_options_only
+
 language_tabs: 
 - check and test correct language_tabs.settings.active_languages handling
