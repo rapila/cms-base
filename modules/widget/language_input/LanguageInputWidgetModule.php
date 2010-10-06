@@ -4,6 +4,8 @@
  */
 class LanguageInputWidgetModule extends WidgetModule {
 	
+	var $sSelectedLanguageId;
+	
 	public function getLanguages($bUseAdminLanguages = false) {
 		if($bUseAdminLanguages) {
 			$aLanguages = LanguagePeer::getAdminLanguages();
@@ -24,4 +26,20 @@ class LanguageInputWidgetModule extends WidgetModule {
 	public function setContentLanguage($sLanguage) {
 		AdminManager::setContentLanguage($sLanguage);
 	}
+	
+	public function setSelectedLanguageId($sSelectedLanguageId) {
+		if($sSelectedLanguageId === '') {
+			$sSelectedLanguageId = null;
+		}
+		$this->sSelectedLanguageId = $sSelectedLanguageId;
+	}
+	
+	public function getSelectedLanguageId() {
+		return $this->sSelectedLanguageId;
+	}
+	
+	public function getElementType() {
+		return 'select';
+	}
+
 }

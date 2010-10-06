@@ -59,7 +59,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
 		$this->validate($aDocumentData);
-		if(!Flash::noErrors($aDocumentData)) {
+		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
 

@@ -54,7 +54,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function saveData($aStringData) {
 		$this->validate($aStringData);
-		if(!Flash::noErrors($aStringData)) {
+		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
 		$oConnection = Propel::getConnection();

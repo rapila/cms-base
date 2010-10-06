@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
 					sidebar.activate_row(sidebar.row_from_row_data({name_space: initial_selection}));
 				}, true, true);
 			}	
-			sidebar.settings.row_click_active_mode = 'toggle';
+			sidebar.settings.row_click_active_mode = 'activate';
 			sidebar.handle('list.row-click', function(event, row, element) {
 				var name_space = element.data('name_space');
 				if(!element.is('.ui-state-active')) {

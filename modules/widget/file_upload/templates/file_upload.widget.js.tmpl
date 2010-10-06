@@ -82,7 +82,7 @@ Widget.types.file_upload = {
 		var file_uploader = this;
 		var fileReader = new FileReader();
 		var size = file.size;
-		var notification = jQuery(document.createElement('div')).text('{{writeString=upload_status}} '+(parseInt(size/1024))+' KiB');
+		var notification = jQuery(document.createElement('div')).text('{{writeString=widget.upload_status}} '+(parseInt(size/1024))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
 		fileReader.onload = function() {
@@ -93,7 +93,7 @@ Widget.types.file_upload = {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
-					Widget.notifyUser('info', '{{writeString=upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
+					Widget.notifyUser('info', '{{writeString=widget.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
 					this.fire('file.uploaded', result);
 					options.callback(result);
 				} else {

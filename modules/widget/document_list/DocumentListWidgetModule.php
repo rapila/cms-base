@@ -74,7 +74,11 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('label_list.file_category_list');
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('widget.language');
+				// $aResult['heading'] = StringPeer::getString('widget.language');
+				$aResult['has_data'] = true;
+				$aResult['heading'] = '';
+				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
 				break;
 			case 'is_protected':
 				$aResult['heading'] = StringPeer::getString('widget.document.is_protected');

@@ -1,16 +1,34 @@
 PRIORITAETEN:
 
-1. RFP-Projekt Priorities and Planning in General
+1. todo_languages: 
+	language_input widget for documents and more
+2. todo_richtext: 
+	RichTextWidget use in Newsletter, Tipps
+3. todo_pages: Drag & Drop, Configuration Fix Discuss behaviour
+	 Required for FrontendUser Testing soon Registration
+4. User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
+5. document detail: file_upload widget bug in
+6. document List viewsView documents
+7. List Order and Category change D&D
+
+RFP-Projekt Priorities and Planning in General
 		- SVN > groups work_pool, tm
 		- FrontendUsers, Users, Rights
 		- NewsletterPlugin
-2. Version 2 Drag & Drop
-		@see 
-		- todo_pages.txt
-		- todo_documents (links etc)
-3. file_upload widget bug in document detail
-4. Recommendation, no migration tasks, no github etc for now
-5. Domainname? why not mosaics-project.ch?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

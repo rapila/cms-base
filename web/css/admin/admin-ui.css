@@ -250,7 +250,7 @@ form.page_detail label.for_checkbox {
   margin-right: 2em;
   padding-left: 0.2em;
 }
-.page_detail .group_label { float: left; }
+.group_fields { float: left; }
 form.page_detail h3.ui-state-default a {
   font-size: 1.2em;
   font-weight: 700;

@@ -1,7 +1,7 @@
 Pages
 
 detail: 
-- Content Language Issue: DISCUSS
+- Content Language Issue:
 	- add language chooser? 
 		for changing main content language: for all language sensitive modules (pages, strings, others)
 	- output of page_tree: Text instead of Name

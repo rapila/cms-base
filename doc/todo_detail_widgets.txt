@@ -1,6 +1,4 @@
 Detail widgets
-- validation: 
-	DISCUSS: in field if empty, in label if field content is not valid > ALWAYS in label (append span in label)
 
 - new_item/create: 
 	document_detail and link_detail are handled differently????
@@ -20,3 +18,8 @@ Detail widgets
 - checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)?
 
 	
+	
+	
+DONE
+- validation: 
+	DISCUSS: in field if empty, in label if field content is not valid > ALWAYS in label (append span in label)

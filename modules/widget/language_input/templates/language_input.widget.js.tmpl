@@ -9,11 +9,25 @@ Widget.types.language_input = {
 		if(this.settings.international_option) {
 			option.text(this.settings.international_option).val('').prependTo(this._element);
 		}
+		
+		//Add change handler
+		this._element.change(function() {
+			if(this.settings.store_value) {
+				this.setSelectedLanguageId(this._element.val());
+			}
+			this.fire('value-changed', this._element.val());
+		}.bind(this));
+		var current_value = this.getSelectedLanguageId();
+		if(current_value === null) {
+			current_value = '';
+		}
+		this._element.val(current_value);
+			
 	},
 	
 	settings: {
 		international_option: "{{writeString=widget.language.international}}",
 		use_admin_languages: false,
-		return_options_only: true
+		store_value: false
 	}
 };
