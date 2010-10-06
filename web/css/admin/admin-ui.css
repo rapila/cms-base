@@ -251,56 +251,56 @@ form.page_detail label.for_checkbox {
   padding-left: 0.2em;
 }
 .group_fields { float: left; }
-form.page_detail h3.ui-state-default a {
+h3.ui-state-default a {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.ui-state-default a:link {
+h3.ui-state-default a:link {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.ui-state-default a:visited {
+h3.ui-state-default a:visited {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.status {
+h3.status {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.ui-state-active a {
+h3.ui-state-active a {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.ui-state-active a:link {
+h3.ui-state-active a:link {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.ui-state-active a:visited {
+h3.ui-state-active a:visited {
   font-size: 1.2em;
   font-weight: 700;
   color: #666666;
   padding: 0.3em 0.3em 0.3em 1.6em;
   border-bottom: none;
 }
-form.page_detail h3.status { padding-left: 0.3em; }
+h3.status { padding-left: 0.3em; }
 input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
 input.ui-widget-content.input_short { width: 6em; }
