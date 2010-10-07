@@ -203,6 +203,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			if($oInheritedFrom !== null) {
 				$aResult[$sContainerName]['inherited_from'] = $oInheritedFrom->getId();
 			}
+			$aResult[$sContainerName]['contents'] = array();
 			
 			$iCount = 0;	
 			foreach($aObjects as $iCount => $oObject) {
@@ -217,9 +218,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 				}		
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();		
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
-			}
-			if(!isset($aResult[$sContainerName]['contents'])) {
-				$aResult[$sContainerName]['contents'] = array();
 			}
 		}
 
