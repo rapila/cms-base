@@ -1,7 +1,23 @@
 Newsletter Plugin
 
+added new fields date_published, is_approved
+
+add
+- feature to load old newsletter that has been sent before but cannot be sent anymore
+- i guess group has to be chosen so it cannot be the wrong one
+
+use accordion tabs for newsletter creation and send form
+
+
 Entwicklung und Dokumentation von Plugins
 - PHPDocumentor : @package / @subpackage (plugin.newsletter, module.admin)
 	@subpackage requirements: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_tags.subpackage.pkg.html
 - separate Plugin Documentation? mit Liste?
+
+
+
+
+
 Newsletter schema und Funktionen
+
+

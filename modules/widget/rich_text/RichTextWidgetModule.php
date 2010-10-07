@@ -7,6 +7,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	private $oImagePickerWidget;
 	private $sModuleContents;
 	private $aModuleSettings;
+	private $aCssUrls;
 	
 	public function __construct($sSessionKey = null, $sModuleContents = null, $aModuleSettings = null) {
 		parent::__construct($sSessionKey);
@@ -17,6 +18,18 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$aModuleSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aModuleSettings = $aModuleSettings;
+		$this->aCssUrls = array();
+		if(isset($this->aModuleSettings['css_files'])) {
+			if(!is_array($this->aModuleSettings['css_files'])) {
+				$this->aModuleSettings['css_files'] = array($this->aModuleSettings['css_files']);
+			}
+			foreach($this->aModuleSettings['css_files'] as $sCssFile) {
+				$oFileUrl = ResourceFinder::findResourceObject(array('web', 'css', "$sCssFile.css"));
+				if($oFileUrl !== null) {
+					$this->aCssUrls[] = $oFileUrl->getFrontendPath();
+				}
+			}
+		}
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
@@ -40,25 +53,17 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$oTemplate->render();
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 			$aResources = $oResourceIncluder->getAllIncludedResources();
-			$aCssFiles = array();
+			$this->aCssUrls = array();
 			foreach($aResources as $aResourceInfo) {
 				if($aResourceInfo['resource_type'] === 'css') {
-					$aCssFiles[] = $aResourceInfo['location'];
+					$this->aCssUrls[] = $aResourceInfo['location'];
 				}
 			}
-			$this->aModuleSettings['css_files'] = $aCssFiles;
 		}
 	}
 	
 	public function getCssUrls() {
-		$aResult = array();
-		if(isset($this->aModuleSettings['css_files'])) {
-			$aResult = $this->aModuleSettings['css_files'];
-			if(!is_array($aResult)) {
-				$aResult = array($aResult);
-			}
-		}
-		return $aResult;
+		return $this->aCssUrls;
 	}
 	
 	public function getStyles() {

@@ -14,12 +14,16 @@ Widget.types.rich_text = {
 		],
 		skin: "kama",
 		entities: false,
-		baseFloatZIndex: 1020
+		baseFloatZIndex: 1020,
+		resize_enabled: false,
+		height: 200
 	},
 	
 	prepare: function() {
 		var module_content = this.getModuleContents();
-		this._element.text(module_content);
+		if(module_content !== null) {
+			this._element.text(module_content);
+		}
 		var textarea = this._element.get(0);
 		this.settings.contentsCss = this.getCssUrls();
 		this.settings.stylesSet = this.getStyles();
@@ -62,5 +66,9 @@ Widget.types.rich_text = {
 	
 	get_data: function() {
 		return this.instance.getData();
+	},
+	
+	set_data: function(new_data) {
+		this.instance.setData(new_data);
 	}
 };

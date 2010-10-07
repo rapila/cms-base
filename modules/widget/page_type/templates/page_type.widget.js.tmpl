@@ -18,6 +18,10 @@ Widget.types.page_type = {
 	},
 	
 	handle_admin: function() {
+		if(this.settings.container.data('admin_handled')) {
+			return;
+		}
+		this.settings.container.data('admin_handled', true);
 		Widget.types.page_type.types[this.settings.page_type].handle_admin(this.settings.page_id, this.settings.container, this);
 	},
 	

@@ -51,12 +51,12 @@ jQuery.extend(Widget.prototype, {
 		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
 		var callback = args.pop();
 		if(!jQuery.isFunction(callback)) {
-			callback && args.push(callback);
+			callback !== undefined && args.push(callback);
 			callback = Widget.defaultMethodHandler;
 		}
 		var options = args.pop();
 		if(!options || options.constructor !== WidgetJSONOptions) {
-			options && args.push(options);
+			options !== undefined && args.push(options);
 			options = new WidgetJSONOptions();
 		}
 		var params = {};
@@ -348,9 +348,6 @@ jQuery.extend(Widget, {
 				});
 			}
 		}
-		// if(!options.async) {
-		// 	console.log("Warning, sending synchronous XMLHTTPRequest", arguments);
-		// }
 		jQuery.ajax({
 			url: url,
 			data: attr_str,
@@ -566,6 +563,11 @@ jQuery.fn.extend({
 			});
 		}, widget_session);
 		return this;
+	},
+	
+	isInDom: function() {
+		var doc = document || arguments[0];
+		return jQuery(doc).has(this[0]).length > 0;
 	}
 });
 

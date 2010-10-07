@@ -6,6 +6,7 @@ Widget.types.detail = {
 	set_instance: function(instance) {
 		this.instance = instance;
 		this.settings.save_callback = function() {
+			instance.fire('saving');
 			instance.saveData(instance.content.serializeArrayKV(), function() {
 				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
 				instance.close();
@@ -16,12 +17,14 @@ Widget.types.detail = {
 	},
 	
 	open: function() {
+		this.fire('opening');
 		if(this.has_dialog) {
 			this.clear_validation();
 			this.content.dialog('open');
 			this.select();
 			return;
 		}
+		this.fire('opening-initial');
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
 		var buttons = {
@@ -38,6 +41,7 @@ Widget.types.detail = {
 			closeOnEscape: this.settings.closeOnEscape,
 			dialogClass: this.settings.dialogClass,
 			width: this.settings.width,
+			height: this.settings.height,
 			buttons: buttons
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
@@ -159,6 +163,7 @@ Widget.types.detail = {
 		cancel_callback: jQuery.noop,
 		save_callback: jQuery.noop,
 		select: "input:eq(0)",
-		width: 480
+		width: 480,
+		height: 'auto'
 	}
 };

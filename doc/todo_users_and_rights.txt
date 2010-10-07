@@ -6,7 +6,7 @@ Rights:
 	or should be configurable in site/config/rights (don't touch base info.yml, just use for presets?)
 
 Language:
-- rights in language context: page, documents, links, (tipps & tricks, guestbook)
+- rights in language context: page, documents, links, (tips & tricks, guestbook)
 
 Roles & Groups
 - manage roles
