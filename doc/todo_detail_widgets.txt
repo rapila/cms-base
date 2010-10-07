@@ -1,8 +1,5 @@
 Detail widgets
 
-- new_item/create: 
-	document_detail and link_detail are handled differently????
-
 - selects 
 	unselected in new detail do not work properly
 	- link_detail: link_category
@@ -14,8 +11,12 @@ Detail widgets
 
 - BUTTON highlight (if changed content?)
 	close_window: alert if modified and not saved > test save action with propel modified info?
-	
-- checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)?
+
+- new_item/create: 
+	document_detail and link_detail are handled differently????
+
+
+	- checkbox active, is_approved etc should be saved/handled on click (page_detail, newsletter etc)?
 
 	
 	

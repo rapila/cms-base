@@ -1,7 +1,6 @@
 Documents
 detail
-- fix file_upload widget_type bug!
-	widgetInformation: undefined??
+- fix file_upload widget_type bug!widgetInformation: undefined??
 - add_item/new,replace image: prevent enter to send form, klick upload button
 - return on detail with file_upload replace should not close window and show new uploaded file
 - upload activity should be shown in detail window.

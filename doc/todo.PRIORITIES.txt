@@ -1,21 +1,20 @@
 PRIORITAETEN:
 
-1. todo_languages: 
-	language_input widget for documents and more
-2. todo_richtext: 
-	RichTextWidget use in Newsletter, Tipps
-	date_picker
-3. todo_pages: Drag & Drop, Configuration Fix Discuss behaviour
-	 Required for FrontendUser Testing soon Registration
-4. User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
-5. document detail: file_upload widget bug in
-6. document List viewsView documents
-7. List Order and Category change D&D
+- todo_richtext: RichTextWidget use in Newsletter, Tipps
+- Newsletter date_picker
+- language_input filter widget for documents and more
+- todo_pages: Drag & Drop, Configuration Fix Discuss behaviour
+	LanguageObject and Object handling add, delete etc.
+- User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
+- document detail: file_upload widget bug in
+- document List viewsView documents
+- List Order and Category change D&D
 
 RFP-Projekt Priorities and Planning in General
-		- SVN > groups work_pool, tm
-		- FrontendUsers, Users, Rights
-		- NewsletterPlugin
+- Tipps & Tricks, list boolean not shown correctly?
+- FrontendUsers, Users, Rights
+- NewsletterPlugin
+- SVN > groups work_pool, tm
 
 
 
