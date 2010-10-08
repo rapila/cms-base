@@ -60,6 +60,10 @@ class Flash {
 	public function checkForNumber($sName, $sFlashName = null) {
 		$this->checkForPattern($sName, "/^(\d+(\.\d*)?)|(\.\d+)$/", $sFlashName);
 	}
+
+    public function checkForInteger($sName, $sFlashName = null) {
+        $this->checkForPattern($sName, "/^(\d+)$/", $sFlashName);
+	}
 	
 	public function checkForLength($sName, $iMin, $iMax=null, $sFlashName = null) {
 		$sMax = $iMax === null ? "" : "$iMax";
