@@ -104,12 +104,12 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			foreach($oUser->getUserRolesRelatedByUserId() as $oUserRole) {
 				$oUserRole->delete();
 			}
-			$aRequestedRoles = isset($aUserData['role_keys']) ? $aUserData['role_keys'] : array();
-			foreach($aRequestedRoleKeys as $sRoleKey) {
-				$sRoleKey = new UserGroup();
-				$sRoleKey->setRoleKey($sRoleId);
-				$oUser->addUserRoleRelatedByUserId($sRoleKey);
-			}
+			$aRequestedRoles = isset($aUserData['role_keys']) ? !is_array($aUserData['role_keys']) ? array($aUserData['role_keys']) : $aUserData['role_keys'] : array();
+			// foreach($aRequestedRoleKeys as $sRoleKey) {
+			// 	$sRoleKey = new UserGroup();
+			// 	$sRoleKey->setRoleKey($sRoleId);
+			// 	$oUser->addUserRoleRelatedByUserId($sRoleKey);
+			// }
 		}
 		
 		return $oUser->save();

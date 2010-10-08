@@ -11,6 +11,14 @@ jQuery(document).ready(function() {
 						role_list.reload();
 					};
 				});
+			}, 'n', true).info_bar.add_button('add-new-item', function() {
+				Widget.create('role_detail', function(widget) {
+					widget.content.find("select[name='group_id']").val(link_list.getOption('link_category_id'));
+					widget.open();
+					widget.save_callback = function() {
+						role_list.reload();
+					};
+				});
 			}, 'n', true).add_search_input("{{writeString=search.groups}}", function(search) {
 				if(role_list.setSearch(search)) {
 					role_list.reload();
