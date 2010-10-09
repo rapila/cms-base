@@ -20,6 +20,7 @@ Widget.types.document_category_detail = {
 			return false;
 		}
 		this.detail_widget.open();
+		this.detail_widget.content.find('input[name=name]').focus();
 	},
 	
 	fill_data: function() {

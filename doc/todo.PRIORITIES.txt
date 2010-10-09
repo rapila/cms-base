@@ -1,5 +1,8 @@
 PRIORITAETEN:
 
+- stringsDetail, how is it deleted
+- Flash::checkForNumber() BUG?
+- ErrorHandler recursive dumps restrict
 - todo_richtext: RichTextWidget use in Newsletter, Tipps
 - Newsletter date_picker
 - language_input filter widget for documents and more

@@ -2,6 +2,11 @@
 	<label for="role_key">{{writeString=widget.role.role_key}}</label>
 	<input type="text" name="role_key" class="ui-widget-content" /><br />
 	<label for="description">{{writeString=widget.role.description}}</label>
-	<input type="text" name="description" class="ui-widget-content" /><br />
-	<div class="role_rights"></div>
+	<textarea rows="4" cols="50" name="description" class="ui-widget-content"></textarea><br />
+	<div class="role_rights">
+  	<legend class="toggler open">{{writeString=group.legend_right}}</legend>
+  	<label for="add_right">{{writeString=right.create}}</label><button type="button" class="new" id="add_right" 	title="{{writeString=right.create}}">&nbsp;</button>
+  	<div id="rights">
+  	</div>
+</div>
 </form>

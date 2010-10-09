@@ -10,7 +10,11 @@ jQuery(document).ready(function() {
 						document_category_list.reload();
 					};
 				});
-			}, 'n', true);
+			}, 'n', true).add_search_input("{{writeString=search.document_categories}}", function(search) {
+				if(document_category_list.setSearch(search)) {
+					document_category_list.reload();
+				}
+			});;
 			
 			// add row_count_info
 			info_bar.add_row_count_info_for_list(document_category_list);

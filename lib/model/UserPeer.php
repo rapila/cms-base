@@ -154,7 +154,6 @@ class UserPeer extends BaseUserPeer {
 		$oCriteria->add($oSearchCriterion);
 	}
 
-	
 	public static function initializeFirstUserIfEmpty($sUsername = null, $sPassword = null) {
 		if (self::doCount(new Criteria()) !== 0) {
 			return false;

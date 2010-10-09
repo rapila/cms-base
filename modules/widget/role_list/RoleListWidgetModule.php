@@ -50,4 +50,9 @@ class RoleListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function deleteRow($aRowData, $oCriteria) {
+		$oRole = RolePeer::retrieveByPK($aRowData['role_key']);
+		if($oRole) return $oRole->delete();
+	}
 }

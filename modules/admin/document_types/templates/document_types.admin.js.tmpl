@@ -29,7 +29,11 @@ jQuery(document).ready(function() {
 						document_type_list.reload();
 					};
 				});
-			}, 'n', true);
+			}, 'n', true).add_search_input("{{writeString=search.document_types}}", function(search) {
+				if(document_type_list.setSearch(search)) {
+					document_type_list.reload();
+				}
+			});
 
 			// add row_count_info
 			info_bar.add_row_count_info_for_list(document_type_list);

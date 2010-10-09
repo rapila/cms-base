@@ -182,5 +182,12 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return self::doSelect($oCriteria);
 	}
 	
+	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$oSearchCriterion = $oCriteria->getNewCriterion(DocumentTypePeer::EXTENSION,"%$sSearch%", Criteria::LIKE);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(DocumentTypePeer::MIMETYPE, "%$sSearch%", Criteria::LIKE));
+		$oCriteria->add($oSearchCriterion);
+	}
+
+	
 }
 

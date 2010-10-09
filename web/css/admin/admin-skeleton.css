@@ -220,6 +220,8 @@ label {
   display: inline-block;
   padding-right: 0.5em;
 }
+.status_section .hide_if_not_saved label:first-child { margin-top: 0.9em; }
+.status_section .hide_if_not_saved label { margin-top: 0.2em; }
 ui-widget { font-size: 0.5em; }
 select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
   border-color: #dfdfdf;

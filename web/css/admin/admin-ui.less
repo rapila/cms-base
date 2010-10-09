@@ -1,6 +1,6 @@
 @import "colors";
 
-.ui-corner-all { -moz-border-radius: 0px; -webkit-border-radius: 0px; }
+.ui-corner-all { -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 
 .ui-selectable-helper {
 	z-index: 4000 !important;
@@ -101,13 +101,16 @@
 }
 
 .ui-dialog .ui-dialog-titlebar  {
-	-moz-border-radius: 0px;
-	-webkit-border-radius: 0px;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 0px;
 	border-width: 0;
-	padding: .6em .8em;
+	padding: .6em .8em 2.0em;
 }
 
+.ui-dialog .ui-dialog-titlebar-close {
+	margin-top:-20px;
+}
 .ui-state-active .ui-icon,
 .ui-state-hover .ui-icon {
 	background-image: url("theme/images/ui-icons_000000_256x240.png");
@@ -245,7 +248,7 @@ button.ui-button.ui-state-default,
 }
 
 .ui-widget-content {
-	background: url() #FFF;
+	background: url() #F9F9F9;
 }
 
 div.ui-widget-content {
@@ -296,6 +299,11 @@ form.page_detail h3 {
 	border: none;
 	border-bottom: #C1C2C4 1px solid;
 }
+
+form.page_detail .status_section h3 {
+	border-bottom: none;
+}
+
 
 form.page_detail h3 a {
 	text-decoration: none;
@@ -357,7 +365,7 @@ input.ui-widget-content.autowidth {
 	.available_modules {
 		min-width: 125px;
 		max-width: 250px;
-		margin: 0px 24px 0 -2px;
+		margin: 0 0 0 24px;
 		min-height: 150px;
 		padding: 0;
 		float:left;
@@ -411,12 +419,16 @@ input.ui-widget-content.autowidth {
 ----------------------------------*/
 #admin_sidebar .ui-state-droppable {border: 0 solid #b8d600; background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat; color: #5b595b;  cursor: pointer;}
 .document_detail .preview {
+	padding: 0 !important;
 	margin-left: -1px;
 	border: 1px dashed #DDD; 
 	background-color: #FBFBFB;
 }
 
-.document_detail .ui-state-droppable .preview {border: 1px solid #b8d600;  cursor: pointer;}
+.document_detail .preview.file_exists {
+	border: 1px solid #DDD; 
+}
+.document_detail .ui-state-droppable .preview {border: 2px solid #b8d600; margin-left: -2px; cursor: pointer;}
 .document_detail .preview .droppable_info {
 	display: block;
 	line-height: 1.6em;

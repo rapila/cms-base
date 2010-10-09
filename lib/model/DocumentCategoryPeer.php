@@ -65,4 +65,9 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 		$oCriteria->add(self::NAME, $sName);
 		return self::doSelectOne($oCriteria);
 	}
+	
+	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$oCriteria->add($oCriteria->getNewCriterion(DocumentCategoryPeer::NAME,"%$sSearch%", Criteria::LIKE));
+	}
+
 }

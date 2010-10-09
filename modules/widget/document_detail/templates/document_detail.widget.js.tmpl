@@ -72,7 +72,7 @@ Widget.types.document_detail = {
 	fill_data: function(is_upload_only) {
 		this.detail_widget.set_is_loading(true);
 		this.getDocumentData(function(document_data) {
-			this.content.find(".preview").text('');
+			this.content.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
 				this.content.find(".preview").html(result);
 			});

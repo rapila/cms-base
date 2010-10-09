@@ -56,6 +56,8 @@ Widget.types.string_detail = {
 		Widget.createWithElement('language_tabs', function(widget) {
 			string_detail.language_tabs = widget;
 			widget.handle('element_set', function(event, element) {
+								console.log(element);
+
 				language_content.append(element);
 			});
 		}, function(language_tabs) {

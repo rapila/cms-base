@@ -4,21 +4,21 @@
  */
 class RoleDetailWidgetModule extends PersistentWidgetModule {
 
-	private $iRoleId = null;
+	private $sRoleId = null;
 	
-	public function setRoleId($iRoleId) {
-		$this->iRoleId = $iRoleId;
+	public function setRoleId($sRoleId) {
+		$this->sRoleId = $sRoleId;
 	}
 	
 	public function getRoleData() {
-		return RolePeer::retrieveByPK($this->iRoleId)->toArray();
+		return RolePeer::retrieveByPK($this->sRoleId)->toArray();
 	}
 	
 	public function saveData($aRoleData) {
-		if($this->iRoleId === null) {
+		if($this->sRoleId === null) {
 			$oRole = new Role();
 		} else {
-			$oRole = RolePeer::retrieveByPK($this->iRoleId);
+			$oRole = RolePeer::retrieveByPK($this->sRoleId);
 		}
 		$oRole->setRoleKey($aRoleData['role_key']);
 		$oRole->setDescription($aRoleData['description']);

@@ -1,6 +1,6 @@
 .ui-corner-all {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
 }
 .ui-selectable-helper { z-index: 4000 !important; }
 .ui-notify {
@@ -72,12 +72,13 @@
 }
 .cmos_alert.ui-dialog-content .ui-icon { background-image: url("theme/images/ui-icons_b8d600_256x240.png"); }
 .ui-dialog .ui-dialog-titlebar {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
+  -moz-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
   border-radius: 0px;
   border-width: 0;
-  padding: 0.6em 0.8em;
+  padding: 0.6em 0.8em 2em;
 }
+.ui-dialog .ui-dialog-titlebar-close { margin-top: -20px; }
 .ui-state-active .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
 .ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
 #admin_sidebar .ui-tree { font-weight: 700; }
@@ -203,7 +204,7 @@ button.ui-button.ui-state-default {
   width: 16px;
 }
 #admin_sidebar span.sidebar_input_save.active { display: inline-block; }
-.ui-widget-content { background: url() #ffffff; }
+.ui-widget-content { background: url() #f9f9f9; }
 div.ui-widget-content { border: 1px solid #999999; }
 .ui-widget-content input { background-color: #ffffff; }
 .ui-widget-content select { background-color: #ffffff; }
@@ -242,6 +243,7 @@ form.page_detail h3 {
   border: none;
   border-bottom: #c1c2c4 1px solid;
 }
+form.page_detail .status_section h3 { border-bottom: none; }
 form.page_detail h3 a {
   text-decoration: none;
   color: #666666;
@@ -317,7 +319,7 @@ input.ui-widget-content.autowidth { width: auto !important; }
 .page_detail .available_modules {
   min-width: 125px;
   max-width: 250px;
-  margin: 0px 24px 0 -2px;
+  margin: 0 0 0 24px;
   min-height: 150px;
   padding: 0;
   float: left;
@@ -370,12 +372,15 @@ input.ui-widget-content.autowidth { width: auto !important; }
   cursor: pointer;
 }
 .document_detail .preview {
+  padding: 0 !important;
   margin-left: -1px;
   border: 1px dashed #dddddd;
   background-color: #fbfbfb;
 }
+.document_detail .preview.file_exists { border: 1px solid #dddddd; }
 .document_detail .ui-state-droppable .preview {
-  border: 1px solid #b8d600;
+  border: 2px solid #b8d600;
+  margin-left: -2px;
   cursor: pointer;
 }
 .document_detail .preview .droppable_info {
