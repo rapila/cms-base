@@ -125,14 +125,7 @@ class EMail {
 	
 	public function send() {
 		$aRecipients = array();
-		// tst.......
-        $extra = "Mime-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: quoted-printable\n"
-        . "User-Agent: Microsoft-Entourage/10.1.1.2418\nReturn-Path: regulanobel@gmx.ch\nX-Mailer: Microsoft-Entourage/10.1.1.2418\n";
-        $mail_text = 'blabla';
-        if(TRUE === mail('rnobel@klik-info.ch', 'Email Tst', $mail_text, $extra . 'From:regulanobel@gmx.ch')) {
-            // print_r($this);
-        }
-/*
+
 		foreach($this->aRecipients as $sAddress => $sName) {
 			$aRecipients[] = $this->getAddressToken($sName, $sAddress);
 		}
@@ -163,7 +156,7 @@ class EMail {
 
 		if($bResult === false) {
 			throw new Exception("Error in EMail->send(): mail() returned false");
-		} */
+		}
 	}
 	
 	private function getAddressToken($sName, $sAddress) {
