@@ -87,7 +87,7 @@
 }
 
 .ui-dialog .ui-dialog-content {
-	padding: 1.5em 1em 2em;
+/*	padding: 1.5em 1em 2em;*/
 }
 
 .cmos_alert.ui-dialog-content {
@@ -270,7 +270,8 @@ form.page_detail h3,
 form.page_detail .status_section,
 .pages #admin_main,
 form.page_detail .ui-state-active, 
-form.page_detail .ui-widget-content .ui-state-active {
+form.page_detail .ui-widget-content .ui-state-active,
+.ui-widget-content h3 {
 	background-color: #ebedef;
 }
 
@@ -291,7 +292,8 @@ form.page_detail .ui-accordion .ui-accordion-content {
 	padding-top: 0;
 }
 
-form.page_detail h3 {
+form.page_detail h3,
+.ui-dialog-content h3 {
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	margin: 0;
@@ -305,7 +307,8 @@ form.page_detail .status_section h3 {
 }
 
 
-form.page_detail h3 a {
+form.page_detail h3 a,
+.ui-dialog-content h3 a {
 	text-decoration: none;
 	color: #666;
 }

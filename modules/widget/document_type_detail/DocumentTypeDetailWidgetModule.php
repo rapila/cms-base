@@ -14,15 +14,27 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 		return DocumentTypePeer::retrieveByPK($this->iTypeId)->toArray();
 	}
 	
+	private function validate($aDocumentTypeData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aDocumentTypeData);
+		$oFlash->checkForValue('extension', 'extension_required');
+		$oFlash->checkForValue('mimetype', 'mimetype_required');
+		$oFlash->finishReporting();
+	}
+
 	public function saveData($aDocumentTypeData) {
 		if($this->iTypeId === null) {
 			$oType = new DocumentType();
 		} else {
 			$oType = DocumentTypePeer::retrieveByPK($this->iTypeId);
 		}
+		$this->validate($aDocumentTypeData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+
 		$oType->setExtension($aDocumentTypeData['extension']);
 		$oType->setMimetype($aDocumentTypeData['mimetype']);
-		$oType->setIsOfficeDoc(isset($aDocumentTypeData['is_office_doc']));
 		return $oType->save();
 	}
 }

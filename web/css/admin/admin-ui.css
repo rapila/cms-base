@@ -64,7 +64,6 @@
   color: #efefef;
   border: 0;
 }
-.ui-dialog .ui-dialog-content { padding: 1.5em 1em 2em; }
 .cmos_alert.ui-dialog-content {
   background-color: #2d3238;
   color: #ffffff;
@@ -220,6 +219,7 @@ form.page_detail .status_section { background-color: #ebedef; }
 .pages #admin_main { background-color: #ebedef; }
 form.page_detail .ui-state-active { background-color: #ebedef; }
 form.page_detail .ui-widget-content .ui-state-active { background-color: #ebedef; }
+.ui-widget-content h3 { background-color: #ebedef; }
 form.page_detail .ui-state-active {
   background-image: none;
   color: #000000;
@@ -243,8 +243,20 @@ form.page_detail h3 {
   border: none;
   border-bottom: #c1c2c4 1px solid;
 }
+.ui-dialog-content h3 {
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  margin: 0;
+  font-weight: 1.5em;
+  border: none;
+  border-bottom: #c1c2c4 1px solid;
+}
 form.page_detail .status_section h3 { border-bottom: none; }
 form.page_detail h3 a {
+  text-decoration: none;
+  color: #666666;
+}
+.ui-dialog-content h3 a {
   text-decoration: none;
   color: #666666;
 }

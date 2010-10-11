@@ -1,5 +1,7 @@
 PRIORITAETEN:
 
+Themenprioriäten @see site/doc/todo_timeline.xlsx
+
 - stringsDetail, how is it deleted
 - Flash::checkForNumber() BUG?
 - ErrorHandler recursive dumps restrict

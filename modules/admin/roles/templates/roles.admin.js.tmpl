@@ -1,7 +1,30 @@
 jQuery(document).ready(function() {
 	// init main content
 	AdminInterface.content.find('table.role_list').prepareWidget(function(role_list) {
-		// has no sidebar
+		// init sidebar
+		var sidebar;
+		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
+			sidebar = widget;
+			sidebar.settings.row_click_active_mode = 'activate';
+			this.initial_selection = "{{writeRequestValue=group_id}}";
+			if(this.initial_selection) {
+				this.initial_selection = isNaN(this.initial_selection) ? this.initial_selection : parseInt(this.initial_selection);
+				sidebar.handle('loaded', function() {
+					sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
+				}, true, true);
+			}
+			
+			sidebar.handle('list.row-click', function(event, row, element) {
+				var group_id = element.data('group_id');
+				if(!element.is('.ui-state-active')) {
+					// handle initial_selection for custom elements
+				 	group_id = null;
+				}
+				role_list.setOption('group_id', group_id);
+				role_list.reload();
+			});
+		});
+
 		// init infobar
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
@@ -12,7 +35,11 @@ jQuery(document).ready(function() {
 						role_list.reload();
 					};
 				});
-			}, 'n', true).add_search_input("{{writeString=search.groups}}", function(search) {
+			}, 'n', true).add_button('add-new-item', function() {
+				Widget.create('sidebar_input', function(widget) {
+					widget.add_new_sidebar_input("{{writeString=widget.group.default_name}}", 'Group', sidebar);
+				});
+			}).add_search_input("{{writeString=search.groups}}", function(search) {
 				if(role_list.setSearch(search)) {
 					role_list.reload();
 				}

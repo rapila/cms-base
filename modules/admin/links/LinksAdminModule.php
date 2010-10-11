@@ -37,12 +37,12 @@ class LinksAdminModule extends AdminModule {
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
-			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.links.sidebar_heading');
-				break;
 			case 'link_category_id':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				$aResult['field_name'] = 'id';
+				break;
+			case 'name':
+				$aResult['heading'] = StringPeer::getString('widget.links.sidebar_heading');
 				break;
 			case 'magic_column':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_CLASSNAME;

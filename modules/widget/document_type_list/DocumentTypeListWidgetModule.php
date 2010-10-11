@@ -22,7 +22,7 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'extension', 'document_kind', 'mimetype', 'is_office_doc', 'document_count', 'delete');
+		return array('id', 'extension', 'document_kind', 'mimetype', 'document_count', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -36,9 +36,6 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 				break;			
 			case 'mimetype':
 				$aResult['heading'] = StringPeer::getString('widget.mimetype');
-				break;
-			case 'is_office_doc':
-				$aResult['heading'] = StringPeer::getString('widget.is_office_doc');
 				break;
 			case 'document_count':
 				$aResult['heading'] = StringPeer::getString('widget.documents_count');

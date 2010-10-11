@@ -11,6 +11,10 @@ class RolesAdminModule extends AdminModule {
 		$this->oSidebarWidget 		= new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
+		if(isset($_REQUEST['group_id'])) {
+			$this->oListWidget->oDelegateProxy->setGroupId($_REQUEST['group_id']);
+		}
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'group_id', $this->oListWidget->oDelegateProxy->getGroupId());
 	}
 	
 	public function mainContent() {
@@ -22,12 +26,16 @@ class RolesAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'magic_column');
+		return array('group_id', 'name', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
+			case 'group_id':
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
+				$aResult['field_name'] = 'id';
+				break;
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('roles.sidebar_heading');
 				$aResult['field_name'] = 'name';
@@ -43,16 +51,15 @@ class RolesAdminModule extends AdminModule {
 	public function getCustomListElements() {
 		if(GroupPeer::doCount(new Criteria()) > 0) {
 			return array(
-				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name' => StringPeer::getString('groups.select_all_title'),
+				array('group_id' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'name' => StringPeer::getString('roles.select_all_title'),
 							'magic_column' => 'all'),
-				array('id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('groups.select_without_title'),
+				array('group_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+							'name' => StringPeer::getString('roles.select_without_group_title'),
 							'magic_column' => 'without'));
 		}
 		return array();
 	}
-
 
 	public function usedWidgets() {
 		return array($this->oListWidget, $this->oSidebarWidget);

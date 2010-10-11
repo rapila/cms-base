@@ -5,11 +5,13 @@
 class RoleListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
+	private $iGroupId;
+	public $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Role", "role_key");
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Role", "role_key");
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
 	
 	public function doWidget() {
@@ -17,6 +19,14 @@ class RoleListWidgetModule extends WidgetModule {
 		$oListTag = new TagWriter('table', $aTagAttributes);
 		$this->oListWidget->setListTag($oListTag);
 		return $this->oListWidget->doWidget();
+	}
+	
+	public function getGroupId() {
+		return $this->iGroupId;
+	}
+	
+	public function setGroupId($iGroupId) {
+		$this->iGroupId = $iGroupId;
 	}
 	
 	public function getColumnIdentifiers() {
@@ -55,4 +65,15 @@ class RoleListWidgetModule extends WidgetModule {
 		$oRole = RolePeer::retrieveByPK($aRowData['role_key']);
 		if($oRole) return $oRole->delete();
 	}
+	
+	public function getCriteria() {
+		$oCriteria = new Criteria();
+		$oCriteria->addJoin(RolePeer::ROLE_KEY, GroupRolePeer::ROLE_KEY, Criteria::LEFT_JOIN);
+		$oCriteria->addJoin(GroupRolePeer::GROUP_ID, GroupPeer::ID, Criteria::LEFT_JOIN);
+		if($this->iGroupId && $this->iGroupId !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oCriteria->add(GroupRolePeer::GROUP_ID, $this->iGroupId);
+		}
+		return $oCriteria;
+	}
+
 }
