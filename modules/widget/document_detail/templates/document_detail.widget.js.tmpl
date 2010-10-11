@@ -21,7 +21,7 @@ Widget.types.document_detail = {
 				document_detail.file_upload.attr('disabled', false);
 				document_detail.upload_button.hide();
 				if(error) {
-					document_detail.detail_widget.validate_with({upload: jQuery('<div class="ui-state-error error_display"/>').text(error.message)});
+					document_detail.detail_widget.validate_with({upload: jQuery('<span class="error_display"/>').text(error.message)});
 				}
 			};
 			var upload_success = function(result) {

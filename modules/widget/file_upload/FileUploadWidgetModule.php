@@ -8,7 +8,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function uploadFile($sFileData, $aOptions) {
+	public function uploadFile($sFileData, $aOptions, $bCreateType = false) {
 		$sFileData = base64_decode($sFileData);
 		if($aOptions['document_id']) {
 			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
@@ -24,8 +24,29 @@ class FileUploadWidgetModule extends WidgetModule {
 			array_pop($aName);
 			$sFileName = implode('.', $aName);
 		}
+		$iDocumentTypeId = null;
+		try {
+			$iDocumentTypeId = $this->accepts($aOptions['name'], $aOptions['type']);
+		} catch(Exception $e) {
+			if($bCreateType) {
+				$aName = explode('.', $aOptions['name']);
+				$sExtension = null;
+				if(count($aName) > 1) {
+					$sExtension = array_pop($aName);
+				}
+				$aMimeType = explode('/', $aOptions['type']);
+				if($sExtension === null) {
+					$sExtension = $aMimeType[1];
+				}
+				$oDocumentType = new DocumentType();
+				$oDocumentType->setExtension($sExtension);
+				$oDocumentType->setMimetype(implode('/', $aMimeType));
+			}
+			$oDocumentType->save();
+			$iDocumentTypeId = $oDocumentType->getId();
+		}
 		$oDocument->setData($sFileData);
-		$oDocument->setDocumentTypeId($this->accepts($aOptions['name'], $aOptions['type']));
+		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
 		if($oDocument->isNew()) {
   		$oDocument->setName($sFileName);

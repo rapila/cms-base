@@ -273,7 +273,7 @@ jQuery.extend(Widget, {
 			widget.fire('element_set', widget._element);
 			widget.handle('prepared', function(event, widget) {
 				finishCallback(widget);
-			});
+			}, false);
 		}, session);
 	},
 	

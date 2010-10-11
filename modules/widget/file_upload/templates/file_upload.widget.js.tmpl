@@ -71,14 +71,27 @@ Widget.types.file_upload = {
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
-				options.error ? options.error(error) : jQuery('<div/>').text(error.message).dialog();
+				if(options.unacceptable) {
+					options.unacceptable(error);
+				} else {
+					var _this = this;
+					jQuery('<div/>').text(error.message).dialog({buttons: {
+						"{{writeString=create}}": function() {
+							jQuery(this).dialog("close");
+							_this.do_upload(file, options, true);
+						},
+						"{{writeString=cancel}}": function() {
+							jQuery(this).dialog("close");
+						}
+					}});
+				}
 			} else {
 				this.do_upload(file, options);
 			}
 		});
 	},
 	
-	do_upload: function(file, options) {
+	do_upload: function(file, options, create_type) {
 		var file_uploader = this;
 		var fileReader = new FileReader();
 		var size = file.size;
@@ -86,7 +99,7 @@ Widget.types.file_upload = {
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
 		fileReader.onload = function() {
-			file_uploader.uploadFile(window.btoa(fileReader.result), options, WidgetJSONOptions.with_upload_progess_callback(function(event) {
+			file_uploader.uploadFile(window.btoa(fileReader.result), options, create_type, WidgetJSONOptions.with_upload_progess_callback(function(event) {
 				progress.progressbar('value', (event.loaded/size)*100);
 			}), function(result, error) {
 				if(!error) {
