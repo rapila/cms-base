@@ -15,7 +15,6 @@
 			_is_loaded : function (obj) { 
 				var s = this._get_settings().tree_widget, d;
 				obj = this._get_node(obj); 
-				console.log('_is_loaded', this._get_settings());
 				if(obj && obj !== -1 && s.progressive_render && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree-children")) {
 					d = this._parse_json(obj.data("jstree-children"));
 					if(d) {
@@ -120,7 +119,6 @@
 						}
 						tmp.prepend("<ins class='jstree-icon'>&#160;</ins>");
 						if(!m.icon && js.icon) { m.icon = js.icon; }
-						console.log(m.icon, "m.icon");
 						if(m.icon) { 
 							if(m.icon.indexOf("/") === -1) { tmp.children("ins").addClass(m.icon); }
 							else { tmp.children("ins").css("background","url('" + m.icon + "') center center no-repeat"); }
