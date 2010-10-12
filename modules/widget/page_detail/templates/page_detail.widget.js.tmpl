@@ -95,7 +95,6 @@ Widget.types.page_detail = {
 		var active_languages = widget.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.settings.active_languages = active_languages;
-
 			widget.handle('element_set', function(event, element) {
 				container.append(element);
 			});

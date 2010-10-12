@@ -7,32 +7,129 @@ Widget.types.tree = {
 		this._element.delegate('.ui-tree li', 'click', function(event) {
 			// Open the item
 			var element = jQuery(this);
-			var opener = element.children('.tree-opener');
-			if(!opener.is('.no-children')) {
-				if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
-					widget.close(element, opener);
-				} else {
-					widget.open(element, opener);
-				}
-			}
-			if(jQuery(event.target).is('.tree-opener')) {
-				return;
-			}
-			// Select it
+			// var opener = element.children('.tree-opener');
+			// if(!opener.is('.no-children')) {
+			// 	if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
+			// 		widget.close(element, opener);
+			// 	} else {
+			// 		widget.open(element, opener);
+			// 	}
+			// }
+			// if(jQuery(event.target).is('.tree-opener')) {
+			// 	return;
+			// }
+			// // Select it
 			widget.activate(element);
 		});	
-		this._element.delegate('.ui-tree li', 'hover', function(event) {
-			var element = jQuery(this);
-			element.toggleClass('ui-state-hover');
-		});
+		// this._element.delegate('.ui-tree li', 'hover', function(event) {
+		// 	var element = jQuery(this);
+		// 	element.toggleClass('ui-state-hover');
+		// });
 		
-		this.reload();
+		this._element.jstree({
+			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd"],
+			tree_widget: {widget: this},
+			crrm: {
+				move: {
+					default_position: 'first'
+				}
+			},
+			
+			dnd: {
+				//TODO: fill in function callbacks for sort, move and deny
+			}
+		});
+		this._tree = jQuery.jstree._reference(this._element);
+		// this.reload();
+	},
+	
+	reload: function() {
+		this._element.empty();
+		this.open_item(this._element);
+	},
+	
+	load_item: function(item, success) {
+		var _this = this;
+		var id = item == -1 ? null : this.identifier_from_element(item);
+		this.listChildren(id, function(children) {
+			var result = [];
+			jQuery.each(children, function(i, child) {
+				var icon = null;
+				var icons = _this.settings.icons_from_item(child);
+				jQuery.each(icons, function(i, theIcon) {
+					if(!icon) {
+						icon = 'ui-icon ';
+					}
+					icon += 'ui-icon-'+theIcon+" ";
+				});
+				result.push({
+					data: {title: _this.settings.description_from_item(child), icon: icon},
+					metadata: child,
+					state: _this.settings.is_open(child) ? 'closed' : 'closed'
+				});
+			});
+			success(result);
+		});
+	},
+	
+	open_item: function(item, data) {
+		var tree = this;
+		this.listChildren(data, function(children) {
+			jQuery.each(children, function(i, child) {
+				tree.add_item(item, child);
+			});
+		});
+	},
+	
+	add_item: function(parent, child) {
+		if(parent === null) {
+			parent = this._element;
+		}
+		if(parent.is('li')) {
+			if(parent.children(this.settings.tag_name).length > 0) {
+				// /there/is/only.one
+				parent = parent.children(this.settings.tag_name);
+			} else {
+				var new_parent = jQuery(document.createElement(this.settings.tag_name));
+				new_parent.addClass(this._element[0].className).addClass("tree_level_"+child.TreeLevel);
+				parent = new_parent.appendTo(parent);
+			}
+		}
+		// var element = jQuery("<li/>").text(this.settings.description_from_item(child));
+		var description = jQuery("<span/>").text(this.settings.description_from_item(child));
+		var element = jQuery("<li/>").append(description);
+		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
+		var icons = jQuery('<div/>').addClass('ui-icons');
+		
+		if(this.settings.has_children(child)) {
+			opener.removeClass('no-children');
+			opener.addClass('ui-icon-triangle-1-e closed');
+		}
+		element.prepend(icons);
+		element.prepend(opener);
+		element.data('tree-data', child);
+		if(this.settings.allow_drag(child)) {
+			var widget = this;
+			element.attr('draggable', 'true');
+			element.ndrag(function() {
+				return {effect: 'copyMove', 'identifier/vnd.widget-tree': widget.settings.identifier_from_data(child)};
+			});
+		}
+		parent.append(element);
+		if(this.settings.is_open(child)) {
+			this.open(element, opener);
+		}
+		if(this.settings.is_active(child)) {
+			this.activate(element);
+		}
+		this.fire('tree_item.inserted', element, child);
+		return parent;
 	},
 	
 	activate: function(element) {
 		this._element.find('li').removeClass('ui-state-active');
 		element.addClass('ui-state-active');
-		this.fire('tree_item.activated', element, this.settings.data_from_element(element));
+		this.fire('tree_item.activated', element, this.identifier_from_element(element));
 	},
 	
 	parent_of: function(element) {
@@ -58,7 +155,7 @@ Widget.types.tree = {
 	},
 	
 	current_element_data: function() {
-		return this.settings.data_from_element(this.current_element());
+		return this.identifier_from_element(this.current_element());
 	},
 	
 	all_pages: function() {
@@ -69,7 +166,7 @@ Widget.types.tree = {
 		var result = null;
 		var widget = this;
 		this._element.find('li').each(function() {
-			if(widget.settings.data_from_element(jQuery(this)) === data) {
+			if(widget.identifier_from_element(jQuery(this)) === data) {
 				result = jQuery(this);
 				return false;
 			}
@@ -78,7 +175,7 @@ Widget.types.tree = {
 	},
 	
 	update_element: function(element) {
-		var data = arguments[1] || this.settings.data_from_element(element);
+		var data = arguments[1] || this.identifier_from_element(element);
 		this.loadItem(data, function(item) {
 			var icons = element.children('.ui-icons').empty();
 			var name = element.children('span').text(this.settings.description_from_item(item));
@@ -89,6 +186,10 @@ Widget.types.tree = {
 			}
 			this.fire('updated', element, item);
 		});
+	},
+	
+	identifier_from_element: function(element) {
+		return this.settings.identifier_from_data(element.data('jstree'));
 	},
 	
 	/**
@@ -110,11 +211,6 @@ Widget.types.tree = {
 		}
 	},
 	
-	reload: function() {
-		this._element.empty();
-		this.open_item(this._element);
-	},
-	
 	open: function(element, opener) {
 		opener = opener || element.children('.tree-opener');
 		if(opener.is('.opened')) {
@@ -124,7 +220,7 @@ Widget.types.tree = {
 		opener.removeClass('closed ui-icon-triangle-1-e').addClass('opened ui-icon-triangle-1-s');
 		var sub_list = element.find(this.settings.tag_name).show();
 		if(sub_list.length === 0) {
-			this.open_item(element, this.settings.data_from_element(element));
+			this.open_item(element, this.identifier_from_element(element));
 		}
 	},
 	
@@ -138,51 +234,6 @@ Widget.types.tree = {
 		element.find(this.settings.tag_name).hide();
 	},
 	
-	open_item: function(item, data) {
-		var tree = this;
-		this.listChildren(data, function(children) {
-			jQuery.each(children, function(i, child) {
-				tree.add_item(item, child);
-			});
-		});
-	},
-	
-	add_item: function(parent, child) {
-		if(parent === null) {
-			parent = this._element;
-		}
-		if(parent.is('li')) {
-			if(parent.children(this.settings.tag_name).length > 0) {
-				parent = parent.children(this.settings.tag_name);
-			} else {
-				var new_parent = jQuery(document.createElement(this.settings.tag_name));
-				new_parent.addClass(this._element[0].className).addClass("tree_level_"+child.TreeLevel);
-				parent = new_parent.appendTo(parent);
-			}
-		}
-		// var element = jQuery("<li/>").text(this.settings.description_from_item(child));
-		var element = jQuery("<li/>").append(jQuery("<span/>").text(this.settings.description_from_item(child)));
-		var opener = jQuery("<div/>").addClass('tree-opener ui-icon no-children');
-		var icons = jQuery('<div/>').addClass('ui-icons');
-		
-		if(this.settings.has_children(child)) {
-			opener.removeClass('no-children');
-			opener.addClass('ui-icon-triangle-1-e closed');
-		}
-		element.prepend(icons);
-		element.prepend(opener);
-		element.data('tree-data', child);
-		parent.append(element);
-		if(this.settings.is_open(child)) {
-			this.open(element, opener);
-		}
-		if(this.settings.is_active(child)) {
-			this.activate(element);
-		}
-		this.fire('tree_item.inserted', element, child);
-		return parent;
-	},
-	
 	update_elements: function() {
 		var tree = this;
 		tree._element.find('li').each(function() {
@@ -190,16 +241,13 @@ Widget.types.tree = {
 		});
 	},
 	
-	add_icon: function(name, element) {
-		var icons = element.children('.ui-icons');
-		icons.append(jQuery('<div/>').addClass('ui-icon ui-icon-'+name));
-	},
-	
 	settings: {
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
-		data_from_element: jQuery.noop,
+		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
-		is_active: jQuery.noop
+		is_active: jQuery.noop,
+		allow_reorder: jQuery.noop,
+		icons_from_item: jQuery.noop
 	}
 };

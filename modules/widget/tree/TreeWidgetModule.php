@@ -22,6 +22,16 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	    return $this->bIsOrdered;
 	}
 	
+	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder == null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addResource('widget/jquery.ndd.js');
+		$oResourceIncluder->addResource('widget/jsTree/jquery.jstree.js');
+		$oResourceIncluder->addResource('widget/jsTree/jquery.jstree.tree_widget_plugin.js');
+		self::includeWidgetResources(false, $oResourceIncluder);
+	}
+	
 	public function doWidget() {
 		$oListTag = new TagWriter($this->bIsOrdered ? 'ol' : 'ul');
 		$oListTag->addToParameter('class', 'ui-tree');

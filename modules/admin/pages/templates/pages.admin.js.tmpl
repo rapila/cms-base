@@ -73,35 +73,41 @@ jQuery(document).ready(function() {
 		// jQuery("div.accordion").accordion( "activate", 0);
 	};
 	
-	var icon_handler = function(event, element, child) {
-		if(child.IsProtected) {
-			page_tree.add_icon('is-protected', element);
-		}		
-		if(child.IsHidden) {
-			page_tree.add_icon('is-hidden', element);
-		}
-	};
-
 	Widget.createWithElement('tree', function(widget) {
-		widget.settings.description_from_item = function(item) {
-			return item.Name;
-		};
-		widget.settings.has_children = function(item) {
-			return item.TreeRight-item.TreeLeft > 1;
-		};
-		widget.settings.data_from_element = function(element) {
-			return element.data('tree-data').Id;
-		};
-		widget.settings.is_open = function(item) {
-			return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
-		};
-		widget.settings.is_active = function(item) {
-			return item.Id === initial_selection;
-		};
+		jQuery.extend(widget.settings, {
+			description_from_item: function(item) {
+				return item.Name;
+			},
+			has_children: function(item) {
+				return item.TreeRight-item.TreeLeft > 1;
+			},
+			identifier_from_data: function(data) {
+				return data.Id;
+			},
+			is_open: function(item) {
+				return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
+			},
+			is_active: function(item) {
+				return item.Id === initial_selection;
+			},
+			allow_drag: function(item) {
+				return item.TreeLeft !== 1;
+			},
+			icons_from_item: function(item) {
+				var result = [];
+				if(item.IsProtected) {
+					result.push('is-protected');
+				}		
+				if(item.IsHidden) {
+					result.push('is-hidden');
+				}
+				return result;
+			}
+		});
 	}, function(widget) {
 		page_tree = widget;
 		AdminInterface.sidebar.append(widget._element);
-		widget.handle('tree_item.activated', click_handler).handle('tree_item.inserted', icon_handler).handle('updated', icon_handler);
+		widget.handle('tree_item.activated', click_handler).handle('updated', jQuery.noop);//TODO: update icons on update
 	}, '{{writeRequestValue=tree_session}}');
 	
 	// init language change
