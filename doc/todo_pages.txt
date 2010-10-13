@@ -12,6 +12,7 @@ detail:
 - Configuration 
 - handle active accordion intelligently	
 - References: how to handle. save notifications easy links
+- preview / publish handling, what about a light version with data_preview blob?
 
 configuration
 - fix bug (missing language_object or blob null?), handle objects without language_objects

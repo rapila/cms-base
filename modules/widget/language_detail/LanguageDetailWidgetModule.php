@@ -13,6 +13,8 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$oLanguage = LanguagePeer::retrieveByPK($this->sLanguageId);
 		$aResult = $oLanguage->toArray();
 		$aResult['LanguageName'] = $oLanguage->getLanguageName();
+		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oLanguage).' / '.Util::getCreatedByIfSet($oLanguage);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oLanguage).' / '.Util::getUpdatedByIfSet($oLanguage);
 		$sLanguageKey = LanguagePeer::STATIC_STRING_NAMESPACE.'.'.$this->sLanguageId;
 		if(StringPeer::staticStringExists($sLanguageKey, $this->sLanguageId) === false) {
 			$sMessage = StringPeer::getString('widget.check_static_strings', AdminManager::getContentLanguage(), 'Please check strings', $aParameters= array('string_key' => $sLanguageKey));

@@ -11,7 +11,14 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getRoleData() {
-		return RolePeer::retrieveByPK($this->sRoleId)->toArray();
+		$oRole = RolePeer::retrieveByPK($this->sRoleId);
+		$aResult = $oRole->toArray();
+		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oRole).' / '.Util::getCreatedByIfSet($oRole);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oRole).' / '.Util::getUpdatedByIfSet($oRole);
+		foreach($oRole->getRightsJoinPage() as $oRight) {
+			$aResult["rights"][$oRight->getId()] = $oRight->toArray();
+		}
+		return $aResult;
 	}
 	
 	private function validate($aRoleData) {
@@ -21,7 +28,6 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 
-	
 	public function saveData($aRoleData) {
 		if($this->sRoleId === null) {
 			$oRole = new Role();

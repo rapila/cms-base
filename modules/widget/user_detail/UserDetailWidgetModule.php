@@ -23,8 +23,8 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 					$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
 				}
 			}
-			$aResult['CreatedInfo'] = $oUser->getCreatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByCreatedBy() == null ? "" : $oUser->getUserRelatedByCreatedBy()->getUserName());
-			$aResult['UpdatedInfo'] = $oUser->getUpdatedAt(DetailWidgetModule::DATE_FORMAT).' / '.($oUser->getUserRelatedByUpdatedBy() == null ? "" : $oUser->getUserRelatedByUpdatedBy()->getUserName());
+		  $aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oUser).' / '.Util::getCreatedByIfSet($oUser);
+		  $aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oUser).' / '.Util::getUpdatedByIfSet($oUser);
 			return $aResult;
 		}		
 	}

@@ -42,6 +42,7 @@ Widget.types.user_detail = {
 			this.content.find("input[name='email']").val(user_data.Email);
 			this.content.find("select[name='language_id']").val(user_data.LanguageId);
 			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
+			console.log(this.user_roles);
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);

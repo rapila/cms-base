@@ -1,13 +1,15 @@
 Widget.types.role_detail = {
 	initialize: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=role.create}}",
-				width: 520
+				width: 540
 			});
 			widget.content = this.content;
+			// this.content.find("select[name='page_id_']").prepareWidget();
 			if(this.auto_open) {
 				this.open();
 			}
@@ -26,6 +28,9 @@ Widget.types.role_detail = {
 		this.getRoleData(function(role_data) {
 			this.content.find("input[name='role_key']").val(role_data.RoleKey);
 			this.content.find("textarea[name='description']").val(role_data.Description);
+			this.content.find(".updated_info").text(role_data.UpdatedInfo);
+			this.content.find(".created_info").text(role_data.CreatedInfo);
+			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);
 		});
 	},

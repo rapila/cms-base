@@ -11,7 +11,11 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCategoryData() {
-		return DocumentCategoryPeer::retrieveByPK($this->iCategoryId)->toArray();
+		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->iCategoryId);
+		$aResult = $oDocumentCategory->toArray();
+		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oDocumentCategory).' / '.Util::getCreatedByIfSet($oDocumentCategory);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oDocumentCategory).' / '.Util::getUpdatedByIfSet($oDocumentCategory);
+    return $aResult;
 	}
 	
 	public function saveData($aDocumentCategoryData) {

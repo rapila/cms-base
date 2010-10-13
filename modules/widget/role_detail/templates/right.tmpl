@@ -1,21 +1,21 @@
 <div class="urights">
-  <label for="page_id_{{right_id}}">{{writeString=page}}</label>
+  <label for="page_id_">{{writeString=page}}</label>
   <div class="grouped_items">
-    <select id="page_id_{{right_id}}" name="page_id_{{right_id}}">
+    <select name="page_id_" class="page_options"  data-widget-type="page_input">
       {{options_pages}}
     </select>
-    <input type="hidden" name="right_numbers[]" value="{{right_id}}" />
-    <label class="edit rights_option" for="may_edit_page_details_{{right_id}}" title="{{writeString=right_may_edit_page_details}}">&nbsp;</label>
-    <input type="checkbox" name="may_edit_page_details_{{right_id}}" id="may_edit_page_details_{{right_id}}" value="1" {{may_edit_page_details}} />
-    <label class="edit_content rights_option" for="may_edit_page_contents_{{right_id}}" title="{{writeString=right_may_edit_page_contents}}">&nbsp;</label>
-    <input type="checkbox" name="may_edit_page_contents_{{right_id}}" id="may_edit_page_contents_{{right_id}}" value="1" {{may_edit_page_contents}} />
-    <label class="delete rights_option" for="may_delete_{{right_id}}" title="{{writeString=right_may_delete}}">&nbsp;</label>
-    <input type="checkbox" name="may_delete_{{right_id}}" id="may_delete_{{right_id}}" value="1" {{may_delete}} />
-    <label class="new rights_option" for="may_create_children_{{right_id}}" title="{{writeString=right_may_create_children}}">&nbsp;</label>
-    <input type="checkbox" name="may_create_children_{{right_id}}" id="may_create_children_{{right_id}}" value="1" {{may_create_children}} />
-    <label class="view rights_option" for="may_view_page_{{right_id}}" title="{{writeString=right_may_view_page}}">&nbsp;</label>
-    <input type="checkbox" name="may_view_page_{{right_id}}" id="may_view_page_{{right_id}}" value="1" {{may_view_page}} />
-    <label class="inherit rights_option" for="is_inherited_{{right_id}}" title="{{writeString=right_is_inherited}}">&nbsp;</label>
-    <input type="checkbox" name="is_inherited_{{right_id}}" id="is_inherited_{{right_id}}" value="1" {{is_inherited;defaultValue=checked="checked"}} />
+    <input type="hidden" name="right_numbers[]" value="" />
+    <label class="edit rights_option" for="may_edit_page_details_" title="{{writeString=user.may_edit_page_details}}">&nbsp;</label>
+    <input type="checkbox" name="may_edit_page_details_" value="1" />
+    <label class="edit_content rights_option" for="may_edit_page_contents_" title="{{writeString=user.may_edit_page_contents}}">&nbsp;</label>
+    <input type="checkbox" name="may_edit_page_contents_" value="1" />
+    <label class="delete rights_option" for="may_delete_" title="{{writeString=user.may_delete}}">&nbsp;</label>
+    <input type="checkbox" name="may_delete_" value="1" />
+    <label class="new rights_option" for="may_create_children_" title="{{writeString=user.may_create_children}}">&nbsp;</label>
+    <input type="checkbox" name="may_create_children_" value="1" />
+    <label class="view rights_option" for="may_view_page_" title="{{writeString=user.may_view_page}}">&nbsp;</label>
+    <input type="checkbox" name="may_view_page_" value="1" />
+    <label class="inherit rights_option" for="is_inherited_" title="{{writeString=user.right_is_inherited}}">&nbsp;</label>
+    <input type="checkbox" name="is_inherited_" value="1" />
   </div>
 </div>

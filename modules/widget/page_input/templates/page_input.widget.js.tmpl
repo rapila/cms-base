@@ -1,0 +1,9 @@
+Widget.types.page_input = {
+	prepare: function() {
+		var option = jQuery('<option/>');
+		var pages = this.getPages();
+		jQuery.each(pages, function(page_id, page_info) {
+			option.clone().text(page_info.value).attr('value', page_id).addClass('level'+page_info.level).appendTo(this._element);
+		}.bind(this));
+	}
+};

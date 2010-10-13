@@ -30,7 +30,7 @@ class UserKindInputWidgetModule extends PersistentWidgetModule {
 		return 'select';
 	}
 	
-	private function allowSelectAll() {
+	public function allowSelectAll() {
 		return Settings::getSetting('admin', 'allow_select_all_users', true);
 	}
 

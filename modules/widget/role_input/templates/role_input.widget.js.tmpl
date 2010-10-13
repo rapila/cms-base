@@ -2,10 +2,14 @@ Widget.types.role_input = {
 	prepare: function() {
 		var input = jQuery('<input/>').attr('type', 'checkbox');
 		var roles = this.getRoles();
+
 		var fieldset = this._element.find('fieldset');
+		if(roles.length === 0) {
+			jQuery('</div>').html("{{writeString=role.none_available_message}}").appendTo(fieldset);
+		}
 		jQuery.each(roles, function(i, role) {
 			input.clone().attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);
-			jQuery('<label/>').attr('for', 'role_keys[]').text(role.description).appendTo(fieldset);
+			jQuery('<label/>').attr('for', 'role_keys[]').text(role.role_key+" / "+role.description).appendTo(fieldset);
 			jQuery('<br/>').appendTo(fieldset);
 		}.bind(this));
 	},

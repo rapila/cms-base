@@ -196,6 +196,7 @@ button.ui-button.ui-state-default {
 #admin_sidebar > ol.ui-tree li.ui-state-active li.ui-state-hover { background-color: #728697; }
 #admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active { background-color: #728697; }
 #admin_sidebar li.ui-state-active { color: white; }
+#admin_sidebar li.ui-state-active a { color: white; }
 #admin_sidebar .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
 #admin_sidebar span.sidebar_input_save {
   display: none;
@@ -434,7 +435,7 @@ tr.ui-list-headrow th.file_info { padding-right: 1em; }
 .ui-accordion .ui-accordion-content.contents_container { padding: 0; }
 .users fieldset {
   padding: 0;
-  border: 1px #999999 solid;
+  border: 1px #c4c4c4 solid;
 }
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
   padding: 0;

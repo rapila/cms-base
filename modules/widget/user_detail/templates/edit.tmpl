@@ -4,8 +4,8 @@
 		<input type="checkbox" name="is_backend_login_enabled" value="1" /><label for="is_backend_login_enabled">{{writeString=widget.user.is_backend_login_enabled}}</label><br />
 		<input type="checkbox" name="is_inactive" value="1" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
 		<div class="hide_if_not_saved">
-			<label>{{writeString=widget.created_info}}:</label><br /><span class="created_info status"></span><br />
-			<label>{{writeString=widget.updated.info}}:</label><br /><span class="updated_info status"></span>
+			<label>{{writeString=widget.created_info}}:</label><span class="created_info status"></span><br />
+			<label>{{writeString=widget.updated.info}}:</label><span class="updated_info status"></span>
 		</div>
 	</div>
 	<label for="first_name" class="validate-first_name_required">{{writeString=first_name}}</label>
@@ -24,13 +24,13 @@
 		<label for="password_confirm">{{writeString=password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
 	</div>
-	<div class="user_roles_section" data-widget-type="role_input">
-		<label>Benutzer-Rollen</label><br />
+	<div class="user_groups_section" data-widget-type="group_input">
+		<label>{{writeString=widget.user.groups}}</label><br />
 		<fieldset>
 		</fieldset>
 	</div>
-	<div class="user_groups_section" data-widget-type="group_input">
-		<label>Benutzer-Gruppen</label><br />
+	<div class="user_roles_section" data-widget-type="role_input">
+		<label>{{writeString=widget.user.roles}}</label><br />
 		<fieldset>
 		</fieldset>
 	</div>

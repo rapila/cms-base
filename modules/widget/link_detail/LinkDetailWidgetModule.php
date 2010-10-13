@@ -16,8 +16,8 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 			return array();
 		}
 		$aResult = $oLink->toArray(BasePeer::TYPE_PHPNAME, false);
-		$aResult['CreatedInfo'] = $oLink->getCreatedAtFormatted().' / '.($oLink->getUserRelatedByCreatedBy() ? $oLink->getUserRelatedByCreatedBy()->getUserName() : '');
-		$aResult['UpdatedInfo'] = $oLink->getUpdatedAtFormatted().' / '.($oLink->getUserRelatedByUpdatedBy() ? $oLink->getUserRelatedByUpdatedBy()->getUserName() : '');
+		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oLink).' / '.Util::getCreatedByIfSet($oLink);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oLink).' / '.Util::getUpdatedByIfSet($oLink);
 		return $aResult;
 	}
 	private function validate($aLinkData) {

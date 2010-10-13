@@ -1,7 +1,11 @@
 <form>
-	<div class="status_section" style="width:10em;">
+	<div class="status_section">
 		<input type="checkbox" name="is_active" value="1" />
 		<label for="is_active">{{writeString=widget.is_online}}</label><br />
+		<div class="hide_if_not_saved">
+  		<label>{{writeString=widget.created_info}}:</label><span class="created_info status"></span><br />
+  		<label>{{writeString=widget.updated.info}}:</label><span class="updated_info status"></span><br />
+		</div>
 	</div>
 	<label for="language_id" class="validate-language_id_required">{{writeString=widget.language_id}}</label>
 	<input type="text" name="language_id" class="ui-widget-content" maxlegth="2" style="width:2em;"/><br class="validate-widget.language_id" />

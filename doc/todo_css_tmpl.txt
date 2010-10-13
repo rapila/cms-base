@@ -10,6 +10,12 @@ Browser issues
 General Infos
 prepared for skins/themes (jQuery-UI, CMOS)
 
+Special issues
+- page_tree
+- language_tabs (pages, strings, tips etc)
+- accordion tabs (pages, newsletter etc)
+- views like thumbnail views, documents, could be some project module or galery module etc
+
 structure
 1.
 - jquery_ui.css

@@ -144,4 +144,26 @@ class Util {
 		}
 		return $aBitsDissected;
 	}
+	
+	
+	
+	public static function formatCreatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
+	  return $oObject->getCreatedAtFormatted().', '.$oObject->getCreatedAt($sTimeFormat);
+	}
+	
+	public static function formatUpdatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
+	  return $oObject->getUpdatedAtFormatted().', '.$oObject->getUpdatedAt($sTimeFormat);
+	}
+	
+	public static function getCreatedByIfSet($oObject) {
+	  if($oObject->getUserRelatedByCreatedBy()) {
+	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();
+	  }
+	}
+	
+	public static function getUpdatedByIfSet($oObject) {
+	  if($oObject->getUserRelatedByUpdatedBy()) {
+	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();
+	  }
+	}
 }
