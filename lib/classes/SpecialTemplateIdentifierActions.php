@@ -40,7 +40,7 @@ class SpecialTemplateIdentifierActions {
 		return '<br />';
 	}
 	
-	public function truncate($oTemplateIdentifier, &$iFlags) {
+	public function truncate($oTemplateIdentifier, &$iFlags, $sPostfix="…") {
 		$iFlags |= Template::NO_HTML_ESCAPE;
 		$iLength=20;
 		if($oTemplateIdentifier->hasParameter('length')) {
