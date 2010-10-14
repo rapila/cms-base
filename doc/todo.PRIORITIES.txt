@@ -1,8 +1,7 @@
 PRIORITAETEN:
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
-- FrontendUserDetailWidgetModule::setUserId > missing argument 1 for 
-	FrontendUserList allow_select_all_users handling
+-	FrontendUserList setUserKind default mit allow_select_all_users
 - WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 - LoginManager, LoginPageType etc! LoginFrontendModule
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
@@ -669,3 +668,4 @@ Widget tasks
 - testing QUnit
 - how can we simplify and make more transparent and more effective?
 - d&d, sortable and assign to category or tag etc
+- FrontendUserDetailWidgetModule::setUserId > missing argument 1 for 

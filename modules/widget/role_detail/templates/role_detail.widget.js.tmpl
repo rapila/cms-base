@@ -5,7 +5,7 @@ Widget.types.role_detail = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=role.create}}",
+				title: "{{writeString=widget.role.create}}",
 				width: 540
 			});
 			widget.content = this.content;
