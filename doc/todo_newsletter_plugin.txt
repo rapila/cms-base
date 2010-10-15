@@ -1,15 +1,20 @@
 Newsletter Plugin
 
-added new fields date_published, is_approved
+send accordion
+- change button from save to send if is approved?
+- change action to sendData instead of saveData
 
-add
-- feature to load old newsletter that has been sent before but cannot be sent anymore
-- i guess group has to be chosen so it cannot be the wrong one
+validate arrays like mail_group_ids[]
 
-use accordion tabs for newsletter creation and send form
+unsubscribe
+- if there are no subscriber groups, does it need unsubscribe and how to do is. would it be necessary?
 
+publish newsletter, depending on public or not
+- newsletter page > Y-m-d/id or name normalised?
 
-Entwicklung und Dokumentation von Plugins
+import addresses to temp group, how to
+
+documentation of Plugins
 - PHPDocumentor : @package / @subpackage (plugin.newsletter, module.admin)
 	@subpackage requirements: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_tags.subpackage.pkg.html
 - separate Plugin Documentation? mit Liste?
@@ -17,6 +22,17 @@ Entwicklung und Dokumentation von Plugins
 
 
 
+
+
+DONE:
+***************************************************
+added new fields date_published, is_approved
+
+add
+- feature to load old newsletter that has been sent before but cannot be sent anymore
+- i guess group has to be chosen so it cannot be the wrong one
+
+use accordion tabs for newsletter creation and send form
 
 Newsletter schema und Funktionen
 

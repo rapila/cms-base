@@ -17,6 +17,13 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oDocumentCategory).' / '.Util::getUpdatedByIfSet($oDocumentCategory);
     return $aResult;
 	}
+
+	private function validate($aDocumentTypeData) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aDocumentTypeData);
+		$oFlash->checkForValue('name', 'name_required');
+		$oFlash->finishReporting();
+	}
 	
 	public function saveData($aDocumentCategoryData) {
 		if($this->iCategoryId === null) {
@@ -27,7 +34,13 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$oCategory->setName($aDocumentCategoryData['name']);
 		$oCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);
 		$oCategory->setIsExternallyManaged(isset($aDocumentCategoryData['widget.is_externally_managed']));
+		
 		$oCategory->setIsInactive(isset($aDocumentCategoryData['is_inactive']));
+    $this->validate($aDocumentCategoryData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+
 		return $oCategory->save();
 	}
 }

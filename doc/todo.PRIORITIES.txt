@@ -1,19 +1,20 @@
 PRIORITAETEN:
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
--	FrontendUserList setUserKind default mit allow_select_all_users
+-	UserList setUserKind/allow_select_all_users=false (only show backend users)
 - WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 - LoginManager, LoginPageType etc! LoginFrontendModule
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
-- Tips Detail Richtext Config
+- Richtext Config, Links, Documents, Images etc
+- document detail: file_upload widget bug in
 - ErrorHandler recursive dumps restrict, like page_type login not found, no login page found etc
 	Display tried to instanciate disabled module > should be handled differently > message is wrong too.
 - Preview Inline editing, prepare for Enrique????
+- Pager for modules
 - Newsletter date_picker
 - language_input filter widget for documents and more
 - todo_pages: Drag & Drop, Configuration Fix Discuss behaviour
 	LanguageObject and Object handling add, delete etc.
-- document detail: file_upload widget bug in
 - document List viewsView documents
 - List Order and Category change D&D
 
