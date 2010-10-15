@@ -72,7 +72,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
 		}
 		if($oDocumentType === null) {
-			throw new LocalizedException("widget.file_upload.document_type_not_found", array('document_type' => $sExtension));
+			throw new LocalizedException("file_upload.document_type_not_found", array('document_type' => $sExtension));
 		}
 		return $oDocumentType->getId();
 	}

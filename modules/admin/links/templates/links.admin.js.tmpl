@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
 				});
 			}, 'n', true).add_button('add-new-item', function() {
 				Widget.create('sidebar_input', function(widget) {
-					widget.add_new_sidebar_input("{{writeString=link_category.default_name}}", 'LinkCategory', sidebar);
+					widget.add_new_sidebar_input("{{writeString=widget.link_category.default_name}}", 'LinkCategory', sidebar);
 				});
 			}).add_search_input("{{writeString=search.link}}", function(search) {
 				if(link_list.setSearch(search)) {
