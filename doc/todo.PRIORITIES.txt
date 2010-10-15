@@ -6,8 +6,11 @@ Themenprioriäten @see site/doc/todo_timeline.xlsx
 - LoginManager, LoginPageType etc! LoginFrontendModule
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
 - Richtext Config, Links, Documents, Images etc
-- document detail: file_upload widget bug in
-- ErrorHandler recursive dumps restrict, like page_type login not found, no login page found etc
+- documents /detail: 
+	file_upload bug in detail initialize
+  search does not work either.
+- ErrorHandler recursive dumps 
+	restrict, like page_type login not found, no login page found etc
 	Display tried to instanciate disabled module > should be handled differently > message is wrong too.
 - Preview Inline editing, prepare for Enrique????
 - Pager for modules
