@@ -128,7 +128,10 @@ class Template {
 			if(StringUtil::startsWith($sTemplateName, 'e_mail_')) {
 				$iDefaultFlags |= self::NO_HTML_ESCAPE;
 			} else if(StringUtil::endsWith($sTemplateName, '.js') || StringUtil::endsWith($sTemplateName, '.css')) {
-				$iDefaultFlags |= self::NO_HTML_ESCAPE&self::ESCAPE;
+				$iDefaultFlags |= (self::NO_HTML_ESCAPE|self::ESCAPE);
+			} else if(StringUtil::endsWith($sRootTemplateName, '.js') || StringUtil::endsWith($sRootTemplateName, '.css')) {
+				//I’m not a js template but my parent is
+				$iDefaultFlags &= ~(self::NO_HTML_ESCAPE|self::ESCAPE);
 			}
 		}
 		
@@ -408,15 +411,15 @@ class Template {
 				$aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
 			}
 			
-			if(($iFlags&self::ESCAPE)===self::ESCAPE) {
+			if(($iFlags&self::ESCAPE)===self::ESCAPE && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::ESCAPE)!==self::ESCAPE)) {
 				$aText[$iKey] = str_replace("\n", "\\n", addslashes($aText[$iKey]));
 			}
 			
-			if(($iFlags&self::URL_ENCODE)===self::URL_ENCODE) {
+			if(($iFlags&self::URL_ENCODE)===self::URL_ENCODE && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::URL_ENCODE)!==self::URL_ENCODE)) {
 				$aText[$iKey] = urlencode($aText[$iKey]);
 			}
 
-			if(($iFlags&self::JAVASCRIPT_CONVERT)===self::JAVASCRIPT_CONVERT) {
+			if(($iFlags&self::JAVASCRIPT_CONVERT)===self::JAVASCRIPT_CONVERT && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::JAVASCRIPT_CONVERT)!==self::JAVASCRIPT_CONVERT)) {
 				$aText[$iKey] = '"'.$aText[$iKey].'"';
 			}
 			
@@ -424,7 +427,7 @@ class Template {
 				$aText[$iKey] = self::htmlEncode($aText[$iKey]);
 			}
 
-			if(($iFlags&self::CONVERT_NEWLINES_TO_BR)===self::CONVERT_NEWLINES_TO_BR) {
+			if(($iFlags&self::CONVERT_NEWLINES_TO_BR)===self::CONVERT_NEWLINES_TO_BR && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::CONVERT_NEWLINES_TO_BR)!==self::CONVERT_NEWLINES_TO_BR)) {
 				$aText[$iKey] = nl2br($aText[$iKey]);
 			}
 			
