@@ -2,8 +2,6 @@
 /**
 	* @package modules.page_type
 	*/
-
-
 require_once("cssparser/CSSParser.php");
 
 class DefaultPageTypeModule extends PageTypeModule {
@@ -220,7 +218,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
 			}
 		}
-
 		return $aResult;
 	}
 	

@@ -64,12 +64,16 @@ Widget.types.page_type.types['default'] = {
 			preview_bar.addClass('loading');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(widget) {
+					widget.handle('element_set', function(event, element) {
+						console.log('element_set', event, element);
+						container.empty().append(element);
+					});
+				}, function(widget) {
 					if(widget.setObjectId) {
 						widget.setObjectId(container.attr('data-object-id'));
 					}
 					preview_bar.removeClass('loading').addClass('editing');
 					container.data('edit_widget', widget);
-					container.empty().append(widget._element);
 					// Reposition the bar
 					container.position_bar();
 				}, result[1]);

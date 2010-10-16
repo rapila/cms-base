@@ -1,7 +1,6 @@
 PRIORITAETEN:
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
--	UserList setUserKind/allow_select_all_users=false (only show backend users)
 - WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 - LoginManager, LoginPageType etc! LoginFrontendModule
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
@@ -673,3 +672,4 @@ Widget tasks
 - how can we simplify and make more transparent and more effective?
 - d&d, sortable and assign to category or tag etc
 - FrontendUserDetailWidgetModule::setUserId > missing argument 1 for 
+-	UserList setUserKind/allow_select_all_users=false (only show backend users)
