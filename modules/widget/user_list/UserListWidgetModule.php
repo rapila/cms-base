@@ -11,7 +11,8 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
-		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, true);
+		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, UserKindInputWidgetModule::IS_BACKEND_LOGIN_ENABLED);
+		$this->oDelegateProxy->setUserKind(UserKindInputWidgetModule::IS_BACKEND_LOGIN_ENABLED);
 	}
 	
 	public function doWidget() {

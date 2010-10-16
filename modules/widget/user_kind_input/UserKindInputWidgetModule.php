@@ -4,9 +4,15 @@
  */
 class UserKindInputWidgetModule extends PersistentWidgetModule {
 
-	private $sSelectedUserKind;
 	const IS_BACKEND_LOGIN_ENABLED = '1';
-	const IS_FRONTEND_USER = '2';
+	const IS_FRONTEND_USER = '0';
+	
+	private $sSelectedUserKind;
+	
+	public function __construct($sSessionKey, $sDefaultSelection = CriteriaListWidgetDelegate::SELECT_ALL) {
+		parent::__construct($sSessionKey);
+		$this->sSelectedUserKind = $sDefaultSelection;
+	}
 		
 	public function getUserKinds() {
 		return array(CriteriaListWidgetDelegate::SELECT_ALL => StringPeer::getString('widget.user_kind.all'),
