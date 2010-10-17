@@ -1,8 +1,11 @@
 PRIORITAETEN:
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
+- delete alert, example tip with getParatmetrizedString=altert_delete;title=....
+- TipList Performance analysis! What can be changed, improved (9.6seconds to load)
 - WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 - LoginManager, LoginPageType etc! LoginFrontendModule
+- FrontendUser > send
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
 - Richtext Config, Links, Documents, Images etc
 - documents /detail: 

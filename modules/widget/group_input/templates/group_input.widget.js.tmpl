@@ -4,7 +4,8 @@ Widget.types.group_input = {
 		var groups = this.getGroups();
 		var fieldset = this._element.find('fieldset');
 		jQuery.each(groups, function(i, group) {
-			input.clone().attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
+			var checkbox = input.clone();
+			checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
 			jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(fieldset);
 			jQuery('<br/>').appendTo(fieldset);
 		}.bind(this));
@@ -21,7 +22,7 @@ Widget.types.group_input = {
 		jQuery.each(values, function(i, value) {
 			value_obj[value] = true;
 		});
-		this._element.find("input[name='group_ids[]']").each(function(checkbox) {
+		this._element.find("input[name='group_ids[]']").each(function(i, checkbox) {
 			jQuery(checkbox).attr('checked', !!value_obj[checkbox.value]);
 		});
 	}

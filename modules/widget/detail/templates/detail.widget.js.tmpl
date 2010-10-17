@@ -77,10 +77,8 @@ Widget.types.detail = {
 			if(message.constructor === String) {
 				message = jQuery.parseHTML(message);
 			}
-			// detail.content.find('.validate-'+key.escapeSelector()).after(message);
 			var validate_element = detail.content.find('.validate-'+key.escapeSelector());
 			jQuery(validate_element).append(message);
-			console.log(validate_element,message);
 		});
 	},
 	
