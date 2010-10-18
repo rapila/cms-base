@@ -14,16 +14,16 @@
 	<input type="text" name="last_name" class="ui-widget-content" /><br />
 	<label for="username" class="validate-username_required validate-user_name_exists">{{writeString=user_name}}</label>
 	<input type="text" name="username" class="ui-widget-content" /><br />
-	<label for="email" class="validate-email" >{{writeString=email}}</label>
+	<label for="email" class="validate-email_required" >{{writeString=email}}</label>
 	<input type="text" name="email" class="ui-widget-content" /><br />
 	<label for="language_id">{{writeString=widget.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
 	<div class="hide_if_saved"
-		<label for="password">{{writeString=password}}</label>
+		<label>{{writeString=password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
 		<label for="password_confirm">{{writeString=password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
-	</div>
+	</div><br />
 	<div class="user_groups_section" data-widget-type="group_input">
 		<label>{{writeString=widget.user.groups}}</label><br />
 		<fieldset>

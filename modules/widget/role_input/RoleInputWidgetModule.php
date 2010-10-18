@@ -1,9 +1,8 @@
 <?php
 /**
-* @package modules.widget
-*/
+ * @package modules.widget
+ */
 class RoleInputWidgetModule extends WidgetModule {
-	
 	public function getRoles() {
 		$oCriteria = new Criteria();
 		$oCriteria->addAscendingOrderByColumn(RolePeer::ROLE_KEY);

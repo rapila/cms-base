@@ -9,6 +9,7 @@ Widget.types.user_detail = {
 				width: 600
 			});
 			widget.content = this.content;
+			this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
 			if(this.auto_open) {
 				this.open();
 			}
@@ -36,6 +37,12 @@ Widget.types.user_detail = {
 	
 	fill_data: function() {
 		this.getUserData(function(user_data) {
+			var password_section = this.content.find(".hide_if_saved");
+			if(user_data.UpdatedInfo && !user_data.IsSessionUser) {
+				password_section.hide();
+			} else {
+				password_section.show();
+			}
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);

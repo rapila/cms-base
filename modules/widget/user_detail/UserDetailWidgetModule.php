@@ -15,14 +15,15 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			$aResult = $oUser->toArray();
 			$aResult['FullName'] = $oUser->getFullName();
 
-			if($oUser->isSessionUser() === false) {
+			$aResult['IsSessionUser'] = $oUser->isSessionUser();
+			if($aResult['IsSessionUser'] === false) {
 				if(GroupPeer::doCount(new Criteria())) {
 					$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
 				}
 				if(RolePeer::doCount(new Criteria())) {
 					$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
 				}
-			}
+			} 
 		  $aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oUser).' / '.Util::getCreatedByIfSet($oUser);
 		  $aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oUser).' / '.Util::getUpdatedByIfSet($oUser);
 			return $aResult;

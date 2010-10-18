@@ -1,5 +1,12 @@
 Users
+Anforderungen Testen.
+- Neuen Benutzer erstellen, kann nur durch Admin oder "mayCreateUser" erstellt werden
+- edit user (not iSessionUser). Admin oder mayCreateUser (ohne Passwort)
+- myProfile (isSessionUser) cannot change his own rights. Can reset his password
 MyProfile: profile, settings and info
+
+Detail
+- show password only if change is required
 
 Rights:
 - page rights, module rights (info.yml, settings), presets in hard_coded info.yml should be storable and changeable in database table?
