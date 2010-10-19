@@ -1,0 +1,70 @@
+Widget.types.document_edit = {
+	prepare: function() {
+		var _this = this;
+		this.settings.width = 404;
+
+		this.mode_options = new Array();
+		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
+			var select_element = jQuery("<select/>");
+			var select_label = jQuery("<label/>");
+			var label_text_key = 'document_list_label.'+select_name;
+			select_element.attr('name', select_name);
+			select_label.attr('for', select_name);
+			if(select_name == 'template_option') {
+				select_label.text("{{writeString=document_list.template_option}}");
+			} else if(select_name == 'sort_option') {
+				select_label.text("{{writeString=document_list.sort_option}}");
+			} else if(select_name == 'category_option') {
+				select_label.text("{{writeString=document_list.category_option}}");
+			}
+			jQuery.each(options, function(key, value) {
+				select_element.append(jQuery('<option/>').attr('value', key).text(value));
+			});
+			
+			_this.mode_options[select_name] = select_element;
+			var group_fields = jQuery("<div/>").addClass('group_fields');
+
+			group_fields.append(select_label);
+			group_fields.append(select_element);
+			_this._element.append(group_fields);
+		});
+		// console.log(_this.mode_options);
+		// this.mode_dropdown.val(this.getDisplayMode());
+		// this.mode_dropdown.change(function() {
+		// 	_this.setDisplayMode(_this.mode_dropdown.val());
+		// 	_this.reload_preview();
+		// });
+		// 
+		var detail_widget;
+		Widget.create('document_detail', function(widget) {
+			_this.detail_widget = widget;
+			widget.save_callback = _this.reload_preview.bind(_this);
+		});
+
+		
+		this.result_list = jQuery('<ol/>');
+		this.reload_preview();
+		this._element.append(this.result_list);
+		this.result_list.delegate('img', 'click', function() {
+			var id = jQuery(this).data('id');
+			_this.detail_widget.setDocumentId(id);
+			_this.detail_widget.fill_data();
+			_this.detail_widget.open();
+		});
+	},
+	
+	reload_preview: function() {
+		var _this = this;
+		this.result_list.empty();
+		this.allDocuments(function(documents) {
+			jQuery.each(documents, function(i, document) {
+				_this.result_list.append(jQuery('<img/>').attr({'alt': document.NAME, 'src' : FILE_PREFIX+'/display_document/'+document.ID+'?max_width=100'}).data('id', document.ID));
+			});
+		});
+	},
+	
+	save: function(callback) {
+		// var data = this.mode_dropdown.val();
+		// this.saveData(data, callback);
+	}
+};

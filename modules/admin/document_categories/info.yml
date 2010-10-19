@@ -1,4 +1,4 @@
-allowed_roles: []
+allowed_roles: [documents_all,is_admin]
 name: "Document Categories"
 description: "Easy categorisation of documents, categories allow specification of i.e. max_width of images"
 website: "http://www.mini-cms.ch/"

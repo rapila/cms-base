@@ -16,7 +16,7 @@ Language:
 - rights in language context: page, documents, links, (tips & tricks, guestbook)
 
 Roles & Groups
-- manage roles
+- manage roles, Page Rights, Module Rights, LanguageRights etc.
 - manage groups by drag&drop (multiple on save)
 
 Options:

@@ -18,7 +18,20 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		foreach($oRole->getRightsJoinPage() as $oRight) {
 			$aResult["rights"][$oRight->getId()] = $oRight->toArray();
 		}
+		$this->getModulesAndRequiredRights();
 		return $aResult;
+	}
+	
+	public function getModulesAndRequiredRights() {
+		$aResult = array();
+		foreach($aAllEnabledModules = Module::listModulesByType('admin') as $sModuleName => $aAdminModule) {
+			if(isset($aAdminModule['module_info']) && isset($aAdminModule['module_info']['allowed_roles'])) {
+				$aResult[$sModuleName] = $aAdminModule['module_info']['allowed_roles'];
+			}
+			
+		}
+		ErrorHandler::log($aResult);
+		
 	}
 	
 	private function validate($aRoleData) {

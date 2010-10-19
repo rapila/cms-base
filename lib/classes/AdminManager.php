@@ -99,7 +99,30 @@ class AdminManager extends Manager {
 		$oOutput = new XHTMLOutput('html5');
 		$oOutput->render();
 	}
-	
+		/**
+	* @param optional string of template 'list item' identifier
+	* retrieve all templates from site template dir that follow a naming convention
+	* list template name: examplename.tmpl
+	* list_item template name: examplename_item.tmpl
+	* @return array assoc of path to examplename in key and value
+	*/	
+	public static function getSiteTemplatesForListOutput($sPostfix = '_item') {
+		$aTemplateList = ArrayUtil::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
+		$aListTemplates = array();
+		foreach($aTemplateList as $sPath => $sListName) {
+			if(StringUtil::endsWith($sListName, $sPostfix)) {
+				$sPath = substr($sListName, 0, -strlen($sPostfix));
+				$aListTemplates[$sPath] = $sPath;
+			}
+		}
+		foreach($aListTemplates as $sListPath) {
+			if(!in_array($sListPath, $aTemplateList)) {
+				unset($aListTemplates[$sListPath]);
+			}
+		}
+		return $aListTemplates;
+	}
+
 	private function doAdmin($oTemplate) {
 		$oAdminMenuWidget = new AdminMenuWidgetModule();
 		AdminMenuWidgetModule::includeResources($this->oResourceIncluder);
