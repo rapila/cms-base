@@ -1,38 +1,35 @@
-ixmos/cmos css work
+"rapila" (mini-cms version 2) template/css
+
+wichtige elemente
+- sidebar
+- page_tree
+- language_tabs (pages, strings, tips etc)
+- accordion tabs (pages, newsletter etc)
+- list views/thumbnail views, documents, i.e. projects or galery module
+- detail widget, admin / preview
+- user notifications alerts
+- admin-menu, admin / preview
 
 Browser issues
+- compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
 - list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
 - FileUpload, if not ready, do not display options
-- Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
-	add info at login. Do not allow login if not the appropriate browser (min requirements)
+- min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
 
+guidelines, coding convention, naming convention
+- ids only for postitioning of main element (admin), skeleton
+- jQuery ui overwrite
+- work with less?
 
 General Infos
 prepared for skins/themes (jQuery-UI, CMOS)
 
-Special issues
-- page_tree
-- language_tabs (pages, strings, tips etc)
-- accordion tabs (pages, newsletter etc)
-- views like thumbnail views, documents, could be some project module or galery module etc
+structure ?
+- admin_preview.css
+- admin.css
+- preview.css
+- jquery_ui.theme.css
+- jquery-ui.theme.overwrite.css (merge in final version?)
+- admin-menu.css
+- widget.css / context css see widget/templates/widget_name.css.tmpl
 
-structure
-1.
-- jquery_ui.css
-- jquery-ui.overwrite.css (merge in final version?)
-2.
-- widget.css ?
-  (notififications, buttons?, admin)
-3.
-- admin.css / preview.css
-4.
-- context widget.css.tmpl
-  (ie admin_menu)
-
-milestones
-
-budget
-
-Richtlinien, Coding convention, naming convention
-1. ids only for postitioning of main element (admin), skeleton
-2. jQuery ui overwrite

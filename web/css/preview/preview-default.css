@@ -61,3 +61,7 @@
 .preview_bar .ui-icon:hover {
 	border-color: #21669b;
 }
+
+.preview_edit {
+	cursor: pointer;
+}

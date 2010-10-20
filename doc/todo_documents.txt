@@ -36,6 +36,13 @@ sidebar: document_categories:
 - question: edit category in sidebar should display modal dialog?
 - IMPORTANT: for user info, sidebar categories should be highlighted if published on web (languague_objects)
 
+Nice to have
+GD: imagerotate
+header('Content-type: image/jpeg');
+$source = imagecreatefromjpeg($filename);
+$rotate = imagerotate($source, 90, 0);
+imagejpeg($rotate);
+
 RELATED projects
 - Mini-CMS Version 2 projects file_upload
 

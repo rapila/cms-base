@@ -1,8 +1,6 @@
 Widget.types.document_edit = {
 	prepare: function() {
 		var _this = this;
-		this.settings.width = 404;
-
 		this.mode_options = new Array();
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
 			var select_element = jQuery("<select/>");
@@ -64,7 +62,11 @@ Widget.types.document_edit = {
 	},
 	
 	save: function(callback) {
-		// var data = this.mode_dropdown.val();
-		// this.saveData(data, callback);
+		var data = new Array();
+		jQuery.each(_this.mode_options, function(select_name, element) {
+			data[select_name] = element.val();
+		});
+		console.log(data, _this.mode_options);
+		this.saveData(data, callback);
 	}
 };
