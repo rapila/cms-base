@@ -24,7 +24,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function __construct(Page $oPage, $sLanguageId = null) {
 		parent::__construct($oPage);
-    $this->sLanguageId = $sLanguageId;
+		$this->sLanguageId = $sLanguageId;
 	}
 	
 	//Frontend stuff
@@ -34,7 +34,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
 		}
 		if($this->sLanguageId === null) {
-  		$this->sLanguageId = $this->bIsPreview ? AdminManager::getContentLanguage() : Session::language();
+			$this->sLanguageId = $this->bIsPreview ? AdminManager::getContentLanguage() : Session::language();
 		}
 		$this->oFrontendTemplate = $oTemplate;
 		$this->iModuleId = 1;
@@ -150,6 +150,26 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 	}
 	
+
+	public function getAjax($aPath) {
+		$sContainerName = $_REQUEST['container'];
+		$iItemNumber = $_REQUEST['item_number']+0;
+		foreach($this->oPage->getObjectsForContainer($sContainerName) as $iCount => $oContentObject) {
+			if($iItemNumber === $iCount+1) {
+				$iCount++;
+			} else if($iItemNumber === $iCount) {
+				$iCount--;
+			}
+			$oContentObject->setSort($iCount);
+			$oContentObject->save();
+		}
+		$oDocument = new DOMDocument();
+		$oRoot = $oDocument->createElement("success");
+		$oDocument->appendChild($oRoot);
+		return $oDocument;
+	}
+	
+	
 	//Admin stuff
 	private $aContentObjects = array();
 	private $aModuleInstances = array();
@@ -174,9 +194,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminListFilledFrontendModules() {
-	  if($this->sLanguageId === null) {
-		  $this->sLanguageId = AdminManager::getContentLanguage();
-	  }
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
 		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
 		asort($aContainers);
 		$aResult = array();
@@ -236,9 +256,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminEdit($iObjectId) {
-	  if($this->sLanguageId === null) {
-		  $this->sLanguageId = AdminManager::getContentLanguage();
-	  }
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
 		if($oCurrentLanguageObject === null) {
@@ -261,9 +281,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminPreview($iObjectId) {
-	  if($this->sLanguageId === null) {
-		  $this->sLanguageId = AdminManager::getContentLanguage();
-	  }
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
 		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
@@ -294,8 +314,37 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 	}
 	
-	public function adminRemoveObject($iObjectId) {
-		return ContentObjectPeer::doDelete($iObjectId);
+	public function adminRemoveObject($iObjectId, $bForce) {
+		$oCurrentContentObject = $this->contentObjectById($iObjectId);
+		
+		if(!Session::getSession()->getUser()->mayEditPageContents($oCurrentContentObject->getPage())) {
+			return;
+		}
+		
+		if($bForce) {
+			return ContentObjectPeer::doDelete($iObjectId);
+		}
+		
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
+		
+		if(!Session::getSession()->getUser()->mayEditPageContents($this->oPage)) {
+			return;
+		}
+		
+		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
+		
+		if(!$oCurrentLanguageObject->delete()) {
+			return false;
+		}
+		
+		$oLanguageObjects = $oCurrentContentObject->getLanguageObjects();
+		// should LanguageObjectHistory be deleted too?
+		if(count($oLanguageObjects) === 0) {
+			return $this->oCurrentContentObject->delete();
+		}
+		return false;
 	}
 
 	public function adminGetContainers() {
@@ -417,23 +466,5 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oRuleSet->removeRule('list-');
 			$oRuleSet->removeRule('cursor');
 		}
-	}
-
-	public function getAjax($aPath) {
-		$sContainerName = $_REQUEST['container'];
-		$iItemNumber = $_REQUEST['item_number']+0;
-		foreach($this->oPage->getObjectsForContainer($sContainerName) as $iCount => $oContentObject) {
-			if($iItemNumber === $iCount+1) {
-				$iCount++;
-			} else if($iItemNumber === $iCount) {
-				$iCount--;
-			}
-			$oContentObject->setSort($iCount);
-			$oContentObject->save();
-		}
-		$oDocument = new DOMDocument();
-		$oRoot = $oDocument->createElement("success");
-		$oDocument->appendChild($oRoot);
-		return $oDocument;
 	}
 }

@@ -95,9 +95,11 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	//Admin helper methods
-	remove_object: function(item_to_remove) {
-		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), function(error) {
-			item_to_remove.remove();
+	remove_object: function(item_to_remove, force) {
+		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), !!force, function(whole_object_deleted) {
+			if(whole_object_deleted) {
+				item_to_remove.remove();
+			}
 		});
 	},
 	
@@ -135,6 +137,15 @@ Widget.types.page_type.types['default'] = {
 		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
+		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').text('delete').appendTo(container);
+		delete_drop_zone.droppable({
+			accept: 'li[data-container]',
+			activeClass: 'ui-state-highlight',
+			hoverClass: 'ui-state-droppable',
+			drop: function(event, ui) {
+				pt_default.remove_object.call(page_type, ui.draggable, true);
+			}
+		});
 		available_modules.empty();
 		filled_modules.empty();
 		container.append('<br clear="both" />');
