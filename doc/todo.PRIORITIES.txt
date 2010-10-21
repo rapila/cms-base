@@ -1,9 +1,28 @@
 PRIORITAETEN:
 
+CMS
+- Page Konfiguration fixen, PageTree D&D, Insert
+- Rechteverwaltung (ist vorbereitet) und Permission Widget etc.
+	Rechte und Login, Password forgotten etc
+- Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload
+- Dokumentenverwaltung Bug, eventuell views (kann auch später gemacht werden)
+- Allgemeiner Support in vielen Details und Widget Fragen
+- Entscheidung der Features und Umsetzung von Minimalvariante für Preview Editing
+- NewsletterPlugin
+- Laufende Verbesserungen nach der Aufschaltung.
+
+Ventla
+- Mehrsprachig
+- Registrierung? Einbettung von Games
+- Scorehandling
+- Tipps & Tricks Bewertung
+- Gästebuch offen
+- Wettbewerb abklären?
+- Document Download Eltern, Lehrer, Presse, Pressekits? (Logo etc)
+
 Themenprioriäten @see site/doc/todo_timeline.xlsx
 - delete alert, example tip with getParatmetrizedString=altert_delete;title=....
 - TipList Performance analysis! What can be changed, improved (9.6seconds to load)
-- WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 - LoginManager, LoginPageType etc! LoginFrontendModule
 - FrontendUser > send
 - User Roles and Groups, Rights > Teilnehmer FE, Admin, Admin Language, Admin Tipps & Trick Newsletter?
@@ -35,6 +54,7 @@ RFP-Projekt Priorities and Planning in General
 
 
 
+- WidgetBasedFrontendModule implement all Newsletter Frontend and RfP Frontend Modules
 
 
 

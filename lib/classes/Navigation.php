@@ -88,7 +88,7 @@ class Navigation {
 		$bNoPagesDisplayed = true;
 		foreach($aNavigationItems as $oNavigationItem) {
 			$oBooleanParser = new BooleanParser(self::$BOOLEAN_PARSER_DEFAULT_VALUES);
-			$bHasChildren = $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyVisibleChildren, !$this->bShowOnlyEnabledChildren);
+			$bHasChildren = $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
 
 			if($bHasChildren) {
 				$oBooleanParser->has_children = true;
@@ -127,10 +127,12 @@ class Navigation {
 					$oBooleanParser->is_virtual = true;
 			}
 			
-			$sTemplateName = $this->getConfigForPage("template", $iLevel, $oBooleanParser);
+			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser);
+			
+			$sTemplateName = @$aConfig['template'];
 			
 			//Don’t show page (and subpages) in navigation if show===false
-			if($this->getConfigForPage("show", $iLevel, $oBooleanParser) === false) {
+			if(@$aConfig['show'] === false) {
 				continue;
 			}
 			
@@ -146,36 +148,35 @@ class Navigation {
 			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
 			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
 			$oTemplate->replaceIdentifier('description', $oNavigationItem->getDescription());
+			
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
 			$oTemplate->replaceIdentifier('link_without_prefix', implode('/', $oNavigationItem->getLink()));
+			
 			$oTemplate->replaceIdentifier('link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
-			// TO decide: include this for backwards compatible reasons?
-			// $oTemplate->replaceIdentifier('full_link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
 			$oTemplate->replaceIdentifier('level', $iLevel);
-			$oTemplate->replaceIdentifier('is_inactive', $oNavigationItem->isEnabled() ? '' : ' inactive');
+			
+			foreach($oBooleanParser->getItems() as $aNavigationAttributeName => $aNavigationAttributeValue) {
+				$oTemplate->replaceIdentifier($aNavigationAttributeName, $aNavigationAttributeValue);
+			}
 			
 			if($oBooleanParser->is_current) {
 				$oTemplate->replaceIdentifier('status', "current");
-			}
-			if($oBooleanParser->is_active) {
+			} else if($oBooleanParser->is_active) {
 				$oTemplate->replaceIdentifier('status', "active");
-			}
-			if($oBooleanParser->is_sibling_of_current) {
+			} else if($oBooleanParser->is_sibling_of_current) {
 				$oTemplate->replaceIdentifier('status', "sibling_of_current");
-			}
-			if($oBooleanParser->is_sibling_of_active) {
+			} else if($oBooleanParser->is_sibling_of_active) {
 				$oTemplate->replaceIdentifier('status', "sibling_of_active");
-			}
-			if($oBooleanParser->is_child_of_current) {
+			} else if($oBooleanParser->is_child_of_current) {
 				$oTemplate->replaceIdentifier('status', 'child_of_current');
-			}
-			if($oBooleanParser->is_descendant_of_current) {
+			} else if($oBooleanParser->is_descendant_of_current) {
 				$oTemplate->replaceIdentifier('status', 'descendant_of_current');
+			} else {
+				$oTemplate->replaceIdentifier('status', "default");
 			}
-			$oTemplate->replaceIdentifier('status', "default");
 			
 			if($oTemplate->hasIdentifier('children') && $bHasChildren && !($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
-				$aChildren = $oNavigationItem->getChildren($this->sLanguageId, !$this->bShowOnlyVisibleChildren, !$this->bShowOnlyEnabledChildren);
+				$aChildren = $oNavigationItem->getChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
 				$oTemplate->replaceIdentifier('children', $this->parseTree($aChildren, $iLevel+1));
 			}
 			
@@ -204,7 +205,7 @@ class Navigation {
 	 * @param int level of navigation
 	 * @return string parsed navigation
 	 */	 
-	private function getConfigForPage($sConfigName, $iLevel, $oBooleanParser) {
+	private function getConfigForPage($iLevel, $oBooleanParser) {
 		$aConfigToCheck = @$this->aConfig[$iLevel];
 		if($aConfigToCheck === null) {
 			if(!isset($this->aConfig['all'])) {
@@ -214,7 +215,7 @@ class Navigation {
 		}
 		foreach($aConfigToCheck as $aConfig) {
 			if(!isset($aConfig['on']) || $oBooleanParser->parse($aConfig['on'])) {
-				return @$aConfig[$sConfigName];
+				return $aConfig;
 			}
 		}
 		return null;

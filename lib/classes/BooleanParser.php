@@ -12,21 +12,18 @@ class BooleanParser
 	const BP_OR = "|";
 	const BP_NOT = "!";
 
-	public function __construct($aItems = null)
-	{
+	public function __construct($aItems = null) {
 		if($aItems == null) {
 			$aItems = array();
 		}
 		$this->aItems = $aItems;
 	}
 
-	public function __get($sName)
-	{
+	public function __get($sName) {
 		return $this->aItems[$sName];
 	}
 
-	public function __set($sName, $sValue)
-	{
+	public function __set($sName, $sValue) {
 		if($sName === self::BP_TRUE || $sName === self::BP_FALSE) {
 			throw new Exception("Error in BooleanParser->__set: invalid key");
 		}
@@ -37,14 +34,16 @@ class BooleanParser
 		return true;
 	}
 
-	public function __isset($sName)
-	{
+	public function __isset($sName) {
 		return isset($this->aItems[$sName]);
 	}
 
-	public function __unset($sName)
-	{
+	public function __unset($sName) {
 		unset($this->aItems[$sName]);
+	}
+	
+	public function getItems() {
+			return $this->aItems;
 	}
 
 	public function parse($sQuery) {
