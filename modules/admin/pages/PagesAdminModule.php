@@ -15,7 +15,6 @@ class PagesAdminModule extends AdminModule {
 		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
-		$this->oTreeWidget->setOrdered(true);
 		$oInitialPage = null;
 
 		if(Manager::hasNextPathItem()) {
@@ -62,12 +61,30 @@ class PagesAdminModule extends AdminModule {
 	}
 	
 	private static function propertiesFromPage($oPage) {
+		$oUser = Session::getSession()->getUser();
 		$aResult = $oPage->toArray();
+		$aResult['UserMayCreateChildren'] = $oUser->mayCreateChildren($oPage);
 		// $aResult['page_string'] = $oPage->getActivePageString(AdminManager::getContentLanguage())->toArray();
 		return $aResult;
 	}
 	
 	public function loadItem($iId) {
 		return self::propertiesFromPage(PagePeer::retrieveByPK($iId));
+	}
+	
+	public function moveItem($iIdNew, $iIdRef, $sPosition) {
+		$oPage = PagePeer::retrieveByPK($iIdNew);
+		$oRefPage = PagePeer::retrieveByPK($iIdRef);
+		if($sPosition === 'first') {
+			$oPage->moveToFirstChildOf($oRefPage);
+		} else if($sPosition === 'before') {
+			$oPage->moveToPrevSiblingOf($oRefPage);
+		} else if($oPage === 'after') {
+			$oPage->moveToNextSiblingOf($oRefPage);
+		} else if($oPage === 'last') {
+			$oPage->moveToLastChildOf($oRefPage);
+		}
+		
+		return true;
 	}
 }

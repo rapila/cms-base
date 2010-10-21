@@ -4,7 +4,6 @@
  */
 class TreeWidgetModule extends PersistentWidgetModule {
 	private $oDelegate = null;
-	private $bIsOrdered = false;
 	
 	public function setDelegate($oDelegate) {
 		$this->oDelegate = $oDelegate;
@@ -12,14 +11,6 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	
 	public function getDelegate() {
 		return $this->oDelegate;
-	}
-	
-	public function setOrdered($bIsOrdered) {
-	    $this->bIsOrdered = $bIsOrdered;
-	}
-
-	public function isOrdered() {
-	    return $this->bIsOrdered;
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
@@ -33,8 +24,8 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function doWidget() {
-		$oListTag = new TagWriter($this->bIsOrdered ? 'ol' : 'ul');
-		$oListTag->addToParameter('class', 'ui-tree');
+		$oListTag = new TagWriter('div');
+		$oListTag->addToParameter('class', 'widget-tree');
 		$oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$oListTag->setParameter('data-widget-type', $this->getModuleName());
 		return $oListTag->parse();
@@ -46,6 +37,10 @@ class TreeWidgetModule extends PersistentWidgetModule {
 	
 	public function loadItem($mData) {
 		return $this->oDelegate->loadItem($mData);
+	}
+	
+	public function moveItem($mFromData, $mToData, $sPosition) {
+		return $this->oDelegate->moveItem($mFromData, $mToData, $sPosition);
 	}
 	
 }

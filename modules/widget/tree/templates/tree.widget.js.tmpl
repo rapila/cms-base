@@ -1,25 +1,29 @@
 Widget.types.tree = {
 	prepare: function() {
-		var widget = this;
+		var _this = this;
 		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
 		
 		// Item click handler
-		this._element.delegate('.ui-tree li', 'click', function(event) {
+		this._element.delegate('li', 'click.jstree', function(event) {
 			// Open the item
 			var element = jQuery(this);
 			// var opener = element.children('.tree-opener');
 			// if(!opener.is('.no-children')) {
 			// 	if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
-			// 		widget.close(element, opener);
+			// 		_this.close(element, opener);
 			// 	} else {
-			// 		widget.open(element, opener);
+			// 		_this.open(element, opener);
 			// 	}
 			// }
-			// if(jQuery(event.target).is('.tree-opener')) {
-			// 	return;
-			// }
-			// // Select it
-			widget.activate(element);
+			if(jQuery(event.target).is('li > ins.jstree-icon')) {
+				return;
+			}
+			// Open it
+			if(!_this._tree.is_open(element)) {
+				_this._tree.open_node(element);
+			}
+			// Select it
+			_this.activate(element);
 		});	
 		// this._element.delegate('.ui-tree li', 'hover', function(event) {
 		// 	var element = jQuery(this);
@@ -28,24 +32,36 @@ Widget.types.tree = {
 		
 		this._element.jstree({
 			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd"],
-			tree_widget: {widget: this},
+			tree_widget: {widget: _this},
 			crrm: {
 				move: {
-					default_position: 'first'
+					default_position: 'first',
+					check_move: function(data) {
+						return _this.settings.may_create_children(data.np.data('jstree'));
+					}
 				}
 			},
 			
 			dnd: {
 				//TODO: fill in function callbacks for sort, move and deny
+				drag_target: false,
+				drop_target: false
 			}
 		});
 		this._tree = jQuery.jstree._reference(this._element);
+		this._element.bind('move_node.jstree', function(event, data) {
+			_this.moveItem(_this.identifier_from_element(data.rslt.o), _this.identifier_from_element(data.rslt.r), data.rslt.p);
+		}).bind('refresh.jstree', function(event, data) {
+			if(_this.current_element_identifier && _this.current_element().length == 0) {
+				var new_element = _this.element_with_identifier(_this.current_element_identifier);
+				_this.activate(new_element);
+			}
+		});
 		// this.reload();
 	},
 	
 	reload: function() {
-		this._element.empty();
-		this.open_item(this._element);
+		this._tree.refresh();
 	},
 	
 	load_item: function(item, success) {
@@ -54,19 +70,19 @@ Widget.types.tree = {
 		this.listChildren(id, function(children) {
 			var result = [];
 			jQuery.each(children, function(i, child) {
-				var icon = null;
 				var icons = _this.settings.icons_from_item(child);
 				jQuery.each(icons, function(i, theIcon) {
-					if(!icon) {
-						icon = 'ui-icon ';
-					}
-					icon += 'ui-icon-'+theIcon+" ";
+					icons[i] = 'ui-icon ui-icon-'+theIcon
 				});
-				result.push({
-					data: {title: _this.settings.description_from_item(child), icon: icon},
+				var node = {
+					data: {title: _this.settings.description_from_item(child), icon: icons},
 					metadata: child,
-					state: _this.settings.is_open(child) ? 'closed' : 'closed'
-				});
+				};
+				if(_this.settings.has_children(child)) {
+					node.state = _this.settings.is_open(child) ? 'closed' : 'closed';
+
+				}
+				result.push(node);
 			});
 			success(result);
 		});
@@ -129,22 +145,21 @@ Widget.types.tree = {
 	activate: function(element) {
 		this._element.find('li').removeClass('ui-state-active');
 		element.addClass('ui-state-active');
-		this.fire('tree_item.activated', element, this.identifier_from_element(element));
+		var new_identifier = this.identifier_from_element(element);
+		var has_changed = this.current_element_identifier !== new_identifier;
+		this.current_element_identifier = new_identifier;
+		this.fire('tree_item.activated', element, this.current_element_identifier, has_changed);
 	},
 	
 	parent_of: function(element) {
-		if(element.parent()[0] === this._element[0]) {
-			return null;
-		}
-		return element.parent().closest('li');
+		return this._tree._get_parent(element);
 	},
 	
-	remove_element_with_data: function(data) {
-		var element = this.element_with_data(data);
+	remove_element_with_identifier: function(data) {
+		var element = this.element_with_identifier(data);
 		var parent = this.parent_of(element);
 		var is_selected = element.is('.ui-state-active');
-		element.remove();
-		this.update_element(parent);
+		this._tree.remove(element);
 		if(is_selected) {
 			this.activate(parent);
 		}
@@ -154,15 +169,11 @@ Widget.types.tree = {
 		return this._element.find('li.ui-state-active');
 	},
 	
-	current_element_data: function() {
-		return this.identifier_from_element(this.current_element());
-	},
-	
 	all_pages: function() {
 		return jQuery('#admin_sidebar').find('li');
 	},
 	
-	element_with_data: function(data) {
+	element_with_identifier: function(data) {
 		var result = null;
 		var widget = this;
 		this._element.find('li').each(function() {
@@ -197,18 +208,19 @@ Widget.types.tree = {
 	* @param element the element to reload
 	*/
 	reload_element: function(element) {
-		this.update_element(element);
-		opener = element.children('.tree-opener');
-		var sub_list = element.find(this.settings.tag_name);
-		if(sub_list.length === 0 && !opener.is('.no-children')) {
-			return;
-		}
-		sub_list.remove();
-		if(opener.is('.opened') || opener.is('.no-children')) {
-			opener.removeClass('opened no-children').addClass('closed');
-			//Reload immediately
-			this.open(element, opener);
-		}
+		this._tree.refresh(element);
+		// this.update_element(element);
+		// opener = element.children('.tree-opener');
+		// var sub_list = element.find(this.settings.tag_name);
+		// if(sub_list.length === 0 && !opener.is('.no-children')) {
+		// 	return;
+		// }
+		// sub_list.remove();
+		// if(opener.is('.opened') || opener.is('.no-children')) {
+		// 	opener.removeClass('opened no-children').addClass('closed');
+		// 	//Reload immediately
+		// 	this.open(element, opener);
+		// }
 	},
 	
 	open: function(element, opener) {
@@ -241,9 +253,12 @@ Widget.types.tree = {
 		});
 	},
 	
+	current_element_identifier: null,
+	
 	settings: {
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
+		may_create_children: jQuery.noop,
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
 		is_active: jQuery.noop,

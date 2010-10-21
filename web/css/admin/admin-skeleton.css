@@ -280,27 +280,10 @@ table.ui-list .ui-list-cell a {
   min-width: 15em;
   padding-left: 5px;
 }
-#admin_sidebar .ui-tree {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 #admin_sidebar .ui-list {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-#admin_sidebar .ui-tree li.ui-state-hover {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background-color: #728697;
-}
-#admin_sidebar .ui-tree li.ui-state-active {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background-color: #728697;
 }
 #admin_sidebar ol {
   padding: 0;
@@ -311,7 +294,10 @@ table.ui-list .ui-list-cell a {
 .ui-tree li { clear: left; }
 .ui-tree .tree-opener { float: left; }
 .ui-tree .tree-opener.no-children { background-image: none; }
-#admin_sidebar > .ui-tree ol li { border-bottom: none; }
+#admin_sidebar > .ui-tree ol li {
+  border-bottom: none;
+  border-bottom: 1px solid #d4d8dc;
+}
 #admin_sidebar > .ui-tree > ol > li:first-child { border-bottom: none; }
 #admin_sidebar > .ui-tree ol ol li {
   border-bottom: none;

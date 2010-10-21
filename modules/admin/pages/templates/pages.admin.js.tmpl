@@ -23,8 +23,8 @@ jQuery(document).ready(function() {
 		});
 		page_detail.handle('saved', function(event) {
 			var page_id = page_detail.current_page_id;
-			var element = page_tree.element_with_data(page_id);
-			page_tree.update_element(element, page_id);
+			var element = page_tree.element_with_identifier(page_id);
+			page_tree.reload_element(page_tree.parent_of(element));
 		});
 	}, function(widget) {
 		widget.disable_input();
@@ -45,7 +45,7 @@ jQuery(document).ready(function() {
 	jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
 		Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, page_detail.current_page_name()), function(confirmed) {
 			if(confirmed) {
-				page_detail.delete_page(page_tree.remove_element_with_data.bind(page_tree));
+				page_detail.delete_page(page_tree.remove_element_with_identifier.bind(page_tree));
 			}
 		});
 		
@@ -57,10 +57,10 @@ jQuery(document).ready(function() {
 			Widget.create('sidebar_input', function(sidebar_input) {
 				sidebar_input.add_new_sidebar_input(null, function(name, cleanup_callback) {
 					//This is the save callback
-					var page_id = page_tree.current_element_data();
+					var page_id = page_tree.current_element_identifier;
 					page_detail.createPage(page_id, name, cleanup_callback.bind(this, page_id));
 				}, function(page_id) {
-					page_tree.reload_element(page_tree.element_with_data(page_id));
+					page_tree.reload_element(page_tree.element_with_identifier(page_id));
 				});
 			});
 		}, 'n', false);
@@ -68,8 +68,10 @@ jQuery(document).ready(function() {
 	});
 	
 	// init main content
-	var click_handler = function(event, element, page_id) {
-		page_detail.load_page(page_id);
+	var click_handler = function(event, element, page_id, has_changed) {
+		if(has_changed) {
+			page_detail.load_page(page_id);
+		}
 		// jQuery("div.accordion").accordion( "activate", 0);
 	};
 	
@@ -80,6 +82,9 @@ jQuery(document).ready(function() {
 			},
 			has_children: function(item) {
 				return item.TreeRight-item.TreeLeft > 1;
+			},
+			may_create_children: function(item) {
+				return item !== undefined && item.UserMayCreateChildren;
 			},
 			identifier_from_data: function(data) {
 				return data.Id;

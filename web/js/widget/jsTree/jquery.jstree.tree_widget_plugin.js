@@ -117,13 +117,29 @@
 							tmp.attr(m.attr)[ t ? "html" : "text" ](m.title);
 							if(m.language) { tmp.addClass(m.language); }
 						}
-						tmp.prepend("<ins class='jstree-icon'>&#160;</ins>");
-						if(!m.icon && js.icon) { m.icon = js.icon; }
-						if(m.icon) { 
-							if(m.icon.indexOf("/") === -1) { tmp.children("ins").addClass(m.icon); }
-							else { tmp.children("ins").css("background","url('" + m.icon + "') center center no-repeat"); }
+						if(!jQuery.isArray(m.icon)) {
+							if(m.icon) {
+								m.icon = [m.icon];
+							} else {
+								m.icon = [];
+							}
 						}
-						d.append(tmp);
+						// var generic_icon_tag = jQuery("<ins>&#160;</ins>").addClass('jstree-icon');
+						var icon_tag = jQuery("<ins>&#160;</ins>");
+						jQuery.each(m.icon, function(i, icon) {
+							var icon_t = icon_tag.clone().addClass("jstree-custom-icon");
+							if(icon.indexOf("/") === -1) {
+								icon_t.addClass(icon);
+							} else {
+								icon_t.css("background","url('" + icon + "') center center no-repeat");
+							}
+							tmp.append(icon_t);
+						});
+						// if(m.icon.length === 0) {
+						// 	tmp.prepend(icon_tag);
+						// }
+						tmp.prepend(icon_tag.addClass('jstree-icon'));
+						d.prepend(tmp);
 					});
 					d.prepend("<ins class='jstree-icon'>&#160;</ins>");
 					if(js.children) { 
