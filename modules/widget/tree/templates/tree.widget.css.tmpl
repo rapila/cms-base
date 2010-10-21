@@ -9,49 +9,55 @@
 }
 */
 
-.ui-tree li a.ui-state-default {
+*[data-widget-type=tree] li a.ui-state-default {
 	border: none;
 }
-.ui-tree { list-style: none inside; }
-#admin_sidebar .ui-tree li li { font-size: 1em; }
-.ui-tree li { clear: left; }
-.ui-tree .tree-opener { float: left; }
-.ui-tree .tree-opener.no-children { background-image: none; }
-#admin_sidebar > .ui-tree ol li {
-	border-bottom: none;
-	border-bottom: 1px solid #d4d8dc;
+
+*[data-widget-type=tree] { list-style: none inside; }
+
+*[data-widget-type=tree] li,
+*[data-widget-type=tree] li a ins {
+	clear: left;
+	cursor: pointer;
 }
-#admin_sidebar > .ui-tree > ol > li:first-child { border-bottom: none; }
-#admin_sidebar > .ui-tree ol ol li {
-	border-bottom: none;
-	border-top: none;
+*[data-widget-type=tree] li ins {
+	cursor: default;
 }
-#admin_sidebar > .ui-tree ol ol li:first-child {
-	border-bottom: none;
-	border-top: none;
+*[data-widget-type=tree] ins.jstree-custom-icon {
+	float: right;
 }
-#admin_sidebar > .ui-tree ol ol li.ui-state-hover {
-	border-bottom: none;
-	border-top: none;
-}
-#admin_sidebar > .ui-tree ol ol li.ui-state-active {
-	border-bottom: none;
-	border-top: none;
-}
-#admin_sidebar .ui-tree li a {
+
+*[data-widget-type=tree] .tree-opener { float: left; }
+
+*[data-widget-type=tree] .tree-opener.no-children { background-image: none; }
+
+*[data-widget-type=tree] ul li a,
+*[data-widget-type=tree] ul li a.ui-state-default {
   color: #444444;
+  font-weight: 700;
   text-decoration: none;
 }
-#admin_sidebar .ui-tree div.ui-icon { margin: 0.3em 0 0 0; }
-#admin_sidebar .ui-tree li {
+
+*[data-widget-type=tree] ul .ui-icon {
+	top: 3px;
+	position: relative;
+}
+
+*[data-widget-type=tree] ul li {
   font-size: 1.2em;
   padding: 0 0 0 0;
   line-height: 25px;
   vertical-align: middle;
   border-bottom: none;
 }
-#admin_sidebar .ui-tree > li ol { padding-left: 18px; }
-#admin_sidebar .ui-tree li.show-children ol {
+
+*[data-widget-type=tree] ul li li { font-size: 1em; }
+
+*[data-widget-type=tree] ul li.show-children ol {
   margin-left: -10px;
   margin-top: 3px;
+}
+
+*[data-widget-type=tree] ul .ui-icon-folder-collapsed {
+	display: none;
 }
