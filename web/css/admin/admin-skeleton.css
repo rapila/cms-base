@@ -290,7 +290,7 @@ table.ui-list .ui-list-cell a {
   margin: 0;
 }
 .ui-tree { list-style: none inside; }
-#admin_sidebar .ui-tree .ui-tree li { font-size: 1em; }
+#admin_sidebar .ui-tree li li { font-size: 1em; }
 .ui-tree li { clear: left; }
 .ui-tree .tree-opener { float: left; }
 .ui-tree .tree-opener.no-children { background-image: none; }
