@@ -42,7 +42,8 @@ Widget.types.detail = {
 			dialogClass: this.settings.dialogClass,
 			width: this.settings.width,
 			height: this.settings.height,
-			buttons: buttons
+			buttons: buttons,
+			position: ['center', 'top']
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
 				// TODO: check if is textarea or whatever

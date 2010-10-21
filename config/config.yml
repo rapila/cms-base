@@ -39,6 +39,9 @@ admin:
   delete_pagetree_enable: true
   page_properties_allow: false
   
+  # set this to false if your containers overlap
+  use_parsed_css_in_config: true
+  
   # document edit and delete can be restricted to owner only (if is not admin), defaults to false
   document_delete_allow_from_creator_only: false
   

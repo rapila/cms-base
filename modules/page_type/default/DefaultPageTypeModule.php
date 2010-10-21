@@ -311,27 +311,36 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
 		}
 		
-		$sCssContents = "";
-		foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
-			if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition'])) {
-				if(isset($aResource['media'])) {
-					$sCssContents.= "@media {$aResource['media']} {";
-				}
-				if(isset($aResource['file_resource'])) {
-					$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
-				} else {
-					// Absolute link, requires fopen wrappers
-					$sCssContents .= file_get_contents($aResource['location']);
-				}
-				if(isset($aResource['media'])) {
-					$sCssContents.= "}";
+		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
+		$oStyle = null;
+		
+		if($bUseParsedCss) {
+			$sCssContents = "";
+			foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
+				if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition'])) {
+					if(isset($aResource['media'])) {
+						$sCssContents.= "@media {$aResource['media']} {";
+					}
+					if(isset($aResource['file_resource'])) {
+						$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
+					} else {
+						// Absolute link, requires fopen wrappers
+						$sCssContents .= file_get_contents($aResource['location']);
+					}
+					if(isset($aResource['media'])) {
+						$sCssContents.= "}";
+					}
 				}
 			}
-		}
 		
-		$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
-		$oCss = $oParser->parse();
-		$this->cleanupCSS($oCss);
+			$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
+			$oCss = $oParser->parse();
+			$this->cleanupCSS($oCss);
+			
+			$oStyle = new HtmlTag('style');
+			$oStyle->addParameters(array('scoped' => 'scoped'));
+			$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+		}
 		
 		$sTemplate = $oTemplate->render();
 		
@@ -341,10 +350,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oParser = new TagParser("<body>$sTemplate</body>");
 		$oTag = $oParser->getTag();
 		$this->cleanupContainerStructure($oTag);
-		$oStyle = new HtmlTag('style');
-		$oStyle->addParameters(array('scoped' => 'scoped'));
-		$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
-		$oTag->appendChild($oStyle);
+		if($bUseParsedCss) {
+			$oTag->appendChild($oStyle);
+		}
 		$sResult = $oTag->__toString();
 		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
 		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
