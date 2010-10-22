@@ -1,29 +1,16 @@
 Widget.types.document_edit = {
 	prepare: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
 		var _this = this;
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
-			var select_element = jQuery("<select/>");
-			var select_label = jQuery("<label/>");
-			var label_text_key = 'document_list_label.'+select_name;
-			select_element.attr('name', select_name);
-			select_label.attr('for', select_name);
-			if(select_name == 'template_option') {
-				select_label.text("{{writeString=document_list.template_option}}");
-			} else if(select_name == 'sort_option') {
-				select_label.text("{{writeString=document_list.sort_option}}");
-			} else if(select_name == 'category_option') {
-				select_label.text("{{writeString=document_list.category_option}}");
-			}
+
+			var select_element = _this.content.find("select[name=select_name]");
+			console.log(select_element);
 			jQuery.each(options, function(key, value) {
 				select_element.append(jQuery('<option/>').attr('value', key).text(value));
 			});
-			
-			var group_fields = jQuery("<div/>").addClass('group_fields');
-
-			group_fields.append(select_label);
-			group_fields.append(select_element);
-			_this._element.append(group_fields);
 		});
+		this._element.append(this.content);
 		// console.log(_this.mode_options);
 		// this.mode_dropdown.val(this.getDisplayMode());
 		// this.mode_dropdown.change(function() {
@@ -40,7 +27,7 @@ Widget.types.document_edit = {
 		
 		this.result_list = jQuery('<ol/>');
 		this.reload_preview();
-		this._element.append(this.result_list);
+		this.content.find('.documents_container').append(this.result_list);
 		this.result_list.delegate('img', 'click', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setDocumentId(id);

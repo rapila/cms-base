@@ -49,8 +49,4 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 	public function saveData($mData) {
 		return $this->oFrontendModule->widgetSave($mData);
 	}
-	
-	public function getElementType() {
-		return 'form';
-	}
 }
