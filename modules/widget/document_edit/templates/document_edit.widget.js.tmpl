@@ -1,21 +1,20 @@
 Widget.types.document_edit = {
 	prepare: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
+		var display_modes = this.getDisplayMode();
 		var _this = this;
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
 			var select_element = _this.content.find("select[name="+select_name+"]");
 			jQuery.each(options, function(key, value) {
-				select_element.append(jQuery('<option/>').attr('value', key).text(value));
+				var option = jQuery('<option/>').attr('value', key).text(value);
+				if(display_modes[select_name] == key) {
+					option.attr('selected', true);
+				}
+				select_element.append(option);
 			});
 		});
 		this._element.append(this.content);
-		// console.log(_this.mode_options);
-		// this.mode_dropdown.val(this.getDisplayMode());
-		// this.mode_dropdown.change(function() {
-		// 	_this.setDisplayMode(_this.mode_dropdown.val());
-		// 	_this.reload_preview();
-		// });
-		// 
+
 		var detail_widget;
 		Widget.create('document_detail', function(widget) {
 			_this.detail_widget = widget;
@@ -44,7 +43,9 @@ Widget.types.document_edit = {
 	},
 	
 	save: function(callback) {
-		console.log(this._element);
-		this.saveData(this._element.serializeArrayKV(), callback);
+		
+		var data = this._element.serializeArrayKV();
+		console.log(this._element,data);
+		this.saveData(data, callback);
 	}
 };
