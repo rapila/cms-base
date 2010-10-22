@@ -1,7 +1,6 @@
 Widget.types.document_edit = {
 	prepare: function() {
 		var _this = this;
-		this.mode_options = new Array();
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
 			var select_element = jQuery("<select/>");
 			var select_label = jQuery("<label/>");
@@ -19,7 +18,6 @@ Widget.types.document_edit = {
 				select_element.append(jQuery('<option/>').attr('value', key).text(value));
 			});
 			
-			_this.mode_options[select_name] = select_element;
 			var group_fields = jQuery("<div/>").addClass('group_fields');
 
 			group_fields.append(select_label);
@@ -62,11 +60,7 @@ Widget.types.document_edit = {
 	},
 	
 	save: function(callback) {
-		var data = new Array();
-		jQuery.each(_this.mode_options, function(select_name, element) {
-			data[select_name] = element.val();
-		});
-		console.log(data, _this.mode_options);
-		this.saveData(data, callback);
+		console.log(this._element);
+		this.saveData(this._element.serializeArrayKV(), callback);
 	}
 };

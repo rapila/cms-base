@@ -1,6 +1,11 @@
 Pages
 
 detail: 
+- handle / save conditions
+- handle problem with adminMoveObject (if content object is trashed, move is triggered at the same time, see comment in DefaultPageTypeModule line 305)
+- check DefaultPageTypeModule/FrontendModule handling >	public static function listContentModules($bInheritIsSet=false) 
+	empty content object should not be shown if inherit is not set in some container.
+- delete references
 - Content Language Issue:
 	- add language chooser? 
 		for changing main content language: for all language sensitive modules (pages, strings, others)

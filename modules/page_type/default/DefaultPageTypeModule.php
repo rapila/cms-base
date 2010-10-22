@@ -11,6 +11,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private $sContainerName;
 	private $sLanguageId;
 	private $bIsPreview;
+	private $bInheritIsSet=false;
 	
 	private static $COMPARISONS = array("eq" => "==",
 																			"ne" => "!==",
@@ -190,7 +191,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminListPossibleFrontendModules() {
-		return FrontendModule::listContentModules();
+		return FrontendModule::listContentModules($this->bInheritIsSet);
 	}
 	
 	public function adminListFilledFrontendModules() {
@@ -210,7 +211,12 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$bHasNoObjects = count($aObjects) === 0;
 			
 			$oInheritedFrom = null;
-			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
+			$bInheritIsSet = BooleanParser::booleanForString($oContainer->getParameter('inherit'));
+			if($bInheritIsSet) {
+				// only change if once is set
+				$this->bInheritIsSet = true;
+			}
+			if(BooleanParser::booleanForString($bInheritIsSet) && $bHasNoObjects) {
 				$oInheritedFrom = $this->oPage;
 				$iInheritedObjectCount = 0;
 				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
@@ -280,6 +286,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return array($oWidget, null);
 	}
 	
+	public function adminEditCondition($iObjectId) {
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
+		$oCurrentContentObject = $this->contentObjectById($iObjectId);
+		return unserialize(is_resource($oCurrentContentObject->getConditionSerialized()) ? stream_get_contents($oCurrentContentObject->getConditionSerialized()) : null);
+	}
+	
 	public function adminPreview($iObjectId) {
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
@@ -293,6 +307,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
+		// fix if content object is deleted in trash, it is moved at the same time but not found anymore!
+		if($oContentObject === null) {
+			return;
+		}
 		$bSortAsc = $iSort > $oContentObject->getSort();
 		if($sNewContainerName) {
 			$oContentObject->setContainerName($sNewContainerName);

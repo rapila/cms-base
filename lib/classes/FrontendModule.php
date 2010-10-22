@@ -56,10 +56,13 @@ abstract class FrontendModule extends Module {
 		return $this->oData;
 	}
 	
-	public static function listContentModules() {
+	public static function listContentModules($bInheritIsSet=false) {
 		$aResult = array();
 		$aModules = self::listModules();
 		foreach($aModules as $sModuleName => $sModulePath) {
+			if($bInheritIsSet === false && $sModuleName === 'empty') {
+				continue;
+			}
 			$sClassName = self::getClassNameByName($sModuleName);
 			$aResult[$sModuleName] = self::getDisplayNameByName($sModuleName);
 		}

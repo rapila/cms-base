@@ -122,6 +122,13 @@ Widget.types.page_type.types['default'] = {
 		});
 	},
 	
+	edit_condition: function(item_to_edit) {
+		this.callPageTypeMethod('adminEditCondition', item_to_edit.attr('data-object-id'), function(result, error) {
+			var condition_serialized = result;
+			// console.log(condition_serialized);
+		});
+	},
+	
 	update_content_properties: function(element, is_filled_in_current_language) {
 		var remove_button = element.find('.ui-icon.ui-icon-trash');
 		if(!is_filled_in_current_language) {
@@ -157,8 +164,9 @@ Widget.types.page_type.types['default'] = {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
-			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').css({ float:"right", cursor: "pointer" });
-			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').css({ float:"right", cursor: "pointer" });
+			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').attr('title', "{{writeString=widget.delete_content_object}}").css({ float:"right", cursor: "pointer" });
+			var edit_condition_button = jQuery('<span/>').addClass('ui-icon ui-icon-wrench').attr('title', "{{writeString=widget.edit_display_conditions}}").css({ float:"right", cursor: "pointer" });
+			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').attr('title', "{{writeString=widget.edit_language_content}}").css({ float:"right", cursor: "pointer" });
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
@@ -169,6 +177,7 @@ Widget.types.page_type.types['default'] = {
 					jQuery.each(params.contents, function(object_id, content) {
 						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
 						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li)));
+						li.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, li)));
 						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));
 						pt_default.update_content_properties(li, content.content_info !== false);
 					});
