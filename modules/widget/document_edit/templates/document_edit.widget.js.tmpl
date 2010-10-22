@@ -3,9 +3,7 @@ Widget.types.document_edit = {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		var _this = this;
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
-
-			var select_element = _this.content.find("select[name=select_name]");
-			console.log(select_element);
+			var select_element = _this.content.find("select[name="+select_name+"]");
 			jQuery.each(options, function(key, value) {
 				select_element.append(jQuery('<option/>').attr('value', key).text(value));
 			});
@@ -23,11 +21,10 @@ Widget.types.document_edit = {
 			_this.detail_widget = widget;
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
-
 		
 		this.result_list = jQuery('<ol/>');
 		this.reload_preview();
-		this.content.find('.documents_container').append(this.result_list);
+		this._element.append(this.result_list);
 		this.result_list.delegate('img', 'click', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setDocumentId(id);
