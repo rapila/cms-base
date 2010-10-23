@@ -34,7 +34,7 @@ domain_holder:
   email:  'info@mini-cms.ch'
 
 admin:
-  title: 'Netla Admin — {{module_name}}'
+  title: 'CMS Admin — {{module_name}}'
   inherit_children_enable: true
   delete_pagetree_enable: true
   page_properties_allow: false
