@@ -1,7 +1,11 @@
 PRIORITAETEN:
 
 CMS
-- Page Konfiguration fixen, PageTree D&D, Insert
+- ISSUE:Module::getDisplayNameByName() does not work properly because Module::getType() does not return proper type in context of default page type!!!!!
+- DocumentEdit und LinkEdit testen und Vorgehen für Feature Freeze entscheiden
+- condition serialized edit
+- Page tree requests???
+  XML descendants internal method called on incompatible Object, on calling LinkEdit widget 
 - Rechteverwaltung (ist vorbereitet) und Permission Widget etc.
 	Rechte und Login, Password forgotten etc
 - Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload

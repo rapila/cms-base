@@ -27,8 +27,8 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		$aOptions = $this->sDisplayMode;
 		$oCriteria = LinkQuery::create();
 
-		if(isset($aOptions['category_option']) && is_array($aOptions['category_option']) && (count($aOptions['category_option']) > 0)) {
-			$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
+		if(isset($aOptions['link_category_option']) && is_array($aOptions['link_category_option']) && (count($aOptions['link_category_option']) > 0)) {
+			$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_category_option'], Criteria::IN);
 		}
 		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === LinkListFrontendModule::SORT_OPTION_BY_SORT) {
 			$oCriteria->orderBySort();
@@ -40,7 +40,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['category_option'] = LinkListFrontendModule::getCategoryOptions();
+		$aResult['link_category_option'] = LinkListFrontendModule::getCategoryOptions();
 		$aResult['template_option'] = LinkListFrontendModule::getTemplateOptions();
 		$aResult['sort_option'] = LinkListFrontendModule::getSortOptions();
 		return $aResult;

@@ -17,8 +17,8 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			$aLinks = LinkPeer::getLinksByTagName($aOptions['tags']);
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
 		} else {
-			if(isset($aOptions['category_option']) && is_array($aOptions['category_option']) && (count($aOptions['category_option']) > 0)) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
+			if(isset($aOptions['link_category_option']) && $aOptions['link_category_option'] != null) {
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_category_option']);
 			}
 			if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === self::SORT_OPTION_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
@@ -35,8 +35,6 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 				$oItemTemplate = new Template($aOptions['template_option'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Link');
 				$oItemTemplate->replaceIdentifier('name', $oLink->getName());
-				$oItemTemplate->replaceIdentifier('link_text', $oLink->getName());
-				$oItemTemplate->replaceIdentifier('title', $oLink->getName());
 				$oItemTemplate->replaceIdentifier('description', $oLink->getDescription());
 				$oItemTemplate->replaceIdentifier('url', $oLink->getUrl());
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);

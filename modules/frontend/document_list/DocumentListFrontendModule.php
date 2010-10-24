@@ -15,8 +15,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		if(!Session::getSession()->isAuthenticated()) {
 			$oCriteria->filterByIsProtected(false);
 		}
-		if(isset($aOptions['category_option']) && is_array($aOptions['category_option']) && (count($aOptions['category_option']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
+		if(isset($aOptions['document_category_option']) && is_array($aOptions['document_category_option']) && (count($aOptions['document_category_option']) > 0)) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option'], Criteria::IN);
 		}
 		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === self::SORT_OPTION_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
@@ -36,14 +36,13 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 				$oItemTemplate->replaceIdentifier('extension', $oDocument->getExtension());
 				$oItemTemplate->replaceIdentifier('mimetype', $oDocument->getMimetype());
 				$oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
-				$oItemTemplate->replaceIdentifier('category_id', $oDocument->getDocumentCategoryId());
+				$oItemTemplate->replaceIdentifier('document_category_id', $oDocument->getDocumentCategoryId());
 				$oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'kb'));
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
 		} catch(Exception $e) {
 			$oListTemplate = new Template("", null, true);
 		}
-		
 		return $oListTemplate;
 	}
 	

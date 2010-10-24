@@ -240,7 +240,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
 					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
 				}		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();	
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
 			}
 		}

@@ -27,8 +27,8 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		$aOptions = $this->sDisplayMode;
 		$oCriteria = DocumentQuery::create();
 
-		if(isset($aOptions['category_option']) && is_array($aOptions['category_option']) && (count($aOptions['category_option']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
+		if(isset($aOptions['document_category_option']) && $aOptions['document_category_option'] != null) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option']);
 		}
 		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_OPTION_BY_SORT) {
 			$oCriteria->orderBySort();
@@ -40,7 +40,7 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['category_option'] = DocumentListFrontendModule::getCategoryOptions();
+		$aResult['document_category_option'] = DocumentListFrontendModule::getCategoryOptions();
 		$aResult['template_option'] = DocumentListFrontendModule::getTemplateOptions();
 		$aResult['sort_option'] = DocumentListFrontendModule::getSortOptions();
 		return $aResult;
