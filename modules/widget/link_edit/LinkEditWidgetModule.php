@@ -1,5 +1,5 @@
 <?php
-class DocumentEditWidgetModule extends PersistentWidgetModule {
+class LinkEditWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $sDisplayMode;
 	
@@ -23,26 +23,26 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
-	public function allDocuments() {
+	public function allLinks() {
 		$aOptions = $this->sDisplayMode;
-		$oCriteria = DocumentQuery::create();
+		$oCriteria = LinkQuery::create();
 
 		if(isset($aOptions['category_option']) && is_array($aOptions['category_option']) && (count($aOptions['category_option']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
+			$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['category_option'], Criteria::IN);
 		}
-		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_OPTION_BY_SORT) {
+		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === LinkListFrontendModule::SORT_OPTION_BY_SORT) {
 			$oCriteria->orderBySort();
 		}
 		$oCriteria->orderByName();
-		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentPeer::ID)->addSelectColumn(DocumentPeer::NAME);
-		return DocumentPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC);
+		$oCriteria->clearSelectColumns()->addSelectColumn(LinkPeer::ID)->addSelectColumn(LinkPeer::NAME);
+		return LinkPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['category_option'] = DocumentListFrontendModule::getCategoryOptions();
-		$aResult['template_option'] = DocumentListFrontendModule::getTemplateOptions();
-		$aResult['sort_option'] = DocumentListFrontendModule::getSortOptions();
+		$aResult['category_option'] = LinkListFrontendModule::getCategoryOptions();
+		$aResult['template_option'] = LinkListFrontendModule::getTemplateOptions();
+		$aResult['sort_option'] = LinkListFrontendModule::getSortOptions();
 		return $aResult;
 	}
 	

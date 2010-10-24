@@ -1,4 +1,4 @@
-Widget.types.document_edit = {
+Widget.types.link_edit = {
 	prepare: function() {
 		this.content = jQuery("{{includeTemplate=edit}}");
 		var display_modes = this.getDisplayMode();
@@ -16,7 +16,7 @@ Widget.types.document_edit = {
 		this._element.append(this.content);
 
 		var detail_widget;
-		Widget.create('document_detail', function(widget) {
+		Widget.create('link_detail', function(widget) {
 			_this.detail_widget = widget;
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
@@ -24,9 +24,9 @@ Widget.types.document_edit = {
 		this.result_list = jQuery('<ol/>');
 		this.reload_preview();
 		this._element.append(this.result_list);
-		this.result_list.delegate('img', 'click', function() {
+		this.result_list.delegate('li', 'click', function() {
 			var id = jQuery(this).data('id');
-			_this.detail_widget.setDocumentId(id);
+			_this.detail_widget.setLinkId(id);
 			_this.detail_widget.fill_data();
 			_this.detail_widget.open();
 		});
@@ -35,9 +35,9 @@ Widget.types.document_edit = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		this.allDocuments(function(documents) {
-			jQuery.each(documents, function(i, document) {
-				_this.result_list.append(jQuery('<img/>').attr({'alt': document.NAME, 'src' : FILE_PREFIX+'/display_document/'+document.ID+'?max_width=100'}).data('id', document.ID));
+		this.allLinks(function(links) {
+			jQuery.each(links, function(i, link) {
+				_this.result_list.append(jQuery('<li/>').text(link.NAME)..data('id', link.ID));
 			});
 		});
 	},
