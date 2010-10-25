@@ -11,13 +11,13 @@ jQuery(document).ready(function() {
 		page_detail = widget;
 		page_detail.handle('loading', function() {
 			Widget.load();
-			info_bar_buttons.hide();
+			// info_bar_buttons.hide();
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
 			if(permission_widget.getMayEditPage(page_detail.current_page_id)) {
 				page_detail.enable_input();
-				info_bar_buttons.show();
+				// info_bar_buttons.show();
 			}
 			Widget.end_load();
 		});
