@@ -351,11 +351,12 @@ input.ui-widget-content.autowidth {
 .page_detail {
 	.filled_modules {
 /*		margin-top: 24px;*/
-		width: 500px;
+		min-width: 350px;
+		max-width: 500px;
 		min-height: 300px;
 		float:left;
-		background-color: white;
-		border: 1px #DFDFDF solid;
+		background-color: transparent;
+/*		border: 1px #DFDFDF solid;*/
 		font-size: 4px;
 		position: relative;
 	}
@@ -371,10 +372,11 @@ input.ui-widget-content.autowidth {
 	
 	.filled_modules ol.template-container {
 		display: block;
-		min-height: 100px !important;
+		min-height: 70px !important;
 		min-width: 150px !important;
-/*		width: 190px !important;*/
-		border: 1px solid #797979 !important;
+		border: 1px solid #B1B1B1 !important;
+		background-color: #FFF;
+		border-color: #DFDFDF;
 	}
 
 	.available_modules li,
@@ -388,8 +390,13 @@ input.ui-widget-content.autowidth {
 		margin: 2px;
 		text-align: left;
 	}
+
+	.filled_modules ol.template-container li {
+		padding: 5px 6px;
+	}
 	
 	.available_modules li {
+		padding: 1px 5px;
 		background-color: #f2f2f2;
 		z-index: 2;
 	}		
