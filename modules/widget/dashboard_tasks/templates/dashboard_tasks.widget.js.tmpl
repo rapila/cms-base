@@ -2,9 +2,9 @@ jQuery(document).ready(function() {
 	AdminInterface.content.find('.dashboard_tasks').prepareWidget(function(dashboard_tasks) {
 		var widget = dashboard_tasks;
 		var tasks = dashboard_tasks.getTasks();
-		var other_task =jQuery('<div>').addClass('other_task');
+		var other_task =jQuery(<div/>).addClass('other_task');
 		widget._element.append(other_task);
-		var context_task =jQuery('<div>').addClass('context_task');
+		var context_task =jQuery(<div/>).addClass('context_task');
 		widget._element.append(context_task);
 		var task_group = jQuery.parseHTML("{{includeTemplate=task_group}}");
 		jQuery.each(tasks, function(taskgroup_key, contents) {
@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
 			taskgroup.find('h2').text(taskgroup_key);
 			var list = taskgroup.find('ul');
 			jQuery.each(contents, function(key, module) {
-				list.append(jQuery('<li>').text(module));
+				list.append(jQuery('<li/>').text(module));
 			});
 			other_task.append(taskgroup);
 		});

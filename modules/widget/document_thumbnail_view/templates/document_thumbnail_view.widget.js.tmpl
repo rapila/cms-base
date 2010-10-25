@@ -56,7 +56,7 @@ Widget.types.document_thumbnail_view = {
 	insert_thumbnail: function(theDocument) {
 		var px_size = ''+this.settings.thumbnail_size+'px';
 		var document_id = theDocument.id;
-		var doc = jQuery('<div></div>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
+		var doc = jQuery('<div/>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
 		doc.css({width: px_size, height: px_size});
 		doc.html(theDocument.preview);
 		doc.data('document_id', document_id);

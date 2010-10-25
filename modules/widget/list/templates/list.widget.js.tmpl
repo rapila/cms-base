@@ -1,6 +1,6 @@
 Widget.types.list = {
 	prepare: function() {
-		this.row_prototype = jQuery(this._element.is('table') ? '<tr>' : '<li>').addClass('ui-list-row');
+		this.row_prototype = jQuery(this._element.is('table') ? '<tr/>' : '<li/>').addClass('ui-list-row');
 		var widget = this;
 		
 		var row_metadata = function(row) {
@@ -385,7 +385,7 @@ Widget.types.list = {
 	types: {
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
-				column = jQuery('<span>').appendTo(column);
+				column = jQuery('<span/>').appendTo(column);
 			} 
 			column.text(data == null ? '-' : data);
 		},
@@ -420,7 +420,7 @@ Widget.types.list = {
 			if(data === undefined) {
 				data = metadata.field_name;
 			}
-			data = jQuery('<div>').addClass('ui-icon ui-icon-'+data);
+			data = jQuery(<div/>).addClass('ui-icon ui-icon-'+data);
 			Widget.types.list.types.html(column, data);
 		},
 		
