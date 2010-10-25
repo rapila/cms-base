@@ -155,12 +155,12 @@ body.login h1 {
   vertical-align: middle;
 }
 #admin_info_bar .info-bar-element-page {
-	background: #F1F1F1 url("../../images/admin/button_gradient_bright.png");
-	line-height: auto;
+  background: #f1f1f1 url("../../images/admin/button_gradient_bright.png");
+  line-height: auto;
 }
 #admin_info_bar button.info-bar-element-page[name="save"] {
-	color: #E3EF99;
-	background: #F1F1F1 url("../../images/admin/button_gradient_dark.png");
+  color: #e3ef99;
+  background: #f1f1f1 url("../../images/admin/button_gradient_dark.png");
 }
 #admin_info_bar input.info-bar-element {
   border-color: #e4e4e4;
@@ -437,4 +437,3 @@ th.ui-list-heading.sortable { cursor: pointer; }
   padding: 0 !important;
 }
 .ui-tabs a { cursor: pointer !important; }
-
