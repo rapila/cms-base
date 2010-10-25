@@ -10,7 +10,6 @@ class BackupAdminModule extends AdminModule {
 	public function __construct() {
 		$this->oBackupOptionsWidget = new ListWidgetModule();
 		$this->oBackupOptionsWidget->setDelegate($this);
-		$this->sOption = null;
 	}
 	
 	public function setAction($sAction) {
@@ -22,14 +21,13 @@ class BackupAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('name', 'link', 'title');
+		return array('action', 'title');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
-			case 'name':
-			case 'link':
+			case 'action':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
@@ -43,7 +41,7 @@ class BackupAdminModule extends AdminModule {
 		$aResult = array();
 		$aBackupOptions = array('load_from_local' => 'Load from local file', 'backup_to_local' => 'Backup to local file');
 		foreach($aBackupOptions as $sAction => $sActionName) {
-			$aResult[] = array('name' => $sAction, 'link' => LinkUtil::link(array('backup'), 'AdminManager', array('action' => $sAction)), 'title' => $sActionName);
+			$aResult[] = array('action' => $sAction, 'title' => $sActionName);
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);
