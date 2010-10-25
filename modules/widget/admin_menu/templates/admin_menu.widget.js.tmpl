@@ -128,10 +128,11 @@ Widget.types.admin_menu = {
 			var admin_menu = this;
 			var result = {};
 			result.element = jQuery('<select/>');
+			var separator_class = '';
 			jQuery.each(items, function(i, item) {
 				if(!item) {
 					//handle Separator
-					result.element.append(jQuery('<option/>').addClass('separator'));
+					separator_class = 'separator_top';
 					return;
 				}
 				var name = item.split('.');
@@ -141,7 +142,8 @@ Widget.types.admin_menu = {
 				if(!item_contents) {
 					return;
 				}
-				var option = jQuery('<option/>').text(item_contents.text).attr('value', args[0]).data('action', item_contents.callback);
+				var option = jQuery('<option/>').text(item_contents.text).attr('value', args[0]).addClass(separator_class).data('action', item_contents.callback);
+				separator_class = '';
 				result.element.append(option);
 			});
 			result.element.val(AdminInterface.current_admin_module);
