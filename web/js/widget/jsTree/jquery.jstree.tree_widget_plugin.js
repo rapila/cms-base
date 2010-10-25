@@ -133,7 +133,7 @@
 							} else {
 								icon_t.css("background","url('" + icon + "') center center no-repeat");
 							}
-							tmp.append(icon_t);
+							tmp.prepend(icon_t);
 						});
 						// if(m.icon.length === 0) {
 						// 	tmp.prepend(icon_tag);
