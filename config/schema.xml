@@ -201,7 +201,7 @@
 		<reference local="owner_id" foreign="id" />
 	</foreign-key>
 	<column name="document_type_id" type="integer" required="true" />
-	<foreign-key foreignTable="document_types">
+	<foreign-key foreignTable="document_types" onDelete="cascade">
 		<reference local="document_type_id" foreign="id" />
 	</foreign-key>
 	<column name="document_category_id" type="integer" required="false" default="null" />

@@ -2,7 +2,6 @@ PRIORITAETEN:
 
 CMS
 - DocumentEdit und LinkEdit testen und Vorgehen für Feature Freeze entscheiden
-- condition serialized edit
 - Page tree requests???
   XML descendants internal method called on incompatible Object, on calling LinkEdit widget 
 - Rechteverwaltung (ist vorbereitet) und Permission Widget etc.
@@ -700,3 +699,4 @@ Widget tasks
 - FrontendUserDetailWidgetModule::setUserId > missing argument 1 for 
 -	UserList setUserKind/allow_select_all_users=false (only show backend users)
 - ISSUE:Module::getDisplayNameByName() does not work properly because Module::getType() does not return proper type in context of default page type!!!!!
+- condition serialized edit

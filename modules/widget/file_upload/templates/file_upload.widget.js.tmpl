@@ -51,7 +51,7 @@ Widget.types.file_upload = {
 				return false;
 			}
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
-				Widget.notifyUser('info', '{{writeString=Gedropptes Element enthält keine Files}}');
+				Widget.notifyUser('info', '{{writeString=file_upload.dropped_element_is_not_file}}');
 				return false;
 			}
 			var target = jQuery(event.target);
@@ -76,11 +76,11 @@ Widget.types.file_upload = {
 				} else {
 					var _this = this;
 					jQuery('<div/>').text(error.message).dialog({buttons: {
-						"{{writeString=create}}": function() {
+						"{{writeString=widget.document_type.allow}}": function() {
 							jQuery(this).dialog("close");
 							_this.do_upload(file, options, true);
 						},
-						"{{writeString=cancel}}": function() {
+						"{{writeString=widget.cancel}}": function() {
 							jQuery(this).dialog("close");
 						}
 					}});

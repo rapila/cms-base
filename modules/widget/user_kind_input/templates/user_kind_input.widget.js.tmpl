@@ -1,15 +1,21 @@
 Widget.types.user_kind_input = {
 	prepare: function() {
-		var option = jQuery('<option/>');
-		var user_kinds = this.getUserKinds();
-		jQuery.each(user_kinds, function(value, name) {
-			option.clone().text(name).val(value).appendTo(this._element);
-		}.bind(this));
+		this.fill_content();
+		
 		this._element.change(function() {
 			if(this.settings.store_value) {
 				this.setSelectedUserKind(this._element.val());
 			}
 			this.fire('value-changed', this._element.val());
+		}.bind(this));
+	},
+
+	fill_content: function() {
+		this._element.empty();
+		var option = jQuery('<option/>');
+		var user_kinds = this.getUserKinds();
+		jQuery.each(user_kinds, function(value, name) {
+			option.clone().text(name).val(value).appendTo(this._element);
 		}.bind(this));
 		var current_value = this.getSelectedUserKind();
 		if(current_value === null) {
@@ -17,7 +23,7 @@ Widget.types.user_kind_input = {
 		}
 		this._element.val(current_value);
 	},
-	
+
 	settings: {
 		store_value: false
 	}
