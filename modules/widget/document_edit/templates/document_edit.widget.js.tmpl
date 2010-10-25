@@ -1,6 +1,6 @@
 Widget.types.document_edit = {
 	prepare: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		var display_modes = this.getDisplayMode();
 		var _this = this;
 		jQuery.each(this.getConfigurationModes(), function(select_name, options) {

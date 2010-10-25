@@ -1054,7 +1054,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 								return createListBulletMarker( listType, listSymbol );
 							}
 
-							// Reveal the <img> element in conditional comments for Firefox.
+							// Reveal the <img/> element in conditional comments for Firefox.
 							if ( CKEDITOR.env.gecko && imageInfo )
 							{
 								var img = CKEDITOR.htmlParser.fragment.fromHtml( imageInfo[ 0 ] ).children[ 0 ],

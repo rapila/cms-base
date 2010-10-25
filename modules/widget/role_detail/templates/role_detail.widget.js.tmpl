@@ -1,7 +1,7 @@
 Widget.types.role_detail = {
 	initialize: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
-		this.right_content = jQuery("{{includeTemplate=right}}");
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.right_content = jQuery.parseHTML("{{includeTemplate=right}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);

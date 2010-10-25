@@ -28,10 +28,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 			if(isset($aAdminModule['module_info']) && isset($aAdminModule['module_info']['allowed_roles'])) {
 				$aResult[$sModuleName] = $aAdminModule['module_info']['allowed_roles'];
 			}
-			
 		}
-		ErrorHandler::log($aResult);
-		
 	}
 	
 	private function validate($aRoleData) {

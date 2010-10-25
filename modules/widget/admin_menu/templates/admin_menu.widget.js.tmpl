@@ -111,7 +111,7 @@ Widget.types.admin_menu = {
 	},
 		
 	addSpacer: function(width, is_right_container) {
-		return this.addElement(jQuery('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
+		return this.addElement(jQuery.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
 	},
 	
 	settings: {
@@ -120,7 +120,7 @@ Widget.types.admin_menu = {
 	
 	predefined_elements: {
 		activity: function() {
-			this.activity_indicator = jQuery('<img>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
+			this.activity_indicator = jQuery('<img/>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
 			return {element: this.activity_indicator};
 		},
 		

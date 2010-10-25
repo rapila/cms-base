@@ -1,6 +1,6 @@
 Widget.types.document_detail = {
 	initialize: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
@@ -21,7 +21,7 @@ Widget.types.document_detail = {
 				document_detail.file_upload.attr('disabled', false);
 				document_detail.upload_button.hide();
 				if(error) {
-					document_detail.detail_widget.validate_with({upload: jQuery('<span class="error_display"/>').text(error.message)});
+					document_detail.detail_widget.validate_with({upload: jQuery.parseHTML('<span class="error_display"/>').text(error.message)});
 				}
 			};
 			var upload_success = function(result) {

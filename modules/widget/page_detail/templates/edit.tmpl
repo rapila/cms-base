@@ -9,6 +9,12 @@
 		<input type="checkbox" name="is_folder" value="1" /><label for="is_folder" class="for_checkbox">{{writeString=widget.page.folder}}</label> 
 	</div>
 	<div class="accordion">
+		<h3 class="content_tab"><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
+		<div class="contents_container">		
+		</div>
+		<h3 class="content_tab"><a href="#">{{writeString=widget.page.label.configuration}}</a></h3>
+		<div class="configuration_container">		
+		</div>
 		<h3><a href="#">{{writeString=widget.page.label.template_pagetype}}</a></h3>
 		<div class="accordion_content">
 			<div class="group_fields">
@@ -23,16 +29,13 @@
 		<h3 class="page_properties" style="display:none;"><a href="#">{{writeString=widget.page.label.properties}}</a></h3>
 		<div class="page_properties" style="display:none;">
 		</div>
-		<h3 class="content_tab"><a href="#">{{writeString=widget.page.label.contents}}</a></h3>
-		<div class="contents_container">		
-		</div>
 		<h3 class="page_references" style="display:none;"><a href="#">{{writeString=widget.page.label.references}}<span class="references_count"></span></a></h3>
 		<div class="page_references" style="display:none;">
 		</div>
 	</div>	
 	<div class="page_detail_controls">
+		<button class="cmos-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only info-bar-element-page" name="save" style="display: block;">Speichern</button>
 		<button class="cmos-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only info-bar-element-page" name="cancel" style="display: block;">Abbrechen</button>
 		<button class="cmos-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only info-bar-element-page" name="delete" style="display: block;">Seite löschen</button>
-		<button class="cmos-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only info-bar-element-page" name="save" style="display: block;">Speichern</button>
 	</div>
 </form>

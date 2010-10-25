@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
 		widget._element.append(other_task);
 		var context_task =jQuery('<div>').addClass('context_task');
 		widget._element.append(context_task);
-		var task_group = jQuery("{{includeTemplate=task_group}}");
+		var task_group = jQuery.parseHTML("{{includeTemplate=task_group}}");
 		jQuery.each(tasks, function(taskgroup_key, contents) {
 			var taskgroup = task_group.clone();
 			taskgroup.find('h2').text(taskgroup_key);

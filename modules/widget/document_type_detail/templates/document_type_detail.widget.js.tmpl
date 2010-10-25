@@ -1,6 +1,6 @@
 Widget.types.document_type_detail = {
 	initialize: function() {
-		this.content = jQuery("{{includeTemplate=edit}}");
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {

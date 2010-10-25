@@ -1763,7 +1763,7 @@ CKEDITOR.dom.range = function( document )
 					this.moveToPosition( el, isMoveToEnd ?
 					                         CKEDITOR.POSITION_BEFORE_END :
 					                         CKEDITOR.POSITION_AFTER_START );
-				// Stop immediately if we've found a non editable inline element (e.g <img>).
+				// Stop immediately if we've found a non editable inline element (e.g <img/>).
 				else if ( CKEDITOR.dtd.$inline[ el.getName() ] )
 				{
 					this.moveToPosition( el, isMoveToEnd ?
