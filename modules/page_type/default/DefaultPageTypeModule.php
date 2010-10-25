@@ -315,11 +315,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 	}
 	
-	public function adminRemoveObject($iObjectId, $bForce) {
+	public function adminRemoveObject($iObjectId, $bForce = false) {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		
 		if(!Session::getSession()->getUser()->mayEditPageContents($oCurrentContentObject->getPage())) {
-			return;
+			return false;
 		}
 		
 		if($bForce) {
@@ -330,22 +330,12 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$this->sLanguageId = AdminManager::getContentLanguage();
 		}
 		
-		if(!Session::getSession()->getUser()->mayEditPageContents($this->oPage)) {
-			return;
-		}
-		
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
-		
-		if(!$oCurrentLanguageObject->delete()) {
-			return false;
+		if($oCurrentLanguageObject === null) {
+			return true;
 		}
-		
-		$oLanguageObjects = $oCurrentContentObject->getLanguageObjects();
-		// should LanguageObjectHistory be deleted too?
-		if(count($oLanguageObjects) === 0) {
-			return $this->oCurrentContentObject->delete();
-		}
-		return false;
+		$oCurrentLanguageObject->delete();
+		return true;
 	}
 
 	public function adminGetContainers() {

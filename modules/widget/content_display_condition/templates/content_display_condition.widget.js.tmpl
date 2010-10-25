@@ -4,9 +4,10 @@ Widget.types.content_display_condition = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=create}}",
+				title: "{{writeString=object_visibility_condition}}",
 				width: 550,
-				dialogClass: "document_detail"
+				dialogClass: "document_detail",
+				modal: true
 			});
 			widget.content = this.content;
 			this.fill_data();
