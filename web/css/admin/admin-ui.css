@@ -261,6 +261,7 @@ input.ui-widget-content.autowidth { width: auto !important; }
   border: 1px solid #999999;
   margin: 2px;
   text-align: left;
+  background: #e3ef99 url("../../images/admin/button_gradient_bright.png") repeat-x right bottom;
 }
 .page_detail .filled_modules ol.template-container li {
   list-style: none inside;
