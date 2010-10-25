@@ -4,22 +4,20 @@ detail:
 - handle / save conditions
 - handle problem with adminMoveObject (if content object is trashed, move is triggered at the same time, see comment in DefaultPageTypeModule line 305)
 - check DefaultPageTypeModule/FrontendModule handling >	public static function listContentModules($bInheritIsSet=false) 
-	empty content object should not be shown if inherit is not set in some container.
-- delete references
+- Configuration 
+- References: how to handle. save notifications easy links
+- preview / publish handling, what about a light version with data_preview blob?
+- Accordion tabs suggested HerrmannGermann DISCUSS
+	- Beschreibung (Inhalt)
+	- Template (Vorlage) und Seitentyp
+	- Configuration
+	- handle active accordion intelligently	
 - Content Language Issue:
 	- add language chooser? 
 		for changing main content language: for all language sensitive modules (pages, strings, others)
 	- output of page_tree: Text instead of Name
-- Accordion tabs suggested HerrmannGermann DISCUSS
-	- Beschreibung (Inhalt)
-	- Template (Vorlage) und Seitentyp
-	- Konfiguration
-- Configuration 
-- handle active accordion intelligently	
-- References: how to handle. save notifications easy links
-- preview / publish handling, what about a light version with data_preview blob?
 
-configuration
+Configuration
 - fix bug (missing language_object or blob null?), handle objects without language_objects
 - Display content_info if exists?
 - allowed_modules are not handled anymore
@@ -47,4 +45,6 @@ tree:
 last_edit_page:
 - what happens when module category is chosen that is used in a page, should it effect last edit page/preview
 
-
+DONE
+**********************************************************************************
+empty content object should not be shown if inherit is not set in a container.
