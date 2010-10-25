@@ -23,5 +23,25 @@ class LanguageObjectPeer extends BaseLanguageObjectPeer {
 		}
 		return parent::retrieveByPK((int)$object_id, $language_id, $con);
 	}
+	
+	public static function findLanguageObjectsWithObjectType($sObjectType) {
+		$oCriteria = new Criteria();
+		$oCriteria->addJoin(self::OBJECT_ID, ContentObjectPeer::ID, Criteria::INNER_JOIN);
+		$oCriteria->add(ContentObjectPeer::OBJECT_TYPE, $sObjectType);
+		return self::doSelect($oCriteria);
+	}
+	
+	public static function findCategoriesFilledInPages($sObjectType = 'document_list', $sCategoryOptionName = 'document_category_option') {
+		$aResult = array();
+		foreach(self::findLanguageObjectsWithObjectType($sObjectType) as $oLangObj) {
+			if(is_resource($oLangObj->getData())) {
+				$aData = unserialize(stream_get_contents($oLangObj->getData()));
+				if(isset($aData[$sCategoryOptionName])) {
+					$aResult[$oLangObj->getContentObject()->getPageId()] = $aData[$sCategoryOptionName];
+				}
+			}
+		}
+		return $aResult;
+	}
 }
 
