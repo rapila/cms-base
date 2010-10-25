@@ -1,5 +1,6 @@
 Widget.types.content_display_condition = {
 	initialize: function() {
+		var _this = this;
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
@@ -13,16 +14,31 @@ Widget.types.content_display_condition = {
 			this.fill_data();
 			widget.open();
 		}.bind(this));
+		this.content.find('.suggestions li').click(function() {
+			var li = jQuery(this);
+			var data = {
+				condition_left: li.attr('data-condition_left'),
+				comparison: li.attr('data-comparison'),
+				condition_right: li.attr('data-condition_right')
+			};
+			_this.set_data(data);
+		}).hover(function() {
+			jQuery(this).addClass('ui-state-hover');
+		}, function() {
+			jQuery(this).removeClass('ui-state-hover');
+		});
 	},
 	
 	fill_data: function() {
-		this.retrieveCondition(function(condition) {
-			if(condition !== null) {
-				this.content.find('[name="condition_left"]').val(condition.condition_left);
-				this.content.find('[name="comparison"]').val(condition.comparison);
-				this.content.find('[name="condition_right"]').val(condition.condition_right);
-			}
-		});
+		this.retrieveCondition(this.set_data);
+	},
+	
+	set_data: function(condition) {
+		if(condition !== null) {
+			this.content.find('[name="condition_left"]').val(condition.condition_left);
+			this.content.find('[name="comparison"]').val(condition.comparison);
+			this.content.find('[name="condition_right"]').val(condition.condition_right);
+		}
 	},
 	
 	save_callback: function(data) {
