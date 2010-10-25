@@ -28,9 +28,10 @@ class PreviewManager extends FrontendManager {
 	
 	protected function initLanguage() {
 		$this->sOldSessionLanguage = Session::language();
-		if(self::hasNextPathItem() && LanguagePeer::languageExists(self::peekNextPathItem())) {
-				AdminManager::setContentLanguage(self::usePath());
-				LinkUtil::redirectToLanguage(false, AdminManager::getContentLanguage());
+		if(isset($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]) && LanguagePeer::languageExists($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY])) {
+				AdminManager::setContentLanguage($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]);
+				unset($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]);
+				LinkUtil::redirect(LinkUtil::linkToSelf());
 		} else {
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				AdminManager::setContentLanguage($this->sOldSessionLanguage);
@@ -40,11 +41,6 @@ class PreviewManager extends FrontendManager {
 			}
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				AdminManager::setContentLanguage(Settings::getSetting('session_default', Session::SESSION_LANGUAGE_KEY, 'en'));
-			}
-			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
-				$sLanguageId = 
-				
-				AdminManager::setContentLanguage();
 			}
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				LinkUtil::redirectToManager('', "AdminManager");
