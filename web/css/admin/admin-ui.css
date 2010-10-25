@@ -21,14 +21,6 @@
 .ui-icon-application { background-position: -32px -96px; }
 .ui-icon-audio { background-position: -144px -160px; }
 .ui-icon-text { background-position: -240px -128px; }
-#admin_sidebar .ui-tree .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/page_protected_default.png') no-repeat; }
-.ui-state-default .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/page_protected_default.png') no-repeat; }
-#admin_sidebar .ui-tree .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/page_hidden_default.png') no-repeat; }
-.ui-state-default .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/page_hidden_default.png') no-repeat; }
-.ui-state-hover .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/page_protected_active.png') no-repeat; }
-.ui-state-active .ui-icon.ui-icon-is-protected { background: transparent url('../../images/admin/page_protected_active.png') no-repeat; }
-.ui-state-hover .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/page_hidden_active.png') no-repeat; }
-.ui-state-active .ui-icon.ui-icon-is-hidden { background: transparent url('../../images/admin/page_hidden_active.png') no-repeat; }
 .ui-widget .status_section {
   font-family: Arial;
   padding-right: 2em;
@@ -112,76 +104,6 @@ button.ui-button.ui-state-default {
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
-#admin_sidebar .ui-tree li li {
-  background-image: url('../../images/admin/child_default.gif');
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li li.ui-state-hover {
-  background-image: url('../../images/admin/child_default.gif');
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li li.ui-state-active {
-  background-image: url('../../images/admin/child_default.gif');
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li ol ol {
-  background-image: url('../../images/admin/child_line.gif');
-  background-repeat: repeat-y;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li li:last-child {
-  background-image: url('../../images/admin/child_last.gif');
-  background-repeat: no-repeat;
-  background-position: bottom left;
-}
-#admin_sidebar .ui-tree li li.ui-state-hover:last-child {
-  background-image: url('../../images/admin/child_last.gif');
-  background-repeat: no-repeat;
-  background-position: bottom left;
-}
-#admin_sidebar .ui-tree li li.ui-state-active:last-child {
-  background-image: url('../../images/admin/child_last.gif');
-  background-repeat: no-repeat;
-  background-position: bottom left;
-}
-#admin_sidebar .ui-tree li.opened:last-child {
-  background-image: url('../../images/admin/child_last_opener.gif');
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li.ui-state-hover.opened:last-child {
-  background-image: url('../../images/admin/child_last_opener.gif');
-  background-repeat: no-repeat;
-  background-position: top left;
-}
-#admin_sidebar .ui-tree li.opened:last-child > ol { background-image: none; }
-#admin_sidebar .ui-tree li.ui-state-hover {
-  background-color: #728697;
-  background-image: none;
-  border-bottom: none;
-}
-#admin_sidebar .ui-tree li.ui-state-hover ol { background-color: #dfe1e3; }
-#admin_sidebar .ui-tree li.ui-state-hover ol li { background-color: #dfe1e3; }
-#admin_sidebar .ui-tree li.ui-state-active {
-  background-color: #728697;
-  background-image: none;
-  border-bottom: none;
-}
-#admin_sidebar .ui-tree li.ui-state-active ol { background-color: #dfe1e3; }
-#admin_sidebar .ui-tree li.ui-state-active ol li { background-color: #dfe1e3; }
-#admin_sidebar .ui-tree li.ui-state-active { background-color: #728697 !important; }
-#admin_sidebar .ui-tree li { border: none !important; }
-#admin_sidebar > ol.ui-tree > li.ui-state-hover {
-  border-bottom: none !important;
-  background-color: #728697;
-}
-#admin_sidebar > ol.ui-tree li.ui-state-active li.ui-state-hover { background-color: #728697; }
-#admin_sidebar > ol.ui-tree > li.ui-state-hover li.ui-state-active { background-color: #728697; }
-#admin_sidebar li.ui-state-active { color: white; }
-#admin_sidebar li.ui-state-active a { color: white; }
 #admin_sidebar .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
 #admin_sidebar span.sidebar_input_save {
   display: none;

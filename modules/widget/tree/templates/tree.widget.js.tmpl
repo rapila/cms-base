@@ -25,10 +25,10 @@ Widget.types.tree = {
 			// Select it
 			_this.activate(element);
 		});	
-		// this._element.delegate('.ui-tree li', 'hover', function(event) {
-		// 	var element = jQuery(this);
-		// 	element.toggleClass('ui-state-hover');
-		// });
+		this._element.delegate('.ui-tree li', 'hover', function(event) {
+			var element = jQuery(this);
+			element.toggleClass('ui-state-hover');
+		});
 		
 		this._element.jstree({
 			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd"],
