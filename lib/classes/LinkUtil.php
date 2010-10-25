@@ -74,7 +74,7 @@ class LinkUtil {
 				}
 			}
 		}
-		return LinkUtil::link($aPath, null, $aParameters, false);
+		return self::link($aPath, null, $aParameters, false);
 	}
 
 	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
