@@ -12,13 +12,15 @@ Widget.types.page_detail = {
 		this.accordion = jQuery(this._element.find('div.accordion')).
 		accordion({active: 0, autoHeight: false, clearStyle: true}).
 		bind('accordionchangestart', function(event, ui) {
-			if(!ui.newContent.is('.contents_container')) {
-				return;
+			if(ui.newContent.is('.contents_container')) {
+				widget.load_content(ui.newContent);
+			} else if(ui.newContent.is('.configuration_container')) {
+				widget.load_configuration(ui.newContent);
 			}
-			widget.load_content(ui.newContent);
 		});
 		
-		this.content_has_been_loaded = false;
+		this.description_has_been_loaded = false;
+		this.configuration_has_been_loaded = false;
 		this.current_page_id = null;
 		
 		// templates
@@ -73,7 +75,8 @@ Widget.types.page_detail = {
 	
 	load_page: function(page_id) {
 		this.fire('loading', page_id);
-		this.content_has_been_loaded = false;
+		this.description_has_been_loaded = false;
+		this.configuration_has_been_loaded = false;
 		this.setPageId(page_id);
 		this.fill_data();
 		var active_accordion_title = this.accordion_active();
@@ -92,11 +95,11 @@ Widget.types.page_detail = {
 
 	load_content: function(container) {
 		var widget = this;
-		if(this.current_page_id === null || this.content_has_been_loaded === true) {
+		if(this.current_page_id === null || this.description_has_been_loaded === true) {
 			return;
 		}
 		
-		this.content_has_been_loaded = true;
+		this.description_has_been_loaded = true;
 		var active_languages = widget.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.settings.active_languages = active_languages;
@@ -119,9 +122,10 @@ Widget.types.page_detail = {
 	
 	load_configuration: function(container) {
 		var widget = this;
-		if(this.current_page_id === null) {
+		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
 			return;
 		}
+		this.configuration_has_been_loaded = true;
 		
 		var active_languages = widget.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
@@ -132,8 +136,8 @@ Widget.types.page_detail = {
 		}, function(language_tabs) {
 			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
 				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_config_language}}'));
-				var page_type_configuration = tab_content.find('.page_type_configuration').hide();
 				
+				var page_type_configuration = tab_content.find('.panel_content');
 				Widget.create('page_type', function(page_type) {
 					//	Intermediate callback
 					page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
@@ -141,19 +145,7 @@ Widget.types.page_detail = {
 					page_type.settings.page_id = widget.current_page_id;
 					page_type.settings.language_id = language_id;
 				}, function(page_type) {
-					// Initialized callback
-					// show content config options: IsInactive, HasLanguageObjectsFilled
-					var content_configuration = jQuery('label.content_configuration').addClass('load_page_configuration').attr('style', 'text-decoration:underline;cursor:pointer;');
-					content_configuration.click(function() {
-						page_type_configuration.toggle();
-						if(page_type_configuration.is(':visible')) {
-							page_type.handle_admin();
-						}
-					});
-					if(!language_data.HasLanguageObjectsFilled) {
-						page_type.handle_admin();
-						page_type_configuration.show();
-					}
+					page_type.handle_admin();
 				});
 			}, false, true);
 		});
@@ -171,7 +163,7 @@ Widget.types.page_detail = {
 		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
 		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
 		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
-			widget.content_has_been_loaded = false;
+			widget.configuration_has_been_loaded = false;
 		});
 		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
 
