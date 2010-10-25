@@ -72,7 +72,7 @@
 	background-color: transparent !important;
 	border: #000 1px solid;
 	border-color: #000 #555 #666 #555;
-	padding: .2em .1em .0em 2em;
+	padding: .2em .1em .0em 1.15em;
 	color: #e3ef99;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -111,6 +111,10 @@
 #cmos_admin_menu .ui-widget-header select option.separator {
 	border-top: 1px solid #e3ef99;
 	font-size: 3px;
+}
+
+#cmos_admin_menu .ui-widget-header select option.separator_top {
+	border-top: 1px solid #B8D600;
 }
 
 #cmos_admin_menu .ui-widget-header select option[selected]	 {
@@ -162,8 +166,8 @@ body.dashboard #cmos_admin_menu button.cmos-button.dashboard {
 }
 
 #cmos_admin_menu .cmos-button.ui-state-default,
-.ui-state-default, .ui-widget-content .ui-state-default {
-	background: url() transparent;
+#cmos_admin_menu select {
+	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_dark.png") transparent;
 }
 
 #cmos_admin_menu .cmos-button.ui-state-hover,

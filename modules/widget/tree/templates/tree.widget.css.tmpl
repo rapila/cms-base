@@ -23,8 +23,12 @@
 *[data-widget-type=tree] li ins {
 	cursor: default;
 }
-*[data-widget-type=tree] ins.jstree-custom-icon {
-	float: right;
+*[data-widget-type=tree] ul ins.jstree-custom-icon {
+	position: absolute;
+	right: 0;
+}
+*[data-widget-type=tree] ul ins.jstree-custom-icon:nth-child(2) {
+	right: 30px;
 }
 
 *[data-widget-type=tree] .tree-opener { float: left; }
@@ -48,6 +52,7 @@
   padding: 0 0 0 0;
   line-height: 25px;
   vertical-align: middle;
+  position: relative;
   border-bottom: none;
 }
 
@@ -61,3 +66,14 @@
 *[data-widget-type=tree] ul .ui-icon-folder-collapsed {
 	display: none;
 }
+
+*[data-widget-type=tree] li .jstree-custom-icon {
+  height: 22px;
+  width: 29px;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+/*#admin_sidebar .ui-tree li span {
+  display: block;
+  margin-left: 16px;
+}*/
