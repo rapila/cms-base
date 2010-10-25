@@ -1,0 +1,35 @@
+Widget.types.content_display_condition = {
+	initialize: function() {
+		this.content = jQuery("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget.set_instance(this);
+			jQuery.extend(widget.settings, {
+				title: "{{writeString=create}}",
+				width: 550,
+				dialogClass: "document_detail"
+			});
+			widget.content = this.content;
+			this.fill_data();
+			widget.open();
+		}.bind(this));
+	},
+	
+	fill_data: function() {
+		this.retrieveCondition(function(condition) {
+			if(condition !== null) {
+				this.content.find('[name="condition_left"]').val(condition.condition_left);
+				this.content.find('[name="comparison"]').val(condition.comparison);
+				this.content.find('[name="condition_right"]').val(condition.condition_right);
+			}
+		});
+	},
+	
+	save_callback: function(data) {
+		//Do nothing
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+	}
+	
+};

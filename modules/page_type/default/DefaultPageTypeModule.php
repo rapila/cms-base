@@ -11,17 +11,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private $sContainerName;
 	private $sLanguageId;
 	private $bIsPreview;
-	private $bInheritIsSet=false;
-	
-	private static $COMPARISONS = array("eq" => "==",
-																			"ne" => "!==",
-																			"gt" => ">",
-																			"gte" => ">=",
-																			"lt" => "<",
-																			"lte" => "<=",
-																			"~" => "~",
-																			"contains" => "contains",
-																			"file_exists" => "file_exists");
 	
 	public function __construct(Page $oPage, $sLanguageId = null) {
 		parent::__construct($oPage);
@@ -150,7 +139,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 		}
 	}
-	
 
 	public function getAjax($aPath) {
 		$sContainerName = $_REQUEST['container'];
@@ -191,7 +179,15 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function adminListPossibleFrontendModules() {
-		return FrontendModule::listContentModules($this->bInheritIsSet);
+		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
+		$bContentIsInherited = false;
+		foreach($aContainers as $oContainer) {
+			if(BooleanParser::booleanForString($oContainer->getParameter('inherit'))) {
+				$bContentIsInherited = true;
+				break;
+			}
+		}
+		return FrontendModule::listContentModules($bContentIsInherited);
 	}
 	
 	public function adminListFilledFrontendModules() {
@@ -211,12 +207,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$bHasNoObjects = count($aObjects) === 0;
 			
 			$oInheritedFrom = null;
-			$bInheritIsSet = BooleanParser::booleanForString($oContainer->getParameter('inherit'));
-			if($bInheritIsSet) {
-				// only change if once is set
-				$this->bInheritIsSet = true;
-			}
-			if(BooleanParser::booleanForString($bInheritIsSet) && $bHasNoObjects) {
+			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
 				$oInheritedFrom = $this->oPage;
 				$iInheritedObjectCount = 0;
 				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
@@ -241,7 +232,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
 				}		
 				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();	
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = Module::getDisplayNameByName($oObject->getObjectType());		
+				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());		
 			}
 		}
 		return $aResult;
@@ -284,14 +275,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 			return array($oWidget->getModuleName(), $oWidget->getSessionKey());
 		}
 		return array($oWidget, null);
-	}
-	
-	public function adminEditCondition($iObjectId) {
-		if($this->sLanguageId === null) {
-			$this->sLanguageId = AdminManager::getContentLanguage();
-		}
-		$oCurrentContentObject = $this->contentObjectById($iObjectId);
-		return unserialize(is_resource($oCurrentContentObject->getConditionSerialized()) ? stream_get_contents($oCurrentContentObject->getConditionSerialized()) : null);
 	}
 	
 	public function adminPreview($iObjectId) {

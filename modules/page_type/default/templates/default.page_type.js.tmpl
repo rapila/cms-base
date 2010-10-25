@@ -123,10 +123,9 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	edit_condition: function(item_to_edit) {
-		this.callPageTypeMethod('adminEditCondition', item_to_edit.attr('data-object-id'), function(result, error) {
-			var condition_serialized = result;
-			// console.log(condition_serialized);
-		});
+		Widget.create('content_display_condition', function(widget) {
+			widget.setContentObjectId(item_to_edit.attr('data-object-id'));
+		}, jQuery.noop);
 	},
 	
 	update_content_properties: function(element, is_filled_in_current_language) {

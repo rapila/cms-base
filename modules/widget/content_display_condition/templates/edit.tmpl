@@ -1,0 +1,17 @@
+<form>
+	<input type="text" name="condition_left"/>
+	<select name="comparison">
+		<option value="eq">=</option>
+		<option value="ne">≠</option>
+		<option value="lt">&lt;</option>
+		<option value="lte">≤</option>
+		<option value="gt">&gt;</option>
+		<option value="gte">≥</option>
+		<option value="~">Regex-Match</option>
+		<option value="contains">Contains</option>
+	</select>
+	<input type="text" name="condition_right" />
+	<div>
+		{{writeString=condition_examples}}
+	</div>
+</form>
