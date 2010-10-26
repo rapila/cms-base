@@ -128,6 +128,10 @@ Widget.types.admin_menu = {
 			var admin_menu = this;
 			var result = {};
 			result.element = jQuery('<select/>');
+			var current_module = AdminInterface.current_admin_module;
+			var default_title = '{{writeString=admin.pages.link_title}}';
+			// todo: remove checked or style when no option is selected
+			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'))
 			var separator_class = '';
 			jQuery.each(items, function(i, item) {
 				if(!item) {
@@ -151,7 +155,7 @@ Widget.types.admin_menu = {
 			if(this.settings.attach_events) {
 				result.element.bind('change', function() {
 					var selected = jQuery(this).find(':selected');
-					if(selected.is('.separator')) {
+					if(!jQuery.isFunction(selected.data('action'))) {
 						return false;
 					}
 					selected.data('action')();

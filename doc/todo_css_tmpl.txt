@@ -1,4 +1,16 @@
-"rapila" (mini-cms version 2) template/css
+CSS und HTML, Eni TODO
+
+Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
+
+Todo
+- PageDetail
+	da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
+ 	der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.(siehe Gestaltungsvorschlag)
+
+
+
+Notes JM Alt
+*******************************
 
 wichtige elemente
 - sidebar

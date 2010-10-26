@@ -15,6 +15,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oRole->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oRole).' / '.Util::getCreatedByIfSet($oRole);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oRole).' / '.Util::getUpdatedByIfSet($oRole);
+		$aResult['rights'] = array();
 		foreach($oRole->getRightsJoinPage() as $oRight) {
 			$aResult["rights"][$oRight->getId()] = $oRight->toArray();
 		}
