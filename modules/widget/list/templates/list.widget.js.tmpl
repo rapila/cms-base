@@ -420,7 +420,7 @@ Widget.types.list = {
 			if(data === undefined) {
 				data = metadata.field_name;
 			}
-			data = jQuery(<div/>).addClass('ui-icon ui-icon-'+data);
+			data = jQuery('<div/>').addClass('ui-icon ui-icon-'+data);
 			Widget.types.list.types.html(column, data);
 		},
 		
