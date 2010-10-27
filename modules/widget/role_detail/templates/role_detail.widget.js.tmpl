@@ -2,7 +2,8 @@ Widget.types.role_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.right_content = jQuery.parseHTML("{{includeTemplate=right}}");
-		this.right_content.find('[name="page_id\[\]"]').prepareWidget();
+		this.right_content.find('[name="page_id_"]').prepareWidget();
+
 
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
@@ -21,10 +22,12 @@ Widget.types.role_detail = {
 		var rights_container = this.content.find('.rights_container');
 		var add_new_right_button = jQuery('<a/>').addClass('add-new-item info-bar-button').attr('style', 'height:24px;width:24px;display:inline-block;').text(' ');
 		add_new_right_button.click(function() {
-			this.right_content.clone().appendTo(rights_container);
+			var page_id_select = rights_container.find('select[name="page_id_"]');
+			if(rights_container.find('select[name="page_id_"]').length == 0) {
+				this.right_content.clone().appendTo(rights_container);
+			}
 		}.bind(this));
 		rights_container.after(add_new_right_button);
-
 	},
 	
 	open: function() {
@@ -34,7 +37,7 @@ Widget.types.role_detail = {
 		}
 		this.detail_widget.open();
 	},
-	
+		
 	fill_data: function() {
 		this.getRoleData(function(role_data) {
 			this.content.find("input[name='role_key']").val(role_data.RoleKey);
@@ -42,8 +45,33 @@ Widget.types.role_detail = {
 			this.content.find(".updated_info").text(role_data.UpdatedInfo);
 			this.content.find(".created_info").text(role_data.CreatedInfo);
 			this.content.find('div.hide_if_not_saved').show();
-			jQuery.each(role_data.rights, function(page_id, role_data) {
-				console.log(page_id, role_data);
+			var right_content_dummy = this.right_content;
+			var rights_container = this.content.find('.rights_container').empty();
+
+			function set_right_data(parent, input_name, right_id, value) {
+				var label = parent.find('label[for="'+input_name+'"]');
+				var input = parent.find('input[name="'+input_name+'"]');
+				label.attr('for', label.attr('for')+right_id);
+				input.attr('name', input.attr('name')+right_id).attr('checked', value);
+			};
+
+			jQuery.each(role_data.rights, function(right_id, rights_data) {
+				var right_content = right_content_dummy.clone();
+				var page_id_select = right_content.find('select[name="page_id_"]');
+				page_id_select.attr('name', page_id_select.attr('name')+right_id).val(rights_data.PageId);
+				set_right_data(right_content, 'may_edit_page_details_', right_id, rights_data.MayEditPageDetails);
+				set_right_data(right_content, 'may_edit_page_contents_', right_id, rights_data.MayEditPageContents);
+				set_right_data(right_content, 'may_delete_', right_id, rights_data.MayDelete);
+				set_right_data(right_content, 'may_create_children_', right_id, rights_data.MayCreateChildren);
+				set_right_data(right_content, 'may_view_page_', right_id, rights_data.MayViewPage);
+				set_right_data(right_content, 'is_inherited_', right_id, rights_data.IsInherited);
+				var delete_this_right = jQuery('<div/>').attr({ 'class' : 'ui-icon ui-icon-trash', 'data-id' : right_id, 'style' : 'margin-left:1.5em;display:inline-block;'});
+				jQuery(delete_this_right).bind('click', function(button) {
+					console.log(button);
+				});
+
+				right_content.append(delete_this_right);
+				right_content.appendTo(rights_container);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);
 		});

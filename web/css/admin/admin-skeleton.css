@@ -178,9 +178,18 @@ body.login h1 {
   color: #888888;
   border-right: 0;
 }
-#admin_info_bar .add-new-item { background-image: url('../../images/admin/add_new_item.png'); }
-.add-new-item { background-image: url('../../images/admin/add_new_item.png'); }
-#admin_info_bar .remove-item { background-image: url('../../images/admin/remove_item.png'); }
+#admin_info_bar .add-new-item {
+  background-image: url('../../images/admin/add_new_item.png');
+  background-repeat: no-repeat;
+}
+.add-new-item {
+  background-image: url('../../images/admin/add_new_item.png');
+  background-repeat: no-repeat;
+}
+#admin_info_bar .remove-item {
+  background-image: url('../../images/admin/remove_item.png');
+  background-repeat: no-repeat;
+}
 #admin_info_bar .action { background-image: url('../../images/admin/action.png'); }
 #admin_info_bar .search_field { padding: 0 4px; }
 #admin_info_bar .search_button { background-image: url('../../images/admin/search_icon.gif'); }
