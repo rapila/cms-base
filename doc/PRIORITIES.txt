@@ -2,15 +2,16 @@ PRIORITAETEN:
 
 CMS
 - Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload
+- Preview Text, Link und Document Edit (tipp_edit....)
 - Login, Login forgotten etc. LoginPageTypeModule Language!?
-- DocumentEdit und LinkEdit testen und Vorgehen für Feature Freeze entscheiden
 - Page tree: Braucht es wirklich soviele Requests
 	PageId. Wenn keine Seite ausgewählt ist sollte immer die Rootpage angezeigt werden. Sonst sollte das Verhalten wie vor dem Umbau sein,
-- Rechteverwaltung (ist vorbereitet) und Permission Widget etc.
-- Dokumentenverwaltung Bug, eventuell views (kann auch später gemacht werden)
-	DocumentKind Filter is not updated if new Kind is uploaded
-- Input and Filter Widgets update event listener? Create new category, update input select
+- Rechteverwaltung check/permissions
+- Dokumentenverwaltung Bug
+	Suche!!!
+	eventuell views (kann auch später gemacht werden), edit, CriteriaDelegate etc
 - NewsletterPlugin
+- Input and Filter Widgets update event listener? Create new category, update input select
 - Laufende Verbesserungen nach der Aufschaltung.
 
 Ventla

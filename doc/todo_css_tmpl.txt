@@ -6,10 +6,13 @@ PageDetail
 - da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
 - der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.(siehe Gestaltungsvorschlag)
 
+Detail
+- alle Abbrechen und Speichern Buttons (Hover, Highlight)
+
 Nächstens Dringend: 
 - Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)
 - Widget Dialog und Richtext Fenster D&D
-- Generell verhindern, dass Widget Dialog Windows Controllelemente unerreichbar sind
+- Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
 
