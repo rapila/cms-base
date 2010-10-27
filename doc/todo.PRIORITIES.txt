@@ -1,6 +1,7 @@
 PRIORITAETEN:
 
 CMS
+- Login, Login forgotten etc. LoginPageTypeModule Language!?
 - DocumentEdit und LinkEdit testen und Vorgehen für Feature Freeze entscheiden
 - Page tree requests???
   XML descendants internal method called on incompatible Object, on calling LinkEdit widget 

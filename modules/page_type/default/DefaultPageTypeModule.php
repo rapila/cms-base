@@ -9,7 +9,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private $oFrontendTemplate;
 	private $iModuleId;
 	private $sContainerName;
-	private $sLanguageId;
+	protected $sLanguageId;
 	private $bIsPreview;
 	
 	public function __construct(Page $oPage, $sLanguageId = null) {
