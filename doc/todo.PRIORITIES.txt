@@ -1,13 +1,12 @@
 PRIORITAETEN:
 
 CMS
+- Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload
 - Login, Login forgotten etc. LoginPageTypeModule Language!?
 - DocumentEdit und LinkEdit testen und Vorgehen für Feature Freeze entscheiden
-- Page tree requests???
-  XML descendants internal method called on incompatible Object, on calling LinkEdit widget 
+- Page tree: Braucht es wirklich soviele Requests
+	PageId. Wenn keine Seite ausgewählt ist sollte immer die Rootpage angezeigt werden. Sonst sollte das Verhalten wie vor dem Umbau sein,
 - Rechteverwaltung (ist vorbereitet) und Permission Widget etc.
-	Rechte und Login, Password forgotten etc
-- Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload
 - Dokumentenverwaltung Bug, eventuell views (kann auch später gemacht werden)
 	DocumentKind Filter is not updated if new Kind is uploaded
 - Input and Filter Widgets update event listener? Create new category, update input select
