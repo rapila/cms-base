@@ -158,8 +158,9 @@ jQuery.extend(Widget, {
 	
 	loadInfo: function(widgetType) {
 		if(!Widget.widgetInformation[widgetType]) {
-			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(widgetInformation, error) {
-				Widget.widgetInformation[widgetType] = widgetInformation;
+			var widgetInformation = null
+			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info, error) {
+				widgetInformation = info;
 				if(!Widget.types[widgetType]) {
 					if(widgetInformation.resources !== '') {
 						var resources = jQuery.parseHTML(widgetInformation.resources);
@@ -191,6 +192,7 @@ jQuery.extend(Widget, {
 					}
 				}
 			}, WidgetJSONOptions.with_async(false));
+			Widget.widgetInformation[widgetType] = widgetInformation;
 		}
 		
 		//If the widget is not yet a function… (its Constructor not the Function constructor)
