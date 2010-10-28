@@ -63,7 +63,7 @@ class DocumentTableMap extends TableMap {
 	{
     $this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
     $this->addRelation('UserRelatedByOwnerId', 'User', RelationMap::MANY_TO_ONE, array('owner_id' => 'id', ), null, null);
-    $this->addRelation('DocumentType', 'DocumentType', RelationMap::MANY_TO_ONE, array('document_type_id' => 'id', ), null, null);
+    $this->addRelation('DocumentType', 'DocumentType', RelationMap::MANY_TO_ONE, array('document_type_id' => 'id', ), 'CASCADE', null);
     $this->addRelation('DocumentCategory', 'DocumentCategory', RelationMap::MANY_TO_ONE, array('document_category_id' => 'id', ), 'SET NULL', null);
     $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
     $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);

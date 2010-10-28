@@ -575,7 +575,8 @@ CREATE TABLE `documents`
 	INDEX `documents_FI_3` (`document_type_id`),
 	CONSTRAINT `documents_FK_3`
 		FOREIGN KEY (`document_type_id`)
-		REFERENCES `document_types` (`id`),
+		REFERENCES `document_types` (`id`)
+		ON DELETE CASCADE,
 	INDEX `documents_FI_4` (`document_category_id`),
 	CONSTRAINT `documents_FK_4`
 		FOREIGN KEY (`document_category_id`)
@@ -611,6 +612,7 @@ CREATE TABLE `document_types`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
+	UNIQUE KEY `document_types_U_1` (`extension`, `mimetype`),
 	INDEX `document_types_FI_1` (`created_by`),
 	CONSTRAINT `document_types_FK_1`
 		FOREIGN KEY (`created_by`)

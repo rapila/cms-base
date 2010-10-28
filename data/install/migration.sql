@@ -341,3 +341,6 @@ ALTER TABLE `page_strings` CHANGE `description` `meta_description` VARCHAR( 255 
 #svn r2799
 ALTER TABLE `documents` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `document_category_id`;
 ALTER TABLE `links` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `link_category_id`;
+
+#svn r2907
+ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `mimetype`);
