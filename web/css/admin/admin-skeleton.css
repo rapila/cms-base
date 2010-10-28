@@ -210,8 +210,8 @@ body.login h1 {
   left: 0;
   z-index: 10000 !important;
   display: none;
-  padding: 0.5em;
-  font-size: 0.7em !important;
+  padding: 0.5em 1em;
+  font-size: 0.9em !important;
 }
 input {
   padding: 0.3em;
