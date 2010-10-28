@@ -14,6 +14,7 @@ CMS
 - NewsletterPlugin
 - Input and Filter Widgets update event listener? Create new category, update input select
 - Laufende Verbesserungen nach der Aufschaltung.
+- Tooltips in Documents thumbnail view do not work properly
 
 Ventla
 - Mehrsprachig

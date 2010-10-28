@@ -18,6 +18,9 @@ Nächstens Dringend:
 - Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
+Documents list
+- thumbnail view hover and tooltips do not work properly in Firefox mainly
+
 Browser issues
  Safari / Chrome
 - Login Window should be centered too
