@@ -4,9 +4,13 @@ Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (f
 
 PageDetail
 - da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
-- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.(siehe Gestaltungsvorschlag)
+- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
+	siehe Gestaltungsvorschlag
+	
+PageTree
+- D&D Visualisation needs some attention
 
-Detail
+Detail und Alert Dialogs
 - alle Abbrechen und Speichern Buttons (Hover, Highlight)
 
 Nächstens Dringend: 
@@ -15,6 +19,16 @@ Nächstens Dringend:
 - Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
+Browser issues
+ Safari / Chrome
+- Login Window should be centered too
+- Documents list header should be lined up with sidebar header
+
+Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
+- FileUpload, if not ready, do not display options (hover class etc?)
+- min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
+
+Immer wieder allgemein testen und Fehler melden
 
 
 
@@ -43,11 +57,6 @@ wichtige elemente
 - user notifications alerts
 - admin-menu, admin / preview
 
-Browser issues
-- compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
-- list_view css issue in Safari and Chrome, after tab icons that float right, content gets moved down
-- FileUpload, if not ready, do not display options
-- min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
 
 guidelines, coding convention, naming convention
 - ids only for postitioning of main element (admin), skeleton
