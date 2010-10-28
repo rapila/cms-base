@@ -2,8 +2,7 @@ connection:
   phptype:    'mysql'
   hostspec:   'localhost'
   database:   'database'
-  username:   'myusername' &un
-  user:       *un
+  user:       'myusername'
   password:   'mypassword'
   dsn:        'mysql:dbname=database;host=localhost'
 database:

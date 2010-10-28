@@ -14,11 +14,15 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 		return DocumentTypePeer::retrieveByPK($this->iTypeId)->toArray();
 	}
 	
-	private function validate($aDocumentTypeData) {
+	private function validate($aDocumentTypeData, $oType) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aDocumentTypeData);
-		$oFlash->checkForValue('extension', 'extension_required');
-		$oFlash->checkForValue('mimetype', 'mimetype_required');
+		if($oFlash->checkForValue('extension', 'extension_required') & $oFlash->checkForValue('mimetype', 'mimetype_required')) {
+			if(($oType->getExtension() !== $aDocumentTypeData['extension'] || $oType->getMimetype() !== $aDocumentTypeData['mimetype'])
+				&& DocumentTypeQuery::create()->filterByExtension($aDocumentTypeData['extension'])->filterByMimetype($aDocumentTypeData['mimetype'])->count() > 0) {
+				$oFlash->addMessage('document_type_duplicate');
+			}
+		}
 		$oFlash->finishReporting();
 	}
 
@@ -28,7 +32,7 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oType = DocumentTypePeer::retrieveByPK($this->iTypeId);
 		}
-		$this->validate($aDocumentTypeData);
+		$this->validate($aDocumentTypeData, $oType);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
