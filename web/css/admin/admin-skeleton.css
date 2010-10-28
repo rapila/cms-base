@@ -81,8 +81,10 @@ body.login h1 {
 #admin_sidebar {
   left: 0;
   width: 277px;
+  border-right: 1px solid #d4d8dc;
   padding: 0px 0;
   background-color: #dfe1e3;
+  z-index: 10;
 }
 #admin_main { left: 277px; }
 #admin_main {

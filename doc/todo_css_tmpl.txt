@@ -3,7 +3,6 @@ HTML / CSS
 Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
 
 PageDetail
-- da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
 - der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
 	siehe Gestaltungsvorschlag
 	
@@ -31,8 +30,8 @@ Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
 Immer wieder allgemein testen und Fehler melden
 
 
-
-
+Admin Menu
+- select Verwalten und Administrieren soll nicht grün sein.
 
 
 
@@ -74,4 +73,14 @@ structure ?
 - jquery-ui.theme.overwrite.css (merge in final version?)
 - admin-menu.css
 - widget.css / context css see widget/templates/widget_name.css.tmpl
+
+
+
+
+
+Done
+****
+
+PageDetail
+- da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
 

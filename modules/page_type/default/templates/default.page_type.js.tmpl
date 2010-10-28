@@ -229,6 +229,7 @@ Widget.types.page_type.types['default'] = {
 				jQuery.each(modules, function(object_type, module_name) {
 					var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
 					element.appendTo(available_modules);
+// not yet but soon		jQuery('<span/>').addClass('handle').appendTo(element);
 				});
 			});
 		});
