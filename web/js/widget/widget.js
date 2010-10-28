@@ -158,7 +158,7 @@ jQuery.extend(Widget, {
 	
 	loadInfo: function(widgetType) {
 		if(!Widget.widgetInformation[widgetType]) {
-			var widgetInformation = null
+			var widgetInformation = null;
 			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info, error) {
 				widgetInformation = info;
 				if(!Widget.types[widgetType]) {
