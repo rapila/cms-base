@@ -58,27 +58,27 @@ class Flash {
 	}
 	
 	public function checkForNumber($sName, $sFlashName = null) {
-		$this->checkForPattern($sName, "/^(\d+(\.\d*)?)|(\.\d+)$/", $sFlashName);
+		return $this->checkForPattern($sName, "/^(\d+(\.\d*)?)|(\.\d+)$/", $sFlashName);
 	}
 
-    public function checkForInteger($sName, $sFlashName = null) {
-        $this->checkForPattern($sName, "/^(\d+)$/", $sFlashName);
+	public function checkForInteger($sName, $sFlashName = null) {
+		return $this->checkForPattern($sName, "/^(\d+)$/", $sFlashName);
 	}
 	
 	public function checkForLength($sName, $iMin, $iMax=null, $sFlashName = null) {
 		$sMax = $iMax === null ? "" : "$iMax";
-		$this->checkForPattern($sName, "/^.{{$iMin},{$sMax}}$/", $sFlashName);
+		return $this->checkForPattern($sName, "/^.{{$iMin},{$sMax}}$/", $sFlashName);
 	}
 	
 	/**
 	* @todo: IDN-Support
 	*/
 	public function checkForEmail($sName, $sFlashName = null) {
-		$this->checkForPattern($sName, "/^[\w._\-%]+@[\w-]+(\.[\w-]+)*(\.\w+)$/", $sFlashName);
+		return $this->checkForPattern($sName, "/^[\w._\-%]+@[\w-]+(\.[\w-]+)*(\.\w+)$/", $sFlashName);
 	}
 	
 	public function checkForValue($sName, $sFlashName = null) {
-		$this->checkForExactNotMatch($sName, "", $sFlashName);
+		return $this->checkForExactNotMatch($sName, "", $sFlashName);
 	}
 	
 	public function checkForPattern($sName, $sPattern, $sFlashName = null) {
@@ -88,7 +88,9 @@ class Flash {
 		$sValue = isset($this->aArrayToCheck[$sName]) ? $this->aArrayToCheck[$sName] : "";
 		if(preg_match($sPattern, $sValue) === 0) {
 			$this->addMessage($sFlashName);
+			return false;
 		}
+		return true;
 	}
 	
 	public function checkForExactNotMatch($sName, $sString, $sFlashName = null) {
@@ -98,7 +100,9 @@ class Flash {
 		$sValue = isset($this->aArrayToCheck[$sName]) ? $this->aArrayToCheck[$sName] : "";
 		if($sValue === $sString) {
 			$this->addMessage($sFlashName);
+			return false;
 		}
+		return true;
 	}
 	
 	public function checkForExactMatch($sName, $sString, $sFlashName = null) {
@@ -108,7 +112,9 @@ class Flash {
 		$sValue = isset($this->aArrayToCheck[$sName]) ? $this->aArrayToCheck[$sName] : "";
 		if($sValue !== $sString) {
 			$this->addMessage($sFlashName);
+			return false;
 		}
+		return true;
 	}
 	
 	/**
