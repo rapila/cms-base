@@ -113,12 +113,17 @@
 
 .ui-dialog .ui-dialog-buttonpane {
 	margin-top: 0;
-	background: url("theme/images/ui-bg_highlight-soft_45_2d3238_1x100.png") repeat-x scroll 50% 50% #2D3238 !important;
+	background: #2D3238;
 	border-top: 0;
+}
+
+.ui-dialog .ui-widget-header {
+	background: #2d3238;
 }
 
 button.ui-button.ui-state-default,
 #admin_info_bar button.ui-button.info-bar-element.ui-state-default {
+	background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
 	line-height: 14px;
 	border-color: #000 #555 #666 #555;
 	border-width: 1px 1px 1px 1px;
@@ -266,7 +271,7 @@ form.page_detail .ui-widget-content .ui-state-active,
 form.page_detail .ui-state-active, 
 form.page_detail .ui-widget-content .ui-state-active {
 	background-image: none;
-	color: #000;
+	/*color: #000;*/
 }
 
 form.page_detail .status_section {

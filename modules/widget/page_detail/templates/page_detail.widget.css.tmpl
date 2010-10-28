@@ -58,17 +58,17 @@ div.container {
 	text-align: right;
 }
 .page_detail_controls button {
-	color: #666666;
-	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_bright.png") repeat-x 0 bottom;
 	float: right;
 }
 .page_detail_controls button[name=save] {
-	color: #E3EF99;
+	/*color: #E3EF99;*/
 	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_dark.png");
 }
 
-.page_detail_controls button[name=cancel],
-.page_detail_controls button[name=delete] {
+.page_detail_controls button.ui-button.ui-state-default[name=cancel],
+.page_detail_controls button.ui-button.ui-state-default[name=delete] {
+	color: #666666;
+	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_bright.png") repeat-x 0 bottom;
 	border-color: #999999;
 }
 
