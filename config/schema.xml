@@ -222,6 +222,10 @@
 	<column name="extension" type="varchar" size="6" required="true" />
 	<column name="mimetype" type="varchar" size="80" required="true" />
 	<column name="is_office_doc" type="boolean" size="1" default="0" />
+	<unique>
+		<unique-column name="extension" />
+		<unique-column name="mimetype" />
+	</unique>
 </table>
 
 <table name="document_categories" phpName="DocumentCategory">
