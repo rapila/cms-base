@@ -15,7 +15,7 @@ Nächstens Dringend:
 - Widget Dialog und Richtext Fenster D&D
 - Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
-
+ 
 Documents list
 - thumbnail view hover and tooltips do not work properly in Firefox mainly
 
@@ -30,11 +30,6 @@ Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
 
 Immer wieder allgemein testen und Fehler melden
 
-
-Admin Menu
-- select Verwalten und Administrieren soll nicht grün sein.
-- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
-	siehe Gestaltungsvorschlag
 
 
 
@@ -86,4 +81,8 @@ Done
 
 PageDetail
 - da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
-
+- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
+	siehe Gestaltungsvorschlag
+	
+Admin Menu
+- select Verwalten und Administrieren soll nicht grün sein.

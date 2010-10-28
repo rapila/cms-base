@@ -151,13 +151,16 @@ Widget.types.admin_menu = {
 				result.element.append(option);
 			});
 			result.element.val(AdminInterface.current_admin_module);
+			if(AdminInterface.current_admin_module == 'dashboard' || AdminInterface.current_admin_module == 'pages') result.element.addClass('inactive');
 			// add current module if not part of
 			if(this.settings.attach_events) {
 				result.element.bind('change', function() {
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
+						result.element.addClass('inactive');
 						return false;
 					}
+					result.element.removeClass('inactive');
 					selected.data('action')();
 				});
 			}
