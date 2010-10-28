@@ -3,8 +3,6 @@ HTML / CSS
 Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
 
 PageDetail
-- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
-	siehe Gestaltungsvorschlag
 	
 PageTree
 - D&D Visualisation needs some attention
@@ -35,6 +33,8 @@ Immer wieder allgemein testen und Fehler melden
 
 Admin Menu
 - select Verwalten und Administrieren soll nicht grün sein.
+- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
+	siehe Gestaltungsvorschlag
 
 
 
