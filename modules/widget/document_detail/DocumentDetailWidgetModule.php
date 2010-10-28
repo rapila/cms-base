@@ -68,8 +68,8 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
 		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
 		$oDocument->setLanguageId($sLanguageId);
-		$oDocument->setIsProtected(isset($aDocumentData['is_protected']));
-		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']));
+		$oDocument->setIsProtected($aDocumentData['is_protected']);
+		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
 		return $oDocument->save();
 	}
 }

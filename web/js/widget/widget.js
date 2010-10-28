@@ -15,7 +15,7 @@ Function.prototype.bind = function(context) {
 
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
-	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/, "\\$1");
+	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
 };
 
 //Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
@@ -32,7 +32,7 @@ jQuery.fn.extend({
 			var val = null;
 			if(this.nodeName.toLowerCase() === 'input') {
 				if(this.type.toLowerCase() === 'checkbox') {
-					val = this.checked;
+					val = this.checked ? (this.hasAttribute('value') ? this.value : true) : false;
 				} else if(this.type.toLowerCase() === 'radio') {
 					val = this.checked ? this.value : null;
 				} else {

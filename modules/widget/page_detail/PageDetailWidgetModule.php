@@ -183,10 +183,10 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	  }
 		// validate post values / fetch most with js
 		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
-		$this->oPage->setIsInactive(!isset($aPageData['global_is_inactive']));
-		$this->oPage->setIsHidden(isset($aPageData['is_hidden']));
-		$this->oPage->setIsFolder(isset($aPageData['is_folder']));
-		$this->oPage->setIsProtected(isset($aPageData['is_protected']));
+		$this->oPage->setIsInactive(!$aPageData['global_is_active']);
+		$this->oPage->setIsHidden($aPageData['is_hidden']);
+		$this->oPage->setIsFolder($aPageData['is_folder']);
+		$this->oPage->setIsProtected($aPageData['is_protected']);
 		if($aPageData['template_name'] === "") {
 			$this->oPage->setTemplateName(null);
 		} else {
@@ -204,19 +204,19 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	private function handlePageStrings($aPageData) {
 	  if(isset($aPageData['edited_languages'])) {
-	    foreach($aPageData['edited_languages'] as $sLanguageId) {
+	    foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
     		$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId);	
     		if($oPageString === null) {
     			$oPageString = new PageString();
     			$oPageString->setLanguageId($sLanguageId);
     			$this->oPage->addPageString($oPageString); 
     		}
-    		$oPageString->setPageTitle($aPageData['page_title_'.$sLanguageId] ? $aPageData['page_title_'.$sLanguageId] : null);
-    		$oPageString->setLinkText($aPageData['link_text_'.$sLanguageId] ? $aPageData['link_text_'.$sLanguageId] : null);
-    		$oPageString->setMetaDescription($aPageData['meta_description_'.$sLanguageId] ? $aPageData['meta_description_'.$sLanguageId] : null);
-    		$oPageString->setMetaKeywords($aPageData['meta_keywords_'.$sLanguageId] ? $aPageData['meta_keywords_'.$sLanguageId] : null);
-    		$bIsActive = $oPageString->getPageTitle() !== null ? !isset($aPageData['is_inactive_'.$sLanguageId]) : true;
-    		$oPageString->setIsInactive($bIsActive);
+    		$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : null);
+    		$oPageString->setLinkText($aPageData['link_text'][$iCounter] ? $aPageData['link_text'][$iCounter] : null);
+    		$oPageString->setMetaDescription($aPageData['meta_description'][$iCounter] ? $aPageData['meta_description'][$iCounter] : null);
+    		$oPageString->setMetaKeywords($aPageData['meta_keywords'][$iCounter] ? $aPageData['meta_keywords'][$iCounter] : null);
+    		$bIsActive = $oPageString->getPageTitle() !== null ? $aPageData['is_active'][$iCounter] : false;
+    		$oPageString->setIsInactive(!$bIsActive);
     		$oPageString->save();
 	    }
 	  }

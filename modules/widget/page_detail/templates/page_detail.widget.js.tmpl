@@ -1,22 +1,34 @@
-jQuery.fn.extend({
-	internationalize: function(language_id) {
-		var name = this.attr('name');
-		this.attr('name', name+'_'+language_id);
-		return this;
-	}
-});
-
 Widget.types.page_detail = {
 	prepare: function() {
-		var widget = this;
+		var _this = this;
 		this.accordion = jQuery(this._element.find('div.accordion')).
 		accordion({active: 0, autoHeight: false, clearStyle: true}).
 		bind('accordionchangestart', function(event, ui) {
 			if(ui.newContent.is('.contents_container')) {
-				widget.load_content(ui.newContent);
+				_this.load_content(ui.newContent);
 			} else if(ui.newContent.is('.configuration_container')) {
-				widget.load_configuration(ui.newContent);
+				_this.load_configuration(ui.newContent);
 			}
+		});
+		
+		//Init buttons
+		var buttons = this._element.find('.page_detail_controls');
+		buttons.find('[name=save]').click(function() {
+			_this.save();
+			return false;
+		});
+		buttons.find('[name=cancel]').click(function() {
+			_this.load_page(_this.current_page_id);
+			_this.enable_input();
+			return false;
+		});
+		buttons.find('[name=delete]').click(function() {
+			Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
+				if(confirmed) {
+					_this.delete_page();
+				}
+			});
+			return false;
 		});
 		
 		this.description_has_been_loaded = false;
@@ -33,15 +45,7 @@ Widget.types.page_detail = {
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
-		this._element.find('label[for]').bind('click', function() {
-			var related_input = widget._element.find("*[name='"+jQuery(this).attr('for')+"']");
-			related_input.focus();
-			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
-				related_input.attr('checked', !related_input.attr('checked'));
-			} else {
-				related_input.select();
-			}
-		});
+		Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', this._element);
 		this._element.bind('keyup', function(event) {
 			if(this.current_page_id === null) {
 				return;
@@ -94,13 +98,13 @@ Widget.types.page_detail = {
 	},
 
 	load_content: function(container) {
-		var widget = this;
+		var _this = this;
 		if(this.current_page_id === null || this.description_has_been_loaded === true) {
 			return;
 		}
 		
 		this.description_has_been_loaded = true;
-		var active_languages = widget.getActiveLanguages();
+		var active_languages = this.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.settings.active_languages = active_languages;
 			widget.handle('element_set', function(event, element) {
@@ -109,25 +113,25 @@ Widget.types.page_detail = {
 		}, function(language_tabs) {
 			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
 				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_language}}'));
-				var language_data = widget.getLanguageData(language_id);
+				var language_data = _this.getLanguageData(language_id);
 				tab_content.find("input[name='edited_languages[]']").val(language_id);
-				tab_content.find("input[name='link_text']").internationalize(language_id).val(language_data.LinkTextOnly);
-				tab_content.find("input[name='page_title']").internationalize(language_id).val(language_data.PageTitle);
-				tab_content.find("input[name='meta_description']").internationalize(language_id).val(language_data.MetaDescription);
-				tab_content.find("input[name='meta_keywords']").internationalize(language_id).val(language_data.MetaKeywords);
-				tab_content.find("input[name='is_inactive']").internationalize(language_id).attr('checked', !language_data.IsInactive);
+				tab_content.find("input[name='link_text[]']").val(language_data.LinkTextOnly);
+				tab_content.find("input[name='page_title[]']").val(language_data.PageTitle);
+				tab_content.find("input[name='meta_description[]']").val(language_data.MetaDescription);
+				tab_content.find("input[name='meta_keywords[]']").val(language_data.MetaKeywords);
+				tab_content.find("input[name='is_active[]']").attr('checked', !language_data.IsInactive);
 			}, false, true);
 		});
 	},
 	
 	load_configuration: function(container) {
-		var widget = this;
+		var _this = this;
 		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
 			return;
 		}
 		this.configuration_has_been_loaded = true;
 		
-		var active_languages = widget.getActiveLanguages();
+		var active_languages = this.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.settings.active_languages = active_languages;
 			widget.handle('element_set', function(event, element) {
@@ -140,9 +144,9 @@ Widget.types.page_detail = {
 				var page_type_configuration = tab_content.find('.panel_content');
 				Widget.create('page_type', function(page_type) {
 					//	Intermediate callback
-					page_type.settings.page_type = widget._element.find("select[name='page_type']").val();
+					page_type.settings.page_type = _this._element.find("select[name='page_type']").val();
 					page_type.settings.container = page_type_configuration;
-					page_type.settings.page_id = widget.current_page_id;
+					page_type.settings.page_id = _this.current_page_id;
 					page_type.settings.language_id = language_id;
 				}, function(page_type) {
 					page_type.handle_admin();
@@ -153,17 +157,17 @@ Widget.types.page_detail = {
 
 	
 	fill_data: function() {
-		var widget = this;
+		var _this = this;
 		var page_data = this.getPageData()
 		this.current_page_id = page_data.Id;
 		this._element.find("input[name='name']").val(page_data.Name);
-		this._element.find("input[name='global_is_inactive']").attr('checked', !page_data.IsInactive);
+		this._element.find("input[name='global_is_active']").attr('checked', !page_data.IsInactive);
 		this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
 		this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
 		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
 		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
 		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
-			widget.configuration_has_been_loaded = false;
+			_this.configuration_has_been_loaded = false;
 		});
 		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
 
@@ -213,9 +217,9 @@ Widget.types.page_detail = {
 		return this._element.find("input[name='name']").val();
 	},
 	
-	delete_page: function(callback) {
+	delete_page: function() {
 		this.disable_input();
-		this.deletePage(callback);
+		this.deletePage(this.settings.delete_callback);
 	},
 	
 	save: function() {
@@ -226,6 +230,6 @@ Widget.types.page_detail = {
 	},
 	
 	settings: {
-		
+		delete_callback: jQuery.noop
 	}
 };

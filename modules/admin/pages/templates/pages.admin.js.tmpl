@@ -7,6 +7,9 @@ jQuery(document).ready(function() {
 	var initial_selection = {{writeRequestValue=initial_page_id}};
 
 	Widget.createWithElement('page_detail', function(widget) {
+		widget.settings.delete_callback = function(page_id) {
+			page_tree.remove_element_with_identifier(page_id);
+		};
 		//Add event handlers in intermediate callback
 		page_detail = widget;
 		page_detail.handle('loading', function() {
@@ -31,25 +34,6 @@ jQuery(document).ready(function() {
 		AdminInterface.content.append(widget._element);
 		// widget.load_page(initial_selection);
 	}, jQuery.noop);
-	
-	//Init info bar buttons
-	// var include = "{{includeTemplate=infobar_button.incl}}";
-	// var info_bar_buttons = jQuery().add(
-	// jQuery.parseHTML(include).text("{{writeString=widget.save}}").attr('name', 'save').click(function() {
-	// 	page_detail.save();
-	// })).add(
-	// jQuery.parseHTML(include).text("{{writeString=widget.cancel}}").attr('name', 'cancel').click(function () {
-	// 	page_detail.fill_data();
-	// 	page_detail.enable_input();
-	// })).add(
-	// jQuery.parseHTML(include).text("{{writeString=widget.page.delete}}").attr('name', 'delete').click(function () {
-	// 	Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, page_detail.current_page_name()), function(confirmed) {
-	// 		if(confirmed) {
-	// 			page_detail.delete_page(page_tree.remove_element_with_identifier.bind(page_tree));
-	// 		}
-	// 	});
-	// 	
-	// }));
 	
 	//Info bar stuff
 	AdminInterface.info_bar.prepareWidget(function(info_bar) {

@@ -46,7 +46,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 
-		$oLanguage->setIsActive(isset($aLanguageData['is_active']));
+		$oLanguage->setIsActive($aLanguageData['is_active']);
 		return $oLanguage->save();
 	}
 }

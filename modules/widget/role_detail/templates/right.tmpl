@@ -1,18 +1,18 @@
 <fieldset class="role-rights">
 	<select name="page_id[]" class="page_options ui-widget-content autowidth" data-widget-type="page_input">
 		{{options_pages}}
-	</select>	<input type="checkbox" name="is_inherited[]" value="1" />
+	</select>	<input type="checkbox" name="is_inherited[]" />
 	<label class="inherit rights_option" for="is_inherited[]" title="{{writeString=user.right_is_inherited}}">{{writeString=widget.right.is_inherited}}</label>
 	<br />
-	<input type="checkbox" name="may_edit_page_details[]" value="1" />
+	<input type="checkbox" name="may_edit_page_details[]" />
 	<label class="edit rights_option" for="may_edit_page_details[]" title="{{writeString=widget.right.may_edit_page_details}}">{{writeString=widget.right.may_edit_page_details}}</label>
-	<input type="checkbox" name="may_edit_page_contents[]" value="1" />
+	<input type="checkbox" name="may_edit_page_contents[]" />
 	<label class="edit_content rights_option" for="may_edit_page_contents[]" title="{{writeString=widget.right.may_edit_page_contents}}">{{writeString=widget.right.may_edit_page_contents}}</label>
-	<input type="checkbox" name="may_delete[]" value="1" />
+	<input type="checkbox" name="may_delete[]" />
 	<label class="delete rights_option" for="may_delete[]" title="{{writeString=user.may_delete}}">{{writeString=widget.right.may_delete_page}}</label>
-	<input type="checkbox" name="may_create_children[]" value="1" />
+	<input type="checkbox" name="may_create_children[]" />
 	<label class="new rights_option" for="may_create_children[]" title="{{writeString=user.may_create_children}}">{{writeString=widget.right.may_create_children}}</label>
-	<input type="checkbox" name="may_view_page[]" value="1" />
+	<input type="checkbox" name="may_view_page[]" />
 	<label class="view rights_option" for="may_view_page[]" title="{{writeString=user.may_view_page}}">{{writeString=widget.right.may_view_page}}</label>
 	<div class="ui-icon ui-icon-trash delete_right" style="margin-left: 1.5em; display: inline-block; cursor: pointer;"> </div>
 </fieldset>

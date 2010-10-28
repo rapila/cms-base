@@ -50,21 +50,29 @@ Widget.types.detail = {
 				detail_widget.settings.save_callback();
 				return false;
 			}
-		}).delegate('label[for]', 'click', function() {
+		});
+		this.clickable_labels_for(this.content);
+		this.select();
+		this.has_dialog = true;
+	},
+	
+	clickable_labels_for: function(element) {
+		element.delegate('label[for]', 'click', function() {
 			var label = jQuery(this);
-			var related_input = detail_widget.content.find("*[name='"+label.attr('for')+"']");
+			var related_input = element.find('*[name="'+label.attr('for')+'"]');
 			if(related_input.length > 1) {
 				var all_inputs = related_input.get();
-				var calculate_score = function(element) {
+				var calculate_score = function(input) {
 					var score = 0;
-					if(element.parentNode == label[0].parentNode) {
+					if(input.parentNode == label[0].parentNode) {
 						score += 100;
-						score -= 10*Math.abs(jQuery.makeArray(element.parentNode.childNodes).indexOf(label[0])-jQuery.makeArray(element.parentNode.childNodes).indexOf(element))
+						score -= 10*Math.abs(jQuery.makeArray(input.parentNode.childNodes).indexOf(label[0])-jQuery.makeArray(input.parentNode.childNodes).indexOf(input))
 					} else {
-						var element_parents = jQuery(element).parents();
+						var element_parents = jQuery(input).parents();
 						var label_parents = label.parents();
 						score -= (element_parents.not(label_parents).length + label_parents.not(element_parents).length)/2;
 					}
+					console.log("Score for ", input, score);
 					return score;
 				};
 				all_inputs.sort(function(a, b) {
@@ -79,8 +87,6 @@ Widget.types.detail = {
 				related_input.select();
 			}
 		});
-		this.select();
-		this.has_dialog = true;
 	},
 	
 	close: function() {
