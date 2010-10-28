@@ -21,19 +21,42 @@ String.prototype.escapeSelector = function() {
 //Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
 jQuery.fn.extend({
 	serializeArrayKV: function() {
-		var attributes = this.serializeArray();
 		var result = {};
-		jQuery.each(attributes, function(i, attr) {
-			if(attr.name.match(/\[\]$/)) {
-				var name = attr.name.substring(0, attr.name.length-2);
-				if(!result[name]) {
+		this.map(function() {
+			return this.elements ? jQuery.makeArray(this.elements) : this;
+		}).each(function() {
+			if(!(this.name && !this.disabled && (/select|textarea|input/i).test(this.nodeName))) {
+				return;
+			}
+			
+			var val = null;
+			if(this.nodeName.toLowerCase() === 'input') {
+				if(this.type.toLowerCase() === 'checkbox') {
+					val = this.checked;
+				} else if(this.type.toLowerCase() === 'radio') {
+					val = this.checked ? this.value : null;
+				} else {
+					val = jQuery(this).val();
+				}
+			} else {
+				val = jQuery(this).val();
+			}
+			
+			if(val === null) {
+				return;
+			}
+			
+			if(this.name.match(/\[\]$/)) {
+				var name = this.name.substring(0, this.name.length-2);
+				if(!jQuery.isArray(result[name])) {
 					result[name] = [];
 				}
-				result[name][result[name].length] = attr.value
+				result[name][result[name].length] = val;
 			} else {
-				result[attr.name] = attr.value;
+				result[this.name] = val;
 			}
 		});
+		
 		return result;
 	}
 });
@@ -128,8 +151,8 @@ jQuery.extend(Widget.prototype, {
 jQuery.extend(Widget, {
 	uuid: function() {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    	var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-    	return v.toString(16);
+			var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+			return v.toString(16);
 		}).toUpperCase();
 	},
 	

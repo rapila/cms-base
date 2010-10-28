@@ -50,8 +50,28 @@ Widget.types.detail = {
 				detail_widget.settings.save_callback();
 				return false;
 			}
-		}).find('label[for]').bind('click', function() {
-			var related_input = detail_widget.content.find("*[name='"+jQuery(this).attr('for')+"']");
+		}).delegate('label[for]', 'click', function() {
+			var label = jQuery(this);
+			var related_input = detail_widget.content.find("*[name='"+label.attr('for')+"']");
+			if(related_input.length > 1) {
+				var all_inputs = related_input.get();
+				var calculate_score = function(element) {
+					var score = 0;
+					if(element.parentNode == label[0].parentNode) {
+						score += 100;
+						score -= 10*Math.abs(jQuery.makeArray(element.parentNode.childNodes).indexOf(label[0])-jQuery.makeArray(element.parentNode.childNodes).indexOf(element))
+					} else {
+						var element_parents = jQuery(element).parents();
+						var label_parents = label.parents();
+						score -= (element_parents.not(label_parents).length + label_parents.not(element_parents).length)/2;
+					}
+					return score;
+				};
+				all_inputs.sort(function(a, b) {
+					return calculate_score(b) - calculate_score(a);
+				});
+				related_input = jQuery(all_inputs[0]);
+			}
 			related_input.focus();
 			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
 				related_input.attr('checked', !related_input.attr('checked'));
