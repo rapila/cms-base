@@ -39,6 +39,7 @@ Widget.types.role_detail = {
 	},
 		
 	fill_data: function() {
+		var _this = this;
 		this.getRoleData(function(role_data) {
 			this.content.find("input[name='role_key']").val(role_data.RoleKey);
 			this.content.find("textarea[name='description']").val(role_data.Description);
@@ -65,9 +66,12 @@ Widget.types.role_detail = {
 				set_right_data(right_content, 'may_create_children_', right_id, rights_data.MayCreateChildren);
 				set_right_data(right_content, 'may_view_page_', right_id, rights_data.MayViewPage);
 				set_right_data(right_content, 'is_inherited_', right_id, rights_data.IsInherited);
-				var delete_this_right = jQuery('<div/>').attr({ 'class' : 'ui-icon ui-icon-trash', 'data-id' : right_id, 'style' : 'margin-left:1.5em;display:inline-block;'});
-				jQuery(delete_this_right).bind('click', function(button) {
-					console.log(button);
+				var delete_this_right = jQuery('<div/>').addClass("ui-icon ui-icon-trash").css({marginLeft: "1.5em", display: "inline-block"}).data('right_id', right_id);
+				delete_this_right.bind('click', function(event) {
+					console.log(delete_this_right);
+					if(this.deleteRight(delete_this_right.data('right_id'))) {
+						right_content.remove();
+					}
 				});
 
 				right_content.append(delete_this_right);

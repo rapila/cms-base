@@ -40,7 +40,11 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 	
-
+	public function deleteRight($iRightId) {
+		$oRight = RightPeer::retrieveByPK($iRightId);
+		if($oRight) return $oRight->delete();
+	}
+	
 	public function saveData($aRoleData) {
 		// ErrorHandler::log($aRoleData);
 		if($this->sRoleId === null) {

@@ -1,6 +1,7 @@
 PRIORITAETEN:
 
 CMS
+- finish rights for roles button.click()!
 - Richtext Konfiguration, Linklists, DocumentList, ImagePicker, FileUpload
 - Preview Text, Link und Document Edit (tipp_edit....)
 - Login, Login forgotten etc. LoginPageTypeModule Language!?
