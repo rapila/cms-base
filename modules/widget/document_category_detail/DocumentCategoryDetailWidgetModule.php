@@ -13,8 +13,8 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 	public function getCategoryData() {
 		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->iCategoryId);
 		$aResult = $oDocumentCategory->toArray();
-		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oDocumentCategory).' / '.Util::getCreatedByIfSet($oDocumentCategory);
-		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oDocumentCategory).' / '.Util::getUpdatedByIfSet($oDocumentCategory);
+		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocumentCategory);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocumentCategory);
     return $aResult;
 	}
 

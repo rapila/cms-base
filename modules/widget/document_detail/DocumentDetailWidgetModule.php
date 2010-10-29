@@ -14,8 +14,8 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
-		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oDocument).' / '.Util::getCreatedByIfSet($oDocument);
-		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oDocument).' / '.Util::getUpdatedByIfSet($oDocument);
+		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocument);
 		$aReferences = ReferencePeer::getReferences($oDocument);
 		if(count($aReferences) > 0) {
 			// $aResult['References'] = $aReferences[0]->toArray();

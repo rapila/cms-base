@@ -145,16 +145,26 @@ class Util {
 		return $aBitsDissected;
 	}
 	
+	public static function formatCreatedInfo($oGameEpisode) {
+		return self::formatCreatedAtForAdmin($oGameEpisode).' / '.self::getCreatedByIfSet($oGameEpisode);
+	}
 	
-	
+	public static function formatUpdatedInfo($oGameEpisode) {
+		return self::formatUpdatedAtForAdmin($oGameEpisode).' / '.self::getUpdatedByIfSet($oGameEpisode);
+	}
+
 	public static function formatCreatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
-	  return $oObject->getCreatedAtFormatted().', '.$oObject->getCreatedAt($sTimeFormat);
+		if($oObject->getCreatedAt() != null) {
+	  	return $oObject->getCreatedAtFormatted().', '.$oObject->getCreatedAt($sTimeFormat);
+		}
 	}
 	
 	public static function formatUpdatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
+		if($oObject->getUpdatedAt() != null) {
 	  return $oObject->getUpdatedAtFormatted().', '.$oObject->getUpdatedAt($sTimeFormat);
+		}
 	}
-	
+
 	public static function getCreatedByIfSet($oObject) {
 	  if($oObject->getUserRelatedByCreatedBy()) {
 	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();

@@ -33,6 +33,18 @@ Widget.types.detail = {
 		if(this.settings.has_cancel_button) {
 			buttons["{{writeString=widget.cancel}}"] = this.settings.cancel_callback;
 		}
+		// option something like.....
+		// var buttons: {
+		// 	"{{writeString=widget.save}}": {
+		// 		priority: 'primary',
+		// 		callback: this.settings.save_callback
+		// 	},
+		// 	"{{writeString=widget.cancel}}": {
+		// 		priority: 'secondary',
+		// 		this.settings.cancel_callback
+		// 	}
+		// };
+
 		this.content.dialog({
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,

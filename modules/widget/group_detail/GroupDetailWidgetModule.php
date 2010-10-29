@@ -13,8 +13,8 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 	public function getGroupData() {
 		$oCroup = GroupPeer::retrieveByPK($this->iGroupId);
 		$aResult = $oGroup->toArray();
-		$aResult['CreatedInfo'] = Util::formatCreatedAtForAdmin($oCroup).' / '.Util::getCreatedByIfSet($oCroup);
-		$aResult['UpdatedInfo'] = Util::formatUpdatedAtForAdmin($oCroup).' / '.Util::getUpdatedByIfSet($oCroup);
+		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oGroup);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oGroup);
 		return $aResult;
 	}
 	
