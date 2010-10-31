@@ -84,7 +84,6 @@ Widget.types.detail = {
 						var label_parents = label.parents();
 						score -= (element_parents.not(label_parents).length + label_parents.not(element_parents).length)/2;
 					}
-					console.log("Score for ", input, score);
 					return score;
 				};
 				all_inputs.sort(function(a, b) {
