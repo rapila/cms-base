@@ -16,28 +16,22 @@ Widget.types.tree = {
 		});
 		
 		//Open initially opened items
-		var open_initial_nodes = function(event, data) {
-			var callback = arguments.callee;
-			var opened_node = data.rslt.obj;
-			_this._tree._get_children(opened_node).each(function() {
-				var node = jQuery(this);
-				var data = node.data('jstree');
-				if(_this.settings.is_open(data)) {
-					_this._element.one('open_node.jstree', callback);
-					_this._tree.open_node(node);
-				}
-				if(_this.settings.is_active(data)) {
-					_this._tree.select_node(node);
-				}
-			});
-		};
 		this._element.one('loaded.jstree', function(event, result) {
-			var root = _this._element.find('li');
-			_this._element.one('open_node.jstree', open_initial_nodes);
-			_this._tree.open_node(root);
-			if(_this.settings.is_active(root.data('jstree'))) {
-				_this._tree.select_node(root);
-			}
+			var open_initial_nodes = function(event, data) {
+				var callback = arguments.callee;
+				var opened_node = data.rslt.obj;
+				_this._tree._get_children(opened_node).each(function() {
+					var node = jQuery(this);
+					var data = node.data('jstree');
+					if(_this.settings.is_active(data)) {
+						_this._tree.select_node(node);
+					} else if(_this.settings.is_open(data)) {
+						_this._element.one('open_node.jstree', callback);
+						_this._tree.open_node(node);
+					}
+				});
+			};
+			open_initial_nodes(null, {rslt: {obj: _this._element}});
 		});
 		
 		this._element.jstree({
