@@ -27,23 +27,19 @@ Widget.types.detail = {
 		this.fire('opening-initial');
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
-		var buttons = {
-			"{{writeString=widget.save}}": this.settings.save_callback
-		};
-		if(this.settings.has_cancel_button) {
-			buttons["{{writeString=widget.cancel}}"] = this.settings.cancel_callback;
-		}
+		var buttons = [
+			{
+				text: "{{writeString=widget.save}}",
+				className: 'primary ui-state-highlighted',
+				click: this.settings.save_callback
+			}
+		];
+		this.settings.has_cancel_button && buttons.push({
+			text: "{{writeString=widget.cancel}}",
+			className: 'secondary',
+			click: this.settings.cancel_callback
+		});
 		// option something like.....
-		// var buttons: {
-		// 	"{{writeString=widget.save}}": {
-		// 		priority: 'primary',
-		// 		callback: this.settings.save_callback
-		// 	},
-		// 	"{{writeString=widget.cancel}}": {
-		// 		priority: 'secondary',
-		// 		this.settings.cancel_callback
-		// 	}
-		// };
 
 		this.content.dialog({
 			title: this.settings.title,
