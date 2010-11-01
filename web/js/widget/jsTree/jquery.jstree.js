@@ -832,6 +832,9 @@
 
 			this.get_container()
 				.delegate("li", "click.jstree", $.proxy(function (event) {
+				    if($(event.target).is('ins.jstree-icon')) {
+				      return;
+				    }
 						event.preventDefault();
 						this.select_node(event.currentTarget, true, event);
 					}, this))

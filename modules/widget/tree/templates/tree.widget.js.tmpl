@@ -5,30 +5,40 @@ Widget.types.tree = {
 		
 		// Item click handler
 		this._element.bind('select_node.jstree', function(event) {
-			// Open the item
+			// Get the selected item
 			var element = _this._tree.get_selected();
-			// var opener = element.children('.tree-opener');
-			// if(!opener.is('.no-children')) {
-			// 	if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
-			// 		_this.close(element, opener);
-			// 	} else {
-			// 		_this.open(element, opener);
-			// 	}
-			// }
-			if(jQuery(event.target).is('li > ins.jstree-icon')) {
-				return;
-			}
 			// Open it
 			if(!_this._tree.is_open(element)) {
 				_this._tree.open_node(element);
 			}
 			// Select it
 			_this.activate(element);
-		});	
-		// this._element.delegate('.ui-tree li', 'hover', function(event) {
-		// 	var element = jQuery(this);
-		// 	element.toggleClass('ui-state-hover');
-		// });
+		});
+		
+		//Open initially opened items
+		var open_initial_nodes = function(event, data) {
+			var callback = arguments.callee;
+			var opened_node = data.rslt.obj;
+			_this._tree._get_children(opened_node).each(function() {
+				var node = jQuery(this);
+				var data = node.data('jstree');
+				if(_this.settings.is_open(data)) {
+					_this._element.one('open_node.jstree', callback);
+					_this._tree.open_node(node);
+				}
+				if(_this.settings.is_active(data)) {
+					_this._tree.select_node(node);
+				}
+			});
+		};
+		this._element.one('loaded.jstree', function(event, result) {
+			var root = _this._element.find('li');
+			_this._element.one('open_node.jstree', open_initial_nodes);
+			_this._tree.open_node(root);
+			if(_this.settings.is_active(root.data('jstree'))) {
+				_this._tree.select_node(root);
+			}
+		});
 		
 		this._element.jstree({
 			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd", 'ui'],
