@@ -7,6 +7,9 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	private $sInitialSearchString;
 	private $sInitialDocumentKind;
 	private $iInitialThumbnailSize;
+	private $aViewSessions;
+	
+	public $oDocumentsViewWidgetDelegate;
 	
 	public function __construct() {
 		parent::__construct();
@@ -14,6 +17,8 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 		$this->sInitialSearchString = null;
 		$this->sInitialDocumentKind = CriteriaListWidgetDelegate::SELECT_ALL;
 		$this->iInitialThumbnailSize = 160;
+		$this->oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
+		$aViewSessions = array();
 	}
 	
 	public function setInitialDocumentCategoryId($iInitialDocumentCategoryId) {
@@ -46,5 +51,13 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 
 	public function getInitialThumbnailSize() {
     return $this->iInitialThumbnailSize;
+	}
+	
+	public function getSessionForView($sViewType) {
+		if(!isset($aViewSessions[$sViewType])) {
+			$oWidget = WidgetModule::getWidget($sViewType, null, $this->oDocumentsViewWidgetDelegate);
+			$aViewSessions[$sViewType] = $oWidget->getSessionKey();
+		}
+		return $aViewSessions[$sViewType];
 	}
 }

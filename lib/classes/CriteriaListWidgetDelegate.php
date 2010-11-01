@@ -48,8 +48,7 @@ class CriteriaListWidgetDelegate {
 				}
 				$this->aFilterTypes[$sFilterColumn] = $sFilterType;
 			}
-			$this->oListSettings->setFilterColumnValue($sFilterColumn, $aArguments[0]);
-			return;
+			return $this->oListSettings->setFilterColumnValue($sFilterColumn, $aArguments[0]);
 		}
 		if($this->aFilterTypes !== null && StringUtil::startsWith($sMethodName, 'get') && $sMethodName[3] === strtoupper($sMethodName[3])) {
 			$sFilterColumn = StringUtil::deCamelize(lcfirst(substr($sMethodName, 3)));
@@ -190,7 +189,7 @@ class CriteriaListWidgetDelegate {
 	}
 	
 	public function setSearch($sSearch) {
-		$this->oListSettings->setSearchPhrase($sSearch);
+		return $this->oListSettings->setSearchPhrase($sSearch);
 	}
 	
 	public function getSearch() {

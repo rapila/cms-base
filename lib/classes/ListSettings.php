@@ -17,10 +17,17 @@ class ListSettings {
 	
 	public function setFilterColumnValue($sColumnName, $sValue) {
 		if($sValue === null || $sValue === '') {
+			if(!isset($this->aFilters[$sColumnName])) {
+				return false;
+			}
 			unset($this->aFilters[$sColumnName]);
-			return;
+			return true;
+		}
+		if($this->getFilterColumnValue($sColumnName) == $sValue) {
+			return false;
 		}
 		$this->aFilters[$sColumnName] = $sValue;
+		return true;
 	}
 	
 	public function setSelectionType($sColumnName, $sSelectionType) {
@@ -56,7 +63,11 @@ class ListSettings {
 		if($sSearchPhrase == '') {
 			$sSearchPhrase = null;
 		}
+		if($this->sSearchPhrase == $sSearchPhrase) {
+			return false;
+		}
 		$this->sSearchPhrase = $sSearchPhrase;
+		return true;
 	}
 
 	public function getSearchPhrase() {

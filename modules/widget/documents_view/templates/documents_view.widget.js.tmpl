@@ -29,8 +29,9 @@ Widget.types.documents_view = {
 					documents_view.init_tab(tab);
 				} else {
 					//Returns true if anything’s changed since the last time
-					if(documents_view.configure_tab(tab)) {
+					if(!tab.data('type').is_updated) {
 						tab.data('widget').reload();
+						tab.data('type').is_updated = true;
 					}
 				}
 			}
@@ -53,7 +54,7 @@ Widget.types.documents_view = {
 			documents_view.configure_tab(tab);
 		}, function(widget) {
 			panel.append(widget._element);
-		});
+		}, this.getSessionForView(widget_name));
 	},
 	
 	configure_tab: function(tab) {
@@ -62,28 +63,32 @@ Widget.types.documents_view = {
 	},
 	
 	reload: function() {
+		var active_tab = this.active_tab.data('type');
+		jQuery.each(this.tab_views, function(i, tab_type) {
+			tab_type.is_updated = tab_type === active_tab;
+		})
 		this.active_tab.data('widget').reload();
 		jQuery('.ui-tabs-panel').focus();
 	},
 	
 	set_document_category_id: function(id) {
 		this.settings.document_category_id = id;
-		this.configure_tab(this.active_tab);
+		return this.configure_tab(this.active_tab);
 	},
 	
 	set_search_string: function(string) {
 		this.settings.search_string = string;
-		this.configure_tab(this.active_tab);
+		return this.configure_tab(this.active_tab);
 	},
 	
 	set_document_kind: function(kind) {
 		this.settings.document_kind = kind;
-		this.configure_tab(this.active_tab);
+		return this.configure_tab(this.active_tab);
 	},
 	
 	set_thumbnail_size: function(size) {
 		this.settings.thumbnail_size = size;
-		this.configure_tab(this.active_tab);
+		return this.configure_tab(this.active_tab);
 	},
 	
 	tab_views: {
@@ -94,15 +99,9 @@ Widget.types.documents_view = {
 			},
 			configure: function(widget) {
 				var changed = false;
-				if(this.settings.document_category_id) {
-					changed = widget.setOption('document_category_id', this.settings.document_category_id) || changed;
-				}
-				if(this.settings.search_string) {
-					changed = widget.setOption('search', this.settings.search_string) || changed;
-				}
-				if(this.settings.document_kind) {
-					changed = widget.setOption('document_kind', this.settings.document_kind) || changed;
-				}
+				changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
+				changed = widget.setDocumentKind(this.settings.document_kind) || changed;
+				changed = widget.setSearch(this.settings.search_string) || changed;
 				return changed;
 			},
 			append_document: function(widget, document_id) {
@@ -116,16 +115,11 @@ Widget.types.documents_view = {
 			},
 			configure: function(widget) {
 				var changed = false;
-				if(this.settings.document_category_id) {
-					changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
-				}
-				if(this.settings.document_kind) {
-					changed = widget.setDocumentKind(this.settings.document_kind) || changed;
-				}
-				if(this.settings.thumbnail_size) {
-					changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size;
-					widget.settings.thumbnail_size = this.settings.thumbnail_size;
-				}
+				changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
+				changed = widget.setDocumentKind(this.settings.document_kind) || changed;
+				changed = widget.setSearch(this.settings.search_string) || changed;
+				changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size || changed;
+				widget.settings.thumbnail_size = this.settings.thumbnail_size;
 				return changed;
 			},
 			append_document: function(widget, document_id) {
