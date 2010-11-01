@@ -65,6 +65,8 @@
   background: #2d3238;
   border-top: 0;
 }
+.ui-dialog button.ui-state-hover { color: #e3ef99; }
+.ui-dialog button.ui-state-highlight { color: #e3ef99; }
 .ui-dialog .ui-widget-header { background: #2d3238; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;

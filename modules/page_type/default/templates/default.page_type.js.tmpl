@@ -112,15 +112,20 @@ Widget.types.page_type.types['default'] = {
 				if(widget.setObjectId) {
 					widget.setObjectId(item_to_edit.attr('data-object-id'));
 				}
-				content.dialog({buttons: {
-					'{{writeString=save}}': function() {
-						widget.save(function() {
-							Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
-							content.dialog('close');
-						});
-					}
-					// modal: true
-				}});
+				content.dialog({
+					buttons: [{
+						text: '{{writeString=save}}',
+						className: 'primary ui-state-highlight',
+						click: function() {
+							widget.save(function() {
+								Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
+								content.dialog('close');
+							});
+						}
+					}],
+					// modal: true,
+					width: 550
+				});
 			}, result[1]);
 		});
 	},

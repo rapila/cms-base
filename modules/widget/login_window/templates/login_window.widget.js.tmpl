@@ -22,14 +22,19 @@ Widget.types.login_window = {
 			modal: true,
 			resizable: false,
 			closeOnEscape: false,
-			buttons: {
-				"{{writeString=login}}": function() {
+			buttons: [{
+				text: "{{writeString=login}}",
+				className: 'primary ui-state-highlight',
+				click: function() {
 					login_window.login_markup.children('form').submit();
-				},
-				"{{writeString=login.password_forgotten}}": function() {
-					window.location.href="{{writeLink=;password_forgotten=true;manager=LoginManager;is_absolute=true}}";
 				}
-			}
+			}, {
+				text: "{{writeString=login.password_forgotten}}",
+				className: 'secondary',
+				click: function() {
+					window.location.href = "{{writeLink=;password_forgotten=true;manager=LoginManager;is_absolute=true}}";
+				}
+			}]
 		});
 	},
 	

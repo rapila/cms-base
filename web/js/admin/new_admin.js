@@ -153,11 +153,17 @@ jQuery.extend(Widget, {
 		var dialog_opts = {
 			resizable: false,
 			modal: true,
-			buttons: {},
+			buttons: [{
+				text: okButtonText,
+				className: 'primary ui-state-highlight',
+				click: destroy.bind(dialog, true)
+			}, {
+				text: cancelButtonText,
+				className: 'secondary',
+				click: destroy.bind(dialog, false)
+			}],
 			close: destroy.bind(dialog, false)
 		};
-		dialog_opts.buttons[okButtonText] = destroy.bind(dialog, true);
-		dialog_opts.buttons[cancelButtonText] = destroy.bind(dialog, false);
 		dialog.dialog(dialog_opts);
 	},
 	
