@@ -4,9 +4,9 @@ Widget.types.tree = {
 		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
 		
 		// Item click handler
-		this._element.delegate('li', 'click.jstree', function(event) {
+		this._element.bind('select_node.jstree', function(event) {
 			// Open the item
-			var element = jQuery(this);
+			var element = _this._tree.get_selected();
 			// var opener = element.children('.tree-opener');
 			// if(!opener.is('.no-children')) {
 			// 	if(opener.is('.opened') && jQuery(event.target)[0] === opener[0]) {
@@ -25,13 +25,13 @@ Widget.types.tree = {
 			// Select it
 			_this.activate(element);
 		});	
-		this._element.delegate('.ui-tree li', 'hover', function(event) {
-			var element = jQuery(this);
-			element.toggleClass('ui-state-hover');
-		});
+		// this._element.delegate('.ui-tree li', 'hover', function(event) {
+		// 	var element = jQuery(this);
+		// 	element.toggleClass('ui-state-hover');
+		// });
 		
 		this._element.jstree({
-			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd"],
+			plugins: ["ui", "themeroller", "tree_widget", "crrm", "dnd", 'ui'],
 			tree_widget: {widget: _this},
 			crrm: {
 				move: {
@@ -46,6 +46,12 @@ Widget.types.tree = {
 				//TODO: fill in function callbacks for sort, move and deny
 				drag_target: false,
 				drop_target: false
+			},
+			
+			ui: {
+				select_limit: 1,
+				selected_parent_close: false,
+				select_multiple_modifier: false
 			}
 		});
 		this._tree = jQuery.jstree._reference(this._element);
@@ -143,8 +149,8 @@ Widget.types.tree = {
 	},
 	
 	activate: function(element) {
-		this._element.find('li').removeClass('ui-state-active');
-		element.addClass('ui-state-active');
+		// this._element.find('li').removeClass('ui-state-active');
+		// element.addClass('ui-state-active');
 		var new_identifier = this.identifier_from_element(element);
 		var has_changed = this.current_element_identifier !== new_identifier;
 		this.current_element_identifier = new_identifier;
@@ -158,11 +164,11 @@ Widget.types.tree = {
 	remove_element_with_identifier: function(data) {
 		var element = this.element_with_identifier(data);
 		var parent = this.parent_of(element);
-		var is_selected = element.is('.ui-state-active');
+		// var is_selected = element.is('.ui-state-active');
 		this._tree.remove(element);
-		if(is_selected) {
-			this.activate(parent);
-		}
+		// if(is_selected) {
+		// 	this.activate(parent);
+		// }
 	},
 	
 	current_element: function() {

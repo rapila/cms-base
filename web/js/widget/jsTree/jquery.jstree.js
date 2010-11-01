@@ -831,14 +831,14 @@
 			this.data.ui.to_select = this.get_settings().ui.initially_select;
 
 			this.get_container()
-				.delegate("a", "click.jstree", $.proxy(function (event) {
+				.delegate("li", "click.jstree", $.proxy(function (event) {
 						event.preventDefault();
 						this.select_node(event.currentTarget, true, event);
 					}, this))
-				.delegate("a", "mouseenter.jstree", $.proxy(function (event) {
+				.delegate("li", "mouseenter.jstree", $.proxy(function (event) {
 						this.hover_node(event.target);
 					}, this))
-				.delegate("a", "mouseleave.jstree", $.proxy(function (event) {
+				.delegate("li", "mouseleave.jstree", $.proxy(function (event) {
 						this.dehover_node(event.target);
 					}, this))
 				.bind("reopen.jstree", $.proxy(function () { 
@@ -3371,10 +3371,10 @@
 			var s = this._get_settings().themeroller;
 			this.get_container()
 				.addClass("ui-widget-content")
-				.delegate("a","mouseenter.jstree", function () {
+				.delegate("li","mouseenter.jstree", function () {
 					$(this).addClass(s.item_h);
 				})
-				.delegate("a","mouseleave.jstree", function () {
+				.delegate("li","mouseleave.jstree", function () {
 					$(this).removeClass(s.item_h);
 				})
 				.bind("open_node.jstree create_node.jstree", $.proxy(function (e, data) { 
@@ -3387,7 +3387,7 @@
 						data.rslt.obj.children("ins").removeClass(s.opened).addClass(s.closed);
 					}, this))
 				.bind("select_node.jstree", $.proxy(function (e, data) {
-						data.rslt.obj.children("a").addClass(s.item_a);
+						data.rslt.obj.addClass(s.item_a);
 					}, this))
 				.bind("deselect_node.jstree deselect_all.jstree", $.proxy(function (e, data) {
 						this.get_container()
