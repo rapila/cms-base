@@ -365,12 +365,14 @@ table.ui-list td.sort {
 }
 tr.ui-list-headrow th.sort { padding-right: 0em; }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
-.ui-accordion .ui-accordion-content.contents_container { padding: 0; }
+.ui-accordion .ui-accordion-content.contents_container,
+.ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
 .users fieldset {
   padding: 0;
   border: 1px #c4c4c4 solid;
 }
-.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content,
+.ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content {
   padding: 0;
   border-color: #cccdcf;
 }
