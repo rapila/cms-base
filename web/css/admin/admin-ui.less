@@ -373,7 +373,7 @@ input.ui-widget-content.autowidth {
 		display: block;
 		min-height: 70px !important;
 		min-width: 150px !important;
-		border: 1px solid #B1B1B1 !important;
+		border: 1px solid #eeeeee !important;
 		background-color: #FFF;
 		border-color: #DFDFDF;
 	}
@@ -385,13 +385,17 @@ input.ui-widget-content.autowidth {
 		-webkit-border-radius: 3px;
 		padding: 2px 6px;
 		border-radius: 3px;
-		border: 1px solid #999;
+		border: 1px solid #ccc;
 		margin: 2px;
 		text-align: left;
 		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom;
 	}
+	.filled_modules ol.template-container li.language_object_emty {
+		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom;
+	}
 
 	.filled_modules ol.template-container li {
+		margin: 3px;
 		padding: 5px 6px;
 	}
 
@@ -429,10 +433,6 @@ input.ui-widget-content.autowidth {
 		font-size: 13px;
 		display:block;
 		margin-top: .5em;
-	}
-	
-	.filled_modules ol.template-container li.language_object_emty {
-		border-style: dotted;
 	}
 	
 	div.ui-widget-content {

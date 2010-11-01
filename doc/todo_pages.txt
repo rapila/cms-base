@@ -3,7 +3,6 @@ Pages
 detail: 
 - handle / save conditions
 - handle problem with adminMoveObject (if content object is trashed, move is triggered at the same time, see comment in DefaultPageTypeModule line 305)
-- check DefaultPageTypeModule/FrontendModule handling >	public static function listContentModules($bInheritIsSet=false) 
 - Configuration 
 - References: how to handle. save notifications easy links
 - preview / publish handling, what about a light version with data_preview blob?
@@ -48,3 +47,4 @@ last_edit_page:
 DONE
 **********************************************************************************
 empty content object should not be shown if inherit is not set in a container.
+- check DefaultPageTypeModule/FrontendModule handling >	public static function listContentModules($bInheritIsSet=false) 

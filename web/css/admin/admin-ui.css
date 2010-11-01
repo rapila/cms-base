@@ -65,9 +65,7 @@
   background: #2d3238;
   border-top: 0;
 }
-.ui-dialog .ui-widget-header {
-  background: #2d3238;
-}
+.ui-dialog .ui-widget-header { background: #2d3238; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
   line-height: 14px;
@@ -132,17 +130,9 @@ form.page_detail .status_section { background-color: #ebedef; }
 form.page_detail .ui-state-active { background-color: #ebedef; }
 form.page_detail .ui-widget-content .ui-state-active { background-color: #ebedef; }
 .ui-widget-content h3 { background-color: #ebedef; }
-.ui-state-active {
-  color: #e3ef99;
-}
-form.page_detail .ui-state-active {
-  background-image: none;
-  /*color: #000000;*/
-}
-form.page_detail .ui-widget-content .ui-state-active {
-  background-image: none;
-  color: #000000;
-}
+.ui-state-active { color: #e3ef99; }
+form.page_detail .ui-state-active { background-image: none; }
+form.page_detail .ui-widget-content .ui-state-active { background-image: none; }
 form.page_detail .status_section {
   border-top: none;
   border-bottom: #c1c2c4 1px solid;
@@ -255,7 +245,7 @@ input.ui-widget-content.autowidth { width: auto !important; }
   display: block;
   min-height: 70px !important;
   min-width: 150px !important;
-  border: 1px solid #b1b1b1 !important;
+  border: 1px solid #eeeeee !important;
   background-color: #ffffff;
   border-color: #dfdfdf;
 }
@@ -265,7 +255,7 @@ input.ui-widget-content.autowidth { width: auto !important; }
   -webkit-border-radius: 3px;
   padding: 2px 6px;
   border-radius: 3px;
-  border: 1px solid #999999;
+  border: 1px solid #cccccc;
   margin: 2px;
   text-align: left;
   background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom;
@@ -276,12 +266,16 @@ input.ui-widget-content.autowidth { width: auto !important; }
   -webkit-border-radius: 3px;
   padding: 2px 6px;
   border-radius: 3px;
-  border: 1px solid #999999;
+  border: 1px solid #cccccc;
   margin: 2px;
   text-align: left;
   background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom;
 }
-.page_detail .filled_modules ol.template-container li { padding: 5px 6px; }
+.page_detail .filled_modules ol.template-container li.language_object_emty { background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom; }
+.page_detail .filled_modules ol.template-container li {
+  margin: 3px;
+  padding: 5px 6px;
+}
 .page_detail .ui-widget-content .ui-icon {
   height: 20px;
   margin: -2px 2px 0 0;
@@ -308,7 +302,6 @@ input.ui-widget-content.autowidth { width: auto !important; }
   display: block;
   margin-top: 0.5em;
 }
-.page_detail .filled_modules ol.template-container li.language_object_emty { border-style: dotted; }
 .page_detail div.ui-widget-content { border: 0; }
 .ui-icon-trash.delete_inactive { background-image: url(''); }
 #admin_sidebar .ui-state-droppable {
