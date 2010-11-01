@@ -112,6 +112,7 @@ Widget.types.page_type.types['default'] = {
 				if(widget.setObjectId) {
 					widget.setObjectId(item_to_edit.attr('data-object-id'));
 				}
+				var rich_text = false;
 				content.dialog({
 					buttons: [{
 						text: '{{writeString=save}}',
@@ -124,8 +125,18 @@ Widget.types.page_type.types['default'] = {
 						}
 					}],
 					// modal: true,
-					width: 550
+					width: 550,
+					// open: function(){},
+					resize: function(event, ui){ // or use dialogresize see further down
+						if(widget.internal_widget.widgetType == 'rich_text'){
+							if (!rich_text) rich_text = jQuery('#cke_contents_editor1');
+							rich_text.css('height', ui.size.height - 200);
+						}
+					}
 				});
+				
+				// $( ".selector" ).bind( "dialogresize", function(event, ui) {});
+				
 			}, result[1]);
 		});
 	},
