@@ -41,7 +41,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 
 		$oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($aLinkData['url']));
 		$oLink->setName($aLinkData['name']);
-		$oLink->setLinkCategoryId($aLinkData['link_category_id']);
+		$oLink->setLinkCategoryId($aLinkData['link_category_id'] == null ? null : $aLinkData['link_category_id']);
 		$oLink->setDescription($aLinkData['description']);
 		$oLink->setIsInactive(isset($aLinkData['is_inactive']));
 		return $oLink->save();

@@ -37,7 +37,7 @@ Widget.types.link_edit = {
 		this.result_list.empty();
 		this.allLinks(function(links) {
 			jQuery.each(links, function(i, link) {
-				_this.result_list.append(jQuery('<li/>').text(link.NAME)..data('id', link.ID));
+				_this.result_list.append(jQuery('<li/>').text(link.NAME).data('id', link.ID));
 			});
 		});
 	},

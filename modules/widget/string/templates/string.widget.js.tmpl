@@ -31,6 +31,7 @@ Widget.types.string = {
 			}
 			jQuery.each(keys, function(i, key) {
 				var option = widget[option_getter](key);
+				console.log(key, option_getter, option);
 				if(option && option != '__all') {
 					var parameters = {};
 					parameters[key] = option;

@@ -1,7 +1,6 @@
 PRIORITAETEN:
 
 CMS
-- page tree performance checks, bug Failed to load source for: http://cms_rfp/get_file/widget_json/tree/methodCall/listChildren
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - Error: on editing languageObject link_list??? TreeBug? XML descendants internal method called on incompatible Object 
 - delete language objects does not update other languages > bug on trying to delete again
@@ -711,3 +710,4 @@ Widget tasks
 - ISSUE:Module::getDisplayNameByName() does not work properly because Module::getType() does not return proper type in context of default page type!!!!!
 - condition serialized edit
 - finish rights for roles button.click()!
+- page tree performance checks, bug Failed to load source for: http://cms_rfp/get_file/widget_json/tree/methodCall/listChildren

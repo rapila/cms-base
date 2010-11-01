@@ -11,7 +11,7 @@ class PagesAdminModule extends AdminModule {
 		try {
 			$this->oRootPage = PagePeer::getRootPage();
 		} catch (Exception $e) {
-				$this->oRootPage = PagePeer::initialiseRootPage();
+			$this->oRootPage = PagePeer::initialiseRootPage();
 		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
@@ -84,7 +84,6 @@ class PagesAdminModule extends AdminModule {
 		} else if($oPage === 'last') {
 			$oPage->moveToLastChildOf($oRefPage);
 		}
-		
 		return true;
 	}
 }

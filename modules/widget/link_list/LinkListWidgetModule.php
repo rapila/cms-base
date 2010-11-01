@@ -81,13 +81,21 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		return null;
 	}
+	
+	public function getLinkCategoryName() {
+		$oLinkCategory = LinkCategoryPeer::retrieveByPK($this->oDelegateProxy->getLinkCategoryId());
+		if($oLinkCategory) {
+			return $oLinkCategory->getName();
+		}
+		if($this->oDelegateProxy->getLinkCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return StringPeer::getString('link_list.without_category');
+		}
+		return $this->oDelegateProxy->getLinkCategoryId();
+	}
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID, Criteria::LEFT_JOIN);
-		if($this->iLinkCategoryId && $this->iLinkCategoryId !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $this->iLinkCategoryId);
-		}
 		return $oCriteria;
 	}
 }

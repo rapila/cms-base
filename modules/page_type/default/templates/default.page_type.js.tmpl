@@ -134,7 +134,6 @@ Widget.types.page_type.types['default'] = {
 						}
 					}
 				});
-
 				// $( ".selector" ).bind( "dialogresize", function(event, ui) {});
 				
 			}, result[1]);
@@ -162,10 +161,10 @@ Widget.types.page_type.types['default'] = {
 		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
-		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').text('delete').appendTo(container);
+		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').html("<span>{{writeString=widget.page.drop_object_all_languages}}</span>").appendTo(container);
 		delete_drop_zone.droppable({
 			accept: 'li[data-container]',
-			activeClass: 'ui-state-highlight',
+			activeClass: 'ui-state-draggable',
 			hoverClass: 'ui-state-droppable',
 			drop: function(event, ui) {
 				pt_default.remove_object.call(page_type, ui.draggable, true);
