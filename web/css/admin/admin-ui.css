@@ -65,9 +65,9 @@
   background: #2d3238;
   border-top: 0;
 }
-.ui-dialog .ui-widget-header { background: #2d3238; }
 .ui-dialog button.ui-state-hover { color: #e3ef99; }
 .ui-dialog button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog .ui-widget-header { background: #2d3238; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
   line-height: 14px;
@@ -360,19 +360,41 @@ table.ui-list td.sort {
 }
 tr.ui-list-headrow th.sort { padding-right: 0em; }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
-.ui-accordion .ui-accordion-content.contents_container { padding: 0; }
+.ui-accordion .ui-icon-triangle-1-s {
+	background-image: url('../../images/admin/icon_triangle_open.png');
+	background-position: 3px 3px;
+}
+.ui-accordion .ui-state-active .ui-icon-triangle-1-s,
+.ui-accordion .ui-state-hover .ui-icon-triangle-1-s {
+	background-image: url('../../images/admin/icon_triangle_open_active.png');
+	background-position: 3px 3px;
+}
+.ui-accordion .ui-icon-triangle-1-e {
+	background-image: url('../../images/admin/icon_triangle_closed.png');
+	background-position: 3px 3px;
+}
+.ui-accordion .ui-state-active .ui-icon-triangle-1-e,
+.ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
+	background-image: url('../../images/admin/icon_triangle_closed_active.png');
+	background-position: 3px 3px;
+}
+.ui-accordion .ui-accordion-content.contents_container,
 .ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
 .users fieldset {
   padding: 0;
   border: 1px #c4c4c4 solid;
 }
-.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
-  padding: 0;
-  border-color: #cccdcf;
-}
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content,
 .ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content {
   padding: 0;
   border-color: #cccdcf;
 }
 label span.error_display::before { content: ' '; }
 label span.error_display { color: red; }
+.delete_drop_zone {
+  float: left;
+  height: 100px;
+  margin: 23px 2px 2px 2px;
+  padding: 2px;
+  width: 100px;
+}

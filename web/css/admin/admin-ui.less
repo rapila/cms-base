@@ -496,6 +496,28 @@ tr.ui-list-headrow th.file_info {
 	padding-right: 1.0em;
 }
 
+.ui-accordion .ui-state-default .ui-icon-triangle-1-s {
+	background-image: url('../../images/admin/icon_triangle_open.png');
+	background-position: 3px 3px;
+}
+
+.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-s,
+.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-s {
+	background-image: url('../../images/admin/icon_triangle_open_active.png');
+	background-position: 3px 3px;
+}
+
+.ui-accordion .ui-state-default .ui-icon-triangle-1-e {
+	background-image: url('../../images/admin/icon_triangle_closed.png');
+	background-position: 3px 3px;
+}
+
+.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-e,
+.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-e {
+	background-image: url('../../images/admin/icon_triangle_closed_active.png');
+	background-position: 3px 3px;
+}
+
 .ui-accordion .ui-accordion-content.contents_container,
 .ui-accordion .ui-accordion-content.configuration_container {
 	padding: 0;
@@ -530,4 +552,10 @@ tr.ui-list-row td + td {
 }
 */
 
-
+.delete_drop_zone {
+	float: left;
+	height: 100px;
+	margin: 23px 2px 2px 2px;
+	padding: 2px;
+	width: 100px;
+}
