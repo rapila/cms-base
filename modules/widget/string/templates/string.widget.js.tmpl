@@ -31,7 +31,6 @@ Widget.types.string = {
 			}
 			jQuery.each(keys, function(i, key) {
 				var option = widget[option_getter](key);
-				console.log(key, option_getter, option);
 				if(option && option != '__all') {
 					var parameters = {};
 					parameters[key] = option;
@@ -39,8 +38,17 @@ Widget.types.string = {
 				}
 			});
 			if(list.children().length > 0) {
-				Widget.notifyUser('info', message, {isHTML: true, closable: true, identifier: message_id});
+				Widget.notifyUser('info', message, {isHTML: true, closable: false, identifier: message_id, closeDelay: 100000, searchInfo: true});
 			}
 		}, false, true);
+	},
+	
+	get_parameterized_string: function() {
+		var result = this.getString.apply(this, arguments);
+		if(result.is_template) {
+			return result.string;
+		} else {
+			return document.createTextNode(result.string);
+		}
 	}
 }
