@@ -45,7 +45,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	public function getDocumentCategoryId() {
 		return $this->oDocumentsViewWidgetDelegate->getDocumentCategoryId();
 	}
-	
+		
 	public function setSearch($sSearch) {
 		return $this->oDocumentsViewWidgetDelegate->setSearch($sSearch);
 	}

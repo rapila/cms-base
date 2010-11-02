@@ -36,7 +36,6 @@ jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover"
 
 jQuery.extend(Widget, {
 	notifyUser: function(severity, message) {
-		console.log(arguments);
 		var options = {
 			closeDelay: 5000,
 			identifier: null,

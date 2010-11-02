@@ -148,6 +148,24 @@ class DocumentsViewWidgetDelegate {
 		return $this->oDelegateProxy->getDocumentCategoryId();
 	}
 	
+	public function getDocumentCategoryName() {
+		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->getDocumentCategoryId());
+		if($oDocumentCategory) {
+			return $oDocumentCategory->getName();
+		}
+		if($this->getDocumentCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return StringPeer::getString('widget.document_list.without_category');
+		}
+		return $this->getDocumentCategoryId();
+	}
+	
+	public function getDocumentKindName() {
+		if($this->getDocumentKind() === CriteriaListWidgetDelegate::SELECT_ALL) {
+			return $this->getDocumentKind();
+		}
+		return DocumentTypePeer::getDocumentKindName($this->getDocumentKind());
+	}
+
 	public function setSearch($sSearch) {
 		return $this->oDelegateProxy->setSearch($sSearch);
 	}
