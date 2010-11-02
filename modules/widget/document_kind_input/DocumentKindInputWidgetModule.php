@@ -8,7 +8,6 @@ class DocumentKindInputWidgetModule extends PersistentWidgetModule {
 		
 	public function getDocumentKinds() {
 		return DocumentTypePeer::getDocumentKindsAssoc();
-		// return DocumentTypePeer::getAllDocumentKindsWhereDocumentsExist();
 	}
 	
 	public function setSelectedDocumentKind($sSelectedDocumentKind) {

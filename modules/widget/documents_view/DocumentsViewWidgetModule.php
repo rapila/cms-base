@@ -3,6 +3,7 @@
 * @package modules.widget
 */
 class DocumentsViewWidgetModule extends PersistentWidgetModule {
+	
 	private $iInitialDocumentCategoryId;
 	private $sInitialSearchString;
 	private $sInitialDocumentKind;
@@ -20,39 +21,39 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 		$this->oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
 		$aViewSessions = array();
 	}
-	
+
 	public function setInitialDocumentCategoryId($iInitialDocumentCategoryId) {
-    $this->iInitialDocumentCategoryId = $iInitialDocumentCategoryId;
+		$this->iInitialDocumentCategoryId = $iInitialDocumentCategoryId;
 	}
 
 	public function getInitialDocumentCategoryId() {
-    return $this->iInitialDocumentCategoryId;
+		return $this->iInitialDocumentCategoryId;
 	}
 
 	public function setInitialSearchString($sInitialSearchString) {
-    $this->sInitialSearchString = $sInitialSearchString;
+		$this->sInitialSearchString = $sInitialSearchString;
 	}
 
 	public function getInitialSearchString() {
-    return $this->sInitialSearchString;
+		return $this->sInitialSearchString;
 	}
 
 	public function setInitialDocumentKind($sInitialDocumentKind) {
-    $this->sInitialDocumentKind = $sInitialDocumentKind;
+		$this->sInitialDocumentKind = $sInitialDocumentKind;
 	}
 
 	public function getInitialDocumentKind() {
-    return $this->sInitialDocumentKind;
+		return $this->sInitialDocumentKind;
 	}
 
 	public function setInitialThumbnailSize($iInitialThumbnailSize) {
-    $this->iInitialThumbnailSize = $iInitialThumbnailSize;
+		$this->iInitialThumbnailSize = $iInitialThumbnailSize;
 	}
 
 	public function getInitialThumbnailSize() {
-    return $this->iInitialThumbnailSize;
+		return $this->iInitialThumbnailSize;
 	}
-	
+
 	public function getSessionForView($sViewType) {
 		if(!isset($aViewSessions[$sViewType])) {
 			$oWidget = WidgetModule::getWidget($sViewType, null, $this->oDocumentsViewWidgetDelegate);
