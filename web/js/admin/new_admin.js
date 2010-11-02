@@ -36,11 +36,13 @@ jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover"
 
 jQuery.extend(Widget, {
 	notifyUser: function(severity, message) {
+		console.log(arguments);
 		var options = {
 			closeDelay: 5000,
 			identifier: null,
 			isHTML: false,
-			closable: false
+			closable: false,
+			searchInfo: false
 		};
 		jQuery.extend(options, arguments[2] || {});
 		
@@ -56,7 +58,13 @@ jQuery.extend(Widget, {
 			}
 		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
-		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>').hide().appendTo(admin_message).data('identifier', options.identifier);
+		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class=" ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>');
+		
+		if(options.searchInfo) {
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><span class="message"></span></div>');
+		}
+		
+		display.hide().appendTo(admin_message).data('identifier', options.identifier);
 		
 		var badge = display.find('.ui-badge').hide();
 		var close_button = display.find('.close-handle').hide();

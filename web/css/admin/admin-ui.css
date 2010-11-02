@@ -8,6 +8,20 @@
   margin-right: auto;
   width: auto;
 }
+.ui-notify.search_info {
+  min-width: 50em;
+  padding: 2.5em;
+  vertical-align: top;
+}
+.ui-notify.search_info ul {
+  margin: 0;
+  padding: 0;
+}
+.ui-notify.search_info li {
+  margin: 0;
+  margin-left: 1.5em;
+  padding: 0.2em 0;
+}
 .ui-loading {
   background: transparent url('../../images/admin/loader.gif') no-repeat scroll top left;
   min-width: 24px;
@@ -65,9 +79,9 @@
   background: #2d3238;
   border-top: 0;
 }
+.ui-dialog .ui-widget-header { background: #2d3238; }
 .ui-dialog button.ui-state-hover { color: #e3ef99; }
 .ui-dialog button.ui-state-highlight { color: #e3ef99; }
-.ui-dialog .ui-widget-header { background: #2d3238; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
   line-height: 14px;
@@ -360,31 +374,40 @@ table.ui-list td.sort {
 }
 tr.ui-list-headrow th.sort { padding-right: 0em; }
 tr.ui-list-headrow th.file_info { padding-right: 1em; }
-.ui-accordion .ui-icon-triangle-1-s {
-	background-image: url('../../images/admin/icon_triangle_open.png');
-	background-position: 3px 3px;
+.ui-accordion .ui-state-default .ui-icon-triangle-1-s {
+  background-image: url('../../images/admin/icon_triangle_open.png');
+  background-position: 3px 3px;
 }
-.ui-accordion .ui-state-active .ui-icon-triangle-1-s,
-.ui-accordion .ui-state-hover .ui-icon-triangle-1-s {
-	background-image: url('../../images/admin/icon_triangle_open_active.png');
-	background-position: 3px 3px;
+.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-s {
+  background-image: url('../../images/admin/icon_triangle_open_active.png');
+  background-position: 3px 3px;
 }
-.ui-accordion .ui-icon-triangle-1-e {
-	background-image: url('../../images/admin/icon_triangle_closed.png');
-	background-position: 3px 3px;
+.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-s {
+  background-image: url('../../images/admin/icon_triangle_open_active.png');
+  background-position: 3px 3px;
 }
-.ui-accordion .ui-state-active .ui-icon-triangle-1-e,
-.ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
-	background-image: url('../../images/admin/icon_triangle_closed_active.png');
-	background-position: 3px 3px;
+.ui-accordion .ui-state-default .ui-icon-triangle-1-e {
+  background-image: url('../../images/admin/icon_triangle_closed.png');
+  background-position: 3px 3px;
 }
-.ui-accordion .ui-accordion-content.contents_container,
+.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-e {
+  background-image: url('../../images/admin/icon_triangle_closed_active.png');
+  background-position: 3px 3px;
+}
+.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-e {
+  background-image: url('../../images/admin/icon_triangle_closed_active.png');
+  background-position: 3px 3px;
+}
+.ui-accordion .ui-accordion-content.contents_container { padding: 0; }
 .ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
 .users fieldset {
   padding: 0;
   border: 1px #c4c4c4 solid;
 }
-.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content,
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
+  padding: 0;
+  border-color: #cccdcf;
+}
 .ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content {
   padding: 0;
   border-color: #cccdcf;
