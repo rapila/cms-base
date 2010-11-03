@@ -40,7 +40,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'edit', 'delete');
+		return array('id', 'name', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -80,12 +80,6 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('widget.updated_at');
-				break;
-			case 'edit':
-				$aResult['heading'] = ' ';
-				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
-				$aResult['field_name'] = 'pencil';
-				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

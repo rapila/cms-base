@@ -1,12 +1,15 @@
 PRIORITAETEN:
 
 CMS
+- RICHTEXT BUGS saving text in page_detail
+	BUG Image ??, Bug Link
+- Media-Object make more transparent, button bug etc
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
-- Error: on editing languageObject link_list??? TreeBug? XML descendants internal method called on incompatible Object 
 - delete language objects does not update other languages > bug on trying to delete again
 - make same loading effect for ie tips when loading new tip into widget etc.
 - Richtext Konfiguration, Linklists, DocumentList, ImagePicker/DocumentPicker, FileUpload integration in Image and Link
 	TipDetail > parseInputFromMce
+	CKEditor imagePicker and upload documentation:http://docs.cksource.com/CKEditor_3.x/Developers_Guide/File_Browser_%28Uploader%29
 - preview / publish handling, what about a light version with languageObject::data_preview blob?
 	you can save and save, when publish, make language history and copy preview_data to data, individually or pagewide?
 - Preview Text, Link und Document Edit (tipp_edit....)
@@ -14,9 +17,6 @@ CMS
 - Page tree: Braucht es wirklich soviele Requests
 	PageId. Wenn keine Seite ausgewählt ist sollte immer die Rootpage angezeigt werden. Sonst sollte das Verhalten wie vor dem Umbau sein,
 - Rechteverwaltung check/permissions
-- Dokumentenverwaltung Bug
-	Suche!!!
-	eventuell views (kann auch später gemacht werden), edit, CriteriaDelegate etc
 - NewsletterPlugin
 - Input and Filter Widgets update event listener? Create new category, update input select
 - Laufende Verbesserungen nach der Aufschaltung.
@@ -711,3 +711,7 @@ Widget tasks
 - condition serialized edit
 - finish rights for roles button.click()!
 - page tree performance checks, bug Failed to load source for: http://cms_rfp/get_file/widget_json/tree/methodCall/listChildren
+- Error: on editing languageObject link_list??? TreeBug? XML descendants internal method called on incompatible Object 
+- Dokumentenverwaltung Bug
+	Suche!!!
+	eventuell views (kann auch später gemacht werden), edit, CriteriaDelegate etc

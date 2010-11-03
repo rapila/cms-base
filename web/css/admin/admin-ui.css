@@ -59,6 +59,7 @@
   color: #ffffff;
   padding-bottom: 0px;
 }
+.cmos_alert.ui-dialog-content p { font-size: 1.1em; }
 .cmos_alert.ui-dialog-content .ui-icon { background-image: url("theme/images/ui-icons_b8d600_256x240.png"); }
 .ui-dialog .ui-dialog-titlebar {
   -moz-border-radius: 3px 3px 0 0;
@@ -378,11 +379,11 @@ tr.ui-list-headrow th.file_info { padding-right: 1em; }
   background-image: url('../../images/admin/icon_triangle_open.png');
   background-position: 3px 3px;
 }
-.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-s {
+.ui-accordion .ui-state-active .ui-icon-triangle-1-s {
   background-image: url('../../images/admin/icon_triangle_open_active.png');
   background-position: 3px 3px;
 }
-.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-s {
+.ui-accordion .ui-state-hover .ui-icon-triangle-1-s {
   background-image: url('../../images/admin/icon_triangle_open_active.png');
   background-position: 3px 3px;
 }
@@ -390,11 +391,11 @@ tr.ui-list-headrow th.file_info { padding-right: 1em; }
   background-image: url('../../images/admin/icon_triangle_closed.png');
   background-position: 3px 3px;
 }
-.ui-accordion .ui-state-default.ui-state-active .ui-icon-triangle-1-e {
+.ui-accordion .ui-state-active .ui-icon-triangle-1-e {
   background-image: url('../../images/admin/icon_triangle_closed_active.png');
   background-position: 3px 3px;
 }
-.ui-accordion .ui-state-default.ui-state-hover .ui-icon-triangle-1-e {
+.ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
   background-image: url('../../images/admin/icon_triangle_closed_active.png');
   background-position: 3px 3px;
 }
