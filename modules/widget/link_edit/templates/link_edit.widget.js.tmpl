@@ -21,7 +21,7 @@ Widget.types.link_edit = {
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
 		
-		this.result_list = jQuery('<ol/>');
+		this.result_list = jQuery('<ul/>');
 		this.reload_preview();
 		this._element.append(this.result_list);
 		this.result_list.delegate('li', 'click', function() {
@@ -37,7 +37,7 @@ Widget.types.link_edit = {
 		this.result_list.empty();
 		this.allLinks(function(links) {
 			jQuery.each(links, function(i, link) {
-				_this.result_list.append(jQuery('<li/>').text(link.NAME).data('id', link.ID));
+				_this.result_list.append(jQuery('<li/>').text(link.NAME).attr('title', "{{writeString=widget.edit_entry}}").data('id', link.ID));
 			});
 		});
 	},
