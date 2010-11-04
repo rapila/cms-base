@@ -112,8 +112,22 @@ Widget.types.page_type.types['default'] = {
 				if(widget.setObjectId) {
 					widget.setObjectId(item_to_edit.attr('data-object-id'));
 				}
-				var rich_text = false;
 				content.dialog({
+					close: function() {
+						if(widget.destroy) {
+							widget.destroy();
+						}
+						content.dialog('destroy').remove();
+					},
+					position: ['center', 50],
+					// modal: true,
+					width: 550,
+					// open: function(event, ui){},
+					resize: function(event, ui) { // or use dialogresize see further down
+						if(widget.resize_to) {
+							widget.resize_to(null, ui.size.height-200);
+						}
+					},
 					buttons: [{
 						text: '{{writeString=save}}',
 						className: 'primary ui-state-highlight',
@@ -123,16 +137,7 @@ Widget.types.page_type.types['default'] = {
 								content.dialog('close');
 							});
 						}
-					}],
-					// modal: true,
-					width: 550,
-					// open: function(event, ui){},
-					resize: function(event, ui){ // or use dialogresize see further down
-						if(widget.internal_widget && widget.internal_widget.widgetType == 'rich_text'){
-							if (!rich_text) rich_text = jQuery('#cke_contents_editor1');
-							rich_text.css('height', ui.size.height - 200);
-						}
-					}
+					}]
 				});
 				// $( ".selector" ).bind( "dialogresize", function(event, ui) {});
 				

@@ -28,6 +28,7 @@ Widget.types.rich_text = {
 		this.settings.contentsCss = this.getCssUrls();
 		this.settings.stylesSet = this.getStyles();
 		var instance = this.instance = CKEDITOR.replace(textarea, this.settings);
+
 		var picker_session = this._element.attr('data-widget-picker-session');
 		if(picker_session) {
 			var picker = null;
@@ -70,5 +71,22 @@ Widget.types.rich_text = {
 	
 	set_data: function(new_data) {
 		this.instance.setData(new_data);
+	},
+	
+	destroy: function() {
+		this.instance.destroy();
+		delete this.instance;
+	},
+	
+	resize_to: function(width, height) {
+		if(!this.editor_contents) {
+			this.editor_contents = this._element.find('.cke_contents');
+		}
+		if(height) {
+			this.editor_contents.css('height', ''+height+'px');
+		}
+		if(width) {
+			this.editor_contents.css('width', ''+width+'px');
+		}
 	}
 };

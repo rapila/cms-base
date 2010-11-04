@@ -18,5 +18,21 @@ Widget.types.generic_frontend_module = {
 		}
 		
 		this.saveData(data, callback);
+	},
+	
+	destroy: function() {
+		switch(this.internal_widget.widgetType) {
+			case 'rich_text': {
+				this.internal_widget.destroy();
+			}
+		}
+	},
+	
+	resize_to: function(width, height) {
+		switch(this.internal_widget.widgetType) {
+			case 'rich_text': {
+				this.internal_widget.resize_to(width, height);
+			}
+		}
 	}
 }
