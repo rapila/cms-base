@@ -355,26 +355,6 @@ input.ui-widget-content.autowidth { width: auto !important; }
   cursor: pointer;
 }
 .ui-state-droppable .ui-icon { background-image: url('../../images/admin/ui-state-droppable.png'); }
-tr.ui-list-headrow th.file_info {
-  text-align: right;
-  padding-right: 2em;
-}
-table.ui-list td.file_info {
-  text-align: right;
-  padding-right: 2em;
-}
-tr.ui-list-headrow th.sort {
-  text-align: right;
-  padding-right: 1em;
-  color: #999999;
-}
-table.ui-list td.sort {
-  text-align: right;
-  padding-right: 1em;
-  color: #999999;
-}
-tr.ui-list-headrow th.sort { padding-right: 0em; }
-tr.ui-list-headrow th.file_info { padding-right: 1em; }
 .ui-accordion .ui-state-default .ui-icon-triangle-1-s {
   background-image: url('../../images/admin/icon_triangle_open.png');
   background-position: 3px 3px;

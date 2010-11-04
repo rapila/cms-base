@@ -1,7 +1,6 @@
 HTML / CSS
 	
 PageTree
-- die Baum linien sind nicht immer korrekt, z.B highligh impressum, linie sollte so gezeigt werden wie wenn nicht aktive, aber hover
 - D&D Visualisation needs some attention
 
 Alert dialogs
@@ -12,9 +11,6 @@ Nächstens Dringend:
 - Widget Dialog und Richtext Fenster D&D
 - Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
- 
-Documents list
-- thumbnail view hover and tooltips do not work properly in Firefox mainly
 
 Browser issues
  Safari / Chrome
@@ -36,7 +32,19 @@ Detail und Alert Dialogs
 
 Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
 
+PageDetail
+- da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
+- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
+	siehe Gestaltungsvorschlag
+	
+Admin Menu
+- select Verwalten und Administrieren soll nicht grün sein.
 
+Tree
+- die Baum linien sind nicht immer korrekt, z.B highligh impressum, linie sollte so gezeigt werden wie wenn nicht aktive, aber hover
+
+Documents list
+- thumbnail view hover and tooltips do not work properly in Firefox mainly
 
 
 
@@ -74,15 +82,3 @@ structure ?
 
 
 
-
-
-Done
-****
-
-PageDetail
-- da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
-- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
-	siehe Gestaltungsvorschlag
-	
-Admin Menu
-- select Verwalten und Administrieren soll nicht grün sein.

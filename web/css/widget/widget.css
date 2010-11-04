@@ -4,12 +4,17 @@
   padding: 5px;
   vertical-align: middle;
   text-align: center;
+  line-height: 160px;
 }
-
+.ui-image-picker-image object { vertical-align: middle; }
 .ui-image-picker-image.ui-widget-content { border: none; }
 .ui-placeholder { background-color: #d3d3d3; }
 .cmos-button {
   padding: 0.2em 1em 0.1em 1em;
   margin-right: 0.2em;
   cursor: pointer;
+}
+*[data-widget-type=document_thumbnail_view] .ui-state-hover {
+  background: #e3ef99;
+  background-image: none;
 }
