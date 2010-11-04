@@ -125,15 +125,6 @@ Widget.types.detail = {
 		}
 	},
 	
-	fill_select: function(element, data) {
-		element.empty();
-		var option = jQuery('<option/>');
-		option.clone().text('-----').attr('value', '').appendTo(element);
-		jQuery.each(data, function(i, detail) {
-			option.clone().text(detail.name).attr('value', detail.id).appendTo(element);
-		});
-	},
-	
 	set_title: function(title) {
 		if(!title) {
 			return;

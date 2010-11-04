@@ -66,6 +66,6 @@ class LinksAdminModule extends AdminModule {
 	}
 
 	public function usedWidgets() {
-		return array($this->oListWidget, $this->oListWidget, $this->oInputWidget);
+		return array($this->oListWidget, $this->oSidebarWidget, $this->oInputWidget);
 	}
 }
