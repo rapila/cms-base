@@ -14,6 +14,7 @@ Priority list
 	BUG Image ??, Bug Link
 - Media-Object make more transparent, button bug etc
 	handle delete_media in form
+- highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - delete language objects does not update other languages > bug on trying to delete again
 - make same loading effect for ie tips when loading new tip into widget etc.
