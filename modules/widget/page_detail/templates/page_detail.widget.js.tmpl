@@ -13,7 +13,7 @@ Widget.types.page_detail = {
 		
 		//Init buttons
 		var buttons = this._element.find('.page_detail_controls');
-		buttons.find('[name=save]').click(function() {
+		buttons.find('[name=save]').addClass('primary ui-state-active').click(function() {
 			_this.save();
 			return false;
 		});
@@ -46,6 +46,11 @@ Widget.types.page_detail = {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
 		Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', this._element);
+		// this._element.find('input').each(function(i, input) {
+		// 	jQuery(input).keyup(function() {
+		// 		console.log(this);
+		// 	});
+		// });
 		this._element.bind('keyup', function(event) {
 			if(this.current_page_id === null) {
 				return;
