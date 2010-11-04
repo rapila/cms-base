@@ -322,18 +322,9 @@ table.ui-list .ui-list-cell a {
   border-bottom: 1px solid #dddddd;
 }
 #admin_sidebar .ui-list li.ui-list-row { line-height: 20px; }
-#admin_sidebar li.ui-list-row.ui-state-active {
-  background-image: url();
-  background-color: #728697;
-}
-#admin_sidebar li.ui-list-row.ui-state-hover {
-  background-image: url();
-  background-color: #728697;
-}
-#admin_sidebar li.ui-state-active {
-  background-image: url();
-  background-color: #728697;
-}
+#admin_sidebar li.ui-list-row.ui-state-active { background-color: #728697; }
+#admin_sidebar li.ui-list-row.ui-state-hover { background-color: #728697; }
+#admin_sidebar li.ui-state-active { background-color: #728697; }
 #admin_sidebar ol > li.ui-list-row.ui-state-hover { border: none; }
 #admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row {
   padding-left: 1.4em;
