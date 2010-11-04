@@ -106,7 +106,7 @@ Widget.types.file_upload = {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
-					Widget.notifyUser('info', '{{writeString=widget.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closeDelay: false, closable: true});
+					Widget.notifyUser('info', '{{writeString=widget.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
 					this.fire('file.uploaded', result);
 					options.callback(result);
 				} else {
