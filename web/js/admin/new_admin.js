@@ -57,12 +57,12 @@ jQuery.extend(Widget, {
 			}
 		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
-		var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class=" ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>');
-		
 		if(options.searchInfo) {
-			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><span class="message"></span></div>');
+			options.closeDelay = false;
+			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><span class="message"></span></div>');
+		} else {
+			var display = jQuery.parseHTML('<div class="ui-widget ui-notify"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>');
 		}
-		
 		display.hide().appendTo(admin_message).data('identifier', options.identifier);
 		
 		var badge = display.find('.ui-badge').hide();
