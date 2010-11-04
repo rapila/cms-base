@@ -4,54 +4,41 @@
 */
 class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	
-	private $iInitialDocumentCategoryId;
-	private $sInitialSearchString;
-	private $sInitialDocumentKind;
-	private $iInitialThumbnailSize;
 	private $aViewSessions;
 	
 	public $oDocumentsViewWidgetDelegate;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->iInitialDocumentCategoryId = CriteriaListWidgetDelegate::SELECT_ALL;
-		$this->sInitialSearchString = null;
-		$this->sInitialDocumentKind = CriteriaListWidgetDelegate::SELECT_ALL;
-		$this->iInitialThumbnailSize = 160;
 		$this->oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
 		$aViewSessions = array();
+		$this->setDocumentKind(CriteriaListWidgetDelegate::SELECT_ALL);
+		$this->setDocumentCategoryId(CriteriaListWidgetDelegate::SELECT_ALL);
+		$this->setSearch(null);
 	}
 
-	public function setInitialDocumentCategoryId($iInitialDocumentCategoryId) {
-		$this->iInitialDocumentCategoryId = $iInitialDocumentCategoryId;
+	public function setDocumentKind($sDocumentKind) {
+		return $this->oDocumentsViewWidgetDelegate->setDocumentKind($sDocumentKind);
 	}
 
-	public function getInitialDocumentCategoryId() {
-		return $this->iInitialDocumentCategoryId;
+	public function getDocumentKind() {
+		return $this->oDocumentsViewWidgetDelegate->getDocumentKind();
+	}
+	
+	public function setDocumentCategoryId($iDocumentCategoryId) {
+		return $this->oDocumentsViewWidgetDelegate->setDocumentCategoryId($iDocumentCategoryId);
 	}
 
-	public function setInitialSearchString($sInitialSearchString) {
-		$this->sInitialSearchString = $sInitialSearchString;
+	public function getDocumentCategoryId() {
+		return $this->oDocumentsViewWidgetDelegate->getDocumentCategoryId();
+	}
+		
+	public function setSearch($sSearch) {
+		return $this->oDocumentsViewWidgetDelegate->setSearch($sSearch);
 	}
 
-	public function getInitialSearchString() {
-		return $this->sInitialSearchString;
-	}
-
-	public function setInitialDocumentKind($sInitialDocumentKind) {
-		$this->sInitialDocumentKind = $sInitialDocumentKind;
-	}
-
-	public function getInitialDocumentKind() {
-		return $this->sInitialDocumentKind;
-	}
-
-	public function setInitialThumbnailSize($iInitialThumbnailSize) {
-		$this->iInitialThumbnailSize = $iInitialThumbnailSize;
-	}
-
-	public function getInitialThumbnailSize() {
-		return $this->iInitialThumbnailSize;
+	public function getSearch() {
+		return $this->oDocumentsViewWidgetDelegate->getSearch();
 	}
 
 	public function getSessionForView($sViewType) {

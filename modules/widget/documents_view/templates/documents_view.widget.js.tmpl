@@ -1,9 +1,6 @@
 Widget.types.documents_view = {
 	initialize: function() {
-		this.settings.document_category_id = this.getInitialDocumentCategoryId();
-		this.settings.search_string = this.getInitialSearchString();
-		this.settings.document_kind = this.getInitialDocumentKind();
-		this.settings.thumbnail_size = this.getInitialThumbnailSize();
+		this.changed = false;
 	},
 	
 	prepare: function() {
@@ -31,6 +28,7 @@ Widget.types.documents_view = {
 					//Returns true if anything’s changed since the last time
 					if(!tab.data('type').is_updated) {
 						tab.data('widget').reload();
+						documents_view.changed = false;
 						tab.data('type').is_updated = true;
 					}
 				}
@@ -51,44 +49,48 @@ Widget.types.documents_view = {
 		Widget.createWithElement(widget_name, function(widget) {
 			tab.data('widget', widget);
 			type.init.call(this, tab.data('widget'));
-			documents_view.configure_tab(tab);
 		}, function(widget) {
 			panel.append(widget._element);
 		}, this.getSessionForView(widget_name));
-	},
-	
-	configure_tab: function(tab) {
-		var type = tab.data('type');
-		return type.configure.call(this, tab.data('widget'));
 	},
 	
 	reload: function() {
 		var active_tab = this.active_tab.data('type');
 		jQuery.each(this.tab_views, function(i, tab_type) {
 			tab_type.is_updated = tab_type === active_tab;
-		})
+		});
 		this.active_tab.data('widget').reload();
+		this.changed = false;
 		jQuery('.ui-tabs-panel').focus();
 	},
 	
 	set_document_category_id: function(id) {
-		this.settings.document_category_id = id;
-		return this.configure_tab(this.active_tab);
+		var widget = this.active_tab.data('widget');
+		if(widget.setDocumentCategoryId) {
+			this.changed = widget.setDocumentCategoryId(id) || this.changed;
+		}
 	},
 	
 	set_search_string: function(string) {
-		this.settings.search_string = string;
-		return this.configure_tab(this.active_tab);
+		var widget = this.active_tab.data('widget');
+		if(widget.setSearch) {
+			this.changed = widget.setSearch(string) || this.changed;
+		}
 	},
 	
 	set_document_kind: function(kind) {
-		this.settings.document_kind = kind;
-		return this.configure_tab(this.active_tab);
+		var widget = this.active_tab.data('widget');
+		if(widget.setDocumentKind) {
+			this.changed = widget.setDocumentKind(kind) || this.changed;
+		}
 	},
 	
 	set_thumbnail_size: function(size) {
-		this.settings.thumbnail_size = size;
-		return this.configure_tab(this.active_tab);
+		var widget = this.active_tab.data('widget');
+		if(widget.settings.thumbnail_size) {
+			this.changed = widget.settings.thumbnail_size !== size || this.changed;
+			widget.settings.thumbnail_size = size;
+		}
 	},
 	
 	tab_views: {
@@ -96,13 +98,6 @@ Widget.types.documents_view = {
 			widget_name: 'document_list',
 			init: function(widget) {
 				
-			},
-			configure: function(widget) {
-				var changed = false;
-				changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
-				changed = widget.setDocumentKind(this.settings.document_kind) || changed;
-				changed = widget.setSearch(this.settings.search_string) || changed;
-				return changed;
 			},
 			append_document: function(widget, document_id) {
 				widget.get_list().append_row_with_data({id: document_id});
@@ -112,15 +107,6 @@ Widget.types.documents_view = {
 			widget_name: 'document_thumbnail_view',
 			init: function(widget) {
 				widget.settings.allows_multiselect = true;
-			},
-			configure: function(widget) {
-				var changed = false;
-				changed = widget.setDocumentCategoryId(this.settings.document_category_id) || changed;
-				changed = widget.setDocumentKind(this.settings.document_kind) || changed;
-				changed = widget.setSearch(this.settings.search_string) || changed;
-				changed = widget.settings.thumbnail_size !== this.settings.thumbnail_size || changed;
-				widget.settings.thumbnail_size = this.settings.thumbnail_size;
-				return changed;
 			},
 			append_document: function(widget, document_id) {
 				widget.append_thumbnail_with_document_id(document_id);
@@ -135,7 +121,6 @@ Widget.types.documents_view = {
 	},
 	
 	settings: {
-		panels: ['list', 'thumbnail'],
-		allow_document_kind_change: true
+		panels: ['list', 'thumbnail']
 	}
 };

@@ -39,9 +39,9 @@ jQuery(document).ready(function() {
 					// TODO: handle highlight of default element or initial selection
 					document_category_id = null;
 				}
-				//DECIDE: Allow this to achieve a quick reload via re-click?
-				if(documents_view.settings.document_category_id != document_category_id) {
-					documents_view.set_document_category_id(document_category_id);
+				documents_view.set_document_category_id(document_category_id);
+				//DECIDE: Always allow this to achieve a quick reload via re-click?
+				if(documents_view.changed) {
 					documents_view.reload();
 				}
 				
@@ -67,7 +67,8 @@ jQuery(document).ready(function() {
 			}).add_button('action', function() {
 					alert('action example: delete all currently shown documents');
 			}).add_search_input("{{writeString=search.file}}", function(search) {
-				if(documents_view.set_search_string(search)) {
+				documents_view.set_search_string(search);
+				if(documents_view.changed) {
 					documents_view.reload();
 				}
 			});
