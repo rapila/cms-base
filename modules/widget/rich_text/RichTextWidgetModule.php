@@ -97,6 +97,10 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		return implode(';', $aTags);
 	}
 	
+	public function getCustomConfiguration() {
+		return Settings::getSetting('newsletter_plugin', 'richtext_settings', null);
+	}
+	
 	public function getElementType() {
 		return new TagWriter('textarea', array('data-widget-picker-session' => $this->oImagePickerWidget->getSessionKey()));
 	}

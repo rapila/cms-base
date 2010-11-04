@@ -31,7 +31,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			if($bOneTagnameOnly) {
         $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
 			}
-			foreach($aLinks as $i => $oLink) {
+			foreach($oCriteria->find() as $i => $oLink) {
 				$oItemTemplate = new Template($aOptions['template_option'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Link');
 				$oItemTemplate->replaceIdentifier('name', $oLink->getName());
