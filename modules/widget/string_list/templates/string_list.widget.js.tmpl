@@ -5,7 +5,6 @@ jQuery(document).ready(function() {
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
 				if(col.identifier === 'delete') {
 					var file_name = row.data('id');
-					console.log(file_name);
 					var delete_message = AdminInterface.strings.get_parameterized_string('widget.string.delete_warning', { detail_name: file_name});
 					Widget.confirm("{{writeString=widget.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {

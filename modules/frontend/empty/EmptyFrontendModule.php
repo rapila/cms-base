@@ -9,6 +9,18 @@ class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendM
 		parent::__construct($oLanguageObject, $aRequestPath);
 	}
 
+	public function renderFrontend() {
+		return "";
+	}
+
+	public function renderBackend() {
+		return $this->constructTemplate('backend');
+	}
+
+	public function getSaveData() {
+		return "";
+	}
+	
 	public function widgetData() {
 		return '';	
 	}
@@ -18,6 +30,6 @@ class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendM
 	}
 	
 	public function getWidget() {
-		return new GenericFrontendModuleWidgetModule(null, this, StringPeer::getString('widget.empty.confirm'));
+		return new GenericFrontendModuleWidgetModule(null, $this, StringPeer::getString('widget.empty.confirm'));
 	}
 }

@@ -6,10 +6,10 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $oInternalWidget;
 	
-	public function __construct($sSessionKey, $oFrontendModule, $mInternalWidget) {
+	public function __construct($sSessionKey, $oFrontendModule, $mInternalWidget = null) {
 		parent::__construct($sSessionKey);
 		$this->oFrontendModule = $oFrontendModule;
-		if($mInternalWidget instanceof WidgetModule) {
+		if($mInternalWidget instanceof WidgetModule || is_string($mInternalWidget)) {
 			$this->oInternalWidget = $mInternalWidget;
 		} else {
 			$this->oInternalWidget = WidgetModule::getWidget($mInternalWidget);
@@ -17,7 +17,7 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 		
 	public function setObjectId($iObjectId) {
-		if(method_exists($this->oInternalWidget, 'setObjectId')) {
+		if(!is_string($this->oInternalWidget) && method_exists($this->oInternalWidget, 'setObjectId')) {
 			$this->oInternalWidget->setObjectId($iObjectId);
 		}
 	}
@@ -27,6 +27,9 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function doWidget() {
+		if(is_string($this->oInternalWidget)) {
+			return TagWriter::quickTag('div', array(), $this->oInternalWidget);
+		}
 		return $this->oInternalWidget->doWidget();
 	}
 	
