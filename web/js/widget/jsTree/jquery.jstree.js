@@ -311,7 +311,8 @@
 					this.get_container().addClass("jstree-rtl").css("direction", "rtl");
 				}
 				this.get_container().html("<ul><li class='jstree-last jstree-leaf'><ins>&#160;</ins><a class='jstree-loading' href='#'><ins class='jstree-icon'>&#160;</ins>" + this._get_settings().core.strings.loading + "</a></li></ul>");
-				this.data.core.li_height = this.get_container().find("ul li.jstree-closed, ul li.jstree-leaf").eq(0).height() || 18;
+
+				this.data.core.li_height = this.get_container().find("ul li.jstree-closed, ul li.jstree-leaf").eq(0).height() || 25;
 
 				this.get_container()
 					.delegate("li > ins", "click.jstree", $.proxy(function (event) {
@@ -2111,6 +2112,7 @@
 					r = false,
 					rtl = this._get_settings().core.rtl,
 					pos;
+				console.log(this.data.core.li_height);
 				if(this.data.dnd.w < this.data.core.li_height/3) { o = ["before","inside","after"]; }
 				else if(this.data.dnd.w <= this.data.core.li_height*2/3) {
 					o = this.data.dnd.w < this.data.core.li_height/2 ? ["inside","before","after"] : ["inside","after","before"];
@@ -2125,7 +2127,7 @@
 				}, this));
 				if(r === false) { $.vakata.dnd.helper.children("ins").attr("class","jstree-invalid"); }
 				
-				pos = rtl ? (this.data.dnd.off.right - 18) : (this.data.dnd.off.left + 10);
+				pos = rtl ? (this.data.dnd.off.right - 18) : (this.data.dnd.off.left - 5);
 				switch(r) {
 					case "before":
 						m.css({ "left" : pos + "px", "top" : (this.data.dnd.off.top - 6) + "px" }).show();
@@ -2134,7 +2136,7 @@
 						m.css({ "left" : pos + "px", "top" : (this.data.dnd.off.top + this.data.core.li_height - 7) + "px" }).show();
 						break;
 					case "inside":
-						m.css({ "left" : pos + ( rtl ? -4 : 4) + "px", "top" : (this.data.dnd.off.top + this.data.core.li_height/2 - 5) + "px" }).show();
+						m.css({ "left" : pos + ( rtl ? -4 : 10) + "px", "top" : (this.data.dnd.off.top + this.data.core.li_height/2 - 7) + "px" }).show();
 						break;
 					default:
 						m.hide();
