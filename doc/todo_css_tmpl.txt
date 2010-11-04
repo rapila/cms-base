@@ -1,14 +1,11 @@
 HTML / CSS
-
-Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
-
-PageDetail
 	
 PageTree
+- die Baum linien sind nicht immer korrekt, z.B highligh impressum, linie sollte so gezeigt werden wie wenn nicht aktive, aber hover
 - D&D Visualisation needs some attention
 
-Detail und Alert Dialogs
-- alle Abbrechen und Speichern Buttons (Hover, Highlight)
+Alert dialogs
+- delete > .cmos_alert längere Texte sollten links eingerückt sein.
 
 Nächstens Dringend: 
 - Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)
@@ -32,7 +29,12 @@ Immer wieder allgemein testen und Fehler melden
 
 
 
+DONE
+*******************************
+Detail und Alert Dialogs
+- alle Abbrechen und Speichern Buttons (Hover, Highlight)
 
+Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
 
 
 
