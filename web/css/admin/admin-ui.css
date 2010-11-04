@@ -399,15 +399,15 @@ tr.ui-list-headrow th.file_info { padding-right: 1em; }
   background-image: url('../../images/admin/icon_triangle_closed_active.png');
   background-position: 3px 3px;
 }
-.ui-widget-content .ui-icon {
+*[data-widget-type=tree].ui-widget-content .ui-icon {
   background-image: url('../../images/admin/icon_triangle_open_active.png');
   background-position: 6px 6px;
 }
-.ui-widget-content .jstree-closed .ui-icon {
+*[data-widget-type=tree].ui-widget-content .jstree-closed .ui-icon {
   background-image: url('../../images/admin/icon_triangle_closed.png');
   background-position: 6px 5px;
 }
-.ui-widget-content .jstree-closed .ui-icon:hover {
+*[data-widget-type=tree].ui-widget-content .jstree-closed .ui-icon:hover {
   background-image: url('../../images/admin/icon_triangle_closed_active.png');
   background-position: 6px 5px;
 }
