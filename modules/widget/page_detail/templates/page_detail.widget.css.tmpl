@@ -48,11 +48,11 @@ div.container {
 
 .page_detail_controls {
 	background: #ebedef;
-	border-top: 1px solid white;
+	border-top: 1px solid #C1C2C4;
 	bottom: 25px;
-	height: 29px;
+	height: 36px;
 	left: 0;
-	padding: 0.5em 8em 0 0.5em;
+	padding: 0;
 	position: fixed;
 	right: 0;
 	text-align: right;
@@ -76,7 +76,7 @@ div.container {
 }
 
 body.pages #admin_main {
-	border-bottom: 37px solid #C1C2C4;
+	border-bottom: 37px solid transparent;
 }
 
 .delete_drop_zone {
@@ -98,5 +98,11 @@ body.pages #admin_main {
 
 .delete_drop_zone.ui-state-droppable span {
 	color: #f00;
+}
+
+.page_detail_controls div {
+	height:100%;
+	border-top: 1px solid #FFF;
+	padding:0.5em 8em 0 0.5em;
 }
 
