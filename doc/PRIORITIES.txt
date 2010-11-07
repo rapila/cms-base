@@ -1,19 +1,11 @@
 PRIORITAETEN:
 
-URGENT JOBS
-- CONFIGURATION Bugs, Bugs Bugs, see ie. Game config dialog, Text edit and saving
-- All Richtext, Config, Image and Link, Upload and ImgPicker Integration
-	(PageDetail, Netla:Tips, Newsletter, Preview)
-- Netla pages Tip of the day (with rating, comments, maybe recent tip of the day), Tips with categories/tags, Bewertung und Kommentar
-- Netla Comments (Gästebuch)
-- Netla NEWSLETTER
-- Netla Spiele und Comix
-	
+taylormade /config/isp_verify_userArray
+
 Priority list
-- RICHTEXT BUGS saving text in page_detail
-	BUG Image ??, Bug Link
 - Media-Object make more transparent, button bug etc
 	handle delete_media in form
+- is_inactive in pages.admin.js added to add class is_inactive for page
 - highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - delete language objects does not update other languages > bug on trying to delete again
@@ -35,16 +27,15 @@ Priority list
 
 
 
+Netla
+- CONFIGURATION Bugs, Bugs Bugs, see ie. Game config dialog, Text edit and saving
+- All Richtext, Config, Image and Link, Upload and ImgPicker Integration
+	(PageDetail, Netla:Tips, Newsletter, Preview)
+- Netla pages Tip of the day (with rating, comments, maybe recent tip of the day), Tips with categories/tags, Bewertung und Kommentar
+- Netla Comments (Gästebuch)
+- Netla NEWSLETTER
+- Netla Spiele und Comix
 
-
-Ventla
-- Mehrsprachig
-- Registrierung? Einbettung von Games
-- Scorehandling
-- Tipps & Tricks Bewertung
-- Gästebuch offen
-- Wettbewerb abklären?
-- Document Download Eltern, Lehrer, Presse, Pressekits? (Logo etc)
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
 - delete alert, example tip with getParatmetrizedString=altert_delete;title=....
@@ -730,3 +721,5 @@ Widget tasks
 - Dokumentenverwaltung Bug
 	Suche!!!
 	eventuell views (kann auch später gemacht werden), edit, CriteriaDelegate etc
+- RICHTEXT BUGS saving text in page_detail
+	BUG Image ??, Bug Link

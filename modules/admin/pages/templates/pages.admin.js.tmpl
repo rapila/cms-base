@@ -82,6 +82,9 @@ jQuery(document).ready(function() {
 			allow_drag: function(item) {
 				return item.TreeLeft !== 1;
 			},
+			is_inactive: function(item) {
+				return item.IsInactive;
+			},
 			icons_from_item: function(item) {
 				var result = [];
 				if(item.IsProtected) {

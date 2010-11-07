@@ -73,7 +73,11 @@ jQuery.extend(Widget, {
 			element: display,
 			options: options,
 			close: function() {
-				display.hide('blind', function() {display.remove();});
+				if(options.searchInfo) {
+					display.remove();
+				} else {
+					display.hide('blind', function() {display.remove();});
+				}
 			},
 			set_severity: function(severity) {
 				var new_highlight = severity == 'info' ? 'highlight' : 'error';

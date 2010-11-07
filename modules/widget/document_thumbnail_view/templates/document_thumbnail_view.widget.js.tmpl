@@ -58,7 +58,12 @@ Widget.types.document_thumbnail_view = {
 		var document_id = theDocument.id;
 		var doc = jQuery('<div/>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
 		doc.css({width: px_size, height: px_size});
-		doc.html(theDocument.preview);
+		// jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
+		// 	jQuery(this, document_id);
+		// 	doc.remove();
+		// 	alert('delete '+document_id);
+		// }).appendTo(doc);
+		doc.append(theDocument.preview);
 		doc.data('document_id', document_id);
 		Widget.tooltip(doc, theDocument.name);
 		doc.hover(function() {
@@ -81,6 +86,6 @@ Widget.types.document_thumbnail_view = {
 	
 	settings: {
 		allows_multiselect: true,
-		thumbnail_size: 50
+		thumbnail_size: 180
 	}
 };

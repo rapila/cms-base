@@ -1,13 +1,15 @@
 <?php
 /**
 * @package modules.widget
+* 
+* 
 */
 class DocumentsViewWidgetModule extends PersistentWidgetModule {
-	
+
 	private $aViewSessions;
-	
+
 	public $oDocumentsViewWidgetDelegate;
-	
+
 	public function __construct() {
 		parent::__construct();
 		$this->oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
@@ -24,7 +26,7 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	public function getDocumentKind() {
 		return $this->oDocumentsViewWidgetDelegate->getDocumentKind();
 	}
-	
+
 	public function setDocumentCategoryId($iDocumentCategoryId) {
 		return $this->oDocumentsViewWidgetDelegate->setDocumentCategoryId($iDocumentCategoryId);
 	}
@@ -32,7 +34,7 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	public function getDocumentCategoryId() {
 		return $this->oDocumentsViewWidgetDelegate->getDocumentCategoryId();
 	}
-		
+
 	public function setSearch($sSearch) {
 		return $this->oDocumentsViewWidgetDelegate->setSearch($sSearch);
 	}
