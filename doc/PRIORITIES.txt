@@ -1,10 +1,9 @@
 PRIORITAETEN:
 
 taylormade /config/isp_verify_userArray
+Schule Altenburg
 
 Priority list
-- Media-Object make more transparent, button bug etc
-	handle delete_media in form
 - is_inactive in pages.admin.js added to add class is_inactive for page
 - highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
@@ -25,8 +24,6 @@ Priority list
 - Laufende Verbesserungen nach der Aufschaltung.
 - Tooltips in Documents thumbnail view do not work properly
 
-
-
 Netla
 - CONFIGURATION Bugs, Bugs Bugs, see ie. Game config dialog, Text edit and saving
 - All Richtext, Config, Image and Link, Upload and ImgPicker Integration
@@ -35,7 +32,6 @@ Netla
 - Netla Comments (Gästebuch)
 - Netla NEWSLETTER
 - Netla Spiele und Comix
-
 
 Themenprioriäten @see site/doc/todo_timeline.xlsx
 - delete alert, example tip with getParatmetrizedString=altert_delete;title=....
@@ -723,3 +719,5 @@ Widget tasks
 	eventuell views (kann auch später gemacht werden), edit, CriteriaDelegate etc
 - RICHTEXT BUGS saving text in page_detail
 	BUG Image ??, Bug Link
+- Media-Object make more transparent, button bug etc
+	handle delete_media in form

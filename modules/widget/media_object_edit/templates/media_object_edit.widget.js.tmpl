@@ -2,7 +2,7 @@ Widget.types.media_object_edit = {
 	prepare: function() {
 		var _this = this;
 		Widget.createWithElement('document_input', function(widget) {
-			widget._element.prepend(jQuery('<option/>').attr('value', '').text('{{writeString=none}}'));
+			widget._element.prepend(jQuery('<option/>').attr('value', '').text('{{writeString=widget.media_object.use_url}}'));
 			_this.document_input = widget._element;
 		});
 		this.preview = this._element.find('.preview');
@@ -10,6 +10,7 @@ Widget.types.media_object_edit = {
 		this.entry_prototype = jQuery.parseHTML('{{includeTemplate=entry}}');
 		this._element.find('a').bind('click', function(event) {
 			_this.add_entry();
+			_this._element.find("span.default_message").hide();
 		});
 		this._element.delegate('input, select', 'change', function() {
 			_this.update_preview();

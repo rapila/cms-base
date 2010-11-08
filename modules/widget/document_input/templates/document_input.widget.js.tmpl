@@ -5,9 +5,9 @@ Widget.types.document_input = {
 		var option = jQuery('<option/>');
 		var document_categories = this.getDocuments();
 		jQuery.each(document_categories, function(optgroup_label, documents) {
-			optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
+			var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
 			jQuery.each(documents, function(id, name) {
-				option.clone().val(id).text(name).appendTo(optgroup);
+				option.clone().val(id).text(name).appendTo(cloned_optgroup);
 			});
 		});
 	}
