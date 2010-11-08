@@ -20,15 +20,50 @@ Widget.types.media_object_edit = {
 		});
 		this._element.delegate('input, select', 'change', function() {
 			_this.update_preview();
-		});
-		this._element.delegate('.delete_media', 'click', function() {
+		}).delegate('.delete_media', 'click', function() {
 			var media_entry = jQuery(this).closest('.media_entry');
 			media_entry.remove();
 			_this.update_preview();
-		});
-		this._element.delegate("select[name='document_id[]'], input[name='url[]']", 'change', function() {
+		}).delegate("select[name='document_id[]'], input[name='url[]']", 'change', function() {
 			_this.update_visibilities(jQuery(this).closest('.media_entry'));
+		}).delegate("input[name='url[]']", 'change', function() {
+			var url_input = jQuery(this);
+			var media_entry = url_input.closest('.media_entry');
+			if(!url_input.val()) {
+				return;
+			}
+			if(url_input.val().indexOf('<') === 0) {
+				var elements = jQuery('<div/>').html(url_input.val());
+				var url = _this.find_param(elements, 'src');
+				if(!url) {
+					url = _this.find_param(elements, 'href');
+				}
+				if(url) {
+					url_input.val(url);
+					var width = _this.find_param(elements, 'width');
+					if(width) {
+						media_entry.find("input[name='width[]']").val(width);
+					}
+					var height = _this.find_param(elements, 'height');
+					if(height) {
+						media_entry.find("input[name='height[]']").val(height);
+					}
+					var mimetype = _this.find_param(elements, 'type');
+					if(mimetype) {
+						media_entry.find("input[name='mimetype[]']").val(mimetype);
+					}
+					_this.update_preview();
+				}
+			}
 		});
+	},
+	
+	find_param: function(elements, param) {
+		var value = elements.find('*['+param+']').attr(param);
+		if(!value) {
+			value = elements.find("param[name='"+param+"']").attr('value');
+		}
+		return value;
 	},
 	
 	add_entry: function(data) {
