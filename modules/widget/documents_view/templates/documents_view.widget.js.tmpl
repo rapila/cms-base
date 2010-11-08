@@ -12,6 +12,7 @@ Widget.types.documents_view = {
 				var tab = jQuery(ui.tab);
 				var item = tab.attr('href').substring(1);
 				if(documents_view.tab_views[item]) {
+					documents_view.tab_views[item].is_updated = true;
 					tab.data('type', documents_view.tab_views[item]);
 					tab.data('panel', panel);
 				}
@@ -47,6 +48,7 @@ Widget.types.documents_view = {
 		var widget_name = type.widget_name;
 		var documents_view = this;
 		Widget.createWithElement(widget_name, function(widget) {
+			widget.handle('document_removed', documents_view.mark_background_views_dirty.bind(documents_view));
 			tab.data('widget', widget);
 			type.init.call(this, tab.data('widget'));
 		}, function(widget) {
@@ -55,13 +57,17 @@ Widget.types.documents_view = {
 	},
 	
 	reload: function() {
+		this.mark_background_views_dirty();
+		this.active_tab.data('widget').reload();
+		this.changed = false;
+		jQuery('.ui-tabs-panel').focus();
+	},
+	
+	mark_background_views_dirty: function() {
 		var active_tab = this.active_tab.data('type');
 		jQuery.each(this.tab_views, function(i, tab_type) {
 			tab_type.is_updated = tab_type === active_tab;
 		});
-		this.active_tab.data('widget').reload();
-		this.changed = false;
-		jQuery('.ui-tabs-panel').focus();
 	},
 	
 	set_document_category_id: function(id) {

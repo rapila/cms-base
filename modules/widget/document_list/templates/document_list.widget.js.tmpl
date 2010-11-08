@@ -12,6 +12,7 @@ Widget.types.document_list = {
 					Widget.confirm("{{writeString=widget.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
+							document_list.fire('document_removed', row);
 						}
 					}.bind(this));
 					event.stopPropagation();
