@@ -23,4 +23,8 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
 		return DocumentPeer::doSelect($oCriteria);
 	}
+	
+	public function getElementType() {
+		return 'select';
+	}
 }
