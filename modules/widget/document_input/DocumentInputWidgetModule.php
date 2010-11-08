@@ -11,7 +11,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		}
 		if(count($aCustomFiles) > 0) {
 			$sCustomFiles = StringPeer::getString('widget.documents.custom_files');
-			$aResult[$sCustomFiles] = $aCustomFiles;
+			$aResult[$sCustomFiles] = array_flip($aCustomFiles);
 		}
 		// find files in database ordered by category
 		$aCategories = DocumentCategoryPeer::getDocumentCategoriesSorted();
@@ -40,7 +40,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 					self::readDirectory($sFilePath, $aResult);
 				} else {
 					$oPath = new FileResource($sFilePath);
-					$aResult[$oPath->getRelativePath()] = $oPath->getFrontendPath();
+					$aResult[$oPath->getRelativePath()] = $oPath->getInstancePrefix().$oPath->getRelativePath();
 				}
 			}
 			closedir($rDir);

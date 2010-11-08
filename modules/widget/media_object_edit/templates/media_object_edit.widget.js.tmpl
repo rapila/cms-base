@@ -4,32 +4,81 @@ Widget.types.media_object_edit = {
 		Widget.createWithElement('document_input', function(widget) {
 			widget._element.prepend(jQuery('<option/>').attr('value', '').text('{{writeString=widget.media_object.use_url}}'));
 			_this.document_input = widget._element;
+			
+			//Update values on load
+			_this.currentData(function(data) {
+				jQuery.each(data, function(key, value) {
+					_this.add_entry(value);
+				});
+			});
 		});
 		this.preview = this._element.find('.preview');
 		this.config = this._element.find('.config');
 		this.entry_prototype = jQuery.parseHTML('{{includeTemplate=entry}}');
 		this._element.find('a').bind('click', function(event) {
 			_this.add_entry();
-			_this._element.find("span.default_message").hide();
 		});
 		this._element.delegate('input, select', 'change', function() {
 			_this.update_preview();
 		});
 		this._element.delegate('.delete_media', 'click', function() {
-			var delete_media = jQuery(this).closest('.media_entry');
-			delete_media.remove();
+			var media_entry = jQuery(this).closest('.media_entry');
+			media_entry.remove();
 			_this.update_preview();
+		});
+		this._element.delegate("select[name='document_id[]'], input[name='url[]']", 'change', function() {
+			_this.update_visibilities(jQuery(this).closest('.media_entry'));
 		});
 	},
 	
-	add_entry: function() {
+	add_entry: function(data) {
+		this._element.find("span.default_message").hide();
 		var new_entry = this.entry_prototype.clone();
 		new_entry.find("label[for='document_id[]']").after(this.document_input.clone().attr('name', 'document_id[]'));
 		this.config.append(new_entry);
+		if(data) {
+			this.is_updating = true;
+			new_entry.find("select[name='document_id[]']").val(data.document_id);
+			new_entry.find("input[name='url[]']").val(data.url);
+			new_entry.find("input[name='height[]']").val(data.height);
+			new_entry.find("input[name='width[]']").val(data.width);
+			new_entry.find("input[name='mimetype[]']").val(data.mimetype);
+			this.is_updating = false;
+		}
+		this.update_preview();
+		this.update_visibilities(new_entry);
 		return new_entry;
 	},
 	
+	update_visibilities: function(media_entry) {
+		var document_select = media_entry.find("select[name='document_id[]']");
+		var url_input = media_entry.find("input[name='url[]']");
+		
+		var document_group = media_entry.find('.group_fields.document_id');
+		var url_group = media_entry.find('.group_fields.url');
+		var mimetype_group = media_entry.find('.group_fields.mimetype');
+		
+		if(url_input.val()) {
+			document_group.hide();
+		} else {
+			document_group.show();
+		}
+		if(!document_select.val()) {
+			url_group.show();
+			mimetype_group.show();
+		} else if(isNaN(document_select.val())) {
+			url_group.hide();
+			mimetype_group.show();
+		} else {
+			url_group.hide();
+			mimetype_group.hide();
+		}
+	},
+	
 	update_preview: function() {
+		if(this.is_updating) {
+			return;
+		}
 		this.renderPreview(this._element.serializeArrayKV(), function(result) {
 			this.preview.empty().append(jQuery.parseHTML(result));
 		});
