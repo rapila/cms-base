@@ -49,9 +49,7 @@ Widget.types.media_object_edit = {
 						media_entry.find("input[name='height[]']").val(height);
 					}
 					var mimetype = _this.find_param(elements, 'type');
-					if(mimetype) {
-						media_entry.find("input[name='mimetype[]']").val(mimetype);
-					}
+					media_entry.find("input[name='mimetype[]']").val(mimetype || '');
 					_this.update_preview();
 				}
 			}

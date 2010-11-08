@@ -124,8 +124,13 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 					} else {
 						if($bGetHeadersEnabled && !$aPostData['mimetype'][$iKey]) {
 							$aHeaders = @get_headers($sSrc, true);
-							if($aHeaders) {
-								$aPostData['mimetype'][$iKey] = $aHeaders['Content-Type'];
+							if($aHeaders && isset($aHeaders['Content-Type'])) {
+								$sContentType = $aHeaders['Content-Type'];
+								$iCharsetLocation = strpos($sContentType, ';');
+								if($iCharsetLocation !== false) {
+									$sContentType = substr($sContentType, 0, $iCharsetLocation);
+								}
+								$aPostData['mimetype'][$iKey] = $sContentType;
 							}
 						}
 					}
