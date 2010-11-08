@@ -6,7 +6,7 @@ Widget.types.document_input = {
 		jQuery.each(documents, function(optgroup_label, documents) {
 			optgroup.clone().attr('label', optgroup_label).appendTo(this._element);
 			jQuery.each(documents, function(id, name) {
-				option.clone().attr('value': id).text(name).appendTo(optgroup);
+				option.clone().val(id).text(name).appendTo(optgroup);
 			});
 		});
 	}
