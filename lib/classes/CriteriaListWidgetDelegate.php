@@ -174,7 +174,6 @@ class CriteriaListWidgetDelegate {
 			$oCriteria = new Criteria();
 		}
 		$oCriterion = null;
-		ErrorHandler::log($aRowData);
 		foreach($aRowData as $sRowDataColumnName => $mRowValue) {
 			$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sRowDataColumnName);
 			if(isset($aMetadata['field_name'])) {
