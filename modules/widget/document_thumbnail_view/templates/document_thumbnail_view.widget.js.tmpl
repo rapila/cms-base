@@ -54,16 +54,25 @@ Widget.types.document_thumbnail_view = {
 	},
 	
 	insert_thumbnail: function(theDocument) {
+		var _this = this;
 		var px_size = ''+this.settings.thumbnail_size+'px';
 		var document_id = theDocument.id;
 		var doc = jQuery('<div/>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
 		doc.css({width: px_size, height: px_size});
-		// jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
-		// 	jQuery(this, document_id);
-		// 	doc.remove();
-		// 	alert('delete '+document_id);
-		// }).appendTo(doc);
-		doc.append(theDocument.preview);
+		// handle delete
+		jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
+			_this.deleteDocument({id: document_id}, function(result) {
+				jQuery(doc).remove();
+				_this.fire('document_removed', {id: document_id});
+			});
+		}).appendTo(doc);
+		
+		var document_object = jQuery(theDocument.preview);
+		doc.append(document_object);
+		// handle edit
+		document_object.bind('dblclick', function() {
+			console.log(jQuery(doc));
+		})
 		doc.data('document_id', document_id);
 		Widget.tooltip(doc, theDocument.name);
 		doc.hover(function() {

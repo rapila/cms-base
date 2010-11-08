@@ -28,6 +28,10 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 		return array('name' => $oDocument->getName(), 'description' => $oDocument->getDescription(), 'id' => $oDocument->getId(), 'preview' => $this->thumbnail($oDocument->getId(), $iThumbnailSize));
 	}
 	
+	public function deleteDocument($aDocumentData) {
+		$this->oDocumentsViewWidgetDelegate->getDelegateProxy()->deleteRow($aDocumentData);
+	}
+	
 	public function singleDocument($iDocumentId, $iThumbnailSize) {
 		return $this->rowData($this->oDocumentsViewWidgetDelegate->getDelegateProxy()->rowFromData(array('id' => $iDocumentId)));
 	}
