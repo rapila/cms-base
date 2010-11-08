@@ -4,7 +4,7 @@
  */
 include_once('propel/query/Criteria.php');
 
-class MediaObjectFrontendModule extends FrontendModule {
+class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
 	
 	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
@@ -61,6 +61,20 @@ class MediaObjectFrontendModule extends FrontendModule {
 		return $oTemplate;
 	}
 	
+	public function widgetData() {
+		return @unserialize($this->getData());	
+	}
+	
+	public function widgetSave($mData) {
+		$this->oLanguageObject->setData(serialize($mData));
+		return $this->oLanguageObject->save();
+	}
+	
+	public function getWidget() {
+		$oWidget = new MediaObjectEditWidgetModule(null, $this);
+		return $oWidget;
+	}
+	
 	public function renderBackend() {
 		$aOptions = @unserialize($this->getData());
 		$oTemplate = $this->constructTemplate('backend');
@@ -86,29 +100,33 @@ class MediaObjectFrontendModule extends FrontendModule {
 	}
 	
 	public function getSaveData() {
+		return $this->dataFromPost($_POST);
+	}
+	
+	public function dataFromPost(&$aPostData) {
 		$aResults = array();
-		foreach($_POST['document_id'] as $iKey => $sId) {
-			$sSrc = $_POST['url'][$iKey];
+		foreach($aPostData['document_id'] as $iKey => $sId) {
+			$sSrc = $aPostData['url'][$iKey];
 			if(!$sId && !$sSrc) {
 				continue;
 			}
-			if(!$sId && !$_POST['mimetype'][$iKey]) {
+			if(!$sId && !$aPostData['mimetype'][$iKey]) {
 				$bGetHeadersEnabled = ini_get('allow_url_fopen') == '1';
-				if(!StringUtil::startsWith($sSrc, '/') && !$_POST['mimetype'][$iKey] && file_exists(MAIN_DIR.'/'.$sSrc)) {
+				if(!StringUtil::startsWith($sSrc, '/') && !$aPostData['mimetype'][$iKey] && file_exists(MAIN_DIR.'/'.$sSrc)) {
 					//Relative url, assume it’s from the MAIN_DIR_FE
 					$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$sSrc);
-					$_POST['mimetype'][$iKey] = $aMimeTypes[0];
+					$aPostData['mimetype'][$iKey] = $aMimeTypes[0];
 				} else {
-					if($bGetHeadersEnabled && !$_POST['mimetype'][$iKey]) {
+					if($bGetHeadersEnabled && !$aPostData['mimetype'][$iKey]) {
 						$aHeaders = get_headers($sSrc, true);
-						$_POST['mimetype'][$iKey] = $aHeaders['Content-Type'];
+						$aPostData['mimetype'][$iKey] = $aHeaders['Content-Type'];
 					}
 				}
 			}
-			if(!$sId && !$_POST['mimetype'][$iKey]) {
-				$_POST['mimetype'][$iKey] = 'application/octet-stream';
+			if(!$sId && !$aPostData['mimetype'][$iKey]) {
+				$aPostData['mimetype'][$iKey] = 'application/octet-stream';
 			}
-			$aResults[] = array("document_id" => $sId, 'url' => $sSrc, "width" => $_POST["width"][$iKey], "height" => $_POST["height"][$iKey], "mimetype" => $_POST["mimetype"][$iKey]);
+			$aResults[] = array("document_id" => $sId, 'url' => $sSrc, "width" => $aPostData["width"][$iKey], "height" => $aPostData["height"][$iKey], "mimetype" => $aPostData["mimetype"][$iKey]);
 		}
 		return serialize($aResults);
 	}

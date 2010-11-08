@@ -109,6 +109,7 @@ Widget.types.page_type.types['default'] = {
 		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
 			Widget.createWithElement(result[0], function(widget) {
 				var content = widget._element;
+				Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', content);
 				if(widget.setObjectId) {
 					widget.setObjectId(item_to_edit.attr('data-object-id'));
 				}
