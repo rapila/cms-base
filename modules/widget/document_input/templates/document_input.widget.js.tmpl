@@ -1,0 +1,13 @@
+Widget.types.document_input = {
+	prepare: function() {
+		var optgroup = jQuery('<optgroup/>');
+		var option = jQuery('<option/>');
+		var documents = this.getDocuments();
+		jQuery.each(documents, function(optgroup_label, documents) {
+			optgroup.clone().attr('label', optgroup_label).appendTo(this._element);
+			jQuery.each(documents, function(id, name) {
+				option.clone().attr('value': id).text(name).appendTo(optgroup);
+			});
+		});
+	}
+};
