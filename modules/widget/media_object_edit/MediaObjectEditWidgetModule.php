@@ -19,6 +19,10 @@ class MediaObjectEditWidgetModule extends PersistentWidgetModule {
 		return $oModule->renderFrontend()->render();
 	}
 	
+	public function mimetypeFor($sId, $sUrl) {
+		return $this->oFrontendModule->mimetypeFor($sId, $sUrl);
+	}
+	
 	public function currentData() {
 		return $this->oFrontendModule->widgetData();
 	}

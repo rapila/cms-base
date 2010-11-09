@@ -144,6 +144,33 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		return serialize($aResults);
 	}
 	
+	public function mimetypeFor($sId, $sSrc) {
+		if($sId && !is_numeric($sId)) {
+			$sSrc = $sId;
+			$sId = '';
+		}
+		if($sSrc) {
+			$bGetHeadersEnabled = ini_get('allow_url_fopen') == '1';
+			if(!StringUtil::startsWith($sSrc, '/') && file_exists(MAIN_DIR.'/'.$sSrc)) {
+				//Relative url, assume it’s from the MAIN_DIR_FE
+				$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$sSrc);
+				return $aMimeTypes[0];
+			} else if($bGetHeadersEnabled) {
+				$aHeaders = @get_headers($sSrc, true);
+				if($aHeaders && isset($aHeaders['Content-Type'])) {
+					$sContentType = $aHeaders['Content-Type'];
+					$iCharsetLocation = strpos($sContentType, ';');
+					if($iCharsetLocation !== false) {
+						$sContentType = substr($sContentType, 0, $iCharsetLocation);
+					}
+					return $sContentType;
+				}
+			}
+		}
+		return '';
+	}
+
+	
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {
 			return null;
