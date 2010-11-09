@@ -1,11 +1,11 @@
 jQuery.fn.extend({
 	tooltip: function(text) {
-		var tooltip = this.data('tooltip-element');
-		if(!tooltip) {
-			tooltip = jQuery('<div/>').text(text).addClass('tooltip ui-widget ui-widget-content ui-corner-all').appendTo(document.body);
-			this.data('tooltip-element', tooltip);
+		var tooltip = jQuery("#global_tooltip");
+		if(!tooltip.length) {
+			tooltip = jQuery('<div/>').attr('id', 'global_tooltip').addClass('tooltip ui-widget ui-widget-content ui-corner-all').appendTo(document.body);
 		}
 		this.hover(function(event) {
+			tooltip.text(text);
 			tooltip.show();
 			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
 		}, function() {
