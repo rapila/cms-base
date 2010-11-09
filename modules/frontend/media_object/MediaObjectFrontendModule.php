@@ -126,6 +126,9 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 							$aHeaders = @get_headers($sSrc, true);
 							if($aHeaders && isset($aHeaders['Content-Type'])) {
 								$sContentType = $aHeaders['Content-Type'];
+								if(is_array($sContentType)) {
+									$sContentType = array_pop($sContentType);
+								}
 								$iCharsetLocation = strpos($sContentType, ';');
 								if($iCharsetLocation !== false) {
 									$sContentType = substr($sContentType, 0, $iCharsetLocation);
@@ -159,6 +162,9 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 				$aHeaders = @get_headers($sSrc, true);
 				if($aHeaders && isset($aHeaders['Content-Type'])) {
 					$sContentType = $aHeaders['Content-Type'];
+					if(is_array($sContentType)) {
+						$sContentType = array_pop($sContentType);
+					}
 					$iCharsetLocation = strpos($sContentType, ';');
 					if($iCharsetLocation !== false) {
 						$sContentType = substr($sContentType, 0, $iCharsetLocation);
