@@ -2112,7 +2112,6 @@
 					r = false,
 					rtl = this._get_settings().core.rtl,
 					pos;
-				console.log(this.data.core.li_height);
 				if(this.data.dnd.w < this.data.core.li_height/3) { o = ["before","inside","after"]; }
 				else if(this.data.dnd.w <= this.data.core.li_height*2/3) {
 					o = this.data.dnd.w < this.data.core.li_height/2 ? ["inside","before","after"] : ["inside","after","before"];
