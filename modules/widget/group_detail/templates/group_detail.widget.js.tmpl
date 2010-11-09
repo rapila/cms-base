@@ -27,6 +27,8 @@ Widget.types.group_detail = {
 			this.content.find("input[name='name']").val(group_data.Name);
 			this.content.find(".updated_info").text(group_data.UpdatedInfo);
 			this.content.find(".created_info").text(group_data.CreatedInfo);
+			this.content.find(".detail_id").text(group_data.Id);
+			
 			this.detail_widget.set_title(this.detail_widget.settings.title = group_data.Name);
 		});
 	},
