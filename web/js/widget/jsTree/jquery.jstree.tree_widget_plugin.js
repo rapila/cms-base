@@ -103,6 +103,10 @@
 					if(typeof js == "string") { js = { data : js }; }
 					if(!js.data && js.data !== "") { return d; }
 					d = $("<li>");
+					var custom_class = p.tree_widget.widget.settings.custom_class(js.metadata);
+					if(custom_class) {
+						d.addClass(custom_class);
+					}
 					if(js.attr) { d.attr(js.attr); }
 					if(js.metadata) { d.data("jstree", js.metadata); }
 					if(js.state) { d.addClass("jstree-" + js.state); }
