@@ -134,13 +134,6 @@ Widget.types.tree = {
 		element.prepend(icons);
 		element.prepend(opener);
 		element.data('tree-data', child);
-		// if(this.settings.allow_drag(child)) {
-		// 	var widget = this;
-		// 	element.attr('draggable', 'true');
-		// 	element.ndrag(function() {
-		// 		return {effect: 'copyMove', 'identifier/vnd.widget-tree': widget.settings.identifier_from_data(child)};
-		// 	});
-		// }
 		parent.append(element);
 		if(this.settings.is_open(child)) {
 			this.open(element, opener);
@@ -272,6 +265,7 @@ Widget.types.tree = {
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
 		is_active: jQuery.noop,
+		custom_class: jQuery.noop,
 		allow_reorder: jQuery.noop,
 		icons_from_item: jQuery.noop
 	}

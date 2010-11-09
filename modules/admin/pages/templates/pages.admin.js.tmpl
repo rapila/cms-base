@@ -79,11 +79,10 @@ jQuery(document).ready(function() {
 			is_active: function(item) {
 				return item.Id === initial_selection;
 			},
-			allow_drag: function(item) {
-				return item.TreeLeft !== 1;
-			},
-			is_inactive: function(item) {
-				return item.IsInactive;
+			custom_class: function(item) {
+				if(item.IsInactive) {
+					return 'page_is_inactive';
+				}
 			},
 			icons_from_item: function(item) {
 				var result = [];
