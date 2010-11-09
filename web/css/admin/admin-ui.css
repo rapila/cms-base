@@ -10,7 +10,7 @@
 }
 .ui-notify.search_info {
   min-width: 50em;
-  padding: 2.5em;
+  padding: 0.5em;
   vertical-align: top;
 }
 .ui-notify.search_info ul {
