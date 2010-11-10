@@ -24,14 +24,16 @@
 		<label for="password_confirm">{{writeString=password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
 	</div><br />
-	<div class="user_groups_section" data-widget-type="group_input">
-		<label>{{writeString=widget.user.groups}}</label><br />
-		<fieldset>
-		</fieldset>
-	</div>
-	<div class="user_roles_section" data-widget-type="role_input">
-		<label>{{writeString=widget.user.roles}}</label><br />
-		<fieldset>
-		</fieldset>
+	<div class="user_rights_section">
+		<div class="user_groups_section" data-widget-type="group_input">
+			<label>{{writeString=widget.user.groups}}</label><br />
+			<fieldset>
+			</fieldset>
+		</div>
+		<div class="user_roles_section" data-widget-type="role_input">
+			<label>{{writeString=widget.user.roles}}</label><br />
+			<fieldset>
+			</fieldset>
+		</div>
 	</div>
 </form>

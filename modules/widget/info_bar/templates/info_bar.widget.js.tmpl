@@ -116,7 +116,6 @@ Widget.types.info_bar = {
 	},
 	
 	add_row_count_info_for_list: function(list) {
-		console.log(this.getNumberOfRows(), list);
 		var row_count_info = jQuery('<span/>').addClass('row_count_info');
 		this.add_element(row_count_info, true);
 		list.handle('reloaded', function() {

@@ -4,6 +4,7 @@ taylormade /config/isp_verify_userArray
 Schule Altenburg
 
 Priority list
+- user profile how to edit
 - is_inactive in pages.admin.js added to add class is_inactive for page
 - highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
