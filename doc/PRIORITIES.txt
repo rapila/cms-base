@@ -4,6 +4,9 @@ taylormade /config/isp_verify_userArray
 Schule Altenburg
 
 Priority list
+-	login_edit.widget.js und game_edit.widget.js
+- add titles to config windows
+- Dialog Windows, confict prototype?
 - user profile how to edit
 - is_inactive in pages.admin.js added to add class is_inactive for page
 - highlight of persistant page does still not work properly

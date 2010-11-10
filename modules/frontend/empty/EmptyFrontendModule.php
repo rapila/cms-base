@@ -13,10 +13,6 @@ class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendM
 		return "";
 	}
 
-	public function renderBackend() {
-		return $this->constructTemplate('backend');
-	}
-
 	public function getSaveData() {
 		return "";
 	}

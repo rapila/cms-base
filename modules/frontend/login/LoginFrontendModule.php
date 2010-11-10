@@ -8,10 +8,12 @@
  * is there a reason to protect a login page?
  */
 
-class LoginFrontendModule extends DynamicFrontendModule {
+class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+	
 	private $oPage;
+	public static $DISPLAY_OPTIONS = array('login_simple', 'login_with_password_forgotten', 'logout_link');
 
-	private static $LOGIN_TYPES = array('login_simple', 'login_with_password_forgotten', 'logout_link');
+	const MODE_SELECT_KEY = 'display_mode';
 
 	public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
@@ -20,10 +22,10 @@ class LoginFrontendModule extends DynamicFrontendModule {
 
 	public function renderFrontend($sAction = 'login') {
 		$aOptions = @unserialize($this->getData());
-		if(isset($aOptions['login_type']) && $aOptions['login_type'] === 'logout_link') {
+		if(isset($aOptions[self::MODE_SELECT_KEY]) && $aOptions[self::MODE_SELECT_KEY] === 'logout_link') {
 			return $this->renderLogout();
 		}
-		$sLoginType = isset($aOptions['login_type']) ? $aOptions['login_type'] : 'login_simple';
+		$sLoginType = isset($aOptions[self::MODE_SELECT_KEY]) ? $aOptions[self::MODE_SELECT_KEY] : 'login_simple';
 		if(Session::getSession()->getUser()) {
 			$oPage = $this->oPage;
 			if(Session::getSession()->hasAttribute('login_referrer_page')) {
@@ -82,17 +84,21 @@ class LoginFrontendModule extends DynamicFrontendModule {
 		$oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
 		$oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
 		return $oTemplate;
-
 	}
 
-	public function renderBackend() {
-		$aOptions = @unserialize($this->getData());
-		$oTemplate = $this->constructTemplate('backend');
-		$oTemplate->replaceIdentifier('login_types', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(self::$LOGIN_TYPES), @$aOptions['login_type'], false, array()));
-		return $oTemplate;
+	public function widgetData() {
+		return @unserialize($this->getData());	
 	}
-
-	public function getSaveData() {
-		return serialize($_POST);
+	
+	public function widgetSave($mData) {
+		$this->oLanguageObject->setData(serialize($mData));
+		return $this->oLanguageObject->save();
+	}
+	
+	public function getWidget() {
+		$aOptions = @unserialize($this->getData());	
+		$oWidget = new LoginEditWidgetModule(null, $this);
+		$oWidget->setDisplayMode($aOptions[self::MODE_SELECT_KEY]);
+		return $oWidget;
 	}
 }
