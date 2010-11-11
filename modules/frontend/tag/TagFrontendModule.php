@@ -19,13 +19,9 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 				$aTags[] = $oTag;
 			}
 		}
-		
-		
+
 		// tagged items
 		foreach($aData['types'] as $sDocumentModel) {
-			if(!in_array('renderListItem', get_class_methods($sDocumentModel))) {
-				continue;
-			}
 			foreach($aTags as $oTag) {
 				$aCorrespondingItems = $oTag->getAllCorrespondingDataEntries($sDocumentModel);
 				foreach($aCorrespondingItems as $oCorrespondingItem) {
