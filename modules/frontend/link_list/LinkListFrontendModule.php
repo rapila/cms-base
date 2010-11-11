@@ -6,8 +6,8 @@
 class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
 	
 	const LIST_ITEM_POSTFIX = '_item';
-	const SORT_OPTION_BY_NAME = 'by_name';
-	const SORT_OPTION_BY_SORT = 'by_sort';
+	const SORT_BY_NAME = 'by_name';
+	const SORT_BY_SORT = 'by_sort';
 	
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
@@ -17,22 +17,22 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			$aLinks = LinkPeer::getLinksByTagName($aOptions['tags']);
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
 		} else {
-			if(isset($aOptions['link_category_option']) && $aOptions['link_category_option'] != null) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_category_option']);
+			if(isset($aOptions['link_categories']) && $aOptions['link_categories'] != null) {
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories']);
 			}
-			if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === self::SORT_OPTION_BY_SORT) {
+			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
 			} else {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
 			}
 		}
 		try {
-			$oListTemplate = new Template($aOptions['template_option']);
+			$oListTemplate = new Template($aOptions['template']);
 			if($bOneTagnameOnly) {
         $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
 			}
 			foreach($oCriteria->find() as $i => $oLink) {
-				$oItemTemplate = new Template($aOptions['template_option'].self::LIST_ITEM_POSTFIX);
+				$oItemTemplate = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Link');
 				$oItemTemplate->replaceIdentifier('name', $oLink->getName());
 				$oItemTemplate->replaceIdentifier('description', $oLink->getDescription());
@@ -51,7 +51,14 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	
 	public function widgetSave($mData) {
 		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
+		$bResult = $this->oLanguageObject->save();
+		if($bResult) {
+			ReferencePeer::removeReferences($this->oLanguageObject);
+			foreach($mData['link_categories'] as $iCategoryId) {
+				ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'LinkCategory'));
+			}
+		}
+		return $bResult;
 	}
 	
 	public function getWidget() {
@@ -66,8 +73,8 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	}
 	
 	public static function getSortOptions() {
-		$aResult[self::SORT_OPTION_BY_NAME] = StringPeer::getString('widget.order.by_name');
-		$aResult[self::SORT_OPTION_BY_SORT] = StringPeer::getString('widget.order.by_sort');
+		$aResult[self::SORT_BY_NAME] = StringPeer::getString('widget.order.by_name');
+		$aResult[self::SORT_BY_SORT] = StringPeer::getString('widget.order.by_sort');
 		return $aResult;
 	}	
 	

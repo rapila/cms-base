@@ -32,7 +32,7 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		} else if(isset($aOptions['categories'])) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories']);
 		}
-		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_OPTION_BY_SORT) {
+		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_BY_SORT) {
 			$oCriteria->orderBySort();
 		}
 		$oCriteria->orderByName();

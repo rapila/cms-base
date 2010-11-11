@@ -37,4 +37,8 @@ class ContentObject extends BaseContentObject {
 	public function getObjectTypeName($sLanguageId=null) {
 		return FrontendModule::getDisplayNameByName($this->getObjectType(), $sLanguageId);
 	}
+	
+	// public function delete(PropelPDO $con = null) {
+	// 	parent::delete($con);
+	// }
 }

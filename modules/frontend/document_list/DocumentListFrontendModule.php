@@ -6,8 +6,8 @@
 class DocumentListFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
 	
 	const LIST_ITEM_POSTFIX = '_item';
-	const SORT_OPTION_BY_NAME = 'by_name';
-	const SORT_OPTION_BY_SORT = 'by_sort';
+	const SORT_BY_NAME = 'by_name';
+	const SORT_BY_SORT = 'by_sort';
 	
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
@@ -20,7 +20,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		} else if(isset($aOptions['categories'])) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories']);
 		}
-		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_OPTION_BY_SORT) {
+		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
 		}
 		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
@@ -68,8 +68,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	}
 	
 	public static function getSortOptions() {
-		$aResult[self::SORT_OPTION_BY_NAME] = StringPeer::getString('widget.order.by_name');
-		$aResult[self::SORT_OPTION_BY_SORT] = StringPeer::getString('widget.order.by_sort');
+		$aResult[self::SORT_BY_NAME] = StringPeer::getString('widget.order.by_name');
+		$aResult[self::SORT_BY_SORT] = StringPeer::getString('widget.order.by_sort');
 		return $aResult;
 	}	
 	
