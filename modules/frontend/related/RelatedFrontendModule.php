@@ -4,7 +4,7 @@
  */
 class RelatedFrontendModule extends DynamicFrontendModule {
   
-  private static $LIST_TYPES = array('documents', 'links', 'pages');
+  private static $DISPLAY_OPTIONS = array('documents', 'links', 'pages');
   
   public function __construct($oLanguageObject, $aRequestPath = null) {
     parent::__construct($oLanguageObject, $aRequestPath);
@@ -105,7 +105,7 @@ class RelatedFrontendModule extends DynamicFrontendModule {
     $oTemplate = $this->constructTemplate('backend');
     $oTemplate->replaceIdentifier("text", $aData['tags']);
     $aListTypes = array();
-    foreach(self::$LIST_TYPES as $sName) {
+    foreach(self::$DISPLAY_OPTIONS as $sName) {
       $aListTypes[$sName] = StringPeer::getString('module.backend.'.$sName);
     }
     $oTemplate->replaceIdentifier("type_options", TagWriter::optionsFromArray($aListTypes, $aData['types'], null, null));

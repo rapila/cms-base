@@ -1,13 +1,16 @@
 Widget.types.login_edit = {
 	prepare: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		var mode_dropdown = this.content.find("select[name='display_mode']");
+		this._element.append(this.content);
+		var mode_dropdown = this._element.find("select[name='display_mode']");
 		jQuery.each(this.getDisplayOptions(), function(value, text) {
 			var option = jQuery('<option/>').attr('value', value).text(text);
 			mode_dropdown.append(option);
 		});
-		mode_dropdown.val(this.getDisplayMode());			
-		this._element.append(this.content);
+		mode_dropdown.val(this.getDisplayMode());
+		if(!mode_dropdown.val()) {
+			mode_dropdown.find("option:first-child").attr('selected', true);
+		}
 	},
 	
 	save: function(callback) {
