@@ -9,18 +9,8 @@ class TagEditWidgetModule extends PersistentWidgetModule {
 		$this->sDisplayMode = $this->oFrontendModule->widgetData();
 	}
 	
-	public function setDisplayMode($sDisplayMode) {
-		$this->sDisplayMode = $sDisplayMode;
-	}
-
-	public function getDisplayMode($sKey=null) {
-		if($sKey === null) {
-			return $this->sDisplayMode;
-		}
-		if(isset($this->sDisplayMode[$sKey])) {
-			return $this->sDisplayMode[$sKey];
-		}
-		return null;
+	public function getConfiguredMode() {
+		return $this->sDisplayMode;
 	}
 	
 	public function allTagedItems() {
@@ -28,15 +18,12 @@ class TagEditWidgetModule extends PersistentWidgetModule {
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['template'] = AdminManager::getSiteTemplatesForListOutput();
+		$aResult['templates'] = AdminManager::getSiteTemplatesForListOutput();
 		$aResult['tags'] = array();
 		foreach(TagPeer::doSelect(new Criteria()) as $oTag) {
-			$aResult['tags'] = $oTag->getName();
+			$aResult['tags'][] = array('name' => $oTag->getName(), 'count' => $oTag->countTagInstances(), 'id' => $oTag->getId());
 		}
 		$aResult['types'] = self::getTaggedModels();
-		foreach(TagFrontendModule::$DISPLAY_OPTIONS as $sName) {
-      $aResult['types'][$sName] = StringPeer::getString('module.backend.'.$sName);
-    }
 		return $aResult;
 	}
 	
@@ -52,10 +39,10 @@ class TagEditWidgetModule extends PersistentWidgetModule {
 		}
 		$oCriteria->addAscendingOrderByColumn(TagInstancePeer::MODEL_NAME);
 		$aResult = array();
-		foreach(TagInstancePeer::doSelect($oCriteria) as $oInstance) {
-			$sTableName = constant($oInstance->getModelName().'Peer::TABLE_NAME');
+		foreach(TagInstancePeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aTag) {
+			$sTableName = constant($aTag['MODEL_NAME'].'Peer::TABLE_NAME');
 			$sName = StringPeer::getString('module.backend.'.$sTableName);
-			$aResult[$oInstance->getModelName()] = $sName;
+			$aResult[$aTag['MODEL_NAME']] = $sName;
 		}
 		return $aResult;
 	}
