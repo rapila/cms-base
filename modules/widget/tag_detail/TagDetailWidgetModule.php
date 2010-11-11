@@ -30,7 +30,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public function removeTaggedItem($mRemoveData) {
+	public function deleteTaggedItem($iTagId, $iTaggedItemId, $sModelName) {
 		$oTagInstance = TagInstancePeer::retrieveByPK($iTagId, $iTaggedItemId, $sModelName);
 		if($oTagInstance) {
 			$oTagInstance->delete();

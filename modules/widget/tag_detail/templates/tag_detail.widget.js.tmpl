@@ -30,13 +30,12 @@ Widget.types.tag_detail = {
 			this.content.find(".created_info").text(tag_data.CreatedInfo);
 			var tagged_items = this.content.find("ul.tagged_items");
 			jQuery.each(tag_data.tagged_models_and_items, function(i, params) {
-				console.log(params);
 				var item = jQuery('<li/>').text(params.name);
 				var delete_button = jQuery("<span/>").addClass('ui-icon ui-icon-trash').click(function() {
-					// if(_this.deleteTaggedItem(tag_data.Id, params.tagged_item_id, params.model_name)) {
-					// 	this.parent().remove();
-					// }
-				}).prependTo(item);
+					_this.deleteTaggedItem(tag_data.Id, params.tagged_item_id, params.model_name, function(result) {
+						result && item.remove();
+					});
+				}).appendTo(item);
 				tagged_items.append(item);
 			});
 		});
