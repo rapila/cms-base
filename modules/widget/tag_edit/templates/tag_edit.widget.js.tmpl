@@ -1,0 +1,23 @@
+Widget.types.tag_edit = {
+	prepare: function() {
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		var types_dropdown = this.content.find("select[name='types']");
+		var templates_dropdown = this.content.find("select[name='template']");
+		var tag_area = this.content.find("div.tag_area");
+		
+		var display_options = this.getDisplayOptions();
+		var display_mode = this.getDisplayMode();
+		
+		jQuery.each(display_options,template, function(value, text) {
+			var option = jQuery('<option/>').attr('value', value).text(text);
+			templates_dropdown.append(option);
+		});
+		templates_dropdown.val(display_mode.template);
+					
+		this._element.append(this.content);
+	},
+	
+	save: function(callback) {
+		this.saveData(this._element.serializeArrayKV(), callback);
+	}
+};
