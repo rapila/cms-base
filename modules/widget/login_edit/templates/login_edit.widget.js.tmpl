@@ -7,6 +7,7 @@ Widget.types.login_edit = {
 			var option = jQuery('<option/>').attr('value', value).text(text);
 			mode_dropdown.append(option);
 		});
+		jQuery('<option/>').text("{{writeString=widget.choose}}").val('').prependTo(mode_dropdown);
 		mode_dropdown.val(this.getDisplayMode());
 		if(!mode_dropdown.val()) {
 			mode_dropdown.find("option:first-child").attr('selected', true);

@@ -252,6 +252,10 @@ select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
   width: 21.5em;
   padding: 0.2em;
 }
+select.display_mode {
+  min-width: 21.5em;
+  margin-bottom: 1em;
+}
 select.ui-widget-content { padding: 0.1em; }
 select.ui-widget-content:hover { border-color: #b5b5b5; }
 select.ui-widget-content:focus { border-color: #b5b5b5; }
