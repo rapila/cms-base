@@ -338,8 +338,21 @@ form.page_detail label.for_checkbox {
 	margin-right: 2em;
 	padding-left:.2em;
 }
+
 .group_fields {
 	float: left;
+}
+
+.group_fields:last-child {
+	float: none;
+}
+
+.group_fields + * {
+	clear: left;
+}
+
+.group_fields + .group_fields {
+	clear: none;
 }
 
 h3.ui-state-default a, 
@@ -374,8 +387,6 @@ input.ui-widget-content.input_short {
 input.ui-widget-content.autowidth {
 	width: auto !important;
 }
-
-.
 
 .page_detail {
 	.filled_modules {

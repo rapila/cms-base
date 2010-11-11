@@ -51,7 +51,11 @@ jQuery.fn.extend({
 				if(!jQuery.isArray(result[name])) {
 					result[name] = [];
 				}
-				result[name][result[name].length] = val;
+				if(jQuery.isArray(val)) {
+					result[name] = result[name].concat(val);
+				} else {
+					result[name][result[name].length] = val;
+				}
 			} else {
 				result[this.name] = val;
 			}

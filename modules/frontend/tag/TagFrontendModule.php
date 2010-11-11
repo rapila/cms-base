@@ -6,19 +6,20 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 	}
 	
 	public function renderFrontend() {
-		$aData = $this->getData();
+		$aData = unserialize($this->getData());
 		$oTemplate = new Template($aData['template']);
 		$oItemTemplatePrototype = new Template($aData['template'].'_item');
-		$sTags = $aData['tags'];
+		$aTagIDs = $aData['tags'];
 		$bItemFound = false;
 		
 		$aTags = array();
-		foreach(explode(",", $sTags) as $sTag) {
-			$oTag = TagPeer::retrieveByName($sTag);
+		foreach($aTagIDs as $iTagID) {
+			$oTag = TagPeer::retrieveByPK($iTagID);
 			if($oTag !== null) {
 				$aTags[] = $oTag;
 			}
 		}
+		
 		
 		// tagged items
 		foreach($aData['types'] as $sDocumentModel) {
@@ -55,7 +56,6 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 	}
 	
 	public function getWidget() {
-		$aOptions = @unserialize($this->getData());	
 		$oWidget = new TagEditWidgetModule(null, $this);
 		return $oWidget;
 	}

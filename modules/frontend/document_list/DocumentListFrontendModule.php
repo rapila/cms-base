@@ -17,6 +17,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		}
 		if(isset($aOptions['document_category_option']) && is_array($aOptions['document_category_option']) && (count($aOptions['document_category_option']) > 0)) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option'], Criteria::IN);
+		} else if(isset($aOptions['document_category_option'])) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option']);
 		}
 		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === self::SORT_OPTION_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);

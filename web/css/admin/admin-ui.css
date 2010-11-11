@@ -187,6 +187,9 @@ form.page_detail label.for_checkbox {
   padding-left: 0.2em;
 }
 .group_fields { float: left; }
+.group_fields:last-child { float: none; }
+.group_fields + * { clear: left; }
+.group_fields + .group_fields { clear: none; }
 h3.ui-state-default a {
   font-size: 1.2em;
   font-weight: 700;
@@ -240,7 +243,7 @@ h3.status { padding-left: 0.3em; }
 input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
 input.ui-widget-content.input_short { width: 6em; }
-input.ui-widget-content.autowidth { width: auto !important; }
+.autowidth, input.ui-widget-content.autowidth { width: auto !important; }
 .page_detail .filled_modules {
   min-width: 350px;
   max-width: 500px;

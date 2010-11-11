@@ -1,6 +1,10 @@
-<label for="types">{{writeString=widget.module}}</label>
-<select id="types" name="types[]" multiple="multiple" size="3" style="height:auto;"></select><br />
-<label for="template">{{writeString=widget.template}}</label>
-<select id="template" name="template"></select>
-<label for="data">{{writeString=widget.tags}}</label><div class="tag_area"> </div>
+<div class="group_fields">
+	<label for="types[]">{{writeString=widget.module}}</label>
+	<select name="types[]" multiple="multiple" size="3" style="height:auto;"></select>
+</div>
+<div class="group_fields">
+	<label for="template">{{writeString=widget.template}}</label>
+	<select name="template"></select>
+</div>
+<label>{{writeString=widget.tags}}</label><div class="tag_area"> </div>
 <input type="hidden" id="data" name="data" size="55" value="{{text}}" />
