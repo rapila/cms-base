@@ -23,10 +23,6 @@ class DocumentsAdminModule extends AdminModule {
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
-	public function getDocumentCategoriesUsedInPages() {
-		return LanguageObjectPeer::findCategoriesFilledInPages('document_list', 'document_category_option');
-	}
 		
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();

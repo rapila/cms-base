@@ -8,8 +8,10 @@ Widget.types.string = {
 		}
 	},
 	
-	handle_strings_for_list_result: function(string_key, keys, widget, option_getter) {
+	handle_strings_for_list_result: function(string_key, keys, widget, no_result_message, option_getter) {
+		console.log(widget);
 		option_getter = option_getter || 'getOption';
+		no_result_message = no_result_message || "{{writeString=widget.no_result.default_message}}";
 		var message_id = 'search_message'+widget.widgetId;
 		var strings = this;
 		widget.handle('reloaded', function(event, list_length) {
@@ -20,9 +22,9 @@ Widget.types.string = {
 			}
 		
 			message = jQuery('<div/>').append(strings.get_string(string_key));
-			var list = jQuery('<ul/>').appendTo(message);
+			var criteria_list = jQuery('<ul/>').appendTo(message);
 			var append_message = function(string_detail, parameters) {
-				list.append(jQuery('<li/>').append(strings.get_string(string_key+'.'+string_detail, parameters)));
+				criteria_list.append(jQuery('<li/>').append(strings.get_string(string_key+'.'+string_detail, parameters)));
 			};
 		
 			var search = widget.getSearch({search: search});
@@ -37,8 +39,10 @@ Widget.types.string = {
 					append_message(key, parameters);
 				}
 			});
-			if(list.children().length > 0) {
+			if(criteria_list.children().length > 0) {
 				Widget.notifyUser('info', message, {isHTML: true, closable: false, identifier: message_id, searchInfo: true});
+			} else {
+				Widget.notifyUser('info', no_result_message, {isHTML: true, closable: false, identifier: message_id, searchInfo: true});
 			}
 		}, false, true);
 	},
