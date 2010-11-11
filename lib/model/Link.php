@@ -12,5 +12,21 @@ class Link extends BaseLink {
 		}
 		return null;
 	}
+	
+	public function shouldBeIncludedInList($sLanguageId, $oPage) {
+		return $this->getLanguageId() === null || $this->getLanguageId() === $sLanguageId;
+	}
+	
+	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier("name", $this->getName());
+		$oTemplate->replaceIdentifier("link_text", $this->getName());
+		$oTemplate->replaceIdentifier("title", $this->getName());
+		$oTemplate->replaceIdentifier("description", $this->getDescription());
+		$oTemplate->replaceIdentifier("url", $this->getUrl());
+		$oTemplate->replaceIdentifier('link_category_id', $this->getLinkCategoryId());
+		$oTemplate->replaceIdentifier('category_id', $this->getLinkCategoryId());
+		$oTemplate->replaceIdentifier('link_category', $this->getLinkCategory()->getName());
+		$oTemplate->replaceIdentifier('category', $this->getLinkCategory()->getName());
+	}
 
 }

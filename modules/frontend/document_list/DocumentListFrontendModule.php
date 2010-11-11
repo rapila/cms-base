@@ -29,15 +29,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 			foreach($aDocuments as $i => $oDocument) {
 				$oItemTemplate = new Template($aOptions['template_option'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Document');
-				$oItemTemplate->replaceIdentifier('name', $oDocument->getName());
-				$oItemTemplate->replaceIdentifier('link_text', $oDocument->getName());
-				$oItemTemplate->replaceIdentifier('title', $oDocument->getName());
-				$oItemTemplate->replaceIdentifier('description', $oDocument->getDescription());
-				$oItemTemplate->replaceIdentifier('extension', $oDocument->getExtension());
-				$oItemTemplate->replaceIdentifier('mimetype', $oDocument->getMimetype());
-				$oItemTemplate->replaceIdentifier('url', $oDocument->getDisplayUrl());
-				$oItemTemplate->replaceIdentifier('document_category_id', $oDocument->getDocumentCategoryId());
-				$oItemTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'kb'));
+				$oDocument->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
 		} catch(Exception $e) {

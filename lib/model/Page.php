@@ -310,6 +310,18 @@ class Page extends BasePage {
 		return null;
 	}
 
+	public function shouldBeIncludedInList($sLanguageId, $oPage) {
+		return $oPage === null || $this->getId() !== $oPage->getId();
+	}
+	
+	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier("name", $this->getName());
+		$oTemplate->replaceIdentifier("link_text", $this->getLinkText());
+		$oTemplate->replaceIdentifier("title", $this->getPageTitle());
+		$oTemplate->replaceIdentifier("description", $this->getPageTitle());
+		$oTemplate->replaceIdentifier("url", LinkUtil::link($this->getLink()));
+	}
+	
 	public function getFullPathArray() {
 		if(!$this->aFullPathArray) {
 			$this->aFullPathArray = array();

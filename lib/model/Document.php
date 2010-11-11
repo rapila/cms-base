@@ -40,6 +40,25 @@ class Document extends BaseDocument {
 		return LinkUtil::link(array($sFileModule, $this->getId()), "FileManager", $aUrlParameters);
 	}
 	
+	public function shouldBeIncludedInList($sLanguageId, $oPage) {
+		return $this->getLanguageId() === null || $this->getLanguageId() === $sLanguageId;
+	}
+	
+	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier('name', $this->getName());
+		$oTemplate->replaceIdentifier('link_text', $this->getName());
+		$oTemplate->replaceIdentifier('title', $this->getName());
+		$oTemplate->replaceIdentifier('description', $this->getDescription());
+		$oTemplate->replaceIdentifier('extension', $this->getExtension());
+		$oTemplate->replaceIdentifier('mimetype', $this->getMimetype());
+		$oTemplate->replaceIdentifier('url', $this->getDisplayUrl());
+		$oTemplate->replaceIdentifier('document_category_id', $this->getDocumentCategoryId());
+		$oTemplate->replaceIdentifier('category_id', $this->getDocumentCategoryId());
+		$oTemplate->replaceIdentifier('document_category', $this->getCategoryName());
+		$oTemplate->replaceIdentifier('category', $this->getCategoryName());
+		$oTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($this->getDataSize(), 'kb'));
+	}
+	
 	public function getCategoryName() {
 		if($this->getDocumentCategory()) {
 			return $this->getDocumentCategory()->getName();
