@@ -16,11 +16,13 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 			$oTag = new Tag();
 		}
 		$aResult = $oTag->toArray();
+		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oTag);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oTag);
 		$aResult['tagged_models_and_items'] = array();
 		foreach($oTag->getTagInstances() as $oTagInstance) {
 			$oCorrObject = $oTagInstance->getCorrespondingDataEntry();
 			if($oCorrObject) {
-				$aResult['tagged_models_and_items'][] = array('name' => Util::descriptionForObject($oCorrObject), 'tagged_item_id' => $oTagInstance->getTaggedItemId(), 'model_name' => $oTagInstance->getModelName());
+				$aResult['tagged_models_and_items'][] = array('name' => Util::nameForObject($oCorrObject), 'tagged_item_id' => $oTagInstance->getTaggedItemId(), 'model_name' => $oTagInstance->getModelName());
 			} else {
 				$oTagInstance->delete();
 			}
