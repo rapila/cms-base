@@ -183,9 +183,15 @@ Widget.types.page_type.types['default'] = {
 		
 		
 		// get containers before filling the objects
-		page_type.callPageTypeMethod('adminGetContainers', function(container_html) {
+		page_type.callPageTypeMethod('adminGetContainers', function(container_result) {
+			var container_html = container_result.html;
 			if(container_html) {
 				jQuery.parseHTML(container_html).appendTo(filled_modules);
+			}
+			if(container_result.css_parsed) {
+				filled_modules.addClass('css_parsed');
+			} else {
+				filled_modules.removeClass('css_parsed');
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
 			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').attr('title', "{{writeString=widget.delete_content_object}}").css({ float:"right", cursor: "pointer" });

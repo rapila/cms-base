@@ -293,6 +293,7 @@ input.ui-widget-content.autowidth { width: auto !important; }
 .page_detail .filled_modules ol.template-container li {
   margin: 3px;
   padding: 5px 6px;
+  min-height: 15.6px;
 }
 .page_detail .ui-widget-content .ui-icon {
   height: 20px;

@@ -396,7 +396,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$sResult = $oTag->__toString();
 		$sResult = substr($sResult, strpos($sResult, '<body>')+6);
 		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
-		return $sResult;
+		return array('html' => $sResult, 'css_parsed' => $bUseParsedCss);
 	}
 	
 	private function cleanupContainerStructure($mTag, $oParent = null) {
