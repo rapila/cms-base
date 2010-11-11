@@ -9,31 +9,23 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 		$aData = unserialize($this->getData());
 		$oTemplate = new Template($aData['template']);
 		$oItemTemplatePrototype = new Template($aData['template'].'_item');
-		$aTagIDs = $aData['tags'];
 		$bItemFound = false;
 		
-		$aTags = array();
-		foreach($aTagIDs as $iTagID) {
+		foreach($aData['tags'] as $iTagID) {
 			$oTag = TagPeer::retrieveByPK($iTagID);
-			if($oTag !== null) {
-				$aTags[] = $oTag;
+			if($oTag === null) {
+				continue;
 			}
-		}
-
-		// tagged items
-		foreach($aData['types'] as $sDocumentModel) {
-			foreach($aTags as $oTag) {
-				$aCorrespondingItems = $oTag->getAllCorrespondingDataEntries($sDocumentModel);
-				foreach($aCorrespondingItems as $oCorrespondingItem) {
-					if(!$oCorrespondingItem->shouldBeIncludedInList(Session::language(), FrontendManager::$CURRENT_PAGE)) {
-						continue;
-					}
-					$bItemFound = true;
-					$oItemTemplate = clone $oItemTemplatePrototype;
-					$oItemTemplate->replaceIdentifier('model', $sDocumentModel);
-					$oCorrespondingItem->renderListItem($oItemTemplate);
-					$oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
+			$aCorrespondingItems = $oTag->getAllCorrespondingDataEntries($aData['types']);
+			foreach($aCorrespondingItems as $oCorrespondingItem) {
+				if(!$oCorrespondingItem->shouldBeIncludedInList(Session::language(), FrontendManager::$CURRENT_PAGE)) {
+					continue;
 				}
+				$bItemFound = true;
+				$oItemTemplate = clone $oItemTemplatePrototype;
+				$oItemTemplate->replaceIdentifier('model', get_class($oCorrespondingItem));
+				$oCorrespondingItem->renderListItem($oItemTemplate);
+				$oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
 			}
 		}
 		if(!$bItemFound) {

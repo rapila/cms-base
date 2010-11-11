@@ -42,7 +42,7 @@ Widget.types.tag_edit = {
 		this.templates_dropdown.val(current_mode.template);
 		jQuery.each(this.tag_area.find('.tag'), function() {
 			var tag = jQuery(this);
-			if(jQuery.inArray(tag.data('tag_id'), current_mode.tags)) {
+			if(current_mode.tags.indexOf(tag.data('tag_id')) > -1) {
 				tag.addClass('active');
 			} else {
 				tag.removeClass('active');
@@ -56,6 +56,7 @@ Widget.types.tag_edit = {
 		this.tag_area.find('.tag.active').each(function() {
 			form_settings.tags.push(jQuery(this).data('tag_id'));
 		});
+		console.log('saved tags', form_settings.tags);
 		this.saveData(form_settings, callback);
 	}
 };

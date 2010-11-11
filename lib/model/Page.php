@@ -319,7 +319,7 @@ class Page extends BasePage {
 		$oTemplate->replaceIdentifier("link_text", $this->getLinkText());
 		$oTemplate->replaceIdentifier("title", $this->getPageTitle());
 		$oTemplate->replaceIdentifier("description", $this->getPageTitle());
-		$oTemplate->replaceIdentifier("url", LinkUtil::link($this->getLink()));
+		$oTemplate->replaceIdentifier("url", LinkUtil::link($this->getFullPathArray(), 'FrontendManager'));
 	}
 	
 	public function getFullPathArray() {

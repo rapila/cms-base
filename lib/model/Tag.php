@@ -6,11 +6,19 @@ require_once 'model/om/BaseTag.php';
  * @package model
  */ 
 class Tag extends BaseTag {
-	public function getAllCorrespondingDataEntries($sType=null) {
+	public function getAllCorrespondingDataEntries($mType = null) {
 		$aResults = array();
-		foreach($this->getTagInstances() as $oTagInstance) {
+		$oCriteria = new Criteria();
+		if($mType !== null) {
+			if(is_array($mType)) {
+				$oCriteria->add(TagInstancePeer::MODEL_NAME, $mType, Criteria::IN);
+			} else {
+				$oCriteria->add(TagInstancePeer::MODEL_NAME, $mType);
+			}
+		}
+		foreach($this->getTagInstances($oCriteria) as $oTagInstance) {
 			$oDataEntry = $oTagInstance->getCorrespondingDataEntry();
-			if($oDataEntry === null || ($sType !== null && $sType !== get_class($oDataEntry))) {
+			if($oDataEntry === null) {
 				continue;
 			}
 			$aResults[] = $oDataEntry;
