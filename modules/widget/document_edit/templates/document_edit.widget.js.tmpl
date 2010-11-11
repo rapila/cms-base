@@ -1,17 +1,19 @@
 Widget.types.document_edit = {
 	prepare: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		var display_modes = this.getDisplayMode();
+		var display_mode = this.getDisplayMode();
 		var _this = this;
-		jQuery.each(this.getConfigurationModes(), function(select_name, options) {
-			var select_element = _this.content.find("select[name="+select_name+"]");
+		jQuery.each(this.getConfigurationModes(), function(config_name, options) {
+			var select_name = config_name;
+			if(select_name === 'categories') {
+				select_name += '[]';
+			}
+			var select_element = _this.content.find("select[name='"+select_name+"']");
 			jQuery.each(options, function(key, value) {
 				var option = jQuery('<option/>').attr('value', key).text(value);
-				if(display_modes[select_name] == key) {
-					option.attr('selected', true);
-				}
 				select_element.append(option);
 			});
+			select_element.val(display_mode[config_name]);
 		});
 		this._element.append(this.content);
 

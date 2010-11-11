@@ -15,21 +15,21 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		if(!Session::getSession()->isAuthenticated()) {
 			$oCriteria->filterByIsProtected(false);
 		}
-		if(isset($aOptions['document_category_option']) && is_array($aOptions['document_category_option']) && (count($aOptions['document_category_option']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option'], Criteria::IN);
-		} else if(isset($aOptions['document_category_option'])) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_category_option']);
+		if(isset($aOptions['categories']) && is_array($aOptions['categories']) && (count($aOptions['categories']) > 0)) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories'], Criteria::IN);
+		} else if(isset($aOptions['categories'])) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories']);
 		}
-		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === self::SORT_OPTION_BY_SORT) {
+		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_OPTION_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
 		}
 		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
 		$aDocuments = $oCriteria->find();
 		
 		try {
-			$oListTemplate = new Template($aOptions['template_option']);
+			$oListTemplate = new Template($aOptions['list_template']);
 			foreach($aDocuments as $i => $oDocument) {
-				$oItemTemplate = new Template($aOptions['template_option'].self::LIST_ITEM_POSTFIX);
+				$oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Document');
 				$oDocument->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
@@ -46,7 +46,14 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	
 	public function widgetSave($mData) {
 		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
+		$bResult = $this->oLanguageObject->save();
+		if($bResult) {
+			ReferencePeer::removeReferences($this->oLanguageObject);
+			foreach($mData['categories'] as $iCategoryId) {
+				ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'DocumentCategory'));
+			}
+		}
+		return $bResult;
 	}
 	
 	public function getWidget() {
