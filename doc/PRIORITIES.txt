@@ -8,11 +8,8 @@ Tags
 - TagsAdminModule, Ajax methods etc.
 
 Priority list
--	login_edit.widget.js und game_edit.widget.js
-- add titles to config windows
 - Dialog Windows, confict prototype?
 - user profile how to edit
-- is_inactive in pages.admin.js added to add class is_inactive for page
 - highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - delete language objects does not update other languages > bug on trying to delete again
@@ -705,7 +702,6 @@ CSSParser, adminGetContainers(), no major priority, can be done anytime
 Security and Stability!!!!!
 - ResourceInclude make stable, fallback for google lib.
 
-
 Widget tasks
 - check session storage of widgets WidgetModule::removeStoredWidgets();
 - sidebar element edit/delete?
@@ -729,3 +725,6 @@ Widget tasks
 	BUG Image ??, Bug Link
 - Media-Object make more transparent, button bug etc
 	handle delete_media in form
+-	login_edit.widget.js und game_edit.widget.js
+- add titles to config windows
+- is_inactive in pages.admin.js added to add class is_inactive for page

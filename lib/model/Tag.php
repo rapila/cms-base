@@ -30,5 +30,9 @@ class Tag extends BaseTag {
 	public function reloadInstances() {
 		$this->collTagInstances=null;
 	}
+	
+	public function getTagInstanceCount() {
+		return $this->countTagInstances();
+	}
 }
 
