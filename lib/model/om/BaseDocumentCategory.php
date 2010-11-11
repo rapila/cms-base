@@ -713,6 +713,10 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
+			// referenceable behavior
+			if(ReferencePeer::hasReference($this)) {
+				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
+			}
 			if ($ret) {
 				DocumentCategoryQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
@@ -1701,6 +1705,15 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 		$this->aUserRelatedByUpdatedBy = null;
 	}
 
+	// referenceable behavior
+	
+	/**
+	 * @return A list of References (not Objects) which reference this DocumentCategory
+	 */
+	public function getReferees()
+	{
+		return ReferencePeer::getReferences($this);
+	}
 	// extended_timestampable behavior
 	
 	/**
