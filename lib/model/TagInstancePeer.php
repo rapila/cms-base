@@ -67,4 +67,20 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		return self::doSelect($oCriteria);
 	}
 	
+	public static function getTaggedModels() {
+		$aResult = array();
+		foreach(TagInstancePeer::doSelectStmt(self::getTaggedModelsCriteria())->fetchAll(PDO::FETCH_ASSOC) as $aTag) {
+			$sTableName = constant($aTag['MODEL_NAME'].'Peer::TABLE_NAME');
+			$sName = StringPeer::getString('module.backend.'.$sTableName);
+			$aResult[$aTag['MODEL_NAME']] = $sName;
+		}
+		return $aResult;
+	}
+	
+	public static function getTaggedModelsCriteria() {
+		$oCriteria = new Criteria();
+		$oCriteria->clearSelectColumns()->addSelectColumn(TagInstancePeer::MODEL_NAME);
+		return $oCriteria->setDistinct();
+	}
+	
 }

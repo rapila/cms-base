@@ -46,8 +46,7 @@ class TagsAdminModule extends AdminModule {
 	}
 	
 	public static function getCustomListElements() {
-		ErrorHandler::log(TagEditWidgetModule::getTaggedModels(true));
-		if(count(TagEditWidgetModule::getTaggedModels(true)) > 0) {
+		if(TagInstancePeer::doCount(TagInstancePeer::getTaggedModelsCriteria())) {
 		 	return array(
 				array('model_name' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('widget.documents.select_all_title'),
@@ -59,7 +58,7 @@ class TagsAdminModule extends AdminModule {
 	
 	public static function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
-		foreach(TagEditWidgetModule::getTaggedModels() as $sModel => $sModelName) {
+		foreach(TagInstancePeer::getTaggedModels() as $sModel => $sModelName) {
 			$aResult[] = array('title' => $sModelName, 'model_name' => $sModel);
 		}
 		if($iRowCount === null) {
