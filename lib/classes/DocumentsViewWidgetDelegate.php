@@ -111,6 +111,9 @@ class DocumentsViewWidgetDelegate {
 		if($sColumnName === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
+		if($sColumnName === 'language_id') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
 		if($sColumnName === 'document_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
