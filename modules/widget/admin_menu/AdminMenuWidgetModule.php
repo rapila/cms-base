@@ -12,9 +12,11 @@ class AdminMenuWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function getLoggedInName() {
+	public function getUserInfo() {
 		if(Session::getSession()->isAuthenticated()) {
-			return Session::getSession()->getUser()->getFullName();
+			$aResult['FullName'] = Session::getSession()->getUser()->getFullName();
+			$aResult['Id'] = Session::getSession()->getUserId();
+			return $aResult;
 		}
 	}
 	

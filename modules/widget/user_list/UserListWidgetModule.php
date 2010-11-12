@@ -78,6 +78,25 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
+	public function getUserKindName() {
+		$aUserKinds = UserKindInputWidgetModule::getUserKinds();
+		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) { 
+			return $aUserKinds[$this->oDelegateProxy->getUserKind()];
+		}
+		return $this->oDelegateProxy->getUserKind();
+	}
+	
+	public function getGroupName() {
+		$oGroup = GroupPeer::retrieveByPK($this->oDelegateProxy->getGroupId());
+		if($oGroup) {
+			return $oGroup->getName();
+		}
+		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return StringPeer::getString('widget.user_list.without_category');
+		}
+		return $this->oDelegateProxy->getGroupId();
+	}
+	
 	public function getFilterTypeForColumn($sColumnName) {
 		if($sColumnName === 'user_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;

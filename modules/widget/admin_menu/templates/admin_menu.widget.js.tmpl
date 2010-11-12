@@ -253,8 +253,10 @@ Widget.types.admin_menu = {
 		},
 		
 		user: function() {
-			return {text: this.getLoggedInName(), callback: function() {
-				window.location.href = '{{writeLink=users;manager=AdminManager;user_id=1}}';
+			var user_info = this.getUserInfo();
+			console.log(user_info);
+			return {text: user_info.FullName, callback: function() {
+				window.location.href = '{{writeLink=users;manager=AdminManager;user_id}}='+user_info.Id;
 			}};
 		}
 	}

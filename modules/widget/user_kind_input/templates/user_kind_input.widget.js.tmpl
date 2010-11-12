@@ -1,7 +1,6 @@
 Widget.types.user_kind_input = {
 	prepare: function() {
 		this.fill_content();
-		
 		this._element.change(function() {
 			if(this.settings.store_value) {
 				this.setSelectedUserKind(this._element.val());
