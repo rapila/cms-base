@@ -3,9 +3,8 @@ PRIORITAETEN:
 taylormade /config/isp_verify_userArray
 Schule Altenburg
 
-Tags
-- for more flexibility make static methods in FrontendModules that are used internally and can be accessed by tags
-- TagsAdminModule, Ajax methods etc.
+Tag Cloud widget for detail objects etc
+Newsletter:: load template see NewsletterBackendModule
 
 Priority list
 - Dialog Windows, confict prototype?
@@ -728,3 +727,6 @@ Widget tasks
 -	login_edit.widget.js und game_edit.widget.js
 - add titles to config windows
 - is_inactive in pages.admin.js added to add class is_inactive for page
+Tags
+- for more flexibility make static methods in FrontendModules that are used internally and can be accessed by tags
+- TagsAdminModule, Ajax methods etc.

@@ -56,7 +56,7 @@ Widget.types.tag_edit = {
 		this.tag_area.find('.tag.active').each(function() {
 			form_settings.tags.push(jQuery(this).data('tag_id'));
 		});
-		console.log('saved tags', form_settings.tags);
+		// console.log('saved tags', form_settings.tags);
 		this.saveData(form_settings, callback);
 	}
 };
