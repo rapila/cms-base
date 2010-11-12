@@ -4,7 +4,10 @@ taylormade /config/isp_verify_userArray
 Schule Altenburg
 
 Tag Cloud widget for detail objects etc
-Newsletter:: load template see NewsletterBackendModule
+NewsletterDetail:
+- Reload on save
+- fix CKEditor bug if two instances of newsletter_body exist (2. time new newsletter)
+- discuss general handling, like when change template, send options etc
 
 Priority list
 - Dialog Windows, confict prototype?
