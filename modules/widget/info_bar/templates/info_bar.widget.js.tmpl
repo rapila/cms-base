@@ -70,7 +70,7 @@ Widget.types.info_bar = {
 	
 	add_search_input: function(default_value, click_handler) {
 		if(!default_value) {
-			default_value = "{{writeString=widget.search}}";
+			default_value = "{{writeString=widget.search.enter_search}}";
 		}
 		var search_input = jQuery('<input/>').addClass('default_state search_field').attr({name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
 		this.add_element(search_input, true, false, 'f');

@@ -66,7 +66,7 @@ jQuery(document).ready(function() {
 				});
 			}).add_button('action', function() {
 					alert('action example: delete all currently shown documents');
-			}).add_search_input("{{writeString=search.file}}", function(search) {
+			}).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
 				documents_view.set_search_string(search);
 				if(documents_view.changed) {
 					documents_view.reload();

@@ -39,7 +39,7 @@ jQuery(document).ready(function() {
 				Widget.create('sidebar_input', function(widget) {
 					widget.add_new_sidebar_input("{{writeString=widget.group.default_name}}", 'Group', sidebar);
 				});
-			}).add_search_input("{{writeString=search.groups}}", function(search) {
+			}).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
 				if(role_list.setSearch(search)) {
 					role_list.reload();
 				}

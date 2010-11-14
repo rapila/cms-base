@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
 				Widget.create('sidebar_input', function(widget) {
 					widget.add_new_sidebar_input("{{writeString=widget.link_category.default_name}}", 'LinkCategory', sidebar);
 				});
-			}).add_search_input("{{writeString=search.link}}", function(search) {
+			}).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
 				if(link_list.setSearch(search)) {
 					link_list.reload();
 				}

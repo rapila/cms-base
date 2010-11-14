@@ -46,7 +46,7 @@ jQuery(document).ready(function() {
 						}
 					};
 				});
-			}, 'n', true).add_search_input("{{writeString=search.strings}}", function(search) {
+			}, 'n', true).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
 				if(string_list.setSearch(search)) {
 					string_list.reload();
 				}
