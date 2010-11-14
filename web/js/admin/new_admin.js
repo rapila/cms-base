@@ -58,8 +58,7 @@ jQuery.extend(Widget, {
 		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
 		if(options.searchInfo) {
-			closeDelay: 5000;
-			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>');
+			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div	></div></div>');
 		} else {
 			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div	></div></div>');
 		}
