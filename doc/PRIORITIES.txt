@@ -11,6 +11,7 @@ NewsletterDetail:
 - discuss general handling, like when change template, send options etc
 
 Priority list
+- login remove close button, fix padding input fields on logout
 - Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
 - NotPermittedException exception PageDetailWidget, general implementation for modules, delete, create, edit, etc?
 	possible criteria: owner, language etc.
