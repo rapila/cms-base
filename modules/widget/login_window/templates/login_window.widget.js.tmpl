@@ -22,6 +22,7 @@ Widget.types.login_window = {
 			modal: true,
 			resizable: false,
 			closeOnEscape: false,
+			dialogClass: 'login_window',
 			buttons: [{
 				text: "{{writeString=login}}",
 				className: 'primary ui-state-highlight',
@@ -29,7 +30,7 @@ Widget.types.login_window = {
 					login_window.login_markup.children('form').submit();
 				}
 			}, {
-				text: "{{writeString=login.password_forgotten}}",
+				text: "{{writeString=widget.cancel}}",
 				className: 'secondary',
 				click: function() {
 					window.location.href = "{{writeLink=;password_forgotten=true;manager=LoginManager;is_absolute=true}}";
@@ -40,7 +41,24 @@ Widget.types.login_window = {
 	
 	show: function() {
 		this.login_markup.dialog('open');
-		this.login_markup.find("input[name='user_name']").select();
+		var user_name_input = this.login_markup.find("input[name='user_name']").select();
+		user_name_input.focus(function() {
+			if(user_name_input.is('.input_default_state')) {
+				user_name_input.removeClass('input_default_state').val('');
+			}
+		});
+		var password_input_fake = this.login_markup.find("input#password_input_fake");
+		var password_input_correct = this.login_markup.find("input#password_input_correct");
+		password_input_fake.focus(function() {
+			password_input_fake.hide();
+			password_input_correct.show().focus();
+		});
+		password_input_correct.blur(function() {
+			if(password_input_correct.val() == '') {
+				password_input_correct.hide();
+				password_input_fake.show().focus();
+			}
+		});
 	}
 };
 
