@@ -1,22 +1,22 @@
 Widget.types.login_window = {
 	initialize: function() {
 		this.login_markup = jQuery('<div class="cmos_alert"><form/></div>');
-		var login_window = this;
+		var _this = this;
 		this.login_markup.children('form').append("{{includeTemplate=login_window.incl}}").bind('submit', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			var form = jQuery(this);
 			var attributes = form.serializeArrayKV();
-			login_window.login(attributes.user_name, attributes.password, function(result, error) {
+			_this.login(attributes.user_name, attributes.password, function(result, error) {
 				if(error) {
-					login_window.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
+					_this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
 				} else {
-					login_window.login_markup.dialog('close');
+					_this.login_markup.dialog('close');
 					Widget.fire('cmos.logged_in');
 				}
 			});
 		});
-		login_window.login_markup.dialog({
+		this.login_markup.dialog({
 			title: '{{writeString=widget.login_at_site}}',
 			autoOpen: false,
 			modal: true,
@@ -27,7 +27,7 @@ Widget.types.login_window = {
 				text: "{{writeString=login}}",
 				className: 'primary ui-state-highlight',
 				click: function() {
-					login_window.login_markup.children('form').submit();
+					_this.login_markup.children('form').submit();
 				}
 			}, {
 				text: "{{writeString=widget.cancel}}",
@@ -37,28 +37,41 @@ Widget.types.login_window = {
 				}
 			}]
 		});
+		this.login_markup.find('.input_default_state').each(function() {
+			var input = jQuery(this);
+			input.data('default_value', input.val());
+		}).bind('focus', function(event) {
+			var input = jQuery(this);
+			if(!event.originalEvent) {
+				//Is artificial focus – ignore
+				input.select();
+				return;
+			}
+			if(input.is('.input_default_state')) {
+				input.removeClass('input_default_state').val('');
+			}
+			if(input.is('.password_input')) {
+				input[0].type = "password";
+			}
+		}).bind('keypress', function() {
+			var input = jQuery(this);
+			if(input.is('.input_default_state')) {
+				input.removeClass('input_default_state');
+			}
+		}).bind('blur', function() {
+			var input = jQuery(this);
+			if(!input.val()) {
+				input.addClass('input_default_state');
+				input.val(input.data('default_value'));
+				if(input.is('.password_input')) {
+					input[0].type = "text";
+				}
+			}
+		});
 	},
 	
 	show: function() {
 		this.login_markup.dialog('open');
-		var user_name_input = this.login_markup.find("input[name='user_name']").select();
-		user_name_input.focus(function() {
-			if(user_name_input.is('.input_default_state')) {
-				user_name_input.removeClass('input_default_state').val('');
-			}
-		});
-		var password_input_fake = this.login_markup.find("input#password_input_fake");
-		var password_input_correct = this.login_markup.find("input#password_input_correct");
-		password_input_fake.focus(function() {
-			password_input_fake.hide();
-			password_input_correct.show().focus();
-		});
-		password_input_correct.blur(function() {
-			if(password_input_correct.val() == '') {
-				password_input_correct.hide();
-				password_input_fake.show().focus();
-			}
-		});
 	}
 };
 
