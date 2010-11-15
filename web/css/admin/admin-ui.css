@@ -437,3 +437,4 @@ label span.error_display { color: red; }
   display: inline-block;
   cursor: pointer;
 }
+.error_display_indicator { background-color: red !important; }

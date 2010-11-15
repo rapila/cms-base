@@ -178,7 +178,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 
 	private function validate($aPageData) {
 		$oFlash = Flash::getFlash();
-		ErrorHandler::log($aPageData);
 		$oFlash->setArrayToCheck($aPageData);
 		$oFlash->checkForValue('name', 'page.name_required');
 		$oFlash->finishReporting();

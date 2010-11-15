@@ -109,6 +109,7 @@ Widget.types.detail = {
 	
 	clear_validation: function() {
 		this.content.find('.error_display').remove();
+		this.content.find('.error_display_indicator').removeClass("error_display_indicator");
 	},
 	
 	validate_with: function(errors) {
@@ -119,8 +120,24 @@ Widget.types.detail = {
 				message = jQuery.parseHTML(message);
 			}
 			var validate_element = detail.content.find('.validate-'+key.escapeSelector());
+			detail.tabs_for(validate_element).addClass('error_display_indicator');
 			jQuery(validate_element).append(message);
 		});
+	},
+	
+	tabs_for: function(element) {
+		var current_element = element;
+		var result = jQuery();
+		while(current_element.length && current_element[0] !== this.content[0]) {
+			if(current_element.is('.ui-accordion-content')) {
+				result = result.add(current_element.prev());
+			} 
+			if(current_element.is('.ui-tabs-panel')) {
+				result = result.add(current_element.parent().find('a[href="'+'#'+current_element.attr('id')+'"]').parent());
+			}
+		 current_element = current_element.parent();
+		}
+		return result;
 	},
 	
 	has_dialog: false,
