@@ -50,7 +50,7 @@ Widget.types.login_window = {
 			if(input.is('.input_default_state')) {
 				input.removeClass('input_default_state').val('');
 			}
-			if(input.is('.password_input')) {
+			if(input.is('[name="password"]')) {
 				input[0].type = "password";
 			}
 		}).bind('keypress', function() {
@@ -63,7 +63,7 @@ Widget.types.login_window = {
 			if(!input.val()) {
 				input.addClass('input_default_state');
 				input.val(input.data('default_value'));
-				if(input.is('.password_input')) {
+				if(input.is('[name="password"]')) {
 					input[0].type = "text";
 				}
 			}
