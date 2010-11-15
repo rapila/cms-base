@@ -259,6 +259,7 @@ jQuery.extend(Widget, {
 				return;
 			}
 			var widget = new Widget.types[widgetType](instanceInformation);
+			widget._type = widgetType;
 			
 			//Settings need to be mutable without changing globally
 			widget.settings = {};

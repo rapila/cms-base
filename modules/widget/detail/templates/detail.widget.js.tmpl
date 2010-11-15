@@ -12,6 +12,11 @@ Widget.types.detail = {
 				instance.close();
 			});
 		};
+		if(this.has_dialog) {
+			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+this.instance._type);
+		} else {
+			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+this.instance._type;
+		}
 		this.settings.cancel_callback = instance.close.bind(instance);
 		return this;
 	},
@@ -187,6 +192,7 @@ Widget.types.detail = {
 		save_callback: jQuery.noop,
 		select: "input:eq(0)",
 		width: 480,
+		dialogClass: '',
 		height: 'auto'
 	}
 };
