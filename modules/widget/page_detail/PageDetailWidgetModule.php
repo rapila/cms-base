@@ -176,12 +176,25 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		return $oPage->save();
 	}
 
+	private function validate($aPageData) {
+		$oFlash = Flash::getFlash();
+		ErrorHandler::log($aPageData);
+		$oFlash->setArrayToCheck($aPageData);
+		$oFlash->checkForValue('name', 'page.name_required');
+		$oFlash->finishReporting();
+	}
+
 	public function saveData($aPageData) {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
 	  if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
-	    // return authentication exception?
+			throw new NotPermittedException('may_edit_page_details');
 	  }
 		// validate post values / fetch most with js
+		$this->validate($aPageData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+
 		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
 		$this->oPage->setIsInactive(!$aPageData['global_is_active']);
 		$this->oPage->setIsHidden($aPageData['is_hidden']);

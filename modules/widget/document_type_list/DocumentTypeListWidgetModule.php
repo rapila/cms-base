@@ -65,6 +65,13 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		return null;
 	}
 	
+	public function getDocumentKindName() {
+		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return DocumentTypePeer::getDocumentKindName($this->oDelegateProxy->getDocumentKind());
+		}
+		return $this->oDelegateProxy->getDocumentKind();
+	}
+	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {

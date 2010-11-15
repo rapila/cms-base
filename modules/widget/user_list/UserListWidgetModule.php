@@ -92,7 +92,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 			return $oGroup->getName();
 		}
 		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.user_list.without_category');
+			return StringPeer::getString('widget.users.without_category');
 		}
 		return $this->oDelegateProxy->getGroupId();
 	}

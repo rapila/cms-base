@@ -11,6 +11,10 @@ NewsletterDetail:
 - discuss general handling, like when change template, send options etc
 
 Priority list
+- Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
+- NotPermittedException exception PageDetailWidget, general implementation for modules, delete, create, edit, etc?
+	possible criteria: owner, language etc.
+- search pages
 - Dialog Windows, confict prototype?
 - user profile how to edit
 - highlight of persistant page does still not work properly

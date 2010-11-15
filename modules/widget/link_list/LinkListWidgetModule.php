@@ -88,7 +88,7 @@ class LinkListWidgetModule extends WidgetModule {
 			return $oLinkCategory->getName();
 		}
 		if($this->oDelegateProxy->getLinkCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.link_list.without_category');
+			return StringPeer::getString('widget.links.without_category');
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}

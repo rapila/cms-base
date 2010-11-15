@@ -151,7 +151,7 @@ class DocumentsViewWidgetDelegate {
 			return $oDocumentCategory->getName();
 		}
 		if($this->getDocumentCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.document_list.without_category');
+			return StringPeer::getString('widget.documents.without_category');
 		}
 		return $this->getDocumentCategoryId();
 	}
