@@ -13,9 +13,9 @@ Widget.types.detail = {
 			});
 		};
 		if(this.has_dialog) {
-			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+this.instance._type);
+			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+instance._type);
 		} else {
-			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+this.instance._type;
+			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
 		return this;
