@@ -9,7 +9,9 @@ Widget.types.detail = {
 			instance.fire('saving');
 			instance.saveData(instance.content.serializeArrayKV(), function() {
 				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
-				instance.close();
+				if(!instance.settings.remains_open) {
+					instance.close();
+				}
 			});
 		};
 		if(this.has_dialog) {
