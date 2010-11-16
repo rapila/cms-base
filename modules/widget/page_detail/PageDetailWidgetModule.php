@@ -180,6 +180,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aPageData);
 		$oFlash->checkForValue('name', 'page.name_required');
+		foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
+			if(isset($aPageData['is_active'][$iCounter]) && $aPageData['page_title'][$iCounter] == '') {
+				// $oFlash->addMessage('page_title_required_'.$sLanguageId);
+			}
+		}
 		$oFlash->finishReporting();
 	}
 
