@@ -71,6 +71,85 @@ Widget.types.detail = {
 		this.has_dialog = true;
 	},
 	
+	close: function() {
+		this.content.dialog('close');
+	},
+	
+	has_dialog: false,
+	content: null,
+	
+	select: function() {
+		if(this.settings.select) {
+			this.content.find(this.settings.select).select();
+		}
+	},
+	
+	set_title: function(title) {
+		if(!title) {
+			return;
+		}
+		this.settings.title = title;
+		if(this.has_dialog) {
+			this.content.dialog('option', 'title', title);
+		}
+	}, 
+	
+	set_is_loading: function(is_loading) {
+		if(is_loading) {
+			this.loader.show();
+			this.content.children().css("visibility", "hidden");
+		} else {
+			this.loader.hide();
+			this.content.children().css("visibility", "visible");
+		}
+	},
+	
+	//Static methods
+	
+	
+	tabs_for: function(element) {
+		var parent = this.constructor === Widget.types.detail ? this.content : arguments[1];
+		var current_element = element;
+		var result = [];
+		while(current_element.length && current_element[0] !== parent[0]) {
+			if(current_element.is('.ui-accordion-content')) {
+				result.push.apply(result, current_element.prev().get());
+			} 
+			if(current_element.is('.ui-tabs-panel')) {
+				result.push.apply(result, current_element.parent().find('a[href="'+'#'+current_element.attr('id')+'"]').parent().get());
+			}
+		 current_element = current_element.parent();
+		}
+		return jQuery(result);
+	},
+	
+	clear_validation: function() {
+		var element = this.constructor === Widget.types.detail ? this.content : arguments[0];
+		element.find('.error_display').remove();
+		element.find('.error_display_indicator').removeClass("error_display_indicator");
+	},
+	
+	validate_with: function(errors) {
+		var element = this.constructor === Widget.types.detail ? this.content : arguments[1];
+		Widget.callStaticWidgetMethod('detail', 'clear_validation', element);
+		jQuery.each(errors, function(key, parameters) {
+			var message = parameters.string;
+			if(!message) {
+				return;
+			}
+			if(message.constructor === String) {
+				message = jQuery.parseHTML(message);
+			}
+			element.find('.validate-'+key.escapeSelector()).each(function(index) {
+				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {
+					var validate_element = jQuery(this);
+					Widget.callStaticWidgetMethod('detail', 'tabs_for', validate_element, element).addClass('error_display_indicator');
+					validate_element.append(message.clone());
+				}
+			});
+		});
+	},
+	
 	clickable_labels_for: function(element) {
 		element.delegate('label[for]', 'click', function() {
 			var label = jQuery(this);
@@ -101,80 +180,6 @@ Widget.types.detail = {
 				related_input.select();
 			}
 		});
-	},
-	
-	close: function() {
-		this.content.dialog('close');
-	},
-	
-	clear_validation: function() {
-		this.content.find('.error_display').remove();
-		this.content.find('.error_display_indicator').removeClass("error_display_indicator");
-	},
-	
-	validate_with: function(errors) {
-		this.clear_validation();
-		var detail = this;
-		jQuery.each(errors, function(key, parameters) {
-			var message = parameters.string;
-			if(!message) {
-				return;
-			}
-			if(message.constructor === String) {
-				message = jQuery.parseHTML(message);
-			}
-			detail.content.find('.validate-'+key.escapeSelector()).each(function(index) {
-				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {
-					var validate_element = jQuery(this);
-					detail.tabs_for(validate_element).addClass('error_display_indicator');
-					validate_element.append(message.clone());
-				}
-			});
-		});
-	},
-	
-	tabs_for: function(element) {
-		var current_element = element;
-		var result = jQuery();
-		while(current_element.length && current_element[0] !== this.content[0]) {
-			if(current_element.is('.ui-accordion-content')) {
-				result = result.add(current_element.prev());
-			} 
-			if(current_element.is('.ui-tabs-panel')) {
-				result = result.add(current_element.parent().find('a[href="'+'#'+current_element.attr('id')+'"]').parent());
-			}
-		 current_element = current_element.parent();
-		}
-		return result;
-	},
-	
-	has_dialog: false,
-	content: null,
-	
-	select: function() {
-		if(this.settings.select) {
-			this.content.find(this.settings.select).select();
-		}
-	},
-	
-	set_title: function(title) {
-		if(!title) {
-			return;
-		}
-		this.settings.title = title;
-		if(this.has_dialog) {
-			this.content.dialog('option', 'title', title);
-		}
-	}, 
-	
-	set_is_loading: function(is_loading) {
-		if(is_loading) {
-			this.loader.show();
-			this.content.children().css("visibility", "hidden");
-		} else {
-			this.loader.hide();
-			this.content.children().css("visibility", "visible");
-		}
 	},
 	
 	connect_detail_with_list: function(detail_name, list, idMethod, idData) {

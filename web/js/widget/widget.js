@@ -489,8 +489,11 @@ jQuery.extend(Widget, {
 		},
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			if(widgetOrId.detail_widget) {
-				widgetOrId.detail_widget.validate_with(error.parameters);
+			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
+				widgetOrId.validate_with(error.parameters);
+				return false;
+			} else if (widgetOrId.detail_widget) {
+				widgetOrId.detail_widget.validate_with(error.parameters, widgetOrId.detail_widget.content);
 				return false;
 			}
 			return true;
