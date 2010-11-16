@@ -18,9 +18,9 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
 		} else {
 			if(isset($aOptions['link_categories']) && is_array($aOptions['link_categories']) && (count($aOptions['link_categories']) > 0)) {
-				$oCriteria->add(DocumentPeer::LINK_CATEGORY_ID, $aOptions['link_categories'], Criteria::IN);
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories'], Criteria::IN);
 			} else if(isset($aOptions['categories'])) {
-				$oCriteria->add(DocumentPeer::LINK_CATEGORY_ID, $aOptions['link_categories']);
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories']);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
