@@ -115,13 +115,21 @@ Widget.types.detail = {
 	validate_with: function(errors) {
 		this.clear_validation();
 		var detail = this;
-		jQuery.each(errors, function(key, message) {
+		jQuery.each(errors, function(key, parameters) {
+			var message = parameters.string;
+			if(!message) {
+				return;
+			}
 			if(message.constructor === String) {
 				message = jQuery.parseHTML(message);
 			}
-			var validate_element = detail.content.find('.validate-'+key.escapeSelector());
-			detail.tabs_for(validate_element).addClass('error_display_indicator');
-			jQuery(validate_element).append(message);
+			detail.content.find('.validate-'+key.escapeSelector()).each(function(index) {
+				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {
+					var validate_element = jQuery(this);
+					detail.tabs_for(validate_element).addClass('error_display_indicator');
+					validate_element.append(message.clone());
+				}
+			});
 		});
 	},
 	

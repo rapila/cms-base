@@ -2,6 +2,10 @@
 class Flash {
 	const FLASH_KEY = "flash_session_key";
 	
+	const STRING_PARAMETERS_KEY = 'string_parameters';
+	const AFFECTED_INSTANCE_INDEXES_KEY = 'affected_instance_indexes';
+	const STRING_KEY_KEY = 'string_key';
+	
 	private static $INSTANCE = null;
 	
 	private $aMessages;
@@ -24,11 +28,32 @@ class Flash {
 		}
 	}
 	
-	public function addMessage($sName, $mParameters = true) {
+	public function addMessage($sName, $mParameters = null) {
 		if($this->bErrorReportingFinished) {
 			throw new Exception("Error in Flash->addMessage(), tried to add message after cleanup, probably due to wrong usage of Flash");
 		}
-		$this->aMessages[$sName] = $mParameters;
+		if(isset($this->aMessages[$sName])) {
+			//Message already set
+			return;
+		}
+		$aValue = array();
+		if($mParameters !== null) {
+			$aValue[self::STRING_PARAMETERS_KEY] = $mParameters;
+		}
+		$this->aMessages[$sName] = $aValue;
+	}
+	
+	public function addInstanceIndex($sName, $iIndex) {
+		if($this->bErrorReportingFinished) {
+			throw new Exception("Error in Flash->addInstanceIndex(), tried to add instance index after cleanup, probably due to wrong usage of Flash");
+		}
+		if(!isset($this->aMessages[$sName])) {
+			throw new Exception("Error in Flash->addInstanceIndex(), no message $sName exists");
+		}
+		if(!isset($this->aMessages[$sName][self::AFFECTED_INSTANCE_INDEXES_KEY])) {
+			$this->aMessages[$sName][self::AFFECTED_INSTANCE_INDEXES_KEY] = array();
+		}
+		$this->aMessages[$sName][self::AFFECTED_INSTANCE_INDEXES_KEY][] = $iIndex;
 	}
 	
 	public function removeMessage($sName) {
@@ -40,17 +65,7 @@ class Flash {
 	}
 		
 	public function hasMessage($sMessageName) {
-		$aMessages = $this->getMessages();
-		return in_array($sMessageName, $aMessages);
-	}
-		
-	public function hasMessagesLeft() {
-		foreach($this->aMessages as $bMessageStatus) {
-			if($bMessageStatus !== false) {
-				return true;
-			}
-		}
-		return false;
+		return isset($this->aMessages[$sMessageName]);
 	}
 	
 	public function getMessages() {
@@ -160,12 +175,24 @@ class Flash {
 			return null;
 		}
 		$aParameters = array();
-		if(is_array($this->aMessages[$sName])) {
-			$aParameters = $this->aMessages[$sName];
+		if(isset($this->aMessages[$sName][self::STRING_PARAMETERS_KEY])) {
+			$aParameters = $this->aMessages[$sName][self::STRING_PARAMETERS_KEY];
 		}
-		$this->aMessages[$sName] = false;
-		$oTag = new TagWriter('span', array('class' => 'error_display'), StringPeer::getString("flash.$sName", null, null, $aParameters));
+		$sStringKey = "flash.$sName";
+		if(isset($this->aMessages[$sName][self::STRING_KEY_KEY])) {
+			$sStringKey = $this->aMessages[$sName][self::STRING_KEY_KEY];
+		}
+		$oTag = new TagWriter('span', array('class' => 'error_display'), StringPeer::getString($sStringKey, null, null, $aParameters));
 		return $oTag->parse();
+	}
+	
+	public function getMessageProperties($sName) {
+		if(!isset($this->aMessages[$sName])) {
+			return null;
+		}
+		$aProperties = $this->aMessages[$sName];
+		$aProperties['string'] = $this->getMessage($sName)->render();
+		return $aProperties;
 	}
 	
 	public function finishReporting() {
