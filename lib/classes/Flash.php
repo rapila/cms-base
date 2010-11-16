@@ -43,12 +43,12 @@ class Flash {
 		$this->aMessages[$sName] = $aValue;
 	}
 	
-	public function addInstanceIndex($sName, $iIndex) {
+	public function addAffectedIndex($sName, $iIndex) {
 		if($this->bErrorReportingFinished) {
-			throw new Exception("Error in Flash->addInstanceIndex(), tried to add instance index after cleanup, probably due to wrong usage of Flash");
+			throw new Exception("Error in Flash->addAffectedIndex(), tried to add instance index after cleanup, probably due to wrong usage of Flash");
 		}
 		if(!isset($this->aMessages[$sName])) {
-			throw new Exception("Error in Flash->addInstanceIndex(), no message $sName exists");
+			throw new Exception("Error in Flash->addAffectedIndex(), no message $sName exists");
 		}
 		if(!isset($this->aMessages[$sName][self::AFFECTED_INSTANCE_INDEXES_KEY])) {
 			$this->aMessages[$sName][self::AFFECTED_INSTANCE_INDEXES_KEY] = array();
