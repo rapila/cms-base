@@ -5,12 +5,15 @@ Schule Altenburg
 
 Tag Cloud widget for detail objects etc
 NewsletterDetail:
-- Betreff check, change
+- this.accordion... and bug arrow and accordion handling on validation error
+- newsletter send button if accordion is on send
+-
 - newsletter/config of plugin and overwrite in site/config
 - Reload on save
 - fix CKEditor bug if two instances of newsletter_body exist (2. time new newsletter)
 - discuss general handling, like when change template, send options etc
 
+- Propel concrete inheritance, see Francois email "Ok, so this is Concrete Inheritance in Propel - with data replication disabled."
 Priority list
 - login remove close button, fix padding input fields on logout
 - Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
@@ -740,3 +743,4 @@ Widget tasks
 Tags
 - for more flexibility make static methods in FrontendModules that are used internally and can be accessed by tags
 - TagsAdminModule, Ajax methods etc.
+- Betreff check, don't allow change if subject is not filled

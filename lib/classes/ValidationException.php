@@ -14,6 +14,6 @@ class ValidationException extends LocalizedException {
 				$aParameters[$sMessageKey] = $oFlash->getMessage($sMessageKey)->render();
 			}
 		}
-		parent::__construct('validation', $aParameters, get_class($this));
+		parent::__construct('exception_validation', $aParameters, get_class($this));
 	}
 }

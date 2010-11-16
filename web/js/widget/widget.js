@@ -489,7 +489,6 @@ jQuery.extend(Widget, {
 		},
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			console.log(arguments);
 			if(widgetOrId.detail_widget) {
 				widgetOrId.detail_widget.validate_with(error.parameters);
 				return false;
