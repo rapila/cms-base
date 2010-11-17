@@ -13,8 +13,11 @@ NewsletterDetail:
 - fix CKEditor bug if two instances of newsletter_body exist (2. time new newsletter)
 - discuss general handling, like when change template, send options etc
 
-- Propel concrete inheritance, see Francois email "Ok, so this is Concrete Inheritance in Propel - with data replication disabled."
 Priority list
+- language object conditions bug:  this[i].style is undefined
+- Bug document kind is not persistent, test with images only change
+	not_found messages are not shown thumbnail view, count is not shown
+- getJsForFrontend should be added last @see DefaultPageTypeModule
 - login remove close button, fix padding input fields on logout
 - Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
 - NotPermittedException exception PageDetailWidget, general implementation for modules, delete, create, edit, etc?

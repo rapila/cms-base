@@ -107,10 +107,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		$oTemplate->replaceIdentifierMultiple("container", $sFrontentContents, null, Template::NO_HTML_ESCAPE);
 		if(($sCss = $oModule->getCssForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
+			ResourceIncluder::defaultIncluder()->addCustomCss($sCss, ResourceIncluder::PRIORITY_LAST);
 		}
 		if(($sJs = $oModule->getJsForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
+			ResourceIncluder::defaultIncluder()->addCustomJs($sJs, ResourceIncluder::PRIORITY_LAST);
 		}
 		return true;
 	}
