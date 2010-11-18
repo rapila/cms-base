@@ -176,6 +176,7 @@ Widget.types.detail = {
 			related_input.focus();
 			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
 				related_input.attr('checked', !related_input.attr('checked'));
+				related_input.change();
 			} else {
 				related_input.select();
 			}

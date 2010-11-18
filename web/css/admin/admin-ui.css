@@ -399,10 +399,8 @@ input.ui-widget-content.input_short { width: 6em; }
 }
 .ui-accordion .ui-accordion-content.contents_container { padding: 0; }
 .ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
-.users fieldset {
-  padding: 0;
-  border: 1px #c4c4c4 solid;
-}
+fieldset.option_groups { border: 1px #c4c4c4 solid; }
+.users fieldset.option_groups { padding: 0; }
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
   padding: 0;
   border-color: #cccdcf;
