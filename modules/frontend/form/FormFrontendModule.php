@@ -78,7 +78,7 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 		foreach($oFormStorage->getFormObjects() as $iKey => $oFormObject) {
 			$aObject = array();
 			
-			$aObject['field_type'] = $oFormObject->getName();
+			$aObject['field_type'] = $oFormObject->getType();
 			$aObject['field_name'] = $oFormObject->getName();
 			$aObject['field_label'] = $oFormObject->getLabel();
 			$aObject['default_value'] = $oFormObject->getDefaultValue();

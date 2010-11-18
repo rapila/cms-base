@@ -5,6 +5,7 @@ Schule Altenburg
 
 Tag Cloud widget for detail objects etc
 NewsletterDetail:
+- Der Newsletter wird gesandt an: default or 
 - this.accordion... and bug arrow and accordion handling on validation error
 - newsletter send button if accordion is on send
 -
@@ -14,6 +15,8 @@ NewsletterDetail:
 - discuss general handling, like when change template, send options etc
 
 Priority list
+- admin_menu preview looks like shit. fix
+- page inactive should be previewable
 - language object conditions bug:  this[i].style is undefined
 - Bug document kind is not persistent, test with images only change
 	not_found messages are not shown thumbnail view, count is not shown

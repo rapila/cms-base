@@ -123,7 +123,7 @@ Widget.types.page_type.types['default'] = {
 					title: item_to_edit.text(),
 					position: ['center', 50],
 					// modal: true,
-					width: 550,
+					width: widget.settings.preferred_width || 550,
 					// open: function(event, ui){},
 					resize: function(event, ui) { // or use dialogresize see further down
 						if(widget.resize_to) {

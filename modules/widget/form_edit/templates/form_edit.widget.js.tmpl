@@ -68,5 +68,9 @@ Widget.types.form_edit = {
 	save: function(callback) {
 		var form_settings = this._element.serializeArrayKV();
 		this.saveData(form_settings, callback);
-	}
+	},
+	
+	settings: {
+		preferred_width: 600
+	}	
 };
