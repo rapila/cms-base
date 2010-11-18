@@ -89,7 +89,7 @@ class Flash {
 	* @todo: IDN-Support
 	*/
 	public function checkForEmail($sName, $sFlashName = null) {
-		return $this->checkForPattern($sName, "/^[\w._\-%]+@[\w-]+(\.[\w-]+)*(\.\w+)$/", $sFlashName);
+		return $this->checkForPattern($sName, "/^[\w._\-%+]+@[\w-]+(\.[\w-]+)*(\.\w+)$/", $sFlashName);
 	}
 	
 	public function checkForValue($sName, $sFlashName = null) {

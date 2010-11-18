@@ -15,6 +15,9 @@ NewsletterDetail:
 - discuss general handling, like when change template, send options etc
 
 Priority list
+- change form config to table row with thead and full text
+- newsletter send in batches, set BatchNumber, count, setBatchCount, check changes
+	in callback call batchnumber, arguments.callee (current method)
 - admin_menu preview looks like shit. fix
 - page inactive should be previewable
 - language object conditions bug:  this[i].style is undefined

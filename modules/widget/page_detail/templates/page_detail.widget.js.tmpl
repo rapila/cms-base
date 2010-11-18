@@ -106,7 +106,6 @@ Widget.types.page_detail = {
 		if(this.current_page_id === null || this.description_has_been_loaded === true) {
 			return;
 		}
-		
 		this.description_has_been_loaded = true;
 		var active_languages = this.getActiveLanguages();
 		Widget.createWithElement('language_tabs', function(widget) {
@@ -121,10 +120,10 @@ Widget.types.page_detail = {
 				tab_content.find('label.validate-page_title_required_language_id').removeClass('validate-page_title_required_language_id').addClass('validate-page_title_required_'+language_id);
 				tab_content.find("input[name='edited_languages[]']").val(language_id);
 				tab_content.find("input[name='link_text[]']").val(language_data.LinkTextOnly);
-				tab_content.find("input[name='page_title[]']").val(language_data.PageTitle);
 				tab_content.find("input[name='meta_description[]']").val(language_data.MetaDescription);
 				tab_content.find("input[name='meta_keywords[]']").val(language_data.MetaKeywords);
 				tab_content.find("input[name='is_active[]']").attr('checked', !language_data.IsInactive);
+				tab_content.find("input[name='page_title[]']").val(language_data.PageTitle);
 			}, false, true);
 		});
 	},
