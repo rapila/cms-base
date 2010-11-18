@@ -8,12 +8,7 @@ Widget.types.document_edit = {
 			if(select_name === 'categories') {
 				select_name += '[]';
 			}
-			var select_element = _this.content.find("select[name='"+select_name+"']");
-			jQuery.each(options, function(key, value) {
-				var option = jQuery('<option/>').attr('value', key).text(value);
-				select_element.append(option);
-			});
-			select_element.val(display_mode[config_name]);
+			_this.content.find("select[name='"+select_name+"']").populate(options, display_mode[config_name]);
 		});
 		this._element.append(this.content);
 

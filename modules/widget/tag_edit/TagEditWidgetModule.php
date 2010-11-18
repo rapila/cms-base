@@ -1,18 +1,5 @@
 <?php
-class TagEditWidgetModule extends PersistentWidgetModule {
-	private $oFrontendModule;
-	private $sDisplayMode;
-	
-	public function __construct($sSessionKey, $oFrontendModule) {
-		parent::__construct($sSessionKey);
-		$this->oFrontendModule = $oFrontendModule;
-		$this->sDisplayMode = $this->oFrontendModule->widgetData();
-	}
-	
-	public function getConfiguredMode() {
-		return $this->sDisplayMode;
-	}
-	
+class TagEditWidgetModule extends EditWidgetModule {
 	public function allTagedItems() {
 	}
 	
@@ -25,13 +12,5 @@ class TagEditWidgetModule extends PersistentWidgetModule {
 		}
 		$aResult['types'] = TagInstancePeer::getTaggedModels();
 		return $aResult;
-	}
-	
-	public function saveData($mData) {
-		return $this->oFrontendModule->widgetSave($mData);
-	}
-	
-	public function getElementType() {
-		return 'form';
 	}
 }

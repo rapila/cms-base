@@ -192,6 +192,10 @@ body.login h1 {
   background-image: url('../../images/admin/remove_item.png');
   background-repeat: no-repeat;
 }
+.remove-item {
+  background-image: url('../../images/admin/remove_item.png');
+  background-repeat: no-repeat;
+}
 #admin_info_bar .action { background-image: url('../../images/admin/action.png'); }
 #admin_info_bar .search_field { padding: 0 4px; }
 #admin_info_bar .search_button { background-image: url('../../images/admin/search_icon.gif'); }

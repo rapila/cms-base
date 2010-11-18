@@ -601,6 +601,19 @@ jQuery.fn.extend({
 	isInDom: function() {
 		var doc = document || arguments[0];
 		return jQuery(doc).has(this[0]).length > 0;
+	},
+	
+	populate: function(options, default_value) {
+		var _this = this;
+		jQuery.each(options, function(value, text) {
+			if(default_value === null || default_value === undefined) {
+				default_value = value;
+			}
+			var option = jQuery('<option/>').text(text).attr('value', value);
+			_this.append(option);
+		});
+		this.val(default_value);
+		return this;
 	}
 });
 

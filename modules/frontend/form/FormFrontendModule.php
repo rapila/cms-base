@@ -5,7 +5,7 @@
 
 require_once('recaptcha/recaptchalib.php');
 
-class FormFrontendModule extends DynamicFrontendModule {
+class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
 	
 	public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
@@ -18,68 +18,6 @@ class FormFrontendModule extends DynamicFrontendModule {
 		$oFormStorage->renderForm($oTemplate, $this->iId);
 		return $oTemplate;
 	}
-	
-	public function renderBackend() {
-		$oFormStorage = $this->getFormStorage();
-		$oTemplate = $this->constructTemplate('backend');
-		$oTemplate->replaceIdentifier('request_methods', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(array('post', 'get')), $oFormStorage->getRequestMethod(), "", array()));
-		$oTemplate->replaceIdentifier('form_types', TagWriter::optionsFromArray(array('email' => StringPeer::getString('form_type.email'), 'external' => StringPeer::getString('form_type.external'), 'manager' => StringPeer::getString('form_type.manager')), $oFormStorage->getFormType(), "", array()));
-		foreach($oFormStorage->getFormObjects() as $iKey => $oFormObject) {
-			$oObjectTemplate = $this->constructTemplate('backend_form_field');
-			$oObjectTemplate->replaceIdentifier('field_name', $oFormObject->getName());
-			$oObjectTemplate->replaceIdentifier('field_label', $oFormObject->getLabel());
-			$oObjectTemplate->replaceIdentifier('default_value', $oFormObject->getDefaultValue());
-			$oObjectTemplate->replaceIdentifier('class_name', $oFormObject->getClassName());
-			$oObjectTemplate->replaceIdentifier('is_required_checked', $oFormObject->isRequired() ? ' checked="checked"' : '', null, Template::NO_HTML_ESCAPE);
-			$oObjectTemplate->replaceIdentifier('sequence_id', $iKey);
-			$oObjectTemplate->replaceIdentifier('available_types', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), $oFormObject->getType(), "", array()));
-			$oTemplate->replaceIdentifierMultiple('form_fields', $oObjectTemplate, null, Template::LEAVE_IDENTIFIERS);
-		}
-		$oTemplate->replaceIdentifier('form_id', $this->iId);
-		$oTemplate->replaceIdentifier('form_action', $oFormStorage->getFormOption('form_action'));
-		$oTemplate->replaceIdentifier('email_address', $oFormStorage->getFormOption('email_address'));
-		$oTemplate->replaceIdentifier('template_addition', $oFormStorage->getFormOption('template_addition'));
-		$oTemplate->replaceIdentifier('manager', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(Manager::listManagers()), $oFormStorage->getFormOption('manager')));
-		$oTemplate->replaceIdentifier('available_types', TagWriter::optionsFromArray(ArrayUtil::arrayWithValuesAsKeys(FormStorage::getAvailableTypes()), null, "", array()));
-		return $oTemplate;
-	}
-	
-	public function getSaveData() {
-		$oFormStorage = $this->getFormStorage();
-		$oFormStorage->clearObjects();
-		$oFormStorage->clearOptions();
-		$oFormStorage->setRequestMethod($_POST['request_method']);
-		$oFormStorage->setFormType($_POST['form_type']);
-		if($oFormStorage->getFormType() === "external") {
-			$oFormStorage->addFormOption("form_action", $_POST['form_action']);
-		}
-		if($oFormStorage->getFormType() === "email") {
-			$oFormStorage->addFormOption("email_address", $_POST['email_address']);
-			$oFormStorage->addFormOption("template_addition", $_POST['template_addition']);
-		}
-		if($oFormStorage->getFormType() === "manager") {
-			$oFormStorage->addFormOption("manager", $_POST['manager']);
-		}
-
-		foreach($_POST['field_names_'.$this->iId] as $iKey => $sFieldName) {
-			if($sFieldName === "") {
-				continue;
-			}
-			$oFormObject = null;
-			if($_POST['field_types_'.$this->iId][$iKey] === 'captcha') {
-				$oFormObject = new CaptchaObject($_POST['field_types_'.$this->iId][$iKey]);
-			} else {
-				$oFormObject = new FormObject($_POST['field_types_'.$this->iId][$iKey]);
-			}
-			$oFormObject->setName($sFieldName);
-			$oFormObject->setLabel($_POST['field_labels_'.$this->iId][$iKey]);
-			$oFormObject->setDefaultValue($_POST['default_values_'.$this->iId][$iKey]);
-			$oFormObject->setClassName($_POST['class_names_'.$this->iId][$iKey]);
-			$oFormObject->setIsRequired(isset($_POST['is_required_'.$this->iId.'_'.$iKey]));
-			$oFormStorage->addFormObject($oFormObject);
-		}
-		return serialize($oFormStorage);
-	} // save()
 	
 	private function getFormStorage() {
 		$oFormStorage = @unserialize($this->getData());
@@ -119,6 +57,84 @@ class FormFrontendModule extends DynamicFrontendModule {
 			$sAction = $oFormStorage->getFormOption('manager');
 		}
 		return $sType.' » '.$sAction.' ['.strtoupper($oFormStorage->getRequestMethod()).']';
+	}
+	
+	public function widgetData() {
+		if($this->oLanguageObject->getData() === null) {
+			return null;
+		}
+		
+		$oFormStorage = $this->getFormStorage();
+		$aResult = array();
+		$aResult['request_method'] = $oFormStorage->getRequestMethod();
+		$aResult['form_type'] = $oFormStorage->getFormType();
+		$aResult['form_action'] = $oFormStorage->getFormOption('form_action');
+		$aResult['email_address'] = $oFormStorage->getFormOption('email_address');
+		$aResult['template_addition'] = $oFormStorage->getFormOption('template_addition');
+		$aResult['manager'] = $oFormStorage->getFormOption('manager');
+		
+		$aResult['objects'] = array();
+		
+		foreach($oFormStorage->getFormObjects() as $iKey => $oFormObject) {
+			$aObject = array();
+			
+			$aObject['field_type'] = $oFormObject->getName();
+			$aObject['field_name'] = $oFormObject->getName();
+			$aObject['field_label'] = $oFormObject->getLabel();
+			$aObject['default_value'] = $oFormObject->getDefaultValue();
+			$aObject['class_name'] = $oFormObject->getClassName();
+			$aObject['is_required'] = $oFormObject->isRequired();
+			
+			$aResult['objects'][] = $aObject;
+		}
+		
+		return $aResult;
+	}
+	
+	public function widgetSave($mData) {
+		$oFormStorage = $this->getFormStorage();
+		
+		$oFormStorage->clearObjects();
+		$oFormStorage->clearOptions();
+		
+		$oFormStorage->setRequestMethod($mData['request_method']);
+		$oFormStorage->setFormType($mData['form_type']);
+		if($oFormStorage->getFormType() === "external") {
+			$oFormStorage->addFormOption("form_action", $mData['form_action']);
+		}
+		if($oFormStorage->getFormType() === "email") {
+			$oFormStorage->addFormOption("email_address", $mData['email_address']);
+			$oFormStorage->addFormOption("template_addition", $mData['template_addition']);
+		}
+		if($oFormStorage->getFormType() === "manager") {
+			$oFormStorage->addFormOption("manager", $mData['manager']);
+		}
+
+		foreach($mData['field_name'] as $iKey => $sFieldName) {
+			if($sFieldName === "") {
+				continue;
+			}
+			$oFormObject = null;
+			if($mData['field_types'][$iKey] === 'captcha') {
+				$oFormObject = new CaptchaObject($mData['field_type'][$iKey]);
+			} else {
+				$oFormObject = new FormObject($mData['field_type'][$iKey]);
+			}
+			$oFormObject->setName($sFieldName);
+			$oFormObject->setLabel($mData['field_label'][$iKey]);
+			$oFormObject->setDefaultValue($mData['default_value'][$iKey]);
+			$oFormObject->setClassName($mData['class_name'][$iKey]);
+			$oFormObject->setIsRequired($mData['is_required'][$iKey]);
+			$oFormStorage->addFormObject($oFormObject);
+		}
+		
+		$this->oLanguageObject->setData(serialize($oFormStorage));
+		return $this->oLanguageObject->save();
+	}
+	
+	public function getWidget() {
+		$oWidget = new FormEditWidgetModule(null, $this);
+		return $oWidget;
 	}
 }
 
