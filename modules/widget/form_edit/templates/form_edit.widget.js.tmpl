@@ -1,6 +1,6 @@
 Widget.types.form_edit = {
 	prepare: function() {
-		var content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		var content = jQuery.parseHTML("{{includeTemplate=edit}}"); // edit_table
 		var _this = this;
 		this._element.append(content);
 		
@@ -9,6 +9,7 @@ Widget.types.form_edit = {
 		this._element.find("select[name='manager']").populate(this.getManagerOptions());
 		
 		this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=form_field}}");
+		// this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=edit_form_field_row}}");
 		this.form_field_prototype.find(".switcher_field").populate(this.getFieldTypeOptions());
 		
 		types_dropdown.bind('change', function() {
@@ -33,6 +34,7 @@ Widget.types.form_edit = {
 		});
 		
 		this._element.delegate('.remove_entry', 'click', function() {
+			// jQuery(this).closest('tr').remove();
 			jQuery(this).closest('fieldset').remove();
 		});
 		

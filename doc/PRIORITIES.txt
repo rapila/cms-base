@@ -3,16 +3,21 @@ PRIORITAETEN:
 taylormade /config/isp_verify_userArray
 Schule Altenburg
 
-Tag Cloud widget for detail objects etc
-NewsletterDetail:
-- Der Newsletter wird gesandt an: default or 
+Newsletter Plugin:
+- Newsletter send finish
+- Testing, Mail, Massmail, 
+- Error messages, invalid emails
 - this.accordion... and bug arrow and accordion handling on validation error
-- newsletter send button if accordion is on send
--
-- newsletter/config of plugin and overwrite in site/config
-- Reload on save
-- fix CKEditor bug if two instances of newsletter_body exist (2. time new newsletter)
-- discuss general handling, like when change template, send options etc
+
+RichtextWidget
+- Buttons > image mit Browseknopf
+- Link List, Internal Links, Document Links,
+- Newsletter Parts
+- all config Issues
+
+Tips
+- Tags, how to
+- Tag Cloud widget for detail objects etc
 
 Priority list
 - change form config to table row with thead and full text
