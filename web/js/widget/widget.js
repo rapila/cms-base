@@ -553,6 +553,11 @@ jQuery.extend(jQuery, {
 			});
 		}
 		return result;
+	},
+	
+	validateEmail: function(email) {
+		var email_regex = /^[\w._\-%+]+@[\w-]+(\.[\w-]+)*(\.\w+)$/;
+		return email.length > 4 && email_regex.test(email);
 	}
 });
 
