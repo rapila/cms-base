@@ -115,7 +115,7 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 				continue;
 			}
 			$oFormObject = null;
-			if($mData['field_types'][$iKey] === 'captcha') {
+			if($mData['field_type'][$iKey] === 'captcha') {
 				$oFormObject = new CaptchaObject($mData['field_type'][$iKey]);
 			} else {
 				$oFormObject = new FormObject($mData['field_type'][$iKey]);
