@@ -5,6 +5,7 @@ Schule Altenburg
 
 Newsletter Plugin:
 - Newsletter send finish
+- Newsletter subscribe, handling of subscriber_groups regarding LANGUAGE, language_id, @see SubscriberListWidgetModule Criteria
 - Testing, Mail, Massmail, 
 - Error messages, invalid emails
 - this.accordion... and bug arrow and accordion handling on validation error
@@ -15,27 +16,32 @@ RichtextWidget
 - Newsletter Parts
 - all config Issues
 
-Tips
+Tags, Tipps und Tricks
 - Tags, how to
 - Tag Cloud widget for detail objects etc
 
-Priority list
-- change form config to table row with thead and full text
-- newsletter send in batches, set BatchNumber, count, setBatchCount, check changes
-	in callback call batchnumber, arguments.callee (current method)
-- admin_menu preview looks like shit. fix
+PageTree and Detail Bugs!
 - page inactive should be previewable
-- language object conditions bug:  this[i].style is undefined
+- language object conditions > bug:  this[i].style is undefined
+
+UserDetail
+- user profile how to edit
+
+Language_tabs
+- getContentLanguage on fill_data?
+
+
+Priority list
+- getJsForFrontend should be added last @see DefaultPageTypeModule, I changed it TEST (for ParticipantFrontendModule)
+- admin_menu preview looks like shit. fix
 - Bug document kind is not persistent, test with images only change
 	not_found messages are not shown thumbnail view, count is not shown
-- getJsForFrontend should be added last @see DefaultPageTypeModule
 - login remove close button, fix padding input fields on logout
 - Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
 - NotPermittedException exception PageDetailWidget, general implementation for modules, delete, create, edit, etc?
 	possible criteria: owner, language etc.
 - search pages
 - Dialog Windows, confict prototype?
-- user profile how to edit
 - highlight of persistant page does still not work properly
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - delete language objects does not update other languages > bug on trying to delete again
@@ -758,3 +764,5 @@ Tags
 - for more flexibility make static methods in FrontendModules that are used internally and can be accessed by tags
 - TagsAdminModule, Ajax methods etc.
 - Betreff check, don't allow change if subject is not filled
+- newsletter send in batches, set BatchNumber, count, setBatchCount, check changes
+	in callback call batchnumber, arguments.callee (current method)

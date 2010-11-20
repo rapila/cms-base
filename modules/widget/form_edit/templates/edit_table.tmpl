@@ -1,23 +1,30 @@
 <div class="form_manager">
 	<div class="group_fields">
-		<label for="request_method">{{writeString=form.request_method}}</label> <select name="request_method" class="ui-widget-content autowidth" style="min-width: 8em;"></select>
+		<label for="request_method">{{writeString=form.request_method}}</label> 
+		<select name="request_method" class="ui-widget-content autowidth" style="min-width: 8em;"></select>
 	</div>
 	<div class="group_fields">
-		<label for="form_type">{{writeString=form.form_type}}</label> <select name="form_type" class="switcher_field ui-widget-content autowidth" style="min-width: 8em;"></select>
+		<label for="form_type">{{writeString=form.form_type}}</label>
+		<select name="form_type" class="switcher_field ui-widget-content autowidth" style="min-width: 8em;"></select>
 	</div>
 	<div class="conditional_field-for-form_type external group_fields">
-		<label for="form_action">{{writeString=form.action}}</label> <input type="text" name="form_action" class="ui-widget-content autowidth" />
+		<label for="form_action">{{writeString=form.action}}</label>
+		<input type="text" name="form_action" class="ui-widget-content autowidth" />
 	</div>
 	<div class="conditional_field-for-form_type email group_fields">
 		<div class="group_fields">
-			<label for="email_address">{{writeString=email}}</label> <input type="text" name="email_address" class="ui-widget-content autowidth" />
+			<label for="email_address">{{writeString=email}}</label>
+			<input type="text" name="email_address" class="ui-widget-content autowidth" />
 		</div>
 		<div class="group_fields">
-			<label for="template_addition">{{writeString=form.template_name_addition}}</label><input type="text" name="template_addition" class="ui-widget-content autowidth" /> {{writeString=name}}: <span class="e_mail_template_name" style="font-style:italic;"></span>
+			<label for="template_addition">{{writeString=form.template_name_addition}}</label>
+			<input type="text" name="template_addition" class="ui-widget-content autowidth" /> 
+			{{writeString=name}}: <span class="e_mail_template_name" style="font-style:italic;"></span>
 		</div>
 	</div>
 	<div class="conditional_field-for-form_type manager group_fields">
-		<label for="manager">{{writeString=form_type.manager}}</label> <select name="manager" class="ui-widget-content autowidth">{{manager}}</select>
+		<label for="manager">{{writeString=form_type.manager}}</label>
+		<select name="manager" class="ui-widget-content autowidth">{{manager}}</select>
 	</div>
 	<table style="padding-top:.5em;">
 		<thead>
