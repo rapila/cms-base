@@ -1,7 +1,7 @@
 Widget.types.form_edit = {
 	prepare: function() {
-		var content = jQuery.parseHTML("{{includeTemplate=edit}}"); 
-		// var content = jQuery.parseHTML("{{includeTemplate=edit_table}}");
+		// var content = jQuery.parseHTML("{{includeTemplate=edit}}"); 
+		var content = jQuery.parseHTML("{{includeTemplate=edit_table}}");
 		var _this = this;
 		this._element.append(content);
 		
@@ -9,8 +9,8 @@ Widget.types.form_edit = {
 		this._element.find("select[name='request_method']").populate(this.getMethodOptions());
 		this._element.find("select[name='manager']").populate(this.getManagerOptions());
 		
-		this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=form_field}}");
-		// this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=edit_form_field_row}}");
+		// this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=form_field}}");
+		this.form_field_prototype = jQuery("{{includeTemplate=edit_form_field_row}}");
 		this.form_field_prototype.find(".switcher_field").populate(this.getFieldTypeOptions());
 		
 		types_dropdown.bind('change', function() {
@@ -35,8 +35,8 @@ Widget.types.form_edit = {
 		});
 		
 		this._element.delegate('.remove_entry', 'click', function() {
-			jQuery(this).closest('fieldset').remove();
-			// jQuery(this).closest('tr').remove();
+			// jQuery(this).closest('fieldset').remove();
+			jQuery(this).closest('tr').remove();
 		});
 		
 		this.update();
@@ -47,7 +47,12 @@ Widget.types.form_edit = {
 		this.form_field_area.append(field);
 		if(data) {
 			jQuery.each(data, function(name, value) {
-				field.find(":input[name='"+name.escapeSelector()+"[]']").val(value);
+				var input = field.find(":input[name='"+name.escapeSelector()+"[]']");
+				if(input.attr('type') !== 'checkbox') {
+					input.val(value);
+				} else {
+					input.attr('checked', value);
+				}
 			}.bind(this));
 		}
 	},
@@ -63,7 +68,12 @@ Widget.types.form_edit = {
 					this.add_item(field);
 				}.bind(this));
 			} else {
-				this._element.find(":input[name='"+name.escapeSelector()+"']").val(value);
+				var input = this._element.find(":input[name='"+name.escapeSelector()+"']");
+				if(input.attr('type') !== 'checkbox') {
+					input.val(value);
+				} else {
+					input.attr('checked', value);
+				}
 			}
 		}.bind(this));
 	},
