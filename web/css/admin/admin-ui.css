@@ -434,6 +434,7 @@ label span.error_display { color: red; }
   display: inline-block;
   cursor: pointer;
 }
+td span.remove_entry { margin: 0; }
 .delete_entry {
   margin-left: 1.5em;
   display: inline-block;

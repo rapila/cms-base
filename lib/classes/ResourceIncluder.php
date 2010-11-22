@@ -64,46 +64,6 @@ class ResourceIncluder {
 		$this->aReverseDependencies = array();
 	}
 	
-	private function findTemplateNameForLocation($sLocation) {
-		if(strrpos($sLocation, '#') !== false) {
-			$sLocation = substr($sLocation, 0, strrpos($sLocation, '#'));
-		}
-		if(strrpos($sLocation, '?') !== false) {
-			$sLocation = substr($sLocation, 0, strrpos($sLocation, '?'));
-		}
-		if(strrpos($sLocation, '.') === false) {
-			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type given for indecisive $sLocation");
-		}
-		$sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
-		if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg') {
-			return self::RESOURCE_TYPE_IMAGE;
-		} else if($sExtension === 'ico') {
-			return self::RESOURCE_TYPE_ICON;
-		} else if ($sExtension === 'css') {
-			return self::RESOURCE_TYPE_CSS;
-		} else if ($sExtension === 'js') {
-			return self::RESOURCE_TYPE_JS;
-		} else {
-			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type found for $sLocation");
-		}
-	}
-	
-	private function ieConditionalTemplate() {
-		if(self::$IE_CONDITIONAL === null) {
-			self::$IE_CONDITIONAL = new Template(self::IE_CONDITIONAL, null, true);
-		}
-		return clone self::$IE_CONDITIONAL;
-	}
-	
-	private function containsResource($sIdentifier) {
-		foreach($this->aIncludedResources as $iPriority => $aResources) {
-			if(isset($aResources[$sIdentifier])) {
-				return $iPriority;
-			}
-		}
-		return false;
-	}
-	
 	public function startDependencies() {
 		array_unshift($this->aCurrentDependencyStack, array());
 	}
@@ -206,15 +166,7 @@ class ResourceIncluder {
 				$aExtraInfo['file_resource'] = $oFileResource;
 			}
 			if($bEndsDependencyList) {
-				$aDependencyList = array_shift($this->aCurrentDependencyStack);
-				if($aDependencyList === null) {
-					throw new Exception("Error in ResourceIncluder->addResource(): Incorrect nesting of dependencies. No dependencies left to end");
-				}
-				foreach($aDependencyList as $sDependencyIdentifier => $bTrue) {
-					if(($iDependencyPriority = $this->containsResource($sDependencyIdentifier)) !== false) {
-						$this->aIncludedResources[$iDependencyPriority][$sDependencyIdentifier]['dependees'][$sIdentifier] = true;
-					}
-				}
+				$this->endDependencyList($sIdentifier);
 			}
 			
 			//Include resource
@@ -305,7 +257,7 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL) {
+	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
 		$sIdentifier = self::RESOURCE_PREFIX_CUSTOM.md5(serialize($aResourceInfo));
 		if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
 			if($iPrevResoucePriority === $iPriority) {
@@ -313,15 +265,18 @@ class ResourceIncluder {
 			}
 			unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
 		}
+		if($bEndsDependencyList) {
+			$this->endDependencyList($sIdentifier);
+		}
 		$this->aIncludedResources[$iPriority][$sIdentifier] = $aResourceInfo;
 	}
 	
-	public function addCustomJs($mCustomJs, $iPriority = self::PRIORITY_NORMAL) {
-		$this->addCustomResource(array('template' => 'inline_js', 'content' => $mCustomJs), $iPriority);
+	public function addCustomJs($mCustomJs, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
+		$this->addCustomResource(array('template' => 'inline_js', 'content' => $mCustomJs), $iPriority, $bEndsDependencyList);
 	}
 	
-	public function addCustomCss($mCustomJs, $iPriority = self::PRIORITY_NORMAL) {
-		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomJs), $iPriority);
+	public function addCustomCss($mCustomCss, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
+		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomJs), $iPriority, $bEndsDependencyList);
 	}
 	
 	public function addReverseDependency($sIdentifier, $bIsBefore = false) {
@@ -389,6 +344,82 @@ class ResourceIncluder {
 		return $oTemplate;
 	}
 	
+	public function addResourceFromTemplateIdentifier($oIdentifier) {
+		$mLocation = $oIdentifier->getValue();
+		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
+		if($oIdentifier->hasParameter('library')) {
+			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
+			return null;
+		}
+		if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
+			$mLocation = explode('/', $mLocation);
+		}
+		$aParams = $oIdentifier->getParameters();
+		$aParams['from_template'] = true;
+		
+		$sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
+		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
+		$bIncludeAll = $oIdentifier->hasParameter('include_all');
+		
+		$this->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
+	}
+	
+	public function clearIncludedResources() {
+		$this->aIncludedResources = array(self::PRIORITY_FIRST => array(), self::PRIORITY_NORMAL => array(), self::PRIORITY_LAST => array());
+	}
+	
+	private function findTemplateNameForLocation($sLocation) {
+		if(strrpos($sLocation, '#') !== false) {
+			$sLocation = substr($sLocation, 0, strrpos($sLocation, '#'));
+		}
+		if(strrpos($sLocation, '?') !== false) {
+			$sLocation = substr($sLocation, 0, strrpos($sLocation, '?'));
+		}
+		if(strrpos($sLocation, '.') === false) {
+			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type given for indecisive $sLocation");
+		}
+		$sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
+		if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg') {
+			return self::RESOURCE_TYPE_IMAGE;
+		} else if($sExtension === 'ico') {
+			return self::RESOURCE_TYPE_ICON;
+		} else if ($sExtension === 'css') {
+			return self::RESOURCE_TYPE_CSS;
+		} else if ($sExtension === 'js') {
+			return self::RESOURCE_TYPE_JS;
+		} else {
+			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type found for $sLocation");
+		}
+	}
+	
+	private function ieConditionalTemplate() {
+		if(self::$IE_CONDITIONAL === null) {
+			self::$IE_CONDITIONAL = new Template(self::IE_CONDITIONAL, null, true);
+		}
+		return clone self::$IE_CONDITIONAL;
+	}
+	
+	private function containsResource($sIdentifier) {
+		foreach($this->aIncludedResources as $iPriority => $aResources) {
+			if(isset($aResources[$sIdentifier])) {
+				return $iPriority;
+			}
+		}
+		return false;
+	}
+	
+	private function endDependencyList($sIdentifier) {
+		$aDependencyList = array_shift($this->aCurrentDependencyStack);
+		if($aDependencyList === null) {
+			throw new Exception("Error in ResourceIncluder->endDependency(): Incorrect nesting of dependencies. No dependencies left to end");
+		}
+		foreach($aDependencyList as $sDependencyIdentifier => $bTrue) {
+			if(($iDependencyPriority = $this->containsResource($sDependencyIdentifier)) !== false) {
+				$this->aIncludedResources[$iDependencyPriority][$sDependencyIdentifier]['dependees'][$sIdentifier] = true;
+			}
+		}
+	}
+	
 	private function cleanupReverseDependencies() {
 		foreach($this->aReverseDependencies as $sDependee => $aDependencies) {
 			$iPriority = $this->containsResource($sDependee);
@@ -414,29 +445,5 @@ class ResourceIncluder {
 				call_user_func_array(array($this, 'addResource'), $aDependency);
 			}
 		}
-	}
-	
-	public function addResourceFromTemplateIdentifier($oIdentifier) {
-		$mLocation = $oIdentifier->getValue();
-		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
-		if($oIdentifier->hasParameter('library')) {
-			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
-			return null;
-		}
-		if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
-			$mLocation = explode('/', $mLocation);
-		}
-		$aParams = $oIdentifier->getParameters();
-		$aParams['from_template'] = true;
-		
-		$sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
-		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
-		$bIncludeAll = $oIdentifier->hasParameter('include_all');
-		
-		$this->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
-	}
-	
-	public function clearIncludedResources() {
-		$this->aIncludedResources = array(self::PRIORITY_FIRST => array(), self::PRIORITY_NORMAL => array(), self::PRIORITY_LAST => array());
 	}
 }

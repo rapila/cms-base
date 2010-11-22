@@ -75,14 +75,14 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
   
   public function testSimpleIncludeCss() {
     $oIncluder = ResourceIncluder::defaultIncluder();
-    $oIncluder->addResource('admin.css');
-    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $oIncluder->addResource('admin/admin-ui.css');
+    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
     
   public function testSimpleIncludeJs() {
     $oIncluder = ResourceIncluder::defaultIncluder();
-    $oIncluder->addResource('admin.js');
-    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $oIncluder->addResource('admin/admin.js');
+    $this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin/admin.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
   
   public function testNullInclude() {
@@ -163,26 +163,26 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
   public function testLibraryIncludejQueryUISslUncomp() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addJavaScriptLibrary('jqueryui', 1, false, true, true);
-    $this->assertSame(array('https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $this->assertSame(array('https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
   
   public function testLibraryIncludejQueryUIUncomp() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addJavaScriptLibrary('jqueryui', 1, false, true, false);
-    $this->assertSame(array('http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $this->assertSame(array('http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
   
   public function testLibraryIncludejQueryUISsl() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, true);
-    $this->assertSame(array('https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $this->assertSame(array('https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
   }
   
   public function testLibraryIncludejQueryUI() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
-    $this->assertSame(array('http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
-    $this->assertSame('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n", $oIncluder->getIncludes()->render());
+    $this->assertSame(array('http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+    $this->assertSame('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n", $oIncluder->getIncludes()->render());
   }
   
   public function testMultipleIncludes() {
@@ -192,7 +192,7 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
     $oIncluder->addResource('tiny_mce/tiny_mce.js');
     $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
   }
   
   public function testPrioritizedMultipleIncludes() {
@@ -202,7 +202,7 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
     $oIncluder->addResource('tiny_mce/tiny_mce.js');
     $oIncluder->addResource(array('web', 'js', 'tiny_mce', 'themes', 'simple', 'skins', 'default', 'ui.css'), null, null, array(), ResourceIncluder::PRIORITY_FIRST);
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
   }
   
   public function testInlineJs() {

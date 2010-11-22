@@ -28,7 +28,11 @@ Widget.types.form_edit = {
 		}).keyup();
 		
 		this.form_field_area = this._element.find('.form_fields');
-		this.form_field_area.sortable();
+		this.form_field_area.sortable({
+			handle: '.ui-sortable-handle',
+			axis: 'y',
+			containment: this.form_field_area.closest('table')
+		});
 		
 		this._element.find('.add_entry').bind('click', function() {
 			_this.add_item();

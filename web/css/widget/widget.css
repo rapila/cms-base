@@ -11,6 +11,13 @@
   position: relative;
   border: none;
 }
+.ui-sortable-handle {
+  background-image: url('../../images/admin/sortable_handler.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  min-width: 16px;
+  height: 12px;
+}
 .ui-placeholder { background-color: #d3d3d3; }
 .cmos-button {
   padding: 0.2em 1em 0.1em 1em;
