@@ -1,7 +1,8 @@
 PRIORITAETEN:
-
-taylormade /config/isp_verify_userArray
 Schule Altenburg
+- Tel Bigler, Model
+
+Strategie Hosting GCGroup
 
 Newsletter Plugin:
 - Newsletter send finish
@@ -22,7 +23,10 @@ Tags, Tipps und Tricks
 
 PageTree and Detail Bugs!
 - page inactive should be previewable
+- highlight of persistant page or on reload does not work properly
+	language validation does not work if this happens
 - language object conditions > bug:  this[i].style is undefined
+- Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
 
 UserDetail
 - user profile how to edit
@@ -30,22 +34,23 @@ UserDetail
 Language_tabs
 - getContentLanguage on fill_data?
 
+Bugs & Fixes
+- Bug document kind is not persistent, test with images only change
+- getJsForFrontend should be added last @see DefaultPageTypeModule, I changed it TEST (for ParticipantFrontendModule)
+- documents thumbnail view: not_found messages, count is not shown
+	Filter Handling in thumbnail view, how to make consistent
+
+Module Backend Migration
+- BackupAdminModule, CheckAdminModule, ConfigAdminModule, Migration, Settings
 
 Priority list
-- getJsForFrontend should be added last @see DefaultPageTypeModule, I changed it TEST (for ParticipantFrontendModule)
+- make same loading effect for ie tips when loading new tip into widget etc.
 - admin_menu preview looks like shit. fix
-- Bug document kind is not persistent, test with images only change
-	not_found messages are not shown thumbnail view, count is not shown
 - login remove close button, fix padding input fields on logout
-- Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
 - NotPermittedException exception PageDetailWidget, general implementation for modules, delete, create, edit, etc?
 	possible criteria: owner, language etc.
-- search pages
 - Dialog Windows, confict prototype?
-- highlight of persistant page does still not work properly
-- tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - delete language objects does not update other languages > bug on trying to delete again
-- make same loading effect for ie tips when loading new tip into widget etc.
 - Richtext Konfiguration, Linklists, DocumentList, ImagePicker/DocumentPicker, FileUpload integration in Image and Link
 	TipDetail > parseInputFromMce
 	CKEditor imagePicker and upload documentation:http://docs.cksource.com/CKEditor_3.x/Developers_Guide/File_Browser_%28Uploader%29
@@ -766,3 +771,5 @@ Tags
 - Betreff check, don't allow change if subject is not filled
 - newsletter send in batches, set BatchNumber, count, setBatchCount, check changes
 	in callback call batchnumber, arguments.callee (current method)
+- tip_detail, validate and save of click is_active, consider behaviour for page_detail
+- search pages

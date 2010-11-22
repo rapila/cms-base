@@ -1,5 +1,7 @@
 HTML / CSS
-	
+
+TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. Resize Window & Textbereich
+
 PageTree
 - D&D Visualisation needs some attention
 

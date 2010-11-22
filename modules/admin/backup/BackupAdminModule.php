@@ -31,7 +31,7 @@ class BackupAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['display_heading'] = false;
+				$aResult['heading'] = StringPeer::getString('widget.backup.sidebar_heading');
 				break;
 		}
 		return $aResult;
@@ -39,9 +39,9 @@ class BackupAdminModule extends AdminModule {
 	
 	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
-		$aBackupOptions = array('load_from_local' => 'Load from local file', 'backup_to_local' => 'Backup to local file');
-		foreach($aBackupOptions as $sAction => $sActionName) {
-			$aResult[] = array('action' => $sAction, 'title' => $sActionName);
+		$aBackupOptions = array('load_from_local', 'backup_to_local');
+		foreach($aBackupOptions as $sAction) {
+			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('backup.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);
