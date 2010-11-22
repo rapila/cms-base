@@ -15,6 +15,22 @@ class BackupAdminModule extends AdminModule {
 	public function setAction($sAction) {
 	  $this->sAction = $sAction;
 	}
+
+	public function mainContent() {
+		switch($this->sAction) {
+			case 'load_from_local': return $this->loadFromLocal(); break;
+			case 'backup_to_local': return $this->backupToLocal(); break;
+			default: return $this->constructTemplate('info');
+		}
+	}
+	
+	private function loadFromLocal() {
+		
+	}
+	
+	private function backupToLocal() {
+		
+	}
 	
 	public function sidebarContent() {
 		return $this->oBackupOptionsWidget->doWidget();
@@ -47,10 +63,6 @@ class BackupAdminModule extends AdminModule {
 			$iRowCount = count($aResult);
 		}
 		return array_splice($aResult, $iRowStart, $iRowCount);
-	}
-
-	public function mainContent() {
-		return $this->constructTemplate('info');
 	}
 	
 	public function usedWidgets() {
