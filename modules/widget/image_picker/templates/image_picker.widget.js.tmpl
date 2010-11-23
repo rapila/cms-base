@@ -47,19 +47,20 @@ Widget.types.image_picker = {
 	},
 	
 	open_chooser: function() {
+		var _this = this;
 		if(!this.is_popup) {
 			var buttons = {};
 			buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
-				var selected = this._element.children('.ui-selected');
+				var selected = _this._element.children('.ui-selected');
 				if(selected.length > 0) {
 					var collection = [];
 					selected.each(function() {
 						collection[collection.length] = jQuery(this).data('document_id');
 					});
 					selected.removeClass('ui-selected ui-state-active');
-					this.settings.callback.apply(this, collection);
+					_this.settings.callback.apply(_this, collection);
 				}
-				this._element.dialog('close');
+				_this._element.dialog('close');
 			};
 			this._element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
 			return;
