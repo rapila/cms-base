@@ -59,8 +59,10 @@ abstract class FrontendModule extends Module {
 	public static function listContentModules($bIncludeEmpty = false) {
 		$aResult = array();
 		$aModules = self::listModules();
+		// list modules except empty [if there is no inherit=true] and tag [if none exist]
 		foreach($aModules as $sModuleName => $aModulePath) {
-			if(!$bIncludeEmpty && $sModuleName === 'empty') {
+			if(!$bIncludeEmpty && $sModuleName === 'empty'
+			|| ($sModuleName === 'tag' && TagPeer::doCount(new Criteria()) == 0)) {
 				continue;
 			}
 			$sClassName = self::getClassNameByName($sModuleName);
