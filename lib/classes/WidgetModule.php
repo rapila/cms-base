@@ -7,6 +7,7 @@ abstract class WidgetModule extends Module {
 	
 	protected $sPersistentSessionKey = null;
 	protected $sInputName = null;
+	protected $aInitialSettings = array();
 	
 	public function __construct($sSessionKey = null) {
 		if(static::isPersistent()) {
@@ -55,7 +56,7 @@ abstract class WidgetModule extends Module {
 	}
 	
 	public function setInputName($sInputName) {
-			$this->sInputName = $sInputName;
+		$this->sInputName = $sInputName;
 	}
 	
 	public function getElementType() {
@@ -63,13 +64,21 @@ abstract class WidgetModule extends Module {
 	}
 
 	public function getInputName() {
-			return $this->sInputName;
+		return $this->sInputName;
 	}
 	
 	public function getSessionKey() {
-			return $this->sPersistentSessionKey;
+		return $this->sPersistentSessionKey;
 	}
 	
+	public function setSetting($sSettingName, $mSettingValue) {
+		$this->aInitialSettings[$sSettingName] = $mSettingValue;
+	}
+	
+	public function allSettings() {
+		return $this->aInitialSettings;
+	}
+
 	public static function getCustomMethods($sClassName) {
 		return array_merge(array_diff(get_class_methods($sClassName), get_class_methods('WidgetModule')), array('getInputName', 'setInputName'));
 	}

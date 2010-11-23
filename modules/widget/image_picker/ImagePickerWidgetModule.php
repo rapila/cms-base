@@ -5,7 +5,6 @@
 class ImagePickerWidgetModule extends PersistentWidgetModule {
 	
 	private $aAllowedCategories = null;
-	private $bAllowsMultiselect = false;
 	
 	public function listImages() {
 		$oCriteria = new Criteria();
@@ -18,11 +17,7 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 	}
 		
 	public function setAllowsMultiselect($bAllowsMultiselect) {
-			$this->bAllowsMultiselect = $bAllowsMultiselect;
-	}
-
-	public function getAllowsMultiselect() {
-			return $this->bAllowsMultiselect;
+		$this->setSetting('allows_multiselect', $bAllowsMultiselect);
 	}
 	
 	public function setAllowedCategories($aAllowedCategories) {
@@ -30,6 +25,6 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getElementType() {
-		return null;
+		return 'div';
 	}
 }

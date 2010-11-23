@@ -48,6 +48,7 @@ class WidgetJsonFileModule extends FileModule {
 				}
 				$aInformation['content'] = $oWidgetContents;
 				$aInformation['is_new'] = $bIsNew;
+				$aInformation['initial_settings'] = $oWidget->allSettings();
 				print json_encode($aInformation);
 			} else if($this->sAction === 'methodCall') {
 				if($oWidget->needsLogin() && !Session::getSession()->isAuthenticated()) {

@@ -263,7 +263,7 @@ jQuery.extend(Widget, {
 			
 			//Settings need to be mutable without changing globally
 			widget.settings = {};
-			jQuery.extend(true, widget.settings, Widget.types[widgetType].prototype.settings);
+			jQuery.extend(true, widget.settings, Widget.types[widgetType].prototype.settings, instanceInformation.initial_settings);
 			
 			//past events must not be shared across instances
 			widget._pastEvents = {};

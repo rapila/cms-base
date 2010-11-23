@@ -19,6 +19,38 @@ Widget.types.rich_text = {
 		height: 200
 	},
 	
+	initialize: function() {
+		CKEDITOR.on('dialogDefinition', function(ev) {
+			var dialogName = ev.data.name;
+			var dialogDefinition = ev.data.definition;
+			if(dialogName == 'image') {
+				var infoTab = dialogDefinition.getContents('info');
+				var picker_tab = dialogDefinition.addContents({
+					id : 'picker',
+					label : '{{writeString=picker}}',
+					accessKey : 'P',
+					elements : [
+						{
+							html: '<div></div>',
+							id : 'picker_field',
+							type : 'html',
+						}
+					]
+				});
+				dialogDefinition.onLoad = function() {
+					var dialog = this;
+					var picker_field = this.getContentElement('picker', 'picker_field');
+					var element = jQuery(picker_field.getElement().$);
+					element.attr('data-widget-type', 'image_picker').prepareWidget(function(widget) {
+						widget.set_callback(function(image_id) {
+							dialog.setValueOf('info', 'txtUrl', widget.document_url_from_id(image_id));
+						});
+					});
+				};
+			}
+		});
+	},
+	
 	prepare: function() {
 		var module_content = this.getModuleContents();
 		if(module_content !== null) {
@@ -35,7 +67,7 @@ Widget.types.rich_text = {
 		var picker_session = this._element.attr('data-widget-picker-session');
 		if(picker_session) {
 			var picker = null;
-			Widget.create('image_picker', function(image_picker) {
+			Widget.createWithElement('image_picker', function(image_picker) {
 				picker = image_picker;
 				picker.set_callback(function() {
 					var selected_images = jQuery.makeArray(arguments);
