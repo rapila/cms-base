@@ -15,7 +15,7 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 		if(isset($_REQUEST['document_category_id'])) {
-			$this->oListWidget->setInitialDocumentCategoryId($_REQUEST['document_category_id']);
+			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $this->oListWidget->getDocumentCategoryId());
 	}

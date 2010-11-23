@@ -4,8 +4,6 @@
  */
 class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	
-	private $bInitialAllowsMultiselect = false;
-	
 	public $oDocumentsViewWidgetDelegate;
 	
 	public function __construct($sSessionKey = null, $oDocumentsViewWidgetDelegate = null) {
@@ -40,14 +38,10 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 		return DocumentDetailWidgetModule::documentPreview($iDocumentId, $iThumbnailSize);
 	}
 		
-	public function setInitialAllowsMultiselect($bInitialAllowsMultiselect) {
-		$this->bInitialAllowsMultiselect = $bInitialAllowsMultiselect;
+	public function setAllowsMultiselect($bInitialAllowsMultiselect) {
+		$this->setSetting('allows_multiselect', $bInitialAllowsMultiselect);
 	}
 
-	public function getInitialAllowsMultiselect() {
-		return $this->bInitialAllowsMultiselect;
-	}
-		
 	public function getElementType() {
 		return 'div';
 	}
