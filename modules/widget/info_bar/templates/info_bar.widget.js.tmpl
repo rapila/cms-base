@@ -3,8 +3,6 @@ Widget.types.info_bar = {
 		this.sidebar = AdminInterface.sidebar;
 		this.content_area = AdminInterface.content;
 		this.is_pages_module = AdminInterface.current_admin_module === "pages";
-		this.max_width = 480;
-		this.min_width = 100;
 		this.button_prototype = jQuery('<a/>').addClass('info-bar-button').text(' ');
 	},
 	
@@ -22,10 +20,10 @@ Widget.types.info_bar = {
 	},
 	
 	resizer_moved: function(event, ui) {
-		if(ui.position.left>this.max_width) {
-			ui.position.left = this.max_width;
-		} else if(ui.position.left < this.min_width) {
-			ui.position.left = this.min_width;
+		if(ui.position.left>this.settings.max_width) {
+			ui.position.left = this.settings.max_width;
+		} else if(ui.position.left < this.settings.min_width) {
+			ui.position.left = this.settings.min_width;
 		}
 		var px = ''+ui.position.left+'px';
 		this.sidebar.css('width', px);
@@ -121,5 +119,10 @@ Widget.types.info_bar = {
 		list.handle('reloaded', function() {
 			row_count_info.text("{{writeParameterizedString=widget.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
 		}, false, true);
+	},
+	
+	settings: {
+		max_width: 480,
+		min_width: 100
 	}
 };

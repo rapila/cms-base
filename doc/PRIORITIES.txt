@@ -5,7 +5,8 @@ Schule Altenburg
 Strategie Hosting GCGroup
 
 Newsletter Plugin:
-- Newsletter send finish
+- Breite des Newsletters
+- Send part only with 1. test button (auth. user), 2. preview in browser 3. select group 4. send newsletter
 - Newsletter subscribe, handling of subscriber_groups regarding LANGUAGE, language_id, @see SubscriberListWidgetModule Criteria
 - Testing, Mail, Massmail, 
 - Error messages, invalid emails
