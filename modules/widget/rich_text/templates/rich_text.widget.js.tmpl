@@ -44,6 +44,7 @@ Widget.types.rich_text = {
 					element.attr('data-widget-type', 'image_picker').prepareWidget(function(widget) {
 						widget.set_callback(function(image_id) {
 							dialog.setValueOf('info', 'txtUrl', widget.document_url_from_id(image_id));
+							dialog.selectPage('info');
 						});
 					});
 				};

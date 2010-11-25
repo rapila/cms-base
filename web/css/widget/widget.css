@@ -34,3 +34,8 @@
   background: #e3ef99;
   background-image: none;
 }
+*[data-widget-type=image_picker] select {
+  border: 1px solid #dbdbdb;
+  min-width: 15em;
+  margin-bottom: 0.5em;
+}

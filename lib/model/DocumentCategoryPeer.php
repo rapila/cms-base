@@ -12,6 +12,12 @@
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 
 	public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bExternallyManaged=false) {
+		$oCriteria = self::getDocumentCategoriesCriteria($bInactiveOnly, $bExternallyManaged);
+		$oCriteria->addAscendingOrderByColumn(self::NAME);
+		return self::doSelect($oCriteria);
+	}
+	
+  public static function getDocumentCategoriesCriteria($bInactiveOnly = false, $bExternallyManaged=false) {
 		$oCriteria = new Criteria();
 		if($bExternallyManaged !== null) {
 			$oCriteria->add(self::IS_EXTERNALLY_MANAGED, $bExternallyManaged);
@@ -21,9 +27,18 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 		if($bInactiveOnly) {
 			$oCriteria->add(self::IS_INACTIVE, true);
 		}
+		return $oCriteria;
+	}
+
+  public static function getDocumentCategoriesForImagePicker() {
+		$oCriteria = self::getDocumentCategoriesCriteria();
+		$oCriteria->setDistinct();
+		$oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_CATEGORY_ID, Criteria::INNER_JOIN);
+		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, Criteria::INNER_JOIN);
+		$oCriteria->add(DocumentTypePeer::MIMETYPE, 'image%', Criteria::LIKE);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
-	}
+  }
 	
 	public static function getExternallyManagedDocumentCategories() {
 		$oCriteria = new Criteria();

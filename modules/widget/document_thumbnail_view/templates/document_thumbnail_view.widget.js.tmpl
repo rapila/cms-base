@@ -36,7 +36,7 @@ Widget.types.document_thumbnail_view = {
 						picker_object.fire('selected', document_ids, ui.selected);
 					}
 				});
-				buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
+				buttons["{{writeString=widget.image_picker.insert}}"] = function() {
 					var selected = picker_object._element.children('.ui-selected');
 					if(selected.length > 0) {
 						var collection = [];

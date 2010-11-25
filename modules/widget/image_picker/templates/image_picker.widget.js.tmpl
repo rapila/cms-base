@@ -7,6 +7,8 @@ Widget.types.image_picker = {
 		var _this = this;
 		this.image_area = jQuery('<div/>').appendTo(this._element);
 		Widget.createWithElement('document_category_input', function(document_category_input) {
+			document_category_input.settings.custom_option = "{{writeString=image_picker.document_cateogy_input.custom_option}}";
+
 			document_category_input.handle('element_set', function() {
 				_this.document_category_input = document_category_input;
 				document_category_input._element.prependTo(_this._element);
@@ -37,10 +39,12 @@ Widget.types.image_picker = {
 				}
 			});
 		} else {
-			this.image_area.delegate('> div', 'click', function() {
+			this.image_area.delegate('div.ui-image-picker-image', 'click', function() {
 				var document_id = jQuery(this).data('document_id');
 				_this.settings.callback(document_id);
-				_this._element.dialog('close');
+				if(_this.is_popup) {
+					_this._element.dialog('close');
+				}
 			});
 		}
 	},
@@ -73,7 +77,7 @@ Widget.types.image_picker = {
 		var _this = this;
 		if(!this.is_popup) {
 			var buttons = {};
-			buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
+			buttons["{{writeString=widget.image_picker.insert}}"] = function() {
 				var selected = _this.image_area.children('.ui-selected');
 				if(selected.length > 0) {
 					var collection = [];
@@ -85,7 +89,7 @@ Widget.types.image_picker = {
 				}
 				_this._element.dialog('close');
 			};
-			this._element.dialog({title: "{{writeString=modules.widget.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
+			this._element.dialog({title: "{{writeString=widget.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
 			return;
 		}
 		this.is_popup = true;
