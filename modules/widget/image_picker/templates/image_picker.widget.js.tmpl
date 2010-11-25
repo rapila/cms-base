@@ -5,10 +5,53 @@ Widget.types.image_picker = {
 	
 	prepare: function() {
 		var _this = this;
+		this.image_area = jQuery('<div/>').appendTo(this._element);
+		Widget.createWithElement('document_category_input', function(document_category_input) {
+			document_category_input.handle('element_set', function() {
+				_this.document_category_input = document_category_input;
+				document_category_input._element.prependTo(_this._element);
+			});
+		}, function(document_category_input) {
+			document_category_input._element.change(function() {
+				var category = document_category_input._element.val();
+				if(category) {
+					_this.setAllowedCategories([category]);
+				} else {
+					_this.setAllowedCategories(null);
+				}
+				_this.reload();
+			});
+		});
+		this.reload();
+		if(this.settings.allows_multiselect) {
+			this.image_area.selectable({
+				selecting: function(event, ui) {
+					jQuery(ui.selecting).addClass('ui-state-active');
+				},
+				unselecting: function(event, ui) {
+					jQuery(ui.unselecting).removeClass('ui-state-active');
+				},
+				filter: "> div",
+				stop: function() {
+					//Change button active state
+				}
+			});
+		} else {
+			this.image_area.delegate('> div', 'click', function() {
+				var document_id = jQuery(this).data('document_id');
+				_this.settings.callback(document_id);
+				_this._element.dialog('close');
+			});
+		}
+	},
+	
+	reload: function() {
+		var _this = this;
 		this.listImages(function(result, error) {
 			if(error) {
 				return;
 			}
+			this.image_area.empty();
 			jQuery.each(result, function() {
 				var document_id = this.id;
 				var url = _this.document_url_from_id(document_id, 50);
@@ -21,28 +64,8 @@ Widget.types.image_picker = {
 				}, function() {
 					image.removeClass('ui-state-hover');
 				});
-				_this._element.append(image);
+				_this.image_area.append(image);
 			});
-			if(this.settings.allows_multiselect) {
-				this._element.selectable({
-					selecting: function(event, ui) {
-						jQuery(ui.selecting).addClass('ui-state-active');
-					},
-					unselecting: function(event, ui) {
-						jQuery(ui.unselecting).removeClass('ui-state-active');
-					},
-					filter: "> div",
-					stop: function() {
-						//Change button active state
-					}
-				});
-			} else {
-				this._element.children('div').bind('click', function() {
-					var document_id = jQuery(this).data('document_id');
-					_this.settings.callback(document_id);
-					_this._element.dialog('close');
-				});
-			}
 		});
 	},
 	
@@ -51,7 +74,7 @@ Widget.types.image_picker = {
 		if(!this.is_popup) {
 			var buttons = {};
 			buttons["{{writeString=modules.widget.image_picker.insert}}"] = function() {
-				var selected = _this._element.children('.ui-selected');
+				var selected = _this.image_area.children('.ui-selected');
 				if(selected.length > 0) {
 					var collection = [];
 					selected.each(function() {

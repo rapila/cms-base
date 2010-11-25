@@ -7,4 +7,8 @@ class DocumentCategoryInputWidgetModule extends WidgetModule {
 	public function getCategories() {
 		return WidgetJsonFileModule::jsonBaseObjects(DocumentCategoryPeer::getDocumentCategoriesSorted(false, null), array('id', 'name'));
 	}
+	
+	public function getElementType() {
+		return 'select';
+	}
 }

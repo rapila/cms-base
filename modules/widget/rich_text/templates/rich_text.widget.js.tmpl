@@ -9,7 +9,7 @@ Widget.types.rich_text = {
 			['Maximize'],
 			'/',
 			['Styles','Format'],
-			['Image', 'PickImage','HorizontalRule','Smiley','SpecialChar'],
+			['Image','HorizontalRule','Smiley','SpecialChar'],
 			['Source'],
 		],
 		skin: "kama",
@@ -27,7 +27,7 @@ Widget.types.rich_text = {
 				var infoTab = dialogDefinition.getContents('info');
 				var picker_tab = dialogDefinition.addContents({
 					id : 'picker',
-					label : '{{writeString=picker}}',
+					label : '{{writeString=richtext.image_picker}}',
 					accessKey : 'P',
 					elements : [
 						{

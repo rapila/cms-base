@@ -30,6 +30,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 				}
 			}
 		}
+    $this->setSetting('language', Session::language());
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
