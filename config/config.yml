@@ -46,18 +46,22 @@ admin:
   document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
   
-  # default config for tinymce
-  text_module:
-    plugins: [advimage, advlink, xhtmlxtras]
-    advanced_buttons_1: "image,separator,bold,cite,link,unlink,bullist,separator,undo,redo,separator,removeformat,formatselect,styleselect,code,sup,sub"
-    advanced_buttons_2: ""
-    css_files: main
-    blockformats: [p, h1, h2]
-    classes: [external_link, internal_link, image_link]
-    force_br_newlines: true
-    toolbar_location: top
-  #possible values: images, internal_links, external_links, documents
-  link_array_disabled: []
+# default config for ckeditor
+# important note: always requires space after comma ", " in order to function properly
+text_module:  
+  toolbar: 
+    - 
+      - ["Bold", "Italic"]
+      - ["Link", "Unlink", "Anchor", "-", "Image"]
+      - ["NumberedList", "BulletedList", "Blockquote"]
+      - ["Undo", "Redo", "-", "Find"]
+      - ["Styles", "Format"]
+    -
+      - ["Subscript", "Superscript", "-", "Maximize"]    -
+      - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "Scayt", "ShowBlocks"]
+      - ["Source"]
+  richtext_width: 700
+
   
 security:
   generate_digest_secrets: false
