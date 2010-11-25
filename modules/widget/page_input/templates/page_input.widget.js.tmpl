@@ -12,8 +12,12 @@ Widget.types.page_input = {
 		}
 	},
 	
+	value: function() {
+		return this._element.val();
+	},
+	
 	proxy_url: function() {
-		var value = this._element.val();
+		var value = this.value();
 		return "{{writeLink=internal_link_proxy;manager=FileManager}}/"+value;
 	},
 	

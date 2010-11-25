@@ -16,6 +16,15 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	
 	public function getWidget() {
 		$oRichTextWidget = WidgetModule::getWidget('rich_text', null, $this->widgetData());
+		$aTextModule = Settings::getSetting('text_module','toolbar', null);
+		if($aTextModule) {
+    	$aResult = array();
+			foreach($aTextModule as $i => $aRowElements) {
+        $aResult = array_merge($aResult, $aRowElements, array('/'));
+			}
+      array_pop($aResult);
+			$oRichTextWidget->setSetting('toolbar_Full', $aResult);
+		}
 		return WidgetModule::getWidget('generic_frontend_module', null, $this, $oRichTextWidget);
 	}
 	
