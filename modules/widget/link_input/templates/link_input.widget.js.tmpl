@@ -10,5 +10,22 @@ Widget.types.link_input = {
 				option.clone().val(id).text(name).appendTo(cloned_optgroup);
 			});
 		});
+		if(this.settings.default_value_label) {
+			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
+			this._element.val('');
+		}
+	},
+	
+	value: function() {
+		return this._element.val();
+	},
+	
+	proxy_url: function() {
+		var value = this.value();
+		return "{{writeLink=external_link_proxy;manager=FileManager}}/"+value;
+	},
+	
+	settings: {
+		default_value_label: null
 	}
 };

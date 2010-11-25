@@ -107,14 +107,18 @@ Widget.types.rich_text = {
 						var dialog = this;
 						var internal_link_chooser = this.getContentElement('info', 'internal_link_chooser');
 						var internal_link_chooser_element = jQuery(internal_link_chooser.getElement().$);
-						// Widget.createWithElement('link_input', function(widget) {
-						// 	widget.handle('element_set', function() {
-						// 		widget._element.appendTo(internal_link_chooser_element);
-						// 	});
-						// }, jQuery.noop);
 						
 						var external_link_chooser = this.getContentElement('info', 'external_link_chooser');
 						var external_link_chooser_element = jQuery(external_link_chooser.getElement().$);
+						Widget.createWithElement('link_input', function(widget) {
+							widget.settings.default_value_label = '{{writeString=use_url}}'
+							widget.handle('element_set', function() {
+								widget._element.appendTo(external_link_chooser_element);
+								widget._element.change(function() {
+									dialog.setValueOf('info', 'url', widget.proxy_url());
+								});
+							});
+						}, jQuery.noop);
 						
 						var document_link_chooser = this.getContentElement('info', 'document_link_chooser');
 						var document_link_chooser_element = jQuery(document_link_chooser.getElement().$);
@@ -123,8 +127,7 @@ Widget.types.rich_text = {
 							widget.handle('element_set', function() {
 								widget._element.appendTo(document_link_chooser_element);
 								widget._element.change(function() {
-									var document_id = widget.url();
-									dialog.setValueOf('info', 'url', document_id);
+									dialog.setValueOf('info', 'url', widget.url());
 								});
 							});
 						}, jQuery.noop);
