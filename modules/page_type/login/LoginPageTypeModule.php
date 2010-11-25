@@ -14,16 +14,6 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 	}
 
 	public function display(Template $oTemplate, $bIsPreview = false) {
-		$this->bIsPreview = $bIsPreview;
-		if($this->bIsPreview) {
-			ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
-		}
-		if($this->sLanguageId === null) {
-			$this->sLanguageId = $this->bIsPreview ? AdminManager::getContentLanguage() : Session::language();
-		}
-		$this->oFrontendTemplate = $oTemplate;
-		$this->iModuleId = 1;
-		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
 		if(Manager::isPost()) {
 			ArrayUtil::trimStringsInArray($_POST);
 		}
@@ -58,7 +48,8 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 		if(isset($_POST[LoginManager::USER_NAME])) {
 			$iLogin = LoginManager::login();
 		}
-		return parent::display($oTemplate);
+		
+		parent::display($oTemplate, $bIsPreview);
 	}
 
 	protected function getModuleContents($oModule, $bAllowTemplate = true) {
@@ -77,14 +68,6 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
 		$bIsDynamic = true;
 		$aAllowedParams = array();
-	}
-	
-	public function backendInit() {
-		return parent::backendInit();
-	}
-	
-	public function backendSave() {
-		return parent::backendSave();
 	}
 	
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {

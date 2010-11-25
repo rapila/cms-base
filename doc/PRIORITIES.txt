@@ -4,6 +4,8 @@ Schule Altenburg
 
 Strategie Hosting GCGroup
 
+BUG: LoginPageType Template object problem, calling fill_container in Line 26
+
 Newsletter Plugin:
 - Breite des Newsletters
 - Send part only with 1. test button (auth. user), 2. preview in browser 3. select group 4. send newsletter

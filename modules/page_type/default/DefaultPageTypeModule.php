@@ -317,19 +317,15 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function adminRemoveObject($iObjectId, $bForce = false) {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
-		
 		if(!Session::getSession()->getUser()->mayEditPageContents($oCurrentContentObject->getPage())) {
 			return false;
-		}
-		
+		}	
 		if($bForce) {
 			return ContentObjectPeer::doDelete($iObjectId);
 		}
-		
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
 		}
-		
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
 		if($oCurrentLanguageObject === null) {
 			return true;
