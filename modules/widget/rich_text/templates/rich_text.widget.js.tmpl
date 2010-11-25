@@ -16,7 +16,7 @@ Widget.types.rich_text = {
 		entities: false,
 		baseFloatZIndex: 1020,
 		resize_enabled: false,
-		height: 200
+		height: 400
 	},
 	
 	initialize: function() {
@@ -219,7 +219,7 @@ Widget.types.rich_text = {
 	
 	resize_to: function(width, height) {
 		if(!this.editor_contents) {
-			this.editor_contents = this._element.find('.cke_contents');
+			this.editor_contents = this._element.parent().find('.cke_contents');
 		}
 		if(height) {
 			this.editor_contents.css('height', ''+height+'px');
