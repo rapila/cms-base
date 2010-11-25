@@ -57,21 +57,10 @@ Widget.types.rich_text = {
 				linkType.items.unshift(['{{writeString=widget.richtext.document_link}}', 'document']);
 				linkType.items.unshift(['{{writeString=widget.richtext.external_link}}', 'external']);
 				linkType.items.unshift(['{{writeString=widget.richtext.internal_link}}', 'internal']);
-				content.setup = function(data) {
-					if (!data.type || (data.type == 'url') && !data.url) {
-						data.type = 'drupal';
-					}
-					else if (data.url && !data.url.protocol && data.url.url) {
-						var path = extractPath(data.url.url);
-						if (path) {
-							data.type = 'drupal';
-							data.drupal_path = path;
-							delete data.url;
-						}
-					}
-					this.setValue(data.type);
+				linkType.setup = function(data) {
+					//@todo: change type to match link if display_document, external_link_proxy or internal_link_proxy is part of the path
 				};
-				content.commit = function(data) {
+				linkType.commit = function(data) {
 					data.type = this.getValue();
 					console.log('commiting', data, ':', data.type)
 					if (data.type == 'document' || data.type == 'external' || data.type == 'internal') {
@@ -107,6 +96,8 @@ Widget.types.rich_text = {
 							external_link_chooser_element.hide();
 							document_link_chooser_element.hide();
 						}
+						
+						var editor = dialog.getParentEditor();
 						if(editor.config.linkShowTargetTab && (this.getValue() == 'internal' || this.getValue() == 'external' || this.getValue() == 'document')) {
 							dialog.showPage('target');
 						}
@@ -131,9 +122,9 @@ Widget.types.rich_text = {
 					return function() {
 						var dialog = this;
 						
-						_this.prepare_chooser(dialog, 'internal_link_chooser', 'proxy_url');
-						_this.prepare_chooser(dialog, 'external_link_chooser', 'proxy_url');
-						_this.prepare_chooser(dialog, 'document_link_chooser', 'url');
+						_this.prepare_chooser(dialog, 'internal_link_chooser', 'page_input', 'proxy_url');
+						_this.prepare_chooser(dialog, 'external_link_chooser', 'link_input', 'proxy_url');
+						_this.prepare_chooser(dialog, 'document_link_chooser', 'document_input', 'url');
 						
 						return orig.apply(this, arguments);
 					};
@@ -191,10 +182,10 @@ Widget.types.rich_text = {
 		var rich_text = this;
 	},
 	
-	prepare_chooser: function(dialog, name, url_function) {
+	prepare_chooser: function(dialog, name, widget, url_function) {
 		var chooser = dialog.getContentElement('info', name);
 		var chooser_element = jQuery(chooser.getElement().$);
-		Widget.createWithElement('page_input', function(widget) {
+		Widget.createWithElement(widget, function(widget) {
 			widget.settings.default_value_label = '{{writeString=widget.richtext.links.use_url}}'
 			widget.handle('element_set', function() {
 				widget._element.appendTo(chooser_element);
