@@ -1,0 +1,14 @@
+Widget.types.link_input = {
+	prepare: function() {
+		var _this = this;
+		var optgroup = jQuery('<optgroup/>');
+		var option = jQuery('<option/>');
+		var link_categories = this.getExternalLinks();
+		jQuery.each(link_categories, function(optgroup_label, links) {
+			var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
+			jQuery.each(links, function(id, name) {
+				option.clone().val(id).text(name).appendTo(cloned_optgroup);
+			});
+		});
+	}
+};

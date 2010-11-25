@@ -39,3 +39,4 @@
   min-width: 15em;
   margin-bottom: 0.5em;
 }
+.cke_dialog_ui_hbox_first label { margin-right: 0.5em; }

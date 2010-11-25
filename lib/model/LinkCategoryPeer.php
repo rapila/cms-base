@@ -11,8 +11,12 @@
  * @package		 model
  */
 class LinkCategoryPeer extends BaseLinkCategoryPeer {
-	public static function getAllSorted() {
+	public static function getAllSorted($bWithLinksOnly=false) {
 		$oCriteria = new Criteria();
+		if($bWithLinksOnly) {
+		  $oCriteria->setDistinct();
+		  $oCriteria->addJoin(self::ID, LinkPeer::LINK_CATEGORY_ID, Criteria::INNER_JOIN);
+		}
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
 	}

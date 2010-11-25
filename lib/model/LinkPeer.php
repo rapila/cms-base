@@ -95,6 +95,15 @@ class LinkPeer extends BaseLinkPeer {
 		$oCriteria->add($oSearchCriterion);
 		return self::doSelect($oCriteria);
 	}
+	
+	public static function getLinksByLinkCategory($iLinkCategoryId = null) {
+	  $oCriteria = new Criteria();
+	  if($iCategoryId !== null) {
+	    $oCriteria->add(self::LINK_CATEGORY_ID, $iLinkCategoryId);
+	  }
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
+	  return self::doSelect($oCriteria);
+	}
 
 }
 
