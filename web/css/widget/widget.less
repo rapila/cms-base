@@ -45,7 +45,9 @@
 	background-image: none;
 }
 
-*[data-widget-type=image_picker] select {
+*[data-widget-type=image_picker] select,
+select[data-widget-type=page_input] {
+	background-color: #fff;
 	border: 1px solid #DBDBDB;
 	min-width: 15em;
 	margin-bottom: .5em;
@@ -53,3 +55,16 @@
 .cke_dialog_ui_hbox_first label {
 	margin-right:.5em;
 }
+
+select[data-widget-type=page_input] option.level1 {
+	padding-left: 1em;
+}
+
+select[data-widget-type=page_input] option.level2 {
+	padding-left: 2em;
+}
+
+select[data-widget-type=page_input] option.level3 {
+	padding-left: 3em;
+}
+

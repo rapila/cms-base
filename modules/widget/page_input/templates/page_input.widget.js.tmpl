@@ -1,9 +1,23 @@
 Widget.types.page_input = {
 	prepare: function() {
+		var _this = this;
 		var option = jQuery('<option/>');
 		var pages = this.getPages();
 		jQuery.each(pages, function(page_id, page_info) {
-			option.clone().text(page_info.value).attr('value', page_id).addClass('level'+page_info.level).appendTo(this._element);
-		}.bind(this));
+			option.clone().text(page_info.value).attr('value', page_id).addClass('level'+page_info.level).appendTo(_this._element);
+		});
+		if(this.settings.default_value_label) {
+			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
+			this._element.val('');
+		}
+	},
+	
+	proxy_url: function() {
+		var value = this._element.val();
+		return "{{writeLink=internal_link_proxy;manager=FileManager}}/"+value;
+	},
+	
+	settings: {
+		default_value_label: null
 	}
 };

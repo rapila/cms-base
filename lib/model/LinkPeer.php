@@ -98,7 +98,7 @@ class LinkPeer extends BaseLinkPeer {
 	
 	public static function getLinksByLinkCategory($iLinkCategoryId = null) {
 	  $oCriteria = new Criteria();
-	  if($iCategoryId !== null) {
+	  if($iLinkCategoryId !== null) {
 	    $oCriteria->add(self::LINK_CATEGORY_ID, $iLinkCategoryId);
 	  }
     $oCriteria->addAscendingOrderByColumn(self::NAME);

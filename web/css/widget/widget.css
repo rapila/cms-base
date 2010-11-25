@@ -35,8 +35,18 @@
   background-image: none;
 }
 *[data-widget-type=image_picker] select {
+  background-color: #ffffff;
+  border: 1px solid #dbdbdb;
+  min-width: 15em;
+  margin-bottom: 0.5em;
+}
+select[data-widget-type=page_input] {
+  background-color: #ffffff;
   border: 1px solid #dbdbdb;
   min-width: 15em;
   margin-bottom: 0.5em;
 }
 .cke_dialog_ui_hbox_first label { margin-right: 0.5em; }
+select[data-widget-type=page_input] option.level1 { padding-left: 1em; }
+select[data-widget-type=page_input] option.level2 { padding-left: 2em; }
+select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
