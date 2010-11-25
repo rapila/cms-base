@@ -93,7 +93,6 @@ class FrontendManager extends Manager {
 				self::$CURRENT_PAGE = $oLoginPage;
 			}
 		}
-		// Util::dumpAll($this->bIsNotFound);
 		
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
