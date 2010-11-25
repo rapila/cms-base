@@ -59,10 +59,10 @@ Widget.types.rich_text = {
 				linkType.items.unshift(['{{writeString=widget.richtext.internal_link}}', 'internal']);
 				linkType.setup = function(data) {
 					//@todo: change type to match link if display_document, external_link_proxy or internal_link_proxy is part of the path
+					this.setValue(data.type);
 				};
 				linkType.commit = function(data) {
 					data.type = this.getValue();
-					console.log('commiting', data, ':', data.type)
 					if (data.type == 'document' || data.type == 'external' || data.type == 'internal') {
 						data.type = 'url';
 					}
