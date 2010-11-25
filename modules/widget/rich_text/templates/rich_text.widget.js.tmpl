@@ -24,7 +24,6 @@ Widget.types.rich_text = {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;
 			if(dialogName == 'image') {
-				var infoTab = dialogDefinition.getContents('info');
 				var picker_tab = dialogDefinition.addContents({
 					id : 'picker',
 					label : '{{writeString=richtext.image_picker}}',
@@ -33,21 +32,105 @@ Widget.types.rich_text = {
 						{
 							html: '<div></div>',
 							id : 'picker_field',
-							type : 'html',
+							type : 'html'
 						}
 					]
 				});
-				dialogDefinition.onLoad = function() {
-					var dialog = this;
-					var picker_field = this.getContentElement('picker', 'picker_field');
-					var element = jQuery(picker_field.getElement().$);
-					element.attr('data-widget-type', 'image_picker').prepareWidget(function(widget) {
-						widget.set_callback(function(image_id) {
-							dialog.setValueOf('info', 'txtUrl', widget.document_url_from_id(image_id));
-							dialog.selectPage('info');
+				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
+					return function() {
+						var dialog = this;
+						var picker_field = this.getContentElement('picker', 'picker_field');
+						var element = jQuery(picker_field.getElement().$);
+						element.attr('data-widget-type', 'image_picker').prepareWidget(function(widget) {
+							widget.set_callback(function(image_id) {
+								dialog.setValueOf('info', 'txtUrl', widget.document_url_from_id(image_id));
+								dialog.selectPage('info');
+							});
 						});
-					});
-				};
+						return orig.apply(this, arguments);
+					};
+				});
+			} else if(dialogName == 'link') {
+				var infoTab = dialogDefinition.getContents('info');
+				var linkType = infoTab.get('linkType');
+				linkType.items.unshift(['{{writeString=document_link}}', 'document']);
+				linkType.items.unshift(['{{writeString=external_link}}', 'external']);
+				linkType.items.unshift(['{{writeString=internal_link}}', 'internal']);
+				linkType.onChange = CKEDITOR.tools.override(linkType.onChange, function(orig) {
+					return function() {
+						orig.apply(this, arguments);
+						var dialog = this.getDialog();
+						
+						var internal_link_chooser = dialog.getContentElement('info', 'internal_link_chooser');
+						var internal_link_chooser_element = jQuery(internal_link_chooser.getElement().getParent().getParent().$);
+						var external_link_chooser = dialog.getContentElement('info', 'external_link_chooser');
+						var external_link_chooser_element = jQuery(external_link_chooser.getElement().getParent().getParent().$);
+						var document_link_chooser = dialog.getContentElement('info', 'document_link_chooser');
+						var document_link_chooser_element = jQuery(document_link_chooser.getElement().getParent().getParent().$);
+						
+						if(this.getValue() == 'internal') {
+							internal_link_chooser_element.show();
+							external_link_chooser_element.hide();
+							document_link_chooser_element.hide();
+						} else if(this.getValue() == 'external') {
+							internal_link_chooser_element.hide();
+							external_link_chooser_element.show();
+							document_link_chooser_element.hide();
+						} else if(this.getValue() == 'document') {
+							internal_link_chooser_element.hide();
+							external_link_chooser_element.hide();
+							document_link_chooser_element.show();
+						} else {
+							internal_link_chooser_element.hide();
+							external_link_chooser_element.hide();
+							document_link_chooser_element.hide();
+						}
+					};
+				});
+				infoTab.add({
+					html: '<div></div>',
+					id : 'internal_link_chooser',
+					type : 'html'
+				});
+				infoTab.add({
+					html: '<div></div>',
+					id : 'external_link_chooser',
+					type : 'html'
+				});
+				infoTab.add({
+					html: '<div></div>',
+					id : 'document_link_chooser',
+					type : 'html'
+				});
+				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
+					return function() {
+						var dialog = this;
+						var internal_link_chooser = this.getContentElement('info', 'internal_link_chooser');
+						var internal_link_chooser_element = jQuery(internal_link_chooser.getElement().$);
+						// Widget.createWithElement('link_input', function(widget) {
+						// 	widget.handle('element_set', function() {
+						// 		widget._element.appendTo(internal_link_chooser_element);
+						// 	});
+						// }, jQuery.noop);
+						
+						var external_link_chooser = this.getContentElement('info', 'external_link_chooser');
+						var external_link_chooser_element = jQuery(external_link_chooser.getElement().$);
+						
+						var document_link_chooser = this.getContentElement('info', 'document_link_chooser');
+						var document_link_chooser_element = jQuery(document_link_chooser.getElement().$);
+						Widget.createWithElement('document_input', function(widget) {
+							widget.handle('element_set', function() {
+								widget._element.appendTo(document_link_chooser_element);
+								widget._element.change(function() {
+									var document_id = widget.url();
+									dialog.setValueOf('info', 'url', document_id);
+								});
+							});
+						}, jQuery.noop);
+						
+						return orig.apply(this, arguments);
+					};
+				});
 			}
 		});
 	},

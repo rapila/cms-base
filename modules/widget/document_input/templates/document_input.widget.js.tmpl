@@ -10,5 +10,17 @@ Widget.types.document_input = {
 				option.clone().val(id).text(name).appendTo(cloned_optgroup);
 			});
 		});
+	},
+	
+	value: function() {
+		return this._element.val();
+	},
+	
+	url: function() {
+		var value = this.value();
+		if(isNaN(parseInt(value))) {
+			return value;
+		}
+		return "{{writeLink=display_document;manager=FileManager}}"+value;
 	}
 };
