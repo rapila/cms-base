@@ -10,6 +10,10 @@ Widget.types.document_input = {
 				option.clone().val(id).text(name).appendTo(cloned_optgroup);
 			});
 		});
+		if(this.settings.default_value_label) {
+			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
+			this._element.val('');
+		}
 	},
 	
 	value: function() {
@@ -21,6 +25,10 @@ Widget.types.document_input = {
 		if(isNaN(parseInt(value))) {
 			return value;
 		}
-		return "{{writeLink=display_document;manager=FileManager}}"+value;
+		return "{{writeLink=display_document;manager=FileManager}}/"+value;
+	},
+	
+	settings: {
+		default_value_label: null
 	}
 };

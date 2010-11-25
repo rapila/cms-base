@@ -2,10 +2,11 @@ Widget.types.media_object_edit = {
 	prepare: function() {
 		var _this = this;
 		Widget.createWithElement('document_input', function(widget) {
-			widget._element.prepend(jQuery('<option/>').attr('value', '').text('{{writeString=widget.media_object.use_url}}'));
+			widget.settings.default_value_label = '{{writeString=widget.media_object.use_url}}';
+		}, function(widget) {
 			_this.document_input = widget._element;
 			
-			//Update values on load
+			//Update values on load (depends on a populated document_input)
 			_this.currentData(function(data) {
 				jQuery.each(data, function(key, value) {
 					_this.add_entry(value);

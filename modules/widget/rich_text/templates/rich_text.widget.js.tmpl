@@ -119,6 +119,7 @@ Widget.types.rich_text = {
 						var document_link_chooser = this.getContentElement('info', 'document_link_chooser');
 						var document_link_chooser_element = jQuery(document_link_chooser.getElement().$);
 						Widget.createWithElement('document_input', function(widget) {
+							widget.settings.default_value_label = '{{writeString=use_url}}'
 							widget.handle('element_set', function() {
 								widget._element.appendTo(document_link_chooser_element);
 								widget._element.change(function() {
