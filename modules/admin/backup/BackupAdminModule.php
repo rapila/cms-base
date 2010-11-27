@@ -66,6 +66,6 @@ class BackupAdminModule extends AdminModule {
 	}
 	
 	public function usedWidgets() {
-		return array();
+		return array($this->oBackupOptionsWidget);
 	}
 }
