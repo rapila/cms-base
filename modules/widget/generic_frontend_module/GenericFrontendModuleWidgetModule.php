@@ -17,8 +17,10 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 		
 	public function setObjectId($iObjectId) {
-		if(!is_string($this->oInternalWidget) && method_exists($this->oInternalWidget, 'setObjectId')) {
-			$this->oInternalWidget->setObjectId($iObjectId);
+		if($this->oInternalWidget instanceof RichTextWidgetModule) {
+			$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
+			$oPage = PageQuery::create()->filterByContentObject($oContentObject)->findOne();
+			$this->oInternalWidget->setTemplate($oPage->getTemplate());
 		}
 	}
 	

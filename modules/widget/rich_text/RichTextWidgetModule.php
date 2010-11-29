@@ -45,13 +45,13 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		$oResourceIncluder->addResource('widget/ckeditor/ckeditor.js');
 	}
 	
-	public function setObjectId($iObjectId) {
+	public function setTemplate($mTemplate) {
 		//Important for CSS
 		if(!isset($this->aModuleSettings['css_files'])) {
-			$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
-			$oPage = PageQuery::create()->filterByContentObject($oContentObject)->findOne();
-			$oTemplate = $oPage->getTemplate();
-			$oTemplate->render();
+			if(is_string($mTemplate)) {
+				$mTemplate = new Template($mTemplate);
+			}
+			$mTemplate->render();
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 			$aResources = $oResourceIncluder->getAllIncludedResources();
 			$this->aCssUrls = array();
