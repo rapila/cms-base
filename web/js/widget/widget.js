@@ -309,7 +309,7 @@ jQuery.extend(Widget, {
 			if(widget.prepare) {
 				widget.prepare();
 			}
-			widget._fire('prepared', widget, widgetInformation, instanceInformation);
+			widget.fire('prepared', widget, widgetInformation, instanceInformation);
 		}, WidgetJSONOptions.with_async(!widgetInformation.is_singleton));
 		if(widgetInformation.is_singleton) {
 			return Widget.singletons[widgetType];
@@ -326,8 +326,8 @@ jQuery.extend(Widget, {
 		}
 		Widget.create(widgetType, intermediateCallback, function(widget) {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
-			widget._fire('element_set', widget._element);
-			widget._handle('prepared', function(event, widget) {
+			widget.fire('element_set', widget._element);
+			widget.handle('prepared', function(event, widget) {
 				finishCallback(widget);
 			}, false);
 		}, session);
@@ -486,7 +486,7 @@ jQuery.extend(Widget, {
 		needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			Widget.create('login_window', function(login_widget) {
 				login_widget.show();
-				Widget._handle('cmos-logged_in', function(event) {
+				Widget.handle('cmos-logged_in', function(event) {
 					// Re-try the action
 					Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
 				}, true);
@@ -600,7 +600,7 @@ jQuery.fn.extend({
 			jQuery.each(widget_element.data('waiting_prepare_callbacks').intermediate, function(i, callback) {
 				callback(widget);
 			});
-			widget._handle('prepared', function() {
+			widget.handle('prepared', function() {
 				jQuery.each(widget_element.data('waiting_prepare_callbacks').ending, function(i, callback) {
 					callback(widget);
 				});

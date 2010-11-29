@@ -98,11 +98,11 @@ jQuery(document).ready(function() {
 	}, function(widget) {
 		page_tree = widget;
 		AdminInterface.sidebar.append(widget._element);
-		widget.handle('tree_item.activated', click_handler).handle('updated', jQuery.noop);//TODO: update icons on update
+		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);//TODO: update icons on update
 	}, '{{writeRequestValue=tree_session}}');
 	
 	// init language change
-	// Widget.handle('cmos.language_changed', function() {
+	// Widget.handle('cmos-language_changed', function() {
 	// 	page_tree.update_elements();
 	// 	// reload the sidebar and page detail
 	// });

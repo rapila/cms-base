@@ -24,7 +24,7 @@ Widget.types.language_tabs = {
 					tab.data('panel', panel);
 					language_tabs.fire('tab.created', language_id, panel);
 				}
-				language_tabs.updateContentLanguage(language_id, Widget.fire.bind(Widget, 'cmos.language_changed'));
+				language_tabs.updateContentLanguage(language_id, Widget.fire.bind(Widget, 'cmos-language_changed'));
 				language_tabs.fire('tab.selected', language_id, jQuery(ui.panel));
 			}
 		};

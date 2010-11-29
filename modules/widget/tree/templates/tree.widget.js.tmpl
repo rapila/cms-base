@@ -151,7 +151,7 @@ Widget.types.tree = {
 		var new_identifier = this.identifier_from_element(element);
 		var has_changed = this.current_element_identifier !== new_identifier;
 		this.current_element_identifier = new_identifier;
-		this.fire('tree_item.activated', element, this.current_element_identifier, has_changed);
+		this.fire('tree_item-activated', element, this.current_element_identifier, has_changed);
 	},
 	
 	parent_of: function(element) {

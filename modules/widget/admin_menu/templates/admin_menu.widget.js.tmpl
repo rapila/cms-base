@@ -57,7 +57,7 @@ Widget.types.admin_menu = {
 				}
 			});
 		});
-		Widget.handle('cmos.logged_in', this.show.bind(this), true, true);
+		Widget.handle('cmos-logged_in', this.show.bind(this), true, true);
 	},
 	
 	activity: function() {
@@ -198,7 +198,7 @@ Widget.types.admin_menu = {
 					select.change(function() {
 						widget.setContentLanguage(select.val());
 						AdminInterface.content_language = select.val();
-						Widget.fire('cmos.language_changed', select.val());
+						Widget.fire('cmos-language_changed', select.val());
 					});
 				}
 				widget.handle('prepared', function() {
