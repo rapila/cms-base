@@ -2,7 +2,7 @@ Widget.types.login_window = {
 	initialize: function() {
 		this.login_markup = jQuery('<div class="cmos_alert"><form/></div>');
 		var _this = this;
-		this.login_markup.children('form').append("{{includeTemplate=login_window.incl}}").bind('submit', function(event) {
+		this.login_markup.children('form').append(jQuery.parseHTML("{{includeTemplate=login_window.incl}}")).bind('submit', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			var form = jQuery(this);
@@ -15,11 +15,49 @@ Widget.types.login_window = {
 					Widget.fire('cmos.logged_in');
 				}
 			});
+		}).find('.password_forgotten').click(function() {
+			var forgotten_alert = jQuery('<div class="cmos_alert"><form/></div>');
+			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).bind('submit', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				var input_field = forgotten_alert.find('input[name="user_name_or_email"]').keyup(function() {
+					if(jQuery(this).val() != '') {
+						forgotten_alert.find('.ui-notify').hide();
+					}
+				});
+				_this.resetRequest(input_field.val(), function(result, error) {
+					var error_element = forgotten_alert.find('.ui-notify');
+					if(error) { 
+						error_element.show().find('.error').text(error.message);
+					} else {
+						error_element.hide();
+						var sent_text = "{{writeString=widget.request.sent_info}}";
+						forgotten_alert.find('div.password_forgotten_info').text(sent_text);
+						setTimeout(function() {
+							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy')});
+						}, 2000);
+					}
+				});
+			});
+			forgotten_alert.dialog({
+				title: '{{writeString=widget.passwort_forgotten}}',
+				autoOpen: true,
+				closeOnEscape: true,
+				modal: false,
+				resizable: false,
+				dialogClass: 'reset_window',
+				buttons: [{
+					text: "{{writeString=widget.request.send}}",
+					className: 'primary ui-state-highlight',
+					click: function() {
+						forgotten_alert.children('form').submit();
+					}
+				}]
+			});
 		});
 		this.login_markup.dialog({
 			title: '{{writeString=widget.login_at_site}}',
 			autoOpen: false,
-			closeOnEscape: false,
 			modal: true,
 			resizable: false,
 			closeOnEscape: false,
@@ -29,12 +67,6 @@ Widget.types.login_window = {
 				className: 'primary ui-state-highlight',
 				click: function() {
 					_this.login_markup.children('form').submit();
-				}
-			}, {
-				text: "{{writeString=widget.cancel}}",
-				className: 'secondary',
-				click: function() {
-					window.location.href = "{{writeLink=;password_forgotten=true;manager=LoginManager;is_absolute=true}}";
 				}
 			}]
 		});

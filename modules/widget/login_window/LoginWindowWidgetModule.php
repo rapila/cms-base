@@ -21,6 +21,19 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 		throw new LocalizedException('flash.login_check_params');
 	}
 	
+	public function resetRequest($sUserNameOrPassword) {
+    if($sUserNameOrPassword === '') {
+			throw new LocalizedException('flash.login.username_or_email_required');
+		}
+	  $oUser = UserPeer::getUserByUserName($sUserNameOrPassword);
+	  if($oUser === null) {
+	    $oUser = UserPeer::getUserByEmail($sUserNameOrPassword);
+	  }
+	  if($oUser) {
+	    LoginManager::doSendResetMail($oUser);
+	  }
+	}
+	
 	public function getIsLoggedIn() {
 		return Session::getSession()->isAuthenticated();
 	}

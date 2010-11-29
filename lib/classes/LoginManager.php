@@ -150,6 +150,11 @@ class LoginManager extends Manager {
 		if($oUser === null) {
 			return 'login';
 		}
+    self::doSendResetMail($oUser);
+		return 'login';
+	}
+	
+	public static function doSendResetMail($oUser) {
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
 		
@@ -165,8 +170,6 @@ class LoginManager extends Manager {
 		$oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'Mini-CMS on '.$_SERVER['HTTP_HOST']), Settings::getSetting('domain_holder', 'email', 'cms@'.$_SERVER['HTTP_HOST']));
 		$oEmail->addRecipient($oUser->getEmail());
 		$oEmail->send();
-
-		return 'login';
 	}
 	
 	public static function passwordReset() {
