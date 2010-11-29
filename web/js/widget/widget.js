@@ -112,7 +112,7 @@ jQuery.extend(Widget.prototype, {
 	},
 	
 	fire: function(eventName, realEvent) {
-		var event = jQuery.Event("widget."+eventName);
+		var event = jQuery.Event("widget-"+eventName);
 		var has_real_event = (realEvent instanceof jQuery.Event);
 		if(has_real_event) {
 			event.realTarget = realEvent.target;
@@ -142,7 +142,9 @@ jQuery.extend(Widget.prototype, {
 					return this;
 				}
 			}
-			jQuery(this)[isOnce ? 'one' : 'bind']("widget."+eventName, handler.bind(this));
+			jQuery(this)[isOnce ? 'one' : 'bind']("widget-"+eventName, function(event) {
+				handler.apply(this, arguments);
+			}.bind(this));
 		}.bind(this));
 		return this;
 	},
@@ -153,6 +155,28 @@ jQuery.extend(Widget.prototype, {
 });
 
 jQuery.extend(Widget, {
+	fire: function(eventName) {
+		var event = jQuery.Event("Widget-"+eventName);
+		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		this.eventHook._pastEvents[eventName] = [event].concat(args);
+		event.preventDefault();
+		event.stopPropagation();
+		jQuery(Widget.eventHook).trigger(event, args);
+	},
+	
+	handle: function(event, handler, isOnce, fireIfPast) {
+		jQuery.each(event.split(/\s+/), function(i, eventName) {
+			if(fireIfPast && this.eventHook._pastEvents[eventName]) {
+				handler.apply(this, this.eventHook._pastEvents[eventName]);
+				if(isOnce) {
+					return this;
+				}
+			}
+			jQuery(Widget.eventHook)[isOnce ? 'one' : 'bind']("Widget-"+eventName, handler.bind(this));
+		}.bind(this));
+		return this;
+	},
+	
 	uuid: function() {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 			var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -175,11 +199,12 @@ jQuery.extend(Widget, {
 							if(!script.attr('src')) {
 								head.append(this.cloneNode(true));
 							} else if(head.find('script[src="'+script.attr('src')+'"]').length == 0) {
-								jQuery.ajax({
-									url: script.attr('src'),
-									dataType: 'script',
-									async: false
-								});
+								head.append(this.cloneNode(true));
+								// jQuery.ajax({
+								// 	url: script.attr('src'),
+								// 	dataType: 'script',
+								// 	async: false
+								// });
 							}
 						});
 						//Add styles
@@ -284,7 +309,7 @@ jQuery.extend(Widget, {
 			if(widget.prepare) {
 				widget.prepare();
 			}
-			widget.fire('prepared', widget, widgetInformation, instanceInformation);
+			widget._fire('prepared', widget, widgetInformation, instanceInformation);
 		}, WidgetJSONOptions.with_async(!widgetInformation.is_singleton));
 		if(widgetInformation.is_singleton) {
 			return Widget.singletons[widgetType];
@@ -301,8 +326,8 @@ jQuery.extend(Widget, {
 		}
 		Widget.create(widgetType, intermediateCallback, function(widget) {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
-			widget.fire('element_set', widget._element);
-			widget.handle('prepared', function(event, widget) {
+			widget._fire('element_set', widget._element);
+			widget._handle('prepared', function(event, widget) {
 				finishCallback(widget);
 			}, false);
 		}, session);
@@ -436,30 +461,11 @@ jQuery.extend(Widget, {
 		return Widget.types[widgetType].prototype[methodName].apply(window, parameters);
 	},
 	
-	fire: function(eventName) {
-		var event = jQuery.Event("Widget."+eventName);
-		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
-		this._pastEvents[eventName] = [event].concat(args);
-		jQuery(Widget).triggerHandler(event, args);
+	eventHook: {
+		_pastEvents: {}
 	},
-	
-	handle: function(event, handler, isOnce, fireIfPast) {
-		jQuery.each(event.split(/\s+/), function(i, eventName) {
-			if(fireIfPast && this._pastEvents[eventName]) {
-				handler.apply(this, this._pastEvents[eventName]);
-				if(isOnce) {
-					return this;
-				}
-			}
-			jQuery(Widget)[isOnce ? 'one' : 'bind']("Widget."+eventName, handler.bind(this));
-		}.bind(this));
-		return this;
-	},
-	
-	_pastEvents: {},
 	
 	defaultJSONHandler: jQuery.noop,
-	
 	defaultMethodHandler: jQuery.noop,
 	
 	log: jQuery.noop,
@@ -480,7 +486,7 @@ jQuery.extend(Widget, {
 		needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			Widget.create('login_window', function(login_widget) {
 				login_widget.show();
-				Widget.handle('cmos.logged_in', function(event) {
+				Widget._handle('cmos-logged_in', function(event) {
 					// Re-try the action
 					Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
 				}, true);
@@ -594,7 +600,7 @@ jQuery.fn.extend({
 			jQuery.each(widget_element.data('waiting_prepare_callbacks').intermediate, function(i, callback) {
 				callback(widget);
 			});
-			widget.handle('prepared', function() {
+			widget._handle('prepared', function() {
 				jQuery.each(widget_element.data('waiting_prepare_callbacks').ending, function(i, callback) {
 					callback(widget);
 				});
