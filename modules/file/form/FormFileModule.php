@@ -65,7 +65,7 @@ class FormFileModule extends FileModule {
       $this->oEmailTemplate->replaceIdentifierMultiple('form_content', $oEmailItemTemplateInstance);
     }
     if($bHasCaptcha && !FormFrontendModule::validateRecaptchaInput()) {
-      $oFlash->addMessage('captcha');
+      $oFlash->addMessage('captcha_code_required');
     }
     $oFlash->finishReporting();
     if(Flash::noErrors()) {
