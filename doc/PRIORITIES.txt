@@ -1,10 +1,10 @@
 PRIORITAETEN:
 Schule Altenburg
-- Tel Bigler, Model
+- Vorgehen, IcampusAdminModule, Soap Install?
 
-Strategie Hosting GCGroup
-
-BUG: LoginPageType Template object problem, calling fill_container in Line 26
+UserDetail & Logn
+- Password forgotten - widget or normal admin_menu and information
+- user profile how to edit
 
 Newsletter Plugin:
 - Breite des Newsletters
@@ -25,14 +25,12 @@ Tags, Tipps und Tricks
 - Tag Cloud widget for detail objects etc
 
 PageTree and Detail Bugs!
+- remove status opened (triangle-1-se) if page has no children anymore  (child move to other branch)
 - page inactive should be previewable
 - highlight of persistant page or on reload does not work properly
 	language validation does not work if this happens
 - language object conditions > bug:  this[i].style is undefined
 - Validate page name, Insecurities about the tree handling. Highlight, sometimes name missing, total block?
-
-UserDetail
-- user profile how to edit
 
 Language_tabs
 - getContentLanguage on fill_data?

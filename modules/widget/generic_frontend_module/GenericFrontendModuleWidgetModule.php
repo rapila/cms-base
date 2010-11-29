@@ -20,7 +20,7 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 		if($this->oInternalWidget instanceof RichTextWidgetModule) {
 			$oContentObject = ContentObjectPeer::retrieveByPK($iObjectId);
 			$oPage = PageQuery::create()->filterByContentObject($oContentObject)->findOne();
-			$this->oInternalWidget->setTemplate($oPage->getTemplate());
+			$this->oInternalWidget->setTemplate($oPage->getTemplateNameUsed());
 		}
 	}
 	

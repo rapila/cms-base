@@ -1,8 +1,9 @@
 Site prototype
 
 cleanup 
-	site/config.yml
+	site/config.yml and db_config
 	templates
 	
 add missing files if...
+- module directories admin, widget, remove backend
 - preview-....css file in css/preview with comments for suggestions
