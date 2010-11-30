@@ -75,7 +75,8 @@ Widget.types.login_window = {
 				click: function() {
 					_this.login_markup.children('form').submit();
 				}
-			}]
+			}],
+			open: function(event, ui) { jQuery(".ui-dialog-titlebar-close").hide(); },
 		});
 		this.login_markup.find('.input_default_state').each(function() {
 			var input = jQuery(this);
