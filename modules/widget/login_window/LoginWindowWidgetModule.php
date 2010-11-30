@@ -26,11 +26,13 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 			throw new LocalizedException('flash.login.username_or_email_required');
 		}
 	  $oUser = UserPeer::getUserByUserName($sUserNameOrPassword);
+	  $bShowUserName = false;
 	  if($oUser === null) {
 	    $oUser = UserPeer::getUserByEmail($sUserNameOrPassword);
+	    $bShowUserName = true;
 	  }
 	  if($oUser) {
-	    LoginManager::doSendResetMail($oUser);
+	    LoginManager::sendResetMail($oUser, $bShowUserName);
 	  }
 	}
 	

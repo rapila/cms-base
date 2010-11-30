@@ -137,7 +137,7 @@ class LoginManager extends Manager {
 		}
 	}
 	
-	public static function sendResetMail($sLinkBase = null) {
+	public static function processPasswordReset($sLinkBase = null) {
 		$oFlash = Flash::getFlash();
 		if($_POST['password_reset_user_name'] === '') {
 			$oFlash->addMessage('login.empty_fields');
@@ -145,22 +145,24 @@ class LoginManager extends Manager {
 		}
 		
 		$oFlash->addMessage('login.recovery_link_sent');
-		
 		$oUser = UserPeer::getUserByUserName($_POST['password_reset_user_name'], true);
 		if($oUser === null) {
 			return 'login';
 		}
-    self::doSendResetMail($oUser);
+    self::sendResetMail($oUser);
 		return 'login';
 	}
 	
-	public static function doSendResetMail($oUser) {
+	public static function sendResetMail($oUser, $bShowUserName = false) {
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
 		
 		$oEmailTemplate = new Template('e_mail_pw_recover', array(DIRNAME_TEMPLATES, 'login'));
 		$oEmailTemplate->replaceIdentifier('first_name', $oUser->getFirstName());
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
+		if($bShowUserName) {
+		  $oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('login.password_reset.your_username').': '.$oUser->getUsername());
+		}
 		if($sLinkBase === null) {
 			$sLinkBase = LinkUtil::linkToSelf(null, null, true);
 		}
