@@ -64,7 +64,8 @@ Widget.types.tree = {
 		}).bind('refresh.jstree', function(event, data) {
 			if(_this.current_element_identifier && _this.current_element().length == 0) {
 				var new_element = _this.element_with_identifier(_this.current_element_identifier);
-				_this.activate(new_element);
+				_this._tree.deselect_all();
+				_this._tree.select_node(new_element);
 			}
 		});
 		// this.reload();
@@ -146,8 +147,6 @@ Widget.types.tree = {
 	},
 	
 	activate: function(element) {
-		// this._element.find('li').removeClass('ui-state-active');
-		// element.addClass('ui-state-active');
 		var new_identifier = this.identifier_from_element(element);
 		var has_changed = this.current_element_identifier !== new_identifier;
 		this.current_element_identifier = new_identifier;

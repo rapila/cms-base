@@ -5,7 +5,7 @@ Widget.types.page_type.types['default'] = {
 			// Get the container
 			var filled_container = jQuery(this);
 			// Append the preview bar
-			var preview_bar = jQuery.parseHTML('<div class="preview_bar"><div class="ui-icon ui-icon-pencil edit"></div><div class="ui-icon ui-icon-cancel cancel"></div><div class="ui-icon ui-icon-check save"></div><div class="ui-loading"></div></div>').hide().appendTo(document.body);
+			var preview_bar = jQuery.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
 			preview_bar.data('filled_container', filled_container);
 			filled_container.data('preview_bar', preview_bar);
 			

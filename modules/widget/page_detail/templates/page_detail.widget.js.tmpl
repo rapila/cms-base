@@ -46,14 +46,15 @@ Widget.types.page_detail = {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
 		Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', this._element);
-		this._element.bind('keyup', function(event) {
-			if(this.current_page_id === null) {
-				return;
-			}
-			if(event.which == 13) {
-				this.save();
-			}
-		}.bind(this));
+		// this._element.bind('keyup', function(event) {
+		// 	if(this.current_page_id === null) {
+		// 		return;
+		// 	}
+		// 	if(event.which == 13) {
+		// 		this.save();
+		// 		return false;
+		// 	}
+		// }.bind(this));
 	},
 	
 	validate_with: function(exception) {
