@@ -19,7 +19,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		} else {
 			if(isset($aOptions['link_categories']) && is_array($aOptions['link_categories']) && (count($aOptions['link_categories']) > 0)) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories'], Criteria::IN);
-			} else if(isset($aOptions['categories'])) {
+			} else if(isset($aOptions['link_categories'])) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories']);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
@@ -55,9 +55,11 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		$this->oLanguageObject->setData(serialize($mData));
 		$bResult = $this->oLanguageObject->save();
 		if($bResult) {
-			ReferencePeer::removeReferences($this->oLanguageObject);
-			foreach($mData['link_categories'] as $iCategoryId) {
-				ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'LinkCategory'));
+			if(isset($mData['link_categories'])) {
+				ReferencePeer::removeReferences($this->oLanguageObject);
+				foreach($mData['link_categories'] as $iCategoryId) {
+					ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'LinkCategory'));
+				}
 			}
 		}
 		return $bResult;
@@ -90,4 +92,23 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		}
 		return $aResult;
 	}
+	
+	public static function getContentInfo($oLanguageObject) {
+		if(!$oLanguageObject) {
+			return null;
+		}
+		$aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
+		if(isset($aData['link_categories']) && is_array($aData['link_categories'])) {
+			$aResult = array();
+			foreach(self::getCategoryOptions() as $iCategory => $sName) {
+				if(in_array($iCategory, $aData['link_categories'])) {
+					$aResult[] = $sName;
+				}
+			}
+			if(count($aResult) > 0) {
+				return StringPeer::getString('widget.link_category').': '.implode(', ', $aResult);
+			}
+		}
+	}
+
 }

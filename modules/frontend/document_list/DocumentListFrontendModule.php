@@ -15,10 +15,10 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		if(!Session::getSession()->isAuthenticated()) {
 			$oCriteria->filterByIsProtected(false);
 		}
-		if(isset($aOptions['categories']) && is_array($aOptions['categories']) && (count($aOptions['categories']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories'], Criteria::IN);
-		} else if(isset($aOptions['categories'])) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['categories']);
+		if(isset($aOptions['document_categories']) && is_array($aOptions['document_categories']) && (count($aOptions['document_categories']) > 0)) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories'], Criteria::IN);
+		} else if(isset($aOptions['document_categories'])) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories']);
 		}
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
@@ -49,8 +49,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		$bResult = $this->oLanguageObject->save();
 		if($bResult) {
 			ReferencePeer::removeReferences($this->oLanguageObject);
-			if(isset($mData['categories'])) {
-				foreach($mData['categories'] as $iCategoryId) {
+			if(isset($mData['document_categories'])) {
+				foreach($mData['document_categories'] as $iCategoryId) {
 					ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'DocumentCategory'));
 				}
 			}
@@ -79,20 +79,18 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		if(!$oLanguageObject) {
 			return null;
 		}
-		$sContentInfo = 'Keine Dokumenten-Kategorien';
 		$aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
-		if(isset($aData['categories']) && is_array($aData['categories'])) {
+		if(isset($aData['document_categories']) && is_array($aData['document_categories'])) {
 			$aResult = array();
 			foreach(self::getCategoryOptions() as $iCategory => $sName) {
-				if(in_array($iCategory, $aData['categories'])) {
+				if(in_array($iCategory, $aData['document_categories'])) {
 					$aResult[] = $sName;
 				}
 			}
 			if(count($aResult) > 0) {
-				$sContentInfo = "Dokumenten-Kategorien: ".implode(', ', $aResult);
+				return StringPeer::getString('widget.document_category').': '.implode(', ', $aResult);
 			}
 		}
-		return $sContentInfo;
 	}
 
 	public static function getCategoryOptions() {

@@ -40,9 +40,12 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['link_categories'] = LinkListFrontendModule::getCategoryOptions();
+		$aLinkCategories = LinkListFrontendModule::getCategoryOptions();
+		$aResult['link_categories'] = $aLinkCategories;
 		$aResult['template'] = LinkListFrontendModule::getTemplateOptions();
-		$aResult['sort_by'] = LinkListFrontendModule::getSortOptions();
+		if(count($aLinkCategories) > 0) {
+			$aResult['sort_by'] = LinkListFrontendModule::getSortOptions();
+		}
 		return $aResult;
 	}
 	

@@ -1,15 +1,15 @@
 Widget.types.document_edit = {
 	prepare: function() {
-		var display_mode = this.getDisplayMode();
+		var display_modes = this.getDisplayMode();
 		var config_modes = this.getConfigurationModes();
-		this.content = (config_modes.categories.length == 0) ? jQuery.parseHTML("{{includeTemplate=edit_no_categories}}") : jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = (config_modes.document_categories.length == 0) ? jQuery.parseHTML("{{includeTemplate=edit_no_categories}}") : jQuery.parseHTML("{{includeTemplate=edit}}");
 		var _this = this;
 		jQuery.each(config_modes, function(config_name, options) {
 			var select_name = config_name;
-			if(select_name === 'categories') {
+			if(select_name === 'document_categories') {
 				select_name += '[]';
 			}
-			_this.content.find("select[name='"+select_name+"']").populate(options, display_mode[config_name]);
+			_this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
 		});
 		this._element.append(this.content);
 
