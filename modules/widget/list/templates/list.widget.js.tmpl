@@ -190,7 +190,7 @@ Widget.types.list = {
 		this.deleteRow(rowData, function(result, error) {
 			if(!error) {
 				row.remove();
-				this.fire('row.deleted', result);
+				this.fire('row-deleted', result);
 			} else {
 				Widget.notifyUser('error', error.message);
 			}
@@ -230,7 +230,7 @@ Widget.types.list = {
 				newRow = this.insert_row(row_contents, false, row);
 			}
 			row.remove();
-			this.fire('row.updated', additonalData, newRow, rowData);
+			this.fire('row-updated', additonalData, newRow, rowData);
 		});
 	},
 	

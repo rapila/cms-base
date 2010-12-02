@@ -118,8 +118,8 @@ jQuery.extend(Widget.prototype, {
 			event.realTarget = realEvent.target;
 		}
 		var args = jQuery.makeArray(arguments).slice(has_real_event ? 2 : 1);
-		this._pastEvents[eventName] = [event].concat(args);
-		jQuery(this).trigger(event, args);
+		this._eventHook._pastEvents[eventName] = [event].concat(args);
+		jQuery(this._eventHook).trigger(event, args);
 		if(has_real_event) {
 			if(event.isDefaultPrevented()) {
 				realEvent.preventDefault();
@@ -136,20 +136,23 @@ jQuery.extend(Widget.prototype, {
 	
 	handle: function(event, handler, isOnce, fireIfPast) {
 		jQuery.each(event.split(/\s+/), function(i, eventName) {
-			if(fireIfPast && this._pastEvents[eventName]) {
-				handler.apply(this, this._pastEvents[eventName]);
+			if(fireIfPast && this._eventHook._pastEvents[eventName]) {
+				handler.apply(this, this._eventHook._pastEvents[eventName]);
 				if(isOnce) {
 					return this;
 				}
 			}
-			jQuery(this)[isOnce ? 'one' : 'bind']("widget-"+eventName, function(event) {
+			jQuery(this._eventHook)[isOnce ? 'one' : 'bind']("widget-"+eventName, function(event) {
 				handler.apply(this, arguments);
 			}.bind(this));
 		}.bind(this));
 		return this;
 	},
 	
-	_pastEvents: {},
+	_eventHook: {
+		_pastEvents: {}
+	},
+	
 	_widgetInformation: {},
 	_instanceInformation: {}
 });
@@ -158,21 +161,21 @@ jQuery.extend(Widget, {
 	fire: function(eventName) {
 		var event = jQuery.Event("Widget-"+eventName);
 		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
-		this.eventHook._pastEvents[eventName] = [event].concat(args);
+		this._eventHook._pastEvents[eventName] = [event].concat(args);
 		event.preventDefault();
 		event.stopPropagation();
-		jQuery(Widget.eventHook).trigger(event, args);
+		jQuery(Widget._eventHook).trigger(event, args);
 	},
 	
 	handle: function(event, handler, isOnce, fireIfPast) {
 		jQuery.each(event.split(/\s+/), function(i, eventName) {
-			if(fireIfPast && this.eventHook._pastEvents[eventName]) {
-				handler.apply(this, this.eventHook._pastEvents[eventName]);
+			if(fireIfPast && this._eventHook._pastEvents[eventName]) {
+				handler.apply(this, this._eventHook._pastEvents[eventName]);
 				if(isOnce) {
 					return this;
 				}
 			}
-			jQuery(Widget.eventHook)[isOnce ? 'one' : 'bind']("Widget-"+eventName, handler.bind(this));
+			jQuery(Widget._eventHook)[isOnce ? 'one' : 'bind']("Widget-"+eventName, handler.bind(this));
 		}.bind(this));
 		return this;
 	},
@@ -292,7 +295,7 @@ jQuery.extend(Widget, {
 			jQuery.extend(widget.settings, instanceInformation.initial_settings);
 			
 			//past events must not be shared across instances
-			widget._pastEvents = {};
+			widget._eventHook = jQuery.extend(true, {}, widget._eventHook);
 			
 			if(widgetInformation.is_singleton) {
 				Widget.singletons[widgetType] = widget;
@@ -461,7 +464,7 @@ jQuery.extend(Widget, {
 		return Widget.types[widgetType].prototype[methodName].apply(window, parameters);
 	},
 	
-	eventHook: {
+	_eventHook: {
 		_pastEvents: {}
 	},
 	

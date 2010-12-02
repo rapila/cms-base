@@ -14,7 +14,7 @@
 			load_node : function (obj, s_call, e_call) { var _this = this; this.load_node_json(obj, function () { _this.__callback({ "obj" : obj }); s_call.call(this); }, e_call); },
 			_is_loaded : function (obj) { 
 				var s = this._get_settings().tree_widget, d;
-				obj = this._get_node(obj); 
+				obj = this._get_node(obj);
 				if(obj && obj !== -1 && s.progressive_render && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree-children")) {
 					d = this._parse_json(obj.data("jstree-children"));
 					if(d) {
@@ -142,7 +142,7 @@
 						// if(m.icon.length === 0) {
 						// 	tmp.prepend(icon_tag);
 						// }
-						tmp.prepend(icon_tag.addClass('jstree-icon'));
+						// tmp.prepend(icon_tag.addClass('jstree-icon'));
 						d.prepend(tmp);
 					});
 					d.prepend("<ins class='jstree-icon'>&#160;</ins>");

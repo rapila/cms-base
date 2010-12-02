@@ -70,7 +70,7 @@ Widget.types.document_thumbnail_view = {
 				if(confirmed) {
 					_this.deleteDocument({id: document_id}, function(result) {
 						jQuery(doc).remove();
-						_this.fire('document_removed', {id: document_id});
+						_this.fire('document-removed', {id: document_id});
 					});
 				}
 			});

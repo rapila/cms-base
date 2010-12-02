@@ -22,7 +22,7 @@ jQuery(document).ready(function() {
 			});
 		
 			//Add handlers for changed namespaces
-			tags_list.handle('row.updated row.deleted', function(event, returnedResult) {
+			tags_list.handle('row-updated row-deleted', function(event, returnedResult) {
 				if(returnedResult.sidebar_changed) {
 					sidebar.reload();
 				}

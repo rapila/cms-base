@@ -12,7 +12,7 @@ Widget.types.login_window = {
 					_this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
 				} else {
 					_this.login_markup.dialog('close');
-					Widget.fire('cmos.logged_in');
+					Widget.fire('cmos-logged_in');
 				}
 			});
 		}).find('.password_forgotten').click(function() {
@@ -121,7 +121,7 @@ jQuery(document).ready(function() {
 		if(!login_window.getIsLoggedIn()) {
 			login_window.show();
 		} else {
-			Widget.fire('cmos.logged_in');
+			Widget.fire('cmos-logged_in');
 		}
 	});
 });

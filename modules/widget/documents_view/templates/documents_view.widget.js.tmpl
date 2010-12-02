@@ -48,7 +48,7 @@ Widget.types.documents_view = {
 		var widget_name = type.widget_name;
 		var documents_view = this;
 		Widget.createWithElement(widget_name, function(widget) {
-			widget.handle('document_removed', documents_view.mark_background_views_dirty.bind(documents_view));
+			widget.handle('document-removed', documents_view.mark_background_views_dirty.bind(documents_view));
 			tab.data('widget', widget);
 			type.init.call(this, tab.data('widget'));
 		}, function(widget) {
