@@ -49,15 +49,17 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		$bResult = $this->oLanguageObject->save();
 		if($bResult) {
 			ReferencePeer::removeReferences($this->oLanguageObject);
-			foreach($mData['categories'] as $iCategoryId) {
-				ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'DocumentCategory'));
+			if(isset($mData['categories'])) {
+				foreach($mData['categories'] as $iCategoryId) {
+					ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'DocumentCategory'));
+				}
 			}
 		}
 		return $bResult;
 	}
 	
 	public function getWidget() {
-		$aOptions = @unserialize($this->getData());	
+		$aOptions = @unserialize($this->getData()); 
 		$oWidget = new DocumentEditWidgetModule(null, $this);
 		$oWidget->setDisplayMode($aOptions);
 		return $oWidget;
@@ -71,8 +73,28 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		$aResult[self::SORT_BY_NAME] = StringPeer::getString('widget.order.by_name');
 		$aResult[self::SORT_BY_SORT] = StringPeer::getString('widget.order.by_sort');
 		return $aResult;
-	}	
+	} 
 	
+	public static function getContentInfo($oLanguageObject) {
+		if(!$oLanguageObject) {
+			return null;
+		}
+		$sContentInfo = 'Keine Dokumenten-Kategorien';
+		$aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
+		if(isset($aData['categories']) && is_array($aData['categories'])) {
+			$aResult = array();
+			foreach(self::getCategoryOptions() as $iCategory => $sName) {
+				if(in_array($iCategory, $aData['categories'])) {
+					$aResult[] = $sName;
+				}
+			}
+			if(count($aResult) > 0) {
+				$sContentInfo = "Dokumenten-Kategorien: ".implode(', ', $aResult);
+			}
+		}
+		return $sContentInfo;
+	}
+
 	public static function getCategoryOptions() {
 		$oCriteria = DocumentCategoryQuery::create();
 		$oCriteria->orderByName();

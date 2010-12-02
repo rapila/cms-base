@@ -207,6 +207,9 @@ Widget.types.page_type.types['default'] = {
 					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 					jQuery.each(params.contents, function(object_id, content) {
 						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': object_id}).appendTo(target);
+						if(content.content_info) {
+							li.attr('title', content.content_info);
+						}
 						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li, false)));
 						li.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, li)));
 						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));

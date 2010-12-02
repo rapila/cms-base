@@ -42,9 +42,12 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 	
 	public function getConfigurationModes() {
 		$aResult = array();
-		$aResult['categories'] = DocumentListFrontendModule::getCategoryOptions();
+		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();
+		$aResult['categories'] = $aDocumentCategories;
 		$aResult['list_template'] = DocumentListFrontendModule::getTemplateOptions();
-		$aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
+		if(count($aDocumentCategories) > 0) {
+		  $aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
+		}
 		return $aResult;
 	}
 	
