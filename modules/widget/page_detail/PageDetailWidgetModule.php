@@ -14,7 +14,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function setPageId($iPageId) {
 		$this->iPageId = (int) $iPageId;
-    Session::getSession()->setAttribute('persistent_page_id', $this->iPageId);
+		Session::getSession()->setAttribute('persistent_page_id', $this->iPageId);
 	}
 	
 	public function getPageData() {
@@ -22,7 +22,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 		
 		// addition related page fields
-		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager'));	
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager')); 
 			
 		// page properties are displayed if added to template
 		try {
@@ -59,17 +59,17 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
 		$oPageString = $oPage->getPageStringByLanguage($sLanguageId);
 		if($oPageString === null) {
-		  $oPageString = new PageString();
-		  $oPageString->setLanguageId($sLanguageId);
-		  $oPageString->setIsInactive(true);
-		  $oPage->addPageString($oPageString);
+			$oPageString = new PageString();
+			$oPageString->setLanguageId($sLanguageId);
+			$oPageString->setIsInactive(true);
+			$oPage->addPageString($oPageString);
 		}
 		$aResult = $oPageString->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['LinkTextOnly'] = $oPageString->getLinkTextOnly();
 		$aResult['HasLanguageObjectsFilled'] = $oPageString->hasLanguageObjectsFilled($sLanguageId);
 		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), $sLanguageId));
 
-    return $aResult;
+		return $aResult;
 	}
 	
  /** 
@@ -110,7 +110,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult[$sKey]['name'] = StringUtil::makeReadableName(isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name']);
 		}
 		return $aResult;
-	}	
+	} 
 
  /** 
 	* getAvailablePageProperties()
@@ -142,27 +142,27 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function deletePage() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
-    if(!Session::getSession()->getUser()->mayDelete($this->oPage)) {
+		if(!Session::getSession()->getUser()->mayDelete($this->oPage)) {
 			throw new NotPermittedException('may_delete_page');
-	  }
-	  if($oPage->hasChildren()) {
+		}
+		if($oPage->hasChildren()) {
 			throw new NotPermittedException('delete_pagetree_enable');
-	  }
-	  if($oPage->isRoot()) {
+		}
+		if($oPage->isRoot()) {
 			throw new LocalizedException('exception.delete_root_page');
-	  }
-    $oPage->delete();
-    return $this->iPageId;
+		}
+		$oPage->delete();
+		return $this->iPageId;
 	}
 	
 	public function createPage($iParentId, $sPageName) {
-	  $oParentPage = PagePeer::retrieveByPK($iParentId);
+		$oParentPage = PagePeer::retrieveByPK($iParentId);
 		if($oParentPage == null) {
 			$oParentPage = PagePeer::getRootPage();
 		}
-	  if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
+		if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
 			throw new NotPermittedException('may_create_children');
-	  }
+		}
 		$oPage = new Page();
 		$oPage->setName(StringUtil::normalize($sPageName));
 		$oPageString = new PageString();
@@ -180,10 +180,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aPageData);
 		$oFlash->checkForValue('name', 'page.name_required');
-		foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
-			if($aPageData['is_active'][$iCounter] && $aPageData['page_title'][$iCounter] == '') {
-				$oFlash->addMessage('page_title_required');
-				$oFlash->addAffectedIndex('page_title_required', $iCounter);
+		if(isset($aPageData['edited_languages'])) {
+			foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
+				if($aPageData['is_active'][$iCounter] && $aPageData['page_title'][$iCounter] == '') {
+					$oFlash->addMessage('page_title_required');
+					$oFlash->addAffectedIndex('page_title_required', $iCounter);
+				}
 			}
 		}
 		$oFlash->finishReporting();
@@ -191,9 +193,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 
 	public function saveData($aPageData) {
 		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
-	  if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
+		if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
 			throw new NotPermittedException('may_edit_page_details');
-	  }
+		}
 		// validate post values / fetch most with js
 		$this->validate($aPageData);
 		if(!Flash::noErrors()) {
@@ -221,23 +223,23 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private function handlePageStrings($aPageData) {
-	  if(isset($aPageData['edited_languages'])) {
-	    foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
-    		$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId);	
-    		if($oPageString === null) {
-    			$oPageString = new PageString();
-    			$oPageString->setLanguageId($sLanguageId);
-    			$this->oPage->addPageString($oPageString); 
-    		}
-    		$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : null);
-    		$oPageString->setLinkText($aPageData['link_text'][$iCounter] ? $aPageData['link_text'][$iCounter] : null);
-    		$oPageString->setMetaDescription($aPageData['meta_description'][$iCounter] ? $aPageData['meta_description'][$iCounter] : null);
-    		$oPageString->setMetaKeywords($aPageData['meta_keywords'][$iCounter] ? $aPageData['meta_keywords'][$iCounter] : null);
-    		$bIsActive = $oPageString->getPageTitle() !== null ? $aPageData['is_active'][$iCounter] : false;
-    		$oPageString->setIsInactive(!$bIsActive);
-    		$oPageString->save();
-	    }
-	  }
+		if(isset($aPageData['edited_languages'])) {
+			foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
+				$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId); 
+				if($oPageString === null) {
+					$oPageString = new PageString();
+					$oPageString->setLanguageId($sLanguageId);
+					$this->oPage->addPageString($oPageString); 
+				}
+				$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : null);
+				$oPageString->setLinkText($aPageData['link_text'][$iCounter] ? $aPageData['link_text'][$iCounter] : null);
+				$oPageString->setMetaDescription($aPageData['meta_description'][$iCounter] ? $aPageData['meta_description'][$iCounter] : null);
+				$oPageString->setMetaKeywords($aPageData['meta_keywords'][$iCounter] ? $aPageData['meta_keywords'][$iCounter] : null);
+				$bIsActive = $oPageString->getPageTitle() !== null ? $aPageData['is_active'][$iCounter] : false;
+				$oPageString->setIsInactive(!$bIsActive);
+				$oPageString->save();
+			}
+		}
 	}
 	
 	private function handleLanguageObjects($aPageData) {
