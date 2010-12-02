@@ -16,19 +16,20 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	
 	public function getWidget() {
 		$oRichTextWidget = WidgetModule::getWidget('rich_text', null, $this->widgetData());
-		$aTextModule = Settings::getSetting('text_module','toolbar', null);
-		if($aTextModule) {
+		$aToolbarSettings = Settings::getSetting('text_module','toolbar', null);
+		if($aToolbarSettings) {
 			$aResult = array();
-			foreach($aTextModule as $i => $aRowElements) {
+			foreach($aToolbarSettings as $i => $aRowElements) {
 				$aResult = array_merge($aResult, $aRowElements, array('/'));
 			}
 			array_pop($aResult);
 			$oRichTextWidget->setSetting('toolbar_Full', $aResult);
 		}
 		$oRichTextWidget->setSetting('contentsLanguage', $this->oLanguageObject->getLanguageId());
-		$oRichTextWidget->setSetting('preferred_width', $aTextModule = Settings::getSetting('text_module', 'richtext_width', 600));
+		$oGenericWidget = WidgetModule::getWidget('generic_frontend_module', null, $this, $oRichTextWidget);
+		$oGenericWidget->setSetting('preferred_width', Settings::getSetting('text_module', 'richtext_width', 600));
     
-		return WidgetModule::getWidget('generic_frontend_module', null, $this, $oRichTextWidget);
+		return $oGenericWidget;
 	}
 	
 	public function widgetData() {

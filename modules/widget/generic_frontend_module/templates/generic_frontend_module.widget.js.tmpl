@@ -5,10 +5,8 @@ Widget.types.generic_frontend_module = {
 		} else {
 			this._element.prepareWidget(function(widget) {
 				this.internal_widget = widget;
-				this.settings.preferred_width = widget.settings.preferred_width;
-			}.bind(this));
+			}.bind(this), jQuery.noop);
 		}
-		
 	},
 	
 	save: function(callback) {
