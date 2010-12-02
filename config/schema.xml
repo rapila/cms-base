@@ -64,7 +64,7 @@
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
 	<column name="data" type="blob" />
-	<column name="update_exists" type="boolean" size="1" default="0" />
+	<!-- <column name="update_exists" type="boolean" size="1" default="0" /> -->
 	<behavior name="referencing" />
 </table>
 
