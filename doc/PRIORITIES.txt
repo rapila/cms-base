@@ -15,6 +15,7 @@ Newsletter Plugin:
 - this.accordion... and bug arrow and accordion handling on validation error
 
 RichtextWidget
+- Optgroups Kategorien make more clear, ideal,
 - Buttons > image mit Browseknopf
 - Link List, Internal Links, Document Links,
 - Newsletter Parts
