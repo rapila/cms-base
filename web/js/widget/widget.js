@@ -574,7 +574,7 @@ jQuery.extend(jQuery, {
 jQuery.fn.extend({
 	prepareWidget: function() {
 		if(this.length == 0) {
-			return;
+			return this;
 		}
 		var callback = arguments[0] || jQuery.noop;
 		var intermediateCallback = jQuery.noop;
@@ -590,7 +590,7 @@ jQuery.fn.extend({
 		if(waiting_callbacks) {
 			waiting_callbacks.intermediate.push(intermediateCallback);
 			waiting_callbacks.ending.push(callback);
-			return;
+			return this;
 		}
 		waiting_callbacks = {intermediate: [intermediateCallback], ending: [callback]};
 		this.data('waiting_prepare_callbacks', waiting_callbacks);
