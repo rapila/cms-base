@@ -1,7 +1,7 @@
 <?php
 /**
 * FilterModule is responsible for running callback functions in various parts of the CMS to handle specific events.
-* Filters are called as follows: FilterModule::getFilters()->execute<Event>Callbacks($aArguments = array())
+* Filters are called as follows: FilterModule::getFilters()->handle<Event>($aArguments = array())
 * Each filter that has a on<Event> event handler is then being called
 */
 abstract class FilterModule extends Module {
