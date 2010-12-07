@@ -24,6 +24,17 @@ jQuery(document).ready(function() {
 				user_list.reload();
 			});
 		});
+		var optional_user_id = "{{writeRequestValue=user_id}}";
+		if(optional_user_id) {
+			Widget.create('user_detail', function(widget) {
+				widget.setUserId(optional_user_id);
+				widget.fill_data();
+				widget.open();
+				widget.save_callback = function() {
+					user_list.reload();
+				};
+			});
+		}
 
 		// init infobar
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {

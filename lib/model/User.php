@@ -85,14 +85,16 @@ class User extends BaseUser {
 			return true;
 		}
 		$aModuleInfo = Module::getModuleInfoByTypeAndName('admin', $sAdminModuleName);
-		$aGroupIds = isset($aModuleInfo['allowed_roles']) ? $aModuleInfo['allowed_roles'] : array();
-		//Cases 3 and 4: No groups defined
-		if(count($aGroupIds) === 0) {
-			//Case 3: Access to module is unrestricted: allow
-			//Case 4: Access to module is restricted to admins: deny (because the user is not one of them)
-			return !(@$aModuleInfo['admin_required']);
+		//Case 3: Access to module is unrestricted: allow
+		if(!isset($aModuleInfo['allowed_roles']) || !is_array($aModuleInfo['allowed_roles'])) {
+			return true;
 		}
-		//Case 5: Access is restricted to certain groups: allow if in group
+		$aGroupIds = $aModuleInfo['allowed_roles'];
+		//Case 4: Access to module is restricted to admins: deny (because the user is not one of them)
+		if(count($aGroupIds) === 0) {
+			return false;
+		}
+		//Case 5: Access is restricted to certain roles: allow if in role
 		if(in_array($this->getRoles(true), $aGroupIds)) {
 			return true;
 		}
@@ -101,7 +103,7 @@ class User extends BaseUser {
 		    return true;
 	    }
 		}
-		//Case 6: User is not in allowed groups
+		//Case 6: User is not in allowed roles
 		return false;
 	}
 	

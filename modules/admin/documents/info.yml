@@ -1,5 +1,4 @@
-allowed_roles: []
-name: "Documents"
+# allowed_roles: [may_administer_documents]
 description: "Documents module for uploading and managing all allowed file types"
 website: "http://www.mini-cms.ch/"
 version: 2.0

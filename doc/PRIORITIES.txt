@@ -2,6 +2,10 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
+Bugs??
+- Richtext does not open in preferred_size (if not console.log())
+- how does 
+
 UserDetail & Logn
 - Password forgotten - widget or normal admin_menu and information
 - user profile how to edit
