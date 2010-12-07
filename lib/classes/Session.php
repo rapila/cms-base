@@ -164,6 +164,10 @@ class Session {
 		if(in_array($sAttribute, array('isAuthenticated', 'getUserId'))) {
 			return $this->$sAttribute();
 		}
+		if(in_array($sAttribute, array('getUser->getEmail', 'getUser->getFullName', 'getUser->getInitials'))) {
+			$sMethodName = substr($sAttribute, strlen('getUser->'));
+			return $this->oUser->$sMethodName();
+		}
 		if($this->hasAttribute($sAttribute)) {
 			return $this->aAttributes[$sAttribute];
 		}
