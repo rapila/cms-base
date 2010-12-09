@@ -3,7 +3,7 @@
  * @package test
  */
 define("CONSTANT", "myTest is great");
-define("MANAGER", "BackendManager");
+define("MANAGER", "AdminManager");
 class TemplateSpecialIdentifierTests extends PHPUnit_Framework_TestCase {
   public function testConstant() {
     $sTemplateText = <<<EOT
@@ -38,7 +38,7 @@ EOT;
 EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     
-    $this->assertSame("cms_manager", $oTemplate->render());
+    $this->assertSame("admin", $oTemplate->render());
   }
   
   public function testQuoteWithInner() {
