@@ -1,7 +1,0 @@
-enabled: true
-required: true
-version: 0.9
-author: "Raphael Schweikert <rs@mini-cms.ch>"
-name: "Backend-AJAX"
-description: "Provides a way for backend modules to use AJAX-driven actions easily and seamlessly."
-website: "http://www.mini-cms.ch/"

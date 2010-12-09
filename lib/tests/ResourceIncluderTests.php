@@ -216,7 +216,7 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 
 EOT;
 
-    $oTemplate = new Template('settings.js', array(DIRNAME_MODULES, 'backend', 'settings', 'templates'));
+    $oTemplate = new Template('settings.js', array(DIRNAME_MODULES, 'admin', 'settings', 'templates'));
     $oIncluder->addCustomJs($oTemplate);
     $this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
   }
@@ -232,7 +232,7 @@ EOT;
 
 EOT;
 
-    $oTemplate = new Template('settings.css', array(DIRNAME_MODULES, 'backend', 'settings', 'templates'));
+    $oTemplate = new Template('settings.css', array(DIRNAME_MODULES, 'admin', 'settings', 'templates'));
     $oIncluder->addCustomCss($oTemplate);
     $this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
   }
