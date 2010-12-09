@@ -155,7 +155,7 @@ class EMail {
 		$bResult = mail($sRecipients, $sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
 
 		if($bResult === false) {
-			throw new Exception("Error in EMail->send(): mail() returned false");
+			throw new Exception("Error in EMail->send(): E-Mail was not accepted for delivery");
 		}
 	}
 	

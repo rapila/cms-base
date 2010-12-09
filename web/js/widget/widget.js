@@ -555,7 +555,7 @@ jQuery.extend(jQuery, {
 	
 	parseHTML: function(html, instanciateWidgets) {
 		var element = document.createElement('div');
-		element.innerHTML = html;
+		element.innerHTML = jQuery.trim(html);
 		var result = jQuery(element.childNodes);
 		if(instanciateWidgets) {
 			result.find('*[data-widget-type]').each(function() {
