@@ -15,6 +15,7 @@ define("TEMPLATE_IDENTIFIER_MATCHER", "/".preg_quote(TEMPLATE_IDENTIFIER_START, 
 /**
  * class Template
  * is used to manage building a tree with static template texts and dynamic identifiers that have the form of <code>{{identifier=value;param=value}}</code>. Those can have special meaning ({@link SpecialTemplateIdentifierActions}) and be replaced by the Template class or can be replaced by the user of the template using {@link replaceIdentifier()} or {@link replaceIdentifierMultiple()}.
+ * All replaceIdentifier… methods take a flag parameter. The possible flags can be bitwise ORed together. The flags are described in the constants section. You can also provide a new template with some default flags. All Templates whose file name start with “e_mail_” will automatically get the NO_HTML_ESCAPE flag while those ending in .css.tmpl or .js.tmpl will automatically get NO_HTML_ESCAPE|ESCAPE.
  */
 class Template {
 	// template suffix
@@ -26,21 +27,69 @@ class Template {
 	
 	private static $HTML_ENTITY_FUNCTION = null;
 	
-	const NO_HTML_ESCAPE = 1;
-	const ESCAPE = 2;
-	const JAVASCRIPT_CONVERT = 4;
 	/**
-	 * (NO_HTML_ESCAPE|ESCAPE|JAVASCRIPT_CONVERT)
+	* Prevents any HTML escaping from taking place (usually any replacement values except templates are being html-escaped).
+	*/
+	const NO_HTML_ESCAPE = 1;
+	
+	/**
+	* Escapes (quotes) all Javascript-unsafe characters
+	*/
+	const ESCAPE = 2;
+	
+	/**
+	* Puts double-quotes around the string. Only used in conjunction with ESCAPE
+	*/
+	const JAVASCRIPT_CONVERT = 4;
+	
+	/**
+	 * Is equivalent to (NO_HTML_ESCAPE|ESCAPE|JAVASCRIPT_CONVERT)
 	 */
 	const JAVASCRIPT_ESCAPE = 7;
+	
+	/**
+	* Re-use existing identifiers (if the replacing value is a template) or re-parse identifier-like strings (if the replacement is a string)
+	*/
 	const LEAVE_IDENTIFIERS = 8;
+	
+	/**
+	* Forces html-escaping of replacement values (even if the replacement is a template)
+	*/
 	const FORCE_HTML_ESCAPE = 16;
+	
+	/**
+	* Suppresses the printing of a newline character between multiple replacements of the same identifier
+	*/
 	const NO_NEWLINE = 32;
+	
+	/**
+	* Does not duplicate the context when doing multiple replacements on the same identifier. This means that the {{identifierContext}} can be used to mark an area to be deleted if no replacements occur but still keep the area only once if multiple replacements happen.
+	*/
 	const NO_NEW_CONTEXT = 64;
+	
+	/**
+	* A replaceIdentifier… operation with this flag set will not look inside template identifier values or parameters for inner identifiers to be replaced. Use this e.g. to to a quicker replacement when you’re sure you don’t have any relevant inner identifiers.
+	*/
 	const NO_IDENTIFIER_VALUE_REPLACEMENT = 128;
+	
+	/**
+	* This will not do any charset-conversions. This only affects operation where the replacement is another template.
+	*/
 	const NO_RECODE = 256;
+	
+	/**
+	* This will run strip_tags() on the replacement.
+	*/
 	const STRIP_TAGS = 512;
+	
+	/**
+	* This will run nl2br() on the replacement.
+	*/
 	const CONVERT_NEWLINES_TO_BR = 1024;
+	
+	/**
+	* This will run urlencode() on the replacement.
+	*/
 	const URL_ENCODE = 2048;
 	
 	//Holds all of the template's contents as either strings or TemplateIdentifier objects
