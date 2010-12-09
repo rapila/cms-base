@@ -2,7 +2,6 @@
 /**
  * @package test
  */
-require_once 'PHPUnit/Framework.php';
 
 class TemplateTest extends PHPUnit_Framework_TestCase {
   public function testConditionalNestingError() {

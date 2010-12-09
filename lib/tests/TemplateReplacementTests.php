@@ -196,7 +196,7 @@ EOT;
     
     $oTemplate->replaceIdentifier('test', '&<>;"\'', null, Template::JAVASCRIPT_ESCAPE);
     
-    $this->assertSame('&<>;\\\'\\\'', $oTemplate->render());
+    $this->assertSame('"&<>;\\"\\\'"', $oTemplate->render());
   }
   
   public function testReplaceIdentifierFlagLeaveIdentifiers() {

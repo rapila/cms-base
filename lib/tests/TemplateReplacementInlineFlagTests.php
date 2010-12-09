@@ -23,6 +23,16 @@ EOT;
     $this->assertSame('&lt;a&gt;&amp;\\&quot;nb\\&#039;sp;&lt;/a&gt;', $oTemplate->render());
   }
   
+  public function testSimpleInlineFlagEscapeNoHTML() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=ESCAPE}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oTemplate->replaceIdentifier('test', '<a>&"nb\'sp;</a>', null, Template::NO_HTML_ESCAPE);
+    
+    $this->assertSame('<a>&\\"nb\\\'sp;</a>', $oTemplate->render());
+  }
+  
   public function testSimpleInlineFlagJavascriptConvert() {
     $sTemplateText = <<<EOT
 {{test;templateFlag=JAVASCRIPT_CONVERT}}
@@ -30,7 +40,17 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oTemplate->replaceIdentifier('test', new Template('a" "/a', null, true));
     
-    $this->assertSame('a\' \'/a', $oTemplate->render());
+    $this->assertSame('"a" "/a"', $oTemplate->render());
+  }
+  
+  public function testSimpleInlineFlagJavascriptEscape() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=JAVASCRIPT_ESCAPE}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true);
+    $oTemplate->replaceIdentifier('test', new Template('a" "/a', null, true));
+    
+    $this->assertSame('"a\\" \\"/a"', $oTemplate->render());
   }
 
   public function testSimpleInlineFlagLeaveIdentifiers1() {
@@ -91,7 +111,17 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true, false, null, null, Template::NO_NEWLINE);
     $oTemplate->replaceIdentifierMultiple('test', new Template('a" "/a', null, true));
     
-    $this->assertSame('a\' \'/a', $oTemplate->render());
+    $this->assertSame('"a" "/a"', $oTemplate->render());
+  }
+  
+  public function testSimpleInlineFlagMultipleJavascriptEscape() {
+    $sTemplateText = <<<EOT
+{{test;templateFlag=JAVASCRIPT_ESCAPE}}
+EOT;
+    $oTemplate = new Template($sTemplateText, null, true, false, null, null, Template::NO_NEWLINE);
+    $oTemplate->replaceIdentifierMultiple('test', new Template('a" "/a', null, true));
+    
+    $this->assertSame('"a\\" \\"/a"', $oTemplate->render());
   }
 
   public function testSimpleInlineFlagMultipleLeaveIdentifiers1() {

@@ -79,11 +79,11 @@ EOT;
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->clearIncludedResources();
     $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-    $oIncluder->addResource(array('web', 'js', 'admin', 'tiny_mce', 'themes', 'simple', 'skins', 'default', 'ui.css'));
+    $oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
     $oIncluder->addResource('admin/admin.css');
-    $oIncluder->addResource('admin/tiny_mce/tiny_mce.js');
-    $this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/admin/tiny_mce/tiny_mce.js"></script>'."\n", $oTemplate->render());
+    $oIncluder->addResource('widget/ckeditor/ckeditor.js');
+    $this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
   }
   
   public function testWriteNamedResourceIncludes() {
@@ -93,11 +93,11 @@ EOT;
     $oTemplate = new Template($sTemplateText, null, true);
     $oIncluder = ResourceIncluder::namedIncluder('myIncluder');
     $oIncluder->clearIncludedResources();
-    $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'favicon'));
-    $oIncluder->addResource(array('web', 'js', 'admin', 'tiny_mce', 'themes', 'simple', 'skins', 'default', 'ui.css'));
+    $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
+    $oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
-    $oIncluder->addResource('admin.css');
-    $oIncluder->addResource('tiny_mce/tiny_mce.js');
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oTemplate->render());
+    $oIncluder->addResource('admin/admin.css');
+    $oIncluder->addResource('widget/ckeditor/ckeditor.js');
+    $this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
   }
 }

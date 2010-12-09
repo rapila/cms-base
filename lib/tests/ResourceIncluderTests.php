@@ -6,6 +6,7 @@
 class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
   public function setUp() {
     ResourceIncluder::defaultIncluder()->clearIncludedResources();
+		ErrorHandler::setEnvironment('production');
   }
   
   public function testSimpleIncludeImage() {
@@ -187,22 +188,22 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
   
   public function testMultipleIncludes() {
     $oIncluder = ResourceIncluder::defaultIncluder();
-    $oIncluder->addResource(array('web', 'js', 'tiny_mce', 'themes', 'simple', 'skins', 'default', 'ui.css'));
-    $oIncluder->addResource('admin.css');
+    $oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
+    $oIncluder->addResource('admin/admin.css');
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
-    $oIncluder->addResource('tiny_mce/tiny_mce.js');
+    $oIncluder->addResource('widget/ckeditor/ckeditor.js');
     $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
   }
   
   public function testPrioritizedMultipleIncludes() {
     $oIncluder = ResourceIncluder::defaultIncluder();
     $oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'), ResourceIncluder::PRIORITY_LAST);
-    $oIncluder->addResource('admin.css');
+    $oIncluder->addResource('admin/admin.css');
     $oIncluder->addJavaScriptLibrary('jqueryui', 1);
-    $oIncluder->addResource('tiny_mce/tiny_mce.js');
-    $oIncluder->addResource(array('web', 'js', 'tiny_mce', 'themes', 'simple', 'skins', 'default', 'ui.css'), null, null, array(), ResourceIncluder::PRIORITY_FIRST);
-    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/themes/simple/skins/default/ui.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/tiny_mce/tiny_mce.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+    $oIncluder->addResource('widget/ckeditor/ckeditor.js');
+    $oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'), null, null, array(), ResourceIncluder::PRIORITY_FIRST);
+    $this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
   }
   
   public function testInlineJs() {
