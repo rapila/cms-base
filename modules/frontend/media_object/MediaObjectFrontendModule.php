@@ -75,34 +75,6 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		return $oWidget;
 	}
 	
-	public function renderBackend() {
-		$aOptions = @unserialize($this->getData());
-		$oTemplate = $this->constructTemplate('backend');
-		// if($aOptions !== null) {
-		if($aOptions) {
-			foreach($aOptions as $iKey => $aDocumentInfo) {
-				$oMediaItemTemplate = $this->constructTemplate("backend_media_item");
-				$oMediaItemTemplate->replaceIdentifier("sequence_id", $iKey);
-				$oMediaItemTemplate->replaceIdentifier("url", @$aDocumentInfo['url']);
-				$oMediaItemTemplate->replaceIdentifier("width", $aDocumentInfo['width']);
-				$oMediaItemTemplate->replaceIdentifier("height", $aDocumentInfo['height']);
-				$oMediaItemTemplate->replaceIdentifier("mimetype", @$aDocumentInfo['mimetype']);
-				$this->replaceDocumentOptions($oMediaItemTemplate, (int)$aDocumentInfo['document_id']);
-				$oTemplate->replaceIdentifierMultiple("documents", $oMediaItemTemplate);
-			}
-		}
-		$this->replaceDocumentOptions($oTemplate);
-		return $oTemplate;
-	}
-	
-	public function getJsForBackend() {
-		return $this->constructTemplate("backend.js")->render();
-	}
-	
-	public function getSaveData() {
-		return $this->dataFromPost($_POST);
-	}
-	
 	public function dataFromPost(&$aPostData) {
 		$aResults = array();
 		if(isset($aPostData['document_id'])) {
