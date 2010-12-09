@@ -223,51 +223,7 @@ input {
 }
 input[type=checkbox] { padding: 0 !important; }
 input.default_state { color: #9e9e9e; }
-label {
-  color: #666666;
-  font-family: Arial;
-  font-size: 0.95em;
-  display: block;
-  padding-bottom: 0.1em;
-  margin-top: 0.8em;
-}
-.status_section label {
-  display: inline-block;
-  padding-right: 0.5em;
-}
-.user_roles_section label {
-  display: inline-block;
-  padding-right: 0.5em;
-}
-.user_groups_section label {
-  display: inline-block;
-  padding-right: 0.5em;
-}
-.status_section .hide_if_not_saved label:first-child { margin-top: 0.9em; }
-.status_section .hide_if_not_saved label {
-  width: 5em;
-  margin-top: 0.2em;
-}
-.hide_if_not_saved label { display: inline-block; }
-.hide_if_not_saved.bottom label { margin-left: 1em; }
-.hide_if_not_saved.bottom label:first-child { margin-left: 0em; }
 ui-widget { font-size: 0.5em; }
-select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
-  border-color: #dfdfdf;
-  width: 21.5em;
-  padding: 0.2em;
-}
-select.display_mode {
-  min-width: 21.5em;
-  margin-bottom: 1em;
-}
-select.ui-widget-content { padding: 0.1em; }
-select.ui-widget-content:hover { border-color: #b5b5b5; }
-select.ui-widget-content:focus { border-color: #b5b5b5; }
-input.ui-widget-content:hover { border-color: #b5b5b5; }
-input.ui-widget-content:focus { border-color: #b5b5b5; }
-textarea.ui-widget-content:hover { border-color: #b5b5b5; }
-textarea.ui-widget-content:focus { border-color: #b5b5b5; }
 textarea.ui-widget-content { width: 22em; }
 #admin_sidebar ol {
   padding: 0;

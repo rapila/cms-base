@@ -36,23 +36,6 @@
 .ui-icon-application { background-position: -32px -96px; }
 .ui-icon-audio { background-position: -144px -160px; }
 .ui-icon-text { background-position: -240px -128px; }
-.ui-widget .status_section {
-  font-family: Arial;
-  padding-right: 2em;
-  width: 16.2em;
-  float: right;
-  border-left: 1px solid #f2f2f2;
-  padding: 0 1em;
-}
-.ui-widget .status_section fieldset {
-  border: 1px dotted #c0c0c0;
-  padding: 0;
-}
-.ui-widget .status_section select { width: 15em; }
-.ui-widget-header {
-  color: #efefef;
-  border: 0;
-}
 .ui-state-default { background: transparent; }
 .ui-widget-content .ui-state-default { background: transparent; }
 .cmos_alert.ui-dialog-content {
@@ -62,44 +45,10 @@
 }
 .cmos_alert.ui-dialog-content p { font-size: 1.1em; }
 .cmos_alert.ui-dialog-content .ui-icon { background-image: url("theme/images/ui-icons_b8d600_256x240.png"); }
-.ui-dialog .ui-dialog-titlebar {
-  -moz-border-radius: 3px 3px 0 0;
-  -webkit-border-radius: 3px 3px 0 0;
-  border-radius: 0px;
-  border-width: 0;
-  padding: 0.6em 0.8em 2em;
-}
-.ui-dialog .ui-dialog-titlebar-close { margin-top: -20px; }
-.ui-state-active .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
-.ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
 #admin_sidebar .ui-tree { font-weight: 700; }
 #admin_sidebar .ui-list { font-weight: 700; }
 #admin_sidebar li.ui-state-active { font-weight: 700; }
 #admin_sidebar li.ui-state-hover { font-weight: 700; }
-.ui-dialog .ui-dialog-buttonpane {
-  margin-top: 0;
-  background: #2d3238;
-  border-top: 0;
-}
-.ui-dialog .ui-widget-header { background: #2d3238; }
-.ui-dialog button.ui-state-hover { color: #e3ef99; }
-.ui-dialog button.ui-state-highlight { color: #e3ef99; }
-button.ui-button.ui-state-default {
-  background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
-  line-height: 14px;
-  border-color: #000000 #555555 #666666 #555555;
-  border-width: 1px 1px 1px 1px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-}
-#admin_info_bar button.ui-button.info-bar-element.ui-state-default {
-  background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
-  line-height: 14px;
-  border-color: #000000 #555555 #666666 #555555;
-  border-width: 1px 1px 1px 1px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-}
 #admin_sidebar li.ui-state-active li { color: #000000; }
 .active-sidebar-list-item {
   border: none;
@@ -131,11 +80,6 @@ button.ui-button.ui-state-default {
   width: 16px;
 }
 #admin_sidebar span.sidebar_input_save.active { display: inline-block; }
-.ui-widget-content { background: url() #f9f9f9; }
-div.ui-widget-content { border: 1px solid #999999; }
-.ui-widget-content input { background-color: #ffffff; }
-.ui-widget-content select { background-color: #ffffff; }
-.ui-widget-content textarea { background-color: #ffffff; }
 form.page_detail {
   background-color: #ffffff;
   margin: 0;
@@ -148,7 +92,6 @@ form.page_detail .status_section { background-color: #ebedef; }
 form.page_detail .ui-state-active { background-color: #ebedef; }
 form.page_detail .ui-widget-content .ui-state-active { background-color: #ebedef; }
 .ui-widget-content h3 { background-color: #ebedef; }
-.ui-state-active { color: #e3ef99; }
 form.page_detail .ui-state-active { background-image: none; }
 form.page_detail .ui-widget-content .ui-state-active { background-image: none; }
 form.page_detail .status_section {
@@ -187,10 +130,6 @@ form.page_detail label.for_checkbox {
   margin-right: 2em;
   padding-left: 0.2em;
 }
-.group_fields { float: left; }
-.group_fields:last-child { float: none; }
-.group_fields + * { clear: left; }
-.group_fields + .group_fields { clear: none; }
 h3.ui-state-default a {
   font-size: 1.2em;
   font-weight: 700;
@@ -241,10 +180,6 @@ h3.ui-state-active a:visited {
   border-bottom: none;
 }
 h3.status { padding-left: 0.3em; }
-input.ui-widget-content.input_long { width: 35em; }
-select.ui-widget-content.input_short { width: 18em; }
-input.ui-widget-content.input_short { width: 6em; }
-.autowidth, input.ui-widget-content.autowidth { width: auto !important; }
 .page_detail .filled_modules {
   min-width: 350px;
   max-width: 500px;

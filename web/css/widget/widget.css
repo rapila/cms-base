@@ -1,3 +1,48 @@
+label {
+  color: #666666;
+  float: none;
+  font-family: Arial;
+  font-size: 0.95em;
+  display: block;
+  padding-bottom: 0.1em;
+  margin-top: 0.8em;
+}
+.status_section label {
+  display: inline-block;
+  padding-right: 0.5em;
+}
+.user_roles_section label {
+  display: inline-block;
+  padding-right: 0.5em;
+}
+.user_groups_section label {
+  display: inline-block;
+  padding-right: 0.5em;
+}
+.status_section .hide_if_not_saved label:first-child { margin-top: 0.9em; }
+.status_section .hide_if_not_saved label {
+  width: 5em;
+  margin-top: 0.2em;
+}
+.hide_if_not_saved label { display: inline-block; }
+.hide_if_not_saved.bottom label { margin-left: 1em; }
+.hide_if_not_saved.bottom label:first-child { margin-left: 0em; }
+select.ui-widget-content, input.ui-widget-content, textarea.ui-widget-content {
+  border-color: #dfdfdf;
+  width: 21.5em;
+  padding: 0.2em;
+}
+select.display_mode {
+  min-width: 21.5em;
+  margin-bottom: 1em;
+}
+select.ui-widget-content { padding: 0.1em; }
+select.ui-widget-content:hover { border-color: #b5b5b5; }
+select.ui-widget-content:focus { border-color: #b5b5b5; }
+input.ui-widget-content:hover { border-color: #b5b5b5; }
+input.ui-widget-content:focus { border-color: #b5b5b5; }
+textarea.ui-widget-content:hover { border-color: #b5b5b5; }
+textarea.ui-widget-content:focus { border-color: #b5b5b5; }
 .ui-image-picker-image {
   float: left;
   margin: 0 5px 5px 0;
@@ -50,3 +95,68 @@ select[data-widget-type=page_input] {
 select[data-widget-type=page_input] option.level1 { padding-left: 1em; }
 select[data-widget-type=page_input] option.level2 { padding-left: 2em; }
 select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
+.ui-widget .status_section {
+  font-family: Arial;
+  padding-right: 2em;
+  width: 16.2em;
+  float: right;
+  border-left: 1px solid #f2f2f2;
+  padding: 0 1em;
+}
+.ui-widget .status_section fieldset {
+  border: 1px dotted #c0c0c0;
+  padding: 0;
+}
+.ui-widget .status_section select { width: 15em; }
+.ui-widget-header {
+  color: #efefef;
+  border: 0;
+}
+.ui-dialog .ui-dialog-titlebar {
+  -moz-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 0px;
+  border-width: 0;
+  padding: 0.6em 0.8em 2em;
+}
+.ui-dialog .ui-dialog-titlebar-close { margin-top: -20px; }
+.ui-state-active .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
+.ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
+.ui-dialog .ui-dialog-buttonpane {
+  margin-top: 0;
+  background: #2d3238;
+  border-top: 0;
+}
+.ui-dialog .ui-widget-header { background: #2d3238; }
+.ui-dialog button.ui-state-hover { color: #e3ef99; }
+.ui-dialog button.ui-state-highlight { color: #e3ef99; }
+button.ui-button.ui-state-default {
+  background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
+  line-height: 14px;
+  border-color: #000000 #555555 #666666 #555555;
+  border-width: 1px 1px 1px 1px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+#admin_info_bar button.ui-button.info-bar-element.ui-state-default {
+  background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
+  line-height: 14px;
+  border-color: #000000 #555555 #666666 #555555;
+  border-width: 1px 1px 1px 1px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+.ui-widget-content { background: url() #f9f9f9; }
+div.ui-widget-content { border: 1px solid #999999; }
+.ui-widget-content input { background-color: #ffffff; }
+.ui-widget-content select { background-color: #ffffff; }
+.ui-widget-content textarea { background-color: #ffffff; }
+.ui-state-active { color: #e3ef99; }
+.group_fields { float: left; }
+.group_fields:last-child { float: none; }
+.group_fields + * { clear: left; }
+.group_fields + .group_fields { clear: none; }
+input.ui-widget-content.input_long { width: 35em; }
+select.ui-widget-content.input_short { width: 18em; }
+input.ui-widget-content.input_short { width: 6em; }
+.autowidth, input.ui-widget-content.autowidth { width: auto !important; }
