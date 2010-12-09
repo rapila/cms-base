@@ -53,7 +53,6 @@ class Util {
 		return "";
 	}
 
-	// used in BackendModule only, could be used from somewhere else?
 	public static function idForObject($oObject) {
 		if(!is_object($oObject)) {
 			return $oObject;

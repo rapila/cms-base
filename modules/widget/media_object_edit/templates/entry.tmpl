@@ -1,10 +1,10 @@
-<fieldset class="media_entry">
+<fieldset class="option_groups">
 	<div class="group_fields document_id">
-		<label for="document_id[]">{{writeString=document}}</label>
+		<label for="document_id[]">{{writeString=widget.document}}</label>
 	</div>
 	<div class="group_fields url">
-		<label for="url[]">{{writeString=or_url}}</label> <input class="autowidth" type="text" name="url[]" />
-	</div>
+		<label for="url[]">{{writeString=widget.media_object.or_url}}</label> <input class="autowidth" size="30" type="text" name="url[]" />
+	</div><br />
 	<div class="group_fields">
 		<label for="width[]">{{writeString=width}}</label> <input class="autowidth" type="text" name="width[]" size="4" />
 	</div>
@@ -12,7 +12,10 @@
 		<label for="height[]">{{writeString=height}}</label> <input class="autoheight" type="text" name="height[]" size="4" />
 	</div>
 	<div class="group_fields mimetype">
-		<label for="mimetype[]">{{writeString=document.mimetype}}</label> <input class="autowidth" type="text" name="mimetype[]" />
+		<label for="mimetype[]">{{writeString=widget.document_type.mimetype}}</label> <input class="autowidth" type="text" name="mimetype[]" />
 	</div>
-	<div class="ui-icon ui-icon-trash delete_entry delete_media"> </div>
+	<div class="group_fields">
+		<label> </label>
+		<div class="ui-icon ui-icon-trash delete_entry delete_media"> </div>
+	</div>
 </fieldset>

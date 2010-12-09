@@ -26,10 +26,6 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 		}
 		return $oFormStorage;
 	}
-	
-	public function getJsForBackend() {
-		return $this->constructTemplate("backend.js")->render();
-	}
  
 	public static function getRecaptchaCode($sId = '') {
 		$oTemplate = self::constructTemplateForModuleAndType(self::$MODULE_TYPE, 'form', 'recaptcha');

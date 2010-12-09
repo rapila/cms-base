@@ -18,10 +18,7 @@ class Role extends BaseRole {
 		}
 		return false;
 	}
-	/**
-	* @todo bug #0000108
-	* here the PagesBackendModule quickFix would throw the error
-	*/
+
 	private function rightFits($oRight, $oPage, $sMethodName) {
 		if($oRight->getPage() !== null && $oPage->getId() === $oRight->getPage()->getId()) {
 			return call_user_func(array($oRight, $sMethodName));

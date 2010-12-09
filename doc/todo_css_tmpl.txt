@@ -1,5 +1,9 @@
 HTML / CSS
 
+DocumentEdit
+- dialog darf nicht groesser als fenster hoehe sein.
+speichern muss immer im sichtbaren bereich sein
+
 Preview 
 - Admin Menu
 - border and edit button
