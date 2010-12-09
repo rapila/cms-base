@@ -15,14 +15,14 @@ abstract class PageTypeModule extends Module {
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
 	
 	/**
-	* Returns the class name of the main model that is being modified at the moment by the backend module
+	* Returns the class name of the main model that is being modified at the moment by the admin module
 	* Used only to assign tags using the tag panel
 	* Default is null
 	*/
 	public function getModelName() {return null;}
 	
 	/**
-	* Returns the primary key value of the main model ({@link getModelName}) row that is being modified at the moment by the backend module
+	* Returns the primary key value of the main model ({@link getModelName}) row that is being modified at the moment by the admin module
 	* Used only to assign tags using the tag panel
 	* Default is null
 	*/

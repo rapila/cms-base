@@ -5,6 +5,8 @@ Schule Altenburg
 Prepare CSS Template Eni
 Detailhandel > Listview
 
+Logout > clearCache, add ClearCache button somewhere
+
 Tags, Tipps und Tricks
 - selected tip_category
 - Tags, how to, Mehrsprachigkeit???????? 

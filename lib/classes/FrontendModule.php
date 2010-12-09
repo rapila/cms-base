@@ -21,23 +21,11 @@ abstract class FrontendModule extends Module {
 
 	public function getSaveData() {}
 
-	public function renderBackend() {
-		return "";
-	}
-
 	public function getCssForFrontend() {
 		return null;
 	}
 
 	public function getJsForFrontend() {
-		return null;
-	}
-
-	public function getCssForBackend() {
-		return null;
-	}
-
-	public function getJsForBackend() {
 		return null;
 	}
 
@@ -96,7 +84,7 @@ abstract class FrontendModule extends Module {
 	
 	/**
 	 * @param object language object with the data
-	 * description: should return some helpful information in backend content, displaying filtered unserialized language object data
+	 * description: should return some helpful information in page_detail filled_module, displaying filtered unserialized language object data
 	 * mainly for custom modules with options
 	 * @return string/Template object/null
  */

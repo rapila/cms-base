@@ -67,7 +67,7 @@ class AdminManager extends Manager {
 		$oTemplate = null;
 		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			if(Session::getSession()->isAuthenticated() && !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
-				Flash::getFlash()->addMessage('backend_login_denied');
+				Flash::getFlash()->addMessage('admin_login_denied');
 				Session::getSession()->logout();
 			}
 			$oTemplate = new Template('login', array(DIRNAME_TEMPLATES, 'admin'), false, true);
@@ -77,7 +77,7 @@ class AdminManager extends Manager {
 			$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$this->doAdmin($oTemplate);
 		}
-		$oTemplate->replaceIdentifier("title", Settings::getSetting('admin', 'title', 'no title set in config/config.yml for backend'), null, Template::LEAVE_IDENTIFIERS);
+		$oTemplate->replaceIdentifier("title", Settings::getSetting('admin', 'title', 'no title set in config/config.yml for admin'), null, Template::LEAVE_IDENTIFIERS);
 		$oTemplate->replaceIdentifier('module_name', $this->sModuleName);
 		$oTemplate->replaceIdentifier('module_display_name', AdminModule::getDisplayNameByName($this->sModuleName));
 

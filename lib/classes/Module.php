@@ -1,6 +1,6 @@
 <?php
 /**
- * Module is the base class for all modules. There are currently five types of modules: page type, filter, file, frontend and backend modules. Read the description in those files to see what they do.
+ * Module is the base class for all modules. There are currently five types of modules: page type, filter, file, frontend and admin modules. Read the description in those files to see what they do.
  * All modules are found in the folder modules/module_type under either the root or site folder
  *
  * Modules always have the following directory structure:
@@ -14,7 +14,7 @@
  * </pre>
  * @see PageTypeModule
  * @see FrontendModule
- * @see BackendModule
+ * @see AdminModule
  * @see FileModule
  * @see FilterModule
  */

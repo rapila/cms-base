@@ -45,7 +45,7 @@ class AdminModule extends Module {
 					$aResult[$oReferencedFromObject->getId()]['title'] = StringPeer::getString('reference.used_in_page');
 					$aResult[$oReferencedFromObject->getId()]['page_name'] = $oContentObject->getPage()->getName();
 					$aResult[$oReferencedFromObject->getId()]['container_name'] = $oContentObject->getContainerName();
-					$aResult[$oReferencedFromObject->getId()]['edit_link'] = TagWriter::quickTag('a', array('href' => LinkUtil::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'BackendManager')), 'edit')->render();
+					$aResult[$oReferencedFromObject->getId()]['edit_link'] = TagWriter::quickTag('a', array('href' => LinkUtil::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'AdminManager')), 'edit')->render();
 				} else {
 					// delete reference if getFrom() === null
 					$oReference->delete();
