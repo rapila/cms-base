@@ -1,7 +1,0 @@
-enabled: true
-admin_required: true
-author: "Raphael Schweikert <rs@mini-cms.ch>"
-name: "MySQL Dump Loader"
-description: "Makes importing large database dumps easy. Mini-CMS DB user must have permissions to execute the statements. File can not be compressed."
-website: "http://www.mini-cms.ch/"
-version: 1.0

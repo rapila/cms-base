@@ -1,26 +1,18 @@
 HTML / CSS
 
+Preview 
+- Admin Menu
+- border and edit button
+- display list, edit detail
+
 TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. Resize Window & Textbereich
-
-PageTree
-- D&D Visualisation needs some attention
-
-Alert dialogs
-- delete > .cmos_alert längere Texte sollten links eingerückt sein.
-
-Nächstens Dringend: 
-- Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)
-- Widget Dialog und Richtext Fenster D&D
-- Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
-- Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
 Browser issues
  Safari / Chrome
 - Login Window should be centered too
-- Documents list header should be lined up with sidebar header
 
 Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
-- FileUpload, if not ready, do not display options (hover class etc?)
+- FileUpload, if browser can't do drag&drop, don't display document_detail "droppable_info" ui-state-droppable on list
 - min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
 
 Immer wieder allgemein testen und Fehler melden
@@ -83,4 +75,18 @@ structure ?
 - widget.css / context css see widget/templates/widget_name.css.tmpl
 
 
+
+- Documents list header should be lined up with sidebar header
+
+PageTree
+- D&D Visualisation needs some attention
+
+Alert dialogs
+- delete > .cmos_alert längere Texte sollten links eingerückt sein.
+
+Nächstens Dringend: 
+- Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)
+- Widget Dialog und Richtext Fenster D&D
+- Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
+- Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
