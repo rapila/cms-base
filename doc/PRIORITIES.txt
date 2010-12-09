@@ -2,13 +2,21 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-Bugs??
-- Richtext does not open in preferred_size (if not console.log())
-- how does 
+Prepare CSS Template Eni
+Detailhandel > Listview
 
-UserDetail & Logn
-- Password forgotten - widget or normal admin_menu and information
-- user profile how to edit
+Tags, Tipps und Tricks
+- selected tip_category
+- Tags, how to, Mehrsprachigkeit???????? 
+- Tag Cloud widget for detail objects etc
+
+RichtextWidget
+- FileUpload in Link and Image Tool
+- Optgroups Kategorien make more clear, ideal,
+- Buttons > image mit Browseknopf
+- Link List, Internal Links, Document Links,
+- Newsletter Parts
+- all config Issues
 
 Newsletter Plugin:
 - Breite des Newsletters
@@ -17,17 +25,6 @@ Newsletter Plugin:
 - Testing, Mail, Massmail, 
 - Error messages, invalid emails
 - this.accordion... and bug arrow and accordion handling on validation error
-
-RichtextWidget
-- Optgroups Kategorien make more clear, ideal,
-- Buttons > image mit Browseknopf
-- Link List, Internal Links, Document Links,
-- Newsletter Parts
-- all config Issues
-
-Tags, Tipps und Tricks
-- Tags, how to
-- Tag Cloud widget for detail objects etc
 
 PageTree and Detail Bugs!
 - remove status opened (triangle-1-se) if page has no children anymore  (child move to other branch)
@@ -49,6 +46,7 @@ Bugs & Fixes
 Module Backend Migration
 - BackupAdminModule, CheckAdminModule, ConfigAdminModule, Migration, Settings
 
+UserDetail & Login
 Priority list
 - make same loading effect for ie tips when loading new tip into widget etc.
 - admin_menu preview looks like shit. fix
@@ -779,3 +777,7 @@ Tags
 	in callback call batchnumber, arguments.callee (current method)
 - tip_detail, validate and save of click is_active, consider behaviour for page_detail
 - search pages
+- Richtext does not open in preferred_size (if not console.log())
+- how does 
+- Password forgotten - widget or normal admin_menu and information
+- user profile how to edit
