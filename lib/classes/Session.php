@@ -215,8 +215,10 @@ class Session {
 	}
 }
 
-session_name("Session".Session::getRealm());
-$aCookieParams = session_get_cookie_params();
-session_set_cookie_params($aCookieParams['lifetime'], MAIN_DIR_FE, $aCookieParams['domain'], false, true);
-//TODO: use ini_set('unserialize_callback_func', gaga);
-session_start();
+if(php_sapi_name() !== 'cli') {
+	session_name("Session".Session::getRealm());
+	$aCookieParams = session_get_cookie_params();
+	session_set_cookie_params($aCookieParams['lifetime'], MAIN_DIR_FE, $aCookieParams['domain'], false, true);
+	//TODO: use ini_set('unserialize_callback_func', gaga);
+	session_start();
+}

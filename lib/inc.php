@@ -40,7 +40,7 @@ $aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB, ResourceFinder::SEARCH
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
 
 // frontend dir constants
-define('MAIN_DIR_FE',				 isset($_SERVER['SHELL']) ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
+define('MAIN_DIR_FE',				 php_sapi_name() === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
 
 define('BASE_DIR_FE',				 MAIN_DIR_FE.DIRNAME_BASE);
 define('SITE_DIR_FE',				 MAIN_DIR_FE.DIRNAME_SITE);

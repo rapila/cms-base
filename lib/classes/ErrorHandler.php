@@ -53,7 +53,9 @@ class ErrorHandler {
 				self::$ENVIRONMENT = 'development';
 			}
 			if(self::$ENVIRONMENT === 'auto' || self::$ENVIRONMENT === null) {
-				if(strpos($_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.local')) {
+				if(php_sapi_name() === 'cli') {
+					self::$ENVIRONMENT = 'development';
+				} else if(strpos(@$_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.local')) {
 					self::$ENVIRONMENT = ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1' || $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
 				} else {
 					self::$ENVIRONMENT = 'production';
@@ -147,6 +149,10 @@ class ErrorHandler {
 			unset($aTrace[$iKey]['object']);
 		}
 		self::log($aTrace);
+	}
+	
+	public static function setEnvironment($sEnvironment) {
+		self::$ENVIRONMENT = $sEnvironment;
 	}
 
 	private static function handle($aError) {

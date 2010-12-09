@@ -276,7 +276,7 @@ class ResourceIncluder {
 	}
 	
 	public function addCustomCss($mCustomCss, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
-		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomJs), $iPriority, $bEndsDependencyList);
+		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomCss), $iPriority, $bEndsDependencyList);
 	}
 	
 	public function addReverseDependency($sIdentifier, $bIsBefore = false) {
