@@ -9,20 +9,6 @@ abstract class WidgetModule extends Module {
 	protected $sInputName = null;
 	protected $aInitialSettings = array();
 	
-	public function __construct($sSessionKey = null) {
-		if(static::isPersistent()) {
-			if($sSessionKey === null) {
-				$this->sPersistentSessionKey = get_class($this);
-				if(!call_user_func(array($this->sPersistentSessionKey, 'isSingleton'))) {
-					$this->sPersistentSessionKey .= "_".Util::uuid();
-				}
-			} else {
-				$this->sPersistentSessionKey = $sSessionKey;
-			}
-			Session::getSession()->setArrayAttributeValueForKey(self::WIDGET_SESSION_KEY, $this->sPersistentSessionKey, $this);
-		}
-	}
-	
 	public function doWidget() {
 		$oElement = $this->getElementType();
 		if($oElement === null) {
@@ -103,4 +89,20 @@ abstract class WidgetModule extends Module {
 		array_unshift($aArgs, $sWidgetType);
 		return call_user_func_array(array("WidgetModule", "getModuleInstance"), $aArgs);
 	}
+	
+	//This method is all the way at the bottom because phpDocumentor can’t handle the static:: keyword.
+	public function __construct($sSessionKey = null) {
+		if(static::isPersistent()) {
+			if($sSessionKey === null) {
+				$this->sPersistentSessionKey = get_class($this);
+				if(!call_user_func(array($this->sPersistentSessionKey, 'isSingleton'))) {
+					$this->sPersistentSessionKey .= "_".Util::uuid();
+				}
+			} else {
+				$this->sPersistentSessionKey = $sSessionKey;
+			}
+			Session::getSession()->setArrayAttributeValueForKey(self::WIDGET_SESSION_KEY, $this->sPersistentSessionKey, $this);
+		}
+	}
+	
 }
