@@ -44,14 +44,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	public function preview() {
 		return self::documentPreview($this->iDocumentId, 190);
 	}
-	
-	private function validate($aDocumentData) {
-		$oFlash = Flash::getFlash();
-		$oFlash->setArrayToCheck($aDocumentData);
-		$oFlash->checkForValue('name', 'name_required');
-		$oFlash->finishReporting();
-	}
-		
+			
 	public function saveData($aDocumentData) {
 		if($this->iDocumentId === null) {
 			$oDocument = new Document();
@@ -59,10 +52,6 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
 		$this->validate($aDocumentData);
-		if(!Flash::noErrors()) {
-			throw new ValidationException();
-		}
-
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);

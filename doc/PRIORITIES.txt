@@ -4,6 +4,9 @@ Schule Altenburg
 
 Prepare CSS Template Eni : Firefox WINDOWS.....
 Ornella, QMS Detailhandel > Listview
+Document_detail: 
+- upload fire list or add at bottom
+- trigger upload on save..!!!
 
 Logout > clearCache, add ClearCache button somewhere
 
