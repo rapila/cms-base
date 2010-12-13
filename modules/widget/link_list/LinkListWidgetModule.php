@@ -40,7 +40,7 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.sort');
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('name');
+				$aResult['heading'] = StringPeer::getString('widget.name');
 				break;
 			case 'url':
 				$aResult['heading'] = StringPeer::getString('url');

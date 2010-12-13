@@ -32,19 +32,6 @@ class DocumentsAdminModule extends AdminModule {
 		return array('document_category_id', 'title', 'magic_column');
 	}
 	
-	public function getCustomListElements() {
-		if(DocumentCategoryPeer::doCount(new Criteria()) > 0) {
-		 	return array(
-				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('widget.documents.select_all_title'),
-							'magic_column' => 'all'),
-				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'title' => StringPeer::getString('widget.documents.select_without_title'),
-							'magic_column' => 'without'));
-		}
-		return array();
-	}
-	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -62,6 +49,19 @@ class DocumentsAdminModule extends AdminModule {
 				break;
 		}
 		return $aResult;
+	}
+	
+	public function getCustomListElements() {
+		if(DocumentCategoryPeer::doCount(new Criteria()) > 0) {
+		 	return array(
+				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
+							'title' => StringPeer::getString('widget.documents.select_all_title'),
+							'magic_column' => 'all'),
+				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+							'title' => StringPeer::getString('widget.documents.select_without_title'),
+							'magic_column' => 'without'));
+		}
+		return array();
 	}
 	
 	public function usedWidgets() {

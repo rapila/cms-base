@@ -4,7 +4,7 @@ Widget.types.string_detail = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=create}}",
+				title: "{{writeString=widget.new_entry}}",
 				width: 600
 			});
 			widget.content = this.content;

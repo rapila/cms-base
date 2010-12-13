@@ -5,7 +5,7 @@
 class DocumentCategoryInputWidgetModule extends WidgetModule {
 	
 	public function getCategories() {
-		return WidgetJsonFileModule::jsonBaseObjects(DocumentCategoryPeer::getDocumentCategoriesForImagePicker(), array('id', 'name'));
+		return WidgetJsonFileModule::jsonBaseObjects(DocumentCategoryPeer::getDocumentCategoriesSorted(), array('id', 'name'));
 	}
 	
 	public function getElementType() {

@@ -30,7 +30,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'full_name':
-				$aResult['heading'] = StringPeer::getString('name');
+				$aResult['heading'] = StringPeer::getString('widget.name');
 				break;			
 			case 'username':
 				$aResult['heading'] = StringPeer::getString('user_name');

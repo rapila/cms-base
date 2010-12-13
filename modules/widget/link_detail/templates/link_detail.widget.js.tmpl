@@ -5,7 +5,7 @@ Widget.types.link_detail = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=create}}",
+				title: "{{writeString=widget.new_entry}}",
 				width: 530
 			});
 			widget.content = this.content;

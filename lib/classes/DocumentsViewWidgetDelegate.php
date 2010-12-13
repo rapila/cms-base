@@ -47,7 +47,7 @@ class DocumentsViewWidgetDelegate {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('name');
+				$aResult['heading'] = StringPeer::getString('widget.name');
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('widget.sort');

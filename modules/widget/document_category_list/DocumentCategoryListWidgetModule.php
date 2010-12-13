@@ -36,7 +36,7 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('name');
+				$aResult['heading'] = StringPeer::getString('widget.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'settings':

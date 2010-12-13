@@ -42,7 +42,7 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['field_name'] = 'id';
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('name');
+				$aResult['heading'] = StringPeer::getString('widget.name');
 				$aResult['field_name'] = 'language_name';
 				break;
 			case 'is_default':

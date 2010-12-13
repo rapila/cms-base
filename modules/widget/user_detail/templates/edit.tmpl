@@ -1,27 +1,27 @@
 <form>
 	<div class="status_section">
-		<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=is_admin}}</label><br />
+		<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=widget.user.is_admin}}</label><br />
 		<input type="checkbox" name="is_backend_login_enabled" /><label for="is_backend_login_enabled">{{writeString=widget.user.is_backend_login_enabled}}</label><br />
-		<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=is_inactive}}</label><br />
+		<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=widget.is_inactive}}</label><br />
 		<div class="hide_if_not_saved">
 			<label>{{writeString=widget.created_info}}:</label><span class="created_info status"></span><br />
 			<label>{{writeString=widget.updated.info}}:</label><span class="updated_info status"></span>
 		</div>
 	</div>
-	<label for="first_name" class="validate-first_name_required">{{writeString=first_name}}</label>
+	<label for="first_name" class="validate-first_name_required">{{writeString=widget.first_name}}</label>
 	<input type="text" name="first_name" class="ui-widget-content" /><br />
-	<label for="last_name" class="validate-last_name_required">{{writeString=last_name}}</label>
+	<label for="last_name" class="validate-last_name_required">{{writeString=widget.last_name}}</label>
 	<input type="text" name="last_name" class="ui-widget-content" /><br />
 	<label for="username" class="validate-username_required validate-user_name_exists">{{writeString=user_name}}</label>
 	<input type="text" name="username" class="ui-widget-content" /><br />
-	<label for="email" class="validate-email_required" >{{writeString=email}}</label>
+	<label for="email" class="validate-email_required" >{{writeString=widget.email}}</label>
 	<input type="text" name="email" class="ui-widget-content" /><br />
 	<label for="language_id">{{writeString=widget.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
 	<div class="hide_if_saved"
-		<label>{{writeString=password}}</label>
+		<label>{{writeString=widget.password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
-		<label for="password_confirm">{{writeString=password_confirm}}</label>
+		<label for="password_confirm">{{writeString=widget.password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
 	</div><br />
 	<div class="user_rights_section">
