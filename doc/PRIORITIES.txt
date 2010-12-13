@@ -2,8 +2,8 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-Prepare CSS Template Eni
-Detailhandel > Listview
+Prepare CSS Template Eni : Firefox WINDOWS.....
+Ornella, QMS Detailhandel > Listview
 
 Logout > clearCache, add ClearCache button somewhere
 

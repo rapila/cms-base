@@ -77,7 +77,7 @@ Widget.types.user_detail = {
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
 			
-			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=user}} "+user_data.FullName);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.user}} "+user_data.FullName);
 		});
 	},
 		
