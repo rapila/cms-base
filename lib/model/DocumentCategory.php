@@ -25,7 +25,7 @@ class DocumentCategory extends BaseDocumentCategory {
 	
 	public function getLinkToDocumentData() {
 		$aArray = array();
-		$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('documents');
+		$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('widget.documents');
 		$aArray[] = LinkUtil::link(array('documents'), 'AdminManager', array('document_category_id' => $this->getId()));
 		return $aArray;
 	}

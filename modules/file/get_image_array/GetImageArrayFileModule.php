@@ -20,7 +20,7 @@ class GetImageArrayFileModule extends FileModule {
 		foreach($this->aImages as $oImage) {
 			if($oImage->getDocumentCategoryId() !== $iDummyCatId) {
 				$iDummyCatId = $oImage->getDocumentCategoryId();
-				$aArrayText[] = '["--------'.StringPeer::getString('documents').'-'.($oImage->getDocumentCategory() ? $oImage->getDocumentCategory()->getName() : '').'-------",""]';
+				$aArrayText[] = '["--------'.StringPeer::getString('widget.documents').'-'.($oImage->getDocumentCategory() ? $oImage->getDocumentCategory()->getName() : '').'-------",""]';
 			}
 			$sLinkUrl = LinkUtil::link(array('display_document', $oImage->getId()));
 			$aArrayText[] = '["'.$oImage->getName().'.'.$oImage->getDocumentType()->getExtension()." (".$oImage->getId().")".'", "'.$sLinkUrl.'"]';

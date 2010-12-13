@@ -24,6 +24,7 @@ Widget.types.sidebar_input = {
 						widget.activate_row(widget.row_from_row_data(row_data));
 					}, true);
 				}
+				Widget.fire('cmos-document_categories_changed');
 				widget.reload();
 			};
 		}

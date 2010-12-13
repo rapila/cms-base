@@ -27,7 +27,7 @@ class GetLinkArrayFileModule extends FileModule {
 			foreach($aDocuments as $oDocument) {
 				if($oDocument->getDocumentCategoryId() !== $iDummyCatId) {
 					$iDummyCatId = $oDocument->getDocumentCategoryId();
-					$aArrayText[] = '["--------'.StringPeer::getString('documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
+					$aArrayText[] = '["--------'.StringPeer::getString('widget.documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
 				}
 				$sLinkUrl = LinkUtil::link(array('display_document', $oDocument->getId()));
 				$aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
