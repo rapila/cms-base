@@ -2,6 +2,12 @@ jQuery(document).ready(function() {
 	AdminInterface.content.find('.dashboard_tasks').prepareWidget(function(dashboard_tasks) {
 		var widget = dashboard_tasks;
 		var tasks = dashboard_tasks.getTasks();
+		
+		if(tasks.module_not_found) {
+			Widget.notifyUser('info', tasks.module_not_found, {isHTML: true, closable: false, searchInfo: true});
+			return;
+		}
+		
 		var other_task =jQuery('<div/>').addClass('other_task');
 		widget._element.append(other_task);
 		var context_task =jQuery('<div/>').addClass('context_task');

@@ -11,7 +11,11 @@ class DashboardAdminModule extends AdminModule {
 		$this->oModuleListWidget = new ListWidgetModule();
 		$this->oModuleListWidget->setDelegate($this);
 		$this->oDashboardTasks = new DashboardTasksWidgetModule();
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', Manager::usePath());
+		$sUsePath = Manager::usePath();
+		if($sUsePath === 'module_not_found') {
+			$this->oDashboardTasks->setModuleNotFound(Manager::usePath());
+		}
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
 	}
 	
 	public function sidebarContent() {
