@@ -18,7 +18,7 @@ class AdminManager extends Manager {
 		try {
 			$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
 		} catch (Exception $e) {
-			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found')));
+			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found', $this->sModuleName)));
 		}
 		$this->oResourceIncluder = ResourceIncluder::defaultIncluder();
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
