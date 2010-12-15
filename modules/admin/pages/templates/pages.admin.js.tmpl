@@ -39,7 +39,7 @@ jQuery(document).ready(function() {
 	AdminInterface.info_bar.prepareWidget(function(info_bar) {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(sidebar_input) {
-				sidebar_input.add_new_sidebar_input(null, function(name, cleanup_callback) {
+				sidebar_input.add_new_sidebar_input("{{writeString=widget.page.new_entry}}", function(name, cleanup_callback) {
 					//This is the save callback
 					var page_id = page_tree.current_element_identifier;
 					page_detail.createPage(page_id, name, cleanup_callback.bind(this, page_id));

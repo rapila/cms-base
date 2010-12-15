@@ -5,7 +5,7 @@ Widget.types.sidebar_input = {
 	
 	add_new_sidebar_input: function(default_value, save_callback, cleanup_callback, fire_handler) {
 		if(!default_value) {
-			default_value = "{{writeString=new_entry}}";
+			default_value = "{{writeString=widget.new_entry}}";
 		}
 		if(save_callback.constructor === String) {
 			var model_name = save_callback;
