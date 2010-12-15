@@ -1,5 +1,10 @@
 Widget.types.link_category_input = {
 	prepare: function() {
+		this.reload();
+		Widget.handle('cmos-link_categories_changed', this.reload.bind(this));
+	},
+	
+	reload: function() {
 		var option = jQuery('<option/>');
 		var categories = this.getCategories();
 		jQuery.each(categories, function(i, category) {

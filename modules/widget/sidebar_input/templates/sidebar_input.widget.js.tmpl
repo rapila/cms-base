@@ -3,7 +3,7 @@ Widget.types.sidebar_input = {
 		this.sidebar = AdminInterface.sidebar;
 	},
 	
-	add_new_sidebar_input: function(default_value, save_callback, cleanup_callback) {
+	add_new_sidebar_input: function(default_value, save_callback, cleanup_callback, fire_handler) {
 		if(!default_value) {
 			default_value = "{{writeString=new_entry}}";
 		}
@@ -24,8 +24,10 @@ Widget.types.sidebar_input = {
 						widget.activate_row(widget.row_from_row_data(row_data));
 					}, true);
 				}
-				Widget.fire('cmos-document_categories_changed');
 				widget.reload();
+				if(fire_handler) {
+					// Widget.fire(fire_handler);
+				}
 			};
 		}
 		var new_input_container = jQuery('<div/>').attr('id', 'new_sidebar_input').addClass('ui-list-row');
