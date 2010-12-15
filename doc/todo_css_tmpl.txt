@@ -1,5 +1,9 @@
 HTML / CSS
 
+
+TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. 
+Resize Window & Textbereich
+
 DocumentEdit
 - dialog darf nicht groesser als fenster hoehe sein.
 speichern muss immer im sichtbaren bereich sein
