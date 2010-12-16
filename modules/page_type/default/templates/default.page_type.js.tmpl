@@ -28,6 +28,10 @@ Widget.types.page_type.types['default'] = {
 				}, 1000);
 			};
 			
+			filled_container.resize(function() {
+				filled_container.position_bar();
+			});
+			
 			filled_container.bind('mouseenter', function() {
 				if(leave_timeout) {
 					window.clearTimeout(leave_timeout); leave_timeout = null;
