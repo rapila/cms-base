@@ -25,6 +25,7 @@ class LocalJsLibraryFileModule extends FileModule {
 			$sContents .= file_get_contents($sLocation);
 		}
 		$oCache->setContents($sContents);
+		$oCache->sendCacheControlHeaders();
 		print($sContents);
 	}
 }

@@ -146,7 +146,7 @@ button.ui-button.ui-state-default {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
-.ui-widget-content { background: url() #f9f9f9; }
+.ui-widget-content { background: none #f9f9f9; }
 div.ui-widget-content { border: 1px solid #999999; }
 .ui-widget-content input { background-color: #ffffff; }
 .ui-widget-content select { background-color: #ffffff; }

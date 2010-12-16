@@ -14,7 +14,8 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
-		ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		$this->addNamespacedCss(array('widget', 'widget.css'));
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
 		
@@ -74,6 +75,12 @@ class PreviewManager extends FrontendManager {
 	
 	protected function useFullPageCache() {
 		return false;
+	}
+	
+	private function addNamespacedCss($mLocation) {
+		array_unshift($mLocation, 'namespaced_preview_css');
+		$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		$oResourceIncluder->addResource(LinkUtil::link($mLocation, 'FileManager'), ResourceIncluder::RESOURCE_TYPE_CSS);
 	}
 	
 	public static function shouldIncludeLanguageInLink() {

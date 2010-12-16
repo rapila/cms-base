@@ -68,13 +68,28 @@ class FileResource {
 	public function getRelativePath() {
 		return $this->sRelativePath;
 	}
+	
+	public function getInternalPath() {
+		return $this->sInstancePrefix.$this->sRelativePath;
+	}
 
 	public function getFrontendPath() {
-		return MAIN_DIR_FE.$this->sInstancePrefix.$this->sRelativePath;
+		return MAIN_DIR_FE.$this->getInternalPath();
 	}
 	
 	public function getFileName($sExtensionCutoff = null) {
 		return basename($this->sFullPath, $sExtensionCutoff);
+	}
+	
+	public function getDirectoryPath() {
+		return dirname($this->sFullPath);
+	}
+	
+	public function getFrontendDirectoryPath() {
+		if(self::$MAIN_DIR_CANONICAL === null) {
+			self::$MAIN_DIR_CANONICAL = realpath(MAIN_DIR);
+		}
+		return MAIN_DIR_FE.substr($this->getDirectoryPath(), strlen(self::$MAIN_DIR_CANONICAL)+1);
 	}
 	
 	public function addToPath($sPathItem) {
