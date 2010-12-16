@@ -51,6 +51,7 @@ Widget.types.image_picker = {
 	
 	reload: function() {
 		var _this = this;
+		Widget.load();
 		this.listImages(function(result, error) {
 			if(error) {
 				return;
@@ -70,6 +71,7 @@ Widget.types.image_picker = {
 				});
 				_this.image_area.append(image);
 			});
+			Widget.end_load();
 		});
 	},
 	

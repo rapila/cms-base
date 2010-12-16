@@ -4,15 +4,12 @@
  */
 class RichTextWidgetModule extends PersistentWidgetModule {
 	
-	private $oImagePickerWidget;
 	private $sModuleContents;
 	private $aModuleSettings;
 	private $aCssUrls;
 	
 	public function __construct($sSessionKey = null, $sModuleContents = null, $aModuleSettings = null) {
 		parent::__construct($sSessionKey);
-		$this->oImagePickerWidget = new ImagePickerWidgetModule();
-		$this->oImagePickerWidget->setAllowsMultiselect(true);
 		$this->sModuleContents = $sModuleContents;
 		if($aModuleSettings === null) {
 			$aModuleSettings = Settings::getSetting('admin', 'text_module', array());
@@ -103,7 +100,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getElementType() {
-		return new TagWriter('textarea', array('data-widget-picker-session' => $this->oImagePickerWidget->getSessionKey()));
+		return new TagWriter('textarea');
 	}
 	
 	public function getModuleContents() {
