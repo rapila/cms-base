@@ -6,7 +6,6 @@ Widget.types.document_detail = {
 		this.content.find('div.hide_if_not_saved').hide();
 		
 		this.file_upload = this.content.find("input[name='file_upload']");
-		
 		this.uploader = Widget.create('file_upload');
 		
 		Widget.create('detail', function(widget) {
@@ -32,11 +31,12 @@ Widget.types.document_detail = {
 				width: 550,
 				dialogClass: "document_detail"
 			});
+			
 			widget.content = _this.content;
-			
-			_this.content.find("select[name='document_category_id']").prepareWidget();
+			_this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
+				category_widget.settings.initial_selection = _this.settings.initial_category_id;
+			}, jQuery.noop);
 			_this.content.find("select[name='language_id']").prepareWidget();
-			
 			
 			_this.uploader.allow_drag_to(_this.content, null, function(target) {
 				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this)};
@@ -124,9 +124,10 @@ Widget.types.document_detail = {
 		this.close_callback();
 	},
 	
-	save_callback: function(data) {
-		this.file_upload;
-		alert('save_callback');
+	settings: {
+		initial_category_id: null
 	},
+	
+	save_callback: jQuery.noop,
 	close_callback: jQuery.noop
 };

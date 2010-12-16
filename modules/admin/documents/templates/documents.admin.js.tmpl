@@ -53,7 +53,7 @@ jQuery(document).ready(function() {
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_detail', function(widget) {
-					widget.content.find("select[name='document_category_id']").val(documents_view.settings.document_category_id);
+					widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
 					widget.content.find("select[name='language_id']").val('');
 					widget.open();
 					widget.save_callback = function() {
