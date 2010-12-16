@@ -12,9 +12,9 @@ Widget.types.page_type.types['default'] = {
 			// Preview bar show/hide stuff
 			filled_container.position_bar = function() {
 				var offset = filled_container.offset();
-				offset.top += filled_container.height()-3;
+				offset.top += filled_container.height()-20;
 				offset.left = Math.max(offset.left, 0);
-				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left-3)+'px'});
+				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left)+'px'});
 			};
 			
 			var leave_timeout = null;
