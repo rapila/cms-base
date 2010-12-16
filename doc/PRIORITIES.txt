@@ -6,7 +6,11 @@ Prepare CSS Template Eni : Firefox WINDOWS.....
 Ornella, QMS Detailhandel > Listview
 Document_detail: 
 - save_callback upload!!!
-- dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
+- validate > if now valid upload and new
+
+Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
+
+Roger Tel. Basis CSS Netla
 
 Logout > clearCache, add ClearCache button somewhere
 
