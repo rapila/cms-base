@@ -45,8 +45,13 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		return self::documentPreview($this->iDocumentId, 190);
 	}
 	
-	public function validate($aDocumentData) {
-	  // do nothing for now. name is always filled with file_name if not set
+	public function validate($aDocumentData, $oDocument) {
+		$oFlash = Flash::getFlash();
+		$oFlash->setArrayToCheck($aDocumentData);
+		if($this->iDocumentId === null) {
+			$oFlash->addMessage('document.requires_file');
+		}
+		$oFlash->finishReporting();
 	}
 			
 	public function saveData($aDocumentData) {
@@ -55,7 +60,10 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		}
-		$this->validate($aDocumentData);
+		$this->validate($aDocumentData, $oDocument);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);

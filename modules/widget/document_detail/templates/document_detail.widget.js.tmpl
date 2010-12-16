@@ -1,63 +1,75 @@
 Widget.types.document_detail = {
 	initialize: function() {
+		var _this = this;
+		
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
+		
+		this.file_upload = this.content.find("input[name='file_upload']");
+		
+		this.uploader = Widget.create('file_upload');
+		
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
-			this.current_detail_id = null;
+			_this.detail_widget = widget.set_instance(_this);
+			var old_save_handler = _this.detail_widget.settings.save_callback;
+			_this.current_detail_id = null;
+			_this.detail_widget.settings.save_callback = function() {
+				if(_this.file_upload.val()) {
+					var file = _this.file_upload[0].files[0];
+					_this.file_upload.attr('disabled', true);
+					_this.uploader.upload_file(file, {document_id: _this.current_detail_id, callback: function(result) {
+						_this.upload_success(result);
+						_this.settings.remains_open = true;
+						old_save_handler.call(_this.detail_widget);
+					}, error: _this.upload_error.bind(_this)});
+				} else {
+					_this.settings.remains_open = false;
+					old_save_handler.call(this);
+				}
+			};
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=widget.new_entry}}",
 				width: 550,
 				dialogClass: "document_detail"
 			});
-			widget.content = this.content;
-			this.content.find("select[name='document_category_id']").prepareWidget();
-			this.content.find("select[name='language_id']").prepareWidget();
+			widget.content = _this.content;
 			
-			var document_detail = this;
+			_this.content.find("select[name='document_category_id']").prepareWidget();
+			_this.content.find("select[name='language_id']").prepareWidget();
 			
-			var upload_error = function(error) {
-				document_detail.upload_button.button('enable');
-				document_detail.file_upload.attr('disabled', false);
-				document_detail.upload_button.hide();
-				if(error) {
-					document_detail.detail_widget.validate_with({upload: jQuery.parseHTML('<span class="error_display"/>').text(error.message)});
-				}
-			};
-			var upload_success = function(result) {
-				upload_error();
-				var is_new = document_detail.current_detail_id === null;
-				if(is_new) {
-					document_detail.setDocumentId(result);
-				}
-				document_detail.fill_data(!is_new);
-				//TODO: reload list row and info part of detail
-			};
 			
-			this.uploader = Widget.create('file_upload');
-			this.uploader.allow_drag_to(document_detail.content, null, function(target) {
-				return {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error};
+			_this.uploader.allow_drag_to(_this.content, null, function(target) {
+				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this)};
 			}, true);
 
-			this.upload_button = this.content.find("button.do_upload").button().hide().click(function(event) {
-				document_detail.upload_button.button('disable');
-				document_detail.file_upload.attr('disabled', true);
-				var file = document_detail.file_upload[0].files[0];
-				document_detail.uploader.upload_file(file, {document_id: document_detail.current_detail_id, callback: upload_success, error: upload_error});
+			_this.file_upload.change(function(event) {
+				_this.detail_widget.clear_validation();
 			});
-			this.file_upload = this.content.find("input[name='file_upload']").change(function(event) {
-				document_detail.detail_widget.clear_validation();
-				var files = this.files;
-				if(files.length === 1) {
-					document_detail.upload_button.show();
-				} else {
-					document_detail.upload_button.hide();
-				}
-			});
-			if(this.auto_open) {
-				this.open();
+			
+			if(_this.auto_open) {
+				_this.open();
 			}
-		}.bind(this));
+		});
+	},
+	
+	upload_error: function(error) {
+		this.file_upload.attr('disabled', false);
+		if(error) {
+			this.detail_widget.validate_with({upload: jQuery.parseHTML('<span class="error_display"/>').text(error.message)});
+		}
+	},
+	
+	upload_success: function(result, no_reload) {
+		this.upload_error();
+		this.file_upload.val('');
+		var is_new = this.current_detail_id === null;
+		if(is_new) {
+			this.setDocumentId(result);
+		}
+		if(!no_reload) {
+			this.fill_data(!is_new);
+		}
+		//TODO: reload list row and info part of detail
 	},
 	
 	open: function() {
