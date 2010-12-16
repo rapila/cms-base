@@ -44,6 +44,10 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	public function preview() {
 		return self::documentPreview($this->iDocumentId, 190);
 	}
+	
+	public function validate($aDocumentData) {
+	  // do nothing for now. name is always filled with file_name if not set
+	}
 			
 	public function saveData($aDocumentData) {
 		if($this->iDocumentId === null) {

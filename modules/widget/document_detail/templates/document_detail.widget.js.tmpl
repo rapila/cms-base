@@ -112,6 +112,9 @@ Widget.types.document_detail = {
 		this.close_callback();
 	},
 	
-	save_callback: jQuery.noop,
+	save_callback: function(data) {
+		this.file_upload;
+		alert('save_callback');
+	},
 	close_callback: jQuery.noop
 };
