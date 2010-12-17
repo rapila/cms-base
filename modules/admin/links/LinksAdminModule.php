@@ -59,7 +59,7 @@ class LinksAdminModule extends AdminModule {
 							'name' => StringPeer::getString('widget.sidebar.select_all'),
 							'magic_column' => 'all'),
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('links.select_without_title'),
+							'name' => StringPeer::getString('widget.links.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

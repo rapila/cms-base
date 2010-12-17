@@ -2,7 +2,12 @@ Widget.types.group_input = {
 	prepare: function() {
 		var input = jQuery('<input/>').attr('type', 'checkbox');
 		var groups = this.getGroups();
+		
 		var fieldset = this._element.find('fieldset');
+		if(groups.length === 0) {
+			jQuery('<div/>').html("{{writeString=none_available.groups}}").appendTo(fieldset);
+		}
+
 		jQuery.each(groups, function(i, group) {
 			var checkbox = input.clone();
 			checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);

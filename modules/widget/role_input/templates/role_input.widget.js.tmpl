@@ -5,8 +5,9 @@ Widget.types.role_input = {
 
 		var fieldset = this._element.find('fieldset');
 		if(roles.length === 0) {
-			jQuery('<div/>').html("{{writeString=role.none_available_message}}").appendTo(fieldset);
+			jQuery('<div/>').html("{{writeString=none_available.roles}}").appendTo(fieldset);
 		}
+		
 		jQuery.each(roles, function(i, role) {
 			var checkbox = input.clone();
 			checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);

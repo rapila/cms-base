@@ -33,10 +33,10 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.name');
 				break;			
 			case 'username':
-				$aResult['heading'] = StringPeer::getString('user_name');
+				$aResult['heading'] = StringPeer::getString('widget.user_name');
 				break;
 			case 'email':
-				$aResult['heading'] = StringPeer::getString('email');
+				$aResult['heading'] = StringPeer::getString('widget.email');
 				break;
 			case 'user_kind':
 				$aResult['heading'] = '';

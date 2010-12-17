@@ -53,7 +53,7 @@ class DocumentsViewWidgetDelegate {
 				$aResult['heading'] = StringPeer::getString('widget.sort');
 				break;
 			case 'file_info':
-				$aResult['heading'] = StringPeer::getString('file.info');
+				$aResult['heading'] = StringPeer::getString('widget.document.file.info');
 				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -63,7 +63,7 @@ class DocumentsViewWidgetDelegate {
 				$aResult['is_sortable'] = false;
 				break;			
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('label_list.file_category_list');
+				$aResult['heading'] = StringPeer::getString('widget.category');
 				break;
 			case 'language_id':
 				// $aResult['heading'] = StringPeer::getString('widget.language');
