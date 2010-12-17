@@ -53,6 +53,8 @@ jQuery(document).ready(function() {
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_detail', function(widget) {
+					console.log(documents_view);
+
 					widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
 					widget.content.find("select[name='language_id']").val('');
 					widget.open();
@@ -73,8 +75,7 @@ jQuery(document).ready(function() {
 				}
 			});
 			// add row_count_info
-			// FIXME: Find elegant way to do this…
-			// info_bar.add_row_count_info_for_list(documents_view);
+			info_bar.add_row_count_info_for_list(documents_view);
 		});
 	});
 });

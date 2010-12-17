@@ -6,16 +6,27 @@ Widget.types.image_picker = {
 	prepare: function() {
 		var _this = this;
 		this.image_area = jQuery('<div/>').appendTo(this._element);
+		var ajax_loader = jQuery('<div/>').addClass();
+		
+		var file_uploader = Widget.create('file_upload');
+		file_uploader.allow_drag_to(this.image_area, null, function(target) {
+			return {
+				document_category_id: _this.document_category_input.val(),
+				callback: _this.reload.bind(_this),
+				error: function() {}
+			};
+		});
+		
 		Widget.createWithElement('document_category_input', function(document_category_input) {
 			document_category_input.settings.custom_option = "{{writeString=image_picker.document_cateogy_input.custom_option}}";
-
+			document_category_input.settings.categories_with_documents_only = true;
 			document_category_input.handle('element_set', function() {
 				_this.document_category_input = document_category_input;
 				document_category_input._element.prependTo(_this._element);
 			});
 		}, function(document_category_input) {
 			document_category_input._element.change(function() {
-				var category = document_category_input._element.val();
+				var category = document_category_input.val();
 				if(category) {
 					_this.setAllowedCategories([category]);
 				} else {

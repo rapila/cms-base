@@ -43,11 +43,11 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.name');
 				break;
 			case 'url':
-				$aResult['heading'] = StringPeer::getString('url');
+				$aResult['heading'] = StringPeer::getString('widget.url');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'description':
-				$aResult['heading'] = StringPeer::getString('description');
+				$aResult['heading'] = StringPeer::getString('widget.description');
 				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('widget.link_category_list');

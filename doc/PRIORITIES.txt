@@ -2,7 +2,12 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
+document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
+richtext: upload_file, d&d etc
+page_type: bug reload richt	ext
+
 Prepare CSS Template Eni : Firefox WINDOWS.....
+
 Ornella, QMS Detailhandel > Listview
 
 Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed

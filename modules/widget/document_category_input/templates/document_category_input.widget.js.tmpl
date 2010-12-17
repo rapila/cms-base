@@ -8,7 +8,7 @@ Widget.types.document_category_input = {
 		var val = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
-		var categories = this.getCategories();
+		var categories = this.getCategories(this.settings.categories_with_documents_only);
 		jQuery.each(categories, function(i, category) {
 			option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 		}.bind(this));
@@ -16,9 +16,14 @@ Widget.types.document_category_input = {
 		this._element.val(this.settings.initial_selection || '');
 	},
 	
+	val: function() {
+		return this._element.val();
+	},
+	
 	settings: {
 		custom_option: "----",
-		initial_selection: null
+		initial_selection: null,
+		categories_with_documents_only: false
 	}
 
 };
