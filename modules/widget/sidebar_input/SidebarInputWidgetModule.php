@@ -15,7 +15,7 @@ class SidebarInputWidgetModule extends WidgetModule {
 		$oCriteria = new Criteria();
 		$oCriteria->add(constant("$sPeerClassName::NAME"), $sItemName);
 		if($sPeerClassName::doCount($oCriteria) > 0) {
-			throw new LocalizedException("modules.widget.input.object_exists");
+			throw new LocalizedException("wns.input.object_exists");
 		}
 		$oModel = new $sModelName();
 		$oModel->setName($sItemName);
