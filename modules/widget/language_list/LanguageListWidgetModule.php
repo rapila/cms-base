@@ -49,7 +49,7 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('widget.language.is_default');
 				break;
 			case 'is_active':
-				$aResult['heading'] = StringPeer::getString('is_active');
+				$aResult['heading'] = StringPeer::getString('widget.is_active');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

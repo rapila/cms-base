@@ -41,7 +41,6 @@ Widget.types.form_edit = {
 		});
 		
 		this._element.delegate('.remove_entry', 'click', function() {
-			// jQuery(this).closest('fieldset').remove();
 			jQuery(this).closest('tr').remove();
 			_this.update_form_fields();
 		});
@@ -55,8 +54,6 @@ Widget.types.form_edit = {
 		} else {
 			this.form_field_thead.hide();
 		}
-		this._element.find('thead');
-		console.log(this.form_field_area.find('.form_input_row').length);
 	},
 	
 	add_item: function(data) {

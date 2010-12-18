@@ -8,7 +8,7 @@ class LoginEditWidgetModule extends EditWidgetModule {
 	public function getDisplayOptions() {
 		$aResult = array();
 		foreach(LoginFrontendModule::$DISPLAY_OPTIONS as $sDisplayOption) {
-			$aResult[$sDisplayOption] = StringPeer::getString('option.'.$sDisplayOption);
+			$aResult[$sDisplayOption] = StringPeer::getString('widget.option.'.$sDisplayOption);
 		}
 		return $aResult;
 	}

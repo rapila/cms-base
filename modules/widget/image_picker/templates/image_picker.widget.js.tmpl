@@ -18,7 +18,7 @@ Widget.types.image_picker = {
 		});
 		
 		Widget.createWithElement('document_category_input', function(document_category_input) {
-			document_category_input.settings.custom_option = "{{writeString=image_picker.document_cateogy_input.custom_option}}";
+			document_category_input.settings.custom_option = "{{writeString=widget.document_cateogy_input.custom_option}}";
 			document_category_input.settings.categories_with_documents_only = true;
 			document_category_input.handle('element_set', function() {
 				_this.document_category_input = document_category_input;
