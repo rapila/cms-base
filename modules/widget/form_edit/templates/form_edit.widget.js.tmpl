@@ -1,6 +1,5 @@
 Widget.types.form_edit = {
 	prepare: function() {
-		// var content = jQuery.parseHTML("{{includeTemplate=edit}}"); 
 		var content = jQuery.parseHTML("{{includeTemplate=edit_table}}");
 		var _this = this;
 		this._element.append(content);
@@ -9,7 +8,6 @@ Widget.types.form_edit = {
 		this._element.find("select[name='request_method']").populate(this.getMethodOptions());
 		this._element.find("select[name='manager']").populate(this.getManagerOptions());
 		
-		// this.form_field_prototype = jQuery.parseHTML("{{includeTemplate=form_field}}");
 		this.form_field_prototype = jQuery("{{includeTemplate=edit_form_field_row}}");
 		this.form_field_prototype.find(".switcher_field").populate(this.getFieldTypeOptions());
 		
@@ -28,6 +26,9 @@ Widget.types.form_edit = {
 		}).keyup();
 		
 		this.form_field_area = this._element.find('.form_fields');
+		this.form_field_thead =	this._element.find('thead').hide();
+		this.update_form_fields();
+		
 		this.form_field_area.sortable({
 			handle: '.ui-sortable-handle',
 			axis: 'y',
@@ -36,14 +37,26 @@ Widget.types.form_edit = {
 		
 		this._element.find('.add_entry').bind('click', function() {
 			_this.add_item();
+			_this.update_form_fields();
 		});
 		
 		this._element.delegate('.remove_entry', 'click', function() {
 			// jQuery(this).closest('fieldset').remove();
 			jQuery(this).closest('tr').remove();
+			_this.update_form_fields();
 		});
 		
 		this.update();
+	},
+	
+	update_form_fields: function() {
+		if(this.form_field_area.find('.form_input_row').length > 0) {
+			this.form_field_thead.show();
+		} else {
+			this.form_field_thead.hide();
+		}
+		this._element.find('thead');
+		console.log(this.form_field_area.find('.form_input_row').length);
 	},
 	
 	add_item: function(data) {

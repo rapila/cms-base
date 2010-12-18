@@ -2,7 +2,7 @@
 
 class FormEditWidgetModule extends EditWidgetModule {
 	public function getTypeOptions() {
-		return array('email' => StringPeer::getString('form_type.email'), 'external' => StringPeer::getString('form_type.external'), 'manager' => StringPeer::getString('form_type.manager'));
+		return array('email' => StringPeer::getString('widget.form_type.email'), 'external' => StringPeer::getString('widget.form_type.external'), 'manager' => StringPeer::getString('widget.form_type.manager'));
 	}
 	
 	public function getMethodOptions() {
