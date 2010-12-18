@@ -42,15 +42,15 @@ class RoleListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'role_key':
-				$aResult['heading'] = StringPeer::getString('widget.role.role_key');
+				$aResult['heading'] = StringPeer::getString('wns.role.role_key');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'description':
-				$aResult['heading'] = StringPeer::getString('widget.role.description');
+				$aResult['heading'] = StringPeer::getString('wns.role.description');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'user_with_role_count':
-				$aResult['heading'] = StringPeer::getString('widget.role.user_with_role_count');
+				$aResult['heading'] = StringPeer::getString('wns.role.user_with_role_count');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

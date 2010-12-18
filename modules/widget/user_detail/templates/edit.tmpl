@@ -1,37 +1,37 @@
 <form>
 	<div class="status_section">
-		<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=widget.user.is_admin}}</label><br />
-		<input type="checkbox" name="is_backend_login_enabled" /><label for="is_backend_login_enabled">{{writeString=widget.user.is_backend_login_enabled}}</label><br />
-		<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=widget.is_inactive}}</label><br />
+		<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=wns.user.is_admin}}</label><br />
+		<input type="checkbox" name="is_backend_login_enabled" /><label for="is_backend_login_enabled">{{writeString=wns.user.is_backend_login_enabled}}</label><br />
+		<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=wns.is_inactive}}</label><br />
 		<div class="hide_if_not_saved">
-			<label>{{writeString=widget.created_info}}:</label><span class="created_info status"></span><br />
-			<label>{{writeString=widget.updated.info}}:</label><span class="updated_info status"></span>
+			<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
+			<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span>
 		</div>
 	</div>
-	<label for="first_name" class="validate-first_name_required">{{writeString=widget.first_name}}</label>
+	<label for="first_name" class="validate-first_name_required">{{writeString=wns.first_name}}</label>
 	<input type="text" name="first_name" class="ui-widget-content" /><br />
-	<label for="last_name" class="validate-last_name_required">{{writeString=widget.last_name}}</label>
+	<label for="last_name" class="validate-last_name_required">{{writeString=wns.last_name}}</label>
 	<input type="text" name="last_name" class="ui-widget-content" /><br />
-	<label for="username" class="validate-username_required validate-user_name_exists">{{writeString=widget.user_name}}</label>
+	<label for="username" class="validate-username_required validate-user_name_exists">{{writeString=wns.user_name}}</label>
 	<input type="text" name="username" class="ui-widget-content" /><br />
-	<label for="email" class="validate-email_required" >{{writeString=widget.email}}</label>
+	<label for="email" class="validate-email_required" >{{writeString=wns.email}}</label>
 	<input type="text" name="email" class="ui-widget-content" /><br />
-	<label for="language_id">{{writeString=widget.language}}</label>
+	<label for="language_id">{{writeString=wns.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
 	<div class="hide_if_saved"
-		<label>{{writeString=widget.password}}</label>
+		<label>{{writeString=wns.password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
-		<label for="password_confirm">{{writeString=widget.password_confirm}}</label>
+		<label for="password_confirm">{{writeString=wns.password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
 	</div><br />
 	<div class="user_rights_section">
 		<div class="user_groups_section" data-widget-type="group_input">
-			<label>{{writeString=widget.user.groups}}</label><br />
+			<label>{{writeString=wns.user.groups}}</label><br />
 			<fieldset class="option_groups">
 			</fieldset>
 		</div>
 		<div class="user_roles_section" data-widget-type="role_input">
-			<label>{{writeString=widget.user.roles}}</label><br />
+			<label>{{writeString=wns.user.roles}}</label><br />
 			<fieldset class="option_groups">
 			</fieldset>
 		</div>

@@ -129,7 +129,7 @@ Widget.types.admin_menu = {
 			var result = {};
 			result.element = jQuery('<select/>');
 			var current_module = AdminInterface.current_admin_module;
-			var default_title = '{{writeString=admin.pages.link_title}}';
+			var default_title = '{{writeString=wns.module_select.default_option.title}}';
 			// todo: remove checked or style when no option is selected
 			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'))
 			var separator_class = '';
@@ -217,7 +217,7 @@ Widget.types.admin_menu = {
 		},
 		
 		preview: function() {
-			var result = {text: "{{writeString=widget.page.preview_linktext}}"};
+			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
 			var admin_menu = this;
 			result.callback = function() {
 				window.location = admin_menu.getPreviewLink();
@@ -226,7 +226,7 @@ Widget.types.admin_menu = {
 		},
 		
 		edit: function() {
-			var result = {text: "{{writeString=widget.page.edit_linktext}}"};
+			var result = {text: "{{writeString=wns.page.edit_linktext}}"};
 			if(AdminInterface.current_admin_module == 'pages') {
 				result.is_active = true;
 			} else {

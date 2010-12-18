@@ -1,29 +1,29 @@
 <form enctype="multipart/form-data">
-	<label for="file_upload" class="validate-upload">{{writeString=widget.document.file_upload}}</label>
+	<label for="file_upload" class="validate-upload">{{writeString=wns.document.file_upload}}</label>
 	<input type="file" name="file_upload" class="ui-widget-content" /><br />
 	<div class="status_section">
 		<div class="preview">
-		  <div class="droppable_info">{{writeString=widget.draganddrop}}<br />{{writeString=widget.draganddrop.hint}}
+		  <div class="droppable_info">{{writeString=wns.draganddrop}}<br />{{writeString=wns.draganddrop.hint}}
 		  </div>
 		</div>
 		<div class="hide_if_not_saved">
-  		<label>{{writeString=widget.document.info}}:</label><span class="file_size status"></span><br />
-  		<label>{{writeString=widget.created_info}}:</label><span class="created_info status"></span><br />
-  		<label>{{writeString=widget.updated.info}}:</label><span class="updated_info status"></span><br />
-  		<label>{{writeString=widget.document.original_name}}</label><span class="original_name"></span><br />
+  		<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span><br />
+  		<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
+  		<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
+  		<label>{{writeString=wns.document.original_name}}</label><span class="original_name"></span><br />
   		<label>ID:</label><span class="detail_id">{{id}}<br />
 		</div>
 	</div>
 	<div>
-		<label for="name">{{writeString=widget.name}}</label>
+		<label for="name">{{writeString=wns.name}}</label>
 		<input type="text" name="name" class="ui-widget-content" /><br />
-		<label for="description">{{writeString=widget.description}}</label>
+		<label for="description">{{writeString=wns.description}}</label>
 		<textarea rows="2" cols="30" name="description" class="ui-widget-content"></textarea>
-		<label for="document_category_id">{{writeString=widget.document.document_category}}</label>
+		<label for="document_category_id">{{writeString=wns.document.document_category}}</label>
 		<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
-		<label for="language_id">{{writeString=widget.language}}</label>
+		<label for="language_id">{{writeString=wns.language}}</label>
 		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
-		<label for="is_protected">{{writeString=widget.is_protected}}</label>	
+		<label for="is_protected">{{writeString=wns.is_protected}}</label>	
 		<input type="checkbox" name="is_protected" /><br />
 	</div>
 </form>

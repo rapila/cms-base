@@ -36,7 +36,7 @@ Widget.types.document_thumbnail_view = {
 						picker_object.fire('selected', document_ids, ui.selected);
 					}
 				});
-				buttons["{{writeString=widget.image_picker.insert}}"] = function() {
+				buttons["{{writeString=wns.image_picker.insert}}"] = function() {
 					var selected = picker_object._element.children('.ui-selected');
 					if(selected.length > 0) {
 						var collection = [];
@@ -66,7 +66,7 @@ Widget.types.document_thumbnail_view = {
 		// handle delete
 		jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
 			var delete_message = AdminInterface.strings.get_parameterized_string('widget.document.delete_warning', { document_name: theDocument.name});
-			Widget.confirm("{{writeString=widget.delete_warning_title}}", delete_message, function(confirmed) {
+			Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 				if(confirmed) {
 					_this.deleteDocument({id: document_id}, function(result) {
 						jQuery(doc).remove();

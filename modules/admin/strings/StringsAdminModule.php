@@ -32,7 +32,7 @@ class StringsAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('widget.string.name_space');
+				$aResult['heading'] = StringPeer::getString('wns.string.name_space');
 				break;
 			case 'name_space':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -49,7 +49,7 @@ class StringsAdminModule extends AdminModule {
 		if(count(StringPeer::getNamespaces()) > 0) {
 		 	return array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('widget.documents.select_all_title'),
+							'title' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

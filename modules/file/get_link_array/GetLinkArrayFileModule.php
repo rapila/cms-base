@@ -27,7 +27,7 @@ class GetLinkArrayFileModule extends FileModule {
 			foreach($aDocuments as $oDocument) {
 				if($oDocument->getDocumentCategoryId() !== $iDummyCatId) {
 					$iDummyCatId = $oDocument->getDocumentCategoryId();
-					$aArrayText[] = '["--------'.StringPeer::getString('widget.documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
+					$aArrayText[] = '["--------'.StringPeer::getString('wns.documents').'-'.($oDocument->getDocumentCategory() ? $oDocument->getDocumentCategory()->getName() : '').'-------",""]';
 				}
 				$sLinkUrl = LinkUtil::link(array('display_document', $oDocument->getId()));
 				$aArrayText[] = '["'.$oDocument->getName().'.'.$oDocument->getDocumentType()->getExtension()." (".$oDocument->getId().")".'", "'.$sLinkUrl.'"]';
@@ -36,7 +36,7 @@ class GetLinkArrayFileModule extends FileModule {
 
 		$aParents = PagePeer::getRootPage()->getTree();
 		if(!in_array('internal_links', $this->aDisabledSections) && count($aParents) > 0) {
-			$aArrayText[] = '["--------'.StringPeer::getString('widget.links.internal').'-----------",""]';
+			$aArrayText[] = '["--------'.StringPeer::getString('wns.links.internal').'-----------",""]';
 			foreach($aParents as $oParent) {
 				$sLinkUrl = LinkUtil::link(array('internal_link_proxy', $oParent->getId()));
 				$aArrayText[] = '["'.$oParent->getNameMceIndented().'", "'.$sLinkUrl.'"]';
@@ -46,7 +46,7 @@ class GetLinkArrayFileModule extends FileModule {
 		if(!in_array('external_links', $this->aDisabledSections)) {
 			$aLinks = LinkPeer::getLinksSorted();
 			if(count($aLinks) > 0) {
-				$aArrayText[] = '["--------'.StringPeer::getString('widget.links.external').'-----------",""]';
+				$aArrayText[] = '["--------'.StringPeer::getString('wns.links.external').'-----------",""]';
 			}
 			foreach($aLinks as $oLink) {
 				$sLinkUrl = LinkUtil::link(array('external_link_proxy', $oLink->getId()));

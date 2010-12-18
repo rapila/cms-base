@@ -17,7 +17,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		$aResult = array();
 		foreach(self::doSelect($oCriteria) as $oDocumentType) {
 			$aKind = explode('/', $oDocumentType->getMimeType());
-			$aResult[$aKind[0]] = StringPeer::getString('widget.document_kind.'.$aKind[0]);
+			$aResult[$aKind[0]] = StringPeer::getString('wns.document_kind.'.$aKind[0]);
 		}
 		return $aResult;
 	}
@@ -33,7 +33,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 	}
 	
 	public static function getDocumentKindName($sKey) {
-		return StringPeer::getString('widget.document_kind.'.$sKey);
+		return StringPeer::getString('wns.document_kind.'.$sKey);
 	}
 	
 	public static function documentKindExists($sDocumentKind = 'application') {

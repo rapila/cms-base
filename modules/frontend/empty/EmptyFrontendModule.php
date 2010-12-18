@@ -26,6 +26,6 @@ class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendM
 	}
 	
 	public function getWidget() {
-		return new GenericFrontendModuleWidgetModule(null, $this, StringPeer::getString('widget.empty.confirm'));
+		return new GenericFrontendModuleWidgetModule(null, $this, StringPeer::getString('wns.empty.confirm'));
 	}
 }

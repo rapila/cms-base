@@ -55,7 +55,7 @@ class CheckAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('widget.check.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('wns.check.sidebar_heading');
 				break;
 		}
 		return $aResult;

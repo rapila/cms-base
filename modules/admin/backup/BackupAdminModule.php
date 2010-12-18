@@ -47,7 +47,7 @@ class BackupAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('widget.backup.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('wns.backup.sidebar_heading');
 				break;
 		}
 		return $aResult;

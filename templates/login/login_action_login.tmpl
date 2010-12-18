@@ -1,7 +1,7 @@
 <div style="float:left;width:45em;">
-<label for="user_name">{{writeString=widget.user_name}}</label>
+<label for="user_name">{{writeString=wns.user_name}}</label>
 <input type="text" class="autowidth" size="30" name="user_name" id="user_name" value="{{user_name}}" /><br />
-<label for="password">{{writeString=widget.password}}</label>
+<label for="password">{{writeString=wns.password}}</label>
 <input type="password" class="autowidth" size="30" name="password" id="password" value="{{password}}" autocomplete="off" /><br />
 {{writeFlashValue=login_welcome}}{{if;1=\{\{writeFlashValue=login_welcome\}\}}}<br />{{endIf}}
 {{writeFlashValue=login_welcome2}}
@@ -11,8 +11,8 @@
 {{writeFlashValue=login.recovery.invalid}}
 {{writeFlashValue=login_user_inactive}}
 {{writeFlashValue=admin_login_denied}}
-<label for="login">Login</label><button type="submit" class="login" id="login" style="width:5em;" title="{{writeString=widget.login.confirm}}"></button><br />
+<label for="login">Login</label><button type="submit" class="login" id="login" style="width:5em;" title="{{writeString=wns.login.confirm}}"></button><br />
 </div>
 <div style="margin-left:1em;">
-  <p class="password_forgotten">{{writeString=widget.login.password_forgotten}}<br /><br /><a class="edit_related_link create_related" href="{{action_password_forgotten}}">{{writeString=widget.login.password_reset}}</a></p>
+  <p class="password_forgotten">{{writeString=wns.login.password_forgotten}}<br /><br /><a class="edit_related_link create_related" href="{{action_password_forgotten}}">{{writeString=wns.login.password_reset}}</a></p>
 </div>

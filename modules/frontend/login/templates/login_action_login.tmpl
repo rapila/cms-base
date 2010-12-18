@@ -1,8 +1,8 @@
 {{writeFlashValue=login.logged_in_no_access}}
 <input type="hidden" name="origin" value="{{origin}}" />
-<label for="user_name">{{writeString=widget.login.user_name}}</label>
+<label for="user_name">{{writeString=wns.login.user_name}}</label>
 <input type="text" name="user_name" id="user_name" value="{{writeRequestValue=user_name}}" />
-<label for="be_password">{{writeString=widget.password}}</label>
+<label for="be_password">{{writeString=wns.password}}</label>
 <input type="password" name="password" id="password" value="" autocomplete="off" />
 {{writeFlashValue=login_check_params}}
 {{writeFlashValue=login.empty_fields}}
@@ -10,6 +10,6 @@
 {{writeFlashValue=login.recovery_link_sent}}
 {{writeFlashValue=login.recovery.invalid}}
 {{writeFlashValue=frontend_login_denied}}
-<button type="submit" class="login" id="login">{{writeString=widget.login}}</button>
-{{identifierContext=start;name=password_forgotten_action}}<a class="password_forgotten" href="{{password_forgotten_action}}">{{writeString=widget.login.password_forgotten}}</a>
+<button type="submit" class="login" id="login">{{writeString=wns.login}}</button>
+{{identifierContext=start;name=password_forgotten_action}}<a class="password_forgotten" href="{{password_forgotten_action}}">{{writeString=wns.login.password_forgotten}}</a>
 {{identifierContext=end;name=password_forgotten_action}}

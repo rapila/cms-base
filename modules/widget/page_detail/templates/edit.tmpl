@@ -1,35 +1,35 @@
 <form class="page_detail">
 	<div class="status_section">
 	<h3 class="status">Status</h3>
-		<label for="name" class="validate-page.name_required" style="padding-left:.4em;">{{writeString=widget.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" />
+		<label for="name" class="validate-page.name_required" style="padding-left:.4em;">{{writeString=wns.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" />
 		<a class="page_href" style="font-family:Courier;"></a><br />
-		<input type="checkbox" name="global_is_active" /><label class="for_checkbox" for="global_is_active">{{writeString=widget.page.global_active}}</label> 
-		<input type="checkbox" name="is_hidden" /><label for="is_hidden" class="for_checkbox">{{writeString=widget.page.hidden}}</label> 
-		<input type="checkbox" name="is_protected" /><label for="is_protected" class="for_checkbox">{{writeString=widget.page.protected}}</label> 
-		<input type="checkbox" name="is_folder" /><label for="is_folder" class="for_checkbox">{{writeString=widget.page.folder}}</label> 
+		<input type="checkbox" name="global_is_active" /><label class="for_checkbox" for="global_is_active">{{writeString=wns.page.global_active}}</label> 
+		<input type="checkbox" name="is_hidden" /><label for="is_hidden" class="for_checkbox">{{writeString=wns.page.hidden}}</label> 
+		<input type="checkbox" name="is_protected" /><label for="is_protected" class="for_checkbox">{{writeString=wns.page.protected}}</label> 
+		<input type="checkbox" name="is_folder" /><label for="is_folder" class="for_checkbox">{{writeString=wns.page.folder}}</label> 
 	</div>
 	<div class="accordion">
-		<h3 class="content_tab"><a href="#">{{writeString=widget.page.header.description}}</a></h3>
+		<h3 class="content_tab"><a href="#">{{writeString=wns.page.header.description}}</a></h3>
 		<div class="contents_container">		
 		</div>
-		<h3 class="content_tab"><a href="#">{{writeString=widget.page.header.configuration}}</a></h3>
+		<h3 class="content_tab"><a href="#">{{writeString=wns.page.header.configuration}}</a></h3>
 		<div class="configuration_container">		
 		</div>
-		<h3><a href="#">{{writeString=widget.page.header.template_pagetype}}</a></h3>
+		<h3><a href="#">{{writeString=wns.page.header.template_pagetype}}</a></h3>
 		<div class="accordion_content">
 			<div class="group_fields">
-				<label for="template_name">{{writeString=widget.page.template_name}}</label>
+				<label for="template_name">{{writeString=wns.page.template_name}}</label>
 				<select name="template_name" class="ui-widget-content input_short"></select>
 			</div>
 			<div class="group_fields">
-				<label for="page_type">{{writeString=widget.page.page_type}}</label>
+				<label for="page_type">{{writeString=wns.page.page_type}}</label>
 				<select name="page_type" class="ui-widget-content input_short"></select>
 			</div>
 		</div>
-		<h3 class="page_properties" style="display:none;"><a href="#">{{writeString=widget.page.header.properties}}</a></h3>
+		<h3 class="page_properties" style="display:none;"><a href="#">{{writeString=wns.page.header.properties}}</a></h3>
 		<div class="page_properties" style="display:none;">
 		</div>
-		<h3 class="page_references" style="display:none;"><a href="#">{{writeString=widget.page.header.references}}<span class="references_count"></span></a></h3>
+		<h3 class="page_references" style="display:none;"><a href="#">{{writeString=wns.page.header.references}}<span class="references_count"></span></a></h3>
 		<div class="page_references" style="display:none;">
 		</div>
 	</div>	

@@ -70,8 +70,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	}
 	
 	public static function getSortOptions() {
-		$aResult[self::SORT_BY_NAME] = StringPeer::getString('widget.order.by_name');
-		$aResult[self::SORT_BY_SORT] = StringPeer::getString('widget.order.by_sort');
+		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
+		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
 		return $aResult;
 	} 
 	
@@ -88,7 +88,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 				}
 			}
 			if(count($aResult) > 0) {
-				return StringPeer::getString('widget.document_category').': '.implode(', ', $aResult);
+				return StringPeer::getString('wns.document_category').': '.implode(', ', $aResult);
 			}
 		}
 	}

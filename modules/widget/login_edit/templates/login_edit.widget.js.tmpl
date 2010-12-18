@@ -2,7 +2,7 @@ Widget.types.login_edit = {
 	prepare: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this._element.append(this.content);
-		var mode_dropdown = this._element.find("select[name='display_mode']").populate(jQuery.extend({'': "{{writeString=widget.choose}}"}, this.getDisplayOptions()), this.getDisplayMode());
+		var mode_dropdown = this._element.find("select[name='display_mode']").populate(jQuery.extend({'': "{{writeString=wns.choose}}"}, this.getDisplayOptions()), this.getDisplayMode());
 	},
 	
 	save: function(callback) {

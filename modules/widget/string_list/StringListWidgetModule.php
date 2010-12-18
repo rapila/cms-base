@@ -33,13 +33,13 @@ class StringListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'string_key':
-				$aResult['heading'] = StringPeer::getString('widget.string.string_key');
+				$aResult['heading'] = StringPeer::getString('wns.string.string_key');
 				break;
 			case 'text':
-				$aResult['heading'] = StringPeer::getString('widget.string.string_text').' ('.AdminManager::getContentLanguage().')';
+				$aResult['heading'] = StringPeer::getString('wns.string.string_text').' ('.AdminManager::getContentLanguage().')';
 				break;
 			case 'languages_available':
-				$aResult['heading'] = StringPeer::getString('widget.languages_filled');
+				$aResult['heading'] = StringPeer::getString('wns.languages_filled');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

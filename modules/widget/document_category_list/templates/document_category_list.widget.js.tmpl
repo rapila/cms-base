@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
 				if(col.identifier === 'delete') {
 					var file_name = widget.cell_for_identifier('name', row).text();
 					var delete_message = AdminInterface.strings.get_parameterized_string('widget.document_category.delete_warning', { document_category: file_name});
-					Widget.confirm("{{writeString=widget.delete_warning_title}}", delete_message, function(confirmed) {
+					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
 						}

@@ -5,7 +5,7 @@ Widget.types.role_input = {
 
 		var fieldset = this._element.find('fieldset');
 		if(roles.length === 0) {
-			jQuery('<div/>').html("{{writeString=widget.roles.none_available}}").appendTo(fieldset);
+			jQuery('<div/>').html("{{writeString=wns.roles.none_available}}").appendTo(fieldset);
 		}
 		
 		jQuery.each(roles, function(i, role) {

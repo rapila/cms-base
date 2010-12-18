@@ -1,46 +1,46 @@
 <div class="form_manager">
 	<div class="group_fields">
-		<label for="request_method">{{writeString=widget.form.request_method}}</label> 
+		<label for="request_method">{{writeString=wns.form.request_method}}</label> 
 		<select name="request_method" class="ui-widget-content autowidth" style="min-width: 8em;"></select>
 	</div>
 	<div class="group_fields">
-		<label for="form_type">{{writeString=widget.form.form_type}}</label>
+		<label for="form_type">{{writeString=wns.form.form_type}}</label>
 		<select name="form_type" class="switcher_field ui-widget-content autowidth" style="min-width: 8em;"></select>
 	</div>
 	<div class="conditional_field-for-form_type external group_fields">
-		<label for="form_action">{{writeString=widget.form.action}}</label>
+		<label for="form_action">{{writeString=wns.form.action}}</label>
 		<input type="text" name="form_action" class="ui-widget-content autowidth" />
 	</div>
 	<div class="conditional_field-for-form_type email group_fields">
 		<div class="group_fields">
-			<label for="email_address">{{writeString=widget.email}}</label>
+			<label for="email_address">{{writeString=wns.email}}</label>
 			<input type="text" name="email_address" class="ui-widget-content autowidth" />
 		</div>
 		<div class="group_fields">
-			<label for="template_addition">{{writeString=widget.form.template_name_addition}}</label>
+			<label for="template_addition">{{writeString=wns.form.template_name_addition}}</label>
 			<input type="text" name="template_addition" class="ui-widget-content autowidth" /> 
-			{{writeString=widget.template_name}}: <span class="e_mail_template_name" style="font-style:italic;"></span>
+			{{writeString=wns.template_name}}: <span class="e_mail_template_name" style="font-style:italic;"></span>
 		</div>
 	</div>
 	<div class="conditional_field-for-form_type manager group_fields">
-		<label for="manager">{{writeString=widget.form_type.manager}}</label>
+		<label for="manager">{{writeString=wns.form_type.manager}}</label>
 		<select name="manager" class="ui-widget-content autowidth">{{manager}}</select>
 	</div>
 	<table style="padding-top:1.5em;">
 		<thead>
 		<tr>	
-			<th title="{{writeString=widget.form.sort_title}}">{{writeString=widget.form.sort_label_short}}</th>
-			<th>{{writeString=widget.form.field_type}}</th>
-			<th>{{writeString=widget.form.field_name_and_id}}</th>
-			<th>{{writeString=widget.form.label}}</th>
-			<th>{{writeString=widget.form.default_value}}</th>
-			<th>{{writeString=widget.form.class_name}}</th>
-			<th title="{{writeString=widget.form.field_is_required}}">*</th>
+			<th title="{{writeString=wns.form.sort_title}}">{{writeString=wns.form.sort_label_short}}</th>
+			<th>{{writeString=wns.form.field_type}}</th>
+			<th>{{writeString=wns.form.field_name_and_id}}</th>
+			<th>{{writeString=wns.form.label}}</th>
+			<th>{{writeString=wns.form.default_value}}</th>
+			<th>{{writeString=wns.form.class_name}}</th>
+			<th title="{{writeString=wns.form.field_is_required}}">*</th>
 			<th></th>
 		</tr>
 		</thead>
 		<tbody class="form_fields">
 		</tbody>
 	</table>
-	<a class='add-new-item add_entry' accesskey="p">{{writeString=widget.form.add_element}}</a>
+	<a class='add-new-item add_entry' accesskey="p">{{writeString=wns.form.add_element}}</a>
 </div>

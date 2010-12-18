@@ -37,23 +37,23 @@ class LinkListWidgetModule extends WidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('widget.sort');
+				$aResult['heading'] = StringPeer::getString('wns.sort');
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.name');
+				$aResult['heading'] = StringPeer::getString('wns.name');
 				break;
 			case 'url':
-				$aResult['heading'] = StringPeer::getString('widget.url');
+				$aResult['heading'] = StringPeer::getString('wns.url');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'description':
-				$aResult['heading'] = StringPeer::getString('widget.description');
+				$aResult['heading'] = StringPeer::getString('wns.description');
 				break;
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('widget.link_category_list');
+				$aResult['heading'] = StringPeer::getString('wns.link_category_list');
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('widget.updated_at');
+				$aResult['heading'] = StringPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -88,7 +88,7 @@ class LinkListWidgetModule extends WidgetModule {
 			return $oLinkCategory->getName();
 		}
 		if($this->oDelegateProxy->getLinkCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.links.without_category');
+			return StringPeer::getString('wns.links.without_category');
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}

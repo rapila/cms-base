@@ -64,11 +64,11 @@ jQuery(document).ready(function() {
 				});
 			}, 'n', true).add_button('add-new-item', function() {
 				Widget.create('sidebar_input', function(widget) {
-					widget.add_new_sidebar_input("{{writeString=widget.document_category.default_name}}", 'DocumentCategory', sidebar, 'cmos-document_categories_changed');
+					widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', sidebar, 'cmos-document_categories_changed');
 				});
 			}).add_button('action', function() {
 					alert('action example: delete all currently shown documents');
-			}).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
+			}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				documents_view.set_search_string(search);
 				if(documents_view.changed) {
 					documents_view.reload();

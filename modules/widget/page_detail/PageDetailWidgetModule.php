@@ -92,7 +92,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$aResult[$i+1]['value'] = "";
 		$aResult[$i+1]['is_default'] = true;
-		$aResult[$i+1]['name'] = StringPeer::getString('widget.default');
+		$aResult[$i+1]['name'] = StringPeer::getString('wns.default');
 		krsort($aResult);
 		return $aResult;
 	}

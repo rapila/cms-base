@@ -47,13 +47,13 @@ class DocumentsViewWidgetDelegate {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.name');
+				$aResult['heading'] = StringPeer::getString('wns.name');
 				break;
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('widget.sort');
+				$aResult['heading'] = StringPeer::getString('wns.sort');
 				break;
 			case 'file_info':
-				$aResult['heading'] = StringPeer::getString('widget.document.file.info');
+				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
 				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -63,23 +63,23 @@ class DocumentsViewWidgetDelegate {
 				$aResult['is_sortable'] = false;
 				break;			
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('widget.category');
+				$aResult['heading'] = StringPeer::getString('wns.category');
 				break;
 			case 'language_id':
-				// $aResult['heading'] = StringPeer::getString('widget.language');
+				// $aResult['heading'] = StringPeer::getString('wns.language');
 				$aResult['has_data'] = true;
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;
 			case 'is_protected':
-				$aResult['heading'] = StringPeer::getString('widget.document.is_protected');
+				$aResult['heading'] = StringPeer::getString('wns.document.is_protected');
 				$aResult['icon_false'] = 'radio-on';
 				$aResult['icon_true'] = 'key';
 				$aResult['has_function'] = true;
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('widget.updated_at');
+				$aResult['heading'] = StringPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -151,7 +151,7 @@ class DocumentsViewWidgetDelegate {
 			return $oDocumentCategory->getName();
 		}
 		if($this->getDocumentCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.documents.without_category');
+			return StringPeer::getString('wns.documents.without_category');
 		}
 		return $this->getDocumentCategoryId();
 	}

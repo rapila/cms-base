@@ -23,7 +23,7 @@ Widget.types.page_detail = {
 			return false;
 		});
 		buttons.find('[name=delete]').click(function() {
-			Widget.confirm("{{writeString=widget.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
+			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
 				if(confirmed) {
 					_this.delete_page();
 				}
@@ -193,7 +193,7 @@ Widget.types.page_detail = {
 		if(page_data.page_properties != undefined) {
 			page_properties_container.empty().show();
 			page_properties_header.show();
-			var default_name = "{{writeString=widget.default}}";
+			var default_name = "{{writeString=wns.default}}";
 			for(property_name in page_data.page_properties) {
 				var property_container = jQuery("<div/>");
 				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.PagePropertyNameSpace.length)).attr("for", property_name));

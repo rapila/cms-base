@@ -35,7 +35,7 @@ Widget.types.document_edit = {
 		this.result_list.empty();
 		this.allDocuments(function(documents) {
 			jQuery.each(documents, function(i, document) {
-				_this.result_list.append(jQuery('<img/>').attr({'alt': document.NAME, 'src' : FILE_PREFIX+'/display_document/'+document.ID+'?max_width=100'}).attr('title', "{{writeString=widget.edit_entry}}").data('id', document.ID));
+				_this.result_list.append(jQuery('<img/>').attr({'alt': document.NAME, 'src' : FILE_PREFIX+'/display_document/'+document.ID+'?max_width=100'}).attr('title', "{{writeString=wns.edit_entry}}").data('id', document.ID));
 			});
 		});
 	},

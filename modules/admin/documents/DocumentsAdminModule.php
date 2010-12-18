@@ -36,7 +36,7 @@ class DocumentsAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('widget.documents.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('wns.documents.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'document_category_id':
@@ -55,10 +55,10 @@ class DocumentsAdminModule extends AdminModule {
 		if(DocumentCategoryPeer::doCount(new Criteria()) > 0) {
 		 	return array(
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('widget.documents.select_all_title'),
+							'title' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all'),
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'title' => StringPeer::getString('widget.documents.select_without_title'),
+							'title' => StringPeer::getString('wns.documents.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

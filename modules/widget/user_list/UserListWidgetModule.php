@@ -30,13 +30,13 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'full_name':
-				$aResult['heading'] = StringPeer::getString('widget.name');
+				$aResult['heading'] = StringPeer::getString('wns.name');
 				break;			
 			case 'username':
-				$aResult['heading'] = StringPeer::getString('widget.user_name');
+				$aResult['heading'] = StringPeer::getString('wns.user_name');
 				break;
 			case 'email':
-				$aResult['heading'] = StringPeer::getString('widget.email');
+				$aResult['heading'] = StringPeer::getString('wns.email');
 				break;
 			case 'user_kind':
 				$aResult['heading'] = '';
@@ -47,10 +47,10 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('column_name.is_admin');
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('widget.language');
+				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('widget.updated_at');
+				$aResult['heading'] = StringPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['is_sortable'] = false;
@@ -92,7 +92,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 			return $oGroup->getName();
 		}
 		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('widget.users.without_category');
+			return StringPeer::getString('wns.users.without_category');
 		}
 		return $this->oDelegateProxy->getGroupId();
 	}

@@ -2,7 +2,7 @@ Widget.types.media_object_edit = {
 	prepare: function() {
 		var _this = this;
 		Widget.createWithElement('document_input', function(widget) {
-			widget.settings.default_value_label = '{{writeString=widget.media_object.use_url}}';
+			widget.settings.default_value_label = '{{writeString=wns.media_object.use_url}}';
 		}, function(widget) {
 			_this.document_input = widget._element;
 			

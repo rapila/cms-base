@@ -37,9 +37,9 @@ jQuery(document).ready(function() {
 				});
 			}, 'n', true).add_button('add-new-item', function() {
 				Widget.create('sidebar_input', function(widget) {
-					widget.add_new_sidebar_input("{{writeString=widget.group.default_name}}", 'Group', sidebar);
+					widget.add_new_sidebar_input("{{writeString=wns.group.default_name}}", 'Group', sidebar);
 				});
-			}).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
+			}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				if(role_list.setSearch(search)) {
 					role_list.reload();
 				}

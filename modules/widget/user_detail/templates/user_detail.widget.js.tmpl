@@ -5,7 +5,7 @@ Widget.types.user_detail = {
 		Widget.create('detail', function(widget) {
 			this.detail_widget = widget.set_instance(this);
 			jQuery.extend(widget.settings, {
-				title: "{{writeString=widget.new_entry}}",
+				title: "{{writeString=wns.new_entry}}",
 				width: 600
 			});
 			widget.content = this.content;
@@ -77,7 +77,7 @@ Widget.types.user_detail = {
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
 			
-			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=widget.user}} "+user_data.FullName);
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.user}} "+user_data.FullName);
 		});
 	},
 		

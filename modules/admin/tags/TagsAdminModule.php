@@ -32,7 +32,7 @@ class TagsAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('widget.tag_instance.model_name');
+				$aResult['heading'] = StringPeer::getString('wns.tag_instance.model_name');
 				break;
 			case 'model_name':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -49,7 +49,7 @@ class TagsAdminModule extends AdminModule {
 		if(TagInstancePeer::doCount(TagInstancePeer::getTaggedModelsCriteria())) {
 		 	return array(
 				array('model_name' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('widget.documents.select_all_title'),
+							'title' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

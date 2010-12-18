@@ -27,15 +27,15 @@ class GroupListWidgetModule extends WidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.group.name');
+				$aResult['heading'] = StringPeer::getString('wns.group.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'user_link_data':
-				$aResult['heading'] = StringPeer::getString('widget.group.user_count');
+				$aResult['heading'] = StringPeer::getString('wns.group.user_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'roles_info':
-				$aResult['heading'] = StringPeer::getString('widget.group.roles');
+				$aResult['heading'] = StringPeer::getString('wns.group.roles');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

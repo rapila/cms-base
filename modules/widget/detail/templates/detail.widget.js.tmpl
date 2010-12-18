@@ -36,13 +36,13 @@ Widget.types.detail = {
 		var detail_widget = this;
 		var buttons = [
 			{
-				text: "{{writeString=widget.save}}",
+				text: "{{writeString=wns.save}}",
 				className: 'primary ui-state-highlight',
 				click: this.settings.save_callback
 			}
 		];
 		this.settings.has_cancel_button && buttons.push({
-			text: "{{writeString=widget.cancel}}",
+			text: "{{writeString=wns.cancel}}",
 			className: 'secondary',
 			click: this.settings.cancel_callback
 		});

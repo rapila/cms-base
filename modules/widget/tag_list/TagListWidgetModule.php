@@ -31,11 +31,11 @@ class TagListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.tag.name');
+				$aResult['heading'] = StringPeer::getString('wns.tag.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'tag_instance_count':
-				$aResult['heading'] = StringPeer::getString('widget.tag.instance_count');
+				$aResult['heading'] = StringPeer::getString('wns.tag.instance_count');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

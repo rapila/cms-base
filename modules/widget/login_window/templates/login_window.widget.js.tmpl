@@ -38,7 +38,7 @@ Widget.types.login_window = {
 						error_element.show().find('.error').text(error.message);
 					} else {
 						error_element.hide();
-						var sent_text = "{{writeString=widget.request.sent_info}}";
+						var sent_text = "{{writeString=wns.request.sent_info}}";
 						forgotten_alert.find('div.password_forgotten_info').text(sent_text);
 						setTimeout(function() {
 							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy')});
@@ -47,14 +47,14 @@ Widget.types.login_window = {
 				});
 			});
 			forgotten_alert.dialog({
-				title: '{{writeString=widget.passwort_forgotten}}',
+				title: '{{writeString=wns.passwort_forgotten}}',
 				autoOpen: true,
 				closeOnEscape: true,
 				modal: false,
 				resizable: false,
 				dialogClass: 'reset_window',
 				buttons: [{
-					text: "{{writeString=widget.request.send}}",
+					text: "{{writeString=wns.request.send}}",
 					className: 'primary ui-state-highlight',
 					click: function() {
 						forgotten_alert.children('form').submit();
@@ -63,14 +63,14 @@ Widget.types.login_window = {
 			});
 		});
 		this.login_markup.dialog({
-			title: '{{writeString=widget.login_at_site}}',
+			title: '{{writeString=wns.login_at_site}}',
 			autoOpen: false,
 			modal: true,
 			resizable: false,
 			closeOnEscape: false,
 			dialogClass: 'login_window',
 			buttons: [{
-				text: "{{writeString=widget.login}}",
+				text: "{{writeString=wns.login}}",
 				className: 'primary ui-state-highlight',
 				click: function() {
 					_this.login_markup.children('form').submit();

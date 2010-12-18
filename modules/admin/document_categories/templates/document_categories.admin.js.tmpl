@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
 						document_category_list.reload();
 					};
 				});
-			}, 'n', true).add_search_input("{{writeString=widget.search.enter_search}}", function(search) {
+			}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				if(document_category_list.setSearch(search)) {
 					document_category_list.reload();
 				}

@@ -35,7 +35,7 @@ class UsersAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.users.sidebar_heading');
+				$aResult['heading'] = StringPeer::getString('wns.users.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'magic_column':
@@ -50,10 +50,10 @@ class UsersAdminModule extends AdminModule {
 		if(GroupPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name' => StringPeer::getString('widget.users.select_all_title'),
+							'name' => StringPeer::getString('wns.users.select_all_title'),
 							'magic_column' => 'all'),
 				array('id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('widget.users.select_without_title'),
+							'name' => StringPeer::getString('wns.users.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

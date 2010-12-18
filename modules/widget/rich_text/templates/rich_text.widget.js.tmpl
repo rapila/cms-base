@@ -54,9 +54,9 @@ Widget.types.rich_text = {
 			} else if(dialogName == 'link') {
 				var infoTab = dialogDefinition.getContents('info');
 				var linkType = infoTab.get('linkType');
-				linkType.items.unshift(['{{writeString=widget.richtext.document_link}}', 'document']);
-				linkType.items.unshift(['{{writeString=widget.richtext.external_link}}', 'external']);
-				linkType.items.unshift(['{{writeString=widget.richtext.internal_link}}', 'internal']);
+				linkType.items.unshift(['{{writeString=wns.richtext.document_link}}', 'document']);
+				linkType.items.unshift(['{{writeString=wns.richtext.external_link}}', 'external']);
+				linkType.items.unshift(['{{writeString=wns.richtext.internal_link}}', 'internal']);
 				linkType.setup = function(data) {
 					//@todo: change type to match link if display_document, external_link_proxy or internal_link_proxy is part of the path
 					this.setValue(data.type);
@@ -185,7 +185,7 @@ Widget.types.rich_text = {
 		var chooser = dialog.getContentElement('info', name);
 		var chooser_element = jQuery(chooser.getElement().$);
 		Widget.createWithElement(widget, function(widget) {
-			widget.settings.default_value_label = '{{writeString=widget.richtext.links.use_url}}'
+			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}'
 			widget.handle('element_set', function() {
 				widget._element.appendTo(chooser_element);
 				widget._element.change(function() {

@@ -38,18 +38,18 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('widget.language_id');
+				$aResult['heading'] = StringPeer::getString('wns.language_id');
 				$aResult['field_name'] = 'id';
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.name');
+				$aResult['heading'] = StringPeer::getString('wns.name');
 				$aResult['field_name'] = 'language_name';
 				break;
 			case 'is_default':
-				$aResult['heading'] = StringPeer::getString('widget.language.is_default');
+				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
 				break;
 			case 'is_active':
-				$aResult['heading'] = StringPeer::getString('widget.is_active');
+				$aResult['heading'] = StringPeer::getString('wns.is_active');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

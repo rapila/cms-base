@@ -10,7 +10,7 @@ Widget.types.string = {
 	
 	handle_strings_for_list_result: function(string_key, keys, widget, no_result_message, option_getter) {
 		option_getter = option_getter || 'getOption';
-		no_result_message = no_result_message || "{{writeString=widget.no_result.default_message}}";
+		no_result_message = no_result_message || "{{writeString=wns.no_result.default_message}}";
 		var message_id = 'search_message'+widget.widgetId;
 		var strings = this;
 		widget.handle('reloaded', function(event, list_length) {

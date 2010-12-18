@@ -9,7 +9,7 @@ class DashboardTasksWidgetModule extends PersistentWidgetModule {
 	public function getTasks() {
 		$oUser = Session::getSession()->getUser();
 		if($this->sModuleNotFound !== null) {
-			$sMessage = StringPeer::getString('module.not_enabled_or_exist', null, null, array('module_name' => $this->sModuleNotFound));
+			$sMessage = StringPeer::getString('wns.module.not_enabled_or_exist', null, null, array('module_name' => $this->sModuleNotFound));
 			return array('module_not_found' => $sMessage);
 		}
 		

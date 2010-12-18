@@ -69,7 +69,7 @@ class FormFileModule extends FileModule {
     }
     $oFlash->finishReporting();
     if(Flash::noErrors()) {
-      $oEmail = new EMail(StringPeer::getString('widget.form_module.email_subject', null, null, array('page' => $this->sPageName)), $this->oEmailTemplate);
+      $oEmail = new EMail(StringPeer::getString('wns.form_module.email_subject', null, null, array('page' => $this->sPageName)), $this->oEmailTemplate);
       $oEmail->addRecipient($this->sEmailAddress);
       $oEmail->send();
       $this->oFormStorage->deleteCurrentValuesFromSession();

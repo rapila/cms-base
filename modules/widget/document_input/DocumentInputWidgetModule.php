@@ -10,7 +10,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			self::readDirectory($sAbsolutePath, $aCustomFiles);
 		}
 		if(count($aCustomFiles) > 0) {
-			$sCustomFiles = StringPeer::getString('widget.documents.custom_files');
+			$sCustomFiles = StringPeer::getString('wns.documents.custom_files');
 			$aResult[$sCustomFiles] = array_flip($aCustomFiles);
 		}
 		// find files in database ordered by category
@@ -21,7 +21,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 				$aResult[$oCategory->getName()][$oDocument->getId()] = $oDocument->getName();
 			}
 		}
-		$sWithoutCategory = StringPeer::getString('widget.documents.select_without_title');
+		$sWithoutCategory = StringPeer::getString('wns.documents.select_without_title');
 		foreach(self::getDocumentWithoutCategoryId() as $oDocument) {
 			$aResult[$sWithoutCategory][$oDocument->getId()] = $oDocument->getName();
 		}

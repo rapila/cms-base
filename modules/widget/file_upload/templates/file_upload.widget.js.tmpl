@@ -48,7 +48,7 @@ Widget.types.file_upload = {
 				return false;
 			}
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
-				Widget.notifyUser('info', '{{writeString=widget.file_upload.dropped_element_is_not_file}}');
+				Widget.notifyUser('info', '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
 				return false;
 			}
 			var target = jQuery(event.target);
@@ -73,11 +73,11 @@ Widget.types.file_upload = {
 				} else {
 					var _this = this;
 					jQuery('<div/>').text(error.message).dialog({buttons: {
-						"{{writeString=widget.document_type.allow}}": function() {
+						"{{writeString=wns.document_type.allow}}": function() {
 							jQuery(this).dialog("close");
 							_this.do_upload(file, options, true);
 						},
-						"{{writeString=widget.cancel}}": function() {
+						"{{writeString=wns.cancel}}": function() {
 							jQuery(this).dialog("close");
 						}
 					}});
@@ -92,7 +92,7 @@ Widget.types.file_upload = {
 		var file_uploader = this;
 		var fileReader = new FileReader();
 		var size = file.size;
-		var notification = jQuery(document.createElement('div')).text('{{writeString=widget.upload_status}} '+(parseInt(size/1024))+' KiB');
+		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
 		fileReader.onload = function() {
@@ -103,7 +103,7 @@ Widget.types.file_upload = {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
-					Widget.notifyUser('info', '{{writeString=widget.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
+					Widget.notifyUser('info', '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
 					this.fire('file-uploaded', result);
 					options.callback(result);
 				} else {

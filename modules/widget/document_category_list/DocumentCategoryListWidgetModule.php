@@ -36,19 +36,19 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('widget.name');
+				$aResult['heading'] = StringPeer::getString('wns.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'settings':
-				$aResult['heading'] = StringPeer::getString('widget.document_category.settings');
+				$aResult['heading'] = StringPeer::getString('wns.document_category.settings');
 				break;
 			case 'link_to_document_data':
-				$aResult['heading'] = StringPeer::getString('widget.documents_count');
+				$aResult['heading'] = StringPeer::getString('wns.documents_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
 				$aResult['is_sortable'] = true;
-				$aResult['heading'] = StringPeer::getString('widget.is_externally_managed');
+				$aResult['heading'] = StringPeer::getString('wns.is_externally_managed');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
