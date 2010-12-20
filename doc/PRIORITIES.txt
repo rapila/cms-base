@@ -2,8 +2,8 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-jQuery / js error deleting user????
 Testen, evtl. Richtext in pages debuggen
+bug d&d fileupload, if category is chosen
 activity indicator in preview
 TESTING TESTING TEST, Windows Testing
 Account
@@ -804,6 +804,7 @@ Tags
 Document_detail: 
 - save_callback upload!!!
 - validate > if now valid upload and new
+jQuery / js error deleting user????
 
 
 comments schema backup
