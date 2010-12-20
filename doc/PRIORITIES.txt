@@ -2,6 +2,13 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
+Newsletter fertigstellen
+Testen, evtl. Richtext in pages debuggen
+activity indicator in preview
+jQuery / js error deleting user????
+TESTING TESTING TEST, Windows Testing
+Account
+
 document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
 richtext: upload_file, d&d etc
 page_type: bug reload richt	ext
