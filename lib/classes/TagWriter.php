@@ -15,6 +15,9 @@ class TagWriter {
 		}
 		$this->sTagName = $sTagName;
 		$this->aParameters = $aParameters;
+		if($sContent instanceof TagWriter) {
+			$sContent = $sContent->parse();
+		}
 		$this->sContent = $sContent;
 	}
 	

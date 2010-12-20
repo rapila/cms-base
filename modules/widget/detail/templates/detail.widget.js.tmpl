@@ -23,6 +23,14 @@ Widget.types.detail = {
 		return this;
 	},
 	
+	save: function() {
+		if(this.content.is('form')) {
+			this.content.submit();
+		} else {
+			this.settings.save_callback();
+		}
+	},
+	
 	open: function() {
 		this.fire('opening');
 		if(this.has_dialog) {
@@ -38,7 +46,7 @@ Widget.types.detail = {
 			{
 				text: "{{writeString=wns.save}}",
 				className: 'primary ui-state-highlight',
-				click: this.settings.save_callback
+				click: this.save.bind(this)
 			}
 		];
 		this.settings.has_cancel_button && buttons.push({
@@ -47,7 +55,14 @@ Widget.types.detail = {
 			click: this.settings.cancel_callback
 		});
 		// option something like.....
-
+		
+		if(this.content.is('form')) {
+			this.content.submit(function() {
+				detail_widget.settings.save_callback();
+				return false;
+			});
+		}
+		
 		this.content.dialog({
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
@@ -62,7 +77,7 @@ Widget.types.detail = {
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
 				// TODO: check if is textarea or whatever
-				detail_widget.settings.save_callback();
+				detail_widget.save();
 				return false;
 			}
 		});

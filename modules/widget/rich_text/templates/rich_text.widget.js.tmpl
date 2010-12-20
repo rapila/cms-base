@@ -134,17 +134,20 @@ Widget.types.rich_text = {
 	},
 	
 	prepare: function() {
+		if(!this._element.isInDom()) {
+			this._element.appendTo(document.body);
+		}
+		var textarea = this.textarea = this._element.find('textarea');
 		var module_content = this.getModuleContents();
 		if(module_content !== null) {
-			this._element.text(module_content);
+			textarea.val(module_content);
 		}
-		var textarea = this._element.get(0);
-		if(!textarea.hasAttribute('id')) {
-			textarea.setAttribute('id', Widget.uuid());
+		if(!textarea.attr('id')) {
+			textarea.attr('id', Widget.uuid());
 		}
 		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
 		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
-		var instance = this.instance = CKEDITOR.replace(textarea, this.settings);
+		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
 
 		var picker_session = this._element.attr('data-widget-picker-session');
 		if(picker_session) {
@@ -196,16 +199,28 @@ Widget.types.rich_text = {
 		}, jQuery.noop);
 	},
 	
+	data_to_textarea: function() {
+		if(this.instance) {
+			this.textarea.val(this.instance.getData());
+		}
+	},
+	
+	data_from_textarea: function() {
+		if(this.instance) {
+			this.instance.setData(this.textarea.val());
+		}
+	},
+	
 	get_data: function() {
 		if(!this.instance) {
-			return this._element.text();
+			return this.textarea.val();
 		}
 		return this.instance.getData();
 	},
 	
 	set_data: function(new_data) {
 		if(!this.instance) {
-			this._element.text(new_data);
+			this.textarea.val(new_data);
 		} else {
 			this.instance.setData(new_data);
 		}
@@ -218,7 +233,7 @@ Widget.types.rich_text = {
 	
 	resize_to: function(width, height) {
 		if(!this.editor_contents) {
-			this.editor_contents = this._element.parent().find('.cke_contents');
+			this.editor_contents = this._element.find('.cke_contents');
 		}
 		if(height) {
 			this.editor_contents.css('height', ''+height+'px');
