@@ -11,7 +11,7 @@ Widget.types.user_detail = {
 			});
 			widget.content = this.content;
 			this.user_rights_section = this.content.find('div.user_rights_section');
-			this.content.find("input[name='is_admin']").bind('click', function() {
+			this.content.find("input[name='is_admin']").bind('change', function() {
 				_this.toggle_rights_section(jQuery(this).attr("checked") === false);
 			});
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
@@ -41,6 +41,7 @@ Widget.types.user_detail = {
 	},
 	
 	toggle_rights_section: function(show) {
+		console.log(show);
 		this.user_rights_section.each(function() {
 			if(show) {
 				jQuery(this).show();
@@ -58,9 +59,7 @@ Widget.types.user_detail = {
 			} else {
 				password_section.show();
 			}
-			if(user_data.IsAdmin) {
-				this.toggle_rights_section(false);
-			}
+			this.toggle_rights_section(!user_data.IsAdmin);
 
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
