@@ -89,7 +89,7 @@ class Group extends BaseGroup {
 
 	public function getUserLinkData() {
 		$aArray = array();
-		$aArray[] = $this->getUserCount().' '.StringPeer::getString('wsn.user');
+		$aArray[] = $this->getUserCount().' '.StringPeer::getString('wns.user');
 		$aArray[] = LinkUtil::link(array('users'), 'AdminManager', array('group_id' => $this->getId()));
 		return $aArray;
 	}
