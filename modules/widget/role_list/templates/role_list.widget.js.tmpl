@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
 				if(col.identifier === 'delete') {
 					var role_key = widget.cell_for_identifier('role_key', row).text();
-					var delete_message = AdminInterface.strings.get_parameterized_string('widget.role.delete_warning', { role_key: role_key});
+					var delete_message = AdminInterface.strings.get_parameterized_string('wns.role.delete_warning', { role_key: role_key});
 					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);

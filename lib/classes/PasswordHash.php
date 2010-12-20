@@ -27,7 +27,7 @@ class PasswordHash {
 	}
 	
 	public static function checkPasswordValidity($sPassword, $oFlash) {
-		if((strlen($sPassword)<4) || (strlen($sPassword)>15)) {
+		if((mb_strlen($sPassword)<4)) {
 			$oFlash->addMessage('password_length');
 			return false;
 		}

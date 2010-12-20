@@ -804,3 +804,20 @@ Tags
 Document_detail: 
 - save_callback upload!!!
 - validate > if now valid upload and new
+
+
+comments schema backup
+
+<table name="comments" phpName="Comment">
+	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+	<column name="text" type="blob" />
+	<column name="tip_id" type="integer"/>
+	<foreign-key foreignTable="tips">
+		<reference local="tip_id" foreign="id" />
+	</foreign-key>
+	<column name="page_id" type="integer"/>
+	<column name="frontend_user_id" type="integer"/>
+	<foreign-key foreignTable="frontend_users">
+		<reference local="frontend_user_id" foreign="user_id" />
+	</foreign-key>
+</table>

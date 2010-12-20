@@ -53,7 +53,6 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 
-	
 	public function saveData($aUserData) {
 		if($this->iUserId === null) {
 			$oUser = new User();
@@ -97,6 +96,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 			$aRequestedGroups = isset($aUserData['group_ids']) ? $aUserData['group_ids'] : array();
 			foreach($aRequestedGroups as $iGroupId) {
+			  if($iGroupId === false) {
+			    continue;
+			  }
 				$oUserGroup = new UserGroup();
 				$oUserGroup->setGroupId($iGroupId);
 				$oUser->addUserGroupRelatedByUserId($oUserGroup);
@@ -107,6 +109,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 			$aRequestedRoles = isset($aUserData['role_keys']) ? !is_array($aUserData['role_keys']) ? array($aUserData['role_keys']) : $aUserData['role_keys'] : array();
 			foreach($aRequestedRoles as $sRoleKey) {
+			  if($sRoleKey === false) {
+			    continue;
+			  }
 				$oUserRole = new UserRole();
 				$oUserRole->setRoleKey($sRoleKey);
 				$oUser->addUserRoleRelatedByUserId($oUserRole);

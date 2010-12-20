@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
 				if(col.identifier === 'delete') {
 					var user_name = widget.cell_for_identifier('username', row).text();
 					var full_name = widget.cell_for_identifier('full_name', row).text();
-					var delete_message = AdminInterface.strings.get_parameterized_string('widget.user.delete_warning', { user_name: full_name+' / '+user_name});
+					var delete_message = AdminInterface.strings.get_parameterized_string('wns.user.delete_warning', { user_name: full_name+' / '+user_name});
 					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
