@@ -12,7 +12,7 @@ Widget.types.user_detail = {
 			widget.content = this.content;
 			this.user_rights_section = this.content.find('div.user_rights_section');
 			this.content.find("input[name='is_admin']").bind('click', function() {
-				this.toggle_rights_section(false);
+				_this.toggle_rights_section(jQuery(this).attr("checked") === false);
 			});
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
 			if(this.auto_open) {
@@ -41,17 +41,16 @@ Widget.types.user_detail = {
 	},
 	
 	toggle_rights_section: function(show) {
-		user_rights_section.each(function() {
+		this.user_rights_section.each(function() {
 			if(show) {
-				// _this.user_rights_section.show();
+				jQuery(this).show();
 			} else {
-				// _this.user_rights_section.hide();
+				jQuery(this).hide();
 			}
 		});
-	}
+	},
 	
 	fill_data: function() {
-		var _this = this;
 		this.getUserData(function(user_data) {
 			var password_section = this.content.find(".hide_if_saved");
 			if(user_data.UpdatedInfo && !user_data.IsSessionUser) {
@@ -59,18 +58,8 @@ Widget.types.user_detail = {
 			} else {
 				password_section.show();
 			}
-			var user_rights_section = ;
-			var toggle_rights_section = function(show) {
-				user_rights_section.each(function() {
-					if(show) {
-						jQuery(this).show();
-					} else {
-						jQuery(this).hide();
-					}
-				});
-			}
 			if(user_data.IsAdmin) {
-				toggle_rights_section(false);
+				_this.toggle_rights_section(false);
 			}
 
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
