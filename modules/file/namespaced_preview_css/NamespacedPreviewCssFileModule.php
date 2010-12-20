@@ -39,7 +39,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		}
 		
 		//Triple all rules and prepend specific strings
-		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog .ui-dialog-content');
+		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog .ui-dialog-content', '.cke_dialog_contents');
 		foreach($oCssContents->getAllSelectors() as $oSelector) {
 			$aNewSelector = array();
 			foreach($oSelector->getSelector() as $iKey => $sSelector) {
