@@ -4,7 +4,7 @@
  */
 class CheckAdminModule extends AdminModule {
 	
-	private $sCheckName = null;
+	private $sAction = null;
 	private $oTemplate;
 	private $oCheckOptionWidget;
 	
@@ -25,11 +25,9 @@ class CheckAdminModule extends AdminModule {
 	const LOG_LEVEL_ERROR = 6;
 	
 	public function __construct() {
-		if(Manager::hasNextPathItem()) {
-			$this->sCheckName = Manager::usePath();
-		}
 		$this->oCheckOptionWidget = new ListWidgetModule();
 		$this->oCheckOptionWidget->setDelegate($this);
+		ErrorHandler::log($this->sAction);
 	}
 	
 	public function sidebarContent() {
@@ -41,6 +39,7 @@ class CheckAdminModule extends AdminModule {
 	}
 
 	public function setAction($sAction) {
+		ErrorHandler::log('setAction', $this->sAction);
 	  $this->sAction = $sAction;
 	}
 	
@@ -65,7 +64,7 @@ class CheckAdminModule extends AdminModule {
 		$aResult = array();
 		$aCheckOptions = array("pages", "strings", "static_strings", "config", "tags", "content");
 		foreach($aCheckOptions as $sAction) {
-			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('check.'.$sAction));
+			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('wns.check.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

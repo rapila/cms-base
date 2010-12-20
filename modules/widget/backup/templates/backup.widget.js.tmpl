@@ -1,0 +1,38 @@
+Widget.types.backup = {
+	initialize: function() {
+		var _this = this;
+		this.content = jQuery.parseHTML("{{includeTemplate=backup}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget.set_instance(this);
+			jQuery.extend(widget.settings, {
+				title: "{{writeString=module.admin.backup}}",
+				width: 550,
+				dialogClass: "backup",
+				modal: true
+			});
+			widget.content = this.content;
+			widget.open();
+		}.bind(this));
+		
+		var choose_restore_file = this.content.find('#choose_restore_file');
+		choose_restore_file.bind('change', function() {
+		  if(choose_restore_file.val() != null) {
+		    //enable button to load from file
+		  }
+		});
+		var option = jQuery('<option/>');
+		var sql_files = this.getSqlFiles();
+		jQuery.each(sql_files, function(file_key, file_name) {
+			option.clone().val(file_key).text(file_name).appendTo(choose_file);
+		});
+	},
+		
+	save_callback: function(data) {
+		//Do nothing
+	},
+	
+	close: function() {
+		this.detail_widget.close();
+	}
+	
+};

@@ -2,8 +2,8 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-Testen, evtl. Richtext in pages debuggen
 bug d&d fileupload, if category is chosen
+Testen, evtl. Richtext in pages debuggen
 activity indicator in preview
 TESTING TESTING TEST, Windows Testing
 Account

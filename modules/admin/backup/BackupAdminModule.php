@@ -57,7 +57,7 @@ class BackupAdminModule extends AdminModule {
 		$aResult = array();
 		$aBackupOptions = array('load_from_local', 'backup_to_local');
 		foreach($aBackupOptions as $sAction) {
-			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('backup.'.$sAction));
+			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('wns.backup.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

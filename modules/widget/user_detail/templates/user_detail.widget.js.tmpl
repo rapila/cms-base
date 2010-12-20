@@ -1,5 +1,6 @@
 Widget.types.user_detail = {
 	initialize: function() {
+		var _this = this;
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
@@ -9,6 +10,10 @@ Widget.types.user_detail = {
 				width: 600
 			});
 			widget.content = this.content;
+			this.user_rights_section = this.content.find('div.user_rights_section');
+			this.content.find("input[name='is_admin']").bind('click', function() {
+				this.toggle_rights_section(false);
+			});
 			this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
 			if(this.auto_open) {
 				this.open();
@@ -35,6 +40,16 @@ Widget.types.user_detail = {
 		this.detail_widget.content.find('input[name=first_name]').focus();
 	},
 	
+	toggle_rights_section: function(show) {
+		user_rights_section.each(function() {
+			if(show) {
+				// _this.user_rights_section.show();
+			} else {
+				// _this.user_rights_section.hide();
+			}
+		});
+	}
+	
 	fill_data: function() {
 		var _this = this;
 		this.getUserData(function(user_data) {
@@ -44,7 +59,7 @@ Widget.types.user_detail = {
 			} else {
 				password_section.show();
 			}
-			var user_rights_section = this.content.find('div.user_rights_section');
+			var user_rights_section = ;
 			var toggle_rights_section = function(show) {
 				user_rights_section.each(function() {
 					if(show) {
@@ -70,9 +85,7 @@ Widget.types.user_detail = {
 			this.content.find(".created_info").text(user_data.CreatedInfo);
 			this.content.find('div.hide_if_not_saved').show();
 			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
-			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin).bind('click', function() {
-				toggle_rights_section(jQuery(this).attr("checked") === false);
-			});
+			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
 
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
