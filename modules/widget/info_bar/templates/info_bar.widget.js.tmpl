@@ -117,7 +117,7 @@ Widget.types.info_bar = {
 		var row_count_info = jQuery('<span/>').addClass('row_count_info');
 		this.add_element(row_count_info, true);
 		list.handle('reloaded', function() {
-			row_count_info.text("{{writeParameterizedString=widget.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+			row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
 		}, false, true);
 	},
 	

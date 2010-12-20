@@ -23,7 +23,7 @@ Widget.types.page_detail = {
 			return false;
 		});
 		buttons.find('[name=delete]').click(function() {
-			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=widget.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
+			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=wns.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
 				if(confirmed) {
 					_this.delete_page();
 				}

@@ -44,7 +44,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['is_sortable'] = false;
 				break;			
 			case 'is_admin':
-				$aResult['heading'] = StringPeer::getString('column_name.is_admin');
+				$aResult['heading'] = StringPeer::getString('wns.user.admin');
 				break;
 			case 'language_id':
 				$aResult['heading'] = StringPeer::getString('wns.language');
