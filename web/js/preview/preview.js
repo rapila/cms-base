@@ -3,12 +3,12 @@ jQuery(document).ready(function() {
 	
 	jQuery.extend(Widget, {
 		activity: function() {
-			loader.data('usage', loader.data('usage')+1);
+			loader.data('usage', (loader.data('usage')||0)+1);
 			loader.show();
 		}, 
 	
 		end_activity: function() {
-			loader.data('usage', loader.data('usage')-1);
+			loader.data('usage', (loader.data('usage')||0)-1);
 			if(loader.data('usage') <= 0) {
 				loader.hide();
 			}
