@@ -155,7 +155,6 @@ jQuery.extend(Widget, {
 		if(okButtonText === undefined) {
 			okButtonText = AdminInterface.translations.okButtonText;
 		}
-		console.log(message);
 		var dialog = jQuery.parseHTML('<div class="cmos_alert"><p><span class="ui-icon ui-icon-alert"></span><span class="text"></span></p></div>').attr('title', title).find('.ui-icon').css('float', 'left').end().find('.text').text(message).end();
 		var destroy = function(result) {
 			callback(!!result)
