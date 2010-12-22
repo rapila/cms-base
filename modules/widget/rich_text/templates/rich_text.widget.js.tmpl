@@ -39,6 +39,10 @@ Widget.types.rich_text = {
 				});
 				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
 					return function() {
+						if(this.has_been_loaded) {
+							return;
+						}
+						this.has_been_loaded = true;
 						var dialog = this;
 						var picker_field = this.getContentElement('picker', 'picker_field');
 						var element = jQuery(picker_field.getElement().$);
@@ -120,6 +124,10 @@ Widget.types.rich_text = {
 				});
 				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
 					return function() {
+						if(this.has_been_loaded) {
+							return;
+						}
+						this.has_been_loaded = true;
 						var dialog = this;
 						
 						_this.prepare_chooser(dialog, 'internal_link_chooser', 'page_input', 'proxy_url');
