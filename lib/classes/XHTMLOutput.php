@@ -27,9 +27,12 @@ class XHTMLOutput {
 	private $bPrintDoctype;
 	private $sClassName;
 	
-	public function __construct($sSetting = null, $bPrintDoctype = true, $sClassName = null) {
+	public function __construct($sSetting = null, $bPrintDoctype = true, $sClassName = null, $sLanguage = null) {
 		$this->sContentType = "text/html";
-		$this->sLanguage = Session::language();
+		if($sLanguage === null) {
+			$sLanguage = Session::language();
+		}
+		$this->sLanguage = $sLanguage;
 		$this->sCharset = Settings::getSetting("encoding", "browser", "utf-8");
 		$this->sSetting = $sSetting;
 		$this->bPrintDoctype = $bPrintDoctype;
