@@ -1,3 +1,4 @@
+.ui-state-hover { border: none; }
 label {
   color: #666666;
   float: none;
@@ -122,8 +123,8 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
   padding: 0.6em 0.8em 2em;
 }
 .ui-dialog .ui-dialog-titlebar-close { margin-top: -20px; }
-.ui-state-active .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
-.ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
+.ui-state-active .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
+.ui-state-hover .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
 .ui-dialog .ui-dialog-buttonpane {
   margin-top: 0;
   background: #2d3238;

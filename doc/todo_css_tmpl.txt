@@ -1,13 +1,11 @@
 HTML / CSS
 
 Admin Fix
-- Dialog detail close button ui-state-hover
 
 Preview Fix
 - Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit
 - Admin menu, buttons dashboard and logout style
-- padding-bottom ui-widget-content, @see link_detail
 
 TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc. 
 - Resize Window & Textbereich
@@ -29,6 +27,7 @@ DONE
 *******************************
 Detail und Alert Dialogs
 - alle Abbrechen und Speichern Buttons (Hover, Highlight)
+- Dialog detail close button ui-state-hover
 
 Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
 
