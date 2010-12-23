@@ -4,16 +4,13 @@ HTML / CSS
 TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. 
 Resize Window & Textbereich
 
-Fix: detail close button ui-state-hover
+Admin Fix
+- Dialog detail close button ui-state-hover
 
-DocumentEdit
-- dialog darf nicht groesser als fenster hoehe sein.
-speichern muss immer im sichtbaren bereich sein
-
-Preview 
-- Admin Menu
-- border and edit button
-- display list, edit detail
+Preview Fix
+- Detail widgets
+- Dialog button pane should NEVER be unreachable, @see document_edit
+- Admin menu, buttons dashboard and logout style
 
 TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. Resize Window & Textbereich
 

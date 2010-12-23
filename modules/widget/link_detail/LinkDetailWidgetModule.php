@@ -20,6 +20,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oLink);
 		return $aResult;
 	}
+	
 	private function validate($aLinkData) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aLinkData);
@@ -34,15 +35,19 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oLink = LinkPeer::retrieveByPK($this->iLinkId);
 		}
-		$this->validate($aLinkData);
-		if(!Flash::noErrors()) {
-			throw new ValidationException();
-		}
-
 		$oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($aLinkData['url']));
 		$oLink->setName($aLinkData['name']);
 		$oLink->setLinkCategoryId($aLinkData['link_category_id'] == null ? null : $aLinkData['link_category_id']);
 		$oLink->setDescription($aLinkData['description']);
+		$this->validate($aLinkData);
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+		if($oLink->getLinkCategoryId() != null) {
+			if($oLink->isNew() || $oLink->isColumnModified(LinkPeer::LINK_CATEGORY_ID)) {
+				$oLink->setSort(LinkPeer::getHightestSortByCategory($oLink->getLinkCategoryId()) + 1);
+			} 
+		}
 		$oLink->setIsInactive(isset($aLinkData['is_inactive']));
 		return $oLink->save();
 	}

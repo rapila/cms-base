@@ -66,11 +66,18 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
+		$iOriginalDocCatId = $oDocument->getDocumentCategoryId();
 		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
 		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
 		$oDocument->setLanguageId($sLanguageId);
 		$oDocument->setIsProtected($aDocumentData['is_protected']);
 		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
+	  ErrorHandler::log('modified_original', $iOriginalDocCatId, 'new', $oDocument->getDocumentCategoryId(), $oDocument->isColumnModified('document_category_id'));
+    if($oDocument->getDocumentCategoryId() != null) {
+		  if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
+		    $oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
+		  }
+		}
 		return $oDocument->save();
 	}
 }

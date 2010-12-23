@@ -93,12 +93,23 @@ class LinkPeer extends BaseLinkPeer {
 	}
 	
 	public static function getLinksByLinkCategory($iLinkCategoryId = null) {
-	  $oCriteria = new Criteria();
-	  if($iLinkCategoryId !== null) {
-	    $oCriteria->add(self::LINK_CATEGORY_ID, $iLinkCategoryId);
-	  }
-    $oCriteria->addAscendingOrderByColumn(self::NAME);
-	  return self::doSelect($oCriteria);
+		$oCriteria = new Criteria();
+		if($iLinkCategoryId !== null) {
+			$oCriteria->add(self::LINK_CATEGORY_ID, $iLinkCategoryId);
+		}
+		$oCriteria->addAscendingOrderByColumn(self::NAME);
+		return self::doSelect($oCriteria);
+	}
+	
+	public static function getHightestSortByCategory($iLinkCategoryId) {
+		$oCriteria = new Criteria();
+		$oCriteria->add(self::LINK_CATEGORY_ID, $iLinkCategoryId);
+		$oCriteria->addDescendingOrderByColumn(self::SORT);
+		$oLink = self::doSelectOne($oCriteria);
+		if($oLink && $oLink->getSort() != null) {
+			return $oLink->getSort();
+		}
+		return 0;
 	}
 
 }

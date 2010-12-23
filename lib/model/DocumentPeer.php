@@ -8,7 +8,7 @@
 
 /**
  * @package model
- */ 
+ */
 class DocumentPeer extends BaseDocumentPeer {
 	
 	public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
@@ -80,7 +80,7 @@ class DocumentPeer extends BaseDocumentPeer {
 		$oCriteria->addAscendingOrderByColumn(DocumentCategoryPeer::NAME);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
-	} 
+	}
 		
 	public static function getMostRecent($bIsProtected = false) {
 		$oCriteria = new Criteria();
@@ -93,4 +93,16 @@ class DocumentPeer extends BaseDocumentPeer {
 	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
 		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
 	}
+	
+	public static function getHightestSortByCategory($iDocumentCategoryId) {
+		$oCriteria = new Criteria();
+		$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategoryId);
+		$oCriteria->addDescendingOrderByColumn(self::SORT);
+		$oDocument = self::doSelectOne($oCriteria);
+		if($oDocument && $oDocument->getSort() != null) {
+			return $oDocument->getSort();
+		}
+		return 0;
+	}
+
 }

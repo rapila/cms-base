@@ -49,14 +49,15 @@ class FileUploadWidgetModule extends WidgetModule {
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
 		if($oDocument->isNew()) {
-  		$oDocument->setName($sFileName);
-  		$oDocument->setLanguageId($aOptions['language_id']);
-  		$oDocument->setIsProtected($aOptions['is_protected']);
-  		if($aOptions['document_category_id']) {
-  			$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
-  		}
+			$oDocument->setName($sFileName);
+			$oDocument->setLanguageId($aOptions['language_id']);
+			$oDocument->setIsProtected($aOptions['is_protected']);
+			if($aOptions['document_category_id']) {
+				$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
+				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
+			}
 		}
-    $oDocument->save();
+		$oDocument->save();
 		return $oDocument->getId();
 	}
 	

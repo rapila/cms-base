@@ -5,11 +5,16 @@ Widget.types.link_category_input = {
 	},
 	
 	reload: function() {
+		var current = this._element.val();
+		this._element.empty();
 		var option = jQuery('<option/>');
 		var categories = this.getCategories();
 		jQuery.each(categories, function(i, category) {
 			option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 		}.bind(this));
 		option.text('----').val('').prependTo(this._element);
+		if(current) {
+			this._element.val(current);
+		}
 	}
 };
