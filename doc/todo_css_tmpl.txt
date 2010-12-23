@@ -7,6 +7,7 @@ Preview Fix
 - Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit
 - Admin menu, buttons dashboard and logout style
+- padding-bottom ui-widget-content, @see link_detail
 
 TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc. 
 - Resize Window & Textbereich

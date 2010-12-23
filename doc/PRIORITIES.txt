@@ -7,16 +7,16 @@ Offerte
 - Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
 
 Ornella, QMS Detailhandel > Listview
+manager/media/browser/mcpuk/frmresourceslist.html
+oListManager.AddFile
 
 Bugs
 - bug d&d fileupload, if category is chosen
 - Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
 
-
 Todo
 - Newsletter send group add number of recipients
 - Newsletter send.sent_some > add boolean is_invalid add to subscriber, and make Link for checking invalid email addresses
-
 - Newsletter fertigstellen, testen, anzeigen auf Webseite, Teasermöglichkeit???
 - Links und Documents, sort int write on create, in file_upload etc.
 - Links add Language_id

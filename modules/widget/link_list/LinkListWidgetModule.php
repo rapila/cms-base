@@ -30,7 +30,7 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'sort', 'url', 'description', 'category_name', 'updated_at_formatted', 'delete');
+		return array('id', 'name', 'sort', 'url', 'description', 'category_name', 'language_name', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -51,6 +51,9 @@ class LinkListWidgetModule extends WidgetModule {
 				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('wns.link_category_list');
+				break;
+			case 'language_name':
+				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('wns.updated_at');
@@ -78,6 +81,9 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		if($sDisplayColumn === 'updated_at_formatted') {
 			return LinkPeer::UPDATED_AT;
+		}
+		if($sDisplayColumn === 'language_name') {
+			return LinkPeer::LANGUAGE_ID;
 		}
 		return null;
 	}

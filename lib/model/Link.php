@@ -28,5 +28,11 @@ class Link extends BaseLink {
 		$oTemplate->replaceIdentifier('link_category', $this->getLinkCategory()->getName());
 		$oTemplate->replaceIdentifier('category', $this->getLinkCategory()->getName());
 	}
+	
+	public function getLanguageName() {
+	  if($this->getLanguageId()) {
+	    return StringPeer::getString('language.'.$this->getLanguageId());
+	  }
+	}
 
 }
