@@ -12,12 +12,11 @@ oListManager.AddFile
 
 Bugs
 - bug d&d fileupload, if category is chosen
-- Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
 
 Todo
-- Newsletter send group add number of recipients
 - Newsletter send.sent_some > add boolean is_invalid add to subscriber, and make Link for checking invalid email addresses
 - Newsletter fertigstellen, testen, anzeigen auf Webseite, Teasermöglichkeit???
+	Handle is_approved. Newsletters sent cannot be modified anymore
 - Links und Documents, sort int write on create, in file_upload etc.
 - Links add Language_id
 - document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
@@ -833,3 +832,5 @@ activity indicator in preview
 TESTING TESTING TEST, Windows Testing
 Accountrichtext: upload_file, d&d etc
 page_type: bug reload richt	ext
+- Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
+- Newsletter send group add number of recipients
