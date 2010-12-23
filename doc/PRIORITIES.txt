@@ -2,12 +2,18 @@ PRIORITAETEN:
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-bug d&d fileupload, if category is chosen
-Testen, evtl. Richtext in pages debuggen
-activity indicator in preview
-TESTING TESTING TEST, Windows Testing
-Account
-Newsletter fertigstellen
+Offerte
+- Diplome mit Name > GD oder SFPDF?
+- Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
+
+Ornella, QMS Detailhandel > Listview
+
+Bugs
+- bug d&d fileupload, if category is chosen
+
+Todo
+- Newsletter fertigstellen, testen, anzeigen auf Webseite, Teasermöglichkeit???
+- Links und Docum
 
 
 document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
@@ -16,7 +22,6 @@ page_type: bug reload richt	ext
 
 Prepare CSS Template Eni : Firefox WINDOWS.....
 
-Ornella, QMS Detailhandel > Listview
 
 Dynamic Widget.fire() in sidebar_input >  cmos-link_categories_changed, cmos-document_categories_changed
 
@@ -822,3 +827,9 @@ comments schema backup
 		<reference local="frontend_user_id" foreign="user_id" />
 	</foreign-key>
 </table>
+
+
+Testen, evtl. Richtext in pages debuggen
+activity indicator in preview
+TESTING TESTING TEST, Windows Testing
+Account
