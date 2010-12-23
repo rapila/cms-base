@@ -5,7 +5,7 @@ Widget.types.document_category_input = {
 	},
 	
 	reload: function() {
-		var val = this._element.val();
+		var current = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
 		var categories = this.getCategories(this.settings.categories_with_documents_only);
@@ -13,11 +13,11 @@ Widget.types.document_category_input = {
 			option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 		}.bind(this));
 		option.text(this.settings.custom_option).val('').prependTo(this._element);
-		this._element.val(this.settings.initial_selection || '');
-	},
-	
-	val: function() {
-		return this._element.val();
+		if(current) {
+			this._element.val(current);
+		} else {
+			this._element.val(this.settings.initial_selection || '');
+		}
 	},
 	
 	settings: {
