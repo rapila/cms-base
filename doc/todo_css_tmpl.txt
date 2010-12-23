@@ -2,7 +2,6 @@ HTML / CSS
 
 Admin Fix
 - Dialog detail close button ui-state-hover
-- Document Thumbnail view, delete/trash ui-state-hover > trash icon is not visible anymore
 
 Preview Fix
 - Detail widgets
@@ -45,6 +44,7 @@ Tree
 
 Documents list
 - thumbnail view hover and tooltips do not work properly in Firefox mainly
+- Document Thumbnail view, delete/trash ui-state-hover > trash icon is not visible anymore
 
 
 
