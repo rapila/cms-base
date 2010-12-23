@@ -1,28 +1,27 @@
 HTML / CSS
 
-
-TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. 
-Resize Window & Textbereich
-
 Admin Fix
 - Dialog detail close button ui-state-hover
+- Document Thumbnail view, delete/trash ui-state-hover > trash icon is not visible anymore
 
 Preview Fix
 - Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit
 - Admin menu, buttons dashboard and logout style
 
-TextFrontendModule, alle Richtext Anwendungen wie Tipps und Tricks etc. Resize Window & Textbereich
+TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc. 
+- Resize Window & Textbereich
 
 Browser issues
- Safari / Chrome
-- Login Window should be centered too
+- Safari / Chrome
+	Login Window should be centered too
 
 Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
 - FileUpload, if browser can't do drag&drop, don't display document_detail "droppable_info" ui-state-droppable on list
 - min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
 
-Immer wieder allgemein testen und Fehler melden
+Immer wieder allgemein TESTEN, Fehler melden, Strings missing melden
+- Windows Firefox, IE 9
 
 
 
