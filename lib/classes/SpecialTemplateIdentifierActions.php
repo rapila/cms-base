@@ -168,8 +168,16 @@ class SpecialTemplateIdentifierActions {
 		return Manager::getPrefixForManager($oTemplateIdentifier->getValue());
 	}
 	
+	/**
+	* Outputs the value of constants. Can be used with multiple constants as follows: {{writeConstantValue=DIRNAME_SITE/DIRNAME_WEB/DIRNAME_IMAGES}}.
+	* FIXME: Allow a null-delimiter
+	*/
 	public function writeConstantValue($oTemplateIdentifier) {
-		return constant($oTemplateIdentifier->getValue());
+		$aResult = array();
+		foreach(explode('/', $oTemplateIdentifier->getValue()) as $sConstantName) {
+			$aResult[] = constant($sConstantName);
+		}
+		return implode('/', $aResult);
 	}
 	
 	public function writeTemplateName($oTemplateIdentifier) {
