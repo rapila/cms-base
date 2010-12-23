@@ -1,3 +1,15 @@
+.ui-dialog {
+	background-color: #000;
+	padding: 0 !important;
+}
+.ui-widget-content {
+	background: none #F9F9F9;
+}
+
+div.ui-widget-content {
+	border: 1px solid #999;
+}
+
 #cmos_admin_menu,
 .ui-dialog,
 .filled-container.editing {

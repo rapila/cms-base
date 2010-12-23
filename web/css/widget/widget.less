@@ -1,5 +1,5 @@
 .ui-state-hover {
-	border: none;
+	border-width: 0;
 }
 
 label {
@@ -138,7 +138,7 @@ select[data-widget-type=page_input] option.level3 {
 
 /* moving stuff from admin-ui */
 
-.ui-widget .status_section {
+.ui-widget-content .status_section {
 	font-family: Arial;
 	padding-right: 2em;
 	width:16.2em;
@@ -147,12 +147,12 @@ select[data-widget-type=page_input] option.level3 {
 	padding:0 1em;
 }
 
-.ui-widget .status_section fieldset {
+.ui-widget-content .status_section fieldset {
 	border: 1px dotted #C0C0C0;
 	padding: 0;
 }
 
-.ui-widget .status_section select {
+.ui-widget-content .status_section select {
 	width: 15em;
 }
 
@@ -161,7 +161,7 @@ select[data-widget-type=page_input] option.level3 {
 	border: 0;
 }
 
-.ui-dialog .ui-dialog-titlebar  {
+.ui-dialog-titlebar.ui-widget-header  {
 	-moz-border-radius: 3px 3px 0 0;
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 0px;
@@ -169,7 +169,7 @@ select[data-widget-type=page_input] option.level3 {
 	padding: .6em .8em 2.0em;
 }
 
-.ui-dialog .ui-dialog-titlebar-close {
+.ui-dialog-titlebar .ui-dialog-titlebar-close {
 	margin-top:-20px;
 }
 
@@ -178,18 +178,18 @@ select[data-widget-type=page_input] option.level3 {
 	background-image: url("../admin/theme/images/ui-icons_000000_256x240.png");
 }
 
-.ui-dialog .ui-dialog-buttonpane {
+.ui-dialog-buttonpane.ui-widget-content {
 	margin-top: 0;
 	background: #2D3238;
 	border-top: 0;
 }
 
-.ui-dialog .ui-widget-header {
+.ui-dialog-titlebar.ui-widget-header {
 	background: #2d3238;
 }
 
-.ui-dialog button.ui-state-hover,
-.ui-dialog button.ui-state-highlight {
+.ui-dialog-buttonpane button.ui-state-hover,
+.ui-dialog-buttonpane button.ui-state-highlight {
 	color: #e3ef99;
 }
 
@@ -203,35 +203,25 @@ button.ui-button.ui-state-default,
 	-webkit-border-radius: 3px;
 }
 
-
-
-
-.ui-widget-content {
-	background: none #F9F9F9;
+button.cmos-button.dashboard {
+	background: transparent url("../../images/admin/dashboard_icon.gif") no-repeat center;
 }
 
-div.ui-widget-content {
-	border: 1px solid #999;
+button.cmos-button.logout_link {
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	background: transparent url("../../images/admin/logout_icon.gif") no-repeat center;
 }
+
 .ui-widget-content input,
 .ui-widget-content select,
 .ui-widget-content textarea {
 	background-color: #FFF;
 }
 
-
-
-
-
-
-
 .ui-state-active {
 	color: #e3ef99;
 }
-
-
-
-
 
 .group_fields {
 	float: left;
@@ -248,12 +238,6 @@ div.ui-widget-content {
 .group_fields + .group_fields {
 	clear: none;
 }
-
-
-
-
-
-
 
 input.ui-widget-content.input_long {
 	width: 35em;

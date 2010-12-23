@@ -244,4 +244,6 @@ textarea.ui-widget-content { width: 22em; }
   background-color: #000000;
   padding: 0 !important;
 }
+.ui-widget-content { background: none #f9f9f9; }
+div.ui-widget-content { border: 1px solid #999999; }
 .ui-tabs a { cursor: pointer !important; }

@@ -1,4 +1,4 @@
-.ui-state-hover { border: none; }
+.ui-state-hover { border-width: 0; }
 label {
   color: #666666;
   float: none;
@@ -98,7 +98,7 @@ select[data-widget-type=page_input] {
 select[data-widget-type=page_input] option.level1 { padding-left: 1em; }
 select[data-widget-type=page_input] option.level2 { padding-left: 2em; }
 select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
-.ui-widget .status_section {
+.ui-widget-content .status_section {
   font-family: Arial;
   padding-right: 2em;
   width: 16.2em;
@@ -106,33 +106,33 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
   border-left: 1px solid #f2f2f2;
   padding: 0 1em;
 }
-.ui-widget .status_section fieldset {
+.ui-widget-content .status_section fieldset {
   border: 1px dotted #c0c0c0;
   padding: 0;
 }
-.ui-widget .status_section select { width: 15em; }
+.ui-widget-content .status_section select { width: 15em; }
 .ui-widget-header {
   color: #efefef;
   border: 0;
 }
-.ui-dialog .ui-dialog-titlebar {
+.ui-dialog-titlebar.ui-widget-header {
   -moz-border-radius: 3px 3px 0 0;
   -webkit-border-radius: 3px 3px 0 0;
   border-radius: 0px;
   border-width: 0;
   padding: 0.6em 0.8em 2em;
 }
-.ui-dialog .ui-dialog-titlebar-close { margin-top: -20px; }
+.ui-dialog-titlebar .ui-dialog-titlebar-close { margin-top: -20px; }
 .ui-state-active .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
 .ui-state-hover .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
-.ui-dialog .ui-dialog-buttonpane {
+.ui-dialog-buttonpane.ui-widget-content {
   margin-top: 0;
   background: #2d3238;
   border-top: 0;
 }
-.ui-dialog .ui-widget-header { background: #2d3238; }
-.ui-dialog button.ui-state-hover { color: #e3ef99; }
-.ui-dialog button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog-titlebar.ui-widget-header { background: #2d3238; }
+.ui-dialog-buttonpane button.ui-state-hover { color: #e3ef99; }
+.ui-dialog-buttonpane button.ui-state-highlight { color: #e3ef99; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
   line-height: 14px;
@@ -149,8 +149,12 @@ button.ui-button.ui-state-default {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
-.ui-widget-content { background: none #f9f9f9; }
-div.ui-widget-content { border: 1px solid #999999; }
+button.cmos-button.dashboard { background: transparent url("../../images/admin/dashboard_icon.gif") no-repeat center; }
+button.cmos-button.logout_link {
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  background: transparent url("../../images/admin/logout_icon.gif") no-repeat center;
+}
 .ui-widget-content input { background-color: #ffffff; }
 .ui-widget-content select { background-color: #ffffff; }
 .ui-widget-content textarea { background-color: #ffffff; }
