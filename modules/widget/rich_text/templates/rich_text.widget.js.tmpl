@@ -156,40 +156,6 @@ Widget.types.rich_text = {
 		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
 		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
 		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
-
-		var picker_session = this._element.attr('data-widget-picker-session');
-		if(picker_session) {
-			var picker = null;
-			Widget.createWithElement('image_picker', function(image_picker) {
-				picker = image_picker;
-				picker.set_callback(function() {
-					var selected_images = jQuery.makeArray(arguments);
-					var image = instance.getSelection().getSelectedElement();
-					var image_width = '600';
-					if(image !== null && image.$.tagName.toLowerCase() === 'img') {
-						image_width = image.$.getAttribute('width');
-						image.remove();
-					}
-					jQuery.each(selected_images, function(i, image_id) {
-						image = CKEDITOR.dom.element.createFromHtml('<img/>');
-						image.setAttribute('src', picker.document_url_from_id(image_id));
-						image.setAttribute('width', image_width);
-						instance.insertElement(image);
-					});
-					instance.fire('afterCommandExec', {name: 'PickImage', command: command});
-				});
-			}, picker_session);
-			instance.addCommand('PickImage', {
-				exec: function(editor) {
-					picker.open_chooser();
-				},
-				async: true
-			});
-			instance.ui.addButton('PickImage', {
-				label: 'Pick Image',
-				command: 'PickImage'
-			});
-		}
 	},
 	
 	prepare_chooser: function(dialog, name, widget, url_function) {
