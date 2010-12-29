@@ -31,7 +31,7 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function singleDocument($iDocumentId, $iThumbnailSize) {
-		return $this->rowData($this->oDocumentsViewWidgetDelegate->getDelegateProxy()->rowFromData(array('id' => $iDocumentId)));
+		return $this->rowData($this->oDocumentsViewWidgetDelegate->getDelegateProxy()->rowFromData(array('id' => $iDocumentId)), $iThumbnailSize);
 	}
 	
 	public function thumbnail($iDocumentId, $iThumbnailSize) {

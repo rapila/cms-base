@@ -19,7 +19,6 @@ Widget.types.document_thumbnail_view = {
 			jQuery.each(result, function() {
 				picker_object.insert_thumbnail(this);
 			});
-			var buttons = {};
 			if(this.settings.allows_multiselect) {
 				this._element.selectable({
 					selecting: function(event, ui) {
@@ -36,17 +35,6 @@ Widget.types.document_thumbnail_view = {
 						picker_object.fire('selected', document_ids, ui.selected);
 					}
 				});
-				buttons["{{writeString=wns.image_picker.insert}}"] = function() {
-					var selected = picker_object._element.children('.ui-selected');
-					if(selected.length > 0) {
-						var collection = [];
-						selected.each(function() {
-							collection[collection.length] = jQuery(this).data('document_id');
-						});
-						selected.removeClass('ui-selected ui-state-active');
-						picker_object.callback.apply(picker_object, collection);
-					}
-				};
 			} else {
 				this._element.children('div').bind('click', function() {
 					var document_id = jQuery(this).data('document_id');
