@@ -1,17 +1,13 @@
 PRIORITAETEN:
+Regula Mob. 079 541 56 06, Wiesen 081 404 15 15
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
-Offerte
-- Diplome mit Name > GD oder SFPDF?
-- Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
-
-Ornella, QMS Detailhandel > Listview
-manager/media/browser/mcpuk/frmresourceslist.html
-oListManager.AddFile
+Roger Tel. Planung
 
 Bugs
 - bug d&d fileupload, if category is chosen
+- file upload for links
 
 Todo
 - Newsletter send.sent_some > add boolean is_invalid add to subscriber, and make Link for checking invalid email addresses
@@ -20,6 +16,19 @@ Todo
 - Links und Documents, sort int write on create, in file_upload etc.
 - Links add Language_id
 - document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
+
+Offerte
+- Diplome mit Name > GD oder SFPDF?
+- Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
+- Serverlösung
+- Tips bewerten kommentare
+- Teilnehmer Anmeldung
+- Newsletter, Newsletter Seite
+- Einbettung Flash (Spiele, Comics, Quiz)
+
+Ornella, QMS Detailhandel > Listview
+manager/media/browser/mcpuk/frmresourceslist.html
+oListManager.AddFile
 
 Prepare CSS Template Eni : Firefox WINDOWS.....
 
