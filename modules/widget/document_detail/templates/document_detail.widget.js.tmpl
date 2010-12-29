@@ -65,6 +65,7 @@ Widget.types.document_detail = {
 		var is_new = this.current_detail_id === null;
 		if(is_new) {
 			this.setDocumentId(result);
+			this.current_detail_id = result;
 		}
 		if(!no_reload) {
 			this.fill_data(is_new ? 'new' : 'existing');

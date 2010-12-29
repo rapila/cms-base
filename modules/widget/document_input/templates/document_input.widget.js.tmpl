@@ -4,7 +4,7 @@ Widget.types.document_input = {
 		this.reload();
 	},
 	
-	reload: function() {
+	reload: function(selected) {
 		var _this = this;
 		var optgroup = jQuery('<optgroup/>');
 		var option = jQuery('<option/>');
@@ -19,6 +19,10 @@ Widget.types.document_input = {
 		if(this.settings.default_value_label) {
 			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
 			this._element.val('');
+		}
+		if(selected) {
+			this._element.val(selected);
+			this._element.change();
 		}
 	},
 	
@@ -37,7 +41,7 @@ Widget.types.document_input = {
 	absolute_url: function() {
 		var value = this.value();
 		if(isNaN(parseInt(value))) {
-			return "{{writeConstantValue=MAIN_DIR_FE}}/"+value;
+			return "{{writeConstantValue=MAIN_DIR_FE}}"+value;
 		}
 		return "{{writeLink=display_document;manager=FileManager}}/"+value;
 	},

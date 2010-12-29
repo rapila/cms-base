@@ -24,6 +24,10 @@ Widget.types.rich_text = {
 		CKEDITOR.on('dialogDefinition', function(ev) {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;
+			if(dialogDefinition.rich_text_widget_additions_done) {
+				return;
+			}
+			dialogDefinition.rich_text_widget_additions_done = true;
 			if(dialogName == 'image') {
 				var picker_tab = dialogDefinition.addContents({
 					id : 'picker',
@@ -39,10 +43,10 @@ Widget.types.rich_text = {
 				});
 				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
 					return function() {
-						if(this.has_been_loaded) {
+						if(this.rich_text_widget_additions_done) {
 							return;
 						}
-						this.has_been_loaded = true;
+						this.rich_text_widget_additions_done = true;
 						var dialog = this;
 						var picker_field = this.getContentElement('picker', 'picker_field');
 						var element = jQuery(picker_field.getElement().$);
@@ -124,21 +128,20 @@ Widget.types.rich_text = {
 				});
 				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
 					return function() {
-						if(this.has_been_loaded) {
+						if(this.rich_text_widget_additions_done) {
 							return;
 						}
-						this.has_been_loaded = true;
+						this.rich_text_widget_additions_done = true;
 						var dialog = this;
 						
 						_this.prepare_chooser(dialog, 'internal_link_chooser', 'page_input', 'proxy_url');
 						_this.prepare_chooser(dialog, 'external_link_chooser', 'link_input', 'proxy_url');
-						_this.prepare_chooser(dialog, 'document_link_chooser', 'document_input', 'url');
+						var document_link_chooser_element = _this.prepare_chooser(dialog, 'document_link_chooser', 'document_input', 'absolute_url');
 						
-						var document_link_chooser_element = jQuery(dialog.getContentElement('info', 'document_link_chooser').getElement().$);
 						var file_uploader = Widget.create('file_upload');
 						file_uploader.allow_drag_to(document_link_chooser_element, null, function() {
 							return {
-								callback: _this.document_link_chooser_widget.reload.bind(_this),
+								callback: _this.document_link_chooser_widget.reload.bind(_this.document_link_chooser_widget),
 								error: function() {}
 							};
 						});
@@ -182,6 +185,7 @@ Widget.types.rich_text = {
 				});
 			});
 		}, jQuery.noop);
+		return chooser_element;
 	},
 	
 	data_to_textarea: function() {
