@@ -134,6 +134,15 @@ Widget.types.rich_text = {
 						_this.prepare_chooser(dialog, 'external_link_chooser', 'link_input', 'proxy_url');
 						_this.prepare_chooser(dialog, 'document_link_chooser', 'document_input', 'url');
 						
+						var document_link_chooser_element = jQuery(dialog.getContentElement('info', 'document_link_chooser').getElement().$);
+						var file_uploader = Widget.create('file_upload');
+						file_uploader.allow_drag_to(document_link_chooser_element, null, function() {
+							return {
+								callback: _this.document_link_chooser_widget.reload.bind(_this),
+								error: function() {}
+							};
+						});
+						
 						return orig.apply(this, arguments);
 					};
 				});
@@ -161,7 +170,9 @@ Widget.types.rich_text = {
 	prepare_chooser: function(dialog, name, widget, url_function) {
 		var chooser = dialog.getContentElement('info', name);
 		var chooser_element = jQuery(chooser.getElement().$);
+		var _this = this;
 		Widget.createWithElement(widget, function(widget) {
+			_this[name+'_widget'] = widget;
 			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}'
 			widget.handle('element_set', function() {
 				widget._element.appendTo(chooser_element);

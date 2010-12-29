@@ -4,6 +4,8 @@ Admin Fix
 
 Preview Fix
 - D&Drop Highlight does not work properly
+- ui-state-droppable should work universally in richtext image_picker, document_detail usw.
+	@see admin-ui.css/less > widget.css
 
 - Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit

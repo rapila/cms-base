@@ -268,6 +268,12 @@ h3.status { padding-left: 0.3em; }
   color: #5b595b;
   cursor: pointer;
 }
+.image_browse_area.ui-state-droppable {
+  border: 0 solid #b8d600;
+  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
+  color: #5b595b;
+  cursor: pointer;
+}
 .document_detail .preview {
   padding: 0 !important;
   margin-left: -1px;
@@ -280,7 +286,7 @@ h3.status { padding-left: 0.3em; }
   margin-left: -2px;
   cursor: pointer;
 }
-.image_browse_area:hover {
+.image_browse_area.ui-state-droppable {
   border: 2px solid #b8d600;
   margin-left: -2px;
   cursor: pointer;

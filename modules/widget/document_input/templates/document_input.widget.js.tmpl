@@ -1,9 +1,14 @@
 Widget.types.document_input = {
 	prepare: function() {
 		var _this = this;
+		this.reload();
+	},
+	
+	reload: function() {
+		var _this = this;
 		var optgroup = jQuery('<optgroup/>');
 		var option = jQuery('<option/>');
-		this._element.addClass('cke_skin_kama cke_dialog_ui_input_select');
+		this._element.addClass('cke_skin_kama cke_dialog_ui_input_select').empty();
 		var document_categories = this.getDocuments();
 		jQuery.each(document_categories, function(optgroup_label, documents) {
 			var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
@@ -29,7 +34,16 @@ Widget.types.document_input = {
 		return "{{writeLink=display_document;manager=FileManager}}/"+value;
 	},
 	
+	absolute_url: function() {
+		var value = this.value();
+		if(isNaN(parseInt(value))) {
+			return "{{writeConstantValue=MAIN_DIR_FE}}/"+value;
+		}
+		return "{{writeLink=display_document;manager=FileManager}}/"+value;
+	},
+	
 	settings: {
-		default_value_label: null
+		default_value_label: null,
+		allow_file_upload: false
 	}
 };
