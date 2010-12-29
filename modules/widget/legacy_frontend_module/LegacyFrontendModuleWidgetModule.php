@@ -28,6 +28,9 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getBackendJs() {
+		if(!method_exists($this->oFrontendModule, 'getJsForBackend')) {
+			return;
+		}
 		$mResult = $this->oFrontendModule->getJsForBackend();
 		if($mResult instanceof Template) {
 			return $mResult->render();
@@ -36,6 +39,9 @@ class LegacyFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getBackendCss() {
+		if(!method_exists($this->oFrontendModule, 'getCssForBackend')) {
+			return;
+		}
 		$mResult = $this->oFrontendModule->getCssForBackend();
 		if($mResult instanceof Template) {
 			return $mResult->render();
