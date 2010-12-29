@@ -67,9 +67,9 @@ Widget.types.document_detail = {
 			this.setDocumentId(result);
 		}
 		if(!no_reload) {
-			this.fill_data(!is_new);
+			this.fill_data(is_new ? 'new' : 'existing');
 		}
-		//TODO: reload list row and info part of detail
+		//TODO: reload list row
 	},
 	
 	open: function() {
@@ -81,7 +81,7 @@ Widget.types.document_detail = {
 		this.detail_widget.content.find('input[name=name]').focus();
 	},
 	
-	fill_data: function(is_upload_only) {
+	fill_data: function(upload_mode) {
 		this.detail_widget.set_is_loading(true);
 		this.getDocumentData(function(document_data) {
 			this.content.find(".preview").text('').addClass('file_exists');
@@ -96,7 +96,13 @@ Widget.types.document_detail = {
 			this.content.find(".file_size").text(document_data.FileInfo);
 			this.content.find(".original_name").text(document_data.OriginalName);
 			
-			if(!is_upload_only) {
+			if(upload_mode === 'new') {
+				if(!jQuery.trim(this.content.find("input[name='name']").val())) {
+					this.content.find("input[name='name']").val(document_data.Name);
+				}
+			}
+			
+			if(!upload_mode) {
 				if(document_data.DocumentCategoryId === null) {
 					document_data.DocumentCategoryId = '';
 				}
