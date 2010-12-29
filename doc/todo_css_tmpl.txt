@@ -3,6 +3,8 @@ HTML / CSS
 Admin Fix
 
 Preview Fix
+- D&Drop Highlight does not work properly
+
 - Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit
 - Admin menu, buttons dashboard and logout style
