@@ -27,7 +27,6 @@ Widget.types.image_picker = {
 		}, function(document_category_input) {
 			document_category_input._element.change(function() {
 				var category = document_category_input.val();
-				console.log(category);
 				if(category) {
 					_this.setAllowedCategories([category]);
 				} else {

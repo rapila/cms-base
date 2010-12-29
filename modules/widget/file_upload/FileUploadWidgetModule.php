@@ -16,7 +16,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocument = new Document();
 		}
 		if($oDocument === null) {
-			throw new LocalizedException("widget.file_upload.document_not_found");
+			throw new LocalizedException("wns.file_upload.document_not_found");
 		}
 		$sFileName = $aOptions['name'];
 		$aName = explode('.', $sFileName);
@@ -73,7 +73,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
 		}
 		if($oDocumentType === null) {
-			throw new LocalizedException("widget.file_upload.document_type_not_found", array('document_type' => $sExtension));
+			throw new LocalizedException("wns.file_upload.document_type_not_found", array('document_type' => $sExtension));
 		}
 		return $oDocumentType->getId();
 	}
