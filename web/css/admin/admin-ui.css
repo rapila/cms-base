@@ -280,6 +280,11 @@ h3.status { padding-left: 0.3em; }
   margin-left: -2px;
   cursor: pointer;
 }
+.image_browse_area:hover {
+  border: 2px solid #b8d600;
+  margin-left: -2px;
+  cursor: pointer;
+}
 .document_detail .preview .droppable_info {
   display: block;
   line-height: 1.6em;
