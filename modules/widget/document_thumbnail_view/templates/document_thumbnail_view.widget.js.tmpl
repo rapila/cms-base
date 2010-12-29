@@ -28,7 +28,7 @@ Widget.types.document_thumbnail_view = {
 						jQuery(ui.unselecting).removeClass('ui-state-active');
 					},
 					filter: "> div",
-					stop: function() {
+					stop: function(event, ui) {
 						
 						//FIXME: Change button active state, add selected ids to document_ids
 						var document_ids = [];
