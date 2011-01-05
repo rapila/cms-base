@@ -29,8 +29,11 @@ special_pages:
   search_result: "search_result"
 
 domain_holder:
-  name:   'Mini-CMS'
-  email:  'info@mini-cms.ch'
+  name:   'Example Site'
+  email:  'info@example.com'
+
+developer:
+  email: cms@example.com
 
 admin:
   title: 'CMS Admin — {{module_name}}'
