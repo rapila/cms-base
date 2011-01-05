@@ -430,7 +430,7 @@ GroupInputWidget
 - safari sidebar_input select does not work > fixed: added .focus().selected()
 - document_kind_input: please check. discuss location (could be in document list table header). When page reloads, storage is gone?
 - label "for" handling: why not use id with name and widget number?
-- dialog css. formatting alert/confirm and login dialogs. procedure design / jQuery UI theme CMOS....
+- dialog css. formatting alert/confirm and login dialogs. procedure design / jQuery UI theme rapila....
 - selected documents category sidebar element should keep active status even if new category is made
 - add Strings to column content. like image, application. Discuss technical vs user ie. swf, flv
 - automatic pointer cursor if toggle_boolean is set? implemented a manual version by adding toggle_active param to metadata

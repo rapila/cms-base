@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Gives a model class the ability to track the CMOS users who created/updated the models
+ * Gives a model class the ability to track the rapila users who created/updated the models
  * Uses two additional columns storing the creation and update date
  *
  * @package    propel.generator.behavior

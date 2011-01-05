@@ -73,7 +73,7 @@ guidelines, coding convention, naming convention
 - work with less?
 
 General Infos
-prepared for skins/themes (jQuery-UI, CMOS)
+prepared for skins/themes (jQuery-UI, rapila)
 
 structure ?
 - admin_preview.css
