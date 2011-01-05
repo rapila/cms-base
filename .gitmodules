@@ -1,0 +1,3 @@
+[submodule "lib/vendor/cssparser"]
+	path = lib/vendor/cssparser
+	url = git://github.com/sabberworm/PHP-CSS-Parser.git
