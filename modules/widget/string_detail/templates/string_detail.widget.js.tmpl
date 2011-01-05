@@ -60,10 +60,11 @@ Widget.types.string_detail = {
 			});
 		}, function(language_tabs) {
 			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
-				var textarea = jQuery.parseHTML('{{includeTemplate=edit_language}}');
+				var language_content = jQuery.parseHTML('{{includeTemplate=edit_language}}');
+				var textarea = language_content.find('textarea');
 				textarea.attr('name', textarea.attr('name')+language_id);
 				textarea.val(string_detail.getTextFor(language_id));
-				tab_content.append(textarea);
+				tab_content.append(language_content);
 			}, false, true);
 		});
 	},
