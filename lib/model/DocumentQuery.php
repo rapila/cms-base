@@ -13,5 +13,10 @@
  * @package    propel.generator.model
  */
 class DocumentQuery extends BaseDocumentQuery {
+	public function filterByDocumentKind($sDocumentKind = 'image') {
+		$this->joinDocumentType();
+		$this->add(DocumentTypePeer::MIMETYPE, "$sDocumentKind/%", Criteria::LIKE);
+		return $this;
+	}
 
 } // DocumentQuery

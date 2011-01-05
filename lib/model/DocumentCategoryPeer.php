@@ -35,7 +35,7 @@ class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 		$oCriteria->setDistinct();
 		$oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_CATEGORY_ID, Criteria::INNER_JOIN);
 		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, Criteria::INNER_JOIN);
-		$oCriteria->add(DocumentTypePeer::MIMETYPE, 'image%', Criteria::LIKE);
+		$oCriteria->add(DocumentTypePeer::MIMETYPE, 'image/%', Criteria::LIKE);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
   }
