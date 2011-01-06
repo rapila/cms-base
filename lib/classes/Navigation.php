@@ -8,6 +8,7 @@ class Navigation {
 	private $aConfig = null;
 	private $iMaxLevel = 0;
 	private $sLinkPrefix;
+	private $sNavigationName = null;
 	private static $BOOLEAN_PARSER_DEFAULT_VALUES = array(
 						"has_children" => false,
 						"is_current" => false,
@@ -44,6 +45,7 @@ class Navigation {
 		}
 		if(is_string($mConfig)) {
 			$this->aConfig = Settings::getSetting("navigations", $mConfig, null);
+			$this->sNavigationName = $mConfig;
 		} else if(is_array($mConfig)) {
 			$this->aConfig = $mConfig;
 		}
@@ -129,20 +131,25 @@ class Navigation {
 			
 			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser);
 			
-			$sTemplateName = @$aConfig['template'];
-			
 			//Don’t show page (and subpages) in navigation if show===false
 			if(@$aConfig['show'] === false) {
 				continue;
 			}
 			
-			if($sTemplateName === null && ($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
+			$sTemplateName = @$aConfig['template'];
+			$sInlineTemplate = @$aConfig['template_inline'];
+			
+			if($sTemplateName === null && $sInlineTemplate === null && ($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
 				continue;
 			}
 			
 			$bNoPagesDisplayed = false;
 			
-			$oTemplate = $this->getTemplate($sTemplateName);
+			if(!$sTemplateName && $sInlineTemplate) {
+				$oTemplate = new Template($sInlineTemplate, null, true);
+			} else {
+				$oTemplate = $this->getTemplate($sTemplateName);
+			}
 			
 			$oTemplate->replaceIdentifier('name', $oNavigationItem->getName());
 			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
