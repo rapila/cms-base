@@ -11,10 +11,11 @@ Widget.types.user_detail = {
 			});
 			widget.content = this.content;
 			this.user_rights_section = this.content.find('div.user_rights_section');
-			this.content.find("input[name='is_admin']").bind('change', function() {
+			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
+			var is_admin = this.content.find("input[name='is_admin']");
+			is_admin.bind('change', function() {
 				_this.toggle_rights_section(jQuery(this).attr("checked") === false);
 			});
-			this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
 			if(this.auto_open) {
 				this.open();
 			}
@@ -40,14 +41,18 @@ Widget.types.user_detail = {
 		this.detail_widget.content.find('input[name=first_name]').focus();
 	},
 	
-	toggle_rights_section: function(show) {
+	toggle_rights_section: function(show_roles_groups) {
 		this.user_rights_section.each(function() {
-			if(show) {
+			if(show_roles_groups) {
 				jQuery(this).show();
 			} else {
 				jQuery(this).hide();
 			}
 		});
+		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
+		if(!show_roles_groups) {
+			this.backend_login_enabled.attr('checked', true);
+		}
 	},
 	
 	fill_data: function() {
