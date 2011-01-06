@@ -21,7 +21,7 @@
  * @author     Hans Lellelid <hans@xmpl.org> (Propel)
  * @author     John D. McNally <jmcnally@collab.net> (Torque)
  * @author     Daniel Rall <dlr@collab.net> (Torque)
- * @version    $Revision: 1650 $
+ * @version    $Revision: 1802 $
  * @package    propel.runtime.map
  */
 class DatabaseMap
@@ -169,6 +169,9 @@ class DatabaseMap
     if (array_key_exists($phpName, $this->tablesByPhpName)) {
       return $this->tablesByPhpName[$phpName];
     } else if (class_exists($tmClass = $phpName . 'TableMap')) {
+      $this->addTableFromMapClass($tmClass);
+      return $this->tablesByPhpName[$phpName];
+    } else if (class_exists($tmClass = substr_replace($phpName, '\\map\\', strrpos($phpName, '\\'), 1) . 'TableMap')) {
       $this->addTableFromMapClass($tmClass);
       return $this->tablesByPhpName[$phpName];
     } else {

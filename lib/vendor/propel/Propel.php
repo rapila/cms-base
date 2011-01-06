@@ -22,7 +22,7 @@
  * @author     Martin Poeschl <mpoeschl@marmot.at> (Torque)
  * @author     Henning P. Schmiedehausen <hps@intermeta.de> (Torque)
  * @author     Kurt Schrader <kschrader@karmalab.org> (Torque)
- * @version    $Revision: 1760 $
+ * @version    $Revision: 2040 $
  * @package    propel.runtime
  */
 class Propel
@@ -30,7 +30,7 @@ class Propel
 	/**
 	 * The Propel version.
 	 */
-	const VERSION = '1.5.1';
+	const VERSION = '1.5.5';
 	
 	/**
 	 * A constant for <code>default</code>.
@@ -153,15 +153,19 @@ class Propel
 	private static $forceMasterConnection = false;
 
 	/**
+	 * @var        string Base directory to use for autoloading. Initialized in self::initBaseDir()
+	 */
+  protected static $baseDir;
+  
+	/**
 	 * @var        array A map of class names and their file paths for autoloading
 	 */
-	private static $autoloadMap = array(
-		'PropelException'     => 'PropelException.php',
+	protected static $autoloadMap = array(
 
 		'DBAdapter'           => 'adapter/DBAdapter.php',
 		'DBMSSQL'             => 'adapter/DBMSSQL.php',
 		'MssqlPropelPDO'      => 'adapter/MSSQL/MssqlPropelPDO.php',
-		'MssqlDebugPDO'       => 'adapter/MSSQL/MssqlDebugPDO.php',	
+		'MssqlDebugPDO'       => 'adapter/MSSQL/MssqlDebugPDO.php',
 		'MssqlDateTime'       => 'adapter/MSSQL/MssqlDateTime.class.php',
 		'DBMySQL'             => 'adapter/DBMySQL.php',
 		'DBMySQLi'            => 'adapter/DBMySQLi.php',
@@ -170,6 +174,7 @@ class Propel
 		'DBPostgres'          => 'adapter/DBPostgres.php',
 		'DBSQLite'            => 'adapter/DBSQLite.php',
 		'DBSybase'            => 'adapter/DBSybase.php',
+		'DBSQLSRV'            => 'adapter/DBSQLSRV.php',
 
 		'PropelArrayCollection' => 'collection/PropelArrayCollection.php',
 		'PropelCollection'    => 'collection/PropelCollection.php',
@@ -192,6 +197,7 @@ class Propel
 		'PropelObjectFormatter' => 'formatter/PropelObjectFormatter.php',
 		'PropelOnDemandFormatter' => 'formatter/PropelOnDemandFormatter.php',
 		'PropelStatementFormatter' => 'formatter/PropelStatementFormatter.php',
+		'PropelSimpleArrayFormatter' => 'formatter/PropelSimpleArrayFormatter.php',
 		
 		'BasicLogger'         => 'logger/BasicLogger.php',
 		'MojaviLogAdapter'    => 'logger/MojaviLogAdapter.php',
@@ -221,6 +227,7 @@ class Propel
 		'BasePeer'            => 'util/BasePeer.php',
 		'NodePeer'            => 'util/NodePeer.php',
 		'PeerInfo'            => 'util/PeerInfo.php',
+		'PropelAutoloader'    => 'util/PropelAutoloader.php',
 		'PropelColumnTypes'   => 'util/PropelColumnTypes.php',
 		'PropelConditionalProxy' => 'util/PropelConditionalProxy.php',
 		'PropelModelPager'    => 'util/PropelModelPager.php',
@@ -258,7 +265,8 @@ class Propel
 		self::$connectionMap = array();
 		
 		if (isset(self::$configuration['classmap']) && is_array(self::$configuration['classmap'])) {
-		  self::$autoloadMap = array_merge(self::$configuration['classmap'], self::$autoloadMap);
+		  PropelAutoloader::getInstance()->addClassPaths(self::$configuration['classmap']);
+		  PropelAutoloader::getInstance()->register();
 	  }
 		
 		self::$isInit = true;
@@ -768,7 +776,7 @@ class Propel
 	{
 		if (self::$defaultDBName === null) {
 			// Determine default database name.
-			self::$defaultDBName = isset(self::$configuration['datasources']['default']) ? self::$configuration['datasources']['default'] : self::DEFAULT_NAME;
+			self::$defaultDBName = isset(self::$configuration['datasources']['default']) && is_scalar(self::$configuration['datasources']['default']) ? self::$configuration['datasources']['default'] : self::DEFAULT_NAME;
 		}
 		return self::$defaultDBName;
 	}
@@ -797,14 +805,24 @@ class Propel
 	public static function autoload($className)
 	{
 		if (isset(self::$autoloadMap[$className])) {
-			require(self::$autoloadMap[$className]);
+			require self::$baseDir . self::$autoloadMap[$className];
 			return true;
 		}
 		return false;
 	}
+	
+	/**
+	 * Initialize the base directory for the autoloader.
+	 * Avoids a call to dirname(__FILE__) each time self::autoload() is called.
+	 * FIXME put in the constructor if the Propel class ever becomes a singleton
+	 */
+	public static function initBaseDir()
+	{
+		self::$baseDir = dirname(__FILE__) . '/';
+	}
 
 	/**
-	 * Include once a file specified in DOT notation and reutrn unqualified clasname.
+	 * Include once a file specified in DOT notation and return unqualified classname.
 	 *
 	 * Typically, Propel uses autoload is used to load classes and expects that all classes
 	 * referenced within Propel are included in Propel's autoload map.  This method is only
@@ -895,4 +913,6 @@ class Propel
 	}
 }
 
+// Since the Propel class is not a true singleton, this code cannot go into the __construct()
+Propel::initBaseDir();
 spl_autoload_register(array('Propel', 'autoload'));

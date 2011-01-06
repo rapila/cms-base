@@ -12,7 +12,7 @@
  * Abstract class for query formatter
  *
  * @author     Francois Zaninotto
- * @version    $Revision: 1733 $
+ * @version    $Revision: 1923 $
  * @package    propel.runtime.formatter
  */
 abstract class PropelFormatter
@@ -44,8 +44,7 @@ abstract class PropelFormatter
 	public function init(ModelCriteria $criteria)
 	{
 		$this->dbName = $criteria->getDbName();
-		$this->class = $criteria->getModelName();
-		$this->peer = $criteria->getModelPeerName();
+		$this->setClass($criteria->getModelName());
 		$this->setWith($criteria->getWith());
 		$this->asColumns = $criteria->getAsColumns();
 		$this->hasLimit = $criteria->getLimit() != 0;
@@ -68,6 +67,7 @@ abstract class PropelFormatter
 	public function setClass($class)
 	{
 		$this->class = $class;
+		$this->peer = constant($this->class . '::PEER');
 	}
 	
 	public function getClass()
@@ -118,6 +118,17 @@ abstract class PropelFormatter
 		return $this->hasLimit;
 	}
 	
+	/**
+	 * Formats an ActiveRecord object
+	 *
+	 * @param BaseObject $record the object to format
+	 *
+	 * @return BaseObject The original record
+	 */
+	public function formatRecord($record = null)
+	{
+		return $record;
+	}
 	
 	abstract public function format(PDOStatement $stmt);
 
