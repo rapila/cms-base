@@ -32,7 +32,7 @@ class PreviewManager extends FrontendManager {
 		if(isset($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]) && LanguagePeer::languageExists($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY])) {
 				AdminManager::setContentLanguage($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]);
 				unset($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]);
-				LinkUtil::redirect(LinkUtil::linkToSelf());
+				LinkUtil::redirect(LinkUtil::link(Manager::getRequestedPath(), get_class()));
 		} else {
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				AdminManager::setContentLanguage($this->sOldSessionLanguage);
