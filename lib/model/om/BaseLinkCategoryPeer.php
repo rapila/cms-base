@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'link_categories' table.
  *
@@ -362,9 +363,9 @@ abstract class BaseLinkCategoryPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in LinkPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LinkPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -1214,7 +1215,10 @@ abstract class BaseLinkCategoryPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			LinkCategoryPeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			LinkCategoryPeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1265,7 +1269,7 @@ abstract class BaseLinkCategoryPeer {
 			$selectCriteria->add(LinkPeer::LINK_CATEGORY_ID, $obj->getId());
 			$updateValues->add(LinkPeer::LINK_CATEGORY_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

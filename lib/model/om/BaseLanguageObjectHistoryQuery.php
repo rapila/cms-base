@@ -28,23 +28,25 @@
  * @method     LanguageObjectHistoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     LanguageObjectHistoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     LanguageObjectHistoryQuery leftJoinContentObject($relationAlias = '') Adds a LEFT JOIN clause to the query using the ContentObject relation
- * @method     LanguageObjectHistoryQuery rightJoinContentObject($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ContentObject relation
- * @method     LanguageObjectHistoryQuery innerJoinContentObject($relationAlias = '') Adds a INNER JOIN clause to the query using the ContentObject relation
+ * @method     LanguageObjectHistoryQuery leftJoinContentObject($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContentObject relation
+ * @method     LanguageObjectHistoryQuery rightJoinContentObject($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContentObject relation
+ * @method     LanguageObjectHistoryQuery innerJoinContentObject($relationAlias = null) Adds a INNER JOIN clause to the query using the ContentObject relation
  *
- * @method     LanguageObjectHistoryQuery leftJoinLanguage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Language relation
- * @method     LanguageObjectHistoryQuery rightJoinLanguage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Language relation
- * @method     LanguageObjectHistoryQuery innerJoinLanguage($relationAlias = '') Adds a INNER JOIN clause to the query using the Language relation
+ * @method     LanguageObjectHistoryQuery leftJoinLanguage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Language relation
+ * @method     LanguageObjectHistoryQuery rightJoinLanguage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Language relation
+ * @method     LanguageObjectHistoryQuery innerJoinLanguage($relationAlias = null) Adds a INNER JOIN clause to the query using the Language relation
  *
- * @method     LanguageObjectHistoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     LanguageObjectHistoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     LanguageObjectHistoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LanguageObjectHistoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LanguageObjectHistoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LanguageObjectHistoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     LanguageObjectHistoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     LanguageObjectHistoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     LanguageObjectHistoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LanguageObjectHistoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LanguageObjectHistoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LanguageObjectHistoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     LanguageObjectHistory findOne(PropelPDO $con = null) Return the first LanguageObjectHistory matching the query
+ * @method     LanguageObjectHistory findOneOrCreate(PropelPDO $con = null) Return the first LanguageObjectHistory matching the query, or a new LanguageObjectHistory object populated from the query conditions when no match is found
+ *
  * @method     LanguageObjectHistory findOneByObjectId(int $object_id) Return the first LanguageObjectHistory filtered by the object_id column
  * @method     LanguageObjectHistory findOneByLanguageId(string $language_id) Return the first LanguageObjectHistory filtered by the language_id column
  * @method     LanguageObjectHistory findOneByData(resource $data) Return the first LanguageObjectHistory filtered by the data column
@@ -171,6 +173,9 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(LanguageObjectHistoryPeer::OBJECT_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(LanguageObjectHistoryPeer::LANGUAGE_ID, $key[1], Criteria::EQUAL);
@@ -211,13 +216,11 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 */
 	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
-		if (is_array($languageId)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($languageId)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $languageId)) {
-			$languageId = str_replace('*', '%', $languageId);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $languageId)) {
+				$languageId = str_replace('*', '%', $languageId);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -400,7 +403,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function joinContentObject($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinContentObject($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ContentObject');
@@ -435,7 +438,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    ContentObjectQuery A secondary query class using the current class as primary query
 	 */
-	public function useContentObjectQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useContentObjectQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinContentObject($relationAlias, $joinType)
@@ -464,7 +467,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function joinLanguage($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinLanguage($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Language');
@@ -499,7 +502,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useLanguageQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinLanguage($relationAlias, $joinType)
@@ -528,7 +531,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -563,7 +566,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -592,7 +595,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -627,7 +630,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

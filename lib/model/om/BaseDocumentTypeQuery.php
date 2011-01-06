@@ -28,19 +28,21 @@
  * @method     DocumentTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     DocumentTypeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     DocumentTypeQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     DocumentTypeQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     DocumentTypeQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentTypeQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentTypeQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentTypeQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     DocumentTypeQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     DocumentTypeQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     DocumentTypeQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentTypeQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentTypeQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentTypeQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
- * @method     DocumentTypeQuery leftJoinDocument($relationAlias = '') Adds a LEFT JOIN clause to the query using the Document relation
- * @method     DocumentTypeQuery rightJoinDocument($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Document relation
- * @method     DocumentTypeQuery innerJoinDocument($relationAlias = '') Adds a INNER JOIN clause to the query using the Document relation
+ * @method     DocumentTypeQuery leftJoinDocument($relationAlias = null) Adds a LEFT JOIN clause to the query using the Document relation
+ * @method     DocumentTypeQuery rightJoinDocument($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Document relation
+ * @method     DocumentTypeQuery innerJoinDocument($relationAlias = null) Adds a INNER JOIN clause to the query using the Document relation
  *
  * @method     DocumentType findOne(PropelPDO $con = null) Return the first DocumentType matching the query
+ * @method     DocumentType findOneOrCreate(PropelPDO $con = null) Return the first DocumentType matching the query, or a new DocumentType object populated from the query conditions when no match is found
+ *
  * @method     DocumentType findOneById(int $id) Return the first DocumentType filtered by the id column
  * @method     DocumentType findOneByExtension(string $extension) Return the first DocumentType filtered by the extension column
  * @method     DocumentType findOneByMimetype(string $mimetype) Return the first DocumentType filtered by the mimetype column
@@ -195,13 +197,11 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 */
 	public function filterByExtension($extension = null, $comparison = null)
 	{
-		if (is_array($extension)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($extension)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $extension)) {
-			$extension = str_replace('*', '%', $extension);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $extension)) {
+				$extension = str_replace('*', '%', $extension);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -219,13 +219,11 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 */
 	public function filterByMimetype($mimetype = null, $comparison = null)
 	{
-		if (is_array($mimetype)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($mimetype)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $mimetype)) {
-			$mimetype = str_replace('*', '%', $mimetype);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $mimetype)) {
+				$mimetype = str_replace('*', '%', $mimetype);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -395,7 +393,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    DocumentTypeQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -430,7 +428,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -459,7 +457,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    DocumentTypeQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -494,7 +492,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
@@ -523,7 +521,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    DocumentTypeQuery The current query, for fluid interface
 	 */
-	public function joinDocument($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinDocument($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Document');
@@ -558,7 +556,7 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useDocumentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinDocument($relationAlias, $joinType)

@@ -24,19 +24,21 @@
  * @method     LinkCategoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     LinkCategoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     LinkCategoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     LinkCategoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     LinkCategoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LinkCategoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LinkCategoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     LinkCategoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     LinkCategoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     LinkCategoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     LinkCategoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LinkCategoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LinkCategoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     LinkCategoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
- * @method     LinkCategoryQuery leftJoinLink($relationAlias = '') Adds a LEFT JOIN clause to the query using the Link relation
- * @method     LinkCategoryQuery rightJoinLink($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Link relation
- * @method     LinkCategoryQuery innerJoinLink($relationAlias = '') Adds a INNER JOIN clause to the query using the Link relation
+ * @method     LinkCategoryQuery leftJoinLink($relationAlias = null) Adds a LEFT JOIN clause to the query using the Link relation
+ * @method     LinkCategoryQuery rightJoinLink($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Link relation
+ * @method     LinkCategoryQuery innerJoinLink($relationAlias = null) Adds a INNER JOIN clause to the query using the Link relation
  *
  * @method     LinkCategory findOne(PropelPDO $con = null) Return the first LinkCategory matching the query
+ * @method     LinkCategory findOneOrCreate(PropelPDO $con = null) Return the first LinkCategory matching the query, or a new LinkCategory object populated from the query conditions when no match is found
+ *
  * @method     LinkCategory findOneById(int $id) Return the first LinkCategory filtered by the id column
  * @method     LinkCategory findOneByName(string $name) Return the first LinkCategory filtered by the name column
  * @method     LinkCategory findOneByCreatedAt(string $created_at) Return the first LinkCategory filtered by the created_at column
@@ -187,13 +189,11 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 */
 	public function filterByName($name = null, $comparison = null)
 	{
-		if (is_array($name)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($name)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $name)) {
-			$name = str_replace('*', '%', $name);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $name)) {
+				$name = str_replace('*', '%', $name);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -346,7 +346,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -381,7 +381,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -410,7 +410,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -445,7 +445,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
@@ -474,7 +474,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery The current query, for fluid interface
 	 */
-	public function joinLink($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLink($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Link');
@@ -509,7 +509,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @return    LinkQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLinkQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLink($relationAlias, $joinType)

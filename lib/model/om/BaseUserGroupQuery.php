@@ -24,23 +24,25 @@
  * @method     UserGroupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     UserGroupQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     UserGroupQuery leftJoinUserRelatedByUserId($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUserId relation
- * @method     UserGroupQuery rightJoinUserRelatedByUserId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUserId relation
- * @method     UserGroupQuery innerJoinUserRelatedByUserId($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserGroupQuery leftJoinUserRelatedByUserId($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserGroupQuery rightJoinUserRelatedByUserId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserGroupQuery innerJoinUserRelatedByUserId($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUserId relation
  *
- * @method     UserGroupQuery leftJoinGroup($relationAlias = '') Adds a LEFT JOIN clause to the query using the Group relation
- * @method     UserGroupQuery rightJoinGroup($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Group relation
- * @method     UserGroupQuery innerJoinGroup($relationAlias = '') Adds a INNER JOIN clause to the query using the Group relation
+ * @method     UserGroupQuery leftJoinGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the Group relation
+ * @method     UserGroupQuery rightJoinGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Group relation
+ * @method     UserGroupQuery innerJoinGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the Group relation
  *
- * @method     UserGroupQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserGroupQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserGroupQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserGroupQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserGroupQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserGroupQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     UserGroupQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserGroupQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserGroupQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserGroupQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserGroupQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserGroupQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     UserGroup findOne(PropelPDO $con = null) Return the first UserGroup matching the query
+ * @method     UserGroup findOneOrCreate(PropelPDO $con = null) Return the first UserGroup matching the query, or a new UserGroup object populated from the query conditions when no match is found
+ *
  * @method     UserGroup findOneByUserId(int $user_id) Return the first UserGroup filtered by the user_id column
  * @method     UserGroup findOneByGroupId(int $group_id) Return the first UserGroup filtered by the group_id column
  * @method     UserGroup findOneByCreatedAt(string $created_at) Return the first UserGroup filtered by the created_at column
@@ -162,6 +164,9 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(UserGroupPeer::USER_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(UserGroupPeer::GROUP_ID, $key[1], Criteria::EQUAL);
@@ -352,7 +357,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUserId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUserRelatedByUserId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUserId');
@@ -387,7 +392,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUserIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUserRelatedByUserIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUserId($relationAlias, $joinType)
@@ -416,7 +421,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function joinGroup($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroup($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Group');
@@ -451,7 +456,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    GroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroup($relationAlias, $joinType)
@@ -480,7 +485,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -515,7 +520,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -544,7 +549,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -579,7 +584,7 @@ abstract class BaseUserGroupQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

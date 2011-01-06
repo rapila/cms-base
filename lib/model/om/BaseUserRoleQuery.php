@@ -24,23 +24,25 @@
  * @method     UserRoleQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     UserRoleQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     UserRoleQuery leftJoinUserRelatedByUserId($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUserId relation
- * @method     UserRoleQuery rightJoinUserRelatedByUserId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUserId relation
- * @method     UserRoleQuery innerJoinUserRelatedByUserId($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserRoleQuery leftJoinUserRelatedByUserId($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserRoleQuery rightJoinUserRelatedByUserId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUserId relation
+ * @method     UserRoleQuery innerJoinUserRelatedByUserId($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUserId relation
  *
- * @method     UserRoleQuery leftJoinRole($relationAlias = '') Adds a LEFT JOIN clause to the query using the Role relation
- * @method     UserRoleQuery rightJoinRole($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Role relation
- * @method     UserRoleQuery innerJoinRole($relationAlias = '') Adds a INNER JOIN clause to the query using the Role relation
+ * @method     UserRoleQuery leftJoinRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the Role relation
+ * @method     UserRoleQuery rightJoinRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Role relation
+ * @method     UserRoleQuery innerJoinRole($relationAlias = null) Adds a INNER JOIN clause to the query using the Role relation
  *
- * @method     UserRoleQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserRoleQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     UserRoleQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserRoleQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserRoleQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     UserRoleQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     UserRoleQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserRoleQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     UserRoleQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserRoleQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserRoleQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     UserRoleQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     UserRole findOne(PropelPDO $con = null) Return the first UserRole matching the query
+ * @method     UserRole findOneOrCreate(PropelPDO $con = null) Return the first UserRole matching the query, or a new UserRole object populated from the query conditions when no match is found
+ *
  * @method     UserRole findOneByUserId(int $user_id) Return the first UserRole filtered by the user_id column
  * @method     UserRole findOneByRoleKey(string $role_key) Return the first UserRole filtered by the role_key column
  * @method     UserRole findOneByCreatedAt(string $created_at) Return the first UserRole filtered by the created_at column
@@ -162,6 +164,9 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(UserRolePeer::USER_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(UserRolePeer::ROLE_KEY, $key[1], Criteria::EQUAL);
@@ -200,13 +205,11 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 */
 	public function filterByRoleKey($roleKey = null, $comparison = null)
 	{
-		if (is_array($roleKey)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($roleKey)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $roleKey)) {
-			$roleKey = str_replace('*', '%', $roleKey);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $roleKey)) {
+				$roleKey = str_replace('*', '%', $roleKey);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -359,7 +362,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUserId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUserRelatedByUserId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUserId');
@@ -394,7 +397,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUserIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUserRelatedByUserIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUserId($relationAlias, $joinType)
@@ -423,7 +426,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery The current query, for fluid interface
 	 */
-	public function joinRole($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinRole($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Role');
@@ -458,7 +461,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    RoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useRoleQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useRoleQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinRole($relationAlias, $joinType)
@@ -487,7 +490,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -522,7 +525,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -551,7 +554,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -586,7 +589,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

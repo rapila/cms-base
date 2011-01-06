@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'languages' table.
  *
@@ -13,7 +14,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'LanguagePeer';
+	const PEER = 'LanguagePeer';
 
 	/**
 	 * The Peer class.
@@ -98,7 +99,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	/**
 	 * @var        array User[] Collection to store aggregation of User objects.
 	 */
-	protected $collUsers;
+	protected $collUsersRelatedByLanguageId;
 
 	/**
 	 * @var        array Document[] Collection to store aggregation of Document objects.
@@ -581,7 +582,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 			$this->collStrings = null;
 
-			$this->collUsers = null;
+			$this->collUsersRelatedByLanguageId = null;
 
 			$this->collDocuments = null;
 
@@ -608,7 +609,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -650,7 +651,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(LanguagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -792,8 +793,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collUsers !== null) {
-				foreach ($this->collUsers as $referrerFK) {
+			if ($this->collUsersRelatedByLanguageId !== null) {
+				foreach ($this->collUsersRelatedByLanguageId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -937,8 +938,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 					}
 				}
 
-				if ($this->collUsers !== null) {
-					foreach ($this->collUsers as $referrerFK) {
+				if ($this->collUsersRelatedByLanguageId !== null) {
+					foreach ($this->collUsersRelatedByLanguageId as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1028,7 +1029,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1253,9 +1254,9 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getUsers() as $relObj) {
+			foreach ($this->getUsersRelatedByLanguageId() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addUser($relObj->copy($deepCopy));
+					$copyObj->addUserRelatedByLanguageId($relObj->copy($deepCopy));
 				}
 			}
 
@@ -1352,13 +1353,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addLanguagesRelatedByCreatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByCreatedBy->addLanguagesRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1401,13 +1402,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addLanguagesRelatedByUpdatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUpdatedBy->addLanguagesRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -2125,32 +2126,32 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collUsers collection
+	 * Clears out the collUsersRelatedByLanguageId collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addUsers()
+	 * @see        addUsersRelatedByLanguageId()
 	 */
-	public function clearUsers()
+	public function clearUsersRelatedByLanguageId()
 	{
-		$this->collUsers = null; // important to set this to NULL since that means it is uninitialized
+		$this->collUsersRelatedByLanguageId = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collUsers collection.
+	 * Initializes the collUsersRelatedByLanguageId collection.
 	 *
-	 * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
+	 * By default this just sets the collUsersRelatedByLanguageId collection to an empty array (like clearcollUsersRelatedByLanguageId());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initUsers()
+	public function initUsersRelatedByLanguageId()
 	{
-		$this->collUsers = new PropelObjectCollection();
-		$this->collUsers->setModel('User');
+		$this->collUsersRelatedByLanguageId = new PropelObjectCollection();
+		$this->collUsersRelatedByLanguageId->setModel('User');
 	}
 
 	/**
@@ -2167,23 +2168,23 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * @return     PropelCollection|array User[] List of User objects
 	 * @throws     PropelException
 	 */
-	public function getUsers($criteria = null, PropelPDO $con = null)
+	public function getUsersRelatedByLanguageId($criteria = null, PropelPDO $con = null)
 	{
-		if(null === $this->collUsers || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsers) {
+		if(null === $this->collUsersRelatedByLanguageId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUsersRelatedByLanguageId) {
 				// return empty collection
-				$this->initUsers();
+				$this->initUsersRelatedByLanguageId();
 			} else {
-				$collUsers = UserQuery::create(null, $criteria)
-					->filterByLanguage($this)
+				$collUsersRelatedByLanguageId = UserQuery::create(null, $criteria)
+					->filterByLanguageRelatedByLanguageId($this)
 					->find($con);
 				if (null !== $criteria) {
-					return $collUsers;
+					return $collUsersRelatedByLanguageId;
 				}
-				$this->collUsers = $collUsers;
+				$this->collUsersRelatedByLanguageId = $collUsersRelatedByLanguageId;
 			}
 		}
-		return $this->collUsers;
+		return $this->collUsersRelatedByLanguageId;
 	}
 
 	/**
@@ -2195,10 +2196,10 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * @return     int Count of related User objects.
 	 * @throws     PropelException
 	 */
-	public function countUsers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countUsersRelatedByLanguageId(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if(null === $this->collUsers || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUsers) {
+		if(null === $this->collUsersRelatedByLanguageId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUsersRelatedByLanguageId) {
 				return 0;
 			} else {
 				$query = UserQuery::create(null, $criteria);
@@ -2206,11 +2207,11 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 					$query->distinct();
 				}
 				return $query
-					->filterByLanguage($this)
+					->filterByLanguageRelatedByLanguageId($this)
 					->count($con);
 			}
 		} else {
-			return count($this->collUsers);
+			return count($this->collUsersRelatedByLanguageId);
 		}
 	}
 
@@ -2222,14 +2223,14 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUser(User $l)
+	public function addUserRelatedByLanguageId(User $l)
 	{
-		if ($this->collUsers === null) {
-			$this->initUsers();
+		if ($this->collUsersRelatedByLanguageId === null) {
+			$this->initUsersRelatedByLanguageId();
 		}
-		if (!$this->collUsers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUsers[]= $l;
-			$l->setLanguage($this);
+		if (!$this->collUsersRelatedByLanguageId->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUsersRelatedByLanguageId[]= $l;
+			$l->setLanguageRelatedByLanguageId($this);
 		}
 	}
 
@@ -2693,6 +2694,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -2727,8 +2729,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collUsers) {
-				foreach ((array) $this->collUsers as $o) {
+			if ($this->collUsersRelatedByLanguageId) {
+				foreach ((array) $this->collUsersRelatedByLanguageId as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -2748,7 +2750,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$this->collLanguageObjects = null;
 		$this->collLanguageObjectHistorys = null;
 		$this->collStrings = null;
-		$this->collUsers = null;
+		$this->collUsersRelatedByLanguageId = null;
 		$this->collDocuments = null;
 		$this->collLinks = null;
 		$this->aUserRelatedByCreatedBy = null;
@@ -2824,10 +2826,18 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseLanguage
