@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'language_object_history' table.
  *
@@ -13,7 +14,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'LanguageObjectHistoryPeer';
+	const PEER = 'LanguageObjectHistoryPeer';
 
 	/**
 	 * The Peer class.
@@ -631,7 +632,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 		if ($con === null) {
 			$con = Propel::getConnection(LanguageObjectHistoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -673,7 +674,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 		if ($con === null) {
 			$con = Propel::getConnection(LanguageObjectHistoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -973,7 +974,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1145,7 +1146,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 		$pks[0] = $this->getObjectId();
 		$pks[1] = $this->getLanguageId();
 		$pks[2] = $this->getRevision();
-		
+
 		return $pks;
 	}
 
@@ -1270,13 +1271,13 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	public function getContentObject(PropelPDO $con = null)
 	{
 		if ($this->aContentObject === null && ($this->object_id !== null)) {
-			$this->aContentObject = ContentObjectQuery::create()->findPk($this->object_id);
+			$this->aContentObject = ContentObjectQuery::create()->findPk($this->object_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aContentObject->addLanguageObjectHistorys($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aContentObject->addLanguageObjectHistorys($this);
 			 */
 		}
 		return $this->aContentObject;
@@ -1319,13 +1320,13 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	public function getLanguage(PropelPDO $con = null)
 	{
 		if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null))) {
-			$this->aLanguage = LanguageQuery::create()->findPk($this->language_id);
+			$this->aLanguage = LanguageQuery::create()->findPk($this->language_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aLanguage->addLanguageObjectHistorys($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aLanguage->addLanguageObjectHistorys($this);
 			 */
 		}
 		return $this->aLanguage;
@@ -1368,13 +1369,13 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addLanguageObjectHistorysRelatedByCreatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByCreatedBy->addLanguageObjectHistorysRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1417,13 +1418,13 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addLanguageObjectHistorysRelatedByUpdatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUpdatedBy->addLanguageObjectHistorysRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -1447,6 +1448,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1538,10 +1540,18 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseLanguageObjectHistory

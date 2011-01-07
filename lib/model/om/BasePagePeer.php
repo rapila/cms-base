@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'pages' table.
  *
@@ -424,18 +425,18 @@ abstract class BasePagePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in PagePropertyPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PagePropertyPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-
-		// invalidate objects in PageStringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PageStringPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-
-		// invalidate objects in ContentObjectPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ContentObjectPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-
-		// invalidate objects in RightPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in RightPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -1285,7 +1286,10 @@ abstract class BasePagePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += PagePeer::doOnDeleteCascade($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += PagePeer::doOnDeleteCascade($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since

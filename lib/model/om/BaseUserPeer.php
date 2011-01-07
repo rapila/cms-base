@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'users' table.
  *
@@ -417,144 +418,144 @@ abstract class BaseUserPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in PagePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PagePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePeer::clearInstancePool();
-
-		// invalidate objects in PagePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PagePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePeer::clearInstancePool();
-
-		// invalidate objects in PagePropertyPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PagePropertyPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-
-		// invalidate objects in PagePropertyPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PagePropertyPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-
-		// invalidate objects in PageStringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PageStringPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-
-		// invalidate objects in PageStringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PageStringPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-
-		// invalidate objects in ContentObjectPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ContentObjectPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-
-		// invalidate objects in ContentObjectPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ContentObjectPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-
-		// invalidate objects in LanguageObjectPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguageObjectPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectPeer::clearInstancePool();
-
-		// invalidate objects in LanguageObjectPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguageObjectPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectPeer::clearInstancePool();
-
-		// invalidate objects in LanguageObjectHistoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguageObjectHistoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectHistoryPeer::clearInstancePool();
-
-		// invalidate objects in LanguageObjectHistoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguageObjectHistoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectHistoryPeer::clearInstancePool();
-
-		// invalidate objects in LanguagePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguagePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguagePeer::clearInstancePool();
-
-		// invalidate objects in LanguagePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LanguagePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguagePeer::clearInstancePool();
-
-		// invalidate objects in StringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in StringPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		StringPeer::clearInstancePool();
-
-		// invalidate objects in StringPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in StringPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		StringPeer::clearInstancePool();
-
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserGroupPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserGroupPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-
-		// invalidate objects in UserGroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserGroupPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-
-		// invalidate objects in GroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in GroupPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupPeer::clearInstancePool();
-
-		// invalidate objects in GroupPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in GroupPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupPeer::clearInstancePool();
-
-		// invalidate objects in GroupRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in GroupRolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
-
-		// invalidate objects in GroupRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in GroupRolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
-
-		// invalidate objects in RolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in RolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RolePeer::clearInstancePool();
-
-		// invalidate objects in RolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in RolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RolePeer::clearInstancePool();
-
-		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserRolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-
-		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserRolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-
-		// invalidate objects in UserRolePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in UserRolePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-
-		// invalidate objects in RightPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in RightPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
-
-		// invalidate objects in RightPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in RightPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
-
-		// invalidate objects in DocumentPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
-
-		// invalidate objects in DocumentPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
-
-		// invalidate objects in DocumentTypePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentTypePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentTypePeer::clearInstancePool();
-
-		// invalidate objects in DocumentTypePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentTypePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentTypePeer::clearInstancePool();
-
-		// invalidate objects in DocumentCategoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentCategoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentCategoryPeer::clearInstancePool();
-
-		// invalidate objects in DocumentCategoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in DocumentCategoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentCategoryPeer::clearInstancePool();
-
-		// invalidate objects in TagPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in TagPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagPeer::clearInstancePool();
-
-		// invalidate objects in TagPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in TagPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagPeer::clearInstancePool();
-
-		// invalidate objects in TagInstancePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in TagInstancePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
-
-		// invalidate objects in TagInstancePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in TagInstancePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
-
-		// invalidate objects in LinkPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LinkPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkPeer::clearInstancePool();
-
-		// invalidate objects in LinkPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LinkPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkPeer::clearInstancePool();
-
-		// invalidate objects in LinkCategoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LinkCategoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkCategoryPeer::clearInstancePool();
-
-		// invalidate objects in LinkCategoryPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in LinkCategoryPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkCategoryPeer::clearInstancePool();
-
-		// invalidate objects in ReferencePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ReferencePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ReferencePeer::clearInstancePool();
-
-		// invalidate objects in ReferencePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ReferencePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ReferencePeer::clearInstancePool();
-
 	}
 
 	/**
@@ -648,7 +649,7 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related Language table
+	 * Returns the number of rows matching criteria, joining the related LanguageRelatedByLanguageId table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -656,7 +657,7 @@ abstract class BaseUserPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinLanguage(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinLanguageRelatedByLanguageId(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -706,7 +707,7 @@ abstract class BaseUserPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinLanguage(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinLanguageRelatedByLanguageId(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -752,7 +753,7 @@ abstract class BaseUserPeer {
 				} // if obj2 already loaded
 
 				// Add the $obj1 (User) to $obj2 (Language)
-				$obj2->addUser($obj1);
+				$obj2->addUserRelatedByLanguageId($obj1);
 
 			} // if joined row was not null
 
@@ -871,7 +872,7 @@ abstract class BaseUserPeer {
 				} // if obj2 loaded
 
 				// Add the $obj1 (User) to the collection in $obj2 (Language)
-				$obj2->addUser($obj1);
+				$obj2->addUserRelatedByLanguageId($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
@@ -1070,8 +1071,14 @@ abstract class BaseUserPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += UserPeer::doOnDeleteCascade($criteria, $con);
-			UserPeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += UserPeer::doOnDeleteCascade($c, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			UserPeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1160,7 +1167,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PagePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(PagePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Page rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1168,7 +1175,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PagePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(PagePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related PageProperty rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1176,7 +1183,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PagePropertyPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(PagePropertyPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related PageProperty rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1184,7 +1191,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PagePropertyPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(PagePropertyPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related PageString rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1192,7 +1199,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PageStringPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(PageStringPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related PageString rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1200,7 +1207,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(PageStringPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(PageStringPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related ContentObject rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1208,7 +1215,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(ContentObjectPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(ContentObjectPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related ContentObject rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1216,7 +1223,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(ContentObjectPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(ContentObjectPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LanguageObject rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1224,7 +1231,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguageObjectPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(LanguageObjectPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LanguageObject rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1232,7 +1239,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguageObjectPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(LanguageObjectPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LanguageObjectHistory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1240,7 +1247,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguageObjectHistoryPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(LanguageObjectHistoryPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LanguageObjectHistory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1248,7 +1255,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguageObjectHistoryPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(LanguageObjectHistoryPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Language rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1256,7 +1263,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguagePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(LanguagePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Language rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1264,7 +1271,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LanguagePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(LanguagePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related String rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1272,7 +1279,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(StringPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(StringPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related String rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1280,7 +1287,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(StringPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(StringPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related UserGroup rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1288,7 +1295,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(UserGroupPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(UserGroupPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related UserGroup rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1296,7 +1303,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(UserGroupPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(UserGroupPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Group rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1304,7 +1311,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(GroupPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(GroupPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Group rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1312,7 +1319,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(GroupPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(GroupPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related GroupRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1320,7 +1327,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(GroupRolePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(GroupRolePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related GroupRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1328,7 +1335,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(GroupRolePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(GroupRolePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Role rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1336,7 +1343,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(RolePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(RolePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Role rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1344,7 +1351,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(RolePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(RolePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related UserRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1352,7 +1359,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(UserRolePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(UserRolePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related UserRole rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1360,7 +1367,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(UserRolePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(UserRolePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Right rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1368,7 +1375,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(RightPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(RightPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Right rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1376,7 +1383,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(RightPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(RightPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Document rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1384,7 +1391,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(DocumentPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Document rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1392,7 +1399,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(DocumentPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related DocumentType rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1400,7 +1407,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentTypePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(DocumentTypePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related DocumentType rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1408,7 +1415,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentTypePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(DocumentTypePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related DocumentCategory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1416,7 +1423,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentCategoryPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(DocumentCategoryPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related DocumentCategory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1424,7 +1431,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(DocumentCategoryPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(DocumentCategoryPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Tag rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1432,7 +1439,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(TagPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(TagPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Tag rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1440,7 +1447,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(TagPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(TagPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related TagInstance rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1448,7 +1455,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(TagInstancePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(TagInstancePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related TagInstance rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1456,7 +1463,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(TagInstancePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(TagInstancePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Link rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1464,7 +1471,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LinkPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(LinkPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Link rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1472,7 +1479,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LinkPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(LinkPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LinkCategory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1480,7 +1487,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LinkCategoryPeer::CREATED_BY, $obj->getId());
 			$updateValues->add(LinkCategoryPeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related LinkCategory rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1488,7 +1495,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(LinkCategoryPeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(LinkCategoryPeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Reference rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1496,7 +1503,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(ReferencePeer::CREATED_BY, $obj->getId());
 			$updateValues->add(ReferencePeer::CREATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related Reference rows to NULL
 			$selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
@@ -1504,7 +1511,7 @@ abstract class BaseUserPeer {
 			$selectCriteria->add(ReferencePeer::UPDATED_BY, $obj->getId());
 			$updateValues->add(ReferencePeer::UPDATED_BY, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

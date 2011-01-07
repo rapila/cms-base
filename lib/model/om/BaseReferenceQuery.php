@@ -30,15 +30,17 @@
  * @method     ReferenceQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ReferenceQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ReferenceQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     ReferenceQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     ReferenceQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     ReferenceQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     ReferenceQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     ReferenceQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     ReferenceQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     ReferenceQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     ReferenceQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     ReferenceQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     ReferenceQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     ReferenceQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     Reference findOne(PropelPDO $con = null) Return the first Reference matching the query
+ * @method     Reference findOneOrCreate(PropelPDO $con = null) Return the first Reference matching the query, or a new Reference object populated from the query conditions when no match is found
+ *
  * @method     Reference findOneById(int $id) Return the first Reference filtered by the id column
  * @method     Reference findOneByFromId(string $from_id) Return the first Reference filtered by the from_id column
  * @method     Reference findOneByFromModelName(string $from_model_name) Return the first Reference filtered by the from_model_name column
@@ -195,13 +197,11 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 */
 	public function filterByFromId($fromId = null, $comparison = null)
 	{
-		if (is_array($fromId)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($fromId)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $fromId)) {
-			$fromId = str_replace('*', '%', $fromId);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $fromId)) {
+				$fromId = str_replace('*', '%', $fromId);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -219,13 +219,11 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 */
 	public function filterByFromModelName($fromModelName = null, $comparison = null)
 	{
-		if (is_array($fromModelName)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($fromModelName)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $fromModelName)) {
-			$fromModelName = str_replace('*', '%', $fromModelName);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $fromModelName)) {
+				$fromModelName = str_replace('*', '%', $fromModelName);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -243,13 +241,11 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 */
 	public function filterByToId($toId = null, $comparison = null)
 	{
-		if (is_array($toId)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($toId)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $toId)) {
-			$toId = str_replace('*', '%', $toId);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $toId)) {
+				$toId = str_replace('*', '%', $toId);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -267,13 +263,11 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 */
 	public function filterByToModelName($toModelName = null, $comparison = null)
 	{
-		if (is_array($toModelName)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($toModelName)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $toModelName)) {
-			$toModelName = str_replace('*', '%', $toModelName);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $toModelName)) {
+				$toModelName = str_replace('*', '%', $toModelName);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -426,7 +420,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -461,7 +455,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -490,7 +484,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -525,7 +519,7 @@ abstract class BaseReferenceQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

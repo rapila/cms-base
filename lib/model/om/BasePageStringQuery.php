@@ -34,23 +34,25 @@
  * @method     PageStringQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PageStringQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PageStringQuery leftJoinPage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Page relation
- * @method     PageStringQuery rightJoinPage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Page relation
- * @method     PageStringQuery innerJoinPage($relationAlias = '') Adds a INNER JOIN clause to the query using the Page relation
+ * @method     PageStringQuery leftJoinPage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Page relation
+ * @method     PageStringQuery rightJoinPage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Page relation
+ * @method     PageStringQuery innerJoinPage($relationAlias = null) Adds a INNER JOIN clause to the query using the Page relation
  *
- * @method     PageStringQuery leftJoinLanguage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Language relation
- * @method     PageStringQuery rightJoinLanguage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Language relation
- * @method     PageStringQuery innerJoinLanguage($relationAlias = '') Adds a INNER JOIN clause to the query using the Language relation
+ * @method     PageStringQuery leftJoinLanguage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Language relation
+ * @method     PageStringQuery rightJoinLanguage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Language relation
+ * @method     PageStringQuery innerJoinLanguage($relationAlias = null) Adds a INNER JOIN clause to the query using the Language relation
  *
- * @method     PageStringQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     PageStringQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     PageStringQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PageStringQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PageStringQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PageStringQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     PageStringQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     PageStringQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     PageStringQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PageStringQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PageStringQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PageStringQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     PageString findOne(PropelPDO $con = null) Return the first PageString matching the query
+ * @method     PageString findOneOrCreate(PropelPDO $con = null) Return the first PageString matching the query, or a new PageString object populated from the query conditions when no match is found
+ *
  * @method     PageString findOneByPageId(int $page_id) Return the first PageString filtered by the page_id column
  * @method     PageString findOneByLanguageId(string $language_id) Return the first PageString filtered by the language_id column
  * @method     PageString findOneByIsInactive(boolean $is_inactive) Return the first PageString filtered by the is_inactive column
@@ -182,6 +184,9 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(PageStringPeer::PAGE_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(PageStringPeer::LANGUAGE_ID, $key[1], Criteria::EQUAL);
@@ -220,13 +225,11 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
-		if (is_array($languageId)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($languageId)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $languageId)) {
-			$languageId = str_replace('*', '%', $languageId);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $languageId)) {
+				$languageId = str_replace('*', '%', $languageId);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -261,13 +264,11 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByLinkText($linkText = null, $comparison = null)
 	{
-		if (is_array($linkText)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($linkText)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $linkText)) {
-			$linkText = str_replace('*', '%', $linkText);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $linkText)) {
+				$linkText = str_replace('*', '%', $linkText);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -285,13 +286,11 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByPageTitle($pageTitle = null, $comparison = null)
 	{
-		if (is_array($pageTitle)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($pageTitle)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $pageTitle)) {
-			$pageTitle = str_replace('*', '%', $pageTitle);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $pageTitle)) {
+				$pageTitle = str_replace('*', '%', $pageTitle);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -309,13 +308,11 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByMetaKeywords($metaKeywords = null, $comparison = null)
 	{
-		if (is_array($metaKeywords)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($metaKeywords)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $metaKeywords)) {
-			$metaKeywords = str_replace('*', '%', $metaKeywords);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $metaKeywords)) {
+				$metaKeywords = str_replace('*', '%', $metaKeywords);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -333,13 +330,11 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 */
 	public function filterByMetaDescription($metaDescription = null, $comparison = null)
 	{
-		if (is_array($metaDescription)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($metaDescription)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $metaDescription)) {
-			$metaDescription = str_replace('*', '%', $metaDescription);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $metaDescription)) {
+				$metaDescription = str_replace('*', '%', $metaDescription);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -492,7 +487,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function joinPage($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPage($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Page');
@@ -527,7 +522,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePageQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPage($relationAlias, $joinType)
@@ -556,7 +551,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function joinLanguage($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinLanguage($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Language');
@@ -591,7 +586,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useLanguageQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinLanguage($relationAlias, $joinType)
@@ -620,7 +615,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -655,7 +650,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -684,7 +679,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -719,7 +714,7 @@ abstract class BasePageStringQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

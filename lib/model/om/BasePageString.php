@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'page_strings' table.
  *
@@ -13,7 +14,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'PageStringPeer';
+	const PEER = 'PageStringPeer';
 
 	/**
 	 * The Peer class.
@@ -765,7 +766,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(PageStringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -807,7 +808,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(PageStringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1111,7 +1112,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1299,7 +1300,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$pks = array();
 		$pks[0] = $this->getPageId();
 		$pks[1] = $this->getLanguageId();
-		
+
 		return $pks;
 	}
 
@@ -1426,13 +1427,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getPage(PropelPDO $con = null)
 	{
 		if ($this->aPage === null && ($this->page_id !== null)) {
-			$this->aPage = PageQuery::create()->findPk($this->page_id);
+			$this->aPage = PageQuery::create()->findPk($this->page_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aPage->addPageStrings($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aPage->addPageStrings($this);
 			 */
 		}
 		return $this->aPage;
@@ -1475,13 +1476,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getLanguage(PropelPDO $con = null)
 	{
 		if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null))) {
-			$this->aLanguage = LanguageQuery::create()->findPk($this->language_id);
+			$this->aLanguage = LanguageQuery::create()->findPk($this->language_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aLanguage->addPageStrings($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aLanguage->addPageStrings($this);
 			 */
 		}
 		return $this->aLanguage;
@@ -1524,13 +1525,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addPageStringsRelatedByCreatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByCreatedBy->addPageStringsRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1573,13 +1574,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addPageStringsRelatedByUpdatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUpdatedBy->addPageStringsRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -1607,6 +1608,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1698,10 +1700,18 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BasePageString

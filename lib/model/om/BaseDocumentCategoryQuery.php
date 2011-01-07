@@ -32,19 +32,21 @@
  * @method     DocumentCategoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     DocumentCategoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     DocumentCategoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     DocumentCategoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     DocumentCategoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentCategoryQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentCategoryQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     DocumentCategoryQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     DocumentCategoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     DocumentCategoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     DocumentCategoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentCategoryQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentCategoryQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     DocumentCategoryQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
- * @method     DocumentCategoryQuery leftJoinDocument($relationAlias = '') Adds a LEFT JOIN clause to the query using the Document relation
- * @method     DocumentCategoryQuery rightJoinDocument($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Document relation
- * @method     DocumentCategoryQuery innerJoinDocument($relationAlias = '') Adds a INNER JOIN clause to the query using the Document relation
+ * @method     DocumentCategoryQuery leftJoinDocument($relationAlias = null) Adds a LEFT JOIN clause to the query using the Document relation
+ * @method     DocumentCategoryQuery rightJoinDocument($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Document relation
+ * @method     DocumentCategoryQuery innerJoinDocument($relationAlias = null) Adds a INNER JOIN clause to the query using the Document relation
  *
  * @method     DocumentCategory findOne(PropelPDO $con = null) Return the first DocumentCategory matching the query
+ * @method     DocumentCategory findOneOrCreate(PropelPDO $con = null) Return the first DocumentCategory matching the query, or a new DocumentCategory object populated from the query conditions when no match is found
+ *
  * @method     DocumentCategory findOneById(int $id) Return the first DocumentCategory filtered by the id column
  * @method     DocumentCategory findOneByName(string $name) Return the first DocumentCategory filtered by the name column
  * @method     DocumentCategory findOneBySort(int $sort) Return the first DocumentCategory filtered by the sort column
@@ -203,13 +205,11 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 */
 	public function filterByName($name = null, $comparison = null)
 	{
-		if (is_array($name)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($name)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $name)) {
-			$name = str_replace('*', '%', $name);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $name)) {
+				$name = str_replace('*', '%', $name);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -458,7 +458,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    DocumentCategoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -493,7 +493,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -522,7 +522,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    DocumentCategoryQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -557,7 +557,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
@@ -586,7 +586,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    DocumentCategoryQuery The current query, for fluid interface
 	 */
-	public function joinDocument($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocument($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Document');
@@ -621,7 +621,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocument($relationAlias, $joinType)

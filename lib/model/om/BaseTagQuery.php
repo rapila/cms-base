@@ -24,19 +24,21 @@
  * @method     TagQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     TagQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     TagQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     TagQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     TagQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     TagQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     TagQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     TagQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     TagQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     TagQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     TagQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     TagQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     TagQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     TagQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
- * @method     TagQuery leftJoinTagInstance($relationAlias = '') Adds a LEFT JOIN clause to the query using the TagInstance relation
- * @method     TagQuery rightJoinTagInstance($relationAlias = '') Adds a RIGHT JOIN clause to the query using the TagInstance relation
- * @method     TagQuery innerJoinTagInstance($relationAlias = '') Adds a INNER JOIN clause to the query using the TagInstance relation
+ * @method     TagQuery leftJoinTagInstance($relationAlias = null) Adds a LEFT JOIN clause to the query using the TagInstance relation
+ * @method     TagQuery rightJoinTagInstance($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TagInstance relation
+ * @method     TagQuery innerJoinTagInstance($relationAlias = null) Adds a INNER JOIN clause to the query using the TagInstance relation
  *
  * @method     Tag findOne(PropelPDO $con = null) Return the first Tag matching the query
+ * @method     Tag findOneOrCreate(PropelPDO $con = null) Return the first Tag matching the query, or a new Tag object populated from the query conditions when no match is found
+ *
  * @method     Tag findOneById(int $id) Return the first Tag filtered by the id column
  * @method     Tag findOneByName(string $name) Return the first Tag filtered by the name column
  * @method     Tag findOneByCreatedAt(string $created_at) Return the first Tag filtered by the created_at column
@@ -187,13 +189,11 @@ abstract class BaseTagQuery extends ModelCriteria
 	 */
 	public function filterByName($name = null, $comparison = null)
 	{
-		if (is_array($name)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($name)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $name)) {
-			$name = str_replace('*', '%', $name);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $name)) {
+				$name = str_replace('*', '%', $name);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -346,7 +346,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    TagQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -381,7 +381,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -410,7 +410,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    TagQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -445,7 +445,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
@@ -474,7 +474,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    TagQuery The current query, for fluid interface
 	 */
-	public function joinTagInstance($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinTagInstance($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('TagInstance');
@@ -509,7 +509,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery A secondary query class using the current class as primary query
 	 */
-	public function useTagInstanceQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useTagInstanceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinTagInstance($relationAlias, $joinType)

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'tag_instances' table.
  *
@@ -13,7 +14,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'TagInstancePeer';
+	const PEER = 'TagInstancePeer';
 
 	/**
 	 * The Peer class.
@@ -572,7 +573,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -614,7 +615,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(TagInstancePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -893,7 +894,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1056,7 +1057,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		$pks[0] = $this->getTagId();
 		$pks[1] = $this->getTaggedItemId();
 		$pks[2] = $this->getModelName();
-		
+
 		return $pks;
 	}
 
@@ -1180,13 +1181,13 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	public function getTag(PropelPDO $con = null)
 	{
 		if ($this->aTag === null && ($this->tag_id !== null)) {
-			$this->aTag = TagQuery::create()->findPk($this->tag_id);
+			$this->aTag = TagQuery::create()->findPk($this->tag_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aTag->addTagInstances($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aTag->addTagInstances($this);
 			 */
 		}
 		return $this->aTag;
@@ -1229,13 +1230,13 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addTagInstancesRelatedByCreatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByCreatedBy->addTagInstancesRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1278,13 +1279,13 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addTagInstancesRelatedByUpdatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUpdatedBy->addTagInstancesRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -1307,6 +1308,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1397,10 +1399,18 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseTagInstance

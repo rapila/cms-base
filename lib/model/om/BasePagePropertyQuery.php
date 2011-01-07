@@ -28,19 +28,21 @@
  * @method     PagePropertyQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PagePropertyQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PagePropertyQuery leftJoinPage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Page relation
- * @method     PagePropertyQuery rightJoinPage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Page relation
- * @method     PagePropertyQuery innerJoinPage($relationAlias = '') Adds a INNER JOIN clause to the query using the Page relation
+ * @method     PagePropertyQuery leftJoinPage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Page relation
+ * @method     PagePropertyQuery rightJoinPage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Page relation
+ * @method     PagePropertyQuery innerJoinPage($relationAlias = null) Adds a INNER JOIN clause to the query using the Page relation
  *
- * @method     PagePropertyQuery leftJoinUserRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     PagePropertyQuery rightJoinUserRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
- * @method     PagePropertyQuery innerJoinUserRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PagePropertyQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PagePropertyQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
+ * @method     PagePropertyQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
  *
- * @method     PagePropertyQuery leftJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     PagePropertyQuery rightJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
- * @method     PagePropertyQuery innerJoinUserRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PagePropertyQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PagePropertyQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ * @method     PagePropertyQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
  *
  * @method     PageProperty findOne(PropelPDO $con = null) Return the first PageProperty matching the query
+ * @method     PageProperty findOneOrCreate(PropelPDO $con = null) Return the first PageProperty matching the query, or a new PageProperty object populated from the query conditions when no match is found
+ *
  * @method     PageProperty findOneById(int $id) Return the first PageProperty filtered by the id column
  * @method     PageProperty findOneByPageId(int $page_id) Return the first PageProperty filtered by the page_id column
  * @method     PageProperty findOneByName(string $name) Return the first PageProperty filtered by the name column
@@ -226,13 +228,11 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 */
 	public function filterByName($name = null, $comparison = null)
 	{
-		if (is_array($name)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($name)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $name)) {
-			$name = str_replace('*', '%', $name);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $name)) {
+				$name = str_replace('*', '%', $name);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -250,13 +250,11 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 */
 	public function filterByValue($value = null, $comparison = null)
 	{
-		if (is_array($value)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($value)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $value)) {
-			$value = str_replace('*', '%', $value);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $value)) {
+				$value = str_replace('*', '%', $value);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -409,7 +407,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    PagePropertyQuery The current query, for fluid interface
 	 */
-	public function joinPage($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPage($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Page');
@@ -444,7 +442,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePageQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPage($relationAlias, $joinType)
@@ -473,7 +471,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    PagePropertyQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByCreatedBy');
@@ -508,7 +506,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByCreatedBy($relationAlias, $joinType)
@@ -537,7 +535,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    PagePropertyQuery The current query, for fluid interface
 	 */
-	public function joinUserRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRelatedByUpdatedBy');
@@ -572,7 +570,7 @@ abstract class BasePagePropertyQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'tags' table.
  *
@@ -362,9 +363,9 @@ abstract class BaseTagPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in TagInstancePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in TagInstancePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
-
 	}
 
 	/**
@@ -1214,7 +1215,10 @@ abstract class BaseTagPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += TagPeer::doOnDeleteCascade($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += TagPeer::doOnDeleteCascade($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since

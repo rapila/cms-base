@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'users_groups' table.
  *
@@ -13,7 +14,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'UserGroupPeer';
+	const PEER = 'UserGroupPeer';
 
 	/**
 	 * The Peer class.
@@ -548,7 +549,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(UserGroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -590,7 +591,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(UserGroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -879,7 +880,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1037,7 +1038,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 		$pks = array();
 		$pks[0] = $this->getUserId();
 		$pks[1] = $this->getGroupId();
-		
+
 		return $pks;
 	}
 
@@ -1159,13 +1160,13 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	public function getUserRelatedByUserId(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUserId === null && ($this->user_id !== null)) {
-			$this->aUserRelatedByUserId = UserQuery::create()->findPk($this->user_id);
+			$this->aUserRelatedByUserId = UserQuery::create()->findPk($this->user_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUserId->addUserGroupsRelatedByUserId($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUserId->addUserGroupsRelatedByUserId($this);
 			 */
 		}
 		return $this->aUserRelatedByUserId;
@@ -1208,13 +1209,13 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	public function getGroup(PropelPDO $con = null)
 	{
 		if ($this->aGroup === null && ($this->group_id !== null)) {
-			$this->aGroup = GroupQuery::create()->findPk($this->group_id);
+			$this->aGroup = GroupQuery::create()->findPk($this->group_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroup->addUserGroups($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroup->addUserGroups($this);
 			 */
 		}
 		return $this->aGroup;
@@ -1257,13 +1258,13 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	public function getUserRelatedByCreatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
-			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by);
+			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByCreatedBy->addUserGroupsRelatedByCreatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByCreatedBy->addUserGroupsRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1306,13 +1307,13 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
 	{
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
-			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by);
+			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUserRelatedByUpdatedBy->addUserGroupsRelatedByUpdatedBy($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUserRelatedByUpdatedBy->addUserGroupsRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -1334,6 +1335,7 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1425,10 +1427,18 @@ abstract class BaseUserGroup extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseUserGroup

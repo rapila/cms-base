@@ -46,203 +46,205 @@
  * @method     UserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     UserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     UserQuery leftJoinLanguage($relationAlias = '') Adds a LEFT JOIN clause to the query using the Language relation
- * @method     UserQuery rightJoinLanguage($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Language relation
- * @method     UserQuery innerJoinLanguage($relationAlias = '') Adds a INNER JOIN clause to the query using the Language relation
+ * @method     UserQuery leftJoinLanguageRelatedByLanguageId($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageRelatedByLanguageId relation
+ * @method     UserQuery rightJoinLanguageRelatedByLanguageId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageRelatedByLanguageId relation
+ * @method     UserQuery innerJoinLanguageRelatedByLanguageId($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageRelatedByLanguageId relation
  *
- * @method     UserQuery leftJoinPageRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageRelatedByCreatedBy relation
- * @method     UserQuery rightJoinPageRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageRelatedByCreatedBy relation
- * @method     UserQuery innerJoinPageRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PageRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinPageRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinPageRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinPageRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PageRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinPageRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinPageRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinPageRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PageRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinPageRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinPageRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinPageRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PageRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinPagePropertyRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
- * @method     UserQuery rightJoinPagePropertyRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
- * @method     UserQuery innerJoinPagePropertyRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinPagePropertyRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinPagePropertyRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinPagePropertyRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PagePropertyRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinPagePropertyRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinPagePropertyRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinPagePropertyRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinPagePropertyRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinPagePropertyRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinPagePropertyRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PagePropertyRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinPageStringRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageStringRelatedByCreatedBy relation
- * @method     UserQuery rightJoinPageStringRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageStringRelatedByCreatedBy relation
- * @method     UserQuery innerJoinPageStringRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PageStringRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinPageStringRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageStringRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinPageStringRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageStringRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinPageStringRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PageStringRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinPageStringRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinPageStringRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinPageStringRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinPageStringRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinPageStringRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinPageStringRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the PageStringRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinContentObjectRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
- * @method     UserQuery rightJoinContentObjectRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
- * @method     UserQuery innerJoinContentObjectRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinContentObjectRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinContentObjectRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinContentObjectRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ContentObjectRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinContentObjectRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinContentObjectRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinContentObjectRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinContentObjectRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinContentObjectRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinContentObjectRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ContentObjectRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinLanguageObjectRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
- * @method     UserQuery rightJoinLanguageObjectRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
- * @method     UserQuery innerJoinLanguageObjectRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinLanguageObjectRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinLanguageObjectRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinLanguageObjectRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageObjectRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinLanguageObjectRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinLanguageObjectRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinLanguageObjectRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinLanguageObjectRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinLanguageObjectRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinLanguageObjectRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageObjectRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
- * @method     UserQuery rightJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
- * @method     UserQuery innerJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageObjectHistoryRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageObjectHistoryRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinLanguageRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageRelatedByCreatedBy relation
- * @method     UserQuery rightJoinLanguageRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageRelatedByCreatedBy relation
- * @method     UserQuery innerJoinLanguageRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinLanguageRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinLanguageRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinLanguageRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinLanguageRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinLanguageRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinLanguageRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinLanguageRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinLanguageRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinLanguageRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinStringRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the StringRelatedByCreatedBy relation
- * @method     UserQuery rightJoinStringRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the StringRelatedByCreatedBy relation
- * @method     UserQuery innerJoinStringRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the StringRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinStringRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the StringRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinStringRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StringRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinStringRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the StringRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the StringRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the StringRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinStringRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the StringRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the StringRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StringRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the StringRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinUserGroupRelatedByUserId($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserGroupRelatedByUserId relation
- * @method     UserQuery rightJoinUserGroupRelatedByUserId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByUserId relation
- * @method     UserQuery innerJoinUserGroupRelatedByUserId($relationAlias = '') Adds a INNER JOIN clause to the query using the UserGroupRelatedByUserId relation
+ * @method     UserQuery leftJoinUserGroupRelatedByUserId($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroupRelatedByUserId relation
+ * @method     UserQuery rightJoinUserGroupRelatedByUserId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByUserId relation
+ * @method     UserQuery innerJoinUserGroupRelatedByUserId($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroupRelatedByUserId relation
  *
- * @method     UserQuery leftJoinUserGroupRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
- * @method     UserQuery rightJoinUserGroupRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
- * @method     UserQuery innerJoinUserGroupRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinUserGroupRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinUserGroupRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinUserGroupRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinUserGroupRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinUserGroupRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinUserGroupRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinUserGroupRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinUserGroupRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinUserGroupRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroupRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinGroupRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRelatedByCreatedBy relation
- * @method     UserQuery rightJoinGroupRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRelatedByCreatedBy relation
- * @method     UserQuery innerJoinGroupRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the GroupRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinGroupRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the GroupRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinGroupRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the GroupRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinGroupRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the GroupRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinGroupRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinGroupRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinGroupRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the GroupRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinGroupRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the GroupRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinGroupRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the GroupRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinGroupRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the GroupRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinGroupRoleRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
- * @method     UserQuery rightJoinGroupRoleRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
- * @method     UserQuery innerJoinGroupRoleRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinGroupRoleRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinGroupRoleRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinGroupRoleRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the GroupRoleRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinGroupRoleRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinGroupRoleRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinGroupRoleRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinGroupRoleRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinGroupRoleRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinGroupRoleRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the GroupRoleRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinRoleRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the RoleRelatedByCreatedBy relation
- * @method     UserQuery rightJoinRoleRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the RoleRelatedByCreatedBy relation
- * @method     UserQuery innerJoinRoleRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the RoleRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinRoleRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinRoleRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinRoleRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinRoleRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the RoleRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinRoleRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the RoleRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinRoleRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the RoleRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinRoleRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinRoleRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinRoleRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinUserRoleRelatedByUserId($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRoleRelatedByUserId relation
- * @method     UserQuery rightJoinUserRoleRelatedByUserId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByUserId relation
- * @method     UserQuery innerJoinUserRoleRelatedByUserId($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRoleRelatedByUserId relation
+ * @method     UserQuery leftJoinUserRoleRelatedByUserId($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRoleRelatedByUserId relation
+ * @method     UserQuery rightJoinUserRoleRelatedByUserId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByUserId relation
+ * @method     UserQuery innerJoinUserRoleRelatedByUserId($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRoleRelatedByUserId relation
  *
- * @method     UserQuery leftJoinUserRoleRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
- * @method     UserQuery rightJoinUserRoleRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
- * @method     UserQuery innerJoinUserRoleRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinUserRoleRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinUserRoleRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinUserRoleRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRoleRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinUserRoleRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinUserRoleRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinUserRoleRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinUserRoleRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinUserRoleRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinUserRoleRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRoleRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinRightRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the RightRelatedByCreatedBy relation
- * @method     UserQuery rightJoinRightRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the RightRelatedByCreatedBy relation
- * @method     UserQuery innerJoinRightRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the RightRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinRightRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the RightRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinRightRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RightRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinRightRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the RightRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinRightRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the RightRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinRightRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the RightRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinRightRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the RightRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinRightRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the RightRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinRightRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RightRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinRightRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the RightRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinDocumentRelatedByOwnerId($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentRelatedByOwnerId relation
- * @method     UserQuery rightJoinDocumentRelatedByOwnerId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentRelatedByOwnerId relation
- * @method     UserQuery innerJoinDocumentRelatedByOwnerId($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentRelatedByOwnerId relation
+ * @method     UserQuery leftJoinDocumentRelatedByOwnerId($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentRelatedByOwnerId relation
+ * @method     UserQuery rightJoinDocumentRelatedByOwnerId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentRelatedByOwnerId relation
+ * @method     UserQuery innerJoinDocumentRelatedByOwnerId($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentRelatedByOwnerId relation
  *
- * @method     UserQuery leftJoinDocumentRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentRelatedByCreatedBy relation
- * @method     UserQuery rightJoinDocumentRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentRelatedByCreatedBy relation
- * @method     UserQuery innerJoinDocumentRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinDocumentRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinDocumentRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinDocumentRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinDocumentRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinDocumentRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinDocumentRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinDocumentRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinDocumentRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinDocumentRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinDocumentTypeRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
- * @method     UserQuery rightJoinDocumentTypeRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
- * @method     UserQuery innerJoinDocumentTypeRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinDocumentTypeRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinDocumentTypeRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinDocumentTypeRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinDocumentTypeRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinDocumentTypeRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinDocumentTypeRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentTypeRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinDocumentCategoryRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
- * @method     UserQuery rightJoinDocumentCategoryRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
- * @method     UserQuery innerJoinDocumentCategoryRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinDocumentCategoryRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinDocumentCategoryRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinDocumentCategoryRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentCategoryRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinDocumentCategoryRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentCategoryRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinTagRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the TagRelatedByCreatedBy relation
- * @method     UserQuery rightJoinTagRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the TagRelatedByCreatedBy relation
- * @method     UserQuery innerJoinTagRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the TagRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinTagRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TagRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinTagRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TagRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinTagRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TagRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinTagRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the TagRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinTagRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the TagRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinTagRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the TagRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinTagRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TagRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinTagRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TagRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinTagRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TagRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinTagInstanceRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
- * @method     UserQuery rightJoinTagInstanceRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
- * @method     UserQuery innerJoinTagInstanceRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinTagInstanceRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinTagInstanceRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinTagInstanceRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TagInstanceRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinTagInstanceRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinTagInstanceRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinTagInstanceRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinTagInstanceRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinTagInstanceRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinTagInstanceRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TagInstanceRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinLinkRelatedByOwnerId($relationAlias = '') Adds a LEFT JOIN clause to the query using the LinkRelatedByOwnerId relation
- * @method     UserQuery rightJoinLinkRelatedByOwnerId($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LinkRelatedByOwnerId relation
- * @method     UserQuery innerJoinLinkRelatedByOwnerId($relationAlias = '') Adds a INNER JOIN clause to the query using the LinkRelatedByOwnerId relation
+ * @method     UserQuery leftJoinLinkRelatedByOwnerId($relationAlias = null) Adds a LEFT JOIN clause to the query using the LinkRelatedByOwnerId relation
+ * @method     UserQuery rightJoinLinkRelatedByOwnerId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LinkRelatedByOwnerId relation
+ * @method     UserQuery innerJoinLinkRelatedByOwnerId($relationAlias = null) Adds a INNER JOIN clause to the query using the LinkRelatedByOwnerId relation
  *
- * @method     UserQuery leftJoinLinkRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LinkRelatedByCreatedBy relation
- * @method     UserQuery rightJoinLinkRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LinkRelatedByCreatedBy relation
- * @method     UserQuery innerJoinLinkRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LinkRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinLinkRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LinkRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinLinkRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LinkRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinLinkRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LinkRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinLinkRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LinkRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinLinkRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LinkRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinLinkRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LinkRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinLinkRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LinkRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinLinkRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LinkRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinLinkRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LinkRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinLinkCategoryRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
- * @method     UserQuery rightJoinLinkCategoryRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
- * @method     UserQuery innerJoinLinkCategoryRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinLinkCategoryRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinLinkCategoryRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinLinkCategoryRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LinkCategoryRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinLinkCategoryRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinLinkCategoryRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinLinkCategoryRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinLinkCategoryRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinLinkCategoryRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinLinkCategoryRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LinkCategoryRelatedByUpdatedBy relation
  *
- * @method     UserQuery leftJoinReferenceRelatedByCreatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
- * @method     UserQuery rightJoinReferenceRelatedByCreatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
- * @method     UserQuery innerJoinReferenceRelatedByCreatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
+ * @method     UserQuery leftJoinReferenceRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
+ * @method     UserQuery rightJoinReferenceRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
+ * @method     UserQuery innerJoinReferenceRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ReferenceRelatedByCreatedBy relation
  *
- * @method     UserQuery leftJoinReferenceRelatedByUpdatedBy($relationAlias = '') Adds a LEFT JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
- * @method     UserQuery rightJoinReferenceRelatedByUpdatedBy($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
- * @method     UserQuery innerJoinReferenceRelatedByUpdatedBy($relationAlias = '') Adds a INNER JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
+ * @method     UserQuery leftJoinReferenceRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
+ * @method     UserQuery rightJoinReferenceRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
+ * @method     UserQuery innerJoinReferenceRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
  *
  * @method     User findOne(PropelPDO $con = null) Return the first User matching the query
+ * @method     User findOneOrCreate(PropelPDO $con = null) Return the first User matching the query, or a new User object populated from the query conditions when no match is found
+ *
  * @method     User findOneById(int $id) Return the first User filtered by the id column
  * @method     User findOneByUsername(string $username) Return the first User filtered by the username column
  * @method     User findOneByPassword(string $password) Return the first User filtered by the password column
@@ -415,13 +417,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByUsername($username = null, $comparison = null)
 	{
-		if (is_array($username)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($username)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $username)) {
-			$username = str_replace('*', '%', $username);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $username)) {
+				$username = str_replace('*', '%', $username);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -439,13 +439,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByPassword($password = null, $comparison = null)
 	{
-		if (is_array($password)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($password)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $password)) {
-			$password = str_replace('*', '%', $password);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $password)) {
+				$password = str_replace('*', '%', $password);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -463,13 +461,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByDigestHA1($digestHA1 = null, $comparison = null)
 	{
-		if (is_array($digestHA1)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($digestHA1)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $digestHA1)) {
-			$digestHA1 = str_replace('*', '%', $digestHA1);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $digestHA1)) {
+				$digestHA1 = str_replace('*', '%', $digestHA1);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -487,13 +483,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByFirstName($firstName = null, $comparison = null)
 	{
-		if (is_array($firstName)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($firstName)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $firstName)) {
-			$firstName = str_replace('*', '%', $firstName);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $firstName)) {
+				$firstName = str_replace('*', '%', $firstName);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -511,13 +505,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByLastName($lastName = null, $comparison = null)
 	{
-		if (is_array($lastName)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($lastName)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $lastName)) {
-			$lastName = str_replace('*', '%', $lastName);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $lastName)) {
+				$lastName = str_replace('*', '%', $lastName);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -535,13 +527,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByEmail($email = null, $comparison = null)
 	{
-		if (is_array($email)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($email)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $email)) {
-			$email = str_replace('*', '%', $email);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $email)) {
+				$email = str_replace('*', '%', $email);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -559,13 +549,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByLanguageId($languageId = null, $comparison = null)
 	{
-		if (is_array($languageId)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($languageId)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $languageId)) {
-			$languageId = str_replace('*', '%', $languageId);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $languageId)) {
+				$languageId = str_replace('*', '%', $languageId);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -634,13 +622,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByPasswordRecoverHint($passwordRecoverHint = null, $comparison = null)
 	{
-		if (is_array($passwordRecoverHint)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($passwordRecoverHint)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $passwordRecoverHint)) {
-			$passwordRecoverHint = str_replace('*', '%', $passwordRecoverHint);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $passwordRecoverHint)) {
+				$passwordRecoverHint = str_replace('*', '%', $passwordRecoverHint);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -658,13 +644,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 */
 	public function filterByBackendSettings($backendSettings = null, $comparison = null)
 	{
-		if (is_array($backendSettings)) {
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($backendSettings)) {
 				$comparison = Criteria::IN;
-			}
-		} elseif (preg_match('/[\%\*]/', $backendSettings)) {
-			$backendSettings = str_replace('*', '%', $backendSettings);
-			if (null === $comparison) {
+			} elseif (preg_match('/[\%\*]/', $backendSettings)) {
+				$backendSettings = str_replace('*', '%', $backendSettings);
 				$comparison = Criteria::LIKE;
 			}
 		}
@@ -803,24 +787,24 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function filterByLanguage($language, $comparison = null)
+	public function filterByLanguageRelatedByLanguageId($language, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UserPeer::LANGUAGE_ID, $language->getId(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the Language relation
+	 * Adds a JOIN clause to the query using the LanguageRelatedByLanguageId relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguage($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageRelatedByLanguageId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('Language');
+		$relationMap = $tableMap->getRelation('LanguageRelatedByLanguageId');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -835,14 +819,14 @@ abstract class BaseUserQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'Language');
+			$this->addJoinObject($join, 'LanguageRelatedByLanguageId');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the Language relation Language object
+	 * Use the LanguageRelatedByLanguageId relation Language object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -852,11 +836,11 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageRelatedByLanguageIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
-			->joinLanguage($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'Language', 'LanguageQuery');
+			->joinLanguageRelatedByLanguageId($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'LanguageRelatedByLanguageId', 'LanguageQuery');
 	}
 
 	/**
@@ -881,7 +865,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPageRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPageRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PageRelatedByCreatedBy');
@@ -916,7 +900,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePageRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPageRelatedByCreatedBy($relationAlias, $joinType)
@@ -945,7 +929,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPageRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPageRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PageRelatedByUpdatedBy');
@@ -980,7 +964,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PageQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePageRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPageRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1009,7 +993,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPagePropertyRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPagePropertyRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PagePropertyRelatedByCreatedBy');
@@ -1044,7 +1028,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PagePropertyQuery A secondary query class using the current class as primary query
 	 */
-	public function usePagePropertyRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePagePropertyRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPagePropertyRelatedByCreatedBy($relationAlias, $joinType)
@@ -1073,7 +1057,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPagePropertyRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPagePropertyRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PagePropertyRelatedByUpdatedBy');
@@ -1108,7 +1092,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PagePropertyQuery A secondary query class using the current class as primary query
 	 */
-	public function usePagePropertyRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePagePropertyRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPagePropertyRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1137,7 +1121,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPageStringRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPageStringRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PageStringRelatedByCreatedBy');
@@ -1172,7 +1156,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageStringRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePageStringRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPageStringRelatedByCreatedBy($relationAlias, $joinType)
@@ -1201,7 +1185,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinPageStringRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinPageStringRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PageStringRelatedByUpdatedBy');
@@ -1236,7 +1220,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    PageStringQuery A secondary query class using the current class as primary query
 	 */
-	public function usePageStringRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function usePageStringRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinPageStringRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1265,7 +1249,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinContentObjectRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinContentObjectRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ContentObjectRelatedByCreatedBy');
@@ -1300,7 +1284,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    ContentObjectQuery A secondary query class using the current class as primary query
 	 */
-	public function useContentObjectRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useContentObjectRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinContentObjectRelatedByCreatedBy($relationAlias, $joinType)
@@ -1329,7 +1313,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinContentObjectRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinContentObjectRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ContentObjectRelatedByUpdatedBy');
@@ -1364,7 +1348,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    ContentObjectQuery A secondary query class using the current class as primary query
 	 */
-	public function useContentObjectRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useContentObjectRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinContentObjectRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1393,7 +1377,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageObjectRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageObjectRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageObjectRelatedByCreatedBy');
@@ -1428,7 +1412,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageObjectRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageObjectRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageObjectRelatedByCreatedBy($relationAlias, $joinType)
@@ -1457,7 +1441,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageObjectRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageObjectRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageObjectRelatedByUpdatedBy');
@@ -1492,7 +1476,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageObjectRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageObjectRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageObjectRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1521,7 +1505,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageObjectHistoryRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageObjectHistoryRelatedByCreatedBy');
@@ -1556,7 +1540,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageObjectHistoryRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageObjectHistoryRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageObjectHistoryRelatedByCreatedBy($relationAlias, $joinType)
@@ -1585,7 +1569,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageObjectHistoryRelatedByUpdatedBy');
@@ -1620,7 +1604,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageObjectHistoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageObjectHistoryRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageObjectHistoryRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageObjectHistoryRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1649,7 +1633,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageRelatedByCreatedBy');
@@ -1684,7 +1668,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageRelatedByCreatedBy($relationAlias, $joinType)
@@ -1713,7 +1697,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLanguageRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLanguageRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LanguageRelatedByUpdatedBy');
@@ -1748,7 +1732,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LanguageQuery A secondary query class using the current class as primary query
 	 */
-	public function useLanguageRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLanguageRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLanguageRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1777,7 +1761,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinStringRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinStringRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('StringRelatedByCreatedBy');
@@ -1812,7 +1796,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    StringQuery A secondary query class using the current class as primary query
 	 */
-	public function useStringRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useStringRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinStringRelatedByCreatedBy($relationAlias, $joinType)
@@ -1841,7 +1825,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinStringRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinStringRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('StringRelatedByUpdatedBy');
@@ -1876,7 +1860,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    StringQuery A secondary query class using the current class as primary query
 	 */
-	public function useStringRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useStringRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinStringRelatedByUpdatedBy($relationAlias, $joinType)
@@ -1905,7 +1889,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserGroupRelatedByUserId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUserGroupRelatedByUserId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserGroupRelatedByUserId');
@@ -1940,7 +1924,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserGroupRelatedByUserIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUserGroupRelatedByUserIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUserGroupRelatedByUserId($relationAlias, $joinType)
@@ -1969,7 +1953,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserGroupRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserGroupRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserGroupRelatedByCreatedBy');
@@ -2004,7 +1988,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserGroupRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserGroupRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserGroupRelatedByCreatedBy($relationAlias, $joinType)
@@ -2033,7 +2017,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserGroupRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserGroupRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserGroupRelatedByUpdatedBy');
@@ -2068,7 +2052,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserGroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserGroupRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserGroupRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserGroupRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2097,7 +2081,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinGroupRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('GroupRelatedByCreatedBy');
@@ -2132,7 +2116,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    GroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupRelatedByCreatedBy($relationAlias, $joinType)
@@ -2161,7 +2145,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinGroupRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('GroupRelatedByUpdatedBy');
@@ -2196,7 +2180,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    GroupQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2225,7 +2209,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinGroupRoleRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupRoleRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('GroupRoleRelatedByCreatedBy');
@@ -2260,7 +2244,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    GroupRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupRoleRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupRoleRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupRoleRelatedByCreatedBy($relationAlias, $joinType)
@@ -2289,7 +2273,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinGroupRoleRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupRoleRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('GroupRoleRelatedByUpdatedBy');
@@ -2324,7 +2308,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    GroupRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupRoleRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupRoleRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupRoleRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2353,7 +2337,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinRoleRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinRoleRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('RoleRelatedByCreatedBy');
@@ -2388,7 +2372,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    RoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useRoleRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useRoleRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinRoleRelatedByCreatedBy($relationAlias, $joinType)
@@ -2417,7 +2401,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinRoleRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinRoleRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('RoleRelatedByUpdatedBy');
@@ -2452,7 +2436,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    RoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useRoleRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useRoleRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinRoleRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2481,7 +2465,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserRoleRelatedByUserId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUserRoleRelatedByUserId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRoleRelatedByUserId');
@@ -2516,7 +2500,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRoleRelatedByUserIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUserRoleRelatedByUserIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUserRoleRelatedByUserId($relationAlias, $joinType)
@@ -2545,7 +2529,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserRoleRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRoleRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRoleRelatedByCreatedBy');
@@ -2580,7 +2564,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRoleRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRoleRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRoleRelatedByCreatedBy($relationAlias, $joinType)
@@ -2609,7 +2593,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinUserRoleRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUserRoleRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UserRoleRelatedByUpdatedBy');
@@ -2644,7 +2628,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserRoleQuery A secondary query class using the current class as primary query
 	 */
-	public function useUserRoleRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUserRoleRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUserRoleRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2673,7 +2657,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinRightRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinRightRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('RightRelatedByCreatedBy');
@@ -2708,7 +2692,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    RightQuery A secondary query class using the current class as primary query
 	 */
-	public function useRightRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useRightRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinRightRelatedByCreatedBy($relationAlias, $joinType)
@@ -2737,7 +2721,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinRightRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinRightRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('RightRelatedByUpdatedBy');
@@ -2772,7 +2756,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    RightQuery A secondary query class using the current class as primary query
 	 */
-	public function useRightRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useRightRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinRightRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2801,7 +2785,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentRelatedByOwnerId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinDocumentRelatedByOwnerId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentRelatedByOwnerId');
@@ -2836,7 +2820,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentRelatedByOwnerIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useDocumentRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinDocumentRelatedByOwnerId($relationAlias, $joinType)
@@ -2865,7 +2849,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentRelatedByCreatedBy');
@@ -2900,7 +2884,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentRelatedByCreatedBy($relationAlias, $joinType)
@@ -2929,7 +2913,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentRelatedByUpdatedBy');
@@ -2964,7 +2948,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentRelatedByUpdatedBy($relationAlias, $joinType)
@@ -2993,7 +2977,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentTypeRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentTypeRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentTypeRelatedByCreatedBy');
@@ -3028,7 +3012,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentTypeQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentTypeRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentTypeRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentTypeRelatedByCreatedBy($relationAlias, $joinType)
@@ -3057,7 +3041,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentTypeRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentTypeRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentTypeRelatedByUpdatedBy');
@@ -3092,7 +3076,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentTypeQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentTypeRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentTypeRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentTypeRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3121,7 +3105,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentCategoryRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentCategoryRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentCategoryRelatedByCreatedBy');
@@ -3156,7 +3140,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentCategoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentCategoryRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentCategoryRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentCategoryRelatedByCreatedBy($relationAlias, $joinType)
@@ -3185,7 +3169,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinDocumentCategoryRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinDocumentCategoryRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('DocumentCategoryRelatedByUpdatedBy');
@@ -3220,7 +3204,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    DocumentCategoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useDocumentCategoryRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useDocumentCategoryRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinDocumentCategoryRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3249,7 +3233,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinTagRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinTagRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('TagRelatedByCreatedBy');
@@ -3284,7 +3268,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    TagQuery A secondary query class using the current class as primary query
 	 */
-	public function useTagRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useTagRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinTagRelatedByCreatedBy($relationAlias, $joinType)
@@ -3313,7 +3297,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinTagRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinTagRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('TagRelatedByUpdatedBy');
@@ -3348,7 +3332,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    TagQuery A secondary query class using the current class as primary query
 	 */
-	public function useTagRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useTagRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinTagRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3377,7 +3361,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinTagInstanceRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinTagInstanceRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('TagInstanceRelatedByCreatedBy');
@@ -3412,7 +3396,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery A secondary query class using the current class as primary query
 	 */
-	public function useTagInstanceRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useTagInstanceRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinTagInstanceRelatedByCreatedBy($relationAlias, $joinType)
@@ -3441,7 +3425,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinTagInstanceRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinTagInstanceRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('TagInstanceRelatedByUpdatedBy');
@@ -3476,7 +3460,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    TagInstanceQuery A secondary query class using the current class as primary query
 	 */
-	public function useTagInstanceRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useTagInstanceRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinTagInstanceRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3505,7 +3489,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLinkRelatedByOwnerId($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinLinkRelatedByOwnerId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkRelatedByOwnerId');
@@ -3540,7 +3524,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LinkQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkRelatedByOwnerIdQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useLinkRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinLinkRelatedByOwnerId($relationAlias, $joinType)
@@ -3569,7 +3553,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLinkRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLinkRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkRelatedByCreatedBy');
@@ -3604,7 +3588,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LinkQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLinkRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLinkRelatedByCreatedBy($relationAlias, $joinType)
@@ -3633,7 +3617,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLinkRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLinkRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkRelatedByUpdatedBy');
@@ -3668,7 +3652,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LinkQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLinkRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLinkRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3697,7 +3681,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLinkCategoryRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLinkCategoryRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkCategoryRelatedByCreatedBy');
@@ -3732,7 +3716,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkCategoryRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLinkCategoryRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLinkCategoryRelatedByCreatedBy($relationAlias, $joinType)
@@ -3761,7 +3745,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinLinkCategoryRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinLinkCategoryRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('LinkCategoryRelatedByUpdatedBy');
@@ -3796,7 +3780,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    LinkCategoryQuery A secondary query class using the current class as primary query
 	 */
-	public function useLinkCategoryRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useLinkCategoryRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinLinkCategoryRelatedByUpdatedBy($relationAlias, $joinType)
@@ -3825,7 +3809,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinReferenceRelatedByCreatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinReferenceRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ReferenceRelatedByCreatedBy');
@@ -3860,7 +3844,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useReferenceRelatedByCreatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useReferenceRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinReferenceRelatedByCreatedBy($relationAlias, $joinType)
@@ -3889,7 +3873,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
-	public function joinReferenceRelatedByUpdatedBy($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinReferenceRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ReferenceRelatedByUpdatedBy');
@@ -3924,7 +3908,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @return    ReferenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useReferenceRelatedByUpdatedByQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useReferenceRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinReferenceRelatedByUpdatedBy($relationAlias, $joinType)

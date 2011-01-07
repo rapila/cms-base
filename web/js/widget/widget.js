@@ -25,7 +25,7 @@ jQuery.fn.extend({
 		this.map(function() {
 			return this.elements ? jQuery.makeArray(this.elements) : this;
 		}).each(function() {
-			if(!(this.name && !this.disabled && (/select|textarea|input/i).test(this.nodeName))) {
+			if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
 				return;
 			}
 			

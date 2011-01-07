@@ -38,7 +38,7 @@ CREATE TABLE `pages`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- page_properties
@@ -74,7 +74,7 @@ CREATE TABLE `page_properties`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- page_strings
@@ -115,7 +115,7 @@ CREATE TABLE `page_strings`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- objects
@@ -152,7 +152,7 @@ CREATE TABLE `objects`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- language_objects
@@ -189,7 +189,7 @@ CREATE TABLE `language_objects`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- language_object_history
@@ -227,7 +227,7 @@ CREATE TABLE `language_object_history`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- languages
@@ -256,7 +256,7 @@ CREATE TABLE `languages`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- strings
@@ -288,7 +288,7 @@ CREATE TABLE `strings`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- users
@@ -322,7 +322,7 @@ CREATE TABLE `users`
 	CONSTRAINT `users_FK_1`
 		FOREIGN KEY (`language_id`)
 		REFERENCES `languages` (`id`)
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- users_groups
@@ -359,7 +359,7 @@ CREATE TABLE `users_groups`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- groups
@@ -388,7 +388,7 @@ CREATE TABLE `groups`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- group_roles
@@ -425,7 +425,7 @@ CREATE TABLE `group_roles`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- roles
@@ -453,7 +453,7 @@ CREATE TABLE `roles`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- user_roles
@@ -490,7 +490,7 @@ CREATE TABLE `user_roles`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- rights
@@ -535,7 +535,7 @@ CREATE TABLE `rights`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- documents
@@ -592,7 +592,7 @@ CREATE TABLE `documents`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- document_types
@@ -623,7 +623,7 @@ CREATE TABLE `document_types`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- document_categories
@@ -655,7 +655,7 @@ CREATE TABLE `document_categories`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- tags
@@ -684,7 +684,7 @@ CREATE TABLE `tags`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- tag_instances
@@ -717,7 +717,7 @@ CREATE TABLE `tag_instances`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- links
@@ -766,7 +766,7 @@ CREATE TABLE `links`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- link_categories
@@ -794,7 +794,7 @@ CREATE TABLE `link_categories`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 #-----------------------------------------------------------------------------
 #-- indirect_references
@@ -826,7 +826,7 @@ CREATE TABLE `indirect_references`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL
-)Type=MyISAM;
+) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * This class defines the structure of the 'languages' table.
  *
@@ -57,7 +58,7 @@ class LanguageTableMap extends TableMap {
     $this->addRelation('LanguageObject', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('LanguageObjectHistory', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('String', 'String', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
-    $this->addRelation('User', 'User', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
+    $this->addRelation('UserRelatedByLanguageId', 'User', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('Document', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('Link', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
 	} // buildRelations()
