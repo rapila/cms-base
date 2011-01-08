@@ -1,8 +1,10 @@
 HTML / CSS
+- fix list views height/color of table tr/td
 
 Admin Fix
 
 Preview Fix
+- progressbar ui-progressbar > no round border, less high, discuss color? blue? (progressbar works in Chrome)
 - D&Drop Highlight does not work properly
 - ui-state-droppable should work universally in richtext image_picker, document_detail usw.
 	@see admin-ui.css/less > widget.css
@@ -16,7 +18,7 @@ TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc.
 
 Browser issues
 - Safari / Chrome
-	Login Window should be centered too
+	Login Window and Dialogs should be centered 
 
 Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
 - FileUpload, if browser can't do drag&drop, don't display document_detail "droppable_info" ui-state-droppable on list

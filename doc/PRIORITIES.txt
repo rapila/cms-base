@@ -3,7 +3,33 @@ Regula Mob. 079 541 56 06, Wiesen 081 404 15 15
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
+Bugs & Fixes
+- new subscriber > preset subscriber_group_id if is current chosen
+- check bug d&d fileupload, if category is chosen
+- check file upload for links
+- page detail duplicate name exception handling
+- document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
+- check and cleanup generated, model
+
+Todo
+- Newsletter send.sent_some > 
+	add boolean seems_invalid add to subscriber, and make Link for checking invalid email addresses
+- Newsletter fertigstellen, testen, anzeigen auf Webseite, Teasermöglichkeit???
+	Handle is_approved. Newsletters sent cannot be modified anymore
+- Tips Tagging > sidebar tags with drag and drop?
+
+Offerte
+- Diplome mit Name > GD oder SFPDF?
+- Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
+- Serverlösung
+- Tips bewerten kommentare
+- Teilnehmer Anmeldung
+- Newsletter, Newsletter Seite
+- Einbettung Flash (Spiele, Comics, Quiz)
+
 Roger Tel. Planung
+- Move Mini-Book to Richtext Module
+	Move Game Teasers to its own FrontendModule
 - Frontend CSS
 	Teaser Site testserver count down
 - Newsletter, participants login, subscribe unsubscribe, publish
@@ -15,24 +41,6 @@ Roger Tel. Planung
 - Strings 3-Sprachig
 - Spiele, Quiz, Einbettung, Speicherung
 
-Bugs
-- bug d&d fileupload, if category is chosen
-- file upload for links
-
-Todo
-- Newsletter send.sent_some > add boolean is_invalid add to subscriber, and make Link for checking invalid email addresses
-- Newsletter fertigstellen, testen, anzeigen auf Webseite, Teasermöglichkeit???
-	Handle is_approved. Newsletters sent cannot be modified anymore
-- document_admin.js > info_bar.add_row_count_info_for_list(documents_view);
-
-Offerte
-- Diplome mit Name > GD oder SFPDF?
-- Vorschauseite auf Testserver, Entwicklung auf definitivem server mit Count down
-- Serverlösung
-- Tips bewerten kommentare
-- Teilnehmer Anmeldung
-- Newsletter, Newsletter Seite
-- Einbettung Flash (Spiele, Comics, Quiz)
 
 Ornella, QMS Detailhandel > Listview
 manager/media/browser/mcpuk/frmresourceslist.html
