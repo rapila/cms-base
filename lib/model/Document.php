@@ -28,6 +28,10 @@ class Document extends BaseDocument {
 		return $this->getName().' ['.$this->getExtension().']';
 	}
 	
+	public function getNameTruncated() {
+	  return StringUtil::truncate($this->getName(), 50);
+	}
+	
 	public function getFullName() {
 		return $this->getName().'.'.$this->getExtension();
 	}

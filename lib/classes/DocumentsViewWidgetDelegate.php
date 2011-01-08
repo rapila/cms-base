@@ -40,13 +40,13 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'delete');
+		return array('id', 'name_truncated', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
-			case 'name':
+			case 'name_truncated':
 				$aResult['heading'] = StringPeer::getString('wns.name');
 				break;
 			case 'sort':
@@ -94,6 +94,9 @@ class DocumentsViewWidgetDelegate {
 	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
 		if($sDisplayColumn === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
+		}		
+		if($sDisplayColumn === 'name_truncated') {
+			return DocumentPeer::NAME;
 		}
 		if($sDisplayColumn === 'file_info') {
 			return "OCTET_LENGTH(DATA)";
