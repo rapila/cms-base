@@ -3,6 +3,24 @@ Regula Mob. 079 541 56 06, Wiesen 081 404 15 15
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 
+Roger Tel. Planung
+- Formulare Registration, Profil, Login, Newsletter subscribe-unsubscribe, publish
+- Discuss move Mini-Book to Richtext Module
+	Move Game Teasers to its own FrontendModule
+- Frontend CSS
+	Teaser Site testserver count down
+- tipps & tricks
+- tags for tips
+- tip rating
+- Kommentare für authentifizierte Benutzer, Backend, is_active default false
+	Regeln
+- Strings 3-Sprachig
+- Spiele, Quiz, Einbettung, Speicherung
+
+CSS
+- update jQuery UI theme ? fix centered dialog for Safari & Chrome
+- tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
+
 Bugs & Fixes
 - new subscriber > preset subscriber_group_id if is current chosen
 - check bug d&d fileupload, if category is chosen
@@ -27,19 +45,6 @@ Offerte
 - Newsletter, Newsletter Seite
 - Einbettung Flash (Spiele, Comics, Quiz)
 
-Roger Tel. Planung
-- Move Mini-Book to Richtext Module
-	Move Game Teasers to its own FrontendModule
-- Frontend CSS
-	Teaser Site testserver count down
-- Newsletter, participants login, subscribe unsubscribe, publish
-- tipps & tricks
-- tags for tips
-- tip rating
-- Kommentare für authentifizierte Benutzer, Backend, is_active default false
-	Regeln
-- Strings 3-Sprachig
-- Spiele, Quiz, Einbettung, Speicherung
 
 
 Ornella, QMS Detailhandel > Listview
