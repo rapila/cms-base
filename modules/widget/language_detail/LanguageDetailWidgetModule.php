@@ -16,8 +16,9 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLanguage);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oLanguage);
 		$sLanguageKey = LanguagePeer::STATIC_STRING_NAMESPACE.'.'.$this->sLanguageId;
-    ErrorHandler::log(StringPeer::getString($sLanguageKey, $this->sLanguageId));
-		if(StringPeer::getString($sLanguageKey, $this->sLanguageId, 'null') === 'null') {
+		ErrorHandler::log(StringPeer::getString($sLanguageKey, $this->sLanguageId, ''));
+
+		if(StringPeer::getString($sLanguageKey, $this->sLanguageId, '') === '') {
 			$sMessage = StringPeer::getString('wns.check_static_strings', AdminManager::getContentLanguage(), 'Please check strings', $aParameters= array('string_key' => $sLanguageKey));
 			$aResult['LanguageStringMissing'] = $sMessage;
 		}
