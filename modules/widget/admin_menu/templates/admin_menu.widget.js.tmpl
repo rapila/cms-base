@@ -205,7 +205,6 @@ Widget.types.admin_menu = {
 			element.button();
 			return {element: element, callback: function() {
 				Widget.create('tag_panel', function(tag_panel) {
-					console.log(tag_panel);
 					tag_panel.toggle_at(element.position());
 				});
 			}};
