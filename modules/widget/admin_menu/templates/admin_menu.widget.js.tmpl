@@ -201,11 +201,11 @@ Widget.types.admin_menu = {
 		},
 		
 		tag: function() {
-			var element = jQuery('<button/>').text('{{writeString=tag}}');
+			var element = jQuery('<button/>').addClass('open-tag-panel').text('{{writeString=wns.tag}}');
 			element.button();
-			return {element: element, callback: function() {
+			return {element: element, callback: function(event) {
 				Widget.create('tag_panel', function(tag_panel) {
-					tag_panel.toggle_at(element.position());
+					tag_panel.toggle_at({left: event.clientX, top: event.clientY+10});
 				});
 			}};
 		},
