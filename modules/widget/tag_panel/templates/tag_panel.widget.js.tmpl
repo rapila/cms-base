@@ -1,0 +1,91 @@
+Widget.types.tag_panel = {
+	initialize: function() {
+		var _this = this;
+		this.panel = jQuery('<div/>').addClass('tag_panel ui-corner-all ui-widget-content').css({visibility: 'hidden'}).appendTo(document.body);
+		this.tag_area = jQuery('<div/>').addClass('tag_area').appendTo(this.panel);
+		this.admin_area = jQuery('<div/>').addClass('admin_area').appendTo(this.panel);
+		var new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
+		var create_new_tag = jQuery('<button/>').text('{{writeString=wns.tag.add}}').appendTo(this.admin_area).button({disabled: true});
+		new_tag.bind('keyup', function(event) {
+			if(jQuery.trim(new_tag.val())) {
+				create_new_tag.button('enable');
+			} else {
+				create_new_tag.button('disable');
+			}
+			if(event.keyCode === 13) {
+				create_new_tag.click();
+			}
+		});
+		create_new_tag.bind('click', function(event) {
+			if(!create_new_tag.button('option', 'disabled')) {
+				_this.append_tag(jQuery.trim(new_tag.val()));
+				new_tag.val('');
+				create_new_tag.button('option', 'disabled', true);
+			}
+		});
+		this.reload_tags();
+	},
+	
+	reload_tags: function() {
+		var _this = this;
+		this.listTags(function(all_tags) {
+			this.tag_area.empty();
+			jQuery.each(all_tags, function(i, tag) {
+				_this.append_tag(tag.Name);
+			});
+		});
+	},
+	
+	append_tag: function(name, display_name) {
+		var _this = this;
+		if(!display_name) {
+			display_name = name;
+		}
+		var tag = jQuery('<span/>').addClass('tag').attr({'data-item-id': name, 'data-model-name': 'Tag'});
+		tag.append(jQuery('<span/>').addClass('tag_start').text(' '));
+		tag.append(jQuery('<span/>').addClass('tag_repeat').text(display_name));
+		tag.append(jQuery('<span/>').addClass('tag_end').text(' '));
+		tag.appendTo(this.tag_area);
+		this.tag_area.append(document.createTextNode(' '));
+	},
+	
+	is_visible: function() {
+		if(this.panel.css('visibility') === 'hidden') {
+			return false;
+		}
+		return this.panel.is(":visible");
+	},
+	
+	hide: function(from) {
+		if(this.panel.css('visibility') === 'hidden') {
+			this.panel.hide().css('visibility', '');
+		}
+		if(!from) {
+			from = 'above'; //Currently the only supported orientation
+		}
+		this.panel.animate({opacity: 0, top: this.panel.position().top-this.panel.height()}, {
+			complete: this.panel.hide.bind(this.panel)
+		});
+	},
+	
+	show_at: function(position, from) {
+		if(this.panel.css('visibility') === 'hidden') {
+			this.panel.hide().css('visibility', '');
+		}
+		if(!from) {
+			from = 'above'; //Currently the only supported orientation
+		}
+		position.left -= this.panel.width()/2;
+		this.panel.css({opacity: 0, left: position.left, top: position.top-this.panel.height()});
+		this.panel.show();
+		this.panel.animate({opacity: 1, top: position.top});
+	},
+	
+	toggle_at: function(position) {
+		if(this.is_visible()) {
+			this.hide();
+		} else {
+			this.show_at(position);
+		}
+	}
+};
