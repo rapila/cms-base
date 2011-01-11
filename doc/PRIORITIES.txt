@@ -2,6 +2,7 @@ PRIORITAETEN:
 Regula Mob. 079 541 56 06, Wiesen 081 404 15 15
 Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
+- FrontendManager fix $bParamsNotAllowed > $this->bIsNotFound
 
 Roger Tel. Planung
 - Formulare Registration, Profil, Login, Newsletter subscribe-unsubscribe, publish
@@ -44,8 +45,6 @@ Offerte
 - Teilnehmer Anmeldung
 - Newsletter, Newsletter Seite
 - Einbettung Flash (Spiele, Comics, Quiz)
-
-
 
 Ornella, QMS Detailhandel > Listview
 manager/media/browser/mcpuk/frmresourceslist.html
