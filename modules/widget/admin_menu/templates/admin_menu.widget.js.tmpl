@@ -62,9 +62,9 @@ Widget.types.admin_menu = {
 	
 	show: function() {
 		this._element.show();
-		if(window.PreviewInterface) {
-			// jQuery('html').css({marginTop: '30px'});
-		}
+		// if(window.PreviewInterface) {
+		// 	jQuery('html').css({marginTop: '30px'});
+		// }
 	},
 	
 	hide: function() {
@@ -88,7 +88,7 @@ Widget.types.admin_menu = {
 		if(attributes.is_active) {
 			element.addClass('ui-state-active');
 		}
-		if(text == null) {
+		if(!text) {
 			text = '';
 		}
 		element.find('.ui-button-text').text(text);
@@ -119,7 +119,7 @@ Widget.types.admin_menu = {
 			var current_module = AdminInterface.current_admin_module;
 			var default_title = '{{writeString=wns.module_select.default_option.title}}';
 			// todo: remove checked or style when no option is selected
-			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'))
+			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'));
 			var separator_class = '';
 			jQuery.each(items, function(i, item) {
 				if(!item) {
@@ -198,6 +198,17 @@ Widget.types.admin_menu = {
 		
 		domain_name: function() {
 			return {element: jQuery("<span/>").text('{{writeSettingValue=name;section=domain_holder}}').attr('class', "domain_name")};
+		},
+		
+		tag: function() {
+			var element = jQuery('<button/>').text('{{writeString=tag}}');
+			element.button();
+			return {element: element, callback: function() {
+				Widget.create('tag_panel', function(tag_panel) {
+					console.log(tag_panel);
+					tag_panel.toggle_at(element.position());
+				});
+			}};
 		},
 		
 		logo: function() {

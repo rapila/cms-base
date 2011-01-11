@@ -164,7 +164,7 @@ Widget.types.page_detail = {
 	fill_data: function() {
 		Widget.callStaticWidgetMethod('detail', 'clear_validation', this._element);
 		var _this = this;
-		var page_data = this.getPageData()
+		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;
 		this._element.find("input[name='name']").val(page_data.Name);
 		this._element.find("input[name='global_is_active']").attr('checked', !page_data.IsInactive);
@@ -201,7 +201,7 @@ Widget.types.page_detail = {
 					if(name === 'value') {
 						var background_color ='';
 						if(page_data.page_properties[property_name]['type'] == 'color') {
-							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default']
+							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default'];
 						}
 						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
 						var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});

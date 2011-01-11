@@ -262,7 +262,7 @@ Widget.types.list = {
 		if(load_heading) {
 			this._element.empty();
 		} else {
-			this._element.find('.ui-list-row').remove()
+			this._element.find('.ui-list-row').remove();
 		}
 		this.sort = this.getOrderColumnSort();
 		if(load_heading) {
@@ -387,15 +387,15 @@ Widget.types.list = {
 			if(isHeading) {
 				column = jQuery('<span/>').appendTo(column);
 			} 
-			column.text(data == null ? '-' : data);
+			column.text(data === null ? '-' : data);
 		},
 		
-		static: function(column, data, metadata) {
+		'static': function(column, data, metadata) {
 			data = metadata.heading;
 			Widget.types.list.types.text(column, data);
 		},
 		
-		boolean: function(column, data, metadata) {
+		'boolean': function(column, data, metadata) {
 			if(metadata.icon_true || metadata.icon_false) {
 				var icon = data ? metadata.icon_true : metadata.icon_false;
 				if(!icon) {

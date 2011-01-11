@@ -175,7 +175,7 @@ Widget.types.detail = {
 					var score = 0;
 					if(input.parentNode == label[0].parentNode) {
 						score += 100;
-						score -= 10*Math.abs(jQuery.makeArray(input.parentNode.childNodes).indexOf(label[0])-jQuery.makeArray(input.parentNode.childNodes).indexOf(input))
+						score -= 10*Math.abs(jQuery.makeArray(input.parentNode.childNodes).indexOf(label[0])-jQuery.makeArray(input.parentNode.childNodes).indexOf(input));
 					} else {
 						var element_parents = jQuery(input).parents();
 						var label_parents = label.parents();

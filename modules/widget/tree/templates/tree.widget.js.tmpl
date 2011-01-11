@@ -83,15 +83,14 @@ Widget.types.tree = {
 			jQuery.each(children, function(i, child) {
 				var icons = _this.settings.icons_from_item(child);
 				jQuery.each(icons, function(i, theIcon) {
-					icons[i] = 'ui-icon ui-icon-'+theIcon
+					icons[i] = 'ui-icon ui-icon-'+theIcon;
 				});
 				var node = {
 					data: {title: _this.settings.description_from_item(child), icon: icons},
-					metadata: child,
+					metadata: child
 				};
 				if(_this.settings.has_children(child)) {
 					node.state = _this.settings.is_open(child) ? 'closed' : 'closed';
-
 				}
 				result.push(node);
 			});

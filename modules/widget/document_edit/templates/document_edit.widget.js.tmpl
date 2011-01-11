@@ -2,7 +2,7 @@ Widget.types.document_edit = {
 	prepare: function() {
 		var display_modes = this.getDisplayMode();
 		var config_modes = this.getConfigurationModes();
-		this.content = (config_modes.document_categories.length == 0) ? jQuery.parseHTML("{{includeTemplate=edit_no_categories}}") : jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = (config_modes.document_categories.length === 0) ? jQuery.parseHTML("{{includeTemplate=edit_no_categories}}") : jQuery.parseHTML("{{includeTemplate=edit}}");
 		var _this = this;
 		jQuery.each(config_modes, function(config_name, options) {
 			var select_name = config_name;

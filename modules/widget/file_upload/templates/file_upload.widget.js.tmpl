@@ -6,7 +6,7 @@
 			event.dataTransfer = event.originalEvent.dataTransfer;
 		}
 		return event;
-	}
+	};
 })(jQuery);
 
 Widget.types.file_upload = {
@@ -92,7 +92,7 @@ Widget.types.file_upload = {
 		var file_uploader = this;
 		var fileReader = new FileReader();
 		var size = file.size;
-		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024))+' KiB');
+		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024, 10))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
 		fileReader.onload = function() {

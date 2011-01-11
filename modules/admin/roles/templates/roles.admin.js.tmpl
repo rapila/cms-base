@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 			sidebar.settings.row_click_active_mode = 'activate';
 			this.initial_selection = "{{writeRequestValue=group_id}}";
 			if(this.initial_selection) {
-				this.initial_selection = isNaN(this.initial_selection) ? this.initial_selection : parseInt(this.initial_selection);
+				this.initial_selection = isNaN(this.initial_selection) ? this.initial_selection : parseInt(this.initial_selection, 10);
 				sidebar.handle('loaded', function() {
 					sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
 				}, true, true);
@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
 				if(role_list.setSearch(search)) {
 					role_list.reload();
 				}
-			});;
+			});
 	
 			// add row_count_info
 			info_bar.add_row_count_info_for_list(role_list);

@@ -10,7 +10,7 @@ Widget.types.rich_text = {
 			'/',
 			['Styles','Format'],
 			['Image','HorizontalRule','Smiley','SpecialChar'],
-			['Source'],
+			['Source']
 		],
 		skin: "kama",
 		entities: false,
@@ -176,7 +176,7 @@ Widget.types.rich_text = {
 		var _this = this;
 		Widget.createWithElement(widget, function(widget) {
 			_this[name+'_widget'] = widget;
-			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}'
+			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}';
 			widget.handle('element_set', function() {
 				widget._element.appendTo(chooser_element);
 				widget._element.change(function() {

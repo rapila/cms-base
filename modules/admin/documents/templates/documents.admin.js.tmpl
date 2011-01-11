@@ -22,7 +22,7 @@ jQuery(document).ready(function() {
 			sidebar.settings.row_click_active_mode = 'activate';
 			var initial_selection = "{{writeRequestValue=document_category_id}}";
 			if(initial_selection) {
-				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection);
+				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
 				sidebar.handle('loaded', function() {
 					sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
 				}, true, true);

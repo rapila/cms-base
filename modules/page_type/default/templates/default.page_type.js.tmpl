@@ -200,9 +200,9 @@ Widget.types.page_type.types['default'] = {
 				filled_modules.removeClass('css_parsed');
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
-			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').attr('title', "{{writeString=wns.delete_content_object}}").css({ float:"right", cursor: "pointer" });
-			var edit_condition_button = jQuery('<span/>').addClass('ui-icon ui-icon-wrench').attr('title', "{{writeString=wns.edit_display_conditions}}").css({ float:"right", cursor: "pointer"});
-			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').attr('title', "{{writeString=wns.edit_language_content}}").css({ float:"right", cursor: "pointer" });
+			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').attr('title', "{{writeString=wns.delete_content_object}}").css({'float': "right", cursor: "pointer"});
+			var edit_condition_button = jQuery('<span/>').addClass('ui-icon ui-icon-wrench').attr('title', "{{writeString=wns.edit_display_conditions}}").css({'float': "right", cursor: "pointer"});
+			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').attr('title', "{{writeString=wns.edit_language_content}}").css({'float':"right", cursor: "pointer"});
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
