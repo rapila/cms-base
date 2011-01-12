@@ -1,0 +1,35 @@
+Widget.types.model_drag_and_drop = {
+	init_dnd: function(element, model_name, item_id) {
+		var _this = this;
+		
+		if(!this.possible_targets[model_name]) {
+			this.possible_targets[model_name] = this.getPossibleTargetsFor(model_name);
+		}
+		element.attr({'data-model-name': model_name, 'data-item-id': item_id});
+		element.draggable({
+			revert: true
+		});
+		element.droppable({
+			accept: function(draggable) {
+				var dragged_model = jQuery(draggable).attr('data-model-name');
+				if(!dragged_model || !_this.possible_targets[dragged_model]) {
+					return false;
+				}
+				return (_this.possible_targets[dragged_model] === '*' || jQuery.inArray(model_name, _this.possible_targets[dragged_model]) > -1);
+			},
+			drop: function(event, ui) {
+				var draggable = ui.draggable;
+				var dragged_model = draggable.attr('data-model-name');
+				var draggable_item_id = draggable.attr('data-item-id');
+				_this.drop(dragged_model, draggable_item_id, model_name, item_id, function(success) {
+					if(success) {
+						_this.fire('model_drag_and_drop-'+success, dragged_model, draggable_item_id, model_name, item_id);
+					}
+				});
+			},
+			hoverClass: 'ui-state-droppable'
+		});
+	},
+	
+	possible_targets: {}
+};
