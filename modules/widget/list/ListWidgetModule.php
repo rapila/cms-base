@@ -30,6 +30,13 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function getDelegate() {
 		return $this->oDelegate;
 	}
+	
+	public function getModelName() {
+		if(method_exists($this->oDelegate, 'getModelName')) {
+			return $this->oDelegate->getModelName();
+		}
+		return null;
+	}
 
 	public function setListTag($oListTag) {
 		$this->oListTag = $oListTag;

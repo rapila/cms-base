@@ -30,6 +30,14 @@ class CriteriaListWidgetDelegate {
 		$this->aFilterTypes = method_exists($this->oCriteriaDelegate, 'getFilterTypeForColumn') ? array() : null;
 	}
 	
+	public function setModelName($sModelName) {
+		$this->sModelName = $sModelName;
+	}
+
+	public function getModelName() {
+		return $this->sModelName;
+	}
+	
 	public function getListSettings() {
 		return $this->oListSettings;
 	}

@@ -1,6 +1,7 @@
 Widget.types.tag_panel = {
 	initialize: function() {
 		var _this = this;
+		this.dnd = Widget.create('model_drag_and_drop');
 		this.panel = jQuery('<div/>').addClass('tag_panel ui-corner-all ui-widget-content').css({visibility: 'hidden'}).appendTo(document.body);
 		this.tag_area = jQuery('<div/>').addClass('tag_area').appendTo(this.panel);
 		this.admin_area = jQuery('<div/>').addClass('admin_area').appendTo(this.panel);
@@ -41,7 +42,8 @@ Widget.types.tag_panel = {
 		if(!display_name) {
 			display_name = name;
 		}
-		var tag = jQuery('<span/>').addClass('tag').attr({'data-item-id': name, 'data-model-name': 'Tag'});
+		var tag = jQuery('<span/>').addClass('tag');
+		this.dnd.init_dnd(tag, "Tag", name);
 		tag.append(jQuery('<span/>').addClass('tag_start').text(' '));
 		tag.append(jQuery('<span/>').addClass('tag_repeat').text(display_name));
 		tag.append(jQuery('<span/>').addClass('tag_end').text(' '));
