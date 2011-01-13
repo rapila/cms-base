@@ -7,6 +7,8 @@ Schule Altenburg
 Netla Organisation
 - E-Mail-Addressen einrichten. info@netla.ch, newsletter@??? etc. webmaster@netla.ch > weiterleitung
 - Teilnehmer Anmeldung, Geschlecht, Kanton ??
+- Disclaimer
+- Nickname unique
 
 Roger Tel. Planung
 - Formulare Registration, Profil, Login, Newsletter subscribe-unsubscribe, publish
