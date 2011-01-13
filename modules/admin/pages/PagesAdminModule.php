@@ -15,6 +15,7 @@ class PagesAdminModule extends AdminModule {
 		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
+		$this->oTreeWidget->setSetting('init_dnd', true);
 		$oInitialPage = null;
 
 		if(Manager::hasNextPathItem()) {
@@ -58,6 +59,10 @@ class PagesAdminModule extends AdminModule {
 			}
 		}
 		return $aResult;
+	}
+	
+	public function getModelName() {
+		return 'Page';
 	}
 	
 	private static function propertiesFromPage($oPage) {

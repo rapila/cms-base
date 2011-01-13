@@ -143,6 +143,9 @@
 						// 	tmp.prepend(icon_tag);
 						// }
 						// tmp.prepend(icon_tag.addClass('jstree-icon'));
+						if(p.tree_widget.widget.dnd) {
+							p.tree_widget.widget.dnd.init_dnd(tmp, p.tree_widget.widget.settings.model_name, p.tree_widget.widget.settings.identifier_from_data(js.metadata), true);
+						}
 						d.prepend(tmp);
 					});
 					d.prepend("<ins class='jstree-icon'>&#160;</ins>");

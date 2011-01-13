@@ -8,7 +8,7 @@ Widget.types.document_thumbnail_view = {
 				_this.reload();
 			};
 		});
-
+		this.dnd = Widget.create('model_drag_and_drop');
 	},
 	
 	reload: function() {
@@ -76,6 +76,7 @@ Widget.types.document_thumbnail_view = {
 			event.stopPropagation();
 		});
 		doc.data('document_id', document_id);
+		this.dnd.init_dnd(doc, 'Document', document_id);
 		Widget.tooltip(doc, theDocument.name);
 		doc.hover(function() {
 			doc.addClass('ui-state-hover');

@@ -43,4 +43,11 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		return $this->oDelegate->moveItem($mFromData, $mToData, $sPosition);
 	}
 	
+	public function getModelName() {
+		if(!method_exists($this->oDelegate, 'getModelName')) {
+			return null;
+		}
+		return $this->oDelegate->getModelName();
+	}
+	
 }

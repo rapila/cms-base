@@ -12,6 +12,7 @@ class LinkListWidgetModule extends WidgetModule {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 	}
 	
 	public function doWidget() {
