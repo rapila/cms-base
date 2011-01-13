@@ -13,5 +13,11 @@
  * @package    propel.generator.model
  */
 class TagQuery extends BaseTagQuery {
-
+	
+	public function filterByTaggedModel($sModelName) {
+		$this->setDistinct();
+		$this->innerJoinTagInstance();
+		$this->add(TagInstancePeer::MODEL_NAME, $sModelName);
+		return $this;
+	}
 } // TagQuery
