@@ -12,6 +12,15 @@
  */ 
 class TagPeer extends BaseTagPeer {
 	
+	public static function allTaggedIdsForModel($sModelName, $sTagName = null) {
+		$oCriteria = TagInstanceQuery::create()->innerJoinTag()->filterByModelName($sModelName);
+		if($sTagName !== null) {
+			$oCriteria->add(TagPeer::NAME, $sTagName);
+		}
+		$oCriteria->select('TaggedItemId');
+		return $oCriteria->find();
+	}
+	
 	public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {
 		$oCriteria = new Criteria();
 		if($bJoinInstances) {
