@@ -11,6 +11,7 @@
  */ 
 class TagInstancePeer extends BaseTagInstancePeer {
 	public static function newTagInstance($sTagName, $sModelName, $iTaggedItemId) {
+		$sTagName = StringUtil::normalize($sTagName);
 		$oTag = TagPeer::retrieveByName($sTagName);
 		if($oTag === null) {
 			$oTag = new Tag();
