@@ -1,8 +1,0 @@
-Infobar
-
-actions?
-
-icons
-- add button (if option)
-- edit(?) button, delete button (-) if item is selected, 
-	show alert window (delete item /and with content?)
