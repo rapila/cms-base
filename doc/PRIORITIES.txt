@@ -4,6 +4,10 @@ Schule Altenburg
 - Vorgehen, IcampusAdminModule, Soap Install?
 - FrontendManager fix $bParamsNotAllowed > $this->bIsNotFound
 
+Netla Organisation
+- E-Mail-Addressen einrichten. info@netla.ch, newsletter@??? etc. webmaster@netla.ch > weiterleitung
+- Teilnehmer Anmeldung, Geschlecht, Kanton ??
+
 Roger Tel. Planung
 - Formulare Registration, Profil, Login, Newsletter subscribe-unsubscribe, publish
 - Discuss move Mini-Book to Richtext Module
@@ -841,19 +845,7 @@ jQuery / js error deleting user????
 
 comments schema backup
 
-<table name="comments" phpName="Comment">
-	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-	<column name="text" type="blob" />
-	<column name="tip_id" type="integer"/>
-	<foreign-key foreignTable="tips">
-		<reference local="tip_id" foreign="id" />
-	</foreign-key>
-	<column name="page_id" type="integer"/>
-	<column name="frontend_user_id" type="integer"/>
-	<foreign-key foreignTable="frontend_users">
-		<reference local="frontend_user_id" foreign="user_id" />
-	</foreign-key>
-</table>
+
 
 
 Testen, evtl. Richtext in pages debuggen
