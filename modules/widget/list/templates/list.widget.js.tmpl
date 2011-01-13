@@ -4,7 +4,8 @@ Widget.types.list = {
 		var widget = this;
 		
 		if(this.settings.row_model_drag_and_drop_identifier) {
-			if(!this.model_name()) {
+			this.settings.row_model_name = this.getModelName();
+			if(!this.settings.row_model_name) {
 				this.settings.row_model_drag_and_drop_identifier = false;
 			} else {
 				this.settings.dnd = Widget.create('model_drag_and_drop');
@@ -375,13 +376,6 @@ Widget.types.list = {
 			}
 		});
 		return result;
-	},
-	
-	model_name: function() {
-		if(this.settings.row_model_name === undefined) {
-			this.settings.row_model_name = this.getModelName();
-		}
-		return this.settings.row_model_name;
 	},
 	
 	toggle_loader: function(toggle_active) {
