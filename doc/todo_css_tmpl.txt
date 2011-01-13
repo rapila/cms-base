@@ -1,9 +1,6 @@
 TODO
 ====
 
-HTML / CSS
-- fix list views height/color of table tr/td
-
 Admin Fix
 
 Preview Fix
@@ -34,6 +31,10 @@ Immer wieder allgemein TESTEN, Fehler melden, Strings missing melden
 
 DONE
 *******************************
+
+HTML / CSS
+- fix list views height/color of table tr/td
+
 Detail und Alert Dialogs
 - alle Abbrechen und Speichern Buttons (Hover, Highlight)
 - Dialog detail close button ui-state-hover
