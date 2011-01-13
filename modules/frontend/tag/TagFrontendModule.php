@@ -11,6 +11,7 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 		$oItemTemplatePrototype = new Template($aData['template'].'_item');
 		$bItemFound = false;
 		
+		// FIXME: Keep track of output $oCorrespondingItems and refuse output if already done
 		foreach($aData['tags'] as $iTagID) {
 			$oTag = TagPeer::retrieveByPK($iTagID);
 			if($oTag === null) {
@@ -18,6 +19,9 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 			}
 			$aCorrespondingItems = $oTag->getAllCorrespondingDataEntries($aData['types']);
 			foreach($aCorrespondingItems as $oCorrespondingItem) {
+				if(!method_exists($oCorrespondingItem, 'renderListItem')) {
+					return;
+				}
 				if(!$oCorrespondingItem->shouldBeIncludedInList(Session::language(), FrontendManager::$CURRENT_PAGE)) {
 					continue;
 				}
