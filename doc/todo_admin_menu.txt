@@ -1,4 +1,0 @@
-AdminMenu
-
-- add current_module if not in user_defaults
-- link to profile of logged in user with settings

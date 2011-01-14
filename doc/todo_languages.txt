@@ -1,7 +1,0 @@
-language_input filter for all language sensitive module lists
-- add and handle settings: return_options_only
-- international_option: all languages?
-
-language_tabs: 
-- add focus() to tab click > i.e. string detail > textarea
-- check and test correct language_tabs.settings.active_languages handling
