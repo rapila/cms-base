@@ -84,10 +84,12 @@ class PagesAdminModule extends AdminModule {
 			$oPage->moveToFirstChildOf($oRefPage);
 		} else if($sPosition === 'before') {
 			$oPage->moveToPrevSiblingOf($oRefPage);
-		} else if($oPage === 'after') {
+		} else if($sPosition === 'after') {
 			$oPage->moveToNextSiblingOf($oRefPage);
-		} else if($oPage === 'last') {
+		} else if($sPosition === 'last') {
 			$oPage->moveToLastChildOf($oRefPage);
+		} else {
+			return false;
 		}
 		return true;
 	}
