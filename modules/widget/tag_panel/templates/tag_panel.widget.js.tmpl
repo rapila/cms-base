@@ -21,6 +21,9 @@ Widget.types.tag_panel = {
 			if(event.keyCode === 13) {
 				create_new_tag.click();
 			}
+			if(event.keyCode === 27) {
+				_this.hide();
+			}
 		});
 		create_new_tag.bind('click', function(event) {
 			if(!create_new_tag.button('option', 'disabled')) {
