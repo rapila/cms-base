@@ -132,9 +132,9 @@ abstract class Manager {
 
 	public static function getManagerClassNormalized($mManager = null) {
 		if($mManager === null) {
-			return self::getCurrentManager();
+			$mManager = self::getCurrentManager();
 		}
-		if(is_object($mManager)) {
+		if($mManager instanceof Manager) {
 			return get_class($mManager);
 		}
 		return $mManager;

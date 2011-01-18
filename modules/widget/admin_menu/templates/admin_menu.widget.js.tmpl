@@ -201,6 +201,9 @@ Widget.types.admin_menu = {
 		},
 		
 		tag: function() {
+			if(window.PreviewInterface) {
+				return;
+			}
 			var element = jQuery('<button/>').addClass('open-tag-panel').text('{{writeString=wns.tag}}');
 			element.button();
 			return {element: element, callback: function(event) {

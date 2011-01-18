@@ -60,7 +60,7 @@ class CriteriaListTagListWidgetDelegate {
 				$aResult['field_name'] = 'name';
 				break;
 			case 'display_name':
-				$aResult['heading'] = $this->oTagList->getHeadingString();
+				$aResult['display_heading'] = false;
 				$aResult['field_name'] = 'name';
 				break;		
 			case 'magic_column':

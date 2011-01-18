@@ -4,6 +4,7 @@
  */
 class AdminMenuWidgetModule extends WidgetModule {
 	public function __construct() {
+	  $this->setSetting('current_manager', Manager::getManagerClassNormalized());
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/admin_menu.js');
 	}
