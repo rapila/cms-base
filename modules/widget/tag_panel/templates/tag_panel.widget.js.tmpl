@@ -1,9 +1,14 @@
 Widget.types.tag_panel = {
 	initialize: function() {
 		var _this = this;
-		this.dnd = Widget.create('model_drag_and_drop');
 		this.panel = jQuery('<div/>').addClass('tag_panel ui-corner-all ui-widget-content').css({visibility: 'hidden'}).appendTo(document.body);
-		this.tag_area = jQuery('<div/>').addClass('tag_area').appendTo(this.panel);
+		Widget.createWithElement('tag_area', function(tag_area) {
+			tag_area.handle('element_set', function(event, element) {
+				_this.panel.prepend(element);
+			});
+		}, function(tag_area) {
+			_this.tag_area = tag_area;
+		});
 		this.admin_area = jQuery('<div/>').addClass('admin_area').appendTo(this.panel);
 		var new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
 		var create_new_tag = jQuery('<button/>').text('{{writeString=wns.tag.add}}').appendTo(this.admin_area).button({disabled: true});
@@ -19,38 +24,13 @@ Widget.types.tag_panel = {
 		});
 		create_new_tag.bind('click', function(event) {
 			if(!create_new_tag.button('option', 'disabled')) {
-				_this.append_tag(jQuery.trim(new_tag.val()));
+				_this.tag_area.append_tag(jQuery.trim(new_tag.val()));
 				new_tag.val('');
 				create_new_tag.button('option', 'disabled', true);
 			}
 		});
-		this.reload_tags();
 	},
-	
-	reload_tags: function() {
-		var _this = this;
-		this.listTags(function(all_tags) {
-			this.tag_area.empty();
-			jQuery.each(all_tags, function(i, tag) {
-				_this.append_tag(tag.Name);
-			});
-		});
-	},
-	
-	append_tag: function(name, display_name) {
-		var _this = this;
-		if(!display_name) {
-			display_name = name;
-		}
-		var tag = jQuery('<span/>').addClass('tag');
-		this.dnd.init_dnd(tag, "Tag", name);
-		tag.append(jQuery('<span/>').addClass('tag_start').text(' '));
-		tag.append(jQuery('<span/>').addClass('tag_repeat').text(display_name));
-		tag.append(jQuery('<span/>').addClass('tag_end').text(' '));
-		tag.appendTo(this.tag_area);
-		this.tag_area.append(document.createTextNode(' '));
-	},
-	
+		
 	is_visible: function() {
 		if(this.panel.css('visibility') === 'hidden') {
 			return false;

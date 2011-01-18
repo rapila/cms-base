@@ -20,4 +20,11 @@ class TagQuery extends BaseTagQuery {
 		$this->add(TagInstancePeer::MODEL_NAME, $sModelName);
 		return $this;
 	}
+	
+	public function filterByTaggedItem($mItemId) {
+		$this->setDistinct();
+		$this->innerJoinTagInstance();
+		$this->add(TagInstancePeer::TAGGED_ITEM_ID, $mItemId);
+		return $this;
+	}
 } // TagQuery
