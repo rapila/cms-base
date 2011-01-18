@@ -1,0 +1,113 @@
+TODO
+====
+
+Admin Fix
+
+CSS
+- update jQuery UI theme ? fix centered dialog for Safari & Chrome
+- tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
+- Preview conflict with ui-widget-header???
+
+Preview Fix
+- progressbar ui-progressbar > no round border, less high, discuss color? blue? (progressbar works in Chrome)
+- D&Drop Highlight does not work properly
+- ui-state-droppable should work universally in richtext image_picker, document_detail usw.
+	@see admin-ui.css/less > widget.css
+
+- Detail widgets
+- Dialog button pane should NEVER be unreachable, @see document_edit
+- Admin menu, buttons dashboard and logout style
+
+TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc. 
+- Resize Window & Textbereich
+
+Browser issues
+- Safari / Chrome
+	Login Window and Dialogs should be centered 
+
+Compatibility: Firefox (both Mac and Win), Safari + Chrome, Opera?
+- FileUpload, if browser can't do drag&drop, don't display document_detail "droppable_info" ui-state-droppable on list
+- min requirements admin/login: add info at login. Do not allow login if not the appropriate browser 
+
+Immer wieder allgemein TESTEN, Fehler melden, Strings missing melden
+- Windows Firefox, IE 9
+
+
+
+DONE
+*******************************
+
+HTML / CSS
+- fix list views height/color of table tr/td
+
+Detail und Alert Dialogs
+- alle Abbrechen und Speichern Buttons (Hover, Highlight)
+- Dialog detail close button ui-state-hover
+
+Info: Ich habe einen neuen Hintergrund hinzugefügt für die Language Objects (filled_object_bg_gradient.png).
+
+PageDetail
+- da es jetzt in der Regel genug Platz unten hat, sollten meiner Meinung nach die control buttons immer fix unten sein wie im Gestaltungsvorschlag
+- der border-bottom der buttons "löschen" und "abbrechen" soll heller sein, nicht dieselbe button Klasse wie die schwarzen.
+	siehe Gestaltungsvorschlag
+	
+Admin Menu
+- select Verwalten und Administrieren soll nicht grün sein.
+
+Tree
+- die Baum linien sind nicht immer korrekt, z.B highligh impressum, linie sollte so gezeigt werden wie wenn nicht aktive, aber hover
+
+Documents list
+- thumbnail view hover and tooltips do not work properly in Firefox mainly
+- Document Thumbnail view, delete/trash ui-state-hover > trash icon is not visible anymore
+
+
+
+
+Notes JM Alt
+*******************************
+
+wichtige elemente
+- sidebar
+- page_tree
+- language_tabs (pages, strings, tips etc)
+- accordion tabs (pages, newsletter etc)
+- list views/thumbnail views, documents, i.e. projects or galery module
+- detail widget, admin / preview
+- user notifications alerts
+- admin-menu, admin / preview
+
+
+guidelines, coding convention, naming convention
+- ids only for postitioning of main element (admin), skeleton
+- jQuery ui overwrite
+- work with less?
+
+General Infos
+prepared for skins/themes (jQuery-UI, rapila)
+
+structure ?
+- admin_preview.css
+- admin.css
+- preview.css
+- jquery_ui.theme.css
+- jquery-ui.theme.overwrite.css (merge in final version?)
+- admin-menu.css
+- widget.css / context css see widget/templates/widget_name.css.tmpl
+
+
+
+- Documents list header should be lined up with sidebar header
+
+PageTree
+- D&D Visualisation needs some attention
+
+Alert dialogs
+- delete > .cmos_alert längere Texte sollten links eingerückt sein.
+
+Nächstens Dringend: 
+- Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)
+- Widget Dialog und Richtext Fenster D&D
+- Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
+- Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
+

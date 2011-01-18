@@ -85,6 +85,7 @@ body.pages #admin_main {
 	height: 100%;
 	margin: 23px 2px 2px 2px;
 	padding: 2px;
+	min-height: 200px;
 	width: 100px;
 }
 
@@ -99,6 +100,11 @@ body.pages #admin_main {
 .delete_drop_zone.ui-state-droppable span {
 	color: #f00;
 }
+
+.delete_drop_zone.ui-state-droppable {
+	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat center center;
+}
+
 
 .page_detail_controls div {
 	height:100%;

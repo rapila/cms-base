@@ -174,7 +174,7 @@ Widget.types.page_type.types['default'] = {
 		var pt_default = this;
 		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
 		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
-		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').html("<span>{{writeString=wns.page.drop_object_all_languages}}</span>").appendTo(container);
+		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').html("<span>&nbsp;</span>").attr('title', "{{writeString=wns.page.drop_object_all_languages}}").appendTo(container);
 		delete_drop_zone.droppable({
 			accept: 'li[data-container]',
 			activeClass: 'ui-state-draggable',
