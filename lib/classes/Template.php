@@ -801,7 +801,7 @@ class Template {
 				
 				case '~=':
 					$sComparisonString = "in_array";
-					$aFuncArgs = array($sFirst, explode('|', $sSecond));
+					$aFuncArgs = array($sFirst, preg_split('/\\s+/', $sSecond, -1, PREG_SPLIT_NO_EMPTY));
 					$sCompareMode = "function";
 				break;
 				
