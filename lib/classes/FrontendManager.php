@@ -12,8 +12,6 @@ class FrontendManager extends Manager {
 	protected $bIsNotFound;
 	protected $oPageType;
 	private $oRootNavigationItem;
-	
-	const USEPATH_HANDLED_BY_MODULE = 'usepath_handled_by_module';
 	/**
 	 * __construct()
 	 */
