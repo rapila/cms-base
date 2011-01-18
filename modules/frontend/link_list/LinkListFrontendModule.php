@@ -13,14 +13,17 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		$aOptions = @unserialize($this->getData());
 		$oCriteria = LinkQuery::create();
 		$bOneTagnameOnly = false;
+		$aCategories = null;
 		if(isset($aOptions['tags']) && is_array($aOptions['tags']) && (count($aOptions['tags']) > 0)) {
 			$aLinks = LinkPeer::getLinksByTagName($aOptions['tags']);
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
 		} else {
-			if(isset($aOptions['link_categories']) && is_array($aOptions['link_categories']) && (count($aOptions['link_categories']) > 0)) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories'], Criteria::IN);
-			} else if(isset($aOptions['link_categories'])) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aOptions['link_categories']);
+      $aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
+
+		  if(count($aCategories) > 1) {
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
+		  } else if(count($aCategories === 1)) {
+				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories[0]);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
@@ -32,6 +35,8 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			$oListTemplate = new Template($aOptions['template']);
 			if($bOneTagnameOnly) {
         $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
+			} else if(is_array($aCategories)) {
+			  $oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));
 			}
 			foreach($oCriteria->find() as $i => $oLink) {
 				$oItemTemplate = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);

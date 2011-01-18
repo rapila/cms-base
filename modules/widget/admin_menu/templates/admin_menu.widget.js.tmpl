@@ -236,11 +236,13 @@ Widget.types.admin_menu = {
 		},
 		
 		logout: function() {
+			var admin_menu = this;
 			var result = {};
 			result.callback = function() {
+				var page_link = admin_menu.getPageLink();
 				Widget.create('login_window', function(login_window) {
 					login_window.logout(function() {
-						window.location.href = window.location.href;
+						window.location.href = page_link;
 					});
 					this.hide();
 				}.bind(this));

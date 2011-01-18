@@ -40,8 +40,15 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getPreviewLink() {
-		$oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
-		$aPath = $oPage ? $oPage->getFullPathArray() : array();
-		return LinkUtil::link($aPath, 'PreviewManager', array(), false);
+		return LinkUtil::link(self::getPageFullPathArray(), 'PreviewManager', array(), false);
+	}
+	
+	private static function getPageFullPathArray() {
+	  $oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+		return ($oPage ? $oPage->getFullPathArray() : array());
+	}
+	
+	public function getPageLink() {
+		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager', array(), true);
 	}
 }
