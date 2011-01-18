@@ -60,7 +60,6 @@ class FrontendManager extends Manager {
 				$oMatchingNavigationItem = $oNextNavigationItem;
 			} else {
 				self::unusePath();
-				$this->bIsNotFound = true;
 				break;
 			}
 		}
@@ -70,6 +69,24 @@ class FrontendManager extends Manager {
 			self::$CURRENT_NAVIGATION_ITEM->setCurrent(false); //It is, however, still active
 		}
 		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
+		
+		$iTimesUsed = 0;
+		while(self::hasNextPathItem()) {
+			$sKey = self::usePath();
+			$iTimesUsed++;
+			$sValue = null;
+			if(self::hasNextPathItem()) {
+				$sValue = self::usePath();
+				$iTimesUsed++;
+			}
+			$this->aPathRequestParams[] = $sKey;
+			if(!isset($_REQUEST[$sKey])) {
+				$_REQUEST[$sKey] = $sValue;
+			}
+		}
+		for($i=1;$i<=$iTimesUsed;$i++) {
+			self::unusePath();
+		}
 		
 		if($oMatchingNavigationItem->isFolder()) {
 			$oFirstChild = $oMatchingNavigationItem->getFirstChild(Session::language(), false, true);
