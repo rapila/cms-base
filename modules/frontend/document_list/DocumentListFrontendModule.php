@@ -15,10 +15,11 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		if(!Session::getSession()->isAuthenticated()) {
 			$oCriteria->filterByIsProtected(false);
 		}
-		if(isset($aOptions['document_categories']) && is_array($aOptions['document_categories']) && (count($aOptions['document_categories']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories'], Criteria::IN);
-		} else if(isset($aOptions['document_categories'])) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories']);
+		$aCategories = isset($aOptions['document_categories']) ? (is_array($aOptions['document_categories']) ? $aOptions['document_categories'] : array($aOptions['document_categories'])) : array();
+		if(count($aCategories) > 1) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories, Criteria::IN);
+		} else if(count($aCategories === 1)) {
+			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
 		}
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
@@ -28,6 +29,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
+			$oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));
 			foreach($aDocuments as $i => $oDocument) {
 				$oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Document');

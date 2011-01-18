@@ -793,6 +793,18 @@ class Template {
 					$mUnexpectedResult = 0;
 				break;
 				
+				case '|=':
+					$sComparisonString = "in_array";
+					$aFuncArgs = array($sFirst, explode('|', $sSecond));
+					$sCompareMode = "function";
+				break;
+				
+				case '~=':
+					$sComparisonString = "in_array";
+					$aFuncArgs = array($sFirst, explode('|', $sSecond));
+					$sCompareMode = "function";
+				break;
+				
 				case 'contains':
 					$sComparisonString = "stripos";
 					if($sCompareMode === "strict") {
