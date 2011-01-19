@@ -2,9 +2,11 @@ TODO
 ====
 
 Admin Fix
+- info dialog header bug Netla preview fixed > ui-dialog position: absolute !important;
 
 CSS
 - update jQuery UI theme ? fix centered dialog for Safari & Chrome
+- Netla Tips > Kategory Tags Tab, discuss
 - tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
 - Preview conflict with ui-widget-header???
 
