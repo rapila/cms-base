@@ -64,6 +64,9 @@ class ResourceIncluder {
 		$this->aReverseDependencies = array();
 	}
 	
+	/**
+	* Use this to start a new dependency stack. This means that all dependencies added between this call and a resource added with addResourceEndingDependency will have the latter added as dependees. This means: the resource added using addResourceEndingDependency will always come after all the resources added between the two calls. Whenever one of the dependencies is added again later, the dependee will be moved down.
+	*/
 	public function startDependencies() {
 		array_unshift($this->aCurrentDependencyStack, array());
 	}

@@ -24,7 +24,7 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 		if($this->sModelName === null || $this->mTaggedItemId === null) {
 			throw new Exception('Can only delete specific tags');
 		}
-		$oTag = TagQuery::create()->filterByTaggedModel($this->sModelName)->filterByTaggedItem($this->mTaggedItemId)->filterByName($sTagName)->findOne();
+		$oTag = TagInstanceQuery::create()->filterByModelName($this->sModelName)->filterByTaggedItemId($this->mTaggedItemId)->filterByTagName($sTagName)->findOne();
 		if(!$oTag) {
 			return true;
 		}
