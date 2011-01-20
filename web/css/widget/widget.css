@@ -189,8 +189,5 @@ body.pages .ui-tabs-nav.ui-widget-header { background-color: #ebedef; }
   padding: 0 0 20px 26px;
   margin-left: 0;
 }
-.ui-tabs .ui-tabs-panel {
-  border-top: 1px solid #cccdcf;
-  background-color: #fcfcfc;
-}
+.ui-tabs .ui-tabs-panel { border-top: 1px solid #cccdcf; }
 .ui-tabs .ui-tabs-panel { padding: 0; }
