@@ -6,7 +6,6 @@ Admin Fix
 
 CSS
 - update jQuery UI theme ? fix centered dialog for Safari & Chrome
-- Netla Tips > Kategory Tags Tab, discuss
 - tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
 - Preview conflict with ui-widget-header???
 
@@ -16,9 +15,7 @@ Preview Fix
 - ui-state-droppable should work universally in richtext image_picker, document_detail usw.
 	@see admin-ui.css/less > widget.css
 
-- Detail widgets
 - Dialog button pane should NEVER be unreachable, @see document_edit
-- Admin menu, buttons dashboard and logout style
 
 TextFrontendModule / Richtext Anwendungen wie Tipps und Tricks etc. 
 - Resize Window & Textbereich
@@ -113,3 +110,5 @@ Nächstens Dringend:
 - Generell verhindern, dass Widget Dialog Windows Kontrollelemente unerreichbar sind
 - Wenn möglich die Hauptaction (save, cancel) je nach Bedarf mit enter return funktioniert.
 
+- Admin menu, buttons dashboard and logout style
+- Netla Tips > Kategory Tags Tab, discuss

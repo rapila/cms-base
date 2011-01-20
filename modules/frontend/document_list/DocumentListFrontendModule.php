@@ -105,4 +105,5 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		}
 		return $aResult;
 	}
+
 }

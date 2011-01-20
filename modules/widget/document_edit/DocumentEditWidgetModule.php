@@ -23,15 +23,28 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
-	public function allDocuments() {
+	public function allDocuments($mDocumentCategoryId = null) {
 		$aOptions = $this->sDisplayMode;
 		$oCriteria = DocumentQuery::create();
-
-		if(isset($aOptions['document_categories']) && is_array($aOptions['document_categories']) 
-				&& (count($aOptions['document_categories']) > 0)) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories'], Criteria::IN);
-		} else if(isset($aOptions['document_categories'])) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories']);
+		$aCategories = array();
+		if($mDocumentCategoryId === null) {
+			if(isset($aOptions['document_categories'])) {
+				if(is_array($aOptions['document_categories']) ) {
+					$aCategories = $aOptions['document_categories'];
+				} else {
+					$aCategories = array($aOptions['document_categories']);
+				}
+			}
+		} else {
+			$aCategories = is_array($mDocumentCategoryId) ? $mDocumentCategoryId : array($mDocumentCategoryId);
+		}
+		if(count($aCategories) > 0) {
+			if(count($aCategories > 1)) {
+				$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aOptions['document_categories'], Criteria::IN);
+			} else {
+				$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
+			}
+			
 		}
 		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_BY_SORT) {
 			$oCriteria->orderBySort();

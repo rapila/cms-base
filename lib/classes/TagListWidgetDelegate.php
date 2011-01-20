@@ -35,7 +35,6 @@ class TagListWidgetDelegate extends CriteriaListWidgetDelegate {
 	public function getIncludeAllAndWithout() {
 		return $this->bIncludeAllAndWithout;
 	}
-	
 }
 
 class CriteriaListTagListWidgetDelegate {
