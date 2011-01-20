@@ -88,6 +88,7 @@ body.login h1 {
   z-index: 10;
 }
 #admin_sidebar .ui-tabs-nav { background: #f6f6f6; }
+#admin_sidebar .ui-tabs-nav li a { font-weight: 700; }
 #admin_sidebar .ui-tabs-nav .ui-state-active { background: #dfe1e3; }
 #admin_main { left: 277px; }
 #admin_main {
