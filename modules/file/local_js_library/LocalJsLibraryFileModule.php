@@ -10,8 +10,8 @@ class LocalJsLibraryFileModule extends FileModule {
 	
 	public function renderFile() {
 		$oCache = new Cache($this->aLibraryName.''.serialize($_GET), DIRNAME_TEMPLATES);
-		$oCache->sendCacheControlHeaders();
 		header("Content-Type: text/javascript");
+		$oCache->sendCacheControlHeaders();
 		if($oCache->cacheFileExists(true)) {
 			$oCache->passContents(); exit;
 		}
