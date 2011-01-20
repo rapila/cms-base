@@ -89,8 +89,6 @@ form.page_detail {
 form.page_detail h3 { background-color: #ebedef; }
 form.page_detail .status_section { background-color: #ebedef; }
 .pages #admin_main { background-color: #ebedef; }
-form.page_detail .ui-state-active { background-color: #ebedef; }
-form.page_detail .ui-widget-content .ui-state-active { background-color: #ebedef; }
 .ui-widget-content h3 { background-color: #ebedef; }
 form.page_detail .ui-state-active { background-image: none; }
 form.page_detail .ui-widget-content .ui-state-active { background-image: none; }
