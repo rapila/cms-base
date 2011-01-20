@@ -5,10 +5,9 @@
  */
 abstract class Manager {
 	protected static $REQUEST_PATH = array();
+	protected static $CURRENT_MANAGER = null;
+	
 	private static $USED_PATH = array();
-	
-	private static $CURRENT_MANAGER = null;
-	
 	private static $ORIGINAL_PATH = null;
 	
 	protected function __construct() {

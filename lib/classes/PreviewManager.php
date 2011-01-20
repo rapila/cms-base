@@ -3,6 +3,8 @@
 class PreviewManager extends FrontendManager {
 	private $sOldSessionLanguage;
 	
+	private static $PREVIOUS_MANAGER;
+	
 	public function __construct() {
 		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => 'true')));
@@ -85,5 +87,14 @@ class PreviewManager extends FrontendManager {
 	
 	public static function shouldIncludeLanguageInLink() {
 		return false;
+	}
+	
+	public static function setTemporaryManager() {
+		self::$PREVIOUS_MANAGER = Manager::getCurrentManager();
+		self::$CURRENT_MANAGER = get_class();
+	}
+	
+	public static function revertTemporaryManager() {
+		self::$CURRENT_MANAGER = self::$PREVIOUS_MANAGER;
 	}
 }

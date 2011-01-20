@@ -284,8 +284,15 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
+		
+		//Some frontend modules use this
+		FrontendManager::$CURRENT_PAGE = $oCurrentContentObject->getPage();
+		//Some frontend modules generate links into the current manager – those need to be correct
+		PreviewManager::setTemporaryManager();
 		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
-		return array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
+		$aResult =  array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
+		PreviewManager::revertTemporaryManager();
+		return $aResult;
 	}
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
