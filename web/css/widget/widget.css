@@ -174,10 +174,7 @@ input.ui-widget-content.input_short { width: 6em; }
 }
 .ui-tabs-nav .ui-state-active a { color: black; }
 .ui-tabs .ui-tabs-nav li a { padding: 0.5em 1.5em 0.2em; }
-.ui-tabs-nav.ui-widget-header {
-  padding-left: 21px;
-  background: transparent url('');
-}
+.ui-tabs-nav.ui-widget-header { background: transparent url(''); }
 body.pages .ui-tabs-nav.ui-widget-header { background-color: #ebedef; }
 .ui-state-default a.tab_content_active { color: black; }
 .ui-tabs .ui-tabs-nav li.ui-state-active { background-color: #fcfcfc; }
