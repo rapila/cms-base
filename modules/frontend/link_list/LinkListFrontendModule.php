@@ -19,6 +19,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			$bOneTagnameOnly = count($aOptions['tags']) === 1;
 		} else {
       $aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
+
 			$oLangCriterion = $oCriteria->getNewCriterion(LinkPeer::LANGUAGE_ID, Session::language());
 			$oLangCriterion->addOr($oCriteria->getNewCriterion(LinkPeer::LANGUAGE_ID, null));
 			$oCriteria->add($oLangCriterion);
