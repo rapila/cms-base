@@ -42,5 +42,11 @@ class Tag extends BaseTag {
 	public function getTagInstanceCount() {
 		return $this->countTagInstances();
 	}
+	
+	public function countTagInstancesByModel($sModelName) {
+	  $oCriteria = new Criteria();
+	  $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
+	  return $this->countTagInstances($oCriteria);
+	}
 }
 

@@ -65,5 +65,19 @@ class TagPeer extends BaseTagPeer {
 		return $oCriteria;
 	}
 	
+	public static function getTagsWithTaggedItemCountByModelName($sModelName) {
+	  $oCriteria = new Criteria();
+		$oCriteria->addJoin(self::ID, TagInstancePeer::TAG_ID, Criteria::INNER_JOIN);
+		$oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
+		$oCriteria->addGroupByColumn(self::NAME);
+    $oCriteria->addAscendingOrderByColumn(self::NAME);
+    $oCriteria->clearSelectColumns()->addSelectColumn('COUNT('.TagInstancePeer::TAG_ID.') AS count');
+    $oStmt = self::doSelectStmt($oCriteria);
+    $aResult = array();
+    while($sName = $oStmt->fetchColumn(1)) {
+      $aResult[$sName] = $oStmt->fetchColumn(2);
+    }
+    return $aResult;
+	}
 }
 
