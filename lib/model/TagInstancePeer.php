@@ -58,7 +58,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		return self::doSelect(self::getByModelNameAndTagIdCriteria($sModelName, $iId));
 	}
 	
-	public static function getByModelNameAndTagName($sModelName, $sTagName = null, $bCountOnly = false) {
+	public static function getByModelNameAndTagName($sModelName, $sTagName = null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
 		if($sTagName !== null) {
