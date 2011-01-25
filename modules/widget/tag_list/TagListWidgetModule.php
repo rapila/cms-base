@@ -45,23 +45,4 @@ class TagListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'model_name') {
-			return TagInstancePeer::MODEL_NAME;
-		}
-		return null;
-	}
-
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'model_name') {
-			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
-		}
-		return null;
-	}
-
-	public function getCriteria() {
-		$oCriteria = new Criteria();
-		return $oCriteria->addJoin(TagPeer::ID, TagInstancePeer::TAG_ID);
-	}
 }
