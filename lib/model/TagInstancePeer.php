@@ -72,7 +72,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
     $oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
 		if($sTagName !== null) {
-			$oCriteria->addJoin(self::TAG_ID, TagPeer::ID, Criteria::INNER_JOIN);
+			$oCriteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, Criteria::INNER_JOIN);
 			$oCriteria->add(TagPeer::NAME, $sTagName);
 		}
     $oCriteria->clearSelectColumns()->addSelectColumn(self::TAGGED_ITEM_ID);
