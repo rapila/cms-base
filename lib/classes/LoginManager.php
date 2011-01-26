@@ -169,7 +169,7 @@ class LoginManager extends Manager {
 		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters(array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_referrer' => Session::getSession()->getAttribute('login_referrer'), 'recover_username' => $oUser->getUsername()));
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
 		$oEmail = new EMail(StringPeer::getString('login.password_recover_email_subject'), $oEmailTemplate);
-		$oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'Mini-CMS on '.$_SERVER['HTTP_HOST']), Settings::getSetting('domain_holder', 'email', 'cms@'.$_SERVER['HTTP_HOST']));
+		$oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'rapila on '.$_SERVER['HTTP_HOST']), Settings::getSetting('domain_holder', 'email', 'cms@'.$_SERVER['HTTP_HOST']));
 		$oEmail->addRecipient($oUser->getEmail());
 		$oEmail->send();
 	}

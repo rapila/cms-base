@@ -1,4 +1,4 @@
-MIGRATION Issues for upgrade from Mini-CMS Version 1 > 2 (rapila)
+MIGRATION Issues for upgrade from Mini-CMS Version 1 > rapila 2
 
 1. Update and clear caches
 2. Clear session (just in case)

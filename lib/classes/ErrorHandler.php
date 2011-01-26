@@ -169,7 +169,7 @@ class ErrorHandler {
 			}
 			if($sAddress) {
 				FilterModule::getFilters()->handleErrorEmailSend(array(&$sAddress, &$aError));
-				mb_send_mail($sAddress, "Error in Mini-CMS on ".$aError['host'], MAIN_DIR_FE.$aError['path'].print_r($aError, true));
+				mb_send_mail($sAddress, "Error in rapila on ".$aError['host'], MAIN_DIR_FE.$aError['path'].print_r($aError, true));
 			}
 		}
 		if(self::shouldLogErrors()) {
