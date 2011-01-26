@@ -42,7 +42,7 @@ class ResourceFinder {
 	}
 	
 	/**
-	* Finds files which reside inside the CMS’ main direcory. The goal of findResource is to provide a way of accessing all the desired resource from
+	* Finds files which reside inside the CMS’ main direcory. The goal of findResource is to provide a way of accessing all the desired resources from
 	* the most specific location. Files in the site folder override files in the plugins folders which, in turn, override files in the base folder.
 	* The return type varies depending on the given options ($bByExpressions, $bFindAll, $bReturnObjects).
 	* If $bReturnObjects is false, the returned value(s) will be strings containing the files canonical full path on the file system.
