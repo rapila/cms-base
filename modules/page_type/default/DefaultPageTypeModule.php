@@ -200,9 +200,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$aResult = array();
 
 		foreach($aContainers as $oContainer) {
-			if($oContainer->hasParameter('autofill')) {
-				continue;
-			}
 			$sContainerName = $oContainer->getValue();
 			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
 			$bHasNoObjects = count($aObjects) === 0;
