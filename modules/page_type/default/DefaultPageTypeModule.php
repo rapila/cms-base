@@ -29,23 +29,23 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		$this->oFrontendTemplate = $oTemplate;
 		$this->iModuleId = 1;
+		$this->oFrontendTemplate->replaceIdentifierCallback("autofill", $this, "fillAutofill", Template::NO_HTML_ESCAPE);
 		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
 	}
 	
-	public function fillContainer($oTemplateIdentifier, $iFlags) {
-		if($oTemplateIdentifier->hasParameter('autofill')) {
-			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('container'), null, true);
-			$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getParameter('autofill'), $oTemplateIdentifier->getParameter('data'));
-			$oTemplate->replaceIdentifierMultiple("container", $oModule->renderFrontend(), null, Template::NO_HTML_ESCAPE);
-			if(($sCss = $oModule->getCssForFrontend()) !== null) {
-				ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
-			}
-			if(($sJs = $oModule->getJsForFrontend()) !== null) {
-				ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
-			}
-			return $oTemplate;
+	public function fillAutofill($oTemplateIdentifier, $iFlags) {
+		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
+		$mResult = $oModule->renderFrontend();
+		if(($sCss = $oModule->getCssForFrontend()) !== null) {
+			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
 		}
-		
+		if(($sJs = $oModule->getJsForFrontend()) !== null) {
+			ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
+		}
+		return $mResult;
+	}
+	
+	public function fillContainer($oTemplateIdentifier, $iFlags) {
 		$bInheritContainer = BooleanParser::booleanForString($oTemplateIdentifier->getParameter("inherit"));
 		$sContainerName = $oTemplateIdentifier->getValue();
 		$aPageObjects = $this->oPage->getObjectsForContainer($sContainerName);
