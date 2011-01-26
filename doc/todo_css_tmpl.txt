@@ -9,7 +9,11 @@ CSS
 - tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
 - Preview conflict with ui-widget-header???
 
+Newsletter
+- detail, cancel and save button !!
+
 Preview Fix
+- z-index link-dialog behind main text editor window
 - progressbar ui-progressbar > no round border, less high, discuss color? blue? (progressbar works in Chrome)
 - D&Drop Highlight does not work properly
 - ui-state-droppable should work universally in richtext image_picker, document_detail usw.
