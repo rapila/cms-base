@@ -112,6 +112,7 @@ class Session {
 				$iReturnValue |= self::USER_IS_DEFAULT_USER;
 			}
 		}
+		FilterModule::getFilters()->handleUserLoggedIn($oUser, array('user_status' => $iReturnValue));
 		return $iReturnValue;
 	}
 
@@ -184,7 +185,12 @@ class Session {
 	}
 
 	public function resetAttribute($sAttribute) {
+		$mResult = null;
+		if($this->hasAttribute($sAttribute)) {
+			$mResult = $this->aAttributes[$sAttribute];
+		}
 		$this->setAttribute($sAttribute, null);
+		return $mResult;
 	}
 
 	public function hasAttribute($sAttribute) {
