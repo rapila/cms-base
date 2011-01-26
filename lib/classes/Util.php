@@ -144,12 +144,12 @@ class Util {
 		return $aBitsDissected;
 	}
 	
-	public static function formatCreatedInfo($oGameEpisode) {
-		return self::formatCreatedAtForAdmin($oGameEpisode).' / '.self::getCreatedByIfSet($oGameEpisode);
+	public static function formatCreatedInfo($oObject) {
+		return self::formatCreatedAtForAdmin($oObject).' / '.self::getCreatedByIfSet($oObject);
 	}
 	
-	public static function formatUpdatedInfo($oGameEpisode) {
-		return self::formatUpdatedAtForAdmin($oGameEpisode).' / '.self::getUpdatedByIfSet($oGameEpisode);
+	public static function formatUpdatedInfo($oObject) {
+		return self::formatUpdatedAtForAdmin($oObject).' / '.self::getUpdatedByIfSet($oObject);
 	}
 
 	public static function formatCreatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
