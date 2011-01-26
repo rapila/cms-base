@@ -8,7 +8,7 @@
 
 /**
  * @package model
- */ 
+ */
 class TagInstancePeer extends BaseTagInstancePeer {
 	public static function newTagInstance($sTagName, $sModelName, $iTaggedItemId) {
 		$sTagName = StringUtil::normalize($sTagName);
@@ -66,22 +66,6 @@ class TagInstancePeer extends BaseTagInstancePeer {
 			$oCriteria->add(TagPeer::NAME, $sTagName);
 		}
 		return self::doSelect($oCriteria);
-	}
-	
-	public static function getTaggedIdsByModelNameAndTagName($sModelName, $sTagName = null) {
-    $oCriteria = new Criteria();
-		$oCriteria->add(self::MODEL_NAME, $sModelName);
-		if($sTagName !== null) {
-			$oCriteria->addJoin(TagInstancePeer::TAG_ID, TagPeer::ID, Criteria::INNER_JOIN);
-			$oCriteria->add(TagPeer::NAME, $sTagName);
-		}
-    $oCriteria->clearSelectColumns()->addSelectColumn(self::TAGGED_ITEM_ID);
-    $oStmt = self::doSelectStmt($oCriteria);
-    $aResult = array();
-    while ($iTaggedItemId = $oStmt->fetchColumn(1)) {
-      $aResult[] = $iTaggedItemId;
-    }
-    return $aResult;
 	}
 	
 	public static function getTaggedModels() {
