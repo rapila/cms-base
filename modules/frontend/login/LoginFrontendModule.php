@@ -35,6 +35,7 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 			if(!$this->oPage->getIsProtected() || Session::getSession()->getUser()->mayViewPage($this->oPage)) {
 				$oTemplate = $this->constructTemplate('logout');
 				$oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
+				$oTemplate->replaceIdentifier('name', Session::getSession()->getUser()->getUsername());
 				$oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
 				return $oTemplate;
 			} else {
