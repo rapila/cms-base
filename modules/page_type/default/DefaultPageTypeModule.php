@@ -94,7 +94,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if($oPageContents === null) {
 			return false;
 		}
-		if($oContentObject->getConditionSerialized() !== null) {
+		if($oContentObject->getConditionSerialized() !== null && !$this->bIsPreview) {
 			$oConditionTemplate = unserialize(stream_get_contents($oContentObject->getConditionSerialized()));
 			if($oConditionTemplate->render() === '') {
 				return false;
