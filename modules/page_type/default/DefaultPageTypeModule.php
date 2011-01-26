@@ -46,6 +46,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	public function fillContainer($oTemplateIdentifier, $iFlags) {
+		if($oTemplateIdentifier->hasParameter('declaration_only')) {
+			// Container exists only to appear in admin area, not be rendered in frontend (at least not directly)
+			return;
+		}
 		$bInheritContainer = BooleanParser::booleanForString($oTemplateIdentifier->getParameter("inherit"));
 		$sContainerName = $oTemplateIdentifier->getValue();
 		$aPageObjects = $this->oPage->getObjectsForContainer($sContainerName);
@@ -287,7 +291,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		//Some frontend modules generate links into the current manager – those need to be correct
 		PreviewManager::setTemporaryManager();
 		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
-		$aResult =  array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
+		$aResult =	array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
 		PreviewManager::revertTemporaryManager();
 		return $aResult;
 	}
@@ -324,7 +328,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		if(!Session::getSession()->getUser()->mayEditPageContents($oCurrentContentObject->getPage())) {
 			return false;
-		}	
+		} 
 		if($bForce) {
 			return ContentObjectPeer::doDelete($iObjectId);
 		}
