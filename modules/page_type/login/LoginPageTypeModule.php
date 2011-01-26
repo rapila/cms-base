@@ -46,7 +46,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 		}
 		
 		if(isset($_POST[LoginManager::USER_NAME])) {
-			$iLogin = LoginManager::login();
+			LoginManager::login();
 		}
 		
 		parent::display($oTemplate, $bIsPreview);

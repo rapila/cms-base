@@ -107,7 +107,7 @@ class Session {
 		if(($iReturnValue & self::USER_IS_VALID) === self::USER_IS_VALID) {
 			$this->oUser = $oUser;
 			$this->iUserId = $oUser->getId();
-			if ($this->oUser->getFirstName() == '') {
+			if(UserQuery::create()->count() === 1 && $this->oUser->getFirstName() == '') {
 				// user firstname can only (should only) be empty if it is the default user
 				$iReturnValue |= self::USER_IS_DEFAULT_USER;
 			}
