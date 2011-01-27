@@ -367,6 +367,7 @@ label span.error_display { color: red; }
   padding: 2px;
   width: 100px;
 }
+.ui-image-picker-image { line-height: 160px; }
 .ui-image-picker-image .ui-icon.ui-icon-trash {
   position: absolute;
   bottom: 2px;
