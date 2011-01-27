@@ -174,7 +174,7 @@ class Template {
 			$mPath = $aPath;
 			array_pop($mPath);
 			
-			if(StringUtil::startsWith($sTemplateName, 'e_mail_')) {
+			if(StringUtil::startsWith($sTemplateName, 'e_mail_') || StringUtil::startsWith($sTemplateName, 'email_')) {
 				$iDefaultFlags |= self::NO_HTML_ESCAPE;
 			} else if(StringUtil::endsWith($sTemplateName, '.js') || StringUtil::endsWith($sTemplateName, '.css')) {
 				$iDefaultFlags |= (self::NO_HTML_ESCAPE|self::ESCAPE);
