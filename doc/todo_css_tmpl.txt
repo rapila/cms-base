@@ -10,12 +10,9 @@ CSS
 - Preview conflict with ui-widget-header???
 
 Newsletter
-- detail, cancel and save button !!
-
-Preview Netla fix sidebar preview button position vertical????
+- detail, cancel and save button !! > push jm!!!
 
 Preview Fix
-- z-index link-dialog behind main text editor window
 - progressbar ui-progressbar > no round border, less high, discuss color? blue? (progressbar works in Chrome)
 - D&Drop Highlight does not work properly
 - ui-state-droppable should work universally in richtext image_picker, document_detail usw.
@@ -118,3 +115,5 @@ Nächstens Dringend:
 
 - Admin menu, buttons dashboard and logout style
 - Netla Tips > Kategory Tags Tab, discuss
+Preview Netla fix sidebar preview button position vertical????
+- z-index link-dialog behind main text editor window, don't no, cannot reproduce
