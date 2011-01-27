@@ -36,7 +36,7 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 				$oTemplate = $this->constructTemplate('logout');
 				$oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
 				$oTemplate->replaceIdentifier('name', Session::getSession()->getUser()->getUsername());
-				$oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
+				$oTemplate->replaceIdentifier('action', LinkUtil::link(FrontendManager::$CURRENT_NAVIGATION_ITEM->getLink(), null, array('logout' => 'true')));
 				return $oTemplate;
 			} else {
 				$oFlash = Flash::getFlash();
