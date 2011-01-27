@@ -12,6 +12,8 @@ CSS
 Newsletter
 - detail, cancel and save button !!
 
+Preview Netla fix sidebar preview button position vertical????
+
 Preview Fix
 - z-index link-dialog behind main text editor window
 - progressbar ui-progressbar > no round border, less high, discuss color? blue? (progressbar works in Chrome)
