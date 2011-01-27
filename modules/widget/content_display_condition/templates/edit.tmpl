@@ -1,6 +1,6 @@
 <form>
-	<input type="text" name="condition_left"/>
-	<select name="comparison">
+	<input type="text" name="condition_left" class="ui-widget-content" size="30" />
+	<select name="comparison" class="ui-widget-content autowidth">
 		<option value="eq">=</option>
 		<option value="ne">≠</option>
 		<option value="lt">&lt;</option>
@@ -10,17 +10,17 @@
 		<option value="~">Regex-Match</option>
 		<option value="contains">Contains</option>
 	</select>
-	<input type="text" name="condition_right" />
+	<input type="text" name="condition_right" class="input_medium" />
 	<div class="suggestions">
-		<h2>Suggestions</h2>
+		<h2>{{writeString=wns.display_condition.title}}</h2>
 		<ul>
-			<li data-condition_left="" data-condition_right="" data-comparison="eq">Remove Condition</li>
-			<li data-condition_left="&#123;&#123;writeRequestValue=aParam&#125;&#125;" data-condition_right="aVal" data-comparison="eq">Display if a request paramater equals a certain value</li>
-			<li data-condition_left="&#123;&#123;writeRequestValue=aParam&#125;&#125;" data-condition_right="" data-comparison="ne">Display if a certain request parameter is set</li>
-			<li data-condition_left="&#123;&#123;writeSessionAttribute=isAuthenticated&#125;&#125;" data-condition_right="true" data-comparison="eq">Display if user is logged in</li>
-			<li data-condition_left="&#123;&#123;writeSettingValue=multilingual;section=general&#125;&#125;" data-condition_right="true" data-comparison="eq">Display if site is multilingual</li>
-			<li data-condition_left="&#123;&#123;writeDate=Y&#125;&#125;" data-condition_right="{{writeDate=Y}}" data-comparison="eq">Display if current year is {{writeDate=Y}}</li>
+			<li data-condition_left="&#123;&#123;writeRequestValue=aParam&#125;&#125;" data-condition_right="aVal" data-comparison="eq">{{writeString=wns.display_condition.request_equals_value}}</li>
+			<li data-condition_left="&#123;&#123;writeRequestValue=aParam&#125;&#125;" data-condition_right="" data-comparison="ne">{{writeString=wns.display_condition.request_param_isset}}</li>
+			<li data-condition_left="&#123;&#123;writeSessionAttribute=isAuthenticated&#125;&#125;" data-condition_right="true" data-comparison="eq">{{writeString=wns.display_condition.user_is_logged_in}}</li>
+			<li data-condition_left="&#123;&#123;writeSessionAttribute=example&#125;&#125;" data-condition_right="" data-comparison="ne">{{writeString=wns.display_condition.session_attr_isset}}</li>
+			<li data-condition_left="&#123;&#123;writeSettingValue=multilingual;section=general&#125;&#125;" data-condition_right="true" data-comparison="eq">{{writeString=wns.display_condition.site_is_multilingual}}</li>
+			<li data-condition_left="&#123;&#123;writeDate=Y&#125;&#125;" data-condition_right="{{writeDate=Y}}" data-comparison="eq">{{writeString=wns.display_condition.current_year_is}}</li>
+			<li data-condition_left="" data-condition_right="" data-comparison="eq">{{writeString=wns.display_condition.remove}}</li>
 		</ul>
-		{{writeString=wns.page.condition_examples}}
 	</div>
 </form>
