@@ -19,3 +19,22 @@
 .cke_skin_kama .image_browse_area:hover {
 	background-color: #f2f2f2;
 }
+
+
+/* clearfix */
+.cke_skin_kama .image_browse_area:before,
+.cke_skin_kama .image_browse_area:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+
+.cke_skin_kama .image_browse_area:after {
+	clear: both;
+}
+
+.cke_skin_kama .image_browse_area {
+	zoom: 1;
+	margin-bottom: 6px;
+}
