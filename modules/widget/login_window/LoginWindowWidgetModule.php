@@ -50,7 +50,7 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 		return true;
 	}
 	
-	public function needsLogin() {
+	public static function needsLogin() {
 		return false;
 	}
 }
