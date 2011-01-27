@@ -94,10 +94,11 @@ jQuery.extend(Widget.prototype, {
 		var error = null;
 		if(options.async) {
 			//Make getters and setter synchronous, Char after set or get must be uppercase
-			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && /[A-Z]/.test(name[3]));
+			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && (/[A-Z]/).test(name[3]));
 		}
+		var action = options.action || 'methodCall';
 		var widget = this;
-		this._widgetJSON(['methodCall', name], function(response, exception) {
+		this._widgetJSON([action, name], function(response, exception) {
 			if(callback.length<2 && exception) {
 				Widget.notifyUser('alert', exception.message);
 			}
@@ -154,7 +155,10 @@ jQuery.extend(Widget.prototype, {
 	},
 	
 	_widgetInformation: {},
-	_instanceInformation: {}
+	_instanceInformation: {},
+	
+	widgetType: null,
+	widgetId: null
 });
 
 jQuery.extend(Widget, {
@@ -188,8 +192,8 @@ jQuery.extend(Widget, {
 	},
 	
 	loadInfo: function(widgetType) {
+		var widgetInformation = null;
 		if(!Widget.widgetInformation[widgetType]) {
-			var widgetInformation = null;
 			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info, error) {
 				widgetInformation = info;
 				if(!Widget.types[widgetType]) {
@@ -229,22 +233,43 @@ jQuery.extend(Widget, {
 		
 		//If the widget is not yet a function… (its Constructor not the Function constructor)
 		if(Widget.types[widgetType].constructor !== Function) {
-			var widgetInformation = Widget.widgetInformation[widgetType];
+			widgetInformation = Widget.widgetInformation[widgetType];
 			//…make Widget.types[widgetType] a function
 			var old_type = Widget.types[widgetType]; //must now be defined after including resources
 			Widget.types[widgetType] = function(instanceInformation) {
 				this._widgetInformation = widgetInformation;
 				this._instanceInformation = instanceInformation;
 				this.widgetId = instanceInformation.session_id;
-				this.widgetType = widgetType;
 			};
 			//Setting default properties
 			Widget.types[widgetType].prototype = new Widget();
 			Widget.types[widgetType].prototype.constructor = Widget.types[widgetType];
+			Widget.types[widgetType].prototype._staticMethods = {};
+			Widget.types[widgetType].prototype.widgetType = widgetType;
 			//Add PHP methods
-			jQuery.each(widgetInformation.methods, function(i, method) {
+			jQuery.each(widgetInformation.methods.instance, function(i, method) {
 				Widget.types[widgetType].prototype[method] = function() {
 					return this._callMethod.apply(this, [method].concat(jQuery.makeArray(arguments)));
+				};
+			});
+			jQuery.each(widgetInformation.methods['static'], function(i, method) {
+				Widget.types[widgetType].prototype._staticMethods[method] = function() {
+					var args = jQuery.makeArray(arguments);
+					var callback = args.pop();
+					if(!jQuery.isFunction(callback)) {
+						callback !== undefined && args.push(callback);
+						callback = Widget.defaultMethodHandler;
+					}
+					var options = args.pop();
+					if(!options || options.constructor !== WidgetJSONOptions) {
+						options !== undefined && args.push(options);
+						options = new WidgetJSONOptions();
+					}
+					options.action = 'staticMethodCall';
+					args.push(options);
+					args.push(callback);
+					args.unshift(method);
+					return Widget.types[widgetType].prototype._callMethod.apply(Widget.types[widgetType].prototype, args);
 				};
 			});
 			//Add JS methods (including initialize [which is not the constructor] and prepare)
@@ -280,7 +305,7 @@ jQuery.extend(Widget, {
 			}
 			return Widget.singletons[widgetType];
 		}
-		var widgetInformation = Widget.loadInfo(widgetType)
+		var widgetInformation = Widget.loadInfo(widgetType);
 		Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation, error) {
 			if(error) {
 				Widget.notifyUser('alert', error.message);
@@ -301,7 +326,7 @@ jQuery.extend(Widget, {
 				Widget.singletons[widgetType] = widget;
 			}
 			if(intermediateCallback) {
-				intermediateCallback(widget)
+				intermediateCallback(widget);
 			}
 			if(widget.initialize) {
 				widget.initialize();
@@ -432,7 +457,7 @@ jQuery.extend(Widget, {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					var call_callback = exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					call_callback = exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
 				}
 				if(call_callback) {
 					callback.call(this, result, error);
@@ -461,7 +486,13 @@ jQuery.extend(Widget, {
 		if(!Widget.types[widgetType]) {
 			Widget.loadInfo(widgetType);
 		}
-		return Widget.types[widgetType].prototype[methodName].apply(window, parameters);
+		var method = jQuery.noop;
+		if(Widget.types[widgetType].prototype[methodName]) {
+			method = Widget.types[widgetType].prototype[methodName];
+		} else if(Widget.types[widgetType].prototype._staticMethods[methodName]) {
+			method = Widget.types[widgetType].prototype._staticMethods[methodName];
+		}
+		return method.apply(Widget.types[widgetType].prototype, parameters);
 	},
 	
 	_eventHook: {
@@ -532,7 +563,8 @@ jQuery.extend(WidgetJSONOptions.prototype, {
 		async: true,
 		upload_progess_callback: null,
 		download_progress_callback: null,
-		content_type: 'application/json'
+		content_type: 'application/json',
+		action: null
 	}
 });
 

@@ -157,6 +157,21 @@ EOT;
 		return self::doSelect($oCriteria);
 	}
 	
+	public static function addOrUpdateString($sStringKey, $sContent, $sLanguageId = null) {
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
+		$oString = StringPeer::retrieveByPK($sLanguageId, $sStringKey);
+	
+		if($oString === null) {
+			$oString = new String();
+			$oString->setLanguageId($sLanguageId);
+			$oString->setStringKey($sStringKey);
+		}
+		$oString->setText($sContent);
+		$oString->save();
+	}
+	
 	public static function nameSpaceExists($sNameSpace) {
 		return self::countNameSpaceByName($sNameSpace) > 0;
 	}

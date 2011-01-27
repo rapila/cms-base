@@ -37,7 +37,7 @@ abstract class WidgetModule extends Module {
 		return false;
 	}
 	
-	public function needsLogin() {
+	public static function needsLogin() {
 		return true;
 	}
 	
@@ -66,7 +66,28 @@ abstract class WidgetModule extends Module {
 	}
 
 	public static function getCustomMethods($sClassName) {
-		return array_merge(array_diff(get_class_methods($sClassName), get_class_methods('WidgetModule')), array('getInputName', 'setInputName'));
+		$aMethods = array();
+		$aStaticMethods = array();
+		$oSuperClass = new ReflectionClass(get_class());
+		$oClass = new ReflectionClass($sClassName);
+		foreach($oClass->getMethods(ReflectionMethod::IS_PUBLIC) as $oMethod) {
+			if($oSuperClass->hasMethod($oMethod->getName())) {
+				continue;
+			}
+			if($oMethod->isStatic()) {
+				$aStaticMethods[] = $oMethod->getName();
+			} else {
+				$aMethods[] = $oMethod->getName();
+			}
+		}
+		$aMethods[] = 'getInputName';
+		$aMethods[] = 'setInputName';
+		
+		return array('static' => $aStaticMethods, 'instance' => $aMethods);
+	}
+	
+	public static function getStaticMethods($sClassName) {
+		
 	}
 	
 	public static function removeStoredWidgets() {
