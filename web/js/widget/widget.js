@@ -269,8 +269,7 @@ jQuery.extend(Widget, {
 					args.push(options);
 					args.push(callback);
 					args.unshift(method);
-					console.log(args);
-					return this._callMethod.apply(this, args);
+					return Widget.types[widgetType].prototype._callMethod.apply(Widget.types[widgetType].prototype, args);
 				};
 			});
 			//Add JS methods (including initialize [which is not the constructor] and prepare)

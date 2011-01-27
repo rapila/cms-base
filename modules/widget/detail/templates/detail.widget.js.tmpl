@@ -139,7 +139,8 @@ Widget.types.detail = {
 	},
 	
 	clear_validation: function() {
-		var element = this.constructor === Widget.types.detail ? this.content : arguments[0];
+		//Static call means this points to the prototype
+		var element = this !== Widget.types.detail.prototype ? this.content : arguments[0];
 		element.find('.error_display').remove();
 		element.find('.error_display_indicator').removeClass("error_display_indicator");
 	},
