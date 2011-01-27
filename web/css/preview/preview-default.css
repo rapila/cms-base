@@ -45,6 +45,24 @@ div.ui-widget-content {
 	min-height: 3em;
 }
 
+/* clearfix */
+.filled-container:before,
+.filled-container:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+
+.filled-container:after {
+	clear: both;
+}
+
+.filled-container {
+	zoom: 1;
+	margin-bottom: 6px;
+}
+
 .filled-container.editing,
 .filled-container.editing:hover {
 	background: #F9F9F9;
