@@ -137,6 +137,10 @@ class LinkUtil {
 		return Settings::getSetting('domain_holder', 'name', $_SERVER['HTTP_HOST']);
 	}
 
+	public static function getDomainHolderEmail($sDefaultSender = 'info') {
+		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.$_SERVER['HTTP_HOST']);
+	}
+	
 	public static function getUrlWithProtocolIfNotSet($sUrl) {
 		if($sUrl != '') {
 			return self::getPrefixIfNotSet($sUrl);

@@ -34,7 +34,7 @@ class EMail {
 		}
 		$this->oContent = $oContent;
 		$this->sSenderName = null;
-		$this->sSenderAddress = Settings::getSetting('domain_holder', 'email', 'mailer-daemon@localhost');
+		$this->sSenderAddress = LinkUtil::getDomainHolderEmail('mailer-daemon');
 		$this->oFlash = new Flash();
 		
 		$this->sReplyTo = null;
