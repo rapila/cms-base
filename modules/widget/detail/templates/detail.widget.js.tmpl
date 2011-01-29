@@ -146,7 +146,8 @@ Widget.types.detail = {
 	},
 	
 	validate_with: function(errors) {
-		var element = this.constructor === Widget.types.detail ? this.content : arguments[1];
+		//Static call means this points to the prototype
+		var element = this !== Widget.types.detail.prototype ? this.content : arguments[1];
 		Widget.callStaticWidgetMethod('detail', 'clear_validation', element);
 		jQuery.each(errors, function(key, parameters) {
 			var message = parameters.string;
