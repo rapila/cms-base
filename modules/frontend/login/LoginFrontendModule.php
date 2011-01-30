@@ -11,6 +11,7 @@
 class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
 	
 	private $oPage;
+	private $oUser;
 	public static $DISPLAY_OPTIONS = array('login_simple', 'login_with_password_forgotten', 'logout_link');
 
 	const MODE_SELECT_KEY = 'display_mode';
@@ -26,7 +27,8 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 			return $this->renderLogout();
 		}
 		$sLoginType = isset($aOptions[self::MODE_SELECT_KEY]) ? $aOptions[self::MODE_SELECT_KEY] : 'login_simple';
-		if(Session::getSession()->getUser()) {
+		$this->oUser = Session::getSession()->getUser();
+		if($this->oUser) {
 			$oPage = $this->oPage;
 			if(Session::getSession()->hasAttribute('login_referrer_page')) {
 				$oPage = Session::getSession()->getAttribute('login_referrer_page');
@@ -85,6 +87,10 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 		$oTemplate->replaceIdentifier('fullname', Session::getSession()->getUser()->getFullName());
 		$oTemplate->replaceIdentifier('action', LinkUtil::link($this->oPage->getFullPathArray(), null, array('logout' => 'true')));
 		return $oTemplate;
+	}
+	
+	public function getUser() {
+		return $this->oUser;
 	}
 
 	public function widgetData() {

@@ -1,14 +1,13 @@
 TODO
 ====
 
-Admin Fix
-- info dialog header bug Netla preview fixed > ui-dialog position: absolute !important;
 
 CSS
 - update jQuery UI theme ? fix centered dialog for Safari & Chrome
 - tab behaviour see http://www.lunarpages.com/hosting-solutions/fully-managed-hosting/
-- Preview conflict with ui-widget-header???
 
+
+CKEditor link dialog behind main dialog. Hard to find. Often on windows for Rainer!!!!
 Newsletter
 - detail, cancel and save button !! > push jm!!!
 
@@ -117,3 +116,5 @@ Nächstens Dringend:
 - Netla Tips > Kategory Tags Tab, discuss
 Preview Netla fix sidebar preview button position vertical????
 - z-index link-dialog behind main text editor window, don't no, cannot reproduce
+Admin Fix
+- info dialog header bug Netla preview fixed > ui-dialog position: absolute !important;
