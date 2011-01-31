@@ -7,6 +7,8 @@ general:
   timezone: "Europe/Zurich"
   # possible environments: development, production, test, automatic (should only be used while in testing phase since it slows down)
   environment: 'auto'
+  # those don’t work well in some environments
+  send_not_modified_headers: true
 
 routing:
   routes:

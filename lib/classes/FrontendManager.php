@@ -147,7 +147,7 @@ class FrontendManager extends Manager {
 		
 		if($this->bIsNotFound) {
 			FilterModule::getFilters()->handlePageNotFound();
-			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+			LinkUtil::sendHTTPStatusCode(404, 'Not Found');
 			$sErrorPageName = Settings::getSetting('error_pages', 'not_found', null);
 			$oPage = null;
 			if($sErrorPageName) {

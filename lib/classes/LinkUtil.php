@@ -33,12 +33,17 @@ class LinkUtil {
 			ob_end_clean();
 		}
 		if($bPermanent) {
-			header("HTTP/1.0 301 Moved Permanently");
+			self::sendHTTPStatusCode(301, "Moved Permanently");
 		} else {
-			header("HTTP/1.0 302 Found");
+			self::sendHTTPStatusCode(302, "Found");
 		}
 		$sRedirectString = "Location: ".self::absoluteLink($sLocation, $sHost, $sProtocol);
 		header($sRedirectString);exit;
+	}
+	
+	public static function sendHTTPStatusCode($iCode, $sName) {
+		$sProtocol = isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : 'HTTP/1.1';
+		header("$sProtocol $iCode $sName", true, $iCode);
 	}
 	
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {

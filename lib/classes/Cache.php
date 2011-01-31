@@ -172,14 +172,14 @@ class Cache {
 		$this->bCacheControlHeaderSent = true;
 		
 		if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $sToken) {
-			header("Not Modified", true, 304);
+			LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
 			header('Content-Length: 0');
 			exit;
 		}
 		
 		//FIXME: should check if sent value is less than or equal to the stored value
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $_SERVER['HTTP_IF_MODIFIED_SINCE'] === $sModifyDate) {
-			header("Not Modified", true, 304);
+			LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
 			header('Content-Length: 0');
 			exit;
 		}
