@@ -61,14 +61,17 @@ class FileUploadWidgetModule extends WidgetModule {
 		return $oDocument->getId();
 	}
 	
-	public function accepts($sFileName, $sMimeType) {
+	public function accepts($sFileName, $sMimeType = null) {
 		$aName = explode('.', $sFileName);
 		$sExtension = null;
 		if(count($aName) > 1) {
 			$sExtension = array_pop($aName);
 			$sFileName = implode('.', $aName);
 		}
-		$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+		$oDocumentType = null;
+		if($sMimeType !== null) {
+			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+		}
 		if($oDocumentType === null && $sExtension !== null) {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
 		}
