@@ -24,7 +24,7 @@ class AdminManager extends Manager {
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
 			self::setContentLanguage($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY]);
 		}
-		if(Session::getSession()->isAuthenticated()) {
+		if(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			$oUser = Session::getSession()->getUser();
 			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
 			if(isset($_REQUEST['preview'])) {
