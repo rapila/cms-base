@@ -400,14 +400,15 @@ jQuery.extend(Widget, {
 		if(!jQuery.isArray(action)) {
 			action = [action];
 		}
+		if(widgetOrId) {
+			attributes['session_key'] = widgetOrId.widgetId !== undefined ? widgetOrId.widgetId : widgetOrId;
+		}
+		Widget.fire('widget-json-call', action, attributes, options);
 		action.unshift('widget_json', widgetType);
 		var url = FILE_PREFIX;
 		jQuery.each(action, function(i, urlPart) {
 			url += '/'+encodeURIComponent(urlPart);
 		});
-		if(widgetOrId) {
-			attributes['session_key'] = widgetOrId.widgetId !== undefined ? widgetOrId.widgetId : widgetOrId;
-		}
 		var attr_str = attributes;
 		if(attributes.constructor !== String) {
 			if(options.content_type === 'application/json') {
@@ -432,7 +433,7 @@ jQuery.extend(Widget, {
 				});
 			}
 		}
-		jQuery.ajax({
+		var ajaxOpts = {
 			url: url,
 			data: attr_str,
 			type: 'POST',
@@ -478,7 +479,8 @@ jQuery.extend(Widget, {
 			complete: function() {
 				Widget.end_activity();
 			}
-		});
+		};
+		jQuery.ajax(ajaxOpts);
 	},
 	
 	callStaticWidgetMethod: function(widgetType, methodName) {
