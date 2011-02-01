@@ -141,7 +141,7 @@ class Session {
 	}
 
 	public function setLanguage($sLanguage) {
-		return $this->setAttribute(self::SESSION_LANGUAGE_KEY, $sLanguage);
+		return $this->setAttribute(self::SESSION_LANGUAGE_KEY, strtolower($sLanguage));
 	}
 
 	public function setAttribute($sAttribute, $mValue) {
