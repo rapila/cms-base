@@ -110,7 +110,8 @@ class SpecialTemplateIdentifierActions {
 			unset($aParameters['ignore_request']);
 			$sDestination = LinkUtil::linkToSelf(null, $aParameters, $bIgnoreRequest);
 		} else if($sDestination === "base_href") {
-			$sDestination = LinkUtil::absoluteLink(MAIN_DIR_FE);
+			$sDestination = MAIN_DIR_FE;
+			$bIsAbsolute = true;
 		} else {
 			$sManager = null;
 			if($oTemplateIdentifier->hasParameter('manager')) {
