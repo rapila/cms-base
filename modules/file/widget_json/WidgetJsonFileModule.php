@@ -15,10 +15,10 @@ class WidgetJsonFileModule extends FileModule {
 			$aRequest = json_decode(file_get_contents('php://input'), true);
 		}
 		$sPrevSessionLanguage = null;
-		if(isset($aRequest['sesson_language'])) {
+		if(isset($aRequest['session_language'])) {
 			$sPrevSessionLanguage = Session::language();
 			$oSession = Session::getSession();
-			$oSession->setLanguage($aRequest['sesson_language']);
+			$oSession->setLanguage($aRequest['session_language']);
 		}
 		try {
 			print json_encode($this->getJSON($aRequest));
