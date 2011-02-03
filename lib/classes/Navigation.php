@@ -129,7 +129,7 @@ class Navigation {
 					$oBooleanParser->is_virtual = true;
 			}
 			
-			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser);
+			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem);
 			
 			//Don’t show page (and subpages) in navigation if show===false
 			if(@$aConfig['show'] === false) {
@@ -212,7 +212,7 @@ class Navigation {
 	 * @param int level of navigation
 	 * @return string parsed navigation
 	 */	 
-	private function getConfigForPage($iLevel, $oBooleanParser) {
+	private function getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem) {
 		$aConfigToCheck = @$this->aConfig[$iLevel];
 		if($aConfigToCheck === null) {
 			if(!isset($this->aConfig['all'])) {
@@ -221,6 +221,9 @@ class Navigation {
 			$aConfigToCheck = $this->aConfig['all'];
 		}
 		foreach($aConfigToCheck as $aConfig) {
+			if(isset($aConfig['page_name']) && $aConfig['page_name'] !== $oNavigationItem->getName()) {
+				continue;
+			}
 			if(!isset($aConfig['on']) || $oBooleanParser->parse($aConfig['on'])) {
 				return $aConfig;
 			}

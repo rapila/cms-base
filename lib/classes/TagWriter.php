@@ -112,7 +112,7 @@ class TagWriter {
  * @param array assoc (optionvalue => optiondisplayname)
  *				or hash (optionvalue => array('value'=> displayname, 'level'=>integer for indenting of nested items)
  * @param mixed string/array selected item
- * @param string optional indent char for nested items, require value as array including param 'level'
+ * @param string optional indent char for nested items, requires value as array including param 'level'
  * @return string of html options
  *
  */
