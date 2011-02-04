@@ -14,7 +14,6 @@ jQuery(document).ready(function() {
 	};
 	
 	Widget.handle('widget-json-call', function(event, action, attributes, options) {
-		console.log(event);
 		if(attributes.constructor !== String) {
 			attributes.session_language = "{{writeSessionAttribute=language}}";
 		}
