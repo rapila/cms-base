@@ -14,6 +14,7 @@ class TemplateIdentifier {
 	function __construct($sName, $sValue, $sParameters, $oTemplate=null) {
 		$this->aParameters = array();
 		$this->oTemplate = $oTemplate;
+		$this->iFlags = 0;
 
 		$this->setName($sName);
 
@@ -47,7 +48,9 @@ class TemplateIdentifier {
 				}
 			}
 			if($aKeyValuePair[0] === 'templateFlag') {
-				$this->iFlags = constant('Template::'.$sParameterValue);
+				foreach(explode('|', $sParameterValue) as $sFlagName) {
+					$this->iFlags |= constant('Template::'.$sFlagName);
+				}
 				continue;
 			}
 			$this->aParameters[$aKeyValuePair[0]] = $sParameterValue;
