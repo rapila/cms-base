@@ -63,6 +63,9 @@ class StringPeer extends BaseStringPeer {
 	}
 	
 	public static function getString($sKey, $sLanguageId=null, $sDefaultValue=null, $aParameters=null, $bMayReturnTemplate=false, $iFlags=0) {
+		if(Settings::getSetting('frontend', 'display_string_keys', false)) {
+			return $sKey;
+		}
 		if(!is_string($sDefaultValue)) {
 			$sDefaultValue = "Translation missing: $sKey";
 		}
