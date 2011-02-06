@@ -37,6 +37,9 @@ class Settings {
 	 * @return mixed value
 	 */
 	public function _getSetting($sSection, $sKey, $mDefaultValue) {
+		if(isset($_REQUEST["setting-override-$sSection/$sKey"]) && Session::getSession()->isBackendAuthenticated()) {
+			return $_REQUEST["setting-override-$sSection/$sKey"];
+		}
 		$aSettingsPart = $this->aSettings;
 		if($sSection !== null) {
 			if(!isset($aSettingsPart[$sSection])) {

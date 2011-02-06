@@ -43,6 +43,10 @@ class Session {
 	public function isAuthenticated() {
 		return ($this->oUser !== null);
 	}
+	
+	public function isBackendAuthenticated() {
+		return $this->isAuthenticated() && $this->oUser->getIsBackendLoginEnabled();
+	}
 
 	public function login($sUsername, $sPassword) {
 		$oUser = UserPeer::getUserByUserName($sUsername);
