@@ -141,7 +141,16 @@ class SpecialTemplateIdentifierActions {
 	}
 	
 	public function writeDate($oTemplateIdentifier) {
-		return LocaleUtil::localizeDate(null, null, $oTemplateIdentifier->getValue());
+		$iTimestamp = null;
+		if($oTemplateIdentifier->hasParameter('timestamp')) {
+			$iTimestamp = (int)$oTemplateIdentifier->getParameter('timestamp');
+		}
+		return LocaleUtil::localizeDate($iTimestamp, null, $oTemplateIdentifier->getValue());
+		$sLocaleId = null;
+		if($oTemplateIdentifier->hasParameter('locale')) {
+			$sLocaleId = $oTemplateIdentifier->getParameter('locale');
+		}
+		return LocaleUtil::localizeDate($iTimestamp, $sLocaleId, $oTemplateIdentifier->getValue());
 	}
 	
 	public function writeRequestValue($oTemplateIdentifier) {
