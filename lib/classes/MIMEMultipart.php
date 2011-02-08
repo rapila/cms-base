@@ -3,6 +3,9 @@
 * @package email
 */
 class MIMEMultipart extends MIMEPart {
+	
+	private static $ALLOWED_TAGS = array('img', 'p', 'a', 'li', 'ul', 'ol');
+	
 	private $aParts;
 	private $sPartSeparator;
 	private $sMultipartType;
@@ -50,7 +53,7 @@ class MIMEMultipart extends MIMEPart {
 					$oMarkdownify = new Markdownify_Extra(false, false, false);
 					$sAlternative = $oMarkdownify->parseString($sAlternative);
 				} else if($sTextfyMethod === 'strip_tags') {
-					$sAlternative = strip_tags($sAlternative, '<a><p><img>');
+					$sAlternative = strip_tags($sAlternative, '<'.implode('><', self::$ALLOWED_TAGS).'>');
 				} else if($sTextfyMethod === 'strip_tags/full') {
 					$sAlternative = strip_tags($sAlternative);
 				} else if($sTextfyMethod === 'purify') {
@@ -62,6 +65,7 @@ class MIMEMultipart extends MIMEPart {
 					}
 					$oPurifierConfig->set('Cache.SerializerPath', $sCacheDir);
 					$oPurifierConfig->set('AutoFormat.AutoParagraph', true);
+					$oPurifierConfig->set('HTML.AllowedElements', self::$ALLOWED_TAGS);
 					$oPurifier = new HTMLPurifier($oPurifierConfig);
 					$sAlternative = $oPurifier->purify($sAlternative);
 				}
