@@ -27,7 +27,7 @@ class PasswordHash {
 	}
 	
 	public static function checkPasswordValidity($sPassword, $oFlash) {
-		if((mb_strlen($sPassword)<4)) {
+		if((mb_strlen($sPassword) < Settings::getSetting('login', 'password_min_length', 4))) {
 			$oFlash->addMessage('password_length');
 			return false;
 		}

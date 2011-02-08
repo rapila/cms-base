@@ -49,7 +49,10 @@ admin:
   # document edit and delete can be restricted to owner only (if is not admin), defaults to false
   document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
-  
+
+login:
+  password_min_length: 4
+
 # default config for ckeditor
 # important note: always requires space after comma ", " in order to function properly
 text_module:  
