@@ -32,9 +32,7 @@ class MIMEMultipart extends MIMEPart {
 		return $sPartSeparator.EMail::SEPARATOR.rtrim(implode(EMail::SEPARATOR.$sPartSeparator.EMail::SEPARATOR, $aParts), EMail::SEPARATOR).EMail::SEPARATOR.$sPartSeparator.'--'.EMail::SEPARATOR;
 	}
 	
-	public static function alternativeMultipartForTemplate($oTemplate, $sAlternative = null, $sCharset = null) {
-		require_once('markdownify/Markdownify_Extra.php');
-		$oMarkdownify = new Markdownify_Extra(false, false, false);
+	public static function alternativeMultipartForTemplate($oTemplate, $sAlternative = null, $sCharset = null, $aTextifyMethods = 'markdown') {
 		$sContent = $oTemplate->render();
 		if($sCharset === null) {
 			$sCharset = $oTemplate->getCharset();
@@ -42,8 +40,35 @@ class MIMEMultipart extends MIMEPart {
 		if($sAlternative === null) {
 			$sAlternative = $sContent;
 		}
+		if($aTextifyMethods !== null) {
+			if(!is_array($aTextifyMethods)) {
+				$aTextifyMethods = explode('-', $aTextifyMethods);
+			}
+			foreach($aTextifyMethods as $sTextfyMethod) {
+				if($sTextfyMethod === 'markdown') {
+					require_once('markdownify/Markdownify_Extra.php');
+					$oMarkdownify = new Markdownify_Extra(false, false, false);
+					$sAlternative = $oMarkdownify->parseString($sAlternative);
+				} else if($sTextfyMethod === 'strip_tags') {
+					$sAlternative = strip_tags($sAlternative, '<a><p><img>');
+				} else if($sTextfyMethod === 'strip_tags/full') {
+					$sAlternative = strip_tags($sAlternative);
+				} else if($sTextfyMethod === 'purify') {
+					require_once('htmlpurifier/HTMLPurifier.standalone.php');
+					$oPurifierConfig = HTMLPurifier_Config::createDefault();
+					$sCacheDir = MAIN_DIR.'/'.DIRNAME_GENERATED.'/'.DIRNAME_CACHES.'/purifier';
+					if(!file_exists($sCacheDir)) {
+						mkdir($sCacheDir);
+					}
+					$oPurifierConfig->set('Cache.SerializerPath', $sCacheDir);
+					$oPurifierConfig->set('AutoFormat.AutoParagraph', true);
+					$oPurifier = new HTMLPurifier($oPurifierConfig);
+					$sAlternative = $oPurifier->purify($sAlternative);
+				}
+			}
+		}
 		$oMimeTree = new MIMEMultipart('alternative');
-		$oMimeTree->addPart(MIMELeaf::leafWithText($oMarkdownify->parseString($sAlternative), '8bit', $sCharset));
+		$oMimeTree->addPart(MIMELeaf::leafWithText($sAlternative, '8bit', $sCharset));
 		$oMimeTree->addPart(new MIMELeaf($sContent, 'text/html', '8bit', $sCharset));
 		
 		return $oMimeTree;
