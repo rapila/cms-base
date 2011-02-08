@@ -68,6 +68,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
 		$bIsDynamic = true;
 		$aAllowedParams = array();
+		parent::setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, $aModulesToCheck);
 	}
 	
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
