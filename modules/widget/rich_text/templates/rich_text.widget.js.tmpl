@@ -155,6 +155,7 @@ Widget.types.rich_text = {
 	},
 	
 	prepare: function() {
+		var _this = this;
 		if(!this._element.isInDom()) {
 			this._element.appendTo(document.body);
 		}
@@ -169,7 +170,9 @@ Widget.types.rich_text = {
 		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
 		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
 		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
-		instance.addCss(this.settings.inline_css);
+		instance.on('instanceReady', function(event) {
+			instance.document.appendStyleText(_this.settings.inline_css);
+		});
 	},
 	
 	prepare_chooser: function(dialog, name, widget, url_function) {
@@ -190,11 +193,11 @@ Widget.types.rich_text = {
 		return chooser_element;
 	},
 	
-	add_css: function(css) {
+	set_inline_css: function(css) {
+		this.settings.inline_css = css;
 		if(this.instance) {
-			this.instance.addCss(css);
+			this.instance.document.appendStyleText(css);
 		}
-		this.settings.inline_css += css;
 	},
 	
 	data_to_textarea: function() {
@@ -217,10 +220,13 @@ Widget.types.rich_text = {
 	},
 	
 	set_data: function(new_data) {
+		var _this = this;
 		if(!this.instance) {
 			this.textarea.val(new_data);
 		} else {
-			this.instance.setData(new_data);
+			this.instance.setData(new_data, function() {
+				_this.instance.document.appendStyleText(_this.settings.inline_css);
+			});
 		}
 	},
 	
