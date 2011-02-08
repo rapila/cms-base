@@ -123,7 +123,8 @@ Widget.types.detail = {
 	
 	
 	tabs_for: function(element) {
-		var parent = this.constructor === Widget.types.detail ? this.content : arguments[1];
+		//Static call means this points to the prototype
+		var parent = this !== Widget.types.detail.prototype ? this.content : arguments[1];
 		var current_element = element;
 		var result = [];
 		while(current_element.length && current_element[0] !== parent[0]) {
