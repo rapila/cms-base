@@ -4,7 +4,7 @@
 */
 class MIMEMultipart extends MIMEPart {
 	
-	private static $ALLOWED_TAGS = array('img', 'p', 'a', 'li', 'ul', 'ol');
+	private static $ALLOWED_TAGS = array('img', 'p', 'a', 'li', 'ul', 'ol', 'h1', 'h2', 'dd', 'dl', 'dt', 'dfn', 'abbr', 'strong', 'em', 'acronym');
 	
 	private $aParts;
 	private $sPartSeparator;
