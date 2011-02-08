@@ -16,7 +16,8 @@ Widget.types.rich_text = {
 		entities: false,
 		baseFloatZIndex: 1020,
 		resize_enabled: false,
-		height: 400
+		height: 400,
+		inline_css: ''
 	},
 	
 	initialize: function() {
@@ -168,6 +169,7 @@ Widget.types.rich_text = {
 		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
 		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
 		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
+		instance.addCss(this.settings.inline_css);
 	},
 	
 	prepare_chooser: function(dialog, name, widget, url_function) {
@@ -186,6 +188,13 @@ Widget.types.rich_text = {
 			});
 		}, jQuery.noop);
 		return chooser_element;
+	},
+	
+	add_css: function(css) {
+		if(this.instance) {
+			this.instance.addCss(css);
+		}
+		this.settings.inline_css += css;
 	},
 	
 	data_to_textarea: function() {
