@@ -241,24 +241,26 @@ class Markdownify_Extra extends Markdownify {
       # finally build the table in Markdown Extra syntax
       $separator = array();
       # seperator with correct align identifikators
-      foreach($this->table['aligns'] as $col => $align) {
-        if (!$this->keepHTML && !isset($this->table['col_widths'][$col])) {
-          break;
-        }
-        $left = ' ';
-        $right = ' ';
-        switch ($align) {
-          case 'left':
-            $left = ':';
+      if(isset($this->table['aligns'])) {
+        foreach($this->table['aligns'] as $col => $align) {
+          if (!$this->keepHTML && !isset($this->table['col_widths'][$col])) {
             break;
-          case 'center':
-            $right = ':';
-            $left = ':';
-          case 'right':
-            $right = ':';
-            break;
+          }
+          $left = ' ';
+          $right = ' ';
+          switch ($align) {
+            case 'left':
+              $left = ':';
+              break;
+            case 'center':
+              $right = ':';
+              $left = ':';
+            case 'right':
+              $right = ':';
+              break;
+          }
+          array_push($separator, $left.str_repeat('-', $this->table['col_widths'][$col]).$right);
         }
-        array_push($separator, $left.str_repeat('-', $this->table['col_widths'][$col]).$right);
       }
       $separator = '|'.implode('|', $separator).'|';
 
@@ -285,7 +287,7 @@ class Markdownify_Extra extends Markdownify {
    * @return void
    */
   function alignTdContent(&$content, $col) {
-    switch ($this->table['aligns'][$col]) {
+    switch (@$this->table['aligns'][$col]) {
       default:
       case 'left':
         $content .= str_repeat(' ', $this->table['col_widths'][$col] - $this->strlen($content));
@@ -329,7 +331,7 @@ class Markdownify_Extra extends Markdownify {
       $this->buffer();
     } else {
       $buffer = trim($this->unbuffer());
-      $this->table['col_widths'][$this->col] = max($this->table['col_widths'][$this->col], $this->strlen($buffer));
+      $this->table['col_widths'][$this->col] = max(@$this->table['col_widths'][$this->col], $this->strlen($buffer));
       $this->table['rows'][$this->row][$this->col] = $buffer;
     }
   }
