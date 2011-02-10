@@ -12,6 +12,8 @@ Widget.types.detail = {
 				if(!instance.settings.remains_open) {
 					instance.close();
 				}
+				var detail_name = instance.widgetType.replace('_detail', '');
+				Widget.fire(detail_name+'-saved');
 			});
 		};
 		if(this.has_dialog) {
