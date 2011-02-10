@@ -22,6 +22,22 @@ Widget.types.tag_detail = {
 		this.detail_widget.content.find('input[name=name]').focus();
 	},
 	
+	init_language_tabs: function() {
+		var _this = this;
+		Widget.createWithElement('language_tabs', function(widget) {
+			widget.handle('element_set', function(event, element) {
+				_this.content.find('.translations').append(element);
+			});
+		}, function(language_tabs) {
+			_this.language_tabs = language_tabs;
+			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
+				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_language}}'));
+				tab_content.find("input[name='edited_languages[]']").val(language_id);
+				tab_content.find('textarea').val(_this.getTagString(language_id));
+			}, false, true);
+		});
+	},
+	
 	fill_data: function() {
 		_this = this;
 		this.getTagData(function(tag_data) {
@@ -39,6 +55,13 @@ Widget.types.tag_detail = {
 				tagged_items.append(item);
 			});
 		});
+		if(!this.language_tabs) {
+			this.init_language_tabs();
+		} else {
+			jQuery.each(this.language_tabs.all_panels(), function(language_id, panel) {
+				panel.find('textarea').val(_this.getTagString(language_id));
+			});
+		}
 	},
 
 	close: function() {

@@ -10,6 +10,15 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		$this->iTagId = $iTagId;
 	}
 	
+	public function getTagString($sLanguageId) {
+		$oTag = TagPeer::retrieveByPK($this->iTagId);
+		if($oTag === null) {
+			return null;
+		}
+		$sTagName = $oTag->getName();
+		return StringPeer::getString("tag.$sTagName", $sLanguageId, '');
+	}
+	
 	public function getTagData() {
 		$oTag = TagPeer::retrieveByPK($this->iTagId);
 		if($oTag === null) {
@@ -53,15 +62,33 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function saveData($aTagData) {
+		$aTagData['name'] = StringUtil::normalize($aTagData['name']);
 		if($this->iTagId === null) {
 			$oTag = new Tag();
 		} else {
 			$oTag = TagPeer::retrieveByPK($this->iTagId);
 		}
-		$oTag->setName($aTagData['name']);
 		$this->validate($aTagData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
+		}
+		$sStringName = "tag.{$aTagData['name']}";
+		if($oTag->getName() !== $aTagData['name']) {
+			//Rename Strings for the tag
+			$sOldStringName = "tag.{$oTag->getName()}";
+			foreach(StringQuery::create()->filterByStringKey($sOldStringName)->find() as $oString) {
+				$sLanguageId = $oString->getLanguageId();
+				//You can’t technically rename strings because string_key is the PKEY so we delete it and re-generate
+				$oString->delete();
+				$oString = new String();
+				$oString->setStringKey($sStringName);
+				$oString->setLanguageId($sLanguageId);
+				$oString->save();
+			}
+			$oTag->setName($aTagData['name']);
+		}
+		foreach($aTagData['edited_languages'] as $iIndex => $sLanguageId) {
+			StringPeer::addOrUpdateString($sStringName, $aTagData['text'][$iIndex], $sLanguageId);
 		}
 		$oTag->save();
 	}
