@@ -166,6 +166,12 @@ EOT;
 		}
 		$oString = StringPeer::retrieveByPK($sLanguageId, $sStringKey);
 	
+		if(!$sContent) {
+			if($oString !== null) {
+				$oString->delete();
+			}
+			return;
+		}
 		if($oString === null) {
 			$oString = new String();
 			$oString->setLanguageId($sLanguageId);
