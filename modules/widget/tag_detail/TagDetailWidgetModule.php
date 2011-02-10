@@ -42,17 +42,19 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aTagData);
 		$oFlash->checkForValue('name', 'tag_name_required');
+		$oCriteria = TagQuery::create()->filterByName($aTagData['name']);
 		if($this->iTagId !== null) {
-			if(TagQuery::create()->filterByName($aTagData['name'])->count() > 0) {
-				$oFlash->addMessage('tag_name_exists');
-			}
+			$oCriteria->exclude($this->iTagId);
+		}
+		if($oCriteria->count() > 0) {
+			$oFlash->addMessage('tag_name_exists');
 		}
 		$oFlash->finishReporting();
 	}
 	
 	public function saveData($aTagData) {
 		if($this->iTagId === null) {
-			$oTag = new Document();
+			$oTag = new Tag();
 		} else {
 			$oTag = TagPeer::retrieveByPK($this->iTagId);
 		}
@@ -61,5 +63,6 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
+		$oTag->save();
 	}
 }

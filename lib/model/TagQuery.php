@@ -27,4 +27,8 @@ class TagQuery extends BaseTagQuery {
 		$this->add(TagInstancePeer::TAGGED_ITEM_ID, $mItemId);
 		return $this;
 	}
+	
+	public function exclude($iTagId) {
+		return $this->filterById($iTagId, Criteria::NOT_EQUAL);
+	}
 } // TagQuery

@@ -32,6 +32,14 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 		return true;
 	}
 	
+	public function tagId($sTagName) {
+		$oTag = TagQuery::create()->filterByName($sTagName)->findOne();
+		if($oTag === null) {
+			return null;
+		}
+		return $oTag->getId();
+	}
+	
 	public function setModelName($sModelName) {
 		$this->sModelName = $sModelName;
 	}
