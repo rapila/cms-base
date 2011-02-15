@@ -14,7 +14,7 @@ Widget.types.rich_text = {
 		],
 		skin: "kama",
 		entities: false,
-		baseFloatZIndex: 1020,
+		baseFloatZIndex: 10000, //jQuery UI dialog’s z-indices start at 1000 or so and get incremented so we need to be an order of magnitude higher here…
 		resize_enabled: false,
 		height: 400,
 		inline_css: ''
