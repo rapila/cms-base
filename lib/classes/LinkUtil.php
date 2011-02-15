@@ -48,6 +48,7 @@ class LinkUtil {
 	
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
 		if($sProtocol === null) {
+			//FIXME: use https if request was done over SSL
 			$sProtocol = 'http://';
 		}
 		if($sHost === null) {

@@ -109,6 +109,8 @@ class SpecialTemplateIdentifierActions {
 			$bIgnoreRequest = $oTemplateIdentifier->getParameter('ignore_request') === 'true';
 			unset($aParameters['ignore_request']);
 			$sDestination = LinkUtil::linkToSelf(null, $aParameters, $bIgnoreRequest);
+		} else if($sDestination === "host_only") {
+			return LinkUtil::absoluteLink('');
 		} else if($sDestination === "base_href") {
 			$sDestination = MAIN_DIR_FE;
 			$bIsAbsolute = true;
