@@ -145,7 +145,6 @@ class SpecialTemplateIdentifierActions {
 		if($oTemplateIdentifier->hasParameter('timestamp')) {
 			$iTimestamp = (int)$oTemplateIdentifier->getParameter('timestamp');
 		}
-		return LocaleUtil::localizeDate($iTimestamp, null, $oTemplateIdentifier->getValue());
 		$sLocaleId = null;
 		if($oTemplateIdentifier->hasParameter('locale')) {
 			$sLocaleId = $oTemplateIdentifier->getParameter('locale');
