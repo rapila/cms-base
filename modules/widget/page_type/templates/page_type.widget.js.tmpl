@@ -25,6 +25,18 @@ Widget.types.page_type = {
 		Widget.types.page_type.types[this.settings.page_type].handle_admin(this.settings.page_id, this.settings.container, this);
 	},
 	
+	will_save: function() {
+		if(Widget.types.page_type.types[this.settings.page_type].will_save) {
+			Widget.types.page_type.types[this.settings.page_type].will_save(this.settings.page_id, this.settings.container, this);
+		}
+	},
+	
+	did_save: function() {
+		if(Widget.types.page_type.types[this.settings.page_type].did_save) {
+			Widget.types.page_type.types[this.settings.page_type].did_save(this.settings.page_id, this.settings.container, this);
+		}
+	},
+	
 	settings: {
 		page_type: null,
 		container: null,

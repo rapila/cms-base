@@ -133,7 +133,9 @@ class Page extends BasePage {
 		$oTempProperty = new PageProperty();
 		$oTempProperty->setName($sPropertyName);
 		$oTempProperty->setValue($sPropertyValue);
+		$oTempProperty->setPage($this);
 		$this->addPageProperty($oTempProperty);
+		$oTempProperty->save();
 	}
 	
 	/**
