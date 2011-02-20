@@ -27,6 +27,7 @@ class LinkUtil {
 	* Redirects (locally by default).
 	* Use with LinkUtil::link()ed URLs (because this redirect does not add the base path/context MAIN_DIR_FE).
 	* Discards all buffered output and exits
+	* Pass $sHost = false to mark $sLocation as absolute URL
 	*/
 	public static function redirect($sLocation, $sHost = null, $sProtocol = null, $bPermanent = true) {
 		while(ob_get_level() > 0) {
@@ -37,7 +38,10 @@ class LinkUtil {
 		} else {
 			self::sendHTTPStatusCode(302, "Found");
 		}
-		$sRedirectString = "Location: ".self::absoluteLink($sLocation, $sHost, $sProtocol);
+		if($sHost !== false) {
+			$sLocation = self::absoluteLink($sLocation, $sHost, $sProtocol);
+		}
+		$sRedirectString = "Location: $sLocation");
 		header($sRedirectString);exit;
 	}
 	
