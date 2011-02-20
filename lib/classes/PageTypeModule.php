@@ -14,20 +14,6 @@ abstract class PageTypeModule extends Module {
 	
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
 	
-	/**
-	* Returns the class name of the main model that is being modified at the moment by the admin module
-	* Used only to assign tags using the tag panel
-	* Default is null
-	*/
-	public function getModelName() {return null;}
-	
-	/**
-	* Returns the primary key value of the main model ({@link getModelName}) row that is being modified at the moment by the admin module
-	* Used only to assign tags using the tag panel
-	* Default is null
-	*/
-	public function getCurrentId() {return null;}
-	
 	//Warning: different than normal
 	public static function getModuleInstance($sModuleName = null) {
 		$aArgs = func_get_args();
