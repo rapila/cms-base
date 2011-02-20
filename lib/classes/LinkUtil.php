@@ -41,7 +41,7 @@ class LinkUtil {
 		if($sHost !== false) {
 			$sLocation = self::absoluteLink($sLocation, $sHost, $sProtocol);
 		}
-		$sRedirectString = "Location: $sLocation");
+		$sRedirectString = "Location: $sLocation";
 		header($sRedirectString);exit;
 	}
 	
