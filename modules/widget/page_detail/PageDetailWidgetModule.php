@@ -180,6 +180,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aPageData);
 		$oFlash->checkForValue('name', 'page.name_required');
+		if($aPageData['name'] != null && $aPageData['name'] != $this->oPage->getName()) {
+		  if(PagePeer::pageIsNotUnique($aPageData['name'], $this->oPage->getParent(), $this->oPage->getId())) {
+        $oFlash->addMessage('page.name_unique_required');
+		  }
+		}
 		if(isset($aPageData['edited_languages'])) {
 			foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
 				if($aPageData['is_active'][$iCounter] && $aPageData['page_title'][$iCounter] == '') {
