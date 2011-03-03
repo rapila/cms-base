@@ -57,8 +57,10 @@ Widget.types.sidebar_input = {
 			if(sidebar_input.val() === default_value) {
 				return false;
 			}
-			new_input_container.remove();
-			save_callback(sidebar_input.val(), cleanup_callback);
+			save_callback(sidebar_input.val(), function() {
+				new_input_container.remove();
+				cleanup_callback.apply(sidebar_input, arguments);
+			});
 		});
 		return this;
 	},
