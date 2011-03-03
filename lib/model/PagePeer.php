@@ -42,19 +42,8 @@ class PagePeer extends BasePagePeer {
 		return $oRootPage;
 	}
 	
-	public static function getPageByNameAndParentId($sName, $oParent, $oCurrentPageId = null) {
-		if(!($oParent instanceof Page)) {
-			$oParent = PagePeer::retrieveByPK($oParent);
-		}
-		$oCriteria = PageQuery::create()->filterByName($sName)->childrenOf($oParent);
-		if($oCurrentPageId !== null) {
-			$oCriteria->add(self::ID, $oCurrentPageId, Criteria::NOT_EQUAL);
-		}
-		return $oCriteria->findOne();
-	}
-	
-	public static function pageIsNotUnique($sName, $iParentId, $oCurrentPageId = null) {
-		return self::getPageByNameAndParentId($sName, $iParentId, $oCurrentPageId) !== null;
+	public static function pageIsNotUnique($sName, $iParentId, $iCurrentPageId = null) {
+		return PageQuery::create()->filterByParentAndName($sName, $iParentId, $iCurrentPageId)->count() > 0;
 	}
 
 	public static function getPageByName($sName) {
