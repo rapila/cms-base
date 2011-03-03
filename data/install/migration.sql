@@ -344,7 +344,3 @@ ALTER TABLE `links` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `link_catego
 
 #svn r2907
 ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `mimetype`);
-
-# 20110303.1103
-# unique contraint removed, we only want constraint within same parent group, programatically done (no parent_id anymore)
-ALTER TABLE `pages` DROP INDEX `pages_U_1`;
