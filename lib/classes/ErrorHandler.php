@@ -2,7 +2,7 @@
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
 	
-	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext = null) {
+	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext = null, $bNeverPrint = false) {
 		if($aErrorContext === null) {
 			$aErrorContext = debug_backtrace();
 		}
@@ -17,15 +17,15 @@ class ErrorHandler {
 										"line" => $iErrorLine,
 										"trace" => $aTrace,
 										"context" => $aErrorContext);
-		self::handle($aError);
+		self::handle($aError, $bNeverPrint);
 		if(self::shouldContinue($iErrorNumber)) {
 			return true;
 		}
 		self::displayErrorMessage($aError);
 	}
 	
-	public static function handleException($oException) {
-		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), $oException->getTrace());
+	public static function handleException($oException, $bNeverPrint = false) {
+		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), $oException->getTrace(), $bNeverPrint);
 	}
 	
 	/**
@@ -155,7 +155,7 @@ class ErrorHandler {
 		self::$ENVIRONMENT = $sEnvironment;
 	}
 
-	private static function handle($aError) {
+	private static function handle($aError, $bNeverPrint = false) {
 		//Add additional information for logging/sending
 		$aError['referrer'] = @$_SERVER['HTTP_REFERER'];
 		$aError['host'] = @$_SERVER['HTTP_HOST'];
@@ -180,7 +180,7 @@ class ErrorHandler {
 			FilterModule::getFilters()->handleErrorLog(array(&$sLogFilePath, &$aError, &$sErrorMessage, &$iMode, &$sDestination));
 			error_log($sErrorMessage, $iMode, $sDestination);
 		}
-		if(self::shouldPrintErrors() && !(isset($aError['code']) && self::shouldContinue($aError['code']))) {
+		if(!$bNeverPrint && self::shouldPrintErrors() && !(isset($aError['code']) && self::shouldContinue($aError['code']))) {
 			FilterModule::getFilters()->handleErrorPrint(array(&$aError));
 			Util::dumpAll($aError);
 		}
