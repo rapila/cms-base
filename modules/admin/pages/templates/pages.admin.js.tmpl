@@ -42,7 +42,20 @@ jQuery(document).ready(function() {
 				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry}}", function(name, cleanup_callback) {
 					//This is the save callback
 					var page_id = page_tree.current_element_identifier;
-					page_detail.createPage(page_id, name, cleanup_callback.bind(this, page_id));
+					page_detail.createPage(page_id, name, function(result, error) {
+						if(error) {
+							if(error.exception_type == 'ValidationException') {
+								for(exception in error.parameters) {
+									if(jQuery.isPlainObject(error.parameters[exception])) {
+										Widget.notifyUser('alert', jQuery.parseHTML(error.parameters[exception].string));
+										return;
+									}
+								}
+							}
+						} else {
+							cleanup_callback(page_id);
+						}
+					});
 				}, function(page_id) {
 					page_tree.reload_element(page_tree.element_with_identifier(page_id));
 				});

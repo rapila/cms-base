@@ -163,6 +163,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
 			throw new NotPermittedException('may_create_children');
 		}
+		if(PagePeer::pageIsNotUnique($sPageName, $oParentPage)) {
+			$oFlash = Flash::getFlash();
+			$oFlash->addMessage('page.name_unique_required');
+			$oFlash->finishReporting();
+			throw new ValidationException($oFlash);
+		}
 		$oPage = new Page();
 		$oPage->setName(StringUtil::normalize($sPageName));
 		$oPageString = new PageString();
@@ -171,7 +177,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPageString->setPageTitle($sPageName);
 		$oPage->addPageString($oPageString);
 		$oPage->setPageType('default');
-		$oPage->setIsInactive(false);
+		$oPage->setIsInactive(true);
 		$oPage->insertAsLastChildOf($oParentPage);
 		return $oPage->save();
 	}
@@ -181,9 +187,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->setArrayToCheck($aPageData);
 		$oFlash->checkForValue('name', 'page.name_required');
 		if($aPageData['name'] != null && $aPageData['name'] != $this->oPage->getName()) {
-		  if(PagePeer::pageIsNotUnique($aPageData['name'], $this->oPage->getParent(), $this->oPage->getId())) {
-        $oFlash->addMessage('page.name_unique_required');
-		  }
+			if(PagePeer::pageIsNotUnique($aPageData['name'], $this->oPage->getParent(), $this->oPage->getId())) {
+				$oFlash->addMessage('page.name_unique_required');
+			}
 		}
 		if(isset($aPageData['edited_languages'])) {
 			foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
