@@ -18,7 +18,7 @@ class PageQuery extends BasePageQuery {
 			$mParent = PagePeer::retrieveByPK($mParent);
 		}
 		$this->filterByName($sName)->childrenOf($mParent);
-		if($oCurrentPageId !== null) {
+		if($mCurrentToExclude !== null) {
 			if($mCurrentToExclude instanceof Page) {
 				$mCurrentToExclude = $mCurrentToExclude->getId();
 			}

@@ -160,6 +160,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		if($oParentPage == null) {
 			$oParentPage = PagePeer::getRootPage();
 		}
+		$sPageTitle = $sPageName;
+		$sPageName = StringUtil::normalize($sPageName);
 		if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
 			throw new NotPermittedException('may_create_children');
 		}
@@ -170,11 +172,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException($oFlash);
 		}
 		$oPage = new Page();
-		$oPage->setName(StringUtil::normalize($sPageName));
+		$oPage->setName($sPageName);
 		$oPageString = new PageString();
 		$oPageString->setLanguageId(AdminManager::getContentLanguage());
 		$oPageString->setLinkText(null);
-		$oPageString->setPageTitle($sPageName);
+		$oPageString->setPageTitle($sPageTitle);
 		$oPage->addPageString($oPageString);
 		$oPage->setPageType('default');
 		$oPage->setIsInactive(true);
