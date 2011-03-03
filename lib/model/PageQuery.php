@@ -22,7 +22,7 @@ class PageQuery extends BasePageQuery {
 			if($mCurrentToExclude instanceof Page) {
 				$mCurrentToExclude = $mCurrentToExclude->getId();
 			}
-			$this->add(self::ID, $mCurrentToExclude, Criteria::NOT_EQUAL);
+			$this->add(PagePeer::ID, $mCurrentToExclude, Criteria::NOT_EQUAL);
 		}
 		return $this;
 	}
