@@ -532,6 +532,9 @@ jQuery.extend(Widget, {
 		},
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
+			if(callback.length>=2) {
+				return true;
+			}
 			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
 				widgetOrId.validate_with(error.parameters);
 				return false;
