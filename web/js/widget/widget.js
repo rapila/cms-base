@@ -96,12 +96,12 @@ jQuery.extend(Widget.prototype, {
 			//Make getters and setter synchronous, Char after set or get must be uppercase
 			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && (/[A-Z]/).test(name[3]));
 		}
+		if(options.callback_handles_error === null) {
+			options.callback_handles_error = callback.length>=2;
+		}
 		var action = options.action || 'methodCall';
 		var widget = this;
 		this._widgetJSON([action, name], function(response, exception) {
-			if(callback.length<2 && exception) {
-				Widget.notifyUser('alert', exception.message);
-			}
 			callback.call(widget, response.result, exception);
 			result = response.result;
 			error = exception;
@@ -205,7 +205,7 @@ jQuery.extend(Widget, {
 							var script = jQuery(this);
 							if(!script.attr('src')) {
 								head.append(this.cloneNode(true));
-							} else if(head.find('script[src="'+script.attr('src')+'"]').length == 0) {
+							} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
 								head.append(this.cloneNode(true));
 								// jQuery.ajax({
 								// 	url: script.attr('src'),
@@ -218,7 +218,7 @@ jQuery.extend(Widget, {
 						head.append(resources.find('style'));
 						//Add linked elements (mostly CSS)
 						resources.filter('link').each(function() {
-							if(head.find('link[href="'+this.getAttribute('href')+'"]').length == 0) {
+							if(head.find('link[href="'+this.getAttribute('href')+'"]').length === 0) {
 								head.append(this);
 							}
 						});
@@ -433,6 +433,9 @@ jQuery.extend(Widget, {
 				});
 			}
 		}
+		if(options.callback_handles_error === null) {
+			options.callback_handles_error = callback.length>=2;
+		}
 		var ajaxOpts = {
 			url: url,
 			data: attr_str,
@@ -458,7 +461,7 @@ jQuery.extend(Widget, {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					call_callback = exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
 				}
 				if(call_callback) {
 					callback.call(this, result, error);
@@ -470,9 +473,9 @@ jQuery.extend(Widget, {
 					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
 					error_object.message = text;
 				}
-				var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
+				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 				action.shift();
-				if(exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes)) {
+				if(options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes)) {
 					callback.call(this, {}, error_object);
 				}
 			},
@@ -510,12 +513,10 @@ jQuery.extend(Widget, {
 	singletons: {},
 	widgetInformation: {},
 	
-	//Called when a specific type of Exception is thrown in _widgetJSON. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
+	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
 		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			if(callback.length<2) {
-				Widget.notifyUser('alert', error.message);
-			}
+			Widget.notifyUser('alert', error.message);
 			return true;
 		},
 		
@@ -532,9 +533,6 @@ jQuery.extend(Widget, {
 		},
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			if(callback.length>=2) {
-				return true;
-			}
 			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
 				widgetOrId.validate_with(error.parameters);
 				return false;
@@ -569,7 +567,8 @@ jQuery.extend(WidgetJSONOptions.prototype, {
 		upload_progess_callback: null,
 		download_progress_callback: null,
 		content_type: 'application/json',
-		action: null
+		action: null,
+		callback_handles_error: null
 	}
 });
 
@@ -610,7 +609,7 @@ jQuery.extend(jQuery, {
 
 jQuery.fn.extend({
 	prepareWidget: function() {
-		if(this.length == 0) {
+		if(this.length === 0) {
 			return this;
 		}
 		var callback = arguments[0] || jQuery.noop;
