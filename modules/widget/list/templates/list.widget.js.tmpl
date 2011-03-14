@@ -430,6 +430,9 @@ Widget.types.list = {
 		},
 		
 		url: function(column, data) {
+			if(data === null) {
+				return;
+			}
 			if(!jQuery.isArray(data)) {
 				data = [data, data];
 			}
