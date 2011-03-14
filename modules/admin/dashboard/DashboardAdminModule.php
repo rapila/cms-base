@@ -18,6 +18,12 @@ class DashboardAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
 	}
 	
+	public function includeCustomResources($oResourceIncluder) {
+		$oResourceIncluder->addResource('admin/dashboard-interface.css', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$oResourceIncluder->addResource('admin/dashboard-interface.js', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
+		parent::includeCustomResources($oResourceIncluder);
+	}
+	
 	public function sidebarContent() {
 		// return $this->oModuleListWidget->doWidget();
 	}
