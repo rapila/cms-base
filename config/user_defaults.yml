@@ -21,10 +21,11 @@ rich_text:
   buttons: [['bold', 'italic', '~'], []]
   
 dashboard:
-  documents:
-    - document_types
-    - document_categories
-  users:
-    - user_groups
-    # - user_roles
-  
+  layout: 3columns
+  widgets:
+    -
+      type: recent_activity
+      title: "Recent Activity"
+      color: "#554499"
+      config:
+        days: 3

@@ -1,8 +1,3 @@
-/* Reset */
-body,img,p,h1,h2,h3,h4,h5,h6,ul,ol {margin:0; padding:0; list-style:none; border:none;}
-/* End Reset */
-
-body {font-size:0.8em; font-family:Arial,Verdana,Sans-Serif; background: #000;}
 a {color:white;}
 
 /* Colors */
@@ -22,22 +17,8 @@ a {color:white;}
 	{color:#FFF;}
 /* End Colors */
 
-/* Head section */
-#head {
-    background: #000 url(img/head-bg.png) repeat-x;
-    height: 100px;
-}
-#head h1 {
-    line-height: 100px;
-    color: #FFF;
-    text-align: center;
-    background: url(img/inettuts.png) no-repeat center;
-    text-indent: -9999em
-}
-/* End Head Section */
-
 /* Columns section */
-#columns .column {
+#dashboard-columns .column {
     float: left;
     width: 33.3%;
 		/* Min-height: */
@@ -45,31 +26,27 @@ a {color:white;}
 		height: auto !important; 
 		height: 400px;
 }
-
-/* Column dividers (background-images) : */
-	#columns #column1 { background: url(img/column-bg-left.png) no-repeat right top; }
-	#columns #column3 { background: url(img/column-bg-right.png) no-repeat left top; }
 	
-#columns #column1 .widget { margin: 30px 35px 0 25px; }
-#columns #column3 .widget { margin: 30px 25px 0 35px; }
-#columns .widget {
+#dashboard-columns #column1 .widget { margin: 30px 35px 0 25px; }
+#dashboard-columns #column3 .widget { margin: 30px 25px 0 35px; }
+#dashboard-columns .widget {
     margin: 30px 20px 0 20px;
     padding: 2px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
 }
-#columns .widget .widget-head {
+#dashboard-columns .widget .widget-head {
     color: #000;
     overflow: hidden;
     width: 100%;
     height: 30px;
     line-height: 30px;
 }
-#columns .widget .widget-head h3 {
+#dashboard-columns .widget .widget-head h3 {
     padding: 0 5px;
     float: left;
 }
-#columns .widget .widget-content {
+#dashboard-columns .widget .widget-content {
     background: #333 url(img/widget-content-bg.png) repeat-x;
     padding: 0 5px;
     color: #DDD;
@@ -80,35 +57,35 @@ a {color:white;}
     line-height: 1.2em;
     overflow: hidden;
 }
-#columns .widget .widget-content p {
+#dashboard-columns .widget .widget-content p {
     padding: 0.8em 0;
     border-bottom: 1px solid #666;
 }
-#columns .widget .widget-content img {
+#dashboard-columns .widget .widget-content img {
     float: right;
     margin: 10px;
     border: 1px solid #FFF;
 }
-#columns .widget .widget-content pre {
+#dashboard-columns .widget .widget-content pre {
     padding: 0.5em 5px;
     color: #EEE;
     font-size: 12px;
 }
-#columns .widget .widget-content ul {
+#dashboard-columns .widget .widget-content ul {
     padding: 5px 0 5px 20px;
     list-style: disc;
 }
-#columns .widget .widget-content ul li {padding: 3px 0;}
-#columns .widget .widget-content ul.images {
+#dashboard-columns .widget .widget-content ul li {padding: 3px 0;}
+#dashboard-columns .widget .widget-content ul.images {
     padding: 7px 0 0 0;
     list-style: none;
     height: 1%;
 }
-#columns .widget .widget-content ul.images li {
+#dashboard-columns .widget .widget-content ul.images li {
     display: inline;
     float: left;
 }
-#columns .widget .widget-content ul.images img {
+#dashboard-columns .widget .widget-content ul.images img {
     display: inline;
     float: left;
     margin: 0 0 7px 7px;
@@ -120,7 +97,7 @@ a {color:white;}
 .widget-head a.remove  {
     float: right;
     display: inline;
-    background: url(img/buttons.gif) no-repeat -24px 0;
+    background: url(../../images/dashboard_buttons.gif) no-repeat -24px 0;
     width: 14px;
     height: 14px;
     margin: 8px 4px 8px 0;
@@ -131,7 +108,7 @@ a {color:white;}
 .widget-head a.edit  {
     float: right;
     display: inline;
-    background: url(img/buttons.gif) no-repeat;
+    background: url(../../images/dashboard_buttons.gif) no-repeat;
     width: 24px;
     height: 14px;
     text-indent: -9999em;
@@ -142,7 +119,7 @@ a {color:white;}
 .widget-head a.collapse  {
     float: left;
     display: inline;
-    background: url(img/buttons.gif) no-repeat -52px 0;
+    background: url(../../images/dashboard_buttons.gif) no-repeat -52px 0;
     width: 14px;
     height: 14px;
     text-indent: -9999em;

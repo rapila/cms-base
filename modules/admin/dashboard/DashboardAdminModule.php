@@ -5,16 +5,11 @@
 class DashboardAdminModule extends AdminModule {
 		
 	private $oModuleListWidget;
-	private $oDashboardTasks;
 	
 	public function __construct() {
 		$this->oModuleListWidget = new ListWidgetModule();
 		$this->oModuleListWidget->setDelegate($this);
-		$this->oDashboardTasks = new DashboardTasksWidgetModule();
 		$sUsePath = Manager::usePath();
-		if($sUsePath === 'module_not_found') {
-			$this->oDashboardTasks->setModuleNotFound(Manager::usePath());
-		}
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
 	}
 	
@@ -25,11 +20,12 @@ class DashboardAdminModule extends AdminModule {
 	}
 	
 	public function sidebarContent() {
-		// return $this->oModuleListWidget->doWidget();
+		return $this->oModuleListWidget->doWidget();
 	}
 	
 	public function mainContent() {
-		return $this->oDashboardTasks->doWidget();
+		$oTemplate = $this->constructTemplate('main');
+		return $oTemplate;
 	}
 	
 	public function getColumnIdentifiers() {
@@ -52,11 +48,8 @@ class DashboardAdminModule extends AdminModule {
 	
 	public static function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
-		$sModulePostFix = '';
-		foreach(AdminModule::listModules() as $sModuleName => $aModuleInformation) {
-			if($sModuleName !== 'dashboard') {
-				$aResult[AdminModule::getDisplayNameByName($sModuleName)] = array('name' => $sModuleName, 'link' => LinkUtil::link(array($sModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sModuleName));
-			}
+		foreach(WidgetModule::listModulesByAspect('dashboard') as $sModuleName => $aModuleInformation) {
+			$aResult[] = array('name' => $sModuleName, 'link' => LinkUtil::link(array($sModuleName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sModuleName));
 		}
 		ksort($aResult);
 		foreach($aResult as $sModuleName => $aModuleInformation) {

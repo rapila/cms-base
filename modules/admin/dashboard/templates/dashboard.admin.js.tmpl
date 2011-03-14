@@ -1,8 +1,8 @@
 jQuery(document).ready(function() {
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
-		sidebar_widget.handle('list.row-click', function(event, row, element) {
-			window.location.pathname = element.data('link');
-		});
-		sidebar_widget.context_module = "{{writeRequestValue=context_module}}";
+	});
+	
+	Widget.create('dashboard_control', function(dashboard_control) {
+		
 	});
 });
