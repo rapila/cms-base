@@ -18,7 +18,7 @@ class ErrorHandler {
 										"trace" => $aTrace,
 										"context" => $aErrorContext);
 		self::handle($aError, $bNeverPrint);
-		if(self::shouldContinue($iErrorNumber)) {
+		if($bNeverPrint || self::shouldContinue($iErrorNumber)) {
 			return true;
 		}
 		self::displayErrorMessage($aError);
