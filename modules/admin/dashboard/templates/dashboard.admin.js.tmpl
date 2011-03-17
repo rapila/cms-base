@@ -1,16 +1,33 @@
 jQuery(document).ready(function() {
+	var create_skeleton = function(title) {
+		var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
+		skeleton.find('.widget-head h3').text(title);
+		return skeleton;
+	};
+	
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
 		
 	});
 	
-	var db = AdminInterface.content.find('.dashboard-columns');
+	var db = AdminInterface.content.find('#dashboard-columns');
 	
 	Widget.create('dashboard_control', function(dashboard_control) {
 		dashboard_control.template(function(template) {
 			db.html(template);
-		});
-		dashboard_control.allDashboardModules(function(modules) {
-			console.log(modules);
+			
+			dashboard_control.allDashboardModules(function(modules) {
+				jQuery.each(modules, function(i, module) {
+					var skeleton = create_skeleton(module.title);
+					skeleton.css({backgroundColor: module.color});
+					var column = db.find('.column#'+module.container);
+					if(column.length !== 1) {
+						column = db.find('.column').eq(0);
+					}
+					column.append(skeleton);
+				});
+				Dashboard.init();
+				console.log(modules);
+			});
 		});
 	});
 });
