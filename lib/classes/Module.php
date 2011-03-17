@@ -283,6 +283,6 @@ abstract class Module {
 	 * @param boolean $bForceGlobalTemplatesDir if set to true causes the template to be loaded from the global templates directory (internal or external) instead of the module's local one
 	 */
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
-		return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
+		return self::constructTemplateForModuleAndType(self::getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
 	}
 }
