@@ -8,7 +8,7 @@ var Dashboard = {
 	jQuery : $,
 	
 	settings : {
-		columns : '.column',
+		columns : '.dashboard-column',
 		widgetSelector: '.widget',
 		handleSelector: '.widget-head',
 		contentSelector: '.widget-content',

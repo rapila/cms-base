@@ -104,7 +104,7 @@ a {color:white;}
 .widget-head a.remove  {
     float: right;
     display: inline;
-    background: url(../../images/dashboard_buttons.gif) no-repeat -24px 0;
+    background: url(../../images/admin/dashboard_buttons.gif) no-repeat -24px 0;
     width: 14px;
     height: 14px;
     margin: 8px 4px 8px 0;
@@ -115,7 +115,7 @@ a {color:white;}
 .widget-head a.edit  {
     float: right;
     display: inline;
-    background: url(../../images/dashboard_buttons.gif) no-repeat;
+    background: url(../../images/admin/dashboard_buttons.gif) no-repeat;
     width: 24px;
     height: 14px;
     text-indent: -9999em;
@@ -126,7 +126,7 @@ a {color:white;}
 .widget-head a.collapse  {
     float: left;
     display: inline;
-    background: url(../../images/dashboard_buttons.gif) no-repeat -52px 0;
+    background: url(../../images/admin/dashboard_buttons.gif) no-repeat -52px 0;
     width: 14px;
     height: 14px;
     text-indent: -9999em;

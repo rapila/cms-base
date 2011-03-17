@@ -19,9 +19,9 @@ jQuery(document).ready(function() {
 				jQuery.each(modules, function(i, module) {
 					var skeleton = create_skeleton(module.title);
 					skeleton.css({backgroundColor: module.color});
-					var column = db.find('.column#'+module.container);
+					var column = db.find('.dashboard-column#'+module.container);
 					if(column.length !== 1) {
-						column = db.find('.column').eq(0);
+						column = db.find('.dashboard-column').eq(0);
 					}
 					column.append(skeleton);
 				});
