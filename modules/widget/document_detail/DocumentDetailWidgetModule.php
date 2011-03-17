@@ -42,7 +42,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function preview() {
-		return self::documentPreview($this->iDocumentId, 190);
+		return DocumentPeer::retrieveByPK($this->iDocumentId)->getPreview(190);
 	}
 	
 	public function validate($aDocumentData, $oDocument) {

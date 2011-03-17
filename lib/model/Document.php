@@ -70,6 +70,23 @@ class Document extends BaseDocument {
 		return null;
 	}
 	
+	public function getPreview($iSize = 190) {
+		$aOptions = array();
+		$aOptions['document_id'] = $this->getId();
+		if($this->getDocumentType()->getDocumentKind() === 'image') {
+			// Objects don’t get displayed otherwise
+			$aOptions['max_width'] = $iSize;
+			$aOptions['max_height'] = $iSize;
+			$aOptions['force_refresh'] = true;
+		} else {
+			$aOptions['width'] = $iSize;
+			$aOptions['height'] = $iSize*0.747;
+		}
+		
+		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
+		return $oModule->renderFrontend()->render();
+	}
+	
 	public function getDataSize(PropelPDO $oConnection = null) {
 		if($this->iDataSize === null) {
 			$oCriteria = $this->buildPkeyCriteria();
