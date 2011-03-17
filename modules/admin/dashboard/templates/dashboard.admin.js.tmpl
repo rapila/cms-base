@@ -1,8 +1,16 @@
 jQuery(document).ready(function() {
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
+		
 	});
 	
+	var db = AdminInterface.content.find('.dashboard-columns');
+	
 	Widget.create('dashboard_control', function(dashboard_control) {
-		
+		dashboard_control.template(function(template) {
+			db.html(template);
+		});
+		dashboard_control.allDashboardModules(function(modules) {
+			console.log(modules);
+		});
 	});
 });
