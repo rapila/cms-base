@@ -23,20 +23,6 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public static function documentPreview($iDocumentId, $iSize) {
-		$aOptions = array();
-		$aOptions['document_id'] = $iDocumentId;
-		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
-		if($oDocument->getDocumentType()->getDocumentKind() === 'image') {
-			// Objects don’t get displayed otherwise
-			$aOptions['max_width'] = $iSize;
-			$aOptions['max_height'] = $iSize;
-			$aOptions['force_refresh'] = true;
-		} else {
-			$aOptions['width'] = $iSize;
-			$aOptions['height'] = $iSize*0.747;
-		}
-		
 		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
 		return $oModule->renderFrontend()->render();
 	}
@@ -72,11 +58,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->setLanguageId($sLanguageId);
 		$oDocument->setIsProtected($aDocumentData['is_protected']);
 		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
-	  ErrorHandler::log('modified_original', $iOriginalDocCatId, 'new', $oDocument->getDocumentCategoryId(), $oDocument->isColumnModified('document_category_id'));
-    if($oDocument->getDocumentCategoryId() != null) {
-		  if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
-		    $oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
-		  }
+		ErrorHandler::log('modified_original', $iOriginalDocCatId, 'new', $oDocument->getDocumentCategoryId(), $oDocument->isColumnModified('document_category_id'));
+		if($oDocument->getDocumentCategoryId() != null) {
+			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
+				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
+			}
 		}
 		return $oDocument->save();
 	}

@@ -29,7 +29,7 @@ class Document extends BaseDocument {
 	}
 	
 	public function getNameTruncated() {
-	  return StringUtil::truncate($this->getName(), 50);
+		return StringUtil::truncate($this->getName(), 50);
 	}
 	
 	public function getFullName() {
