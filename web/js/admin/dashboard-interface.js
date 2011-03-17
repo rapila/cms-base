@@ -29,7 +29,8 @@ var Dashboard = {
 		}
 	},
 
-	init : function () {
+	init : function (usedSettings) {
+		jQuery.extend(true, this.settings, usedSettings);
 		this.addWidgetControls();
 		this.makeSortable();
 	},
@@ -112,8 +113,7 @@ var Dashboard = {
 			$('input',this).keyup(function () {
 				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
 			});
-			$('ul.colors li',this).click(function () {
-				
+			$('ul.colors li', this).click(function () {
 				var colorStylePattern = /\bcolor-[\w]{1,}\b/,
 					thisWidgetColorClass = $(this).parents(settings.widgetSelector).attr('class').match(colorStylePattern)
 				if (thisWidgetColorClass) {
@@ -125,25 +125,19 @@ var Dashboard = {
 				
 			});
 		});
-		
 	},
 	
 	makeSortable : function () {
 		var _this = this,
 			$ = this.jQuery,
 			settings = this.settings,
-			$sortableItems = (function () {
-				var notSortable = '';
-				$(settings.widgetSelector,$(settings.columns)).each(function (i) {
-					if (!_this.getWidgetSettings(this.id).movable) {
-						if(!this.id) {
-							this.id = 'widget-no-id-' + i;
-						}
-						notSortable += '#' + this.id + ',';
-					}
-				});
-				return $('> li:not(' + notSortable + ')', settings.columns);
-			})();
+			$sortableItems = $('> li.'+settings.widgetSelector, settings.columns);
+			
+		$(settings.widgetSelector,$(settings.columns)).each(function (i) {
+			if (!_this.getWidgetSettings(this.id).movable) {
+				$sortableItems = $sortableItems.not(this);
+			}
+		});
 		
 		$sortableItems.find(settings.handleSelector).css({
 			cursor: 'move'

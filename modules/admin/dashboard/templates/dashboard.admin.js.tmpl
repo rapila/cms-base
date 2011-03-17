@@ -1,7 +1,8 @@
 jQuery(document).ready(function() {
-	var create_skeleton = function(title) {
+	var create_skeleton = function(uid, title) {
 		var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
 		skeleton.find('.widget-head h3').text(title);
+		skeleton.attr('id', uid);
 		return skeleton;
 	};
 	
@@ -12,22 +13,28 @@ jQuery(document).ready(function() {
 	var db = AdminInterface.content.find('#dashboard-columns');
 	
 	Widget.create('dashboard_control', function(dashboard_control) {
-		dashboard_control.template(function(template) {
-			db.html(template);
+		var reload;
+		
+		reload = function() {
+			dashboard_control.template(function(template) {
+				db.html(template);
 			
-			dashboard_control.allDashboardModules(function(modules) {
-				jQuery.each(modules, function(i, module) {
-					var skeleton = create_skeleton(module.title);
-					skeleton.css({backgroundColor: module.color});
-					var column = db.find('.dashboard-column#'+module.container);
-					if(column.length !== 1) {
-						column = db.find('.dashboard-column').eq(0);
-					}
-					column.append(skeleton);
+				dashboard_control.allDashboardModules(function(modules) {
+					jQuery.each(modules, function(i, module) {
+						var skeleton = create_skeleton(module.uid, module.title);
+						skeleton.css({backgroundColor: module.color});
+						var column = db.find('.dashboard-column#'+module.container);
+						if(column.length !== 1) {
+							column = db.find('.dashboard-column').eq(0);
+						}
+						column.append(skeleton);
+					});
+					Dashboard.init();
 				});
-				Dashboard.init();
-				console.log(modules);
 			});
-		});
+		};
+		
+		reload();
+		
 	});
 });
