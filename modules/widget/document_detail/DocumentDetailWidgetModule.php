@@ -23,12 +23,12 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
-		return $oModule->renderFrontend()->render();
+	public static function documentPreview($iDocumentId, $iSize) {
+		return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
 	}
 	
 	public function preview() {
-		return DocumentPeer::retrieveByPK($this->iDocumentId)->getPreview(190);
+		return self::documentPreview($this->iDocumentId, 190);
 	}
 	
 	public function validate($aDocumentData, $oDocument) {
