@@ -6,8 +6,9 @@ Widget.types.detail = {
 	set_instance: function(instance) {
 		this.instance = instance;
 		this.settings.save_callback = function() {
-			instance.fire('saving');
-			instance.saveData(instance.content.serializeArrayKV(), function() {
+			var data = instance.content.serializeArrayKV();
+			instance.fire('saving', data);
+			instance.saveData(data, function() {
 				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
 				if(!instance.settings.remains_open) {
 					instance.close();
