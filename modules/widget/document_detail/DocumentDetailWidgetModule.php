@@ -58,7 +58,6 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->setLanguageId($sLanguageId);
 		$oDocument->setIsProtected($aDocumentData['is_protected']);
 		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
-		ErrorHandler::log('modified_original', $iOriginalDocCatId, 'new', $oDocument->getDocumentCategoryId(), $oDocument->isColumnModified('document_category_id'));
 		if($oDocument->getDocumentCategoryId() != null) {
 			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
 				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
