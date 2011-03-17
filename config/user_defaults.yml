@@ -27,5 +27,6 @@ dashboard:
       type: recent_activity
       title: "Recent Activity"
       color: "#554499"
+      container: 'column1'
       config:
         days: 3
