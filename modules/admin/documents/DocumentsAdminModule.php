@@ -67,4 +67,10 @@ class DocumentsAdminModule extends AdminModule {
 	public function usedWidgets() {
 		return array($this->oListWidget, $this->oSidebarWidget, $this->oInputWidget);
 	}
+	
+	public function getCriteria() {
+		$oCriteria = new Criteria();
+		return $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+	}
+
 }

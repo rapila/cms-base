@@ -2,21 +2,21 @@
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'documents' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
  * @package    propel.generator.model
  */
 class DocumentQuery extends BaseDocumentQuery {
+	public function excludeExternallyManaged() {
+		$this->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
+		$oManagedFalse = $this->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false, Criteria::EQUAL);
+		$oManagedNull = $this->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL);
+		$oManagedFalse->addOr($oManagedNull);
+		$this->addAnd($oManagedFalse);
+		return $this;
+	}
+		
 	public function filterByDocumentKind($sDocumentKind = 'image') {
 		$this->joinDocumentType();
 		$this->add(DocumentTypePeer::MIMETYPE, "$sDocumentKind/%", Criteria::LIKE);
 		return $this;
 	}
-
-} // DocumentQuery
+}
