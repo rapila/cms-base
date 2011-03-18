@@ -124,12 +124,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = new Criteria();
-		// addJoin to Document Types for sort speed, sort order and filter
-		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, Criteria::LEFT_JOIN);
-		// Speed only
-		$oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-		return $oCriteria;
+		return DocumentQuery::create()->excludeExternallyManaged()->joinDocumentType(null, Criteria::LEFT_JOIN)->excludeExternallyManaged();
 	}
 	
 	public function setDocumentKind($sDocumentKind) {
