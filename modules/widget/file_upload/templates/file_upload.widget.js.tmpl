@@ -55,7 +55,11 @@ Widget.types.file_upload = {
 			
 			var i = 0;
 			for(i=0;i<event.dataTransfer.files.length;i++) {
-				file_upload.upload_file(event.dataTransfer.files.item(i), callback(target));
+				var file = event.dataTransfer.files.item(i);
+				var callback_result = callback(target, file);
+				if(callback_result) {
+					file_upload.upload_file(file, callback_result);
+				}
 			}
 			
 			current_drag_is_file = false;
