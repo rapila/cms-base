@@ -25,7 +25,7 @@ class WidgetJsonFileModule extends FileModule {
 		} catch (LocalizedException $ex) {
 			print json_encode(array('exception' => array('message' => $ex->getLocalizedMessage(), 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'parameters' => $ex->getMessageParameters(), 'exception_type' => $ex->getExceptionType())));
 		} catch (Exception $ex) {
-			ErrorHandler::handleException($e, true);
+			ErrorHandler::handleException($ex, true);
 			print json_encode(array('exception' => array('message' => "Exception when trying to execute the last action {$ex->getMessage()}", 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'exception_type' => get_class($ex))));
 		}
 		if($sPrevSessionLanguage !== null) {
