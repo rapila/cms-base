@@ -1,3 +1,22 @@
 Widget.types.recent_activity = {
+	prepare: function() {
+		this._element.text('fad');
+		this.changed_dashboard_config();
+	},
 	
+	changed_dashboard_config: function() {
+		this._element.append(jQuery('<strong/>').text(" for "+this.settings.dashboard.days+" days"));
+	},
+	
+	dashboard_config_form: function() {
+		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
+		form.find('input[name=days]').val(this.settings.dashboard.days);
+		return form;
+	},
+	
+	settings: {
+		dashboard: {
+			days: 2
+		}
+	}
 };
