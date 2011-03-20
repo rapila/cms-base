@@ -1,46 +1,101 @@
 jQuery(document).ready(function() {
-	var create_skeleton = function(uid, title) {
-		var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
-		var heading = skeleton.find('.dashboard-widget-head h3').text(title);
-		skeleton.attr('id', uid);
-		return {
-			skeleton: skeleton,
-			heading: heading,
-			content: skeleton.find('.dashboard-widget-content')
-		};
-	};
-	
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
 		
 	});
 	
 	var db = AdminInterface.content.find('#dashboard-columns');
 	
+	var add_to_column = function(column_name, skeleton) {
+		var column = db.find('.dashboard-column#'+column_name);
+		if(column.length !== 1) {
+			column = db.find('.dashboard-column').eq(0);
+		}
+		column.append(skeleton.skeleton);
+		column.data('dashboard-skeleton', skeleton);
+	};
+	
 	Widget.create('dashboard_control', function(dashboard_control) {
-		var reload;
+		var create_skeleton = function(uid, title) {
+			var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
+			var heading = skeleton.find('.dashboard-widget-head h3').text(title);
+			skeleton.attr('id', uid);
+			
+			var result = {
+				skeleton: skeleton,
+				heading: heading,
+				heading: heading,
+				content: skeleton.find('.dashboard-widget-content'),
+				collapse: function() {
+					skeleton.find('a.collapse').click();
+				}
+			};
+			
+			//Change handlers
+			skeleton.bind('db-configured', function(event) {
+				var settings = result.module;
+				settings.color = skeleton.css('backgroundColor');
+				settings.title = heading.text();
+				settings.config = result.config_form.serializeArrayKV();
+				if(result.widget.changed_dashboard_config) {
+					result.widget.settings.dashboard = jQuery.extend(result.widget.settings.dashboard || {}, settings.config);
+					result.widget.changed_dashboard_config();
+				}
+				dashboard_control.saveSettings(uid, settings);
+			});
+			skeleton.bind('db-collapsed', function(event, state) {
+				result.module.collapsed = state;
+				dashboard_control.changeCollapsed(uid, state);
+			});
+			skeleton.bind('db-moved', function(event, move) {
+				result.module.container = move.to;
+				dashboard_control.move(uid, move.to, move.pos);
+			});
+			
+			return result;
+		};
 		
+		
+		var reload;
 		reload = function() {
 			dashboard_control.template(function(template) {
 				db.html(template);
 			
 				dashboard_control.allDashboardModules(function(modules) {
+					var skeletons = [];
 					jQuery.each(modules, function(i, module) {
 						var skeleton = create_skeleton(module.uid, module.title);
+						skeleton.module = module;
 						skeleton.skeleton.css({backgroundColor: module.color});
-						var column = db.find('.dashboard-column#'+module.container);
-						if(column.length !== 1) {
-							column = db.find('.dashboard-column').eq(0);
-						}
-						column.append(skeleton.skeleton);
+						add_to_column(module.container, skeleton);
+						skeletons.push(skeleton);
+					});
+					
+					//Init the dashboard, init widgets afterwards
+					Dashboard.init();
+					
+					jQuery.each(skeletons, function(i, skeleton) {
+						var module = skeleton.module;
 						Widget.createWithElement(module.type, function(widget) {
+							skeleton.widget = widget;
+							widget.settings.is_dashboard = true;
+							widget.settings.dashboard = jQuery.extend(widget.settings.dashboard || {}, module.config);
 							widget.handle('element_set', function(event, element) {
 								skeleton.content.append(element);
 							});
+							
+							//Config area
+							var form = widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>');
+							skeleton.config_form = form;
+							form.appendTo(skeleton.skeleton.find('.dashboard-edit-box'));
+							form.bind('submit', function(event) {
+								event.preventDefault();
+							});
 						}, function(widget) {
-							widget.set_config(module.config);
+							if(module.collapsed) {
+								skeleton.collapse();
+							}
 						});
 					});
-					Dashboard.init();
 				});
 			});
 		};

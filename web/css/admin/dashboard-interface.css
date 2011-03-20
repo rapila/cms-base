@@ -58,7 +58,7 @@ a {color:white;}
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content {
     background-color: #333;
-    padding: 0 5px;
+    padding: 1em;
     color: #DDD;
     -moz-border-radius-bottomleft: 2px;
     -moz-border-radius-bottomright: 2px;
@@ -142,14 +142,14 @@ a {color:white;}
 #column2 .dashboard-widget-placeholder { margin: 30px 20px 0 20px; }
 #column3 .dashboard-widget-placeholder { margin: 30px 25px 0 35px; }
 
-.edit-box {
+.dashboard-edit-box {
     overflow: hidden;
-    background: #333 url(img/widget-content-bg.png) repeat-x;
+    background-color: #333;
     margin-bottom: 2px;
     padding: 10px 0;
 }
 
-.edit-box li.item {
+.dashboard-edit-box li.item {
     padding: 10px 0;
     overflow: hidden;
     float: left;
@@ -158,14 +158,14 @@ a {color:white;}
 }
 
 
-.edit-box label {
+.dashboard-edit-box label {
     float: left;
     width: 30%;
     color: #FFF;
     padding: 0 0 0 10px;
 }
 
-.edit-box ul.colors li {
+.dashboard-edit-box ul.colors li {
     width: 20px;
     height: 20px;
     border: 1px solid #EEE;

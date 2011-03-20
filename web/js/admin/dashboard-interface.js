@@ -17,7 +17,7 @@ var Dashboard = {
 			removable: true,
 			collapsible: true,
 			editable: true,
-			colorClasses : ['color-yellow', 'color-red', 'color-blue', 'color-white', 'color-orange', 'color-green']
+			colors : ['#f2bc00', '#dd0000', '#148ea4', '#dfdfdf', '#f66e00', '#8dc100']
 		},
 		widgetIndividual : {
 			intro : {
@@ -71,20 +71,20 @@ var Dashboard = {
 				}).toggle(function () {
 					$(this).css({backgroundPosition: '-66px 0', width: '55px'})
 						.parents(settings.widgetSelector)
-							.find('.edit-box').show().find('input').focus();
+							.find('.dashboard-edit-box').show().find('input').focus();
 					return false;
-				},function () {
-					$(this).css({backgroundPosition: '', width: ''})
-						.parents(settings.widgetSelector)
-							.find('.edit-box').hide();
+				}, function () {
+					var widget = $(this).css({backgroundPosition: '', width: ''}).parents(settings.widgetSelector);
+					widget.find('.dashboard-edit-box').hide();
+					widget.triggerHandler('db-configured');
 					return false;
 				}).appendTo($(settings.handleSelector,this));
-				$('<div class="edit-box" style="display:none;"/>')
+				$('<div class="dashboard-edit-box" style="display:none;"/>')
 					.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('h3',this).text() + '"/></li>')
 					.append((function(){
 						var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
-						$(thisWidgetSettings.colorClasses).each(function () {
-							colorList += '<li class="' + this + '"/>';
+						$(thisWidgetSettings.colors).each(function () {
+							colorList += '<li style="background-color: ' + this + ';"/>';
 						});
 						return colorList + '</ul>';
 					})())
@@ -96,33 +96,26 @@ var Dashboard = {
 				$('<a href="#" class="collapse">COLLAPSE</a>').mousedown(function (e) {
 					e.stopPropagation();	
 				}).toggle(function () {
-					$(this).css({backgroundPosition: '-38px 0'})
-						.parents(settings.widgetSelector)
-							.find(settings.contentSelector).hide();
+					var widget = $(this).css({backgroundPosition: '-38px 0'}).parents(settings.widgetSelector);
+					widget.find(settings.contentSelector).hide();
+					widget.triggerHandler('db-collapsed', true);
 					return false;
 				},function () {
-					$(this).css({backgroundPosition: ''})
-						.parents(settings.widgetSelector)
-							.find(settings.contentSelector).show();
+					var widget = $(this).css({backgroundPosition: ''}).parents(settings.widgetSelector);
+					widget.find(settings.contentSelector).show();
+					widget.triggerHandler('db-collapsed', false);
 					return false;
 				}).prependTo($(settings.handleSelector,this));
 			}
 		});
 		
-		$('.edit-box').each(function () {
+		$('.dashboard-edit-box').each(function () {
 			$('input',this).keyup(function () {
 				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
 			});
 			$('ul.colors li', this).click(function () {
-				var colorStylePattern = /\bcolor-[\w]{1,}\b/,
-					thisWidgetColorClass = $(this).parents(settings.widgetSelector).attr('class').match(colorStylePattern)
-				if (thisWidgetColorClass) {
-					$(this).parents(settings.widgetSelector)
-						.removeClass(thisWidgetColorClass[0])
-						.addClass($(this).attr('class').match(colorStylePattern)[0]);
-				}
+				$(this).parents(settings.widgetSelector).css('backgroundColor', $(this).css('backgroundColor'));
 				return false;
-				
 			});
 		});
 	},
@@ -157,6 +150,18 @@ var Dashboard = {
 		$(settings.columns).sortable({
 			items: $sortableItems,
 			connectWith: $(settings.columns),
+			update: function(event, ui) {
+				if(ui.sender) {
+					return;
+				}
+				var item = jQuery(ui.item);
+				var target = item.parent();
+				var position = target.children().index(item);
+				item.triggerHandler('db-moved', {
+					to: target.attr('id'), 
+					pos: position
+				});
+			},
 			handle: settings.handleSelector,
 			placeholder: 'dashboard-widget-placeholder',
 			forcePlaceholderSize: true,
