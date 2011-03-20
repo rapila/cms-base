@@ -9,9 +9,9 @@ var Dashboard = {
 	
 	settings : {
 		columns : '.dashboard-column',
-		widgetSelector: '.widget',
-		handleSelector: '.widget-head',
-		contentSelector: '.widget-content',
+		widgetSelector: '.dashboard-widget',
+		handleSelector: '.dashboard-widget-head',
+		contentSelector: '.dashboard-widget-content',
 		widgetDefault : {
 			movable: true,
 			removable: true,
@@ -158,7 +158,7 @@ var Dashboard = {
 			items: $sortableItems,
 			connectWith: $(settings.columns),
 			handle: settings.handleSelector,
-			placeholder: 'widget-placeholder',
+			placeholder: 'dashboard-widget-placeholder',
 			forcePlaceholderSize: true,
 			revert: 300,
 			delay: 100,

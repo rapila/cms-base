@@ -1,9 +1,13 @@
 jQuery(document).ready(function() {
 	var create_skeleton = function(uid, title) {
 		var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
-		skeleton.find('.widget-head h3').text(title);
+		var heading = skeleton.find('.dashboard-widget-head h3').text(title);
 		skeleton.attr('id', uid);
-		return skeleton;
+		return {
+			skeleton: skeleton,
+			heading: heading,
+			content: skeleton.find('.dashboard-widget-content')
+		};
 	};
 	
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar_widget) {
@@ -22,12 +26,19 @@ jQuery(document).ready(function() {
 				dashboard_control.allDashboardModules(function(modules) {
 					jQuery.each(modules, function(i, module) {
 						var skeleton = create_skeleton(module.uid, module.title);
-						skeleton.css({backgroundColor: module.color});
+						skeleton.skeleton.css({backgroundColor: module.color});
 						var column = db.find('.dashboard-column#'+module.container);
 						if(column.length !== 1) {
 							column = db.find('.dashboard-column').eq(0);
 						}
-						column.append(skeleton);
+						column.append(skeleton.skeleton);
+						Widget.createWithElement(module.type, function(widget) {
+							widget.handle('element_set', function(event, element) {
+								skeleton.content.append(element);
+							});
+						}, function(widget) {
+							widget.set_config(module.config);
+						});
 					});
 					Dashboard.init();
 				});
