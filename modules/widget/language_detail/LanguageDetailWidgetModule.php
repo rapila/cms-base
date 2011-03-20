@@ -32,7 +32,6 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 
-	
 	public function saveData($aLanguageData) {
 		// string key is changed if a existing Language string_key is changed
 		if($aLanguageData['language_id'] !== $this->sLanguageId) {
