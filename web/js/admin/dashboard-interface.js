@@ -52,15 +52,8 @@ var Dashboard = {
 				$('<a href="#" class="remove">CLOSE</a>').mousedown(function (e) {
 					e.stopPropagation();	
 				}).click(function () {
-					if(confirm('This widget will be removed, ok?')) {
-						$(this).parents(settings.widgetSelector).animate({
-							opacity: 0	  
-						},function () {
-							$(this).wrap('<div/>').parent().slideUp(function () {
-								$(this).remove();
-							});
-						});
-					}
+					var widget = $(this).parents(settings.widgetSelector);
+					widget.triggerHandler('db-removing');
 					return false;
 				}).appendTo($(settings.handleSelector, this));
 			}

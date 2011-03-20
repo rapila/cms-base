@@ -42,13 +42,23 @@ jQuery(document).ready(function() {
 				}
 				dashboard_control.saveSettings(uid, settings);
 			});
-			skeleton.bind('db-collapsed', function(event, state) {
+			skeleton.bind('db-collapsed.dashboard', function(event, state) {
 				result.module.collapsed = state;
 				dashboard_control.changeCollapsed(uid, state);
 			});
-			skeleton.bind('db-moved', function(event, move) {
+			skeleton.bind('db-moved.dashboard', function(event, move) {
 				result.module.container = move.to;
 				dashboard_control.move(uid, move.to, move.pos);
+			});
+			skeleton.bind('db-removing.dashboard', function(event) {
+				Widget.confirm('{{writeString=wns.dashboard.remove}}', '{{writeString=wns.dashboard.remove_widget}}', function(removed) {
+					if(removed) {
+						dashboard_control.remove(uid, function() {
+							skeleton.unbind('.dashboard');
+							skeleton.remove();
+						});
+					}
+				});
 			});
 			
 			return result;

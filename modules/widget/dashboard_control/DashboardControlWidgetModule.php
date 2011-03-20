@@ -13,6 +13,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 			}
 		}
 		if($bDidAddIds) {
+			$oUser = Session::getSession()->getUser();
 			$oUser->setAdminSettings('dashboard', $aDashboardConfig);
 			$oUser->save();
 		}
@@ -75,7 +76,23 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser->save();
 	}
 	
-	private function add($aSettings) {
+	public function remove($sUid) {
+		$aDashboardConfig = self::dashboardConfig();
+		$aWidgets = &$aDashboardConfig['widgets'];
+		// Step 1: Remove said widget from all widgets
+		foreach($aWidgets as $iKey => &$aWidget) {
+			if($aWidget['uid'] === $sUid) {
+				unset($aWidgets[$iKey]);
+				break;
+			}
+		}
+		$aDashboardConfig['widgets'] = array_values($aWidgets);
+		$oUser = Session::getSession()->getUser();
+		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
+		$oUser->save();
+	}
+	
+	public function add($aSettings) {
 		
 	}
 	

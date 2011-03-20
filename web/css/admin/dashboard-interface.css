@@ -7,23 +7,6 @@
 
 a {color:white;}
 
-/* Colors */
-.color-yellow {background:#f2bc00;}
-.color-red    {background:#dd0000;}
-.color-blue   {background:#148ea4;}
-.color-white  {background:#dfdfdf;}
-.color-orange {background:#f66e00;}
-.color-green  {background:#8dc100;}
-.color-yellow h3,
-.color-white h3,
-.color-green h3
-	{color:#000;}
-.color-red h3,
-.color-blue h3,
-.color-orange h3
-	{color:#FFF;}
-/* End Colors */
-
 /* Columns section */
 #dashboard-columns .dashboard-column {
     float: left;
@@ -55,6 +38,7 @@ a {color:white;}
 #dashboard-columns .dashboard-widget .dashboard-widget-head h3 {
     padding: 0 5px;
     float: left;
+		color: black;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content {
     background-color: #333;
