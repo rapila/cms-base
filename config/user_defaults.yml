@@ -25,8 +25,28 @@ dashboard:
   widgets:
     -
       type: recent_activity
-      title: "Recent Activity"
+      title: "Activity in Pages"
       color: "#554499"
+      contrastColor: white
       container: 'column1'
       config:
         days: 3
+        models: ['Page']
+    -
+      type: recent_activity
+      title: "Activity in Documents"
+      color: "#99794B"
+      contrastColor: white
+      container: 'column2'
+      config:
+        days: 10
+        models: ['Document']
+    -
+      type: recent_activity
+      title: "Activity in Links"
+      color: "#316E99"
+      contrastColor: white
+      container: 'column3'
+      config:
+        days: 10
+        models: ['Link']

@@ -4,7 +4,7 @@ class RecentActivityWidgetModule extends PersistentWidgetModule {
 	public function listRecentlyChanged($aSettings) {
 		$aResult = array();
 		$iSeconds = $aSettings['days']*25*60*60;
-		foreach($aSettings['modules'] as $sModelName) {
+		foreach($aSettings['models'] as $sModelName) {
 			if($sModelName === false) {
 				continue;
 			}

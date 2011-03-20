@@ -7,6 +7,9 @@ Widget.types.recent_activity = {
 		this._element.empty();
 		var list = jQuery('<ol/>').appendTo(this._element);
 		this.listRecentlyChanged(this.settings.dashboard, function(result) {
+			if(result.length === 0) {
+				list.append(jQuery('<li/>').append(jQuery('<em/>').text('{{writeString=wns.no_results}}')));
+			}
 			jQuery.each(result, function(i, res) {
 				list.append(jQuery('<li/>').text(res.message))
 			});
@@ -16,7 +19,7 @@ Widget.types.recent_activity = {
 	dashboard_config_form: function() {
 		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
 		form.find('input[name=days]').val(this.settings.dashboard.days);
-		jQuery.each(this.settings.dashboard.modules, function(i, type) {
+		jQuery.each(this.settings.dashboard.models, function(i, type) {
 			type && form.find('input[type=checkbox][value="'+type+'"]').attr('checked', true);
 		});
 		return form;
@@ -25,7 +28,7 @@ Widget.types.recent_activity = {
 	settings: {
 		dashboard: {
 			days: 2,
-			modules: ['Page', 'Document']
+			models: ['Page', 'Document']
 		}
 	}
 };
