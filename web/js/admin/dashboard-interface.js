@@ -3,7 +3,9 @@
  * @requires jQuery($), jQuery UI & sortable/draggable UI modules
  */
 
-var Dashboard = {
+var Dashboard = (function($) {
+	
+	return {
 	
 	jQuery : $,
 	
@@ -18,14 +20,6 @@ var Dashboard = {
 			collapsible: true,
 			editable: true,
 			colors : ['#f2bc00', '#dd0000', '#148ea4', '#dfdfdf', '#f66e00', '#8dc100']
-		},
-		widgetIndividual : {
-			intro : {
-				movable: false,
-				removable: false,
-				collapsible: false,
-				editable: false
-			}
 		}
 	},
 
@@ -38,7 +32,7 @@ var Dashboard = {
 	getWidgetSettings : function (id) {
 		var $ = this.jQuery,
 			settings = this.settings;
-		return (id&&settings.widgetIndividual[id]) ? $.extend({},settings.widgetDefault,settings.widgetIndividual[id]) : settings.widgetDefault;
+		return (id&&settings.widgetIndividual&&settings.widgetIndividual[id]) ? $.extend({},settings.widgetDefault,settings.widgetIndividual[id]) : settings.widgetDefault;
 	},
 	
 	addWidgetControls : function () {
@@ -107,7 +101,16 @@ var Dashboard = {
 				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
 			});
 			$('ul.colors li', this).click(function () {
+				var currentColor = $(this).css('backgroundColor');
+				var rgb = (/rgba?\s*\((\d+),\s*(\d+),\s*(\d+)/).exec(currentColor);
+				var r = parseInt(rgb[1], 10), g = parseInt(rgb[2], 10), b = parseInt(rgb[3], 10);
+				var brightness = (r*299 + g*587 + b*114) / 1000;
 				$(this).parents(settings.widgetSelector).css('backgroundColor', $(this).css('backgroundColor'));
+				if(brightness > 125) {
+					$(this).parents(settings.widgetSelector).find(settings.handleSelector+' h3').css('color', 'black');
+				} else {
+					$(this).parents(settings.widgetSelector).find(settings.handleSelector+' h3').css('color', 'white');
+				}
 				return false;
 			});
 		});
@@ -171,5 +174,5 @@ var Dashboard = {
 			}
 		});
 	}
-  
 };
+})(jQuery);
