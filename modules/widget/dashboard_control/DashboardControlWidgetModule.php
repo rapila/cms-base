@@ -44,10 +44,13 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$aDashboardConfig = self::dashboardConfig();
 		$aSettings = null;
 		$aWidgets = &$aDashboardConfig['widgets'];
+		
 		// Step 1: Remove said widget from all widgets
+		$iRemovedKey = null;
 		foreach($aWidgets as $iKey => &$aWidget) {
 			if($aWidget['uid'] === $sUid) {
 				$aSettings = $aWidget;
+				$iRemovedKey = $iKey;
 				unset($aWidgets[$iKey]);
 				break;
 			}
@@ -60,13 +63,15 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$iInsertionKey = 0;
 		foreach($aWidgets as $iKey => &$aWidget) {
 			if($iCounter === $iPosition) {
-				$iInsertionKey = $iKey;
+				$iInsertionKey--;
 				break;
 			}
+			$iInsertionKey++;
 			if($aWidget['container'] === $sContainer) {
 				$iCounter++;
 			}
 		}
+		$iInsertionKey++;
 		
 		// Step 4: Re-Insert
 		array_splice($aWidgets, $iInsertionKey, 0, array($aSettings));
