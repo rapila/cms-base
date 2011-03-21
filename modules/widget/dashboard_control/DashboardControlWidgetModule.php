@@ -58,7 +58,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		
 		//Step 3: Find new position
 		$iCounter = 0;
-		$iInsertionKey = 0;
+		$iInsertionKey = null;
 		foreach($aWidgets as $iKey => &$aWidget) {
 			if($iCounter === $iPosition) {
 				$iInsertionKey--;
@@ -69,7 +69,11 @@ class DashboardControlWidgetModule extends WidgetModule {
 				$iCounter++;
 			}
 		}
-		$iInsertionKey++;
+		if($iInsertionKey === null) {
+			$iInsertionKey = 0;
+		} else {
+			$iInsertionKey++;
+		}
 		
 		// Step 4: Re-Insert
 		array_splice($aWidgets, $iInsertionKey, 0, array($aSettings));
