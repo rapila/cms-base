@@ -46,11 +46,9 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$aWidgets = &$aDashboardConfig['widgets'];
 		
 		// Step 1: Remove said widget from all widgets
-		$iRemovedKey = null;
 		foreach($aWidgets as $iKey => &$aWidget) {
 			if($aWidget['uid'] === $sUid) {
 				$aSettings = $aWidget;
-				$iRemovedKey = $iKey;
 				unset($aWidgets[$iKey]);
 				break;
 			}
