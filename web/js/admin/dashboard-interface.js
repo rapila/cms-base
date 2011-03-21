@@ -41,6 +41,11 @@ var Dashboard = (function($) {
 			settings = this.settings;
 			
 		$(settings.widgetSelector, $(settings.columns)).each(function () {
+			if($(this).data('is-dashboard-widget')) {
+				return;
+			}
+			$(this).data('is-dashboard-widget', true)
+			
 			var thisWidgetSettings = _this.getWidgetSettings(this.id);
 			if (thisWidgetSettings.removable) {
 				$('<a href="#" class="remove">CLOSE</a>').mousedown(function (e) {

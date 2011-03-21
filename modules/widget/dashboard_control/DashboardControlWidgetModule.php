@@ -99,6 +99,14 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser->save();
 	}
 	
+	public function listDashboardModules() {
+		$aResult = array();
+		foreach(WidgetModule::listModulesByAspect('dashboard') as $aModuleInfo) {
+			$aResult[$aModuleInfo['name']] = Module::getDisplayNameByTypeAndName(WidgetModule::getType(), $aModuleInfo['name']);
+		}
+		return $aResult;
+	}
+	
 	public function add($aSettings) {
 		
 	}
