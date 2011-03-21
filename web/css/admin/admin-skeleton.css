@@ -90,7 +90,8 @@ body.login h1 {
 #admin_sidebar .ui-tabs-nav { background: #f6f6f6; }
 #admin_sidebar .ui-tabs-nav li a { font-weight: 700; }
 #admin_sidebar .ui-tabs-nav .ui-state-active { background: #dfe1e3; }
-#admin_main { left: 277px; }
+#admin_main { left: 0; }
+#admin_sidebar + #admin_main { left: 277px; }
 #admin_main {
   right: 0;
   padding-right: 0;

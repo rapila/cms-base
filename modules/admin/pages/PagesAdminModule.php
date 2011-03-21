@@ -36,12 +36,6 @@ class PagesAdminModule extends AdminModule {
 		$oResourceIncluder->addResource('admin/template.css', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
 	}
 	
-	public function mainContent() {
-	}	
-	
-	public function sidebarContent() {
-	}
-
 	public function usedWidgets() {
 		return array($this->oTreeWidget);
 	}
