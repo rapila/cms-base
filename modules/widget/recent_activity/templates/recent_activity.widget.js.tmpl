@@ -1,0 +1,34 @@
+Widget.types.recent_activity = {
+	prepare: function() {
+		this.changed_dashboard_config();
+	},
+	
+	changed_dashboard_config: function() {
+		this._element.empty();
+		var list = jQuery('<ol/>').appendTo(this._element);
+		this.listRecentlyChanged(this.settings.dashboard, function(result) {
+			if(result.length === 0) {
+				list.append(jQuery('<li/>').append(jQuery('<em/>').text('{{writeString=wns.no_results}}')));
+			}
+			jQuery.each(result, function(i, res) {
+				list.append(jQuery('<li/>').text(res.message))
+			});
+		});
+	},
+	
+	dashboard_config_form: function() {
+		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
+		form.find('input[name=days]').val(this.settings.dashboard.days);
+		jQuery.each(this.settings.dashboard.models, function(i, type) {
+			type && form.find('input[type=checkbox][value="'+type+'"]').attr('checked', true);
+		});
+		return form;
+	},
+	
+	settings: {
+		dashboard: {
+			days: 2,
+			models: ['Page', 'Document']
+		}
+	}
+};

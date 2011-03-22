@@ -179,6 +179,16 @@ abstract class Module {
 		return $aResult;
 	}
 	
+	public static function listModulesByTypeAndAspect($sType, $sAspect, $bListEnabledOnly = true) {
+		$aResult = array();
+		foreach(self::listModulesByType($sType, $bListEnabledOnly) as $sName => $aMetadata) {
+			if(isset($aMetadata['module_info']['aspects']) && in_array($sAspect, $aMetadata['module_info']['aspects'])) {
+				$aResult[$sName] = $aMetadata;
+			}
+		}
+		return $aResult;
+	}
+	
 	public static function listModuleTypes() {
 		if(self::$MODULE_TYPE_LIST === null) {
 			$aPaths = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN));
@@ -213,8 +223,12 @@ abstract class Module {
 		return static::$MODULE_TYPE;
 	}
 	
-	public static function listModules() {
-		return self::listModulesByType(self::getType());
+	public static function listModules($bListEnabledOnly = true) {
+		return self::listModulesByType(self::getType(), $bListEnabledOnly);
+	}
+	
+	public static function listModulesByAspect($sAspect, $bListEnabledOnly = true) {
+		return self::listModulesByTypeAndAspect(self::getType(), $sAspect, $bListEnabledOnly);
 	}
 	
 	public static function getClassNameByName($sModuleName) {
@@ -269,6 +283,6 @@ abstract class Module {
 	 * @param boolean $bForceGlobalTemplatesDir if set to true causes the template to be loaded from the global templates directory (internal or external) instead of the module's local one
 	 */
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
-		return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
+		return self::constructTemplateForModuleAndType(self::getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
 	}
 }

@@ -2,7 +2,7 @@
 
 class AdminManager extends Manager {
 	
-	const DEFAULT_MODULE = 'pages';
+	const DEFAULT_MODULE = 'dashboard';
   const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
 	private $sModuleName;
 	private $oModule;
@@ -131,7 +131,15 @@ class AdminManager extends Manager {
 		AdminMenuWidgetModule::includeResources($this->oResourceIncluder);
 		
 		$oTemplate->replaceIdentifierMultiple('main_content', $this->oModule->mainContent());
-		$oTemplate->replaceIdentifierMultiple('sidebar_content', $this->oModule->sidebarContent());
+		
+		$mSidebarContent = $this->oModule->sidebarContent();
+		if($mSidebarContent === null) {
+			$mSidebarContent = '';
+		} else if($mSidebarContent === false) {
+			$mSidebarContent = null;
+		}
+		$oTemplate->replaceIdentifierMultiple('sidebar_content', $mSidebarContent);
+		
 		$oTemplate->replaceIdentifierMultiple('admin_menu', $oAdminMenuWidget->doWidget());
 		
 		foreach($this->oModule->usedWidgets() as $mWidget) {

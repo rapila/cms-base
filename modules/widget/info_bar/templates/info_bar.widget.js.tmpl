@@ -8,15 +8,22 @@ Widget.types.info_bar = {
 	
 	prepare: function() {
 		this.resizer = this._element.find('.sidebar_resizer');
+		this.infobar_left = this._element.find('.infobar_left');
+		this.infobar_right = this._element.find('.infobar_right');
+		this.admin_menu_right = this._element.find('.admin_menu_right');
+		this.admin_menu_left = this._element.find('.admin_menu_left');
+		
+		if(this.sidebar.length === 0) {
+			this.resizer.remove();
+			this.infobar_left.remove();
+			this.infobar_right.css('left', 0);
+			return;
+		}
 		this.resizer.draggable({
 			axis: 'x',
 			containment: 'parent',
 			drag: this.resizer_moved.bind(this)
 		});
-		this.infobar_left = this._element.find('.infobar_left');
-		this.infobar_right = this._element.find('.infobar_right');
-		this.admin_menu_right = this._element.find('.admin_menu_right');
-		this.admin_menu_left = this._element.find('.admin_menu_left');
 	},
 	
 	resizer_moved: function(event, ui) {

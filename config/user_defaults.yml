@@ -21,10 +21,32 @@ rich_text:
   buttons: [['bold', 'italic', '~'], []]
   
 dashboard:
-  documents:
-    - document_types
-    - document_categories
-  users:
-    - user_groups
-    # - user_roles
-  
+  layout: 3columns
+  widgets:
+    -
+      type: recent_activity
+      title: "Activity in Pages"
+      color: "#554499"
+      contrastColor: white
+      container: 'column1'
+      config:
+        days: 3
+        models: ['Page']
+    -
+      type: recent_activity
+      title: "Activity in Documents"
+      color: "#99794B"
+      contrastColor: white
+      container: 'column2'
+      config:
+        days: 10
+        models: ['Document']
+    -
+      type: recent_activity
+      title: "Activity in Links"
+      color: "#316E99"
+      contrastColor: white
+      container: 'column3'
+      config:
+        days: 10
+        models: ['Link']

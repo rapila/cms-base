@@ -8,7 +8,7 @@
 		<div id="admin_area">
 			<div id="admin_message">
 			</div>
-			<div id="admin_sidebar">{{sidebar_content}}</div>
+			{{identifierContext=start;name=sidebar_content}}<div id="admin_sidebar">{{sidebar_content}}</div>{{identifierContext=end;name=sidebar_content}}
 			<div id="admin_main">
 				<noscript>
 					{{writeString=wns.admin.script_warning}}

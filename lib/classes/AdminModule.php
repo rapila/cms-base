@@ -8,12 +8,8 @@ class AdminModule extends Module {
 		$this->aResourceParameters = array_fill_keys(TemplateResourceFileModule::$RESOURCE_TYPES, array());
 	}
 	
-	public function mainWidgetName() {
-		return $this->getModuleName();
-	}
-	
 	public function usedWidgets() {
-		return array($this->mainWidgetName());
+		return array();
 	}
 	
 	public function mainContent() {
