@@ -1,161 +1,165 @@
 #dashboard-columns img, #dashboard-columns p, #dashboard-columns h1, #dashboard-columns h2, #dashboard-columns h3, #dashboard-columns h4, #dashboard-columns h5, #dashboard-columns h6, #dashboard-columns ul, #dashboard-columns ol {
-    border: medium none;
-    list-style: none outside none;
-    margin: 0;
-    padding: 0;
+	border: medium none;
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
 }
 
 a {color:white;}
 
 /* Columns section */
 #dashboard-columns .dashboard-column {
-    float: left;
-    width: 33.333%;
-		/* Min-height: */
-		min-height: 400px;
-		height: auto !important; 
-		height: 400px;
-		border: 1px dashed white;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
+	float: left;
+	/* Min-height: */
+	min-height: 40px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
-	
-#dashboard-columns #column1 .dashboard-widget { margin: 30px 35px 0 25px; }
-#dashboard-columns #column3 .dashboard-widget { margin: 30px 25px 0 35px; }
+
 #dashboard-columns .dashboard-widget {
-    margin: 30px 20px 0 20px;
-    padding: 2px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	padding: 2px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 }
+#dashboard-columns .dashboard-widget-placeholder { border: 2px dashed #999; }
+
+#dashboard-columns .dashboard-widget,
+#dashboard-columns .dashboard-widget-placeholder {margin: 30px 10px 0 10px;}
+
+#dashboard-columns .dashboard-column:first-child .dashboard-widget,
+#dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder { margin-left: 20px; }
+#dashboard-columns .dashboard-column:last-child .dashboard-widget,
+#dashboard-columns .dashboard-column:last-child .dashboard-widget-placeholder { margin-right: 20px; }
+
+
 #dashboard-columns .dashboard-widget .dashboard-widget-head {
-    color: #000;
-    overflow: hidden;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
+	color: #000;
+	overflow: hidden;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
 }
+
 #dashboard-columns .dashboard-widget .dashboard-widget-head h3 {
-    padding: 0 5px;
-    float: left;
-		color: black;
+	padding: 0 5px;
+	float: left;
+	color: black;
 }
+
 #dashboard-columns .dashboard-widget .dashboard-widget-content {
-    background-color: #333;
-    padding: 1em;
-    color: #DDD;
-    -moz-border-radius-bottomleft: 2px;
-    -moz-border-radius-bottomright: 2px;
-    -webkit-border-bottom-left-radius: 2px;
-    -webkit-border-bottom-right-radius: 2px;
-    line-height: 1.2em;
-    overflow: hidden;
+	background-color: #333;
+	padding: 1em;
+	color: #DDD;
+	-moz-border-radius-bottomleft: 2px;
+	-moz-border-radius-bottomright: 2px;
+	-webkit-border-bottom-left-radius: 2px;
+	-webkit-border-bottom-right-radius: 2px;
+	line-height: 1.2em;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 400px;
 }
+
 #dashboard-columns .dashboard-widget .dashboard-widget-content p {
-    padding: 0.8em 0;
-    border-bottom: 1px solid #666;
+	padding: 0.8em 0;
+	border-bottom: 1px solid #666;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content img {
-    float: right;
-    margin: 10px;
-    border: 1px solid #FFF;
+	float: right;
+	margin: 10px;
+	border: 1px solid #FFF;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content pre {
-    padding: 0.5em 5px;
-    color: #EEE;
-    font-size: 12px;
+	padding: 0.5em 5px;
+	color: #EEE;
+	font-size: 12px;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul {
-    padding: 5px 0 5px 20px;
-    list-style: disc;
+	padding: 5px 0 5px 20px;
+	list-style: disc;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul li {padding: 3px 0;}
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul.images {
-    padding: 7px 0 0 0;
-    list-style: none;
-    height: 1%;
+	padding: 7px 0 0 0;
+	list-style: none;
+	height: 1%;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul.images li {
-    display: inline;
-    float: left;
+	display: inline;
+	float: left;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul.images img {
-    display: inline;
-    float: left;
-    margin: 0 0 7px 7px;
+	display: inline;
+	float: left;
+	margin: 0 0 7px 7px;
 }
 /* End Columns section */
 
 /* JS-Enabled CSS */
 
-.dashboard-widget-head a.remove  {
-    float: right;
-    display: inline;
-    background: url(../../images/admin/dashboard_buttons.gif) no-repeat -24px 0;
-    width: 14px;
-    height: 14px;
-    margin: 8px 4px 8px 0;
-    text-indent: -9999em;
-    outline: none;
+.dashboard-widget-head a.remove	 {
+	float: right;
+	display: inline;
+	background: url(../../images/admin/dashboard_buttons.gif) no-repeat -24px 0;
+	width: 14px;
+	height: 14px;
+	margin: 8px 4px 8px 0;
+	text-indent: -9999em;
+	outline: none;
 }
 
 .dashboard-widget-head a.edit  {
-    float: right;
-    display: inline;
-    background: url(../../images/admin/dashboard_buttons.gif) no-repeat;
-    width: 24px;
-    height: 14px;
-    text-indent: -9999em;
-    margin: 8px 4px 8px 4px;
-    outline: none;
+	float: right;
+	display: inline;
+	background: url(../../images/admin/dashboard_buttons.gif) no-repeat;
+	width: 24px;
+	height: 14px;
+	text-indent: -9999em;
+	margin: 8px 4px 8px 4px;
+	outline: none;
 }
 
 .dashboard-widget-head a.collapse  {
-    float: left;
-    display: inline;
-    background: url(../../images/admin/dashboard_buttons.gif) no-repeat -52px 0;
-    width: 14px;
-    height: 14px;
-    text-indent: -9999em;
-    margin: 8px 0 8px 4px;
-    outline: none;
+	float: left;
+	display: inline;
+	background: url(../../images/admin/dashboard_buttons.gif) no-repeat -52px 0;
+	width: 14px;
+	height: 14px;
+	text-indent: -9999em;
+	margin: 8px 0 8px 4px;
+	outline: none;
 }
 
-.dashboard-widget-placeholder { border: 2px dashed #999;}
-#column1 .dashboard-widget-placeholder { margin: 30px 35px 0 25px; }
-#column2 .dashboard-widget-placeholder { margin: 30px 20px 0 20px; }
-#column3 .dashboard-widget-placeholder { margin: 30px 25px 0 35px; }
-
 .dashboard-edit-box {
-    overflow: hidden;
-    background-color: #333;
-    margin-bottom: 2px;
-    padding: 10px 0;
+	overflow: hidden;
+	background-color: #333;
+	margin-bottom: 2px;
+	padding: 10px 0;
 }
 
 .dashboard-edit-box li.item {
-    padding: 10px 0;
-    overflow: hidden;
-    float: left;
-    width: 100%;
-    clear: both;
+	padding: 10px 0;
+	overflow: hidden;
+	float: left;
+	width: 100%;
+	clear: both;
 }
 
 
 .dashboard-edit-box label {
-    float: left;
-    width: 30%;
-    color: #FFF;
-    padding: 0 0 0 10px;
+	float: left;
+	width: 30%;
+	color: #FFF;
+	padding: 0 0 0 10px;
 }
 
 .dashboard-edit-box ul.colors li {
-    width: 20px;
-    height: 20px;
-    border: 1px solid #EEE;
-    float: left;
-    display: inline;
-    margin: 0 5px 0 0;
-    cursor: pointer;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #EEE;
+	float: left;
+	display: inline;
+	margin: 0 5px 0 0;
+	cursor: pointer;
 }
 
