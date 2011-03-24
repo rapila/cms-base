@@ -202,7 +202,7 @@ Widget.types.rich_text = {
 	
 	data_to_textarea: function() {
 		if(this.instance) {
-			this.textarea.val(this.instance.getData());
+			this.instance.updateElement();
 		}
 	},
 	

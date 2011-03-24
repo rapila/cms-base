@@ -1,0 +1,28 @@
+Widget.types.static_text = {
+	prepare: function() {
+		this.changed_dashboard_config();
+	},
+	
+	changed_dashboard_config: function() {
+		this._element.html(this.settings.dashboard.text);
+	},
+	
+	dashboard_config_form: function() {
+		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
+		form.attr('data-widget-type', 'rich_text').prepareWidget(function(widget) {
+			widget.settings.height = 230;
+			widget.settings.autoUpdateElement = true;
+			form.bind('db-configured', function() {
+				widget.data_to_textarea();
+			});
+		}, jQuery.noop);
+		return form;
+	},
+	
+	settings: {
+		dashboard: {
+			text: '<h2>Lorem ipsum dolor sit amet,</h2>consectetur adipisicing <em>elit</em>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+			models: ['Page', 'Document']
+		}
+	}
+};
