@@ -8,9 +8,14 @@
 a {color:white;}
 
 /* Columns section */
+
+#dashboard-columns .dashboard-column-group {
+	clear: left;
+}
+
 #dashboard-columns .dashboard-column {
 	float: left;
-	/* Min-height: */
+	width: 100%; /* Default to full-width */
 	min-height: 40px;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
