@@ -108,8 +108,8 @@ Widget.types.file_upload = {
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
 					Widget.notifyUser('info', '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
-					this.fire('file-uploaded', result);
-					options.callback(result);
+					this.fire('file-uploaded', result, options);
+					options.callback(result, options);
 				} else {
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
