@@ -153,11 +153,12 @@ jQuery(document).ready(function() {
 								Widget.createWithElement(type.val(), function(widget) {
 									var module = create_module({
 										type: type.val(),
-										title: type.find(':checked').text()
+										title: type.find(':checked').text(),
+										container: column.val()
 									});
 									dashboard_control.saveSettings(module.uid, module);
 									var skeleton = create_skeleton(module);
-									add_to_column(column.val(), skeleton);
+									add_to_column(module.container, skeleton);
 					
 									//Add the controls
 									Dashboard.addWidgetControls();
