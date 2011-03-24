@@ -20,14 +20,39 @@ class DashboardControlWidgetModule extends WidgetModule {
 		return $aWidgets;
 	}
 	
+	public function possibleTemplates() {
+		$aResult = array();
+		foreach(ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), DIRNAME_TEMPLATES, 'layouts', '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
+			$aResult[] = $oResource->getFileName('.tmpl');
+		}
+		
+		return ArrayUtil::arrayWithValuesAsKeys($aResult);
+	}
+	
 	public function template() {
-		$oUser = Session::getSession()->getUser();
-		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
-		$sLayoutName = '1column';
+		$sLayoutName = $this->getLayoutName();
 		if(isset($aDashboardConfig['layout'])) {
 			$sLayoutName = $aDashboardConfig['layout'];
 		}
 		return Module::constructTemplateForModuleAndType(AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), 'layouts/'.$sLayoutName)->render();
+	}
+	
+	public function setLayoutName($sLayoutName) {
+		$oUser = Session::getSession()->getUser();
+		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
+		$aDashboardConfig['layout'] = $sLayoutName;
+		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
+		$oUser->save();
+	}
+
+	public function getLayoutName() {
+		$oUser = Session::getSession()->getUser();
+		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
+		$sLayoutName = '3columns';
+		if(isset($aDashboardConfig['layout'])) {
+			$sLayoutName = $aDashboardConfig['layout'];
+		}
+		return $sLayoutName;
 	}
 	
 	public function saveSettings($sUid, $aSettings) {
