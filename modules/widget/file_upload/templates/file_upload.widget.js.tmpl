@@ -114,7 +114,7 @@ Widget.types.file_upload = {
 					notification.enable_close_button();
 					notification.reset_timeout(3000);
 					notification.set_severity('error');
-					options.error ? options.error(error, notification) : notification.set_message(error.message);
+					options.error ? options.error(error, notification, options) : notification.set_message(error.message);
 				}
 			});
 		};
