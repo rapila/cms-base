@@ -183,7 +183,7 @@ Widget.types.rich_text = {
 	
 	replace: function() {
 		var _this = this;
-		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
+		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
 			instance.document.appendStyleText(_this.settings.inline_css);
 		});
