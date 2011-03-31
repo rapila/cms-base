@@ -156,9 +156,6 @@ Widget.types.rich_text = {
 	
 	prepare: function() {
 		var _this = this;
-		if(!this._element.isInDom()) {
-			this._element.appendTo(document.body);
-		}
 		var textarea = this.textarea = this._element.find('textarea');
 		var module_content = this.getModuleContents();
 		if(module_content !== null) {
@@ -169,6 +166,23 @@ Widget.types.rich_text = {
 		}
 		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
 		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
+		
+		if(this._element.isInDom()) {
+			this.replace();
+		} else {
+			//Wait awhile before replacing the textarea if not yet attached to document
+			var interval;
+			interval = window.setInterval(function() {
+				if(_this._element.isInDom()) {
+					window.clearInterval(interval);
+					_this.replace();
+				}
+			}, 100);
+		}
+	},
+	
+	replace: function() {
+		var _this = this;
 		var instance = this.instance = CKEDITOR.replace(textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
 			instance.document.appendStyleText(_this.settings.inline_css);
