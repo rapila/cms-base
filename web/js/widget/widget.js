@@ -581,20 +581,12 @@ jQuery.each(WidgetJSONOptions.prototype.options, function(i, option) {
 });
 
 jQuery.extend(jQuery, {
-	widgetElements: function(type) {
-		if(type) {
-			return jQuery('*[data-widget-type='+type+']');
-		} else {
-			return jQuery('*[data-widget-type]');
-		}
-	},
-	
 	parseHTML: function(html, instanciateWidgets) {
 		var element = document.createElement('div');
 		element.innerHTML = jQuery.trim(html);
 		var result = jQuery(element.childNodes);
 		if(instanciateWidgets) {
-			result.find('*[data-widget-type]').each(function() {
+			result.widgetElements().each(function() {
 				jQuery(this).prepareWidget();
 			});
 		}
@@ -608,6 +600,14 @@ jQuery.extend(jQuery, {
 });
 
 jQuery.fn.extend({
+	widgetElements: function(type) {
+		if(type) {
+			return this.find('*[data-widget-type='+type+']');
+		} else {
+			return this.find('*[data-widget-type]');
+		}
+	},
+	
 	prepareWidget: function() {
 		if(this.length === 0) {
 			return this;
@@ -615,37 +615,44 @@ jQuery.fn.extend({
 		var callback = arguments[0] || jQuery.noop;
 		var intermediateCallback = jQuery.noop;
 		if(arguments[1]) {
+			intermediateCallback = callback;
 			callback = arguments[1];
-			intermediateCallback = arguments[0];
 		}
-		if(this.data('widget')) {
-			callback(this.data('widget'));
+		callback && this.ensureWidget(callback);
+		intermediateCallback && this.ensureWidget(intermediateCallback, true);
+		
+		if(this.data('widget') || this.data('prepareWidget_called')) {
 			return this;
 		}
-		var waiting_callbacks = this.data('waiting_prepare_callbacks');
-		if(waiting_callbacks) {
-			waiting_callbacks.intermediate.push(intermediateCallback);
-			waiting_callbacks.ending.push(callback);
-			return this;
-		}
-		waiting_callbacks = {intermediate: [intermediateCallback], ending: [callback]};
-		this.data('waiting_prepare_callbacks', waiting_callbacks);
+		this.data('prepareWidget_called', true);
+		
 		var widget_type = this.attr('data-widget-type');
 		var widget_session = this.attr('data-widget-session');
 		var widget_element = this;
+		
 		Widget.create(widget_type, function(widget) {
 			widget_element.data('widget', widget);
 			widget._element = widget_element;
-			jQuery.each(widget_element.data('waiting_prepare_callbacks').intermediate, function(i, callback) {
-				callback(widget);
-			});
+			(widget_element.data('waiting_intermediate_callbacks') || {resolve: jQuery.noop}).resolve(widget);
 			widget.handle('prepared', function() {
-				jQuery.each(widget_element.data('waiting_prepare_callbacks').ending, function(i, callback) {
-					callback(widget);
-				});
-				widget_element.removeData('waiting_prepare_callbacks');
+				(widget_element.data('waiting_prepare_callbacks') || {resolve: jQuery.noop}).resolve(widget);
 			});
 		}, widget_session);
+		
+		return this;
+	},
+	
+	/** 
+	* Use this to make sure a specific element’s widget is initialized/prepared when the callback is called but DO NOT WANT to cause the widget to initialize, for example if you know that the widget will be initialized eventually.
+	*/
+	ensureWidget: function(callback, is_intermediate) {
+		var data_name = is_intermediate ? 'waiting_intermediate_callbacks' : 'waiting_prepare_callbacks';
+		var queue = this.data(data_name);
+		if(!queue) {
+			queue = new jQuery.Deferred();
+			this.data(data_name, queue);
+		}
+		queue.done(callback);
 		return this;
 	},
 	
@@ -670,7 +677,7 @@ jQuery.fn.extend({
 
 //Initialize all widgets present as html elements on document.ready
 jQuery(document).ready(function() {
-	jQuery.widgetElements().each(function() {
+	jQuery(document.body).widgetElements().each(function() {
 		jQuery(this).prepareWidget();
 	});
 });
