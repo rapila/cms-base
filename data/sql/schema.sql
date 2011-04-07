@@ -311,7 +311,7 @@ CREATE TABLE `users`
 	`is_backend_login_enabled` TINYINT(1) default 1,
 	`is_inactive` TINYINT(1) default 0,
 	`password_recover_hint` VARCHAR(10),
-	`backend_settings` TEXT,
+	`backend_settings` LONGBLOB,
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,

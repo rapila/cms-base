@@ -49,7 +49,7 @@ class UserTableMap extends TableMap {
 		$this->addColumn('IS_BACKEND_LOGIN_ENABLED', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
 		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
 		$this->addColumn('PASSWORD_RECOVER_HINT', 'PasswordRecoverHint', 'VARCHAR', false, 10, null);
-		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'LONGVARCHAR', false, null, null);
+		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'BLOB', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('CREATED_BY', 'CreatedBy', 'INTEGER', false, null, null);

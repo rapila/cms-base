@@ -257,7 +257,7 @@
  * @method     User findOneByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return the first User filtered by the is_backend_login_enabled column
  * @method     User findOneByIsInactive(boolean $is_inactive) Return the first User filtered by the is_inactive column
  * @method     User findOneByPasswordRecoverHint(string $password_recover_hint) Return the first User filtered by the password_recover_hint column
- * @method     User findOneByBackendSettings(string $backend_settings) Return the first User filtered by the backend_settings column
+ * @method     User findOneByBackendSettings(resource $backend_settings) Return the first User filtered by the backend_settings column
  * @method     User findOneByCreatedAt(string $created_at) Return the first User filtered by the created_at column
  * @method     User findOneByUpdatedAt(string $updated_at) Return the first User filtered by the updated_at column
  * @method     User findOneByCreatedBy(int $created_by) Return the first User filtered by the created_by column
@@ -275,7 +275,7 @@
  * @method     array findByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return User objects filtered by the is_backend_login_enabled column
  * @method     array findByIsInactive(boolean $is_inactive) Return User objects filtered by the is_inactive column
  * @method     array findByPasswordRecoverHint(string $password_recover_hint) Return User objects filtered by the password_recover_hint column
- * @method     array findByBackendSettings(string $backend_settings) Return User objects filtered by the backend_settings column
+ * @method     array findByBackendSettings(resource $backend_settings) Return User objects filtered by the backend_settings column
  * @method     array findByCreatedAt(string $created_at) Return User objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return User objects filtered by the updated_at column
  * @method     array findByCreatedBy(int $created_by) Return User objects filtered by the created_by column
@@ -636,22 +636,13 @@ abstract class BaseUserQuery extends ModelCriteria
 	/**
 	 * Filter the query on the backend_settings column
 	 * 
-	 * @param     string $backendSettings The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     mixed $backendSettings The value to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UserQuery The current query, for fluid interface
 	 */
 	public function filterByBackendSettings($backendSettings = null, $comparison = null)
 	{
-		if (null === $comparison) {
-			if (is_array($backendSettings)) {
-				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $backendSettings)) {
-				$backendSettings = str_replace('*', '%', $backendSettings);
-				$comparison = Criteria::LIKE;
-			}
-		}
 		return $this->addUsingAlias(UserPeer::BACKEND_SETTINGS, $backendSettings, $comparison);
 	}
 

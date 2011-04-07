@@ -344,3 +344,6 @@ ALTER TABLE `links` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `link_catego
 
 #svn r2907
 ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `mimetype`);
+
+#20110407.1004
+ALTER TABLE `users` CHANGE `backend_settings` `backend_settings` BLOB NULL DEFAULT NULL;
