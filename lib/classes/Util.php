@@ -166,7 +166,7 @@ class Util {
 
 	public static function getCreatedByIfSet($oObject) {
 	  if($oObject->getUserRelatedByCreatedBy()) {
-	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();
+	    return $oObject->getUserRelatedByCreatedBy()->getInitials();
 	  }
 	}
 	
