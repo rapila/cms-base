@@ -39,7 +39,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		$oLink->setName($aLinkData['name']);
 		$oLink->setLinkCategoryId($aLinkData['link_category_id'] == null ? null : $aLinkData['link_category_id']);
 		$oLink->setDescription($aLinkData['description']);
-		$oLink->setLanguageId($aLinkData['language_id']);
+		$oLink->setLanguageId($aLinkData['language_id'] != null ? $aLinkData['language_id'] : null);
 		$this->validate($aLinkData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
