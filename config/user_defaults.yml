@@ -33,7 +33,7 @@ dashboard:
         text: '<h3>Hello</h3><p>Welcome to your Dashboard. The Dashboard allows you to see all the information at a glance that is most relevant to you.</p><p>You may add as many widgets to the dashboard as you like. Dashboard widgets can be added using the “+” Icon at the bottom-left or using the access key “n”: just choose a type and container and you’re good to go.</p><p>To change the Dashboard layout, use the dropdown on the bottom. Each layout contains containers into which your widgets can be easily organized simply by dragging them.</p><p>To edit a widget, click the edit button in its title bar; to remove it, click the “╳” icon.</p>'
     -
       type: recent_activity
-      title: "Activity in Pages"
+      title: "{{writeString=wns.activity_in_pages}}"
       color: "#554499"
       contrastColor: white
       container: 'column-1'
@@ -42,7 +42,7 @@ dashboard:
         models: ['Page']
     -
       type: recent_activity
-      title: "Activity in Documents"
+      title:  "{{writeString=wns.activity_in_documents}}"
       color: "#99794B"
       contrastColor: white
       container: 'column-2'
@@ -51,7 +51,7 @@ dashboard:
         models: ['Document']
     -
       type: recent_activity
-      title: "Activity in Links"
+      title: "{{writeString=wns.activity_in_links}}"
       color: "#316E99"
       contrastColor: white
       container: 'column-3'

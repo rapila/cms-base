@@ -1,0 +1,45 @@
+Widget.types.link_category_detail = {
+	initialize: function() {
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		Widget.create('detail', function(widget) {
+			this.detail_widget = widget.set_instance(this);
+			jQuery.extend(widget.settings, {
+				title: "{{writeString=wns.link_category.create}}",
+				width: 530
+			});
+			widget.content = this.content;
+			if(this.auto_open) {
+				this.open();
+			}
+		}.bind(this));
+	},
+	
+	open: function() {
+		if(!this.detail_widget) {
+			this.auto_open = true;
+			return false;
+		}
+		this.detail_widget.open();
+		this.detail_widget.content.find('input[name=name]').focus();
+	},
+	
+	fill_data: function() {
+		this.getCategoryData(function(category_data) {
+			this.content.find("input[name='name']").val(category_data.Name);
+			this.content.find("input[name='is_inactive']").attr('checked', category_data.IsInactive);
+			this.content.find("input[name='is_externally_managed']").attr('checked', category_data.IsExternallyManaged);
+			this.content.find(".updated_info").text(category_data.UpdatedInfo);
+			this.content.find(".created_info").text(category_data.CreatedInfo);
+			this.content.find("span[class='detail_id']").text(category_data.Id);
+			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
+		});
+	},
+
+	close: function() {
+		this.detail_widget.close();
+		this.close_callback();
+	},
+	
+	save_callback: jQuery.noop,
+	close_callback: jQuery.noop
+};

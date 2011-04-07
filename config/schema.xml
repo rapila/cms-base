@@ -115,7 +115,7 @@
 	<column name="is_backend_login_enabled" type="boolean" size="1" default="1" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="password_recover_hint" type="varchar" size="10" />
-	<column name="backend_settings" type="longvarchar" required="false" />
+	<column name="backend_settings" type="blob" required="false" />
 	<behavior name="taggable" />
 </table>
 
@@ -283,6 +283,7 @@
 <table name="link_categories" phpName="LinkCategory">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 	<column name="name" type="varchar" size="80" required="true" />
+	<column name="is_externally_managed" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
 </table>
 

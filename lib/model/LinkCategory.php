@@ -2,18 +2,21 @@
 
 require_once 'model/om/BaseLinkCategory.php';
 
-
 /**
- * Skeleton subclass for representing a row from the 'link_categories' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.	This class will only be generated as
- * long as it does not already exist in the output directory.
- *
  * @package		 model
  */
 class LinkCategory extends BaseLinkCategory {
 
-} // LinkCategory
+	public function getLinkCount() {
+		return $this->countLinks();
+	}
+			
+	public function getLinkToLinkData() {
+		$aArray = array();
+		$aArray[] = $this->getLinkCount().' '.StringPeer::getString('wns.links');
+		$aArray[] = LinkUtil::link(array('links'), 'AdminManager', array('link_category_id' => $this->getId()));
+		return $aArray;
+	}
+
+}
+

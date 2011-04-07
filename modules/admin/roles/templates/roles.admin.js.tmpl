@@ -6,9 +6,9 @@ jQuery(document).ready(function() {
 		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
 			sidebar = widget;
 			sidebar.settings.row_click_active_mode = 'activate';
-			this.initial_selection = "{{writeRequestValue=group_id}}";
-			if(this.initial_selection) {
-				this.initial_selection = isNaN(this.initial_selection) ? this.initial_selection : parseInt(this.initial_selection, 10);
+			var initial_selection = "{{writeRequestValue=group_id}}";
+			if(initial_selection) {
+				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
 				sidebar.handle('loaded', function() {
 					sidebar.activate_row(sidebar.row_from_row_data({id: initial_selection}));
 				}, true, true);

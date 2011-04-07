@@ -99,33 +99,33 @@ class User extends BaseUser {
 			return true;
 		}
 		foreach($this->getGroups() as $oGroup) {
-		  if(in_array($oGroup->getRoles(true), $aGroupIds)) {
-		    return true;
-	    }
+			if(in_array($oGroup->getRoles(true), $aGroupIds)) {
+				return true;
+			}
 		}
 		//Case 6: User is not in allowed roles
 		return false;
 	}
 	
-  public function getAdminSettings($sSection, $mDefaultResult = array()) {
+	public function getAdminSettings($sSection, $mDefaultResult = array()) {
 		if($this->getBackendSettings() !== null) {
-			$aSections = unserialize($this->getBackendSettings());
+			$aSections = unserialize(stream_get_contents($this->getBackendSettings()));
 			if(isset($aSections[$sSection])) {
-        return $aSections[$sSection];
+				return $aSections[$sSection];
 			}
 		}
-    // @todo check users permission for module
-    $mDefaultResult = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
-    return $mDefaultResult;
+		// @todo check users permission for module
+		$mDefaultResult = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
+		return $mDefaultResult;
 	}
 	
 	public function setAdminSettings($sSection, $mValue) {
 		$aSections = array();
-	  if($this->getBackendSettings() !== null) {
-			$aSections = unserialize($this->getBackendSettings());
-	  }
-    $aSections[$sSection] = $mValue;
-    $this->setBackendSettings(serialize($aSections));
+		if($this->getBackendSettings() !== null) {
+			$aSections = unserialize(stream_get_contents($this->getBackendSettings()));
+		}
+		$aSections[$sSection] = $mValue;
+		$this->setBackendSettings(serialize($aSections));
 	}
 	
 	public function getGroups($bReturnNamesOnly = false) {
@@ -142,7 +142,7 @@ class User extends BaseUser {
 	
 	public function getRoles($bReturnNamesOnly = false) {
 		$aResult = array();
-    $aUserRoles = $bReturnNamesOnly ? $this->getUserRolesRelatedByUserId() : $this->getUserRolesRelatedByUserIdJoinRole();
+		$aUserRoles = $bReturnNamesOnly ? $this->getUserRolesRelatedByUserId() : $this->getUserRolesRelatedByUserIdJoinRole();
 		foreach($aUserRoles as $oUserRole) {
 			if($bReturnNamesOnly) {
 				$aResult[] = $oUserRole->getRoleKey();
@@ -178,7 +178,7 @@ class User extends BaseUser {
 			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
 		}
 		return $aResult;
-	}	
+	} 
 	
 	public function getActiveUserRoleKeys() {
 		$aResult = array();

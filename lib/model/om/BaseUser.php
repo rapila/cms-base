@@ -101,7 +101,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the backend_settings field.
-	 * @var        string
+	 * @var        resource
 	 */
 	protected $backend_settings;
 
@@ -534,7 +534,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * Get the [backend_settings] column value.
 	 * 
-	 * @return     string
+	 * @return     resource
 	 */
 	public function getBackendSettings()
 	{
@@ -884,19 +884,22 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * Set the value of [backend_settings] column.
 	 * 
-	 * @param      string $v new value
+	 * @param      resource $v new value
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setBackendSettings($v)
 	{
-		if ($v !== null) {
-			$v = (string) $v;
-		}
-
-		if ($this->backend_settings !== $v) {
+		// Because BLOB columns are streams in PDO we have to assume that they are
+		// always modified when a new value is passed in.  For example, the contents
+		// of the stream itself may have changed externally.
+		if (!is_resource($v) && $v !== null) {
+			$this->backend_settings = fopen('php://memory', 'r+');
+			fwrite($this->backend_settings, $v);
+			rewind($this->backend_settings);
+		} else { // it's already a stream
 			$this->backend_settings = $v;
-			$this->modifiedColumns[] = UserPeer::BACKEND_SETTINGS;
 		}
+		$this->modifiedColumns[] = UserPeer::BACKEND_SETTINGS;
 
 		return $this;
 	} // setBackendSettings()
@@ -1095,7 +1098,13 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->is_backend_login_enabled = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
 			$this->is_inactive = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
 			$this->password_recover_hint = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->backend_settings = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			if ($row[$startcol + 12] !== null) {
+				$this->backend_settings = fopen('php://memory', 'r+');
+				fwrite($this->backend_settings, $row[$startcol + 12]);
+				rewind($this->backend_settings);
+			} else {
+				$this->backend_settings = null;
+			}
 			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
 			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
 			$this->created_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
@@ -1441,6 +1450,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					$this->setNew(false);
 				} else {
 					$affectedRows += UserPeer::doUpdate($this, $con);
+				}
+
+				// Rewind the backend_settings LOB column, since PDO does not rewind after inserting value.
+				if ($this->backend_settings !== null && is_resource($this->backend_settings)) {
+					rewind($this->backend_settings);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'

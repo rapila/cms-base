@@ -24,8 +24,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 					$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
 				}
 			} 
-		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
-		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
+			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
+			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
+			$aResult['BackendSettings'] = null;
 			return $aResult;
 		}		
 	}
