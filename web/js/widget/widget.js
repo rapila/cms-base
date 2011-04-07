@@ -444,13 +444,17 @@ jQuery.extend(Widget, {
 			async: options.async,
 			contentType: options.content_type,
 			cache: true,
-			beforeSend: function(xmlhttprequest) {
+			xhr: function() {
+				var xmlhttprequest = jQuery.ajaxSettings.xhr();
 				if(options.download_progress_callback) {
 					xmlhttprequest.addEventListener('progress', options.download_progress_callback, false);
 				}
 				if(options.upload_progess_callback) {
 					xmlhttprequest.upload.addEventListener('progress', options.upload_progess_callback, false);
 				}
+				return xmlhttprequest;
+			},
+			beforeSend: function() {
 				Widget.activity();
 			},
 			success: function(result) {
@@ -621,7 +625,7 @@ jQuery.fn.extend({
 		callback && this.ensureWidget(callback);
 		intermediateCallback && this.ensureWidget(intermediateCallback, true);
 		
-		if(this.data('widget') || this.data('prepareWidget_called')) {
+		if(this.didPrepareWidget() || this.hasWidget()) {
 			return this;
 		}
 		this.data('prepareWidget_called', true);
@@ -640,6 +644,14 @@ jQuery.fn.extend({
 		}, widget_session);
 		
 		return this;
+	},
+	
+	hasWidget: function() {
+		return !!this.data('widget');
+	},
+	
+	didPrepareWidget: function() {
+		return !!this.data('prepareWidget_called');
 	},
 	
 	/** 
