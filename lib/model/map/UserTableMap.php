@@ -49,7 +49,7 @@ class UserTableMap extends TableMap {
 		$this->addColumn('IS_BACKEND_LOGIN_ENABLED', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
 		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
 		$this->addColumn('PASSWORD_RECOVER_HINT', 'PasswordRecoverHint', 'VARCHAR', false, 10, null);
-		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'LONGVARCHAR', false, null, null);
+		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'BLOB', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('CREATED_BY', 'CreatedBy', 'INTEGER', false, null, null);
@@ -111,6 +111,34 @@ class UserTableMap extends TableMap {
     $this->addRelation('LinkCategoryRelatedByUpdatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
     $this->addRelation('ReferenceRelatedByCreatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
     $this->addRelation('ReferenceRelatedByUpdatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('NewsletterRelatedByCreatedBy', 'Newsletter', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('NewsletterRelatedByUpdatedBy', 'Newsletter', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('NewsletterMailing', 'NewsletterMailing', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberRelatedByCreatedBy', 'Subscriber', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberRelatedByUpdatedBy', 'Subscriber', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberGroupMembershipRelatedByCreatedBy', 'SubscriberGroupMembership', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberGroupMembershipRelatedByUpdatedBy', 'SubscriberGroupMembership', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberGroupRelatedByCreatedBy', 'SubscriberGroup', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('SubscriberGroupRelatedByUpdatedBy', 'SubscriberGroup', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('TipStringRelatedByCreatedBy', 'TipString', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('TipStringRelatedByUpdatedBy', 'TipString', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('TipRelatedByCreatedBy', 'Tip', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('TipRelatedByUpdatedBy', 'Tip', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('TipCategoryRelatedByCreatedBy', 'TipCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('TipCategoryRelatedByUpdatedBy', 'TipCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('FrontendUserRelatedByUserId', 'FrontendUser', RelationMap::ONE_TO_ONE, array('id' => 'user_id', ), 'CASCADE', null);
+    $this->addRelation('FrontendUserRelatedByCreatedBy', 'FrontendUser', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('FrontendUserRelatedByUpdatedBy', 'FrontendUser', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('ScoreRelatedByCreatedBy', 'Score', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('ScoreRelatedByUpdatedBy', 'Score', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('GameRelatedByCreatedBy', 'Game', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('GameRelatedByUpdatedBy', 'Game', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('EpisodeRelatedByCreatedBy', 'Episode', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('EpisodeRelatedByUpdatedBy', 'Episode', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('EpisodeTypeRelatedByCreatedBy', 'EpisodeType', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('EpisodeTypeRelatedByUpdatedBy', 'EpisodeType', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+    $this->addRelation('CommentRelatedByCreatedBy', 'Comment', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
+    $this->addRelation('CommentRelatedByUpdatedBy', 'Comment', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**

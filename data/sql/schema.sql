@@ -311,7 +311,7 @@ CREATE TABLE `users`
 	`is_backend_login_enabled` TINYINT(1) default 1,
 	`is_inactive` TINYINT(1) default 0,
 	`password_recover_hint` VARCHAR(10),
-	`backend_settings` TEXT,
+	`backend_settings` LONGBLOB,
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,
@@ -823,6 +823,510 @@ CREATE TABLE `indirect_references`
 		ON DELETE SET NULL,
 	INDEX `indirect_references_FI_2` (`updated_by`),
 	CONSTRAINT `indirect_references_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- newsletters
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `newsletters`;
+
+
+CREATE TABLE `newsletters`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`subject` VARCHAR(255)  NOT NULL,
+	`newsletter_body` LONGBLOB,
+	`language_id` VARCHAR(3)  NOT NULL,
+	`is_approved` TINYINT default 0 NOT NULL,
+	`is_html` TINYINT default 1 NOT NULL,
+	`template_name` VARCHAR(60),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `newsletters_FI_1` (`created_by`),
+	CONSTRAINT `newsletters_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `newsletters_FI_2` (`updated_by`),
+	CONSTRAINT `newsletters_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- newsletter_mailings
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `newsletter_mailings`;
+
+
+CREATE TABLE `newsletter_mailings`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`date_sent` DATETIME  NOT NULL,
+	`subscriber_group_id` INTEGER,
+	`external_mail_group_id` VARCHAR(255),
+	`newsletter_id` INTEGER  NOT NULL,
+	`created_by` INTEGER  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `newsletter_mailings_FI_1` (`subscriber_group_id`),
+	CONSTRAINT `newsletter_mailings_FK_1`
+		FOREIGN KEY (`subscriber_group_id`)
+		REFERENCES `subscriber_groups` (`id`),
+	INDEX `newsletter_mailings_FI_2` (`newsletter_id`),
+	CONSTRAINT `newsletter_mailings_FK_2`
+		FOREIGN KEY (`newsletter_id`)
+		REFERENCES `newsletters` (`id`)
+		ON DELETE CASCADE,
+	INDEX `newsletter_mailings_FI_3` (`updated_by`),
+	CONSTRAINT `newsletter_mailings_FK_3`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- subscribers
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `subscribers`;
+
+
+CREATE TABLE `subscribers`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(80)  NOT NULL,
+	`preferred_language_id` VARCHAR(3)  NOT NULL,
+	`email` VARCHAR(255),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `subscribers_U_1` (`email`),
+	INDEX `subscribers_FI_1` (`created_by`),
+	CONSTRAINT `subscribers_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `subscribers_FI_2` (`updated_by`),
+	CONSTRAINT `subscribers_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- subscriber_group_memberships
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `subscriber_group_memberships`;
+
+
+CREATE TABLE `subscriber_group_memberships`
+(
+	`subscriber_id` INTEGER  NOT NULL,
+	`subscriber_group_id` INTEGER  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`subscriber_id`,`subscriber_group_id`),
+	CONSTRAINT `subscriber_group_memberships_FK_1`
+		FOREIGN KEY (`subscriber_id`)
+		REFERENCES `subscribers` (`id`)
+		ON DELETE CASCADE,
+	INDEX `subscriber_group_memberships_FI_2` (`subscriber_group_id`),
+	CONSTRAINT `subscriber_group_memberships_FK_2`
+		FOREIGN KEY (`subscriber_group_id`)
+		REFERENCES `subscriber_groups` (`id`)
+		ON DELETE CASCADE,
+	INDEX `subscriber_group_memberships_FI_3` (`created_by`),
+	CONSTRAINT `subscriber_group_memberships_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `subscriber_group_memberships_FI_4` (`updated_by`),
+	CONSTRAINT `subscriber_group_memberships_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- subscriber_groups
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `subscriber_groups`;
+
+
+CREATE TABLE `subscriber_groups`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(80)  NOT NULL,
+	`is_default` TINYINT default 0 NOT NULL,
+	`description` VARCHAR(255),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `subscriber_groups_FI_1` (`created_by`),
+	CONSTRAINT `subscriber_groups_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `subscriber_groups_FI_2` (`updated_by`),
+	CONSTRAINT `subscriber_groups_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- tip_strings
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tip_strings`;
+
+
+CREATE TABLE `tip_strings`
+(
+	`tip_id` INTEGER  NOT NULL,
+	`language_id` CHAR(3)  NOT NULL,
+	`title` VARCHAR(255),
+	`text` LONGBLOB,
+	`is_tip_of_the_day` TINYINT default 0 NOT NULL,
+	`is_active` TINYINT default 0 NOT NULL,
+	`day_displayed_last` DATE,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`tip_id`,`language_id`),
+	INDEX `I_referenced_comments_FK_2_1` (`language_id`,`tip_id`),
+	CONSTRAINT `tip_strings_FK_1`
+		FOREIGN KEY (`tip_id`)
+		REFERENCES `tips` (`id`)
+		ON DELETE CASCADE,
+	CONSTRAINT `tip_strings_FK_2`
+		FOREIGN KEY (`language_id`)
+		REFERENCES `languages` (`id`),
+	INDEX `tip_strings_FI_3` (`created_by`),
+	CONSTRAINT `tip_strings_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `tip_strings_FI_4` (`updated_by`),
+	CONSTRAINT `tip_strings_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- tips
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tips`;
+
+
+CREATE TABLE `tips`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`tip_category_id` TINYINT(1),
+	`rating` FLOAT default 0.0 NOT NULL,
+	`rating_count` INTEGER default 0 NOT NULL,
+	`frontend_user_id` INTEGER,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `tips_FI_1` (`tip_category_id`),
+	CONSTRAINT `tips_FK_1`
+		FOREIGN KEY (`tip_category_id`)
+		REFERENCES `tip_categories` (`id`),
+	INDEX `tips_FI_2` (`frontend_user_id`),
+	CONSTRAINT `tips_FK_2`
+		FOREIGN KEY (`frontend_user_id`)
+		REFERENCES `frontend_users` (`user_id`),
+	INDEX `tips_FI_3` (`created_by`),
+	CONSTRAINT `tips_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `tips_FI_4` (`updated_by`),
+	CONSTRAINT `tips_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- tip_categories
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tip_categories`;
+
+
+CREATE TABLE `tip_categories`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `tip_categories_FI_1` (`created_by`),
+	CONSTRAINT `tip_categories_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `tip_categories_FI_2` (`updated_by`),
+	CONSTRAINT `tip_categories_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- frontend_users
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `frontend_users`;
+
+
+CREATE TABLE `frontend_users`
+(
+	`user_id` INTEGER  NOT NULL,
+	`gender` CHAR(1),
+	`year_of_birth` INTEGER(4),
+	`in_lottery` TINYINT default 1 NOT NULL,
+	`age_group_id` TINYINT(1)   COMMENT 'persistent value',
+	`preferred_language_id` CHAR(3),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`user_id`),
+	CONSTRAINT `frontend_users_FK_1`
+		FOREIGN KEY (`user_id`)
+		REFERENCES `users` (`id`)
+		ON DELETE CASCADE,
+	INDEX `frontend_users_FI_2` (`age_group_id`),
+	CONSTRAINT `frontend_users_FK_2`
+		FOREIGN KEY (`age_group_id`)
+		REFERENCES `games` (`id`),
+	INDEX `frontend_users_FI_3` (`preferred_language_id`),
+	CONSTRAINT `frontend_users_FK_3`
+		FOREIGN KEY (`preferred_language_id`)
+		REFERENCES `languages` (`id`),
+	INDEX `frontend_users_FI_4` (`created_by`),
+	CONSTRAINT `frontend_users_FK_4`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `frontend_users_FI_5` (`updated_by`),
+	CONSTRAINT `frontend_users_FK_5`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- scores
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `scores`;
+
+
+CREATE TABLE `scores`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`value` INTEGER  NOT NULL,
+	`frontend_user_id` INTEGER  NOT NULL,
+	`episode_id` INTEGER  NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `scores_FI_1` (`frontend_user_id`),
+	CONSTRAINT `scores_FK_1`
+		FOREIGN KEY (`frontend_user_id`)
+		REFERENCES `frontend_users` (`user_id`)
+		ON DELETE CASCADE,
+	INDEX `scores_FI_2` (`episode_id`),
+	CONSTRAINT `scores_FK_2`
+		FOREIGN KEY (`episode_id`)
+		REFERENCES `episodes` (`id`)
+		ON DELETE CASCADE,
+	INDEX `scores_FI_3` (`created_by`),
+	CONSTRAINT `scores_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `scores_FI_4` (`updated_by`),
+	CONSTRAINT `scores_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- games
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `games`;
+
+
+CREATE TABLE `games`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255)  NOT NULL,
+	`age_start` TINYINT,
+	`age_end` TINYINT,
+	`is_in_lottery` TINYINT default 1 NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `games_FI_1` (`created_by`),
+	CONSTRAINT `games_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `games_FI_2` (`updated_by`),
+	CONSTRAINT `games_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- episodes
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `episodes`;
+
+
+CREATE TABLE `episodes`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`episode_number` TINYINT  NOT NULL,
+	`episode_type_id` TINYINT  NOT NULL,
+	`name` VARCHAR(255)   COMMENT 'file_name',
+	`game_id` INTEGER  NOT NULL,
+	`is_active` TINYINT default 1 NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `episodes_U_1` (`episode_number`, `game_id`),
+	INDEX `episodes_FI_1` (`episode_type_id`),
+	CONSTRAINT `episodes_FK_1`
+		FOREIGN KEY (`episode_type_id`)
+		REFERENCES `episode_types` (`id`),
+	INDEX `episodes_FI_2` (`game_id`),
+	CONSTRAINT `episodes_FK_2`
+		FOREIGN KEY (`game_id`)
+		REFERENCES `games` (`id`)
+		ON DELETE CASCADE,
+	INDEX `episodes_FI_3` (`created_by`),
+	CONSTRAINT `episodes_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `episodes_FI_4` (`updated_by`),
+	CONSTRAINT `episodes_FK_4`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- episode_types
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `episode_types`;
+
+
+CREATE TABLE `episode_types`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(40)  NOT NULL,
+	`has_score_list` TINYINT default 1 NOT NULL,
+	`is_pro_forma` TINYINT default 0 NOT NULL,
+	`is_text` TINYINT default 0 NOT NULL,
+	`per_language_files` TINYINT default 0 NOT NULL,
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `episode_types_FI_1` (`created_by`),
+	CONSTRAINT `episode_types_FK_1`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `episode_types_FI_2` (`updated_by`),
+	CONSTRAINT `episode_types_FK_2`
+		FOREIGN KEY (`updated_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL
+) ENGINE=MyISAM;
+
+#-----------------------------------------------------------------------------
+#-- comments
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `comments`;
+
+
+CREATE TABLE `comments`
+(
+	`id` INTEGER  NOT NULL AUTO_INCREMENT,
+	`text` TEXT,
+	`language_id` CHAR(3)  NOT NULL,
+	`tip_id` INTEGER,
+	`page_id` INTEGER,
+	`is_approved` TINYINT default 0 NOT NULL,
+	`approval_hint` VARCHAR(10),
+	`created_at` DATETIME,
+	`updated_at` DATETIME,
+	`created_by` INTEGER,
+	`updated_by` INTEGER,
+	PRIMARY KEY (`id`),
+	INDEX `comments_FI_1` (`language_id`),
+	CONSTRAINT `comments_FK_1`
+		FOREIGN KEY (`language_id`)
+		REFERENCES `languages` (`id`),
+	INDEX `comments_FI_2` (`language_id`,`tip_id`),
+	CONSTRAINT `comments_FK_2`
+		FOREIGN KEY (`language_id`,`tip_id`)
+		REFERENCES `tip_strings` (`language_id`,`tip_id`),
+	INDEX `comments_FI_3` (`created_by`),
+	CONSTRAINT `comments_FK_3`
+		FOREIGN KEY (`created_by`)
+		REFERENCES `users` (`id`)
+		ON DELETE SET NULL,
+	INDEX `comments_FI_4` (`updated_by`),
+	CONSTRAINT `comments_FK_4`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL

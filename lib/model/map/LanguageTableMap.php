@@ -61,6 +61,9 @@ class LanguageTableMap extends TableMap {
     $this->addRelation('UserRelatedByLanguageId', 'User', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('Document', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
     $this->addRelation('Link', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
+    $this->addRelation('TipString', 'TipString', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
+    $this->addRelation('FrontendUser', 'FrontendUser', RelationMap::ONE_TO_MANY, array('id' => 'preferred_language_id', ), null, null);
+    $this->addRelation('Comment', 'Comment', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null);
 	} // buildRelations()
 
 	/**
