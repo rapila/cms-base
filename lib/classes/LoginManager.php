@@ -54,7 +54,8 @@ class LoginManager extends Manager {
 		$this->oTemplate->replaceIdentifier('login_action', $this->sAction);
 		$this->oTemplate->doIncludes();
 		$this->oTemplate->replaceIdentifier('action', LinkUtil::link());
-		$this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'login.password_reset' : 'login'));
+		$this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
+		$this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName());
 		if($this->sAction === 'login') {
 			$this->renderLogin();
 		}
@@ -62,32 +63,8 @@ class LoginManager extends Manager {
 	}
 
 	private function renderLogin() {
-		// should be improved or configurable
-		$sPreferredBrowser = 'Firefox';
-		$sPreferredBrowserVersion = '3.5';
-		$sBrowserMessage = null;
-		$iStrPos = strpos($_SERVER['HTTP_USER_AGENT'], $sPreferredBrowser);
-		$sVersion = null;
-		if($iStrPos) {
-			$sVersion = substr($_SERVER['HTTP_USER_AGENT'], $iStrPos);
-		}
-		$aVersion = explode('/', $sVersion);
-		if($aVersion[0] !== $sPreferredBrowser) {
-			$sBrowserMessage = StringPeer::getString('browser_preferred_message');
-		} elseif(isset($aVersion[1])) {
-			$iVersionNo = substr($aVersion[1],0,3);
-			if($iVersionNo < $sPreferredBrowserVersion) {
-				$sBrowserMessage = StringPeer::getString('browser_version_message');
-			}
-		}
-		if($sBrowserMessage !== null) {
-			$this->oTemplate->replaceIdentifier('browser_message', $sBrowserMessage);
-			$this->oTemplate->replaceIdentifier('firefox_download_linktext', 'Firefox Download '.StringPeer::getString('page'));
-		}
-		$this->oTemplate->replaceIdentifier('title', LinkUtil::getHostName(). ' | Login');
 		$this->oTemplate->replaceIdentifier('action_password_forgotten', LinkUtil::link(null, null, array('password_forgotten' => 'true')));
 		$this->oTemplate->replaceIdentifier(self::USER_NAME, '');
-		$this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName(). ' | Login');
 		$this->oTemplate->replaceIdentifier(self::LOGIN_PASSWORD, '');
 	}
 
