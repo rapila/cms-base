@@ -344,3 +344,6 @@ ALTER TABLE `links` ADD `sort` INT UNSIGNED NULL DEFAULT NULL AFTER `link_catego
 
 #svn r2907
 ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `mimetype`);
+
+#20110407.1714
+UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' WHERE `object_id` IN (SELECT `id` FROM `objects` WHERE `object_type` = 'login') AND `data` NOT LIKE "%logout%";

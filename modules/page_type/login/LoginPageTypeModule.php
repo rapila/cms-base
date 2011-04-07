@@ -7,7 +7,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 	
 	public function __construct(Page $oPage, $sLanguageId = null) {
 		parent::__construct($oPage, $sLanguageId);
-		$this->sAction = 'login';
+		$this->sAction = null;
 		if(isset($_REQUEST['origin']) && !Session::getSession()->hasAttribute('login_referrer')) {
 			Session::getSession()->setAttribute('login_referrer', $_REQUEST['origin']);
 		}

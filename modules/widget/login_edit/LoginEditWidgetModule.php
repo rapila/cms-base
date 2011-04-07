@@ -7,10 +7,14 @@ class LoginEditWidgetModule extends EditWidgetModule {
 
 	public function getDisplayOptions() {
 		$aResult = array();
-		foreach(LoginFrontendModule::$DISPLAY_OPTIONS as $sDisplayOption) {
-			$aResult[$sDisplayOption] = StringPeer::getString('wns.option.'.$sDisplayOption);
+		foreach(ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, FrontendModule::getType(), FrontendModule::getNameByClassName('LoginFrontendModule'), DIRNAME_TEMPLATES, '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
+			$sFileName = $oResource->getFileName('.tmpl');
+			if(strpos($sFileName, '_action_') !== false) {
+				continue;
+			}
+			$aResult[] = $sFileName;
 		}
-		return $aResult;
+		
+		return ArrayUtil::arrayWithValuesAsKeys($aResult);
 	}
-	
 }
