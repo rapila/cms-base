@@ -779,6 +779,7 @@ CREATE TABLE `link_categories`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(80)  NOT NULL,
+	`is_externally_managed` TINYINT(1) default 0,
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,

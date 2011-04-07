@@ -8,6 +8,7 @@
  *
  * @method     LinkCategoryQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     LinkCategoryQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     LinkCategoryQuery orderByIsExternallyManaged($order = Criteria::ASC) Order by the is_externally_managed column
  * @method     LinkCategoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     LinkCategoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     LinkCategoryQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -15,6 +16,7 @@
  *
  * @method     LinkCategoryQuery groupById() Group by the id column
  * @method     LinkCategoryQuery groupByName() Group by the name column
+ * @method     LinkCategoryQuery groupByIsExternallyManaged() Group by the is_externally_managed column
  * @method     LinkCategoryQuery groupByCreatedAt() Group by the created_at column
  * @method     LinkCategoryQuery groupByUpdatedAt() Group by the updated_at column
  * @method     LinkCategoryQuery groupByCreatedBy() Group by the created_by column
@@ -41,6 +43,7 @@
  *
  * @method     LinkCategory findOneById(int $id) Return the first LinkCategory filtered by the id column
  * @method     LinkCategory findOneByName(string $name) Return the first LinkCategory filtered by the name column
+ * @method     LinkCategory findOneByIsExternallyManaged(boolean $is_externally_managed) Return the first LinkCategory filtered by the is_externally_managed column
  * @method     LinkCategory findOneByCreatedAt(string $created_at) Return the first LinkCategory filtered by the created_at column
  * @method     LinkCategory findOneByUpdatedAt(string $updated_at) Return the first LinkCategory filtered by the updated_at column
  * @method     LinkCategory findOneByCreatedBy(int $created_by) Return the first LinkCategory filtered by the created_by column
@@ -48,6 +51,7 @@
  *
  * @method     array findById(int $id) Return LinkCategory objects filtered by the id column
  * @method     array findByName(string $name) Return LinkCategory objects filtered by the name column
+ * @method     array findByIsExternallyManaged(boolean $is_externally_managed) Return LinkCategory objects filtered by the is_externally_managed column
  * @method     array findByCreatedAt(string $created_at) Return LinkCategory objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return LinkCategory objects filtered by the updated_at column
  * @method     array findByCreatedBy(int $created_by) Return LinkCategory objects filtered by the created_by column
@@ -198,6 +202,23 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(LinkCategoryPeer::NAME, $name, $comparison);
+	}
+
+	/**
+	 * Filter the query on the is_externally_managed column
+	 * 
+	 * @param     boolean|string $isExternallyManaged The value to use as filter.
+	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    LinkCategoryQuery The current query, for fluid interface
+	 */
+	public function filterByIsExternallyManaged($isExternallyManaged = null, $comparison = null)
+	{
+		if (is_string($isExternallyManaged)) {
+			$is_externally_managed = in_array(strtolower($isExternallyManaged), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		}
+		return $this->addUsingAlias(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, $isExternallyManaged, $comparison);
 	}
 
 	/**
