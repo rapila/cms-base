@@ -444,10 +444,10 @@ Widget.types.list = {
 			});
 		},
 		
-		truncate: function(str, len, pfix) {
+		truncate: function(string, len, pfix) {
 			var length = len || 50;
 			var postfix = pfix || '…';
-			var tolerance = pfix.length+2;
+			var tolerance = postfix.length+2;
 			if(string.length > length+tolerance) {
 				return string.substr(0,length)+postfix;
 			}
