@@ -14,6 +14,9 @@ Widget.types.link_input = {
 			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
 			this._element.val('');
 		}
+		if(this.settings.disabled) {
+			this._element.attr('disabled', true);
+		}
 	},
 	
 	value: function() {
