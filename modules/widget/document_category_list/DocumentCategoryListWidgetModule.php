@@ -5,12 +5,21 @@
 class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 
 	private $oListWidget;
+	private $oDelegateProxy;
+	private $oDocumentCategoryManagedInputFilter;
+	private $bInternallyManagedOnly;
 	
 	public function __construct($sSessionKey = null) {
 		parent::__construct($sSessionKey);
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentCategory", 'name');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentCategory", 'name');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$this->oDocumentCategoryManagedInputFilter = WidgetModule::getWidget('document_category_managed_input', null, true);
+		$this->oDelegateProxy->setInternallyManagedOnly(true);
+	}
+	
+	public function setIsExternallyManaged($bIsExternallyManaged) {
+		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
 	}
 
 	public function doWidget() {
@@ -47,8 +56,9 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
-				$aResult['is_sortable'] = true;
-				$aResult['heading'] = StringPeer::getString('wns.is_externally_managed');
+        $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
+				$aResult['heading_filter'] = array('document_category_managed_input', $this->oDocumentCategoryManagedInputFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -57,5 +67,17 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 				break;
 		}
 		return $aResult;
+	}
+	
+	public function setInternallyManagedOnly($bInternallyManagedOnly) {
+	  $this->bInternallyManagedOnly = $bInternallyManagedOnly;
+	}
+	
+	public function getCriteria() {
+		$oCriteria = DocumentCategoryQuery::create();
+		if($this->bInternallyManagedOnly) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
+		return $oCriteria;
 	}
 }

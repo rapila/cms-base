@@ -1,0 +1,8 @@
+Widget.types.document_category_managed_input = {
+	prepare: function() {
+		var _this = this;
+		this._element.change(function() {
+			_this.fire('value-changed', _this._element.attr('checked'));
+		});
+	}
+};
