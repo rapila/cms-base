@@ -33,8 +33,6 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oCategory->setName($aLinkCategoryData['name']);
 		$oCategory->setIsExternallyManaged($aLinkCategoryData['is_externally_managed']);
-		
-		$oCategory->setIsInactive(isset($aLinkCategoryData['is_inactive']));
     $this->validate($aLinkCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
