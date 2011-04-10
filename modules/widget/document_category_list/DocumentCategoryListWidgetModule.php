@@ -6,20 +6,16 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 
 	private $oListWidget;
 	private $oDelegateProxy;
-	private $oDocumentCategoryManagedInputFilter;
-	private $bInternallyManagedOnly;
+	private $oExternallyManagedInputFilter;
+	private $bExcludeExternallyManaged;
 	
 	public function __construct($sSessionKey = null) {
 		parent::__construct($sSessionKey);
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentCategory", 'name');
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
-		$this->oDocumentCategoryManagedInputFilter = WidgetModule::getWidget('document_category_managed_input', null, true);
+		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', null, true);
 		$this->oDelegateProxy->setInternallyManagedOnly(true);
-	}
-	
-	public function setIsExternallyManaged($bIsExternallyManaged) {
-		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
 	}
 
 	public function doWidget() {
@@ -57,7 +53,7 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 				break;
 			case 'is_externally_managed':
         $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
-				$aResult['heading_filter'] = array('document_category_managed_input', $this->oDocumentCategoryManagedInputFilter->getSessionKey());
+				$aResult['heading_filter'] = array('externally_managed_input', $this->oExternallyManagedInputFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
@@ -68,14 +64,18 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
+
+	public function setIsExternallyManaged($bIsExternallyManaged) {
+		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
+	}
 	
-	public function setInternallyManagedOnly($bInternallyManagedOnly) {
-	  $this->bInternallyManagedOnly = $bInternallyManagedOnly;
+	public function setInternallyManagedOnly($bExcludeExternallyManaged) {
+	  $this->bExcludeExternallyManaged = $bExcludeExternallyManaged;
 	}
 	
 	public function getCriteria() {
 		$oCriteria = DocumentCategoryQuery::create();
-		if($this->bInternallyManagedOnly) {
+		if($this->bExcludeExternallyManaged) {
 			$oCriteria->filterByIsExternallyManaged(false);
 		}
 		return $oCriteria;

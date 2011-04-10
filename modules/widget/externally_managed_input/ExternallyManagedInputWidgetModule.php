@@ -2,16 +2,16 @@
 /**
  * @package modules.widget
  */
-class DocumentCategoryManagedInputWidgetModule extends WidgetModule {
+class ExternallyManagedInputWidgetModule extends WidgetModule {
 	
-	private $bInternallyManagedOnly;
+	private $bExcludeExternallyManaged;
 	
 	public function __construct($sSessionKey, $sDefaultSelection = true) {
 		parent::__construct($sSessionKey);
-		$this->bInternallyManagedOnly = $sDefaultSelection;
+		$this->bExcludeExternallyManaged = $sDefaultSelection;
 	}
 	
 	public function getElementType() {
-		return new TagWriter('input', array('type' => 'checkbox', 'name' => 'internally_managed_only', 'checked' => ($this->bInternallyManagedOnly ? 'checked' : '')));
+		return new TagWriter('input', array('type' => 'checkbox', 'name' => 'exclude_externally_managed', 'checked' => ($this->bExcludeExternallyManaged ? 'checked' : '')));
 	}
 }
