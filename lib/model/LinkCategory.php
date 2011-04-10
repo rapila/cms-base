@@ -12,11 +12,10 @@ class LinkCategory extends BaseLinkCategory {
 	}
 			
 	public function getLinkToLinkData() {
-		if($this->getLinkCount() == 0) {
-			return '-';
-		}
 		$aArray = array();
-		if($this->getLinkCount() === 1) {
+		if($this->getLinkCount() == 0) {
+			$aArray[] = StringPeer::getString('wns.none');
+		} else if($this->getLinkCount() === 1) {
 			$aArray[] = $this->getLinkCount().' '.StringPeer::getString('wns.link');
 		} else {
 			$aArray[] = $this->getLinkCount().' '.StringPeer::getString('wns.links');
