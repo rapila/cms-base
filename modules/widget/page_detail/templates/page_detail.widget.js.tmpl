@@ -22,14 +22,14 @@ Widget.types.page_detail = {
 			_this.enable_input();
 			return false;
 		});
-		buttons.find('[name=delete]').click(function() {
+		this.delete_button = buttons.find('[name=delete]').click(function() {
 			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=wns.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
 				if(confirmed) {
 					_this.delete_page();
 				}
 			});
 			return false;
-		});
+		}).hide();
 		
 		this.description_has_been_loaded = false;
 		this.configuration_has_been_loaded = false;
@@ -46,15 +46,6 @@ Widget.types.page_detail = {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
 		Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', this._element);
-		// this._element.bind('keyup', function(event) {
-		// 	if(this.current_page_id === null) {
-		// 		return;
-		// 	}
-		// 	if(event.which == 13) {
-		// 		this.save();
-		// 		return false;
-		// 	}
-		// }.bind(this));
 	},
 	
 	validate_with: function(exception) {
@@ -180,7 +171,11 @@ Widget.types.page_detail = {
 			_this.configuration_has_been_loaded = false;
 		});
 		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
-
+		if(!page_data.DeleteNotPermitted) {
+			this.delete_button.attr({disabled: true, title: page_data.DeleteNotPermitted}).show();
+		} else {
+			this.delete_button.attr({disabled: true, title: page_data.DeleteNotPermitted}).hide();
+		}
 		// references
 		var count_references = page_data.CountReferences;
 		var count_text = count_references > 0 ? " ("+count_references+")" : '';
