@@ -35,13 +35,16 @@ Widget.types.link_detail = {
 	},
 	
 	fill_data: function() {
+		var _this = this;
 		this.getLinkData(function(link_data) {
 			if(link_data.LinkCategoryId == null) {
 				link_data.LinkCategoryId = '';
 			}
 			this.content.find("input[name='name']").val(link_data.Name);
 			this.content.find("input[name='url']").val(link_data.Url);
-			this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+			if(!_this.settings.predefined_link_category_id) {
+				this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
