@@ -11,8 +11,8 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 		$this->oFrontendModule = $oFrontendModule;
 		if($mInternalWidget instanceof WidgetModule || is_string($mInternalWidget)) {
 			$this->oInternalWidget = $mInternalWidget;
-		} else {
-			$this->oInternalWidget = WidgetModule::getWidget($mInternalWidget);
+		} else if($mInternalWidget === null) {
+			$this->oInternalWidget = $oFrontendModule->widgetData();
 		}
 	}
 		
