@@ -91,7 +91,7 @@ class LoginManager extends Manager {
 				$sReferrer = Session::getSession()->getAttribute('login_referrer');
 				Session::getSession()->resetAttribute('login_referrer');
 				ErrorHandler::log($sReferrer, 'login_referrer');
-			} else {
+			} else if(!$sReferrer) {
 				$sReferrer = LinkUtil::link(array(), 'AdminManager');
 				ErrorHandler::log($sReferrer, 'AdminManager');
 			}
