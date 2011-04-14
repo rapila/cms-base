@@ -36,7 +36,7 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 			$oFunctionTemplate = null;
 			try {
 				$oFunctionTemplate = $this->constructTemplate("{$sLoginType}_action_{$sAction}");
-			} catch ($e) {
+			} catch (Exception $e) {
 				//Fallback to the default function template for the specified action
 				$oFunctionTemplate = $this->constructTemplate("login_action_{$sAction}");
 			}
