@@ -350,4 +350,4 @@ ALTER TABLE `users` CHANGE `backend_settings` `backend_settings` BLOB NULL DEFAU
 ALTER TABLE `link_categories` ADD `is_externally_managed` TINYINT UNSIGNED NOT NULL AFTER `name`;
 
 #20110407.1714
-UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' WHERE `object_id` IN (SELECT `id` FROM `objects` WHERE `object_type` = 'login') AND `data` NOT LIKE "%logout%";
+UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' WHERE `object_id` IN (SELECT `id` FROM `objects` WHERE `object_type` = 'login')
