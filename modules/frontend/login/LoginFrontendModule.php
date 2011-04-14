@@ -33,7 +33,14 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 		}
 		$oTemplate = $this->constructTemplate($sLoginType);
 		if($oTemplate->hasIdentifier('function_template')) {
-			$oTemplate->replaceIdentifier('function_template', $this->constructTemplate("{$sLoginType}_action_{$sAction}"), null, Template::LEAVE_IDENTIFIERS);
+			$oFunctionTemplate = null;
+			try {
+				$oFunctionTemplate = $this->constructTemplate("{$sLoginType}_action_{$sAction}");
+			} catch ($e) {
+				//Fallback to the default function template for the specified action
+				$oFunctionTemplate = $this->constructTemplate("login_action_{$sAction}");
+			}
+			$oTemplate->replaceIdentifier('function_template', $oFunctionTemplate, null, Template::LEAVE_IDENTIFIERS);
 		}
 		if($this->oUser) {
 			$oPage = $this->oPage;
