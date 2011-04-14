@@ -28,7 +28,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
 			$aResult['BackendSettings'] = null;
 			return $aResult;
-		}		
+		}
 	}
 
 	private function validate($aUserData, $oUser) {
