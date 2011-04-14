@@ -46,7 +46,7 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 		}
 		
 		if(isset($_POST[LoginManager::USER_NAME])) {
-			LoginManager::login();
+			LoginManager::login(null, null, LinkUtil::link($this->oPage->getFullPathArray()));
 		}
 		
 		parent::display($oTemplate, $bIsPreview);

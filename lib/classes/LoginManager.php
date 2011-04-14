@@ -68,7 +68,7 @@ class LoginManager extends Manager {
 		$this->oTemplate->replaceIdentifier(self::LOGIN_PASSWORD, '');
 	}
 
-	public static function login($sUserName = null, $sPassword = null) {
+	public static function login($sUserName = null, $sPassword = null, $sReferrer = '') {
 		if($sUserName === null) {
 			$sUserName = $_POST[self::USER_NAME];
 		}
@@ -83,7 +83,6 @@ class LoginManager extends Manager {
 		$iAdminTest = Session::getSession()->login($sUserName, $sPassword);
 		//User is valid
 		if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
-			$sReferrer = '';
 			 if(isset($_REQUEST['origin'])) {
 				$sReferrer = $_REQUEST['origin'];
 			} else if(Session::getSession()->hasAttribute('login_referrer')) {
@@ -144,7 +143,11 @@ class LoginManager extends Manager {
 		if($sLinkBase === null) {
 			$sLinkBase = LinkUtil::linkToSelf(null, null, true);
 		}
-		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters(array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_referrer' => Session::getSession()->getAttribute('login_referrer'), 'recover_username' => $oUser->getUsername()));
+		$aParams = array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_username' => $oUser->getUsername());
+		if(Session::getSession()->hasAttribute('login_referrer')) {
+			$aParams['recover_referrer'] = Session::getSession()->getAttribute('login_referrer');
+		}
+		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters($aParams);
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
 		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
