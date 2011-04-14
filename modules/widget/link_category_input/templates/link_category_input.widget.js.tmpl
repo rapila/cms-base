@@ -16,5 +16,8 @@ Widget.types.link_category_input = {
 		if(current) {
 			this._element.val(current);
 		}
+		if(this.settings.disabled) {
+			this._element.attr('disabled', true);
+		}
 	}
 };

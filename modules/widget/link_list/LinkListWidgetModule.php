@@ -101,8 +101,6 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 
 	public function getCriteria() {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID, Criteria::LEFT_JOIN);
-		return $oCriteria;
+		return LinkQuery::create()->excludeExternallyManaged();
 	}
 }

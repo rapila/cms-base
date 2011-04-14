@@ -34,7 +34,13 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		} catch(Exception $e) {
 			ErrorHandler::handleException($e);
 		}
-		
+		$sDeleteNotPermitted = null;
+		try {
+			$this->mayDelete($oPage);
+		} catch(Exception $e) {
+			$sDeleteNotPermitted = $e->getMessage();
+		}
+		$aResult['DeleteNotPermitted'] = $sDeleteNotPermitted;
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
 		$aResult['CountReferences'] = count($mReferences);
@@ -140,9 +146,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public function deletePage() {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
-		if(!Session::getSession()->getUser()->mayDelete($this->oPage)) {
+	private function mayDelete($oPage) {
+		if(!Session::getSession()->getUser()->mayDelete($oPage)) {
 			throw new NotPermittedException('may_delete_page');
 		}
 		if($oPage->hasChildren()) {
@@ -151,6 +156,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		if($oPage->isRoot()) {
 			throw new LocalizedException('exception.delete_root_page');
 		}
+	}
+	
+	public function deletePage() {
+		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$this->mayDelete($oPage);
 		$oPage->delete();
 		return $this->iPageId;
 	}

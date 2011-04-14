@@ -124,7 +124,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		return DocumentQuery::create()->excludeExternallyManaged()->joinDocumentType(null, Criteria::LEFT_JOIN)->excludeExternallyManaged();
+		return DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->excludeExternallyManaged();
 	}
 	
 	public function setDocumentKind($sDocumentKind) {

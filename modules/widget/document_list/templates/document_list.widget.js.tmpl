@@ -2,6 +2,7 @@ Widget.types.document_list = {
 	prepare: function() {
 		var document_list = this;
 		this.list = this._element.find('.ui-list');
+
 		this.list.prepareWidget(function(widget) {
 			document_list.list = widget;
 			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');

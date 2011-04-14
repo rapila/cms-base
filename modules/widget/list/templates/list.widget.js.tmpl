@@ -138,6 +138,7 @@ Widget.types.list = {
 			}
 		}
 		into.addClass(metadata.identifier);
+		
 		// add isHeading for adding span for sortable
 		Widget.types.list.types[display_type](into, data, metadata, isHeading);
 		if(isHeading && metadata.heading_filter) {
@@ -436,9 +437,19 @@ Widget.types.list = {
 			if(!jQuery.isArray(data)) {
 				data = [data, data];
 			}
-			jQuery("<a>").attr('href', data[1]).text(data[0]).appendTo(column).bind('click', function(event) {
+			jQuery("<a>").attr('href', data[1]).text(this.truncate(data[0])).appendTo(column).bind('click', function(event) {
 				event.stopPropagation();
 			});
+		},
+		
+		truncate: function(string, len, pfix) {
+			var length = len || 50;
+			var postfix = pfix || '…';
+			var tolerance = postfix.length+2;
+			if(string.length > length+tolerance) {
+				return string.substr(0,length)+postfix;
+			}
+			return string;
 		},
 		
 		icon: function(column, data, metadata) {

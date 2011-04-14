@@ -5,12 +5,17 @@
 class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 
 	private $oListWidget;
+	private $oDelegateProxy;
+	private $oExternallyManagedInputFilter;
+	private $bExcludeExternallyManaged;
 	
 	public function __construct($sSessionKey = null) {
 		parent::__construct($sSessionKey);
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "LinkCategory", 'name');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "LinkCategory", 'name');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', null, true);
+		$this->oDelegateProxy->setInternallyManagedOnly(true);
 	}
 
 	public function doWidget() {
@@ -44,8 +49,9 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
-				$aResult['is_sortable'] = true;
-				$aResult['heading'] = StringPeer::getString('wns.is_externally_managed');
+        $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
+				$aResult['heading_filter'] = array('externally_managed_input', $this->oExternallyManagedInputFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -54,5 +60,21 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 				break;
 		}
 		return $aResult;
+	}
+
+	public function setIsExternallyManaged($bIsExternallyManaged) {
+		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
+	}
+	
+	public function setInternallyManagedOnly($bExcludeExternallyManaged) {
+	  $this->bExcludeExternallyManaged = $bExcludeExternallyManaged;
+	}
+	
+	public function getCriteria() {
+		$oCriteria = LinkCategoryQuery::create();
+		if($this->bExcludeExternallyManaged) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
+		return $oCriteria;
 	}
 }
