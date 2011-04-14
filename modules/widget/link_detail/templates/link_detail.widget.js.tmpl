@@ -1,5 +1,6 @@
 Widget.types.link_detail = {
 	initialize: function() {
+		var _this = this;
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
@@ -9,8 +10,16 @@ Widget.types.link_detail = {
 				width: 530
 			});
 			widget.content = this.content;
-			this.content.find("select[name='link_category_id']").prepareWidget();
+			
 			this.content.find("select[name='language_id']").prepareWidget();
+			this.content.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
+				link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
+			}, function(link_category_input_widget) {
+				if(_this.settings.predefined_link_category_id) { 
+					link_category_input_widget._element.val(_this.settings.predefined_link_category_id);
+				}
+			});
+			
 			if(this.auto_open) {
 				this.open();
 			}
@@ -26,13 +35,16 @@ Widget.types.link_detail = {
 	},
 	
 	fill_data: function() {
+		var _this = this;
 		this.getLinkData(function(link_data) {
 			if(link_data.LinkCategoryId == null) {
 				link_data.LinkCategoryId = '';
 			}
 			this.content.find("input[name='name']").val(link_data.Name);
 			this.content.find("input[name='url']").val(link_data.Url);
-			this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+			if(!_this.settings.predefined_link_category_id) {
+				this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
@@ -49,5 +61,10 @@ Widget.types.link_detail = {
 	},
 	
 	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	close_callback: jQuery.noop,
+	
+	settings: {
+		predefined_link_category_id: null
+	}
+
 };

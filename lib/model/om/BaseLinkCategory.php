@@ -37,6 +37,13 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	protected $name;
 
 	/**
+	 * The value for the is_externally_managed field.
+	 * Note: this column has a database default value of: false
+	 * @var        boolean
+	 */
+	protected $is_externally_managed;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -90,6 +97,27 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->is_externally_managed = false;
+	}
+
+	/**
+	 * Initializes internal state of BaseLinkCategory object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
+
+	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -107,6 +135,16 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Get the [is_externally_managed] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getIsExternallyManaged()
+	{
+		return $this->is_externally_managed;
 	}
 
 	/**
@@ -244,6 +282,26 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 
 		return $this;
 	} // setName()
+
+	/**
+	 * Set the value of [is_externally_managed] column.
+	 * 
+	 * @param      boolean $v new value
+	 * @return     LinkCategory The current object (for fluent API support)
+	 */
+	public function setIsExternallyManaged($v)
+	{
+		if ($v !== null) {
+			$v = (boolean) $v;
+		}
+
+		if ($this->is_externally_managed !== $v || $this->isNew()) {
+			$this->is_externally_managed = $v;
+			$this->modifiedColumns[] = LinkCategoryPeer::IS_EXTERNALLY_MANAGED;
+		}
+
+		return $this;
+	} // setIsExternallyManaged()
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -401,6 +459,10 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->is_externally_managed !== false) {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -425,10 +487,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->created_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->updated_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->created_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->updated_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->is_externally_managed = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
+			$this->created_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->updated_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->created_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->updated_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -437,7 +500,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 6; // 6 = LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = LinkCategoryPeer::NUM_COLUMNS - LinkCategoryPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating LinkCategory object", $e);
@@ -839,15 +902,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				return $this->getName();
 				break;
 			case 2:
-				return $this->getCreatedAt();
+				return $this->getIsExternallyManaged();
 				break;
 			case 3:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 4:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 5:
+				return $this->getCreatedBy();
+				break;
+			case 6:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -876,10 +942,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
-			$keys[2] => $this->getCreatedAt(),
-			$keys[3] => $this->getUpdatedAt(),
-			$keys[4] => $this->getCreatedBy(),
-			$keys[5] => $this->getUpdatedBy(),
+			$keys[2] => $this->getIsExternallyManaged(),
+			$keys[3] => $this->getCreatedAt(),
+			$keys[4] => $this->getUpdatedAt(),
+			$keys[5] => $this->getCreatedBy(),
+			$keys[6] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUserRelatedByCreatedBy) {
@@ -926,15 +993,18 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				$this->setName($value);
 				break;
 			case 2:
-				$this->setCreatedAt($value);
+				$this->setIsExternallyManaged($value);
 				break;
 			case 3:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 4:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 5:
+				$this->setCreatedBy($value);
+				break;
+			case 6:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -963,10 +1033,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setCreatedBy($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setUpdatedBy($arr[$keys[5]]);
+		if (array_key_exists($keys[2], $arr)) $this->setIsExternallyManaged($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
 	}
 
 	/**
@@ -980,6 +1051,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(LinkCategoryPeer::ID)) $criteria->add(LinkCategoryPeer::ID, $this->id);
 		if ($this->isColumnModified(LinkCategoryPeer::NAME)) $criteria->add(LinkCategoryPeer::NAME, $this->name);
+		if ($this->isColumnModified(LinkCategoryPeer::IS_EXTERNALLY_MANAGED)) $criteria->add(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, $this->is_externally_managed);
 		if ($this->isColumnModified(LinkCategoryPeer::CREATED_AT)) $criteria->add(LinkCategoryPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) $criteria->add(LinkCategoryPeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(LinkCategoryPeer::CREATED_BY)) $criteria->add(LinkCategoryPeer::CREATED_BY, $this->created_by);
@@ -1046,6 +1118,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setName($this->name);
+		$copyObj->setIsExternallyManaged($this->is_externally_managed);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 		$copyObj->setCreatedBy($this->created_by);
@@ -1421,6 +1494,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	{
 		$this->id = null;
 		$this->name = null;
+		$this->is_externally_managed = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
@@ -1428,6 +1502,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
 		$this->setDeleted(false);

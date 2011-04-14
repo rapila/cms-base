@@ -352,9 +352,13 @@ h3.status { padding-left: 0.3em; }
 .ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
 fieldset.option_groups {
   margin-top: -1px;
-  border: 1px #c4c4c4 solid;
+  margin-left: 0;
+  border: 1px #dfdfdf solid;
 }
-fieldset.option_groups:first-child { margin-top: 0; }
+fieldset.option_groups:first-child {
+  margin-left: 0;
+  margin-top: 0.1em;
+}
 .users fieldset.option_groups { padding: 0; }
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {
   padding: 0;

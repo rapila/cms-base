@@ -8,7 +8,10 @@ jQuery(document).ready(function() {
 
 	Widget.createWithElement('page_detail', function(widget) {
 		widget.settings.delete_callback = function(page_id) {
-			page_tree.remove_element_with_identifier(page_id);
+			// do not remove element if NotPermittedException
+			if(!arguments[1]) {
+				page_tree.remove_element_with_identifier(page_id);
+			} 
 		};
 		//Add event handlers in intermediate callback
 		page_detail = widget;

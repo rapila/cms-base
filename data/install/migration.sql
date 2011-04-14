@@ -1,4 +1,4 @@
-#Migration script
+\#Migration script
 #Usage: add new changes to the bottom. always use "#svn rREV" as comment before the statement(s)
 
 #svn r1000
@@ -347,3 +347,4 @@ ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `
 
 #20110407.1004
 ALTER TABLE `users` CHANGE `backend_settings` `backend_settings` BLOB NULL DEFAULT NULL;
+ALTER TABLE `link_categories` ADD `is_externally_managed` TINYINT UNSIGNED NOT NULL AFTER `name`;

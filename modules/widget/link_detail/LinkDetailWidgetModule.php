@@ -50,6 +50,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 			} 
 		}
 		$oLink->setIsInactive(isset($aLinkData['is_inactive']));
-		return $oLink->save();
+		$oLink->save();
+		return $oLink->getId();
 	}
 }

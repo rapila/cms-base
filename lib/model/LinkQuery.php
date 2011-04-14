@@ -1,17 +1,18 @@
 <?php
 
-
 /**
- * Skeleton subclass for performing query and update operations on the 'links' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
  * @package    propel.generator.model
  */
 class LinkQuery extends BaseLinkQuery {
 
-} // LinkQuery
+	public function excludeExternallyManaged() {
+		$this->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID, Criteria::LEFT_JOIN);
+		$oManagedFalse = $this->getNewCriterion(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, false, Criteria::EQUAL);
+		$oManagedNull = $this->getNewCriterion(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL);
+		$oManagedFalse->addOr($oManagedNull);
+		$this->addAnd($oManagedFalse);
+		return $this;
+	}
+
+}
+

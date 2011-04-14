@@ -22,12 +22,19 @@ class DocumentCategory extends BaseDocumentCategory {
 		$iCount = $this->countDocuments();
 		return $this->getName().' ['.($iCount === 0 ? '-' : $iCount).']';
 	}
-	
+
 	public function getLinkToDocumentData() {
 		$aArray = array();
-		$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('wns.documents');
+		if($this->getDocumentCount() == 0) {
+			$aArray[] = StringPeer::getString('wns.none');
+		} else if($this->getDocumentCount() === 1) {
+			$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('wns.document');
+		} else {
+			$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('wns.documents');
+		}
 		$aArray[] = LinkUtil::link(array('documents'), 'AdminManager', array('document_category_id' => $this->getId()));
 		return $aArray;
 	}
+
 }
 

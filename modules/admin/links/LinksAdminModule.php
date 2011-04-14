@@ -64,6 +64,11 @@ class LinksAdminModule extends AdminModule {
 		}
 		return array();
 	}
+	
+	public function getCriteria() {
+		$oCriteria = new Criteria();
+		return $oCriteria->add(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+	}
 
 	public function usedWidgets() {
 		return array($this->oListWidget, $this->oSidebarWidget, $this->oInputWidget);
