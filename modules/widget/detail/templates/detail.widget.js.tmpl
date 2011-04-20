@@ -80,8 +80,10 @@ Widget.types.detail = {
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
 				// TODO: check if is textarea or whatever
-				detail_widget.save();
-				return false;
+				if(!jQuery(event.target).is('textarea')) {
+					detail_widget.save();
+					return false;
+				}
 			}
 		});
 		this.clickable_labels_for(this.content);
