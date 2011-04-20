@@ -83,18 +83,23 @@ class LoginManager extends Manager {
 		$iAdminTest = Session::getSession()->login($sUserName, $sPassword);
 		//User is valid
 		if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
+			ErrorHandler::log($sReferrer, 'initial');
 			if(isset($_REQUEST['origin'])) {
 				$sReferrer = $_REQUEST['origin'];
+				ErrorHandler::log($sReferrer, 'origin');
 			} else if(Session::getSession()->hasAttribute('login_referrer')) {
 				$sReferrer = Session::getSession()->getAttribute('login_referrer');
 				Session::getSession()->resetAttribute('login_referrer');
+				ErrorHandler::log($sReferrer, 'login_referrer');
 			} else if(!$sReferrer) {
 				$sReferrer = LinkUtil::link(array(), 'AdminManager');
+				ErrorHandler::log($sReferrer, 'AdminManager');
 			}
 			if(($iAdminTest & Session::USER_IS_DEFAULT_USER) === Session::USER_IS_DEFAULT_USER) { 
 				Session::getSession()->setAttribute('change_password', 1);
 				$sReferrer = LinkUtil::link(array('users', Session::getSession()->getUserId()), 'AdminManager');
 			}
+			ErrorHandler::log($sReferrer, 'end');
 			LinkUtil::redirect($sReferrer);
 		}
 		//User is inactive
