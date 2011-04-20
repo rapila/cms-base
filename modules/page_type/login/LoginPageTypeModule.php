@@ -42,11 +42,11 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 		//	• Log in (if valid)
 		//	• Redirect to the referrer (if valid)
 		if(isset($_POST['new_password'])) {
-			$this->sAction = LoginManager::loginNewPassword();
+			$this->sAction = LoginManager::loginNewPassword(LinkUtil::link($this->oPage->getFullPathArray()));
 		}
 		
 		if(isset($_POST[LoginManager::USER_NAME])) {
-			LoginManager::login();
+			LoginManager::login(null, null, LinkUtil::link($this->oPage->getFullPathArray()));
 		}
 		
 		parent::display($oTemplate, $bIsPreview);

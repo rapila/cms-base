@@ -54,7 +54,8 @@ class LoginManager extends Manager {
 		$this->oTemplate->replaceIdentifier('login_action', $this->sAction);
 		$this->oTemplate->doIncludes();
 		$this->oTemplate->replaceIdentifier('action', LinkUtil::link());
-		$this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'login.password_reset' : 'login'));
+		$this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
+		$this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName());
 		if($this->sAction === 'login') {
 			$this->renderLogin();
 		}
@@ -62,36 +63,12 @@ class LoginManager extends Manager {
 	}
 
 	private function renderLogin() {
-		// should be improved or configurable
-		$sPreferredBrowser = 'Firefox';
-		$sPreferredBrowserVersion = '3.5';
-		$sBrowserMessage = null;
-		$iStrPos = strpos($_SERVER['HTTP_USER_AGENT'], $sPreferredBrowser);
-		$sVersion = null;
-		if($iStrPos) {
-			$sVersion = substr($_SERVER['HTTP_USER_AGENT'], $iStrPos);
-		}
-		$aVersion = explode('/', $sVersion);
-		if($aVersion[0] !== $sPreferredBrowser) {
-			$sBrowserMessage = StringPeer::getString('browser_preferred_message');
-		} elseif(isset($aVersion[1])) {
-			$iVersionNo = substr($aVersion[1],0,3);
-			if($iVersionNo < $sPreferredBrowserVersion) {
-				$sBrowserMessage = StringPeer::getString('browser_version_message');
-			}
-		}
-		if($sBrowserMessage !== null) {
-			$this->oTemplate->replaceIdentifier('browser_message', $sBrowserMessage);
-			$this->oTemplate->replaceIdentifier('firefox_download_linktext', 'Firefox Download '.StringPeer::getString('page'));
-		}
-		$this->oTemplate->replaceIdentifier('title', LinkUtil::getHostName(). ' | Login');
 		$this->oTemplate->replaceIdentifier('action_password_forgotten', LinkUtil::link(null, null, array('password_forgotten' => 'true')));
 		$this->oTemplate->replaceIdentifier(self::USER_NAME, '');
-		$this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName(). ' | Login');
 		$this->oTemplate->replaceIdentifier(self::LOGIN_PASSWORD, '');
 	}
 
-	public static function login($sUserName = null, $sPassword = null) {
+	public static function login($sUserName = null, $sPassword = null, $sReferrer = '') {
 		if($sUserName === null) {
 			$sUserName = $_POST[self::USER_NAME];
 		}
@@ -106,13 +83,12 @@ class LoginManager extends Manager {
 		$iAdminTest = Session::getSession()->login($sUserName, $sPassword);
 		//User is valid
 		if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
-			$sReferrer = '';
-			 if(isset($_REQUEST['origin'])) {
+			if(isset($_REQUEST['origin'])) {
 				$sReferrer = $_REQUEST['origin'];
 			} else if(Session::getSession()->hasAttribute('login_referrer')) {
 				$sReferrer = Session::getSession()->getAttribute('login_referrer');
 				Session::getSession()->resetAttribute('login_referrer');
-			} else {
+			} else if(!$sReferrer) {
 				$sReferrer = LinkUtil::link(array(), 'AdminManager');
 			}
 			if(($iAdminTest & Session::USER_IS_DEFAULT_USER) === Session::USER_IS_DEFAULT_USER) { 
@@ -167,7 +143,11 @@ class LoginManager extends Manager {
 		if($sLinkBase === null) {
 			$sLinkBase = LinkUtil::linkToSelf(null, null, true);
 		}
-		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters(array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_referrer' => Session::getSession()->getAttribute('login_referrer'), 'recover_username' => $oUser->getUsername()));
+		$aParams = array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_username' => $oUser->getUsername());
+		if(Session::getSession()->hasAttribute('login_referrer')) {
+			$aParams['recover_referrer'] = Session::getSession()->getAttribute('login_referrer');
+		}
+		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters($aParams);
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
 		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
@@ -189,7 +169,7 @@ class LoginManager extends Manager {
 		return 'password_reset';
 	}
 	
-	public static function loginNewPassword() {
+	public static function loginNewPassword($sReferrer = '') {
 		$oFlash = Flash::getFlash();
 		$oUser = UserPeer::getUserByUserName(trim($_REQUEST['recover_username']), true);
 		if($oUser === null || md5($oUser->getPasswordRecoverHint()) !== $_REQUEST['recover_hint']) {
@@ -214,7 +194,7 @@ class LoginManager extends Manager {
 		$oUser->setPassword($_POST['new_password']);
 		$oUser->setPasswordRecoverHint(null);
 		$oUser->save();
-		self::login($_POST['recover_username'], $_POST['new_password']);
+		self::login($_POST['recover_username'], $_POST['new_password'], $sReferrer);
 		
 		return 'login';
 	}

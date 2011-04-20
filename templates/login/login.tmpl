@@ -1,28 +1,18 @@
-  <head>
-  	<title>{{title}}</title>
-  	{{writeResourceIncludes}}{{addResourceInclude=admin/admin.css;include_all=true}}
-  </head>
-  <body onload="document.getElementById('user_name').select()">
-  <div id="admin_navigation">
-    <div id="admin_header"><a href="{{web_link}}" id="admin_domain_title">{{domain_name}}&nbsp;</a></div>
-    <div id="toolbar">
-      <div class="inner">
-        <a id="by_minicms" href="http://wiki.mini-cms.ch/w/Introduction" title="wiki.mini-cms.ch">by MiniCMS</a>
-      </div>
-    </div>
-  </div>
-  <div id="bottom_wrapper">
-    <div id="detail">{{identifierContext=start;name=browser_message}}
-      <div class="browser_error_message">
-        {{browser_message}}
-<br /><a href="http://www.mozilla.com/en-US/firefox/all.html">{{firefox_download_linktext}}</a>
-      </div>{{identifierContext=end;name=browser_message}}
-      <fieldset style="padding-top: 1em;padding-bottom:1em;">
-        <form action="{{action}}" method="post">
-          {{includeTemplate=login_action_\{\{login_action\}\};position=last}}
-        </form>
-      </fieldset>
-    </div>
-  </div>
-  </body>
+	<head>
+		<title>{{domain_name}} | {{login_title}}</title>
+		<style type="text/css">
+		<!--/*--><![CDATA[/*><!--*/
+			body {
+				background-color: white;
+				font-family: Verdana;
+			}
+		/*]]>*/-->
+		</style>
+	</head>
+	<body onload="document.getElementById('user_name').select()">
+		<h2>{{domain_name}} | {{login_title}}</h2>
+		<form action="{{action}}" method="post">
+			{{includeTemplate=login_action_\{\{login_action\}\};position=last}}
+		</form>
+	</body>
 </html>

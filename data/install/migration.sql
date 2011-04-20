@@ -348,3 +348,6 @@ ALTER TABLE `document_types` ADD UNIQUE KEY `document_types_U_1` (`extension`, `
 #20110407.1004
 ALTER TABLE `users` CHANGE `backend_settings` `backend_settings` BLOB NULL DEFAULT NULL;
 ALTER TABLE `link_categories` ADD `is_externally_managed` TINYINT UNSIGNED NOT NULL AFTER `name`;
+
+#20110407.1714
+UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' WHERE `object_id` IN (SELECT `id` FROM `objects` WHERE `object_type` = 'login')
