@@ -16,6 +16,14 @@ Widget.types.role_input = {
 		}.bind(this));
 	},
 	
+	checked_roles: function() {
+		var result = [];
+		this._element.find("input[name='role_keys[]']:checked").each(function() {
+			result.push(this.value);
+		});
+		return result;
+	},
+	
 	set_checked: function(values) {
 		if(!values) {
 			this._element.hide();
