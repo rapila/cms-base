@@ -5,51 +5,58 @@
  */
 class Role extends BaseRole {
 
-	public function may($oPage, $sRightName, $bInheritedOnly = false) {
+	public function may($mPage, $sRightName, $bInheritedOnly = false) {
 		$sRightName = "getMay".StringUtil::camelize($sRightName, true);
 		$aRights = $this->getRights();
 		foreach($aRights as $oRight) {
 			if($bInheritedOnly && !$oRight->getIsInherited()) {
 				continue;
 			}
-			if($this->rightFits($oRight, $oPage, $sRightName)) {
+			if($this->rightFits($oRight, $mPage, $sRightName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private function rightFits($oRight, $oPage, $sMethodName) {
-		if($oRight->getPage() !== null && $oPage->getId() === $oRight->getPage()->getId()) {
+	private function rightFits($oRight, $mPage, $sMethodName) {
+    $oPage = $mPage;
+	  if($mPage instanceof Page) {
+      $mPage = $mPage->getId();
+	  }
+		if($oRight->getPage() !== null && $mPage === $oRight->getPage()->getId()) {
 			return call_user_func(array($oRight, $sMethodName));
 		}
-		if($oRight->getIsInherited() && $oPage->getParent() !== null) {
+		if($oRight->getIsInherited() && $mPage !== null) {
+		  if($oPage === null) {
+		    $oPage = PagePeer::retrieveByPK($mPage);
+		  }
 			return $this->rightFits($oRight, $oPage->getParent(), $sMethodName);
 		}
 		return false;
 	}
 
-	public function mayEditPageDetails($oPage) {
-		return $this->may($oPage, 'edit_page_details');
+	public function mayEditPageDetails($mPage) {
+		return $this->may($mPage, 'edit_page_details');
 	}
 
-	public function mayEditPageContents($oPage) {
-		return $this->may($oPage, 'edit_page_contents');
+	public function mayEditPageContents($mPage) {
+		return $this->may($mPage, 'edit_page_contents');
 	}
 
-	public function mayCreateChildren($oPage) {
-		return $this->may($oPage, 'create_children');
+	public function mayCreateChildren($mPage) {
+		return $this->may($mPage, 'create_children');
 	}
 
-	public function mayDelete($oPage) {
-		return $this->may($oPage, 'delete');
+	public function mayDelete($mPage) {
+		return $this->may($mPage, 'delete');
 	}
 
-	public function mayViewPage($oPage) {
-		return $this->may($oPage, 'view_page');
+	public function mayViewPage($mPage) {
+		return $this->may($mPage, 'view_page');
 	}
 
-	public function getMissingRights($oPage, $bInheritedOnly = false) {
+	public function getMissingRights($mPage, $bInheritedOnly = false) {
 		$oRightMethods = get_class_methods("Right");
 		$aResult = array();
 		foreach($oRightMethods as $iKey => $sRightMethodName) {
@@ -57,7 +64,7 @@ class Role extends BaseRole {
 				continue;
 			}
 			$sRightName = substr($sRightMethodName, strlen('getMay'));
-			if(!$this->may($oPage, $sRightName, $bInheritedOnly)) {
+			if(!$this->may($mPage, $sRightName, $bInheritedOnly)) {
 				$aResult[] = $sRightName;
 			}
 		}

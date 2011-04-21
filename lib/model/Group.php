@@ -7,38 +7,38 @@ require_once 'model/om/BaseGroup.php';
  * @package		 model
  */
 class Group extends BaseGroup {
-	public function may($oPage, $sRightName) {
+	public function may($mPage, $sRightName) {
 		foreach($this->getRoles() as $oRole) {
-			if($oRole->may($oPage, $sRightName)) {
+			if($oRole->may($mPage, $sRightName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public function mayEditPageDetails($oPage) {
-		return $this->may($oPage, 'edit_page_details');
+	public function mayEditPageDetails($mPage) {
+		return $this->may($mPage, 'edit_page_details');
 	}
 
-	public function mayEditPageContents($oPage) {
-		return $this->may($oPage, 'edit_page_contents');
+	public function mayEditPageContents($mPage) {
+		return $this->may($mPage, 'edit_page_contents');
 	}
 
-	public function mayCreateChildren($oPage) {
-		return $this->may($oPage, 'create_children');
+	public function mayCreateChildren($mPage) {
+		return $this->may($mPage, 'create_children');
 	}
 
-	public function mayDelete($oPage) {
-		return $this->may($oPage, 'delete');
+	public function mayDelete($mPage) {
+		return $this->may($mPage, 'delete');
 	}
 
-	public function mayViewPage($oPage) {
-		return $this->may($oPage, 'view_page');
+	public function mayViewPage($mPage) {
+		return $this->may($mPage, 'view_page');
 	}
-  
+	
 	public function getRoles($bReturnNamesOnly = false) {
 		$aResult = array();
-    $aGroupRoles = $bReturnNamesOnly ? $this->getGroupRoles() : $this->getGroupRolesJoinRole();
+		$aGroupRoles = $bReturnNamesOnly ? $this->getGroupRoles() : $this->getGroupRolesJoinRole();
 		foreach($aGroupRoles as $oGroupRole) {
 			if($bReturnNamesOnly) {
 				$aResult[] = $oGroupRole->getRoleKey();
@@ -50,11 +50,11 @@ class Group extends BaseGroup {
 	}
 	
 	public function getRolesInfo() {
-	  $aRoles = self::getRoles(true);
-	  if(count($aRoles) > 0) {
-	    return implode(', ', $aRoles);
-	  }
-	  return null;
+		$aRoles = self::getRoles(true);
+		if(count($aRoles) > 0) {
+			return implode(', ', $aRoles);
+		}
+		return null;
 	}
 	
 	public function addUser($oUser) {
