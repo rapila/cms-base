@@ -93,7 +93,5 @@ class Group extends BaseGroup {
 		$aArray[] = LinkUtil::link(array('users'), 'AdminManager', array('group_id' => $this->getId()));
 		return $aArray;
 	}
-
-
 }
 

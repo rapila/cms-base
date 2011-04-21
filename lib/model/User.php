@@ -212,6 +212,8 @@ class User extends BaseUser {
 		if($mRole instanceof Role) {
 			$mRole = $mRole->getRoleKey();
 		}
+		$aRoles = $this->allRoles();
+		return isset($aRoles[$mRole]);
 	}
 	
 	public function setPassword($sPassword, $cPasswordHashMethod = null) {
