@@ -7,6 +7,8 @@ require_once 'model/om/BaseUser.php';
  * @package model
  */ 
 class User extends BaseUser {
+	
+	public static $ALL_ROLES = null;
 
 	public function getFullName() {
 		return $this->getFirstName(). ' '.$this->getLastName();
@@ -35,71 +37,66 @@ class User extends BaseUser {
 		return $this->getId() === Session::getSession()->getUserId();
 	}
 
-	public function may($oPage, $sRightName) {
+	public function may($mPage, $sRightName) {
 		if($this->getIsAdmin()) {
 			return true;
 		}
-		//Aquire alls roles the user is in (direct as well as group roles)
 		
-		//FIXME: possible optimization: get all roles using getRoles(false) and getGroups() foreach getRoles() and consolidate
-		foreach($this->getRoles() as $oRole) {
-			if($oRole->may($oPage, $sRightName)) {
-				return true;
-			}
-		}
-		foreach($this->getGroups() as $oGroup) {
-			if($oGroup->may($oPage, $sRightName)) {
+		foreach($this->allRoles() as $oRole) {
+			if($oRole->may($mPage, $sRightName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public function mayEditPageDetails($oPage) {
-		return $this->may($oPage, 'edit_page_details');
+	public function mayEditPageDetails($mPage) {
+		return $this->may($mPage, 'edit_page_details');
 	}
 
-	public function mayEditPageContents($oPage) {
-		return $this->may($oPage, 'edit_page_contents');
+	public function mayEditPageContents($mPage) {
+		return $this->may($mPage, 'edit_page_contents');
 	}
 
-	public function mayCreateChildren($oPage) {
-		return $this->may($oPage, 'create_children');
+	public function mayCreateChildren($mPage) {
+		return $this->may($mPage, 'create_children');
 	}
 
-	public function mayDelete($oPage) {
-		return $this->may($oPage, 'delete');
+	public function mayDelete($mPage) {
+		return $this->may($mPage, 'delete');
 	}
 
-	public function mayViewPage($oPage) {
-		return $this->may($oPage, 'view_page');
+	public function mayViewPage($mPage) {
+		return $this->may($mPage, 'view_page');
 	}
 	
-	public function mayUseAdmimModule($sAdminModuleName, $bCheckEnabled = true) {
+	public function mayUseAdminModule($sAdminModuleName, $bCheckEnabled = true) {
+		return $this->mayUseModuleOfTypeAndName('admin', $sAdminModuleName, $bCheckEnabled);
+	}
+	
+	public function mayUseModuleOfTypeAndName($sModuleType, $sModuleName, $bCheckEnabled = true) {
 		//Case 1: Module is disabled (this check is not mandatory): deny
-		if($bCheckEnabled && !Module::isModuleEnabled('admin', $sAdminModuleName)) {
+		if($bCheckEnabled && !Module::isModuleEnabled($sModuleType, $sModuleName)) {
 			return false;
 		}
 		//Case 2: User is admin: allow
 		if($this->getIsAdmin()) {
 			return true;
 		}
-		$aModuleInfo = Module::getModuleInfoByTypeAndName('admin', $sAdminModuleName);
+		$aModuleInfo = Module::getModuleInfoByTypeAndName($sModuleType, $sModuleName);
 		//Case 3: Access to module is unrestricted: allow
 		if(!isset($aModuleInfo['allowed_roles']) || !is_array($aModuleInfo['allowed_roles'])) {
 			return true;
 		}
-		$aGroupIds = $aModuleInfo['allowed_roles'];
+		$aRoleKeys = $aModuleInfo['allowed_roles'];
 		//Case 4: Access to module is restricted to admins: deny (because the user is not one of them)
-		if(count($aGroupIds) === 0) {
+		if(count($aRoleKeys) === 0) {
 			return false;
 		}
 		//Case 5: Access is restricted to certain roles: allow if in role
-		if(in_array($this->getRoles(true), $aGroupIds)) {
-			return true;
-		}
-		foreach($this->getGroups() as $oGroup) {
-			if(in_array($oGroup->getRoles(true), $aGroupIds)) {
+		$aUserRoles = $this->allRoles();
+		foreach($aRoleKeys as $sRoleKey) {
+			if(isset($aUserRoles[$sRoleKey])) {
 				return true;
 			}
 		}
@@ -153,6 +150,21 @@ class User extends BaseUser {
 		return $aResult;
 	}
 	
+	public function allRoles() {
+		if(self::$ALL_ROLES === null) {
+			self::$ALL_ROLES = array();
+			foreach($this->getRoles() as $oRole) {
+				self::$ALL_ROLES[$oRole->getRoleKey()] = $oRole;
+			}
+			foreach($this->getGroups() as $oGroup) {
+				foreach($oGroup->getRoles() as $oRole) {
+					self::$ALL_ROLES[$oRole->getRoleKey()] = $oRole;
+				}
+			}
+		}
+		return self::$ALL_ROLES;
+	}
+	
 	public function mayEditUser($oUser = null) {
 		if($oUser === null) {
 			return Session::getSession()->getUser()->getIsAdmin();
@@ -160,13 +172,13 @@ class User extends BaseUser {
 		return $oUser->isSessionUser() || Session::getSession()->getUser()->getIsAdmin();
 	}
 	
-	public function getMissingRights($oPage, $bInheritedOnly = false) {
+	public function getMissingRights($mPage, $bInheritedOnly = false) {
 		$aResult = null;
-		foreach($this->getGroups() as $oGroup) {
+		foreach($this->allRoles() as $oRole) {
 			if($aResult === null) {
-				$aResult = $oGroup->getMissingRights($oPage, $bInheritedOnly);
+				$aResult = $oGroup->getMissingRights($mPage, $bInheritedOnly);
 			} else {
-				$aResult = array_diff($aResult, $oGroup->getMissingRights($oPage, $bInheritedOnly));
+				$aResult = array_diff($aResult, $oGroup->getMissingRights($mPage, $bInheritedOnly));
 			}
 		}
 		return $aResult;
@@ -181,11 +193,7 @@ class User extends BaseUser {
 	} 
 	
 	public function getActiveUserRoleKeys() {
-		$aResult = array();
-		foreach($this->getUserRolesRelatedByUserId() as $oUserRole) {
-			$aResult[] = $oUserRole->getRoleKey();
-		}
-		return $aResult;
+		return $this->getRoles(true);
 	}
 
 	public function hasGroup($mGroup) {
@@ -198,6 +206,14 @@ class User extends BaseUser {
 			}
 		}
 		return false;
+	}
+	
+	public function hasRole($mRole) {
+		if($mRole instanceof Role) {
+			$mRole = $mRole->getRoleKey();
+		}
+		$aRoles = $this->allRoles();
+		return isset($aRoles[$mRole]);
 	}
 	
 	public function setPassword($sPassword, $cPasswordHashMethod = null) {

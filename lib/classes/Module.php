@@ -87,6 +87,22 @@ abstract class Module {
 		return @$aModuleInfo['enabled'];
 	}
 	
+	public static function isModuleAllowed($sType, $sName, $oUser = null) {
+		if($oUser === null) {
+			if(!self::isModuleEnabled($sType, $sName)) {
+				return false;
+			}
+			$aModuleInfo = Module::getModuleInfoByTypeAndName($sType, $sName);
+			//Access to module is unrestricted: allow
+			if(!isset($aModuleInfo['allowed_roles']) || !is_array($aModuleInfo['allowed_roles'])) {
+				return true;
+			}
+			return false;
+		} else {
+			return $oUser->mayUseModuleOfTypeAndName($sType, $sName);
+		}
+	}
+	
 	/**
 	* Fetches all module metadata (including module info obtained from the info.yml files) and stores it into a static field, returns it
 	*/
