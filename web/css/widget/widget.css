@@ -134,6 +134,7 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
 .ui-dialog-titlebar.ui-widget-header { background: #2d3238; }
 .ui-dialog-buttonpane button.ui-state-hover { color: #e3ef99; }
 .ui-dialog-buttonpane button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog .ui-dialog-content { cursor: auto; }
 button.ui-button.ui-state-default {
   background: url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;
   line-height: 14px;
