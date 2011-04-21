@@ -26,6 +26,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			} 
 			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
+			$aResult['IsSessionUser'] = $oUser->isSessionUser();
 			$aResult['BackendSettings'] = null;
 			return $aResult;
 		}
@@ -44,7 +45,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		if(($aUserData['password']) !== '') { 
-      if($oUser->getPassword() != null) {
+      if($oUser->isSessionUser() && $oUser->getPassword() != null) {
         if($aUserData['old_password'] == '') {
 				  $oFlash->addMessage('old_password_required');
         } else {
