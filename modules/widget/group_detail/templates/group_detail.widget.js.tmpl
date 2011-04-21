@@ -11,6 +11,12 @@ Widget.types.group_detail = {
 			if(this.auto_open) {
 				this.open();
 			}
+			this.roles_section = this.content.find("div.roles_section").prepareWidget(function(roles) {
+				this.handle('saving', function(event, data) {
+					delete data.role_keys;
+					data.roles = roles.checked_roles();
+				});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -29,6 +35,9 @@ Widget.types.group_detail = {
 			this.content.find(".created_info").text(group_data.CreatedInfo);
 			this.content.find(".detail_id").text(group_data.Id);
 			
+			this.roles_section.ensureWidget(function(roles) {
+				roles.set_checked(group_data.Roles);
+			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = group_data.Name);
 		});
 	},

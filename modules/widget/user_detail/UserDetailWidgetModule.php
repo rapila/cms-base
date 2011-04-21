@@ -17,12 +17,8 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 
 			$aResult['IsSessionUser'] = $oUser->isSessionUser();
 			if($aResult['IsSessionUser'] === false) {
-				if(GroupPeer::doCount(new Criteria())) {
-					$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
-				}
-				if(RolePeer::doCount(new Criteria())) {
-					$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
-				}
+				$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
+				$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
 			} 
 			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
