@@ -30,7 +30,7 @@ class RoleListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'role_key', 'description', 'user_with_role_count', 'delete');
+		return array('id', 'role_key', 'description', 'user_with_role_count', 'group_with_role_count', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -51,6 +51,9 @@ class RoleListWidgetModule extends WidgetModule {
 				break;
 			case 'user_with_role_count':
 				$aResult['heading'] = StringPeer::getString('wns.role.user_with_role_count');
+				break;
+			case 'group_with_role_count':
+				$aResult['heading'] = StringPeer::getString('wns.role.group_with_role_count');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

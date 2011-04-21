@@ -77,4 +77,8 @@ class Role extends BaseRole {
 		return $this->countUserRoles();
 	}
 	
+	public function getGroupWithRoleCount() {
+		return $this->countGroupRoles();
+	}
+	
 } // Role
