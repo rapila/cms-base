@@ -15,7 +15,7 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->hasRole($sRoleKey);
 	}
 	
-	public function mayEditPageDetails($iPageId) {
+	public static function mayEditPageDetails($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
 		}
@@ -23,7 +23,7 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->mayEditPageDetails($iPageId);
 	}
 
-	public function mayEditPageContents($iPageId) {
+	public static function mayEditPageContents($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
 		}
@@ -31,7 +31,7 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->mayEditPageContents($iPageId);
 	}
 
-	public function mayCreateChildren($iPageId) {
+	public static function mayCreateChildren($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
 		}
@@ -39,7 +39,7 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->mayCreateChildren($iPageId);
 	}
 
-	public function mayDelete($iPageId) {
+	public static function mayDelete($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
 		}
@@ -47,7 +47,7 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->mayDelete($iPageId);
 	}
 
-	public function mayViewPage($iPageId) {
+	public static function mayViewPage($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
 		}
