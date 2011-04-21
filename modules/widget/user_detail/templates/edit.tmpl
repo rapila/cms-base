@@ -18,10 +18,12 @@
 	<input type="text" name="email" class="ui-widget-content" /><br />
 	<label for="language_id">{{writeString=wns.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
-	<div class="hide_if_saved">
-		<label class="validate-password_length">{{writeString=wns.password}}</label>
+	<div class="hide_if_saved" style="padding-top:.3em;">
+		<label for="old_password" class="validate-old_password_invalid validate-old_password_required show_if_set">{{writeString=wns.old_password}}</label>
+		<input type="password" name="old_password" autocomplete="off" class="ui-widget-content show_if_set" /><br />
+		<label for="password" class="validate-password_length">{{writeString=wns.password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><br />
-		<label for="password_confirm">{{writeString=wns.password_confirm}}</label>
+		<label for="password_confirm" class="validate-password_confirm">{{writeString=wns.password_confirm}}</label>
 		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
 	</div><br />
 	<div class="user_rights_section">

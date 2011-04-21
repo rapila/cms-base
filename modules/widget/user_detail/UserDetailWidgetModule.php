@@ -44,6 +44,15 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		if(($aUserData['password']) !== '') { 
+      if($oUser->getPassword() != null) {
+        if($aUserData['old_password'] == '') {
+				  $oFlash->addMessage('old_password_required');
+        } else {
+          if(!PasswordHash::comparePassword($aUserData['old_password'], $oUser->getPassword())) {
+				    $oFlash->addMessage('old_password_invalid');
+          }
+        }
+  		}
 			if($aUserData['password'] !== $aUserData['password_confirm']) {
 				$oFlash->addMessage('password_confirm');
 			}

@@ -64,7 +64,10 @@ Widget.types.user_detail = {
 				password_section.show();
 			}
 			this.toggle_rights_section(!user_data.IsAdmin);
-
+			if(user_data.Password == '') {
+				this.content.find(".show_if_set").hide();
+			}
+			this.content.find("input[name='old_password']").val();
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);
