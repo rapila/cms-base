@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package    propel.generator.model
+ * @package		 propel.generator.model
  */
 class Role extends BaseRole {
 
@@ -20,18 +20,20 @@ class Role extends BaseRole {
 	}
 
 	private function rightFits($oRight, $mPage, $sMethodName) {
-    $oPage = $mPage;
-	  if($mPage instanceof Page) {
-      $mPage = $mPage->getId();
-	  }
+		$oPage = $mPage;
+		if($mPage instanceof Page) {
+			$mPage = $mPage->getId();
+		}
 		if($oRight->getPage() !== null && $mPage === $oRight->getPage()->getId()) {
 			return call_user_func(array($oRight, $sMethodName));
 		}
 		if($oRight->getIsInherited() && $mPage !== null) {
-		  if($oPage === null) {
-		    $oPage = PagePeer::retrieveByPK($mPage);
-		  }
-			return $this->rightFits($oRight, $oPage->getParent(), $sMethodName);
+			if($oPage === null) {
+				$oPage = PagePeer::retrieveByPK($mPage);
+			}
+			if($oPage !== null && $oPage->getParent() !== null) {
+				return $this->rightFits($oRight, $oPage->getParent(), $sMethodName);
+			}
 		}
 		return false;
 	}
