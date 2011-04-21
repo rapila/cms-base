@@ -36,7 +36,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getModule($sName) {
-		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName), 'may' => Session::getSession()->getUser()->mayUseAdmimModule($sName));
+		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName), 'may' => Session::getSession()->getUser()->mayUseAdminModule($sName));
 		return $aResult;
 	}
 	
