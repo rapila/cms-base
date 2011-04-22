@@ -50,6 +50,9 @@ Widget.types.document_detail = {
 				_this.open();
 			}
 		});
+		this.handle('saving', function(event, data) {
+			data.is_called_externally = _this.settings.hide_inputs_if_called_externally;
+		});
 	},
 	
 	upload_error: function(error) {
@@ -119,7 +122,6 @@ Widget.types.document_detail = {
 					this.content.find("label[for='document_category_id']").hide();
 					this.content.find("input[name='is_protected']").hide();
 					this.content.find("label[for='is_protected']").hide();
-					this.content.find("input[name='is_called_externally']").val(1);
 				} else {
 					this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
 				}

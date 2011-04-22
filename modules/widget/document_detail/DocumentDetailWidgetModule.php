@@ -57,7 +57,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->setLanguageId($sLanguageId);
 		
 		// only handle if not called externally
-		if($aDocumentData['is_called_externally'] === '0') {
+		if($aDocumentData['is_called_externally'] === false) {
   		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
   		$oDocument->setIsProtected($aDocumentData['is_protected']);
   		if($oDocument->getDocumentCategoryId() != null) {
