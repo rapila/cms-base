@@ -102,7 +102,6 @@ Widget.types.document_detail = {
 					this.content.find("input[name='name']").val(document_data.Name);
 				}
 			}
-			
 			if(!upload_mode) {
 				if(document_data.DocumentCategoryId === null) {
 					document_data.DocumentCategoryId = '';
@@ -115,7 +114,15 @@ Widget.types.document_detail = {
 				}
 				this.content.find("input[name='name']").val(document_data.Name);
 				this.content.find("textarea[name='description']").val(document_data.Description);
-				this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
+				if(this.settings.hide_inputs_if_called_externally) {
+					this.content.find("select[name='document_category_id']").hide();
+					this.content.find("label[for='document_category_id']").hide();
+					this.content.find("input[name='is_protected']").hide();
+					this.content.find("label[for='is_protected']").hide();
+					this.content.find("input[name='is_called_externally']").val(1);
+				} else {
+					this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
+				}
 				this.content.find("select[name='language_id']").val(document_data.LanguageId);
 				this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
 				this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
@@ -132,7 +139,8 @@ Widget.types.document_detail = {
 	},
 	
 	settings: {
-		initial_category_id: null
+		initial_category_id: null,
+		hide_inputs_if_called_externally: false
 	},
 	
 	save_callback: jQuery.noop,
