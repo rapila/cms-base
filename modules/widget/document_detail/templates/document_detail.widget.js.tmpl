@@ -70,7 +70,8 @@ Widget.types.document_detail = {
 			this.setDocumentId(result);
 			this.current_detail_id = result;
 		}
-		if(!no_reload) {
+		// check rafi
+		if(no_reload) {
 			this.fill_data(is_new ? 'new' : 'existing');
 		}
 		//TODO: reload list row
