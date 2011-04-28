@@ -30,6 +30,16 @@ a {color:white;}
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 }
+
+#dashboard-columns .dashboard-widget.dragging {
+	height: auto !important;
+}
+
+#dashboard-columns .dashboard-widget.dragging .dashboard-widget-content,
+#dashboard-columns .dashboard-widget.dragging .dashboard-edit-box {
+	display: none;
+}
+
 #dashboard-columns .dashboard-widget-placeholder { border: 2px dashed #999; }
 
 #dashboard-columns .dashboard-widget,

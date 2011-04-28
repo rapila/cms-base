@@ -168,8 +168,9 @@ var Dashboard = (function($) {
 			forcePlaceholderSize: true,
 			revert: 300,
 			delay: 100,
+			scroll: false,
+			tolerance: 'pointer',
 			opacity: 0.8,
-			containment: 'document',
 			start: function (e,ui) {
 				$(ui.helper).addClass('dragging');
 			},
