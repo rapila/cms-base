@@ -140,7 +140,8 @@ Widget.types.page_type.types['default'] = {
 							text: '{{writeString=wns.save}}',
 							className: 'primary ui-state-highlight',
 							click: function() {
-								widget.save(function() {
+								widget.save(function(result, error) {
+									//Don’t handle the error, it’s probably an unprivileged user whose data could not be saved
 									Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
 									element.dialog('close');
 								});
