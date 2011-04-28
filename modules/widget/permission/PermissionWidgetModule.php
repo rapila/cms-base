@@ -31,6 +31,14 @@ class PermissionWidgetModule extends WidgetModule {
 		return $oUser->mayEditPageContents($iPageId);
 	}
 
+	public static function mayEditPageStructure($iPageId) {
+		if(!Session::getSession()->isAuthenticated()) {
+			return false;
+		}
+		$oUser = Session::getSession()->getUser();
+		return $oUser->mayEditPageStructure($iPageId);
+	}
+
 	public static function mayCreateChildren($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {
 			return false;
