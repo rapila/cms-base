@@ -43,15 +43,12 @@ a {color:white;}
 #dashboard-columns .dashboard-widget-placeholder { border: 2px dashed #999; }
 
 #dashboard-columns .dashboard-widget,
-#dashboard-columns .dashboard-widget-placeholder {margin: 30px 10px 0 10px;}
+#dashboard-columns .dashboard-widget-placeholder {margin: 20px 5px 0 5px;}
 
 #dashboard-columns .dashboard-column:first-child .dashboard-widget,
-#dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder { margin-left: 20px; }
+#dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder { margin-left: 10px; }
 #dashboard-columns .dashboard-column:last-child .dashboard-widget,
-#dashboard-columns .dashboard-column:last-child .dashboard-widget-placeholder { margin-right: 20px; }
-
-.vertical-column-group { height: 100%;}
-.vertical-column-group.right { float: left; }
+#dashboard-columns .dashboard-column:last-child .dashboard-widget-placeholder { margin-right: 10px; }
 
 #dashboard-columns .dashboard-widget .dashboard-widget-head {
 	color: #000;
@@ -111,6 +108,12 @@ a {color:white;}
 	display: inline;
 	float: left;
 	margin: 0 0 7px 7px;
+}
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr {
+  background-color: #444444;
+}
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n) {
+  background-color: #555555;
 }
 /* End Columns section */
 
