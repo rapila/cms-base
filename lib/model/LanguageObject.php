@@ -30,5 +30,16 @@ class LanguageObject extends BaseLanguageObject {
 		}
 	}
 	
+	public function setData($mData, $bIgnorePermissions = false) {
+		if(!$bIgnorePermissions) {
+			$oUser = Session::getSession()->getUser();
+			if(!$oUser || !$oUser->mayEditPageContents($this->getContentObject()->getPage())) {
+				throw new Exception('Changing data not permitted');
+			}
+		}
+		
+		return parent::setData($mData);
+	}
+	
 }
 
