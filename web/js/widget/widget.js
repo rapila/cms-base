@@ -585,8 +585,8 @@ jQuery.each(WidgetJSONOptions.prototype.options, function(i, option) {
 });
 
 jQuery.extend(jQuery, {
-	parseHTML: function(html, instanciateWidgets) {
-		var element = document.createElement('div');
+	parseHTML: function(html, instanciateWidgets, elementName) {
+		var element = document.createElement(elementName || 'div');
 		element.innerHTML = jQuery.trim(html);
 		var result = jQuery(element.childNodes);
 		if(instanciateWidgets) {
