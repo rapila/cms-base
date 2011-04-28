@@ -47,9 +47,7 @@ class WidgetJsonFileModule extends FileModule {
 			return $aInformation;
 		}
 		if($this->sAction == 'staticMethodCall') {
-			if($sWidgetClass::needsLogin() && !Session::getSession()->isAuthenticated()) {
-				throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
-			}
+			$this->checkPermissions($sWidgetClass);
 			$sMethodName = isset($aRequest['method']) ? $aRequest['method'] : Manager::usePath();
 			if(!method_exists($sWidgetClass, $sMethodName)) {
 				throw new LocalizedException('wns.file.widget_json.method_does_not_exist', array('method' => $sMethodName, 'widget' => $sWidgetClass));
@@ -82,15 +80,24 @@ class WidgetJsonFileModule extends FileModule {
 			return $aInformation;
 		}
 		if($this->sAction === 'methodCall') {
-			if($sWidgetClass::needsLogin() && !Session::getSession()->isAuthenticated()) {
-				throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
-			}
+			$this->checkPermissions($sWidgetClass);
 			$sMethodName = isset($aRequest['method']) ? $aRequest['method'] : Manager::usePath();
 			if(!method_exists($oWidget, $sMethodName)) {
 				throw new LocalizedException('wns.file.widget_json.method_does_not_exist', array('method' => $sMethodName, 'widget' => $oWidget->getName()));
 			}
 			return array("result" => call_user_func_array(array($oWidget, $sMethodName), isset($aRequest['method_parameters']) ? $aRequest['method_parameters'] : array()));
 		}
+	}
+	
+	private function checkPermissions($sWidgetClass) {
+		if(!$sWidgetClass::needsLogin()) {
+			return;
+		}
+		$oUser = Session::getSession()->getUser();
+		if(Module::isModuleAllowed('widget', $this->sWidgetType, $oUser)) {
+			return;
+		}
+		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
 	}
 	
 	public static function jsonBaseObjects($aBaseObjects, $aOriginalColumnNames) {
