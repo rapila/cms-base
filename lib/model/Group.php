@@ -24,6 +24,10 @@ class Group extends BaseGroup {
 		return $this->may($mPage, 'edit_page_contents');
 	}
 
+	public function mayEditPageStructure($mPage) {
+		return $this->may($mPage, 'edit_page_structure');
+	}
+
 	public function mayCreateChildren($mPage) {
 		return $this->may($mPage, 'create_children');
 	}
