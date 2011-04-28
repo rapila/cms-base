@@ -21,10 +21,11 @@ jQuery(document).ready(function() {
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
-			if(permission_widget.getMayEditPage(page_detail.current_page_id)) {
-				page_detail.enable_input();
-				// info_bar_buttons.show();
-			}
+			// call statically
+			// if(permission_widget.mayEditPageDetails(page_detail.current_page_id)) {
+			// 	page_detail.enable_input();
+			// 	info_bar_buttons.show();
+			// }
 			Widget.end_load();
 		});
 		page_detail.handle('saved', function(event) {
