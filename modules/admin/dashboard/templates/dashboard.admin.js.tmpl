@@ -136,7 +136,7 @@ jQuery(document).ready(function() {
 		
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
-			dashboard_control.listDashboardModules(function(modules) {
+			dashboard_control.listDashboardModules(true, function(modules) {
 				info_bar.add_button('add-new-item', function() {
 					var dialog = jQuery.parseHTML('{{includeTemplate=add_dialog}}');
 					var columns = {};

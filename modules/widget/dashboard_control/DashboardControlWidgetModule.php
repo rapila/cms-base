@@ -124,9 +124,12 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser->save();
 	}
 	
-	public function listDashboardModules() {
+	public function listDashboardModules($bFilterByAllowed = false) {
 		$aResult = array();
 		foreach(WidgetModule::listModulesByAspect('dashboard') as $aModuleInfo) {
+			if($bFilterByAllowed && !Module::isModuleAllowed('widget', $aModuleInfo['name'], Session::getSession()->getUser())) {
+				continue;
+			}
 			$aResult[$aModuleInfo['name']] = Module::getDisplayNameByTypeAndName(WidgetModule::getType(), $aModuleInfo['name']);
 		}
 		return $aResult;

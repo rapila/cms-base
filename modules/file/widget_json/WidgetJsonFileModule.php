@@ -68,6 +68,7 @@ class WidgetJsonFileModule extends FileModule {
 			$oWidget = call_user_func_array(array('WidgetModule', 'getModuleInstance'), $aNewArgs);
 		}
 		if($this->sAction === 'instanciateWidget') {
+			$this->checkPermissions($sWidgetClass);
 			$aInformation = array();
 			$aInformation['session_id'] = $oWidget->getSessionKey();
 			$oWidgetContents = $oWidget->doWidget();
