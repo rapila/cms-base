@@ -21,6 +21,10 @@ a {color:white;}
 	box-sizing: border-box;
 }
 
+#dashboard-columns .dashboard-column.clear {
+  clear: left;
+}
+
 #dashboard-columns .dashboard-widget {
 	padding: 2px;
 	-moz-border-radius: 4px;
@@ -36,6 +40,8 @@ a {color:white;}
 #dashboard-columns .dashboard-column:last-child .dashboard-widget,
 #dashboard-columns .dashboard-column:last-child .dashboard-widget-placeholder { margin-right: 20px; }
 
+.vertical-column-group { height: 100%;}
+.vertical-column-group.right { float: left; }
 
 #dashboard-columns .dashboard-widget .dashboard-widget-head {
 	color: #000;

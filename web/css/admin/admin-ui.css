@@ -401,3 +401,8 @@ td span.remove_entry { margin: 0; }
   background-repeat: no-repeat !important;
   background-position: left top !important;
 }
+.ui-progressbar {
+  margin-top: 0.3em;
+  height: 1.5em;
+  background-color: #999999;
+}
