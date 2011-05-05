@@ -2,8 +2,6 @@ jQuery(document).ready(function() {
 	var page_detail = null;
 	var page_tree = null;
 	
-	var permission_widget = Widget.create('permission');
-	
 	var initial_selection = {{writeRequestValue=initial_page_id}};
 
 	Widget.createWithElement('page_detail', function(widget) {
@@ -21,11 +19,9 @@ jQuery(document).ready(function() {
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
-			// call statically
-			// if(permission_widget.mayEditPageDetails(page_detail.current_page_id)) {
-			// 	page_detail.enable_input();
-			// 	info_bar_buttons.show();
-			// }
+			if(Widget.callStatic('permission', 'mayEditPageDetails', page_detail.current_page_id)) {
+				page_detail.enable_input();
+			}
 			Widget.end_load();
 		});
 		page_detail.handle('saved', function(event) {
