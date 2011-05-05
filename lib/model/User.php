@@ -9,6 +9,9 @@ require_once 'model/om/BaseUser.php';
 class User extends BaseUser {
 	
 	public static $ALL_ROLES = null;
+	
+	private static $CACHED_ADMIN_SETTINGS = null;
+	private static $ADMIN_SETTINGS_SET = array();
 
 	public function getFullName() {
 		return $this->getFirstName(). ' '.$this->getLastName();
@@ -109,24 +112,46 @@ class User extends BaseUser {
 	}
 	
 	public function getAdminSettings($sSection, $mDefaultResult = array()) {
-		if($this->getBackendSettings() !== null) {
-			$aSections = unserialize(stream_get_contents($this->getBackendSettings()));
-			if(isset($aSections[$sSection])) {
-				return $aSections[$sSection];
-			}
+		if(self::$CACHED_ADMIN_SETTINGS === null) {
+			self::$CACHED_ADMIN_SETTINGS = $this->allAdminSettings();
 		}
-		// @todo check users permission for module
-		$mDefaultResult = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
-		return $mDefaultResult;
+		if(!isset(self::$CACHED_ADMIN_SETTINGS[$sSection])) {
+			self::$CACHED_ADMIN_SETTINGS[$sSection] = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
+		}
+		return self::$CACHED_ADMIN_SETTINGS[$sSection];
 	}
 	
 	public function setAdminSettings($sSection, $mValue) {
-		$aSections = array();
-		if($this->getBackendSettings() !== null) {
-			$aSections = unserialize(stream_get_contents($this->getBackendSettings()));
+		if(self::$CACHED_ADMIN_SETTINGS === null) {
+			self::$CACHED_ADMIN_SETTINGS = $this->allAdminSettings();
 		}
-		$aSections[$sSection] = $mValue;
-		$this->setBackendSettings(serialize($aSections));
+		self::$CACHED_ADMIN_SETTINGS[$sSection] = $mValue;
+		self::$ADMIN_SETTINGS_SET[$sSection] = true;
+		$aToSave = array();
+		foreach(self::$ADMIN_SETTINGS_SET as $sSetSection => $bTrue) {
+			$aToSave[$sSetSection] = self::$CACHED_ADMIN_SETTINGS[$sSetSection];
+		}
+		parent::setBackendSettings(serialize($aToSave));
+	}
+	
+	public function getBackendSettings() {
+		// Never call getBackendSettings directly!
+		return null;
+	}
+	
+	public function setBackendSettings($mSettings) {
+		throw new Exception('Never call setBackendSettings directly!');
+	}
+	
+	private function allAdminSettings() {
+		$mSettings = parent::getBackendSettings();
+		if($mSettings === null) {
+			return array();
+		}
+		if(is_resource($mSettings)) {
+			$mSettings = stream_get_contents($mSettings);
+		}
+		return unserialize($mSettings);
 	}
 	
 	public function getGroups($bReturnNamesOnly = false) {

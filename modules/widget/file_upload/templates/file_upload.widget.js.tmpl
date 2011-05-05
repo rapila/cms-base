@@ -100,9 +100,7 @@ Widget.types.file_upload = {
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
 		fileReader.onload = function() {
-			file_uploader.uploadFile(window.btoa(fileReader.result), options, create_type, WidgetJSONOptions.with_upload_progess_callback(function(event) {
-				progress.progressbar('value', (event.loaded/size)*100);
-			}), function(result, error) {
+			file_uploader.uploadFile(window.btoa(fileReader.result), options, create_type, function(result, error) {
 				if(!error) {
 					progress.progressbar('value', 100);
 					notification.enable_close_button();
@@ -116,7 +114,9 @@ Widget.types.file_upload = {
 					notification.set_severity('error');
 					options.error ? options.error(error, notification, options) : notification.set_message(error.message);
 				}
-			});
+			}, WidgetJSONOptions.with_upload_progess_callback(function(event) {
+				progress.progressbar('value', (event.loaded/size)*100);
+			}));
 		};
 		fileReader.readAsBinaryString(file);
 	}

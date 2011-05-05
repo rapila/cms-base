@@ -19,9 +19,11 @@ jQuery(document).ready(function() {
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
-			if(Widget.callStatic('permission', 'mayEditPageDetails', page_detail.current_page_id)) {
-				page_detail.enable_input();
-			}
+			Widget.callStatic('permission', 'mayEditPageDetails', page_detail.current_page_id, function(may) {
+				if(may) {
+					page_detail.enable_input();
+				}
+			});
 			Widget.end_load();
 		});
 		page_detail.handle('saved', function(event) {

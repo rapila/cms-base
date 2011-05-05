@@ -76,15 +76,15 @@ jQuery.extend(Widget.prototype, {
 	
 	_callMethod: function(name) {
 		var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
-		var callback = args.pop();
-		if(!jQuery.isFunction(callback)) {
-			callback !== undefined && args.push(callback);
-			callback = Widget.defaultMethodHandler;
-		}
 		var options = args.pop();
 		if(!options || options.constructor !== WidgetJSONOptions) {
 			options !== undefined && args.push(options);
 			options = new WidgetJSONOptions();
+		}
+		var callback = args.pop();
+		if(!jQuery.isFunction(callback)) {
+			callback !== undefined && args.push(callback);
+			callback = Widget.defaultMethodHandler;
 		}
 		var params = {};
 		if(args.length > 0) {
@@ -255,19 +255,19 @@ jQuery.extend(Widget, {
 			jQuery.each(widgetInformation.methods['static'], function(i, method) {
 				Widget.types[widgetType].prototype._staticMethods[method] = function() {
 					var args = jQuery.makeArray(arguments);
-					var callback = args.pop();
-					if(!jQuery.isFunction(callback)) {
-						callback !== undefined && args.push(callback);
-						callback = Widget.defaultMethodHandler;
-					}
 					var options = args.pop();
 					if(!options || options.constructor !== WidgetJSONOptions) {
 						options !== undefined && args.push(options);
 						options = new WidgetJSONOptions();
 					}
 					options.action = 'staticMethodCall';
-					args.push(options);
+					var callback = args.pop();
+					if(!jQuery.isFunction(callback)) {
+						callback !== undefined && args.push(callback);
+						callback = Widget.defaultMethodHandler;
+					}
 					args.push(callback);
+					args.push(options);
 					args.unshift(method);
 					return Widget.types[widgetType].prototype._callMethod.apply(Widget.types[widgetType].prototype, args);
 				};
@@ -500,7 +500,6 @@ jQuery.extend(Widget, {
 			method = Widget.types[widgetType].prototype[methodName];
 		} else if(Widget.types[widgetType].prototype._staticMethods[methodName]) {
 			method = Widget.types[widgetType].prototype._staticMethods[methodName];
-			parameters.push(WidgetJSONOptions.with_async(false));
 		}
 		return method.apply(Widget.types[widgetType].prototype, parameters);
 	},
