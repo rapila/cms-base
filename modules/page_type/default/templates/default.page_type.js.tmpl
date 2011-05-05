@@ -118,7 +118,7 @@ Widget.types.page_type.types['default'] = {
 				// $( ".selector" ).bind( "dialogresize", function(event, ui) {});
 				
 				widget.handle('element_set', function(event, element) {
-					Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', element);
+					Widget.callStatic('detail', 'clickable_labels_for', element);
 					element.dialog({
 						close: function() {
 							if(widget.destroy) {
