@@ -500,7 +500,6 @@ jQuery.extend(Widget, {
 			method = Widget.types[widgetType].prototype[methodName];
 		} else if(Widget.types[widgetType].prototype._staticMethods[methodName]) {
 			method = Widget.types[widgetType].prototype._staticMethods[methodName];
-			parameters.push(WidgetJSONOptions.with_async(false));
 		}
 		return method.apply(Widget.types[widgetType].prototype, parameters);
 	},
