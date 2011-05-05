@@ -24,7 +24,24 @@ class AdminMenuWidgetModule extends WidgetModule {
 	public function getModuleConfig() {
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
+		foreach($aSettings as $sSection => &$aConfig) {
+			$this->cleanModules($aConfig);
+		}
 		return $aSettings;
+	}
+	
+	private function cleanModules(&$aSettings) {
+		foreach($aSettings as $iKey => &$mValue) {
+			if(is_array($mValue)) {
+				$this->cleanModules($mValue);
+			} else if(is_string($mValue) && StringUtil::startsWith($mValue, 'module.')) {
+				$sModuleName = substr($mValue, strlen('module.'));
+				if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
+					unset($aSettings[$iKey]);
+				}
+			}
+		}
+		$aSettings = array_values($aSettings);
 	}
 	
 	public function doWidget() {

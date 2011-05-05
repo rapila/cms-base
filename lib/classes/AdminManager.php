@@ -20,6 +20,9 @@ class AdminManager extends Manager {
 		} catch (Exception $e) {
 			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found', $this->sModuleName)));
 		}
+		if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
+			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_denied', $this->sModuleName)));
+		}
 		$this->oResourceIncluder = ResourceIncluder::defaultIncluder();
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
 			self::setContentLanguage($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY]);
