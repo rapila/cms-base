@@ -28,7 +28,7 @@ class Role extends BaseRole {
 			return call_user_func(array($oRight, $sMethodName));
 		}
 		if($oRight->getIsInherited() && $mPage !== null) {
-			if($oPage === null) {
+			if(!is_object($oPage)) {
 				$oPage = PagePeer::retrieveByPK($mPage);
 			}
 			if($oPage !== null && $oPage->getParent() !== null) {
