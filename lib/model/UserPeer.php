@@ -165,6 +165,12 @@ class UserPeer extends BaseUserPeer {
 		$oFirstUser->setUsername($sUsername);
 		$oFirstUser->setIsAdmin(true);
 		$oFirstUser->save();
+    if(LanguagePeer::hasNoLanguage()) {
+      $oLanguage = new Language();
+      $oLanguage->setId(Session::language());
+      $oLanguage->setIsActive(true);
+      $oLanguage->save();
+    }
 		return true;
 	}
 		
