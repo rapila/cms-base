@@ -3,3 +3,4 @@ name: "Backup"
 description: "Save and load large sql dumps to and from local file or http"
 website: "http://www.mini-cms.ch/"
 version: 2.0
+allowed_roles: []
