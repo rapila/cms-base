@@ -114,7 +114,6 @@ class User extends BaseUser {
 		if(!isset(self::$CACHED_ADMIN_SETTINGS[$sSection])) {
 			self::$CACHED_ADMIN_SETTINGS[$sSection] = Settings::getSetting(null, $sSection, $mDefaultResult, 'user_defaults');
 		}
-		ErrorHandler::log(self::$CACHED_ADMIN_SETTINGS);
 		return self::$CACHED_ADMIN_SETTINGS[$sSection];
 	}
 	
