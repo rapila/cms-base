@@ -204,8 +204,8 @@ class User extends BaseUser {
 		if($mGroup instanceof Group) {
 			$mGroup = $mGroup->getId();
 		}
-		foreach($this->getGroups() as $oGroup) {
-			if($oGroup->getId() === $mGroup) {
+		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
+			if($oUserGroup->getGroupId() === $mGroup) {
 				return true;
 			}
 		}

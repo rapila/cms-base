@@ -490,7 +490,7 @@ jQuery.extend(Widget, {
 		jQuery.ajax(ajaxOpts);
 	},
 	
-	callStaticWidgetMethod: function(widgetType, methodName) {
+	callStatic: function(widgetType, methodName) {
 		var parameters = jQuery.makeArray(arguments).slice(2);
 		if(!Widget.types[widgetType]) {
 			Widget.loadInfo(widgetType);
@@ -500,6 +500,7 @@ jQuery.extend(Widget, {
 			method = Widget.types[widgetType].prototype[methodName];
 		} else if(Widget.types[widgetType].prototype._staticMethods[methodName]) {
 			method = Widget.types[widgetType].prototype._staticMethods[methodName];
+			parameters.push(WidgetJSONOptions.with_async(false));
 		}
 		return method.apply(Widget.types[widgetType].prototype, parameters);
 	},

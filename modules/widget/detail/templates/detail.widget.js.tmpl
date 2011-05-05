@@ -79,7 +79,6 @@ Widget.types.detail = {
 			position: ['center', 50]
 		}).dialog('open').bind('keydown', function(event) {
 			if(event.which === 13) {
-				// TODO: check if is textarea or whatever
 				if(!jQuery(event.target).is('textarea')) {
 					detail_widget.save();
 					return false;
@@ -154,7 +153,7 @@ Widget.types.detail = {
 	validate_with: function(errors) {
 		//Static call means this points to the prototype
 		var element = this !== Widget.types.detail.prototype ? this.content : arguments[1];
-		Widget.callStaticWidgetMethod('detail', 'clear_validation', element);
+		Widget.callStatic('detail', 'clear_validation', element);
 		jQuery.each(errors, function(key, parameters) {
 			var message = parameters.string;
 			if(!message) {
@@ -166,7 +165,7 @@ Widget.types.detail = {
 			element.find('.validate-'+key.escapeSelector()).each(function(index) {
 				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {
 					var validate_element = jQuery(this);
-					Widget.callStaticWidgetMethod('detail', 'tabs_for', validate_element, element).addClass('error_display_indicator');
+					Widget.callStatic('detail', 'tabs_for', validate_element, element).addClass('error_display_indicator');
 					validate_element.append(message.clone());
 				}
 			});

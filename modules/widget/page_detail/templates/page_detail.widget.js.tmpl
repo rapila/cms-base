@@ -45,11 +45,11 @@ Widget.types.page_detail = {
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
-		Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', this._element);
+		Widget.callStatic('detail', 'clickable_labels_for', this._element);
 	},
 	
 	validate_with: function(exception) {
-		Widget.callStaticWidgetMethod('detail', 'validate_with', exception, this._element);
+		Widget.callStatic('detail', 'validate_with', exception, this._element);
 	},
 	
 	disable_input: function() {
@@ -157,7 +157,7 @@ Widget.types.page_detail = {
 
 	
 	fill_data: function() {
-		Widget.callStaticWidgetMethod('detail', 'clear_validation', this._element);
+		Widget.callStatic('detail', 'clear_validation', this._element);
 		var _this = this;
 		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;

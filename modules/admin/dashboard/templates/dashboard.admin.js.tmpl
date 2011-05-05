@@ -91,7 +91,7 @@ jQuery(document).ready(function() {
 				
 				//Config area
 				var form = widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>');
-				Widget.callStaticWidgetMethod('detail', 'clickable_labels_for', form);
+				Widget.callStatic('detail', 'clickable_labels_for', form);
 				skeleton.config_form = form;
 				form.appendTo(skeleton.skeleton.find('.dashboard-edit-box'));
 				form.bind('submit', function(event) {

@@ -5,7 +5,7 @@ Widget.types.document_list = {
 
 		this.list.prepareWidget(function(widget) {
 			document_list.list = widget;
-			Widget.callStaticWidgetMethod('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');
+			Widget.callStatic('detail', 'connect_detail_with_list', 'document', widget, 'setDocumentId');
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
 				if(col.identifier === 'delete') {
 					var document_name = widget.cell_for_identifier('name_truncated', row).text();
