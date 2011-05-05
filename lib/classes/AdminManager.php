@@ -46,13 +46,6 @@ class AdminManager extends Manager {
     if($sLanguageId === null) {
       $sLanguageId = Session::language();
     }
-    // hack that should be moved to a (potential) installManager
-    if(!LanguagePeer::languageExists($sLanguageId) && LanguagePeer::hasNoLanguage()) {
-      $oLanguage = new Language();
-      $oLanguage->setId($sLanguageId);
-      $oLanguage->setIsActive(true);
-      $oLanguage->save();
-    }
     return $sLanguageId;
   }
 
