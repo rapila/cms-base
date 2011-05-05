@@ -168,8 +168,7 @@ Widget.types.admin_menu = {
 				return null;
 			}
 			result.callback = function() {
-				var link = module != 'dashboard' ? module_info.link : module_info.link+"/"+AdminInterface.current_admin_module;
-				window.location.href = link;
+				window.location.href = module_info.link;
 			};
 			result.text = module_info.title;
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
