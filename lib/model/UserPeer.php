@@ -164,6 +164,7 @@ class UserPeer extends BaseUserPeer {
 		$oFirstUser->setPassword($sPassword);
 		$oFirstUser->setUsername($sUsername);
 		$oFirstUser->setIsAdmin(true);
+		$oFirstUser->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'en'));
 		$oFirstUser->save();
 		return true;
 	}
