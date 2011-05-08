@@ -162,6 +162,7 @@ class UserPeer extends BaseUserPeer {
 		$sPassword = $sPassword !== null ? $sPassword : ADMIN_PASSWORD;
 		$oFirstUser = new User();
 		$oFirstUser->setPassword($sPassword);
+		$oFirstUser->setFirstName($sUsername);
 		$oFirstUser->setUsername($sUsername);
 		$oFirstUser->setIsAdmin(true);
 		$oFirstUser->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'en'));
