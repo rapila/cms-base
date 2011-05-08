@@ -16,7 +16,7 @@ class PagePeer extends BasePagePeer {
 		if(self::$ROOT_PAGE === null) {
 			self::$ROOT_PAGE = self::retrieveRoot();
 			if(self::$ROOT_PAGE === null) {
-				LinkUtil::redirectToManager('', "AdminManager");
+				throw new Exception('Error in PagePeer::getRootPage(): there is no root page');
 			}
 		}
 		return self::$ROOT_PAGE;
