@@ -1,0 +1,6 @@
+admin_required: true
+name: "Installer"
+description: "Install routines"
+website: "http://www.mini-cms.ch/"
+version: 2.0
+allowed_roles: []

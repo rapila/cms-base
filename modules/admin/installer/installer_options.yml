@@ -1,0 +1,12 @@
+options:
+  test_environment:
+    - php
+  initialize_db:
+    - mysql
+    - sqlite
+  initialize_sql: 
+    first_user: First User
+    first_page: Home
+  import:
+    - document_types
+    
