@@ -152,7 +152,7 @@ class Navigation {
 			}
 			
 			$oTemplate->replaceIdentifier('name', $oNavigationItem->getName());
-			$oTemplate->replaceIdentifier('long_title', $oNavigationItem->getTitle());
+			$oTemplate->replaceIdentifier('page_title', $oNavigationItem->getTitle());
 			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
 			$oTemplate->replaceIdentifier('description', $oNavigationItem->getDescription());
 			

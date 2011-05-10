@@ -3,10 +3,17 @@ MIGRATION Issues for upgrade from Mini-CMS Version 1 > rapila 2
 1. Update and clear caches
 2. Clear session (just in case)
 3. run migration.sql changes required for update between local version and trunk (version 2)
-4. make release-1-devel MIGRATION changes if older than r2442
+4. r2442 > change to rapila, make release-1-devel MIGRATION changes >= r2442
 
-PageTree changes
-- remove parent_id, sort (after mini_cms_migrate_adjacency_list_to_nested_set.sh, @see migration.sql)
+5. switch base to rapila with: mini_cms_switch_svn_base.sh
+6. optional, if you plan to use git: svn export to get rid of the .svn meta data to prepare for git
+
+
+7. PageTree changes:
+- run mini_cms_migrate_adjacency_list_to_nested_set.sh (@see migration.sql)
+- remove parent_id, sort (@see migration.sql)
+
+8. Identifier amendments:
 - replace Page/PageString::getLongTitle(), identifiers 'long_title' by getPageTitle(), 'page_title'
 - replace Pape/PageString::getTitle(), idendifiers 'title' ??? watch out, getLinkText(), getLinkTextOnly()
 - getTree() is deprecated
