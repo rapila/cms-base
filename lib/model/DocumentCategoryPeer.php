@@ -11,6 +11,8 @@
  */ 
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
 
+	const DOCUMENT_CATEGORY_AKTUELL = 7;
+	
 	public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bExternallyManaged=false) {
 		$oCriteria = self::getDocumentCategoriesCriteria($bInactiveOnly, $bExternallyManaged);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
