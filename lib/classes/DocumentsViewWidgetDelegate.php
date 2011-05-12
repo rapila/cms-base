@@ -66,8 +66,6 @@ class DocumentsViewWidgetDelegate {
 				$aResult['heading'] = StringPeer::getString('wns.category');
 				break;
 			case 'language_id':
-				// $aResult['heading'] = StringPeer::getString('wns.language');
-				$aResult['has_data'] = true;
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
