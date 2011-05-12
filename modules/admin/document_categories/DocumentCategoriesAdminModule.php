@@ -13,6 +13,10 @@ class DocumentCategoriesAdminModule extends AdminModule {
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
+	
+	public function sidebarContent() {
+		return false;
+	}
 
 	public function usedWidgets() {
 		return array($this->oListWidget);
