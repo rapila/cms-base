@@ -57,6 +57,21 @@ class FileUploadWidgetModule extends WidgetModule {
 				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
 			}
 		}
+
+		// Resize image if necessary
+		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null 
+			&& $oDocument->getDocumentCategory()->getMaxWidth() != null) {
+			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
+			$oImage = Image::imageFromData(stream_get_contents($oDocument->getData()));
+			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
+				$oImage->setSize((int)$oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
+				ob_start();
+				$oImage->render();
+				$oDocument->setData(ob_get_contents());
+				ob_end_clean();
+			}
+		}
+		
 		$oDocument->save();
 		return $oDocument->getId();
 	}
