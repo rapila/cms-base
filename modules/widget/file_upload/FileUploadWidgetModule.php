@@ -10,6 +10,14 @@ class FileUploadWidgetModule extends WidgetModule {
 	
 	public function uploadFile($sFileKey, $aOptions, $bCreateType = false) {
 		$aFileInfo = $_FILES[$sFileKey];
+		
+		$oFlash = Flash::getFlash();
+		$oFlash->checkForFileUpload($sFileKey);
+		$oFlash->finishReporting();
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+		
 		if($aOptions['document_id']) {
 			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
 		} else {
