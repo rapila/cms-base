@@ -94,30 +94,33 @@ Widget.types.file_upload = {
 	
 	do_upload: function(file, options, create_type) {
 		var file_uploader = this;
-		var fileReader = new FileReader();
 		var size = file.size;
 		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024, 10))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
 		notification = Widget.notifyUser('info', notification, {closeDelay: null});
-		fileReader.onload = function() {
-			file_uploader.uploadFile(window.btoa(fileReader.result), options, create_type, function(result, error) {
-				if(!error) {
-					progress.progressbar('value', 100);
-					notification.enable_close_button();
-					notification.reset_timeout(3000);
-					Widget.notifyUser('info', '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
-					this.fire('file-uploaded', result, options);
-					options.callback(result, options);
-				} else {
-					notification.enable_close_button();
-					notification.reset_timeout(3000);
-					notification.set_severity('error');
-					options.error ? options.error(error, notification, options) : notification.set_message(error.message);
-				}
-			}, WidgetJSONOptions.with_upload_progess_callback(function(event) {
+		var json_options = new WidgetJSONOptions({
+			upload_progess_callback: function(event) {
 				progress.progressbar('value', (event.loaded/size)*100);
-			}));
-		};
-		fileReader.readAsBinaryString(file);
+			},
+			content_type: 'multipart/form-data',
+			additional_params: {
+				file: file
+			}
+		});
+		file_uploader.uploadFile('file', options, create_type, function(result, error) {
+			if(!error) {
+				progress.progressbar('value', 100);
+				notification.enable_close_button();
+				notification.reset_timeout(3000);
+				Widget.notifyUser('info', '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
+				this.fire('file-uploaded', result, options);
+				options.callback(result, options);
+			} else {
+				notification.enable_close_button();
+				notification.reset_timeout(3000);
+				notification.set_severity('error');
+				options.error ? options.error(error, notification, options) : notification.set_message(error.message);
+			}
+		}, json_options);
 	}
 };

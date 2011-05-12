@@ -90,6 +90,10 @@ jQuery.extend(Widget.prototype, {
 		if(args.length > 0) {
 			params['method_parameters'] = args;
 		}
+		if(options.additional_params) {
+			jQuery.extend(params, options.additional_params);
+			delete options.additional_params;
+		}
 		var result = null;
 		var error = null;
 		if(options.async) {
@@ -417,9 +421,14 @@ jQuery.extend(Widget, {
 				if(attributes.constructor !== FormData) {
 					attr_str = new FormData();
 					jQuery.each(attributes, function(i, val) {
-						attr_str.append(i, val);
+						if(val instanceof File || val instanceof Blob) {
+							attr_str.append(i, val);
+						} else {
+							attr_str.append(i, JSON.stringify(val));
+						}
 					});
 				}
+				options.content_type = false;
 			} else if(options.content_type === 'application/x-www-form-urlencoded') {
 				attr_str = '';
 				jQuery.each(attributes, function(i, val) {
@@ -440,6 +449,7 @@ jQuery.extend(Widget, {
 			url: url,
 			data: attr_str,
 			type: 'POST',
+			processData: false,
 			dataType: 'json',
 			async: options.async,
 			contentType: options.content_type,
