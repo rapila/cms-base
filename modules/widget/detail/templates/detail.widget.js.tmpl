@@ -17,6 +17,7 @@ Widget.types.detail = {
 				Widget.fire(detail_name+'-saved');
 			});
 		};
+		this.content = instance.content;
 		if(this.has_dialog) {
 			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+instance._type);
 		} else {

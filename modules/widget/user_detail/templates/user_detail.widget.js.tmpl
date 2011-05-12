@@ -9,7 +9,6 @@ Widget.types.user_detail = {
 				title: "{{writeString=wns.new_entry}}",
 				width: 600
 			});
-			widget.content = this.content;
 			this.rights_section = this.content.find('div.rights_section');
 			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");

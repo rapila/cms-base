@@ -32,7 +32,6 @@ Widget.types.document_detail = {
 				dialogClass: "document_detail"
 			});
 			
-			widget.content = _this.content;
 			_this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
 				category_widget.settings.initial_selection = _this.settings.initial_category_id;
 			}, jQuery.noop);
