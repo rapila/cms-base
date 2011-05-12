@@ -60,7 +60,7 @@ class Document extends BaseDocument {
 		$oTemplate->replaceIdentifier('category_id', $this->getDocumentCategoryId());
 		$oTemplate->replaceIdentifier('document_category', $this->getCategoryName());
 		$oTemplate->replaceIdentifier('category', $this->getCategoryName());
-		$oTemplate->replaceIdentifier("size", DocumentUtil::getDocumentSize($this->getDataSize(), 'kb'));
+		$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
 	}
 	
 	public function getCategoryName() {
@@ -98,7 +98,7 @@ class Document extends BaseDocument {
 	}
 
 	public function getFileInfo($sFilesizeFormat = 'auto_iso') {
-		return DocumentUtil::getDocumentSize($this->getDataSize(), $sFilesizeFormat).' | '.$this->getExtension();
+		return DocumentPeer::getDocumentSize($this->getDataSize(), $sFilesizeFormat).' | '.$this->getExtension();
 	}
 	
 	/**
