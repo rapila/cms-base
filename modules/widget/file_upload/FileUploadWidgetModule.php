@@ -8,8 +8,8 @@ class FileUploadWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function uploadFile($sFileData, $aOptions, $bCreateType = false) {
-		$sFileData = base64_decode($sFileData);
+	public function uploadFile($sFileKey, $aOptions, $bCreateType = false) {
+		$aFileInfo = $_FILES[$sFileKey];
 		if($aOptions['document_id']) {
 			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
 		} else {
@@ -45,9 +45,10 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocumentType->save();
 			$iDocumentTypeId = $oDocumentType->getId();
 		}
-		$oDocument->setData($sFileData);
+    $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
+		
 		if($oDocument->isNew()) {
 			$oDocument->setName($sFileName);
 			$oDocument->setLanguageId($aOptions['language_id']);
