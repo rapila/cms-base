@@ -90,6 +90,10 @@ jQuery.extend(Widget.prototype, {
 		if(args.length > 0) {
 			params['method_parameters'] = args;
 		}
+		if(options.additional_params) {
+			jQuery.extend(params, options.additional_params);
+			delete options.additional_params;
+		}
 		var result = null;
 		var error = null;
 		if(options.async) {
