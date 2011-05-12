@@ -43,6 +43,10 @@ jQuery.extend(Widget, {
 			closable: false,
 			searchInfo: false
 		};
+		if(severity === Widget.logSeverity.ALERT) {
+			delete options.closeDelay;
+			options.closable = true;
+		}
 		jQuery.extend(options, arguments[2] || {});
 		
 		var admin_message = jQuery('#admin_message');

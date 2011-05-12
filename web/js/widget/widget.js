@@ -312,7 +312,7 @@ jQuery.extend(Widget, {
 		var widgetInformation = Widget.loadInfo(widgetType);
 		Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation, error) {
 			if(error) {
-				Widget.notifyUser('alert', error.message);
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 				return;
 			}
 			var widget = new Widget.types[widgetType](instanceInformation);
@@ -380,7 +380,7 @@ jQuery.extend(Widget, {
 	confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 		message = title+' '+message;
 		if(cancelButtonText === null) {
-			Widget.notifyUser('info', message);
+			Widget.notifyUser(Widget.logSeverity.INFO, message);
 			return callback(true);
 		}
 		callback(confirm(message));
@@ -530,7 +530,7 @@ jQuery.extend(Widget, {
 	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
 		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			Widget.notifyUser('alert', error.message);
+			Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			return true;
 		},
 		
@@ -558,6 +558,12 @@ jQuery.extend(Widget, {
 		}
 	}
 });
+
+Widget.logSeverity = {
+	DEBUG: 'debug',
+	INFO: 'info',
+	ALERT: 'alert'
+};
 
 if(window.console && window.console.log) {
 	Widget.log = function() {
