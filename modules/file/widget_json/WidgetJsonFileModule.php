@@ -10,9 +10,13 @@ class WidgetJsonFileModule extends FileModule {
 	
 	public function renderFile() {
 		header("Content-Type: application/json;charset=utf-8");
-		$aRequest = $_REQUEST;
+		$aRequest = array();
 		if(StringUtil::startsWith($_SERVER['CONTENT_TYPE'], 'application/json')) {
 			$aRequest = json_decode(file_get_contents('php://input'), true);
+		} else {
+			foreach($_REQUEST as $sKey => $sValue) {
+				$aRequest[$sKey] = json_decode($sValue, true);
+			}
 		}
 		$sPrevSessionLanguage = null;
 		if(isset($aRequest['session_language'])) {
