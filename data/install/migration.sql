@@ -167,12 +167,12 @@ CREATE TABLE `link_categories`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
-	INDEX `FI_` (`created_by`),
+	INDEX `FI_created_by` (`created_by`),
 	CONSTRAINT ``
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	INDEX `FI_` (`updated_by`),
+	INDEX `FI_updated_by` (`updated_by`),
 	CONSTRAINT ``
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
