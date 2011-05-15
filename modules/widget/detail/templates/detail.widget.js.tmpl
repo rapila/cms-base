@@ -206,13 +206,21 @@ Widget.types.detail = {
 		});
 	},
 	
-	connect_detail_with_list: function(detail_name, list, idMethod, idData) {
+	connect_detail_with_list: function(detail_name, list, idMethod, idData, options) {
 		if(!idMethod) idMethod = 'setId';
 		if(!idData) idData = 'id';
+		options = jQuery.extend({
+			colName: false,
+			eventName: 'dblclick'
+		}, (options || {}));
+		options.eventName = 'list.'+(options.colName ? 'cell' : 'row')+'-'+options.eventName
 		list.settings.row_click_active_mode = 'activate';
 		list.settings.row_click_active_class = 'ui-state-highlight';
 		Widget.create(detail_name+"_detail", function(detail) {
-			list.handle('list.row-dblclick', function(event, rowIndex, row) {
+			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
+				if(options.colName && col.identifier !== options.colName) {
+					return;
+				}
 				//Init
 				var cell = jQuery(event.realTarget).closest('.ui-list-cell');
 				var row = cell.closest('.ui-list-row');
