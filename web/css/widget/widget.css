@@ -1,4 +1,5 @@
-.ui-state-droppable { background: #b8d600; }
+.ui-state-droppable { background: #e3ef99 !important; }
+.ui-state-droppable td { background: #e3ef99 !important; }
 .ui-state-hover { border-width: 0; }
 label {
   color: #666666;
