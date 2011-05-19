@@ -484,7 +484,7 @@ jQuery.extend(Widget, {
 			error: function(request, statusCode, error) {
 				var error_object = {message: error, exception_type: statusCode};
 				if(statusCode === 'parsererror') {
-					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
+					var text = jQuery.trim(request.responseText);
 					error_object.message = text;
 				}
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
