@@ -31,3 +31,15 @@ How to migrate:
 - if {{link_prefix}} was used: remove {{link_prefix}}.
 - if full_link is used: rename to link.
 - If link was used: probably safe.
+
+Installer issues in full demo from github:
+- directory 'generated' must be present in main dir.
+- set-permissions has to be run every now and then
+- jQuery Library version hard coded in main.tmpl
+- strings missing
+- default strings like meta.keywords, meta.description should be added with example text
+
+Installer Documentation:
+
+- main config in site: config.yml
+
