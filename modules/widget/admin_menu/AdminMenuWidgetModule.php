@@ -4,7 +4,7 @@
  */
 class AdminMenuWidgetModule extends WidgetModule {
 	public function __construct() {
-	  $this->setSetting('current_manager', Manager::getManagerClassNormalized());
+		$this->setSetting('current_manager', Manager::getManagerClassNormalized());
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/admin_menu.js');
 	}
@@ -34,11 +34,16 @@ class AdminMenuWidgetModule extends WidgetModule {
 		foreach($aSettings as $iKey => &$mValue) {
 			if(is_array($mValue)) {
 				$this->cleanModules($mValue);
-			} else if(is_string($mValue) && StringUtil::startsWith($mValue, 'module.')) {
-				$sModuleName = substr($mValue, strlen('module.'));
-				if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
-					unset($aSettings[$iKey]);
-				}
+			} else if(is_string($mValue)) {
+			  if($mValue === 'edit') {
+          $mValue = "module.pages";
+			  }
+			  if(StringUtil::startsWith($mValue, 'module.')) {
+  				$sModuleName = substr($mValue, strlen('module.'));
+  				if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
+  					unset($aSettings[$iKey]);
+  				}
+  			}
 			}
 		}
 		$aSettings = array_values($aSettings);
@@ -62,7 +67,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	private static function getPageFullPathArray() {
-	  $oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+		$oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
 		return ($oPage ? $oPage->getFullPathArray() : array());
 	}
 	
