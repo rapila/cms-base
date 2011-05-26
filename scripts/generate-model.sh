@@ -7,11 +7,6 @@ owner=`whoami`
 path_to_buildfile="base/lib/vendor/propel-generator/build.xml"
 
 if [ "s$PHING_PATH" == "s" ]; then
-	which phing > /dev/null
-	if [ "$?" -ne 0 ]; then
-		echo "Error: phing not found in path. Please make sure it is installed and in your path or export PHING_PATH"
-		exit 1
-	fi
 	PHING_PATH="./base/lib/vendor/phing/bin/phing"
 	export PHING_HOME="./base/lib/vendor/phing"
 fi

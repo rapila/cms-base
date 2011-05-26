@@ -73,7 +73,7 @@
   background-image: none;
   border-bottom: 1px solid #d4d8dc;
 }
-#admin_sidebar .ui-state-droppable { background-image: url('../../images/admin/ui-state-droppable.png'); }
+#admin_sidebar .ui-state-droppable { background-image: none; }
 #admin_sidebar span.sidebar_input_save {
   display: none;
   height: 16px;
@@ -268,13 +268,11 @@ h3.status { padding-left: 0.3em; }
 .ui-icon-trash.delete_inactive { background-image: url(''); }
 #admin_sidebar .ui-state-droppable {
   border: 0 solid #b8d600;
-  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
   color: #5b595b;
   cursor: pointer;
 }
 .image_browse_area.ui-state-droppable {
   border: 0 solid #b8d600;
-  background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat;
   color: #5b595b;
   cursor: pointer;
 }
@@ -311,7 +309,6 @@ h3.status { padding-left: 0.3em; }
   color: #5b595b;
   cursor: pointer;
 }
-.ui-state-droppable .ui-icon { background-image: url('../../images/admin/ui-state-droppable.png'); }
 .ui-accordion .ui-state-default .ui-icon-triangle-1-s {
   background-image: url('../../images/admin/icon_triangle_open.png');
   background-position: 3px 3px;

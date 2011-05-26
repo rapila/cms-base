@@ -22,8 +22,12 @@ Widget.types.file_upload = {
 				element.addClass('ui-state-droppable');
 			}
 		}).bind('dragover', function(event) {
+			
 			if(!selector) {
 				event.originalEvent.preventDefault();
+				if(element.has(event.target).length > 0) {
+					element.addClass('ui-state-droppable');
+				}
 				return false;
 			}
 			if(!current_drag_is_file) {
@@ -33,11 +37,16 @@ Widget.types.file_upload = {
 			if(!target.is(selector)) {
 				return;
 			}
+			//console.log('dragover', element.find(selector));
 			element.find(selector).removeClass('ui-state-droppable');
 			target.addClass('ui-state-droppable');
 			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
+			
+			//if (event.target != element[0]) 
+			//console.log('dragleave', event.target);
+		
 			if(selector) {
 				element.find(selector).removeClass('ui-state-droppable');
 			} else {
@@ -109,6 +118,7 @@ Widget.types.file_upload = {
 		});
 		file_uploader.uploadFile('file', options, create_type, function(result, error) {
 			if(!error) {
+				jQuery('.ui-state-droppable').removeClass('ui-state-droppable');
 				progress.progressbar('value', 100);
 				notification.enable_close_button();
 				notification.reset_timeout(3000);
