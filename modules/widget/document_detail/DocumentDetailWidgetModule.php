@@ -24,7 +24,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public static function documentPreview($iDocumentId, $iSize) {
-		return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
+		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
+		if($oDocument) {
+			return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
+		}
+		return null;
 	}
 	
 	public function preview() {
