@@ -19,7 +19,6 @@ class PreviewManager extends FrontendManager {
 		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		$this->addNamespacedCss(array('widget', 'widget.css'));
-		ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
 		
 		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
 		
