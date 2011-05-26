@@ -187,7 +187,7 @@ button.ui-button.ui-state-default,
 }
 
 #admin_sidebar .ui-state-droppable {
-	background-image: url('../../images/admin/ui-state-droppable.png');
+	background-image: none;
 }
 
 #admin_sidebar span.sidebar_input_save {
@@ -433,8 +433,14 @@ input.ui-widget-content.autowidth {
 
 /* Interaction Cues addition
 ----------------------------------*/
+
 #admin_sidebar .ui-state-droppable,
-.image_browse_area.ui-state-droppable {border: 0 solid #b8d600; background: #e3ef99 url('../../images/admin/ui-state-droppable.png') right top no-repeat; color: #5b595b;  cursor: pointer;}
+.image_browse_area.ui-state-droppable {
+	border: 0 solid #b8d600;
+	color: #5b595b;
+	cursor: pointer;
+}
+
 .document_detail .preview {
 	padding: 0 !important;
 	margin-left: -1px;
@@ -462,7 +468,6 @@ div.ui-state-droppable {border: 2px solid #b8d600; margin-left: -2px; cursor: po
 
 .ui-state-droppable a, .ui-widget-content .ui-state-droppable a { color: #5b595b; cursor: pointer;}
 /* states and images addition */
-.ui-state-droppable .ui-icon {background-image: url('../../images/admin/ui-state-droppable.png'); }
 
 .ui-accordion .ui-state-default .ui-icon-triangle-1-s {
 	background-image: url('../../images/admin/icon_triangle_open.png');

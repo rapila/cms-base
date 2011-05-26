@@ -16,7 +16,7 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 			throw new LocalizedException('flash.login_user_inactive');
 		}
 		if(UserPeer::initializeFirstUserIfEmpty($sUserName, $sPassword)) {
-			throw new LocalizedException('flash.login_welcome2', array('username' => $sUsernameDefault, 'password' => $sPasswordDefault));
+			throw new LocalizedException('flash.login_welcome2', array('username' => $sUserName, 'password' => $sPassword));
 		}
 		throw new LocalizedException('flash.login_check_params');
 	}

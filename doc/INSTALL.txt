@@ -1,3 +1,84 @@
+CHECKOUT:
+---------
+
+> git clone  git@rapi.la:/var/server/git/project_name.git local_project_directory
+> cd local_project_directory
+> git submodule init
+> git submodule update --recursive
+
+
+WEBSERVER KONFIGURIEREN FÜR LOKALE WEBSITE:
+-------------------------------------------
+- wenn nötig: /etc/hosts
+- entsprechendes httpd*.conf im entsprechenden Verzeichnis
+
+SHELL COMMANDS:
+--------------
+You can use>
+> base/scripts/rapila_script_name
+
+or for convenience:
+> rap rapila_script_name
+For example:
+> rap clear-caches.sh
+
+shell functions for 'rap' function and tab-autocompletion
+(include them in your .bashrc, .profile, .cshrc or the like):
+
+# autocompletion
+_rap ()
+{
+    local cur prev opts;
+    COMPREPLY=();
+    cur="${COMP_WORDS[COMP_CWORD]}";
+    prev="${COMP_WORDS[COMP_CWORD-1]}";
+    if [ ! -d base/scripts ]; then
+        return 0;
+    fi;
+    opts=$( cd base/scripts > /dev/null ; echo * );
+    if [[ ${prev} == "rap" ]]; then
+        COMPREPLY=($(compgen -W "${opts}" -- ${cur}));
+        return 0;
+    fi
+}
+
+# function definition
+rap ()
+{
+    script_name=$1;
+    shift;
+    "./base/scripts/$script_name" $*
+}
+
+DATABASE:
+---------
+
+mysql:
+>> CREATE DATABASE `project_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+>> GRANT ALL PRIVILEGES ON `project_db` . * TO 'my_user'@'localhost' WITH GRANT OPTION ;
+>> mysql -u my_user -p project_db < base/data/sql/schema.sql
+
+Edit site/config/db_config.yml to match your database parameters.
+
+Build ORM for site schema.xml if any:
+> rap generate-model.sh
+If too many warnings (and nothing built):
+> chmod -R 777 generated
+
+************************************************************************************
+Issues:
+************************************************************************************
+- "require_once(cssparser/CSSParser.php): failed to open stream: No such file or directory"
+  even after > git submodule update --recursive (from within base and top level to no avail!!!!)
+- we had to copy all model from jmg's machine to make it work
+- vendor/propel
+- pear global installation needed? PEAR/Exception, HTTP/Request2
+
+- Login to the Site:
+
+
+
+
 INSTALL
 What do we need?
 Install Manager for new Admin
@@ -7,7 +88,7 @@ Install Manager for new Admin
 - First User Admin
 - Default Language of page
 - Dashboard for install, starters informations
- 
+
 Migration @see MIGRATION_2.0.txt
 
 

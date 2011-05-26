@@ -13,7 +13,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	public function getDocumentData() {
 		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
-		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentUtil::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
+		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocument);
 		$aReferences = ReferencePeer::getReferences($oDocument);

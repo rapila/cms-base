@@ -82,7 +82,7 @@ Widget.types.info_bar = {
 		var clear_button = this.button_prototype.clone().addClass('search_field_reset').hide();
 		this.add_element(clear_button, true).add_button('search_button', function() {
 			if(search_input.is('.default_state')) {
-				Widget.notifyUser('info', "{{writeString=wns.not_applicable.add_search_word}}");
+				Widget.notifyUser(Widget.logSeverity.INFO, "{{writeString=wns.not_applicable.add_search_word}}");
 				return;
 			}
 			click_handler(search_input.val());

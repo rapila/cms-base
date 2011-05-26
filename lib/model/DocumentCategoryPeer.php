@@ -10,7 +10,7 @@
  * @package model
  */ 
 class DocumentCategoryPeer extends BaseDocumentCategoryPeer {
-
+	
 	public static function getDocumentCategoriesSorted($bInactiveOnly = false, $bExternallyManaged=false) {
 		$oCriteria = self::getDocumentCategoriesCriteria($bInactiveOnly, $bExternallyManaged);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);

@@ -1,0 +1,11 @@
+jQuery(document).ready(function() {
+	// init main content
+	var sidebar;
+	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
+		sidebar = widget;		
+		sidebar.handle('list.row-click', function(event, row, element) {
+			var action = element.data('action');
+		});
+	});
+
+});

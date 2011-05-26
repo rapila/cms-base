@@ -131,7 +131,8 @@ class User extends BaseUser {
 	}
 	
 	public function getBackendSettings() {
-		throw new Exception('Never call getBackendSettings directly!');
+		// Never call getBackendSettings directly!
+		return null;
 	}
 	
 	public function setBackendSettings($mSettings) {

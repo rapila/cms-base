@@ -8,8 +8,16 @@ class FileUploadWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function uploadFile($sFileData, $aOptions, $bCreateType = false) {
-		$sFileData = base64_decode($sFileData);
+	public function uploadFile($sFileKey, $aOptions, $bCreateType = false) {
+		$aFileInfo = $_FILES[$sFileKey];
+		
+		$oFlash = Flash::getFlash();
+		$oFlash->checkForFileUpload($sFileKey);
+		$oFlash->finishReporting();
+		if(!Flash::noErrors()) {
+			throw new ValidationException();
+		}
+		
 		if($aOptions['document_id']) {
 			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
 		} else {
@@ -45,9 +53,10 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocumentType->save();
 			$iDocumentTypeId = $oDocumentType->getId();
 		}
-		$oDocument->setData($sFileData);
+    $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
+		
 		if($oDocument->isNew()) {
 			$oDocument->setName($sFileName);
 			$oDocument->setLanguageId($aOptions['language_id']);
@@ -57,6 +66,21 @@ class FileUploadWidgetModule extends WidgetModule {
 				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
 			}
 		}
+
+		// Resize image if necessary
+		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null 
+			&& $oDocument->getDocumentCategory()->getMaxWidth() != null) {
+			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
+			$oImage = Image::imageFromData(stream_get_contents($oDocument->getData()));
+			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
+				$oImage->setSize((int)$oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
+				ob_start();
+				$oImage->render();
+				$oDocument->setData(ob_get_contents());
+				ob_end_clean();
+			}
+		}
+		
 		$oDocument->save();
 		return $oDocument->getId();
 	}

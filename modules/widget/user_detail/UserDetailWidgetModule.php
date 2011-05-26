@@ -23,7 +23,6 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
 			$aResult['IsSessionUser'] = $oUser->isSessionUser();
-			$aResult['BackendSettings'] = null;
 			return $aResult;
 		}
 	}

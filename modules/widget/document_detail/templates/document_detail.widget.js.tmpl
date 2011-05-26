@@ -17,7 +17,7 @@ Widget.types.document_detail = {
 					var file = _this.file_upload[0].files[0];
 					_this.file_upload.attr('disabled', true);
 					_this.uploader.upload_file(file, {document_id: _this.current_detail_id, callback: function(result) {
-						_this.upload_success(result);
+						_this.upload_success(result, true);
 						_this.settings.remains_open = true;
 						old_save_handler.call(_this.detail_widget);
 					}, error: _this.upload_error.bind(_this)});
@@ -32,7 +32,6 @@ Widget.types.document_detail = {
 				dialogClass: "document_detail"
 			});
 			
-			widget.content = _this.content;
 			_this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
 				category_widget.settings.initial_selection = _this.settings.initial_category_id;
 			}, jQuery.noop);

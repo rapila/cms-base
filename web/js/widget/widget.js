@@ -90,6 +90,10 @@ jQuery.extend(Widget.prototype, {
 		if(args.length > 0) {
 			params['method_parameters'] = args;
 		}
+		if(options.additional_params) {
+			jQuery.extend(params, options.additional_params);
+			delete options.additional_params;
+		}
 		var result = null;
 		var error = null;
 		if(options.async) {
@@ -308,7 +312,7 @@ jQuery.extend(Widget, {
 		var widgetInformation = Widget.loadInfo(widgetType);
 		Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation, error) {
 			if(error) {
-				Widget.notifyUser('alert', error.message);
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 				return;
 			}
 			var widget = new Widget.types[widgetType](instanceInformation);
@@ -376,7 +380,7 @@ jQuery.extend(Widget, {
 	confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 		message = title+' '+message;
 		if(cancelButtonText === null) {
-			Widget.notifyUser('info', message);
+			Widget.notifyUser(Widget.logSeverity.INFO, message);
 			return callback(true);
 		}
 		callback(confirm(message));
@@ -417,9 +421,14 @@ jQuery.extend(Widget, {
 				if(attributes.constructor !== FormData) {
 					attr_str = new FormData();
 					jQuery.each(attributes, function(i, val) {
-						attr_str.append(i, val);
+						if(val instanceof File || val instanceof Blob) {
+							attr_str.append(i, val);
+						} else {
+							attr_str.append(i, JSON.stringify(val));
+						}
 					});
 				}
+				options.content_type = false;
 			} else if(options.content_type === 'application/x-www-form-urlencoded') {
 				attr_str = '';
 				jQuery.each(attributes, function(i, val) {
@@ -440,6 +449,7 @@ jQuery.extend(Widget, {
 			url: url,
 			data: attr_str,
 			type: 'POST',
+			processData: false,
 			dataType: 'json',
 			async: options.async,
 			contentType: options.content_type,
@@ -474,7 +484,7 @@ jQuery.extend(Widget, {
 			error: function(request, statusCode, error) {
 				var error_object = {message: error, exception_type: statusCode};
 				if(statusCode === 'parsererror') {
-					var text = jQuery.parseHTML(jQuery.trim(request.responseText));
+					var text = jQuery.trim(request.responseText);
 					error_object.message = text;
 				}
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
@@ -500,7 +510,6 @@ jQuery.extend(Widget, {
 			method = Widget.types[widgetType].prototype[methodName];
 		} else if(Widget.types[widgetType].prototype._staticMethods[methodName]) {
 			method = Widget.types[widgetType].prototype._staticMethods[methodName];
-			parameters.push(WidgetJSONOptions.with_async(false));
 		}
 		return method.apply(Widget.types[widgetType].prototype, parameters);
 	},
@@ -521,7 +530,7 @@ jQuery.extend(Widget, {
 	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
 		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-			Widget.notifyUser('alert', error.message);
+			Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			return true;
 		},
 		
@@ -549,6 +558,12 @@ jQuery.extend(Widget, {
 		}
 	}
 });
+
+Widget.logSeverity = {
+	DEBUG: 'debug',
+	INFO: 'info',
+	ALERT: 'alert'
+};
 
 if(window.console && window.console.log) {
 	Widget.log = function() {

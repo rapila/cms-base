@@ -22,8 +22,12 @@ Widget.types.file_upload = {
 				element.addClass('ui-state-droppable');
 			}
 		}).bind('dragover', function(event) {
+			
 			if(!selector) {
 				event.originalEvent.preventDefault();
+				if(element.has(event.target).length > 0) {
+					element.addClass('ui-state-droppable');
+				}
 				return false;
 			}
 			if(!current_drag_is_file) {
@@ -33,11 +37,16 @@ Widget.types.file_upload = {
 			if(!target.is(selector)) {
 				return;
 			}
+			//console.log('dragover', element.find(selector));
 			element.find(selector).removeClass('ui-state-droppable');
 			target.addClass('ui-state-droppable');
 			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
+			
+			//if (event.target != element[0]) 
+			//console.log('dragleave', event.target);
+		
 			if(selector) {
 				element.find(selector).removeClass('ui-state-droppable');
 			} else {
@@ -48,7 +57,7 @@ Widget.types.file_upload = {
 				return false;
 			}
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
-				Widget.notifyUser('info', '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
+				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
 				return false;
 			}
 			var target = jQuery(event.target);
@@ -94,30 +103,33 @@ Widget.types.file_upload = {
 	
 	do_upload: function(file, options, create_type) {
 		var file_uploader = this;
-		var fileReader = new FileReader();
 		var size = file.size;
 		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024, 10))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
-		notification = Widget.notifyUser('info', notification, {closeDelay: null});
-		fileReader.onload = function() {
-			file_uploader.uploadFile(window.btoa(fileReader.result), options, create_type, function(result, error) {
-				if(!error) {
-					progress.progressbar('value', 100);
-					notification.enable_close_button();
-					notification.reset_timeout(3000);
-					Widget.notifyUser('info', '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
-					this.fire('file-uploaded', result, options);
-					options.callback(result, options);
-				} else {
-					notification.enable_close_button();
-					notification.reset_timeout(3000);
-					notification.set_severity('error');
-					options.error ? options.error(error, notification, options) : notification.set_message(error.message);
-				}
-			}, WidgetJSONOptions.with_upload_progess_callback(function(event) {
+		notification = Widget.notifyUser(Widget.logSeverity.INFO, notification, {closeDelay: null});
+		var json_options = new WidgetJSONOptions({
+			upload_progess_callback: function(event) {
 				progress.progressbar('value', (event.loaded/size)*100);
-			}));
-		};
-		fileReader.readAsBinaryString(file);
+			},
+			content_type: 'multipart/form-data',
+			additional_params: {
+				file: file
+			}
+		});
+		file_uploader.uploadFile('file', options, create_type, function(result, error) {
+			if(!error) {
+				jQuery('.ui-state-droppable').removeClass('ui-state-droppable');
+				progress.progressbar('value', 100);
+				notification.enable_close_button();
+				notification.reset_timeout(3000);
+				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
+				this.fire('file-uploaded', result, options);
+				options.callback(result, options);
+			} else {
+				notification.enable_close_button();
+				notification.set_severity('error');
+				options.error ? options.error(error, notification, options) : notification.set_message(error.message);
+			}
+		}, json_options);
 	}
 };
