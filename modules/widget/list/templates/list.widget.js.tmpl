@@ -222,13 +222,17 @@ Widget.types.list = {
 		return rowData;
 	},
 
-	toggle_boolean: function(row, boolean_name) {
+	toggle_boolean: function(row, boolean_name, reload_all) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
 		var rowData = this.collect_row_data(row);
 		this.toggleBoolean(rowData, boolean_name, function(result) {
-			this.update_row(row);
+			if(reload_all) {
+				this.reload();
+			} else {
+				this.update_row(row);
+			}
 		});
 	},
 	
