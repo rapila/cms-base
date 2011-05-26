@@ -379,6 +379,32 @@ Widget.types.list = {
 		return result;
 	},
 	
+	rows_matching_row_data: function(rowData) {
+		var result = [];
+		var _this = this;
+		this.all_rows().each(function() {
+			var row = jQuery(this);
+			var all_data_matches = true;
+			jQuery.each(rowData, function(dataName, dataValue) {
+				jQuery.each(_this.schema, function(i) {
+					if(_this.schema[i].display_type === 'data' && _this.schema[i].field_name == dataName) {
+						if(row.data(_this.schema[i].identifier) !== dataValue) {
+							all_data_matches = false;
+							return false;
+						}
+					}
+				});
+				if(!all_data_matches) {
+					return false;
+				}
+			});
+			if(all_data_matches) {
+				result.push(row);
+			}
+		});
+		return result;
+	},
+	
 	model_name: function() {
 		if(this.settings.row_model_name === undefined) {
 			this.settings.row_model_name = this.getModelName();
