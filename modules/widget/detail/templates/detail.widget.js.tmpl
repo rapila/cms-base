@@ -8,9 +8,10 @@ Widget.types.detail = {
 		this.settings.save_callback = function() {
 			var data = instance.content.serializeArrayKV();
 			instance.fire('saving', data);
+			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
 				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
-				if(!instance.settings.remains_open) {
+				if(!remains_open) {
 					instance.close();
 				}
 				var detail_name = instance.widgetType.replace('_detail', '');
