@@ -222,13 +222,17 @@ Widget.types.list = {
 		return rowData;
 	},
 
-	toggle_boolean: function(row, boolean_name) {
+	toggle_boolean: function(row, boolean_name, reload_all) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
 		var rowData = this.collect_row_data(row);
 		this.toggleBoolean(rowData, boolean_name, function(result) {
-			this.update_row(row);
+			if(reload_all) {
+				this.reload();
+			} else {
+				this.update_row(row);
+			}
 		});
 	},
 	
@@ -374,6 +378,32 @@ Widget.types.list = {
 			if(is_found) {
 				result = row;
 				return false;
+			}
+		});
+		return result;
+	},
+	
+	rows_matching_row_data: function(rowData) {
+		var result = [];
+		var _this = this;
+		this.all_rows().each(function() {
+			var row = jQuery(this);
+			var all_data_matches = true;
+			jQuery.each(rowData, function(dataName, dataValue) {
+				jQuery.each(_this.schema, function(i) {
+					if(_this.schema[i].display_type === 'data' && _this.schema[i].field_name == dataName) {
+						if(row.data(_this.schema[i].identifier) !== dataValue) {
+							all_data_matches = false;
+							return false;
+						}
+					}
+				});
+				if(!all_data_matches) {
+					return false;
+				}
+			});
+			if(all_data_matches) {
+				result.push(row);
 			}
 		});
 		return result;

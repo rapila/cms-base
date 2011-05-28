@@ -1,3 +1,8 @@
+#cmos_admin_menu {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: black;
+}
 #cmos_admin_menu html {
   margin: 0;
   padding: 0;
@@ -681,6 +686,19 @@
 #cmos_admin_menu table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+#cmos_admin_menu span { display: inline; }
+#cmos_admin_menu .cke_skin_kama .cke_wrapper {
+  display: block;
+  padding: 5px;
+}
+#cmos_admin_menu .cke_skin_kama .cke_voice_label { display: none; }
+#cmos_admin_menu .cke_skin_kama .cke_toolgroup { margin-right: 6px; }
+#cmos_admin_menu .cke_dialog_body a { display: inline; }
+.filled-container.editing {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: black;
 }
 .filled-container.editing html {
   margin: 0;
@@ -1366,6 +1384,19 @@
   border-collapse: collapse;
   border-spacing: 0;
 }
+.filled-container.editing span { display: inline; }
+.filled-container.editing .cke_skin_kama .cke_wrapper {
+  display: block;
+  padding: 5px;
+}
+.filled-container.editing .cke_skin_kama .cke_voice_label { display: none; }
+.filled-container.editing .cke_skin_kama .cke_toolgroup { margin-right: 6px; }
+.filled-container.editing .cke_dialog_body a { display: inline; }
+.ui-dialog {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: black;
+}
 .ui-dialog html {
   margin: 0;
   padding: 0;
@@ -2050,7 +2081,20 @@
   border-collapse: collapse;
   border-spacing: 0;
 }
-.cke_dialog_contents html {
+.ui-dialog span { display: inline; }
+.ui-dialog .cke_skin_kama .cke_wrapper {
+  display: block;
+  padding: 5px;
+}
+.ui-dialog .cke_skin_kama .cke_voice_label { display: none; }
+.ui-dialog .cke_skin_kama .cke_toolgroup { margin-right: 6px; }
+.ui-dialog .cke_dialog_body a { display: inline; }
+.cke_dialog {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: black;
+}
+.cke_dialog html {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2058,7 +2102,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents body {
+.cke_dialog body {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2066,7 +2110,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents div {
+.cke_dialog div {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2074,7 +2118,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents span {
+.cke_dialog span {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2082,7 +2126,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents applet {
+.cke_dialog applet {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2090,7 +2134,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents object {
+.cke_dialog object {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2098,7 +2142,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents iframe {
+.cke_dialog iframe {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2106,7 +2150,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h1 {
+.cke_dialog h1 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2114,7 +2158,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h2 {
+.cke_dialog h2 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2122,7 +2166,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h3 {
+.cke_dialog h3 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2130,7 +2174,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h4 {
+.cke_dialog h4 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2138,7 +2182,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h5 {
+.cke_dialog h5 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2146,7 +2190,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents h6 {
+.cke_dialog h6 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2154,7 +2198,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents p {
+.cke_dialog p {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2162,7 +2206,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents blockquote {
+.cke_dialog blockquote {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2170,7 +2214,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents pre {
+.cke_dialog pre {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2178,7 +2222,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents a {
+.cke_dialog a {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2186,7 +2230,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents abbr {
+.cke_dialog abbr {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2194,7 +2238,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents acronym {
+.cke_dialog acronym {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2202,7 +2246,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents address {
+.cke_dialog address {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2210,7 +2254,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents big {
+.cke_dialog big {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2218,7 +2262,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents cite {
+.cke_dialog cite {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2226,7 +2270,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents code {
+.cke_dialog code {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2234,7 +2278,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents del {
+.cke_dialog del {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2242,7 +2286,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents dfn {
+.cke_dialog dfn {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2250,7 +2294,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents em {
+.cke_dialog em {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2258,7 +2302,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents img {
+.cke_dialog img {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2266,7 +2310,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents ins {
+.cke_dialog ins {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2274,7 +2318,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents kbd {
+.cke_dialog kbd {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2282,7 +2326,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents q {
+.cke_dialog q {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2290,7 +2334,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents s {
+.cke_dialog s {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2298,7 +2342,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents samp {
+.cke_dialog samp {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2306,7 +2350,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents small {
+.cke_dialog small {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2314,7 +2358,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents strike {
+.cke_dialog strike {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2322,7 +2366,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents strong {
+.cke_dialog strong {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2330,7 +2374,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents sub {
+.cke_dialog sub {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2338,7 +2382,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents sup {
+.cke_dialog sup {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2346,7 +2390,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents tt {
+.cke_dialog tt {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2354,7 +2398,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents var {
+.cke_dialog var {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2362,7 +2406,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents b {
+.cke_dialog b {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2370,7 +2414,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents u {
+.cke_dialog u {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2378,7 +2422,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents i {
+.cke_dialog i {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2386,7 +2430,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents center {
+.cke_dialog center {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2394,7 +2438,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents dl {
+.cke_dialog dl {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2402,7 +2446,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents dt {
+.cke_dialog dt {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2410,7 +2454,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents dd {
+.cke_dialog dd {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2418,7 +2462,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents ol {
+.cke_dialog ol {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2426,7 +2470,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents ul {
+.cke_dialog ul {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2434,7 +2478,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents li {
+.cke_dialog li {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2442,7 +2486,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents fieldset {
+.cke_dialog fieldset {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2450,7 +2494,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents form {
+.cke_dialog form {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2458,7 +2502,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents label {
+.cke_dialog label {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2466,7 +2510,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents legend {
+.cke_dialog legend {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2474,7 +2518,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents table {
+.cke_dialog table {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2482,7 +2526,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents caption {
+.cke_dialog caption {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2490,7 +2534,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents tbody {
+.cke_dialog tbody {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2498,7 +2542,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents tfoot {
+.cke_dialog tfoot {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2506,7 +2550,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents thead {
+.cke_dialog thead {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2514,7 +2558,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents tr {
+.cke_dialog tr {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2522,7 +2566,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents th {
+.cke_dialog th {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2530,7 +2574,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents td {
+.cke_dialog td {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2538,7 +2582,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents article {
+.cke_dialog article {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2546,7 +2590,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents aside {
+.cke_dialog aside {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2554,7 +2598,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents canvas {
+.cke_dialog canvas {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2562,7 +2606,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents details {
+.cke_dialog details {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2570,7 +2614,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents embed {
+.cke_dialog embed {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2578,7 +2622,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents figure {
+.cke_dialog figure {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2586,7 +2630,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents figcaption {
+.cke_dialog figcaption {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2594,7 +2638,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents footer {
+.cke_dialog footer {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2602,7 +2646,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents header {
+.cke_dialog header {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2610,7 +2654,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents hgroup {
+.cke_dialog hgroup {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2618,7 +2662,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents menu {
+.cke_dialog menu {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2626,7 +2670,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents nav {
+.cke_dialog nav {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2634,7 +2678,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents output {
+.cke_dialog output {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2642,7 +2686,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents ruby {
+.cke_dialog ruby {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2650,7 +2694,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents section {
+.cke_dialog section {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2658,7 +2702,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents summary {
+.cke_dialog summary {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2666,7 +2710,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents time {
+.cke_dialog time {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2674,7 +2718,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents mark {
+.cke_dialog mark {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2682,7 +2726,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents audio {
+.cke_dialog audio {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2690,7 +2734,7 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents video {
+.cke_dialog video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -2698,39 +2742,47 @@
   font: inherit;
   vertical-align: baseline;
 }
-.cke_dialog_contents article { display: block; }
-.cke_dialog_contents aside { display: block; }
-.cke_dialog_contents details { display: block; }
-.cke_dialog_contents figcaption { display: block; }
-.cke_dialog_contents figure { display: block; }
-.cke_dialog_contents footer { display: block; }
-.cke_dialog_contents header { display: block; }
-.cke_dialog_contents hgroup { display: block; }
-.cke_dialog_contents menu { display: block; }
-.cke_dialog_contents nav { display: block; }
-.cke_dialog_contents section { display: block; }
-.cke_dialog_contents body { line-height: 1; }
-.cke_dialog_contents ol { list-style: none; }
-.cke_dialog_contents ul { list-style: none; }
-.cke_dialog_contents blockquote { quotes: none; }
-.cke_dialog_contents q { quotes: none; }
-.cke_dialog_contents blockquote:before {
+.cke_dialog article { display: block; }
+.cke_dialog aside { display: block; }
+.cke_dialog details { display: block; }
+.cke_dialog figcaption { display: block; }
+.cke_dialog figure { display: block; }
+.cke_dialog footer { display: block; }
+.cke_dialog header { display: block; }
+.cke_dialog hgroup { display: block; }
+.cke_dialog menu { display: block; }
+.cke_dialog nav { display: block; }
+.cke_dialog section { display: block; }
+.cke_dialog body { line-height: 1; }
+.cke_dialog ol { list-style: none; }
+.cke_dialog ul { list-style: none; }
+.cke_dialog blockquote { quotes: none; }
+.cke_dialog q { quotes: none; }
+.cke_dialog blockquote:before {
   content: '';
   content: none;
 }
-.cke_dialog_contents blockquote:after {
+.cke_dialog blockquote:after {
   content: '';
   content: none;
 }
-.cke_dialog_contents q:before {
+.cke_dialog q:before {
   content: '';
   content: none;
 }
-.cke_dialog_contents q:after {
+.cke_dialog q:after {
   content: '';
   content: none;
 }
-.cke_dialog_contents table {
+.cke_dialog table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+.cke_dialog span { display: inline; }
+.cke_dialog .cke_skin_kama .cke_wrapper {
+  display: block;
+  padding: 5px;
+}
+.cke_dialog .cke_skin_kama .cke_voice_label { display: none; }
+.cke_dialog .cke_skin_kama .cke_toolgroup { margin-right: 6px; }
+.cke_dialog .cke_dialog_body a { display: inline; }
