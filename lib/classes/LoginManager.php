@@ -129,7 +129,7 @@ class LoginManager extends Manager {
 		return 'login';
 	}
 	
-	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase) {
+	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase = null) {
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
 		
