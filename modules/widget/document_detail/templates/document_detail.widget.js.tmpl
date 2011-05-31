@@ -87,12 +87,12 @@ Widget.types.document_detail = {
 	
 	fill_data: function(upload_mode) {
 		this.detail_widget.set_is_loading(true);
-		this.getDocumentData(function(document_data) {
+		this.documentData(function(document_data) {
 			this.content.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
 				this.content.find(".preview").html(result);
 			});
-			this.detail_widget.content.find('div.hide_if_not_saved').show();
+			this.content.find('div.hide_if_not_saved').show();
 			this.content.find(".updated_info").text(document_data.UpdatedInfo);
 			this.content.find(".created_info").text(document_data.CreatedInfo);
 			this.content.find('div.hide_if_not_saved').show();

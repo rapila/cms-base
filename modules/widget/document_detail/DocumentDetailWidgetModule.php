@@ -10,7 +10,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$this->iDocumentId = $iDocumentId;
 	}
 	
-	public function getDocumentData() {
+	public function documentData() {
 		$aResult = array();
 		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
