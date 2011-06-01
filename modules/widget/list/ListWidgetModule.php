@@ -18,6 +18,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	
 	const DISPLAY_TYPE_CLASSNAME = 'classname';
 	const DISPLAY_TYPE_DATA = 'data';
+	const DISPLAY_TYPE_SORT = 'sort';
 
 	private $oDelegate;
 	private $oListTag;
@@ -88,15 +89,26 @@ class ListWidgetModule extends PersistentWidgetModule {
 				$aMetadata['field_name'] = $sColumnIdentifier;
 			}
 			if(!isset($aMetadata['has_data'])) {
-				$aMetadata['has_data'] = $aMetadata['display_type'] !== self::DISPLAY_TYPE_STATIC && $aMetadata['display_type'] !== self::DISPLAY_TYPE_ICON;
+				$aMetadata['has_data'] = $aMetadata['display_type'] !== self::DISPLAY_TYPE_STATIC && $aMetadata['display_type'] !== self::DISPLAY_TYPE_ICON && $aMetadata['display_type'] !== self::DISPLAY_TYPE_SORT;
 			}
 			if(!isset($aMetadata['is_sortable'])) {
-				$aMetadata['is_sortable'] = false;
+				$aMetadata['is_sortable'] = $aMetadata['display_type'] === self::DISPLAY_TYPE_SORT;
 			}
 			
 			$this->aSchema[] = $aMetadata;
 		}
 		return $this->aSchema;
+	}
+	
+	public function allowSort($sColumnIdentifier) {
+		if(method_exists($this->oDelegate, 'allowSort')) {
+			return $this->oDelegate->allowSort($sColumnIdentifier);
+		}
+		return false;
+	}
+	
+	public function doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition) {
+		$this->oDelegate->doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition);
 	}
 
 	public function deleteRow($aRowData) {
