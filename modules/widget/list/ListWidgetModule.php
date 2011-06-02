@@ -18,7 +18,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	
 	const DISPLAY_TYPE_CLASSNAME = 'classname';
 	const DISPLAY_TYPE_DATA = 'data';
-	const DISPLAY_TYPE_SORTABLE = 'sortable';
+	const DISPLAY_TYPE_REORDERABLE = 'reorderable';
 
 	private $oDelegate;
 	private $oListTag;
@@ -89,10 +89,10 @@ class ListWidgetModule extends PersistentWidgetModule {
 				$aMetadata['field_name'] = $sColumnIdentifier;
 			}
 			if(!isset($aMetadata['has_data'])) {
-				$aMetadata['has_data'] = $aMetadata['display_type'] !== self::DISPLAY_TYPE_STATIC && $aMetadata['display_type'] !== self::DISPLAY_TYPE_ICON && $aMetadata['display_type'] !== self::DISPLAY_TYPE_SORTABLE;
+				$aMetadata['has_data'] = $aMetadata['display_type'] !== self::DISPLAY_TYPE_STATIC && $aMetadata['display_type'] !== self::DISPLAY_TYPE_ICON && $aMetadata['display_type'] !== self::DISPLAY_TYPE_REORDERABLE;
 			}
 			if(!isset($aMetadata['is_sortable'])) {
-				$aMetadata['is_sortable'] = $aMetadata['display_type'] === self::DISPLAY_TYPE_SORTABLE;
+				$aMetadata['is_sortable'] = $aMetadata['display_type'] === self::DISPLAY_TYPE_REORDERABLE;
 			}
 			
 			$this->aSchema[] = $aMetadata;

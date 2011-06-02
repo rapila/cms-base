@@ -196,6 +196,19 @@ class CriteriaListWidgetDelegate {
 		return $oCriteria;
 	}
 	
+	public function allowSort($sColumnIdentifier) {
+		if(method_exists($this->oCriteriaDelegate, 'allowSort')) {
+			return $this->oCriteriaDelegate->allowSort($sColumnIdentifier);
+		}
+		return false;
+	}
+	
+	public function doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition) {
+		$oObjectToSort = $this->rowFromData($aRowData);
+		$oRelatedObject = $this->rowFromData($aRelatedRowData);
+		$this->oCriteriaDelegate->doSort($sColumnIdentifier, $oObjectToSort, $oRelatedObject, $sPosition);
+	}
+	
 	public function setSearch($sSearch) {
 		return $this->oListSettings->setSearchPhrase($sSearch);
 	}

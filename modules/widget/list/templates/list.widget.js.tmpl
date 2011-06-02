@@ -197,6 +197,62 @@ Widget.types.list = {
 		});
 	},
 	
+	update_reorderable: function() {
+		var reorderable = this._element.find('tbody');
+		var currentSortSchema = null;
+		var _this = this;
+		if(this.sort) {
+			jQuery.each(this.schema, function(i, schema) {
+				if(schema.field_name === _this.sort[0]) {
+					if(schema.display_type === 'reorderable' && _this.sort[1] === 'asc') {
+						currentSortSchema = schema;
+					}
+					return false;
+				}
+			});
+		}
+		if(currentSortSchema !== null) {
+			var currentSchema = null;
+			reorderable.sortable({
+				handle: '.ui-sortable-handle',
+				containment: reorderable,
+				forceHelperSize: true,
+				start: function(event, ui) {
+					var item = event.originalEvent.target;
+					currentSchema = _this.schema_for_col(item);
+				},
+				stop: function() {
+					currentSchema = null;
+				},
+				beforeStop: function() {
+					if(!_this.allowSort(currentSchema.identifier, WidgetJSONOptions.with_async(false))) {
+						reorderable.sortable('cancel');
+					}
+				},
+				update: function(event, ui) {
+					_this.update_reorderable_order(ui.item, currentSchema);
+				},
+				axis: 'y'
+			});
+		} else {
+			reorderable.sortable('destroy');
+		}
+	},
+	
+	update_reorderable_order: function(row, schema) {
+		var relation = 'before';
+		var related = row.next('.ui-list-row');
+		if(related.length === 0) {
+			related = row.prev('.ui-list-row');
+			relation = 'after';
+			if(related.length === 0) {
+				// Only one element in the list: no sorting necessary
+				return;
+			}
+		}
+		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
+	},
+	
 	delete_row: function(row) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -308,6 +364,7 @@ Widget.types.list = {
 				}.bind(this));
 			}
 			this.toggle_loader(false);
+			this.update_reorderable();
 			if(load_heading) {
 				this.fire('loaded', list.length);
 			}
@@ -341,6 +398,10 @@ Widget.types.list = {
 		var widget = this;
 		var counter = 0;
 		var col_schema = null;
+		if(col.constructor !== Number) {
+			var row = jQuery(col).closest('.ui-list-row');
+			col = row.find('.ui-list-cell').index(col);
+		}
 		jQuery.each(this.schema, function(i, schema_item) {
 			if(widget.col_is_invisible(schema_item)) {
 				return;
@@ -460,7 +521,7 @@ Widget.types.list = {
 			Widget.types.list.types.html(column, element);
 		},
 		
-		sortable: function(column, data, metadata) {
+		reorderable: function(column, data, metadata) {
 			column.addClass('ui-sortable-handle').data('sort', data);
 		},
 		
