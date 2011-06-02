@@ -9,21 +9,22 @@ Widget.types.document_input = {
 		var optgroup = jQuery('<optgroup/>');
 		var option = jQuery('<option/>');
 		this._element.addClass('cke_skin_kama cke_dialog_ui_input_select').empty();
-		var document_categories = this.getDocuments();
-		jQuery.each(document_categories, function(optgroup_label, documents) {
-			var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
-			jQuery.each(documents, function(id, name) {
-				option.clone().val(id).text(name).appendTo(cloned_optgroup);
+		this.allDocumentsByCategories(function(document_categories) {
+			jQuery.each(document_categories, function(optgroup_label, documents) {
+				var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
+				jQuery.each(documents, function(id, name) {
+					option.clone().val(id).text(name).appendTo(cloned_optgroup);
+				});
 			});
+			if(this.settings.default_value_label) {
+				this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
+				this._element.val('');
+			}
+			if(selected) {
+				this._element.val(selected);
+				this._element.change();
+			}
 		});
-		if(this.settings.default_value_label) {
-			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
-			this._element.val('');
-		}
-		if(selected) {
-			this._element.val(selected);
-			this._element.change();
-		}
 	},
 	
 	value: function() {

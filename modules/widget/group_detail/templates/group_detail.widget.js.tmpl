@@ -28,7 +28,7 @@ Widget.types.group_detail = {
 	},
 	
 	fill_data: function() {
-		this.getGroupData(function(group_data) {
+		this.groupData(function(group_data) {
 			this.content.find("input[name='name']").val(group_data.Name);
 			this.content.find(".updated_info").text(group_data.UpdatedInfo);
 			this.content.find(".created_info").text(group_data.CreatedInfo);

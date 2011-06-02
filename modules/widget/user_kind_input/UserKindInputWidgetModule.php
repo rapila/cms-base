@@ -14,7 +14,7 @@ class UserKindInputWidgetModule extends PersistentWidgetModule {
 		$this->sSelectedUserKind = $sDefaultSelection;
 	}
 		
-	public static function getUserKinds() {
+	public static function allUserKinds() {
 		return array(CriteriaListWidgetDelegate::SELECT_ALL => StringPeer::getString('wns.user_kind.all'),
 								self::IS_BACKEND_LOGIN_ENABLED => StringPeer::getString('wns.user.backend'), 
 								self::IS_FRONTEND_USER => StringPeer::getString('wns.user.frontend')

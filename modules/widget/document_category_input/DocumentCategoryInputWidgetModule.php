@@ -4,7 +4,7 @@
  */
 class DocumentCategoryInputWidgetModule extends WidgetModule {
 	
-	public function getCategories($bGetCategoriesWithDocumentsOnly=false) {
+	public function allCategories($bGetCategoriesWithDocumentsOnly=false) {
 		if(!$bGetCategoriesWithDocumentsOnly) {
 			$oDocuments = DocumentCategoryPeer::getDocumentCategoriesSorted();
 		} else {

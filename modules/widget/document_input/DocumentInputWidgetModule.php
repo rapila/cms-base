@@ -1,7 +1,7 @@
 <?php
 class DocumentInputWidgetModule extends PersistentWidgetModule {
 	
-	public function getDocuments() {
+	public function allDocumentsByCategories() {
 		$aResult = array();
 		// find files in media dirs - large files that cannot be uploaded with http
 		$aCustomFiles = array();

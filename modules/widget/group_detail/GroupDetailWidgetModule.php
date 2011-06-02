@@ -10,7 +10,7 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 		$this->iGroupId = $iGroupId;
 	}
 	
-	public function getGroupData() {
+	public function groupData() {
 		$oGroup = GroupPeer::retrieveByPK($this->iGroupId);
 		$aResult = $oGroup->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oGroup);

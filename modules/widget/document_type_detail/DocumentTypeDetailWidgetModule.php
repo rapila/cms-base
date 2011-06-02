@@ -10,7 +10,7 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 		$this->iTypeId = $iTypeId;
 	}
 	
-	public function getTypeData() {
+	public function typeData() {
 		return DocumentTypePeer::retrieveByPK($this->iTypeId)->toArray();
 	}
 	

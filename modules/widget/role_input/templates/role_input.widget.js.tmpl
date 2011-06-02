@@ -1,19 +1,19 @@
 Widget.types.role_input = {
 	prepare: function() {
-		var input = jQuery('<input/>').attr('type', 'checkbox');
-		var roles = this.getRoles();
-
-		var fieldset = this._element.find('fieldset');
-		if(roles.length === 0) {
-			jQuery('<div/>').html("{{writeString=wns.roles.none_available}}").appendTo(fieldset);
-		}
+		this.checkbox_prototype = jQuery('<input/>').attr('type', 'checkbox');
+		this.allRoles(function(roles) {
+			var fieldset = this._element.find('fieldset');
+			if(roles.length === 0) {
+				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.roles.none_available}}").appendTo(fieldset);
+			}
 		
-		jQuery.each(roles, function(i, role) {
-			var checkbox = input.clone();
-			checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);
-			jQuery('<label/>').attr('for', 'role_keys[]').text(role.role_key+" / "+role.description).appendTo(fieldset);
-			jQuery('<br/>').appendTo(fieldset);
-		}.bind(this));
+			jQuery.each(roles, function(i, role) {
+				var checkbox = this.checkbox_prototype.clone();
+				checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);
+				jQuery('<label/>').attr('for', 'role_keys[]').text(role.role_key+" / "+role.description).appendTo(fieldset);
+				jQuery('<br/>').appendTo(fieldset);
+			}.bind(this));
+		});
 	},
 	
 	checked_roles: function() {

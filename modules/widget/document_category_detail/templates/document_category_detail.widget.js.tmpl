@@ -23,7 +23,7 @@ Widget.types.document_category_detail = {
 	},
 	
 	fill_data: function() {
-		this.getCategoryData(function(category_data) {
+		this.categoryData(function(category_data) {
 			this.content.find("input[name='name']").val(category_data.Name);
 			this.content.find("input[name='max_width']").val(category_data.MaxWidth);
 			this.content.find("input[name='is_inactive']").attr('checked', category_data.IsInactive);

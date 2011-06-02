@@ -80,7 +80,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getUserKindName() {
-		$aUserKinds = UserKindInputWidgetModule::getUserKinds();
+		$aUserKinds = UserKindInputWidgetModule::allUserKinds();
 		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) { 
 			return $aUserKinds[$this->oDelegateProxy->getUserKind()];
 		}

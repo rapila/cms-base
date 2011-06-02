@@ -10,7 +10,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		$this->sStringId = $sStringId;
 	}
 	
-	public function getStringData() {
+	public function stringData() {
 		$oCriteria = new Criteria();
 		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
 		$oCriteria->add(StringPeer::STRING_KEY, $this->sStringId);

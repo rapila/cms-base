@@ -9,7 +9,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$this->sRoleId = $sRoleId;
 	}
 	
-	public function getRoleData() {
+	public function roleData() {
 		$oRole = RolePeer::retrieveByPK($this->sRoleId);
 		$aResult = $oRole->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oRole);
