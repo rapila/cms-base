@@ -35,7 +35,7 @@ Widget.types.link_detail = {
 	
 	fill_data: function() {
 		var _this = this;
-		this.getLinkData(function(link_data) {
+		this.linkData(function(link_data) {
 			if(link_data.LinkCategoryId == null) {
 				link_data.LinkCategoryId = '';
 			}
@@ -47,7 +47,6 @@ Widget.types.link_detail = {
 			var url_preview = this.content.find('a.url_preview');
 			if(link_data.Url !== '') {
 				url_preview.attr('href', link_data.Url);
-				console.log(url_preview);
 			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);

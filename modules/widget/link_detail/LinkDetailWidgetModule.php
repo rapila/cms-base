@@ -10,7 +10,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		$this->iLinkId = $iLinkId;
 	}
 	
-	public function getLinkData() {
+	public function linkData() {
 		$oLink = LinkPeer::retrieveByPK($this->iLinkId);
 		if($oLink === null) {
 			return array();

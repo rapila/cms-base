@@ -1,7 +1,18 @@
 Widget.types.language_input = {
 	prepare: function() {
-		// wrap select name language_id if option return_options_only is set to false
 		var option = jQuery('<option/>');
+		// wrap select name language_id if option return_options_only is set to false
+		if(this.settings.hide_on_monolingual && "{{writeSettingValue=multilingual;section=general;defaultValue=true}}" !== 'true') {
+			this._element.next('br').hide();
+			this._element.parent().find('label[for="'+this._element.attr('name').escapeSelector()+'"]').hide();
+			this._element.hide();
+			var selected = this.getSelectedLanguageId();
+			if(selected) {
+				option.text(selected).attr('value', selected).appendTo(this._element);
+				this._element.val(selected);
+			}
+			return false;
+		}
 		var languages = this.getLanguages(this.settings.use_admin_languages);
 		jQuery.each(languages, function(i, language) {
 			option.clone().text(language.language_name).attr('value', language.id).appendTo(this._element);
@@ -22,11 +33,11 @@ Widget.types.language_input = {
 			current_value = '';
 		}
 		this._element.val(current_value);
-			
 	},
 	
 	settings: {
 		international_option: "{{writeString=wns.language.international}}",
+		hide_on_monolingual: true,
 		use_admin_languages: false,
 		store_value: false
 	}
