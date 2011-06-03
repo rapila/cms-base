@@ -222,7 +222,10 @@ body.login h1 {
   padding: 0.5em 1em;
   font-size: 0.9em !important;
 }
-input { padding: 0.3em; }
+input {
+  padding: 0.3em;
+  margin-bottom: 0.3em;
+}
 input[type=checkbox] { padding: 0 !important; }
 input.default_state { color: #9e9e9e; }
 ui-widget { font-size: 0.5em; }
