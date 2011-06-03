@@ -215,7 +215,7 @@ Widget.types.list = {
 			var currentSchema = null;
 			reorderable.sortable({
 				handle: '.ui-sortable-handle',
-				containment: reorderable,
+				containment: this._element,
 				forceHelperSize: true,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
