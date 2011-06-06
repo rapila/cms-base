@@ -203,7 +203,8 @@ Widget.types.page_detail = {
 							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default'];
 						}
 						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
-						var property_input = jQuery('<input/>').attr({"name": property_name, "class" : 'ui-widget-content'+type_class, "value": page_data.page_properties[property_name][name], 'style' : 'background-color:'+background_color+';'});
+						var type = page_data.page_properties[property_name]['type'] ? page_data.page_properties[property_name]['type'] : 'text';
+						var property_input = jQuery('<input/>').attr({name: property_name, type: type, "class": 'ui-widget-content'+type_class, value: page_data.page_properties[property_name][name], style: 'background-color:'+background_color+';'});
 						property_container.append(property_input);
 					}
 					if(name === 'default') {
