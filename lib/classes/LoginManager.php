@@ -141,13 +141,20 @@ class LoginManager extends Manager {
 		  $oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('login.password_reset.your_username').': '.$oUser->getUsername());
 		}
 		if($sLinkBase === null) {
-			$sLinkBase = LinkUtil::linkToSelf(null, null, true);
+			if(Manager::$CURRENT_MANAGER instanceof FrontendManager) {
+				// We’re most likely on a login page: link to self should be ok
+				$sLinkBase = LinkUtil::linkToSelf(null, null, true);
+			} else {
+				// Use the login manager
+				$sLinkBase = LinkUtil::link(array(), 'LoginManager');
+			}
 		}
 		$aParams = array('recover_hint' => md5($oUser->getPasswordRecoverHint()), 'recover_username' => $oUser->getUsername());
 		if(Session::getSession()->hasAttribute('login_referrer')) {
 			$aParams['recover_referrer'] = Session::getSession()->getAttribute('login_referrer');
 		}
 		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters($aParams);
+		ErrorHandler::log($sLink);
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
 		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
