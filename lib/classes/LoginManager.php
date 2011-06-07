@@ -154,7 +154,6 @@ class LoginManager extends Manager {
 			$aParams['recover_referrer'] = Session::getSession()->getAttribute('login_referrer');
 		}
 		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters($aParams);
-		ErrorHandler::log($sLink);
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
 		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
