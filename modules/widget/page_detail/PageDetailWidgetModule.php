@@ -189,7 +189,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPageString->setPageTitle($sPageTitle);
 		$oPage->addPageString($oPageString);
 		$oPage->setPageType('default');
-		$oPage->setIsInactive(true);
+		$oPage->setIsInactive(false);
 		$oPage->insertAsLastChildOf($oParentPage);
 		return $oPage->save();
 	}
