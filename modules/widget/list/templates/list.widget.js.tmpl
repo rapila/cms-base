@@ -211,7 +211,7 @@ Widget.types.list = {
 				}
 			});
 		}
-		if(currentSortSchema !== null) {
+		if(currentSortSchema !== null && this.allowSort(currentSortSchema.identifier, WidgetJSONOptions.with_async(false))) {
 			var currentSchema = null;
 			reorderable.sortable({
 				items: '.ui-list-row',
@@ -223,11 +223,6 @@ Widget.types.list = {
 				},
 				stop: function() {
 					currentSchema = null;
-				},
-				beforeStop: function() {
-					if(!_this.allowSort(currentSchema.identifier, WidgetJSONOptions.with_async(false))) {
-						reorderable.sortable('cancel');
-					}
 				},
 				update: function(event, ui) {
 					_this.update_reorderable_order(ui.item, currentSchema);
