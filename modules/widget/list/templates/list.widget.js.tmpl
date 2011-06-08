@@ -214,9 +214,9 @@ Widget.types.list = {
 		if(currentSortSchema !== null) {
 			var currentSchema = null;
 			reorderable.sortable({
+				items: '.ui-list-row',
 				handle: '.ui-sortable-handle',
 				containment: this._element,
-				forceHelperSize: true,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
 					currentSchema = _this.schema_for_col(item);
