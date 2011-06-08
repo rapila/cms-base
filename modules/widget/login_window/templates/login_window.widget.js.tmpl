@@ -15,7 +15,8 @@ Widget.types.login_window = {
 					Widget.fire('cmos-logged_in');
 				}
 			});
-		}).find('.password_forgotten').click(function() {
+		}).find('.password_forgotten').click(function(event) {
+			event.preventDefault();
 			// values reset and hide errormessage
 			var username = _this.login_markup.find('input[name="user_name"]');
 			var password = _this.login_markup.find('input[name="password"]');
