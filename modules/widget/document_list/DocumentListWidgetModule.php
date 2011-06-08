@@ -17,7 +17,6 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 		}
 		$this->oDocumentsViewWidgetDelegate = $oDocumentsViewWidgetDelegate;
 		$this->oListWidget->setDelegate($this->oDocumentsViewWidgetDelegate->getDelegateProxy());
-		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 	}
 
 	public function doWidget() {
