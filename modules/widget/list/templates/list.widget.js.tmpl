@@ -211,23 +211,18 @@ Widget.types.list = {
 				}
 			});
 		}
-		if(currentSortSchema !== null) {
+		if(currentSortSchema !== null && this.allowSort(currentSortSchema.identifier, WidgetJSONOptions.with_async(false))) {
 			var currentSchema = null;
 			reorderable.sortable({
+				items: '.ui-list-row',
 				handle: '.ui-sortable-handle',
 				containment: this._element,
-				forceHelperSize: true,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
 					currentSchema = _this.schema_for_col(item);
 				},
 				stop: function() {
 					currentSchema = null;
-				},
-				beforeStop: function() {
-					if(!_this.allowSort(currentSchema.identifier, WidgetJSONOptions.with_async(false))) {
-						reorderable.sortable('cancel');
-					}
 				},
 				update: function(event, ui) {
 					_this.update_reorderable_order(ui.item, currentSchema);

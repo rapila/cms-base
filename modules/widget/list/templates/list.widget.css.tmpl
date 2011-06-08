@@ -47,10 +47,6 @@ table.ui-list {
 	padding: 0;
 }
 
-table.ui-list > tbody {
-	padding-bottom: 3px;
-}
-
 table.ui-list { border-collapse: collapse; border-spacing: 0;}
 table.ui-list td { padding: .3em .5em .3em 0.2em; vertical-align: top;}
 
@@ -193,16 +189,25 @@ th.ui-list-heading select {
 	background-color: transparent;
 	margin: 0;
 }
-
+th.ui-list-heading.sortable:hover span,
 th.ui-list-heading.sortable.asc span,
 th.ui-list-heading.sortable.desc span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_desc.png");
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_asc.png");
 	background-position: right;
 	background-repeat: no-repeat;
 }
 
+th.ui-list-heading.sortable.asc:hover span {
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_asc_hover.png");
+}
+
 th.ui-list-heading.sortable.desc span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_asc.png");
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_desc.png");
+}
+
+th.ui-list-heading.sortable:hover span,
+th.ui-list-heading.sortable.desc:hover span {
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_desc_hover.png");
 }
 
 div[data-widget-type='documents_list'] {

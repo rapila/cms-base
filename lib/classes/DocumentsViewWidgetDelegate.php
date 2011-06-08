@@ -51,6 +51,7 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'file_info':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
@@ -119,6 +120,44 @@ class DocumentsViewWidgetDelegate {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
+	}
+	
+	public function allowSort($sSortColumn) {
+		$aListSettings = $this->oDelegateProxy->getListSettings();
+		if($aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_ALL || $aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return false;
+		}
+		foreach($aListSettings->allFilterColumns() as $sColumnName) {
+			if($sColumnName === 'document_category_id') {
+				continue;
+			}
+			if($aListSettings->getFilterColumnValue($sColumnName) !== CriteriaListWidgetDelegate::SELECT_ALL) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public function doSort($sColumnIdentifier, $oDocumentToSort, $oRelatedDocument, $sPosition = 'before') {
+		$oQuery = DocumentQuery::create();
+		$iNewPosition = $oRelatedDocument->getSort() + ($sPosition === 'before' ? 0 : 1);
+		if($oDocumentToSort->getSort() < $oRelatedDocument->getSort()) {
+			$iNewPosition--;
+		}
+		$oDocumentToSort->setSort($iNewPosition);
+		$oDocumentToSort->save();
+		$oQuery = $this->oDelegateProxy->getCriteria();
+		$oQuery->filterById($oDocumentToSort->getId(), Criteria::NOT_EQUAL);
+		$oQuery->orderBySort();
+		$i = 1;
+		foreach($oQuery->find() as $oDocument) {
+			if($i == $iNewPosition) {
+				$i++;
+			}
+			$oDocument->setSort($i);
+			$oDocument->save();
+			$i++;
+		}
 	}
 	
 	public function getCriteria() {
