@@ -24,7 +24,7 @@ Widget.types.login_window = {
 			_this.login_markup.find('.ui-notify').hide();
 			
 			var forgotten_alert = jQuery('<div class="cmos_alert"><form/></div>');
-			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).bind('submit', function(event) {
+			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).once('submit', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
 				var input_field = forgotten_alert.find('input[name="user_name_or_email"]').keyup(function() {
