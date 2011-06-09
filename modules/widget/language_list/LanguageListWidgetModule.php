@@ -8,7 +8,7 @@ class LanguageListWidgetModule extends WidgetModule {
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Language");
+		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Language", 'language_id', 'asc');
 		$this->oListWidget->setDelegate($oDelegateProxy);
 	}
 	
@@ -40,6 +40,7 @@ class LanguageListWidgetModule extends WidgetModule {
 			case 'language_id':
 				$aResult['heading'] = StringPeer::getString('wns.language_id');
 				$aResult['field_name'] = 'id';
+				$aResult['is_sortable'] = true;
 				break;
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('wns.name');
@@ -50,6 +51,7 @@ class LanguageListWidgetModule extends WidgetModule {
 				break;
 			case 'is_active':
 				$aResult['heading'] = StringPeer::getString('wns.is_active');
+				$aResult['is_sortable'] = true;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
