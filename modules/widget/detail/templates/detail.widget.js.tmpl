@@ -4,6 +4,7 @@ Widget.types.detail = {
 	},
 	
 	set_instance: function(instance) {
+		var _this = this;
 		this.instance = instance;
 		this.settings.save_callback = function() {
 			var data = instance.content.serializeArrayKV();
@@ -26,6 +27,12 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
+		
+		var old_fill_data = instance.fill_data;
+		instance.fill_data = function() {
+			_this.clear_validation();
+			old_fill_data.apply(instance, jQuery.makeArray(arguments));
+		};
 		
 		return this;
 	},
