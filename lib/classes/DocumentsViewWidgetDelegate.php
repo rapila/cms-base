@@ -139,7 +139,6 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function doSort($sColumnIdentifier, $oDocumentToSort, $oRelatedDocument, $sPosition = 'before') {
-		$oQuery = DocumentQuery::create();
 		$iNewPosition = $oRelatedDocument->getSort() + ($sPosition === 'before' ? 0 : 1);
 		if($oDocumentToSort->getSort() < $oRelatedDocument->getSort()) {
 			$iNewPosition--;

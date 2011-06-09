@@ -2,7 +2,7 @@ Widget.types.link_category_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.link_category.create}}",
 				width: 530

@@ -2,7 +2,7 @@ Widget.types.string_detail = {
 	initialize: function() {
 		this.init_content();
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
 				width: 600

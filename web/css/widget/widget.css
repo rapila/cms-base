@@ -68,12 +68,13 @@ textarea.ui-widget-content:focus { border-color: #b5b5b5; }
   vertical-align: middle;
 }
 .ui-sortable-handle {
-  background-image: url('../../images/admin/sortable_handler.png');
+  background-image: url('../../images/admin/sortable_handler_inactive.png');
   background-repeat: no-repeat;
   background-position: center center;
   min-width: 16px;
   height: 12px;
 }
+.ui-sortable .ui-sortable-handle { background-image: url('../../images/admin/sortable_handler.png'); }
 .ui-placeholder { background-color: #d3d3d3; }
 .cmos-button {
   padding: 0.2em 1em 0.1em 1em;

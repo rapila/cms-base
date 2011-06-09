@@ -9,7 +9,7 @@ Widget.types.document_detail = {
 		this.uploader = Widget.create('file_upload');
 		
 		Widget.create('detail', function(widget) {
-			_this.detail_widget = widget.set_instance(_this);
+			widget.set_instance(_this);
 			var old_save_handler = _this.detail_widget.settings.save_callback;
 			_this.current_detail_id = null;
 			_this.detail_widget.settings.save_callback = function() {

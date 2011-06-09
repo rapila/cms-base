@@ -2,7 +2,7 @@ Widget.types.language_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.language.create}}",
 				width: 400
