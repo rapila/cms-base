@@ -173,14 +173,15 @@ Widget.types.list = {
 	},
 	
 	prepare_sort: function(row, into, metadata) {
-		var widget = this;
+		var _this = this;
 		into.addClass('sortable');
-		if(this.sort && this.sort[0] == metadata.field_name) {
+		if(this.sort && this.sort[0] == metadata.identifier) {
 			into.addClass(this.sort[1]);
 		}
 		into.click(function(){
-			widget.setOrderColumnSort(metadata.field_name, into.is('.asc') ? 'desc' : 'asc');
-			widget.reload();
+			_this.sort = [metadata.identifier, into.is('.asc') ? 'desc' : 'asc'];
+			_this.setOrderColumnSort.apply(_this, _this.sort);
+			_this.reload();
 		});
 	},
 	
@@ -191,7 +192,7 @@ Widget.types.list = {
 		all_headings.filter('.sortable').removeClass('asc').removeClass('desc').each(function() {
 			var sortable = jQuery(this);
 			var index = all_headings.index(sortable);
-			if(widget.schema_for_col(index).field_name == sort[0]) {
+			if(widget.schema_for_col(index).identifier == sort[0]) {
 				sortable.addClass(sort[1]);
 			}
 		});
@@ -203,7 +204,7 @@ Widget.types.list = {
 		var _this = this;
 		if(this.sort) {
 			jQuery.each(this.schema, function(i, schema) {
-				if(schema.field_name === _this.sort[0]) {
+				if(schema.identifier === _this.sort[0]) {
 					if(schema.display_type === 'reorderable' && _this.sort[1] === 'asc') {
 						currentSortSchema = schema;
 					}
