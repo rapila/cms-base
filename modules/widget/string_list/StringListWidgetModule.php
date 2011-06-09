@@ -40,6 +40,7 @@ class StringListWidgetModule extends WidgetModule {
 				break;
 			case 'languages_available':
 				$aResult['heading'] = StringPeer::getString('wns.languages_filled');
+				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -60,15 +61,15 @@ class StringListWidgetModule extends WidgetModule {
 		return array(StringDetailWidgetModule::SIDEBAR_CHANGED => $bResult);
 	}
 	
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'name_space') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'name_space') {
 			return StringPeer::STRING_KEY;
 		}
 		return null;
 	}
 	
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'name_space') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'name_space') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
 		return null;
