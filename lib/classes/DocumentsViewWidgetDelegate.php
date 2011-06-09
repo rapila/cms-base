@@ -10,7 +10,7 @@ class DocumentsViewWidgetDelegate {
 	private $oLanguageFilter;
 	
 	public function __construct() {
-		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name", "asc");
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
 		$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 	}
