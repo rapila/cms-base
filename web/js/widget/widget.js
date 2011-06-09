@@ -4,14 +4,16 @@ if(!jQuery.noop) {
 }
 
 //Bind method (heavily used)
-Function.prototype.bind = function(context) {
-	var __method = this;
-	var __arguments = jQuery.makeArray(arguments).slice(arguments.callee.length);
-	return function() {
-		var args = __arguments.concat(jQuery.makeArray(arguments));
-		return __method.apply(context, args);
+if(!Function.prototype.bind) {
+	Function.prototype.bind = function(context) {
+		var __method = this;
+		var __arguments = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		return function() {
+			var args = __arguments.concat(jQuery.makeArray(arguments));
+			return __method.apply(context, args);
+		};
 	};
-};
+}
 
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
