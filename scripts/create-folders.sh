@@ -1,11 +1,9 @@
 #! /bin/bash
 
-if [ ! -d "generated" ]; then
-	mkdir generated
-	mkdir generated/caches
-fi
-
-if [ ! -d "plugins" ]; then
-	mkdir plugins
-fi
-
+mkdir -p generated/caches/config
+mkdir -p generated/caches/full_page
+mkdir -p generated/caches/images
+mkdir -p generated/caches/lang
+mkdir -p generated/caches/templates
+mkdir -p generated/model
+mkdir -p plugins
