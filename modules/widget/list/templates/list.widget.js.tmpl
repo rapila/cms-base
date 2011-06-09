@@ -153,7 +153,7 @@ Widget.types.list = {
 			if(event.val) {
 				value = event.val();
 			}
-			this.setOption(metadata.field_name, value);
+			this.setOption(metadata.identifier, value);
 			this.reload();
 		}.bind(this);
 		if(is_widget) {
@@ -268,7 +268,7 @@ Widget.types.list = {
 		var rowData = {};
 		jQuery.each(this.schema, function(i) {
 			if(this.schema[i].display_type === 'data') {
-				rowData[this.schema[i].field_name] = row.data(this.schema[i].identifier);
+				rowData[this.schema[i].identifier] = row.data(this.schema[i].identifier);
 			}
 		}.bind(this));
 		return rowData;
@@ -426,7 +426,7 @@ Widget.types.list = {
 			var row = jQuery(this);
 			jQuery.each(widget.schema, function(i) {
 				if(widget.schema[i].display_type === 'data') {
-					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].field_name]) {
+					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].identifier]) {
 						is_found = false;
 						return false;
 					}
@@ -448,7 +448,7 @@ Widget.types.list = {
 			var all_data_matches = true;
 			jQuery.each(rowData, function(dataName, dataValue) {
 				jQuery.each(_this.schema, function(i) {
-					if(_this.schema[i].display_type === 'data' && _this.schema[i].field_name == dataName) {
+					if(_this.schema[i].display_type === 'data' && _this.schema[i].identifier == dataName) {
 						if(row.data(_this.schema[i].identifier) !== dataValue) {
 							all_data_matches = false;
 							return false;

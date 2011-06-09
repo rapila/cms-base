@@ -5,7 +5,7 @@ class CriteriaListWidgetDelegate {
 	private $sModelName;
 	private $sPeerClassName;
 	private $oListSettings;
-	private $bSortColumnForDisplayColumnDefined;
+	private $bDatabaseColumnForColumnDefined;
 	private $aFilterTypes;
 	
 	const SELECT_ALL = '__all';
@@ -23,7 +23,7 @@ class CriteriaListWidgetDelegate {
 		$this->oCriteriaDelegate = $oCriteriaDelegate;
 		$this->sModelName = $sModelName;
 		$this->sPeerClassName = "${sModelName}Peer";
-		$this->bSortColumnForDisplayColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForDisplayColumn');
+		$this->bDatabaseColumnForColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForDisplayColumn');
 		if($sDefaultOrderColumn !== null) {
 			$this->oListSettings->addSortColumn($sDefaultOrderColumn, $sDefaultSortOrder);
 		}
@@ -149,10 +149,22 @@ class CriteriaListWidgetDelegate {
 	
 	private function getDatabaseColumnForDisplayColumn($sSortColumn) {
 		$sSortOverride = null;
-		if($this->bSortColumnForDisplayColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForDisplayColumn($sSortColumn)) !== null) {
+		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForDisplayColumn($sColumnIdentifier)) !== null) {
 			return $sSortOverride;
 		}
-		return constant("$this->sPeerClassName::".strtoupper($sSortColumn));
+		$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
+		$sFieldName = $sColumnIdentifier;
+		if(isset($aMetadata['field_name'])) {
+			$sFieldName = $aMetadata['field_name'];
+		}
+		$sConstant = "$this->sPeerClassName::".strtoupper($sFieldName);
+		if(!defined($sConstant)) {
+			$sConstant = "$this->sPeerClassName::".strtoupper($sColumnIdentifier);
+		}
+		if($bLenient && !defined($sConstant)) {
+			return null;
+		}
+		return constant($sConstant);
 	}
 	
 	private function handleListSearching($oCriteria) {
@@ -182,16 +194,9 @@ class CriteriaListWidgetDelegate {
 			$oCriteria = new Criteria();
 		}
 		$oCriterion = null;
-		foreach($aRowData as $sRowDataColumnName => $mRowValue) {
-			$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sRowDataColumnName);
-			if(isset($aMetadata['field_name'])) {
-				$sRowDataColumnName = $aMetadata['field_name'];
-			}
-			$sConstant = "$this->sPeerClassName::".strtoupper($sRowDataColumnName);
-			if(defined($sConstant)) {
-				$sColumnName = constant($sConstant);
-				$oCriteria->addAnd($sColumnName, $mRowValue);
-			}
+		foreach($aRowData as $sRowDataColumnIdentifier => $mRowValue) {
+			$sColumn = $this->getDatabaseColumnForDisplayColumn($sRowDataColumnIdentifier, true);
+			$oCriteria->addAnd($sColumn, $mRowValue);
 		}
 		return $oCriteria;
 	}
