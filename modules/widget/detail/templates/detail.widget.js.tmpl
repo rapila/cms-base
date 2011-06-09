@@ -6,6 +6,7 @@ Widget.types.detail = {
 	set_instance: function(instance) {
 		var _this = this;
 		this.instance = instance;
+		instance.detail_widget = this;
 		this.settings.save_callback = function() {
 			var data = instance.content.serializeArrayKV();
 			instance.fire('saving', data);
