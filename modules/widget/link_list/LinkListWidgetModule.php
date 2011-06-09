@@ -69,21 +69,21 @@ class LinkListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'link_category_id') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'link_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
 	}
 
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'category_name') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'category_name') {
 			return LinkPeer::LINK_CATEGORY_ID;
 		}
-		if($sDisplayColumn === 'updated_at_formatted') {
+		if($sColumnIdentifier === 'updated_at_formatted') {
 			return LinkPeer::UPDATED_AT;
 		}
-		if($sDisplayColumn === 'language_name') {
+		if($sColumnIdentifier === 'language_name') {
 			return LinkPeer::LANGUAGE_ID;
 		}
 		return null;

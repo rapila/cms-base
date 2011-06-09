@@ -23,7 +23,7 @@ class CriteriaListWidgetDelegate {
 		$this->oCriteriaDelegate = $oCriteriaDelegate;
 		$this->sModelName = $sModelName;
 		$this->sPeerClassName = "${sModelName}Peer";
-		$this->bDatabaseColumnForColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForDisplayColumn');
+		$this->bDatabaseColumnForColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForColumn');
 		if($sDefaultOrderColumn !== null) {
 			$this->oListSettings->addSortColumn($sDefaultOrderColumn, $sDefaultSortOrder);
 		}
@@ -112,13 +112,13 @@ class CriteriaListWidgetDelegate {
 	private function handleListSorting($oCriteria) {
 		foreach($this->oListSettings->aSorts as $sSortColumn => $sSortOrder) {
 			$sMethod = 'add'.ucfirst(strtolower($sSortOrder)).'endingOrderByColumn';
-			$oCriteria->$sMethod($this->getDatabaseColumnForDisplayColumn($sSortColumn));
+			$oCriteria->$sMethod($this->getDatabaseColumnForColumn($sSortColumn));
 		}
 	}
 	
 	private function handleListFiltering($oCriteria) {
 		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $sFilterValue) {
-			$sFilterColumn = $this->getDatabaseColumnForDisplayColumn($sFilterIdentifier);
+			$sFilterColumn = $this->getDatabaseColumnForColumn($sFilterIdentifier);
 			if($sFilterValue === self::SELECT_ALL || $this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_MANUAL) {
 				continue;
 			}
@@ -147,9 +147,9 @@ class CriteriaListWidgetDelegate {
 		}
 	}
 	
-	private function getDatabaseColumnForDisplayColumn($sSortColumn) {
+	private function getDatabaseColumnForColumn($sSortColumn) {
 		$sSortOverride = null;
-		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForDisplayColumn($sColumnIdentifier)) !== null) {
+		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForColumn($sColumnIdentifier)) !== null) {
 			return $sSortOverride;
 		}
 		$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
@@ -195,8 +195,10 @@ class CriteriaListWidgetDelegate {
 		}
 		$oCriterion = null;
 		foreach($aRowData as $sRowDataColumnIdentifier => $mRowValue) {
-			$sColumn = $this->getDatabaseColumnForDisplayColumn($sRowDataColumnIdentifier, true);
-			$oCriteria->addAnd($sColumn, $mRowValue);
+			$sColumn = $this->getDatabaseColumnForColumn($sRowDataColumnIdentifier, true);
+			if($sColumn !== null) {
+				$oCriteria->addAnd($sColumn, $mRowValue);
+			}
 		}
 		return $oCriteria;
 	}
