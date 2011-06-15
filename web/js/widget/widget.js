@@ -423,14 +423,21 @@ jQuery.extend(Widget, {
 				if(attributes.constructor !== FormData) {
 					attr_str = new FormData();
 					jQuery.each(attributes, function(i, val) {
-						if(val instanceof File || val instanceof Blob) {
+						if(val instanceof File || (window.Blob && val instanceof Blob)) {
 							attr_str.append(i, val);
 						} else {
 							attr_str.append(i, JSON.stringify(val));
 						}
 					});
 				}
-				options.content_type = false;
+				if(attr_str.fake) {
+					// Is fake FormData object
+					options.content_type = "multipart/form-data; boundary="+attr_str.boundary;
+					attr_str = attr_str.toString();
+					options.send_as_binary = true;
+				} else {
+					options.content_type = false;
+				}
 			} else if(options.content_type === 'application/x-www-form-urlencoded') {
 				attr_str = '';
 				jQuery.each(attributes, function(i, val) {
@@ -463,6 +470,9 @@ jQuery.extend(Widget, {
 				}
 				if(options.upload_progess_callback) {
 					xmlhttprequest.upload.addEventListener('progress', options.upload_progess_callback, false);
+				}
+				if(options.send_as_binary && xmlhttprequest.sendAsBinary) {
+					xmlhttprequest.send = xmlhttprequest.sendAsBinary
 				}
 				return xmlhttprequest;
 			},
