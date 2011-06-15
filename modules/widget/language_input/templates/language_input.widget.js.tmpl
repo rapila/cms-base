@@ -2,7 +2,7 @@ Widget.types.language_input = {
 	prepare: function() {
 		var option = jQuery('<option/>');
 		// wrap select name language_id if option return_options_only is set to false
-		if(this.settings.hide_on_monolingual && this.settings.is_monolingual) {
+		if(!this.settings.use_admin_languages && this.settings.hide_on_monolingual && this.settings.is_monolingual) {
 			this._element.next('br').hide();
 			this._element.parent().find('label[for="'+this._element.attr('name').escapeSelector()+'"]').hide();
 			this._element.hide();
