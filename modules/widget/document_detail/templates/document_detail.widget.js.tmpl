@@ -98,7 +98,7 @@ Widget.types.document_detail = {
 			this.content.find('div.hide_if_not_saved').show();
 			this.content.find(".detail_id").text(document_data.Id);
 			this.content.find(".file_size").text(document_data.FileInfo);
-			this.content.find(".original_name").text(document_data.OriginalName);
+			this.content.find(".original_name").text(document_data.OriginalName).attr('href', FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true');
 			
 			if(upload_mode === 'new') {
 				if(!jQuery.trim(this.content.find("input[name='name']").val())) {
