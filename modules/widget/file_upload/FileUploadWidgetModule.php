@@ -85,6 +85,14 @@ class FileUploadWidgetModule extends WidgetModule {
 		return $oDocument->getId();
 	}
 	
+	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder == null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addResource('widget/html5-formdata/formdata.js');
+		self::includeWidgetResources(false, $oResourceIncluder);
+	}
+	
 	public function accepts($sFileName, $sMimeType = null) {
 		$aName = explode('.', $sFileName);
 		$sExtension = null;
