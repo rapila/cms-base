@@ -147,7 +147,7 @@ class CriteriaListWidgetDelegate {
 		}
 	}
 	
-	private function getDatabaseColumnForColumn($sColumnIdentifier, $bLenient=false) {
+	private function getDatabaseColumnForColumn($sColumnIdentifier, $bLenient = false) {
 		$sSortOverride = null;
 		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForColumn($sColumnIdentifier)) !== null) {
 			return $sSortOverride;

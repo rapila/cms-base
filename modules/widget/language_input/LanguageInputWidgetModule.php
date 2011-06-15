@@ -8,7 +8,7 @@ class LanguageInputWidgetModule extends WidgetModule {
 
 	public function __construct($sWidgetId) {
 		parent::__construct($sWidgetId);
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'is_monolingual', LanguagePeer::doCount(new Criteria()) <= 1);
+		$this->setSetting('is_monolingual', LanguagePeer::doCount(new Criteria()) <= 1);
 	}
 
 	public function getLanguages($bUseAdminLanguages = false) {
