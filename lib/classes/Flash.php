@@ -153,7 +153,7 @@ class Flash {
 					}
 					return false;
 				default:
-					$this->addMessage('upload_error');
+					$this->addMessage('upload_error', array('code' => $_FILES[$sName]["error"]));
 					return false;
 			}
 		}
