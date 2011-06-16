@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(50),
+	`name` VARCHAR(50)  NOT NULL,
+	`identifier` VARCHAR(30),
 	`page_type` VARCHAR(15),
 	`template_name` VARCHAR(50),
 	`is_inactive` TINYINT(1) default 1,
@@ -28,6 +29,7 @@ CREATE TABLE `pages`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
+	UNIQUE KEY `pages_U_1` (`identifier`),
 	INDEX `pages_FI_1` (`created_by`),
 	CONSTRAINT `pages_FK_1`
 		FOREIGN KEY (`created_by`)

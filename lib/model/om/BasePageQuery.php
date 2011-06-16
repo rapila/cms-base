@@ -8,6 +8,7 @@
  *
  * @method     PageQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     PageQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     PageQuery orderByIdentifier($order = Criteria::ASC) Order by the identifier column
  * @method     PageQuery orderByPageType($order = Criteria::ASC) Order by the page_type column
  * @method     PageQuery orderByTemplateName($order = Criteria::ASC) Order by the template_name column
  * @method     PageQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
@@ -24,6 +25,7 @@
  *
  * @method     PageQuery groupById() Group by the id column
  * @method     PageQuery groupByName() Group by the name column
+ * @method     PageQuery groupByIdentifier() Group by the identifier column
  * @method     PageQuery groupByPageType() Group by the page_type column
  * @method     PageQuery groupByTemplateName() Group by the template_name column
  * @method     PageQuery groupByIsInactive() Group by the is_inactive column
@@ -71,6 +73,7 @@
  *
  * @method     Page findOneById(int $id) Return the first Page filtered by the id column
  * @method     Page findOneByName(string $name) Return the first Page filtered by the name column
+ * @method     Page findOneByIdentifier(string $identifier) Return the first Page filtered by the identifier column
  * @method     Page findOneByPageType(string $page_type) Return the first Page filtered by the page_type column
  * @method     Page findOneByTemplateName(string $template_name) Return the first Page filtered by the template_name column
  * @method     Page findOneByIsInactive(boolean $is_inactive) Return the first Page filtered by the is_inactive column
@@ -87,6 +90,7 @@
  *
  * @method     array findById(int $id) Return Page objects filtered by the id column
  * @method     array findByName(string $name) Return Page objects filtered by the name column
+ * @method     array findByIdentifier(string $identifier) Return Page objects filtered by the identifier column
  * @method     array findByPageType(string $page_type) Return Page objects filtered by the page_type column
  * @method     array findByTemplateName(string $template_name) Return Page objects filtered by the template_name column
  * @method     array findByIsInactive(boolean $is_inactive) Return Page objects filtered by the is_inactive column
@@ -246,6 +250,28 @@ abstract class BasePageQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(PagePeer::NAME, $name, $comparison);
+	}
+
+	/**
+	 * Filter the query on the identifier column
+	 * 
+	 * @param     string $identifier The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByIdentifier($identifier = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($identifier)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $identifier)) {
+				$identifier = str_replace('*', '%', $identifier);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(PagePeer::IDENTIFIER, $identifier, $comparison);
 	}
 
 	/**

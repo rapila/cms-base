@@ -26,7 +26,7 @@ abstract class BasePagePeer {
 	const TM_CLASS = 'PageTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 15;
+	const NUM_COLUMNS = 16;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -36,6 +36,9 @@ abstract class BasePagePeer {
 
 	/** the column name for the NAME field */
 	const NAME = 'pages.NAME';
+
+	/** the column name for the IDENTIFIER field */
+	const IDENTIFIER = 'pages.IDENTIFIER';
 
 	/** the column name for the PAGE_TYPE field */
 	const PAGE_TYPE = 'pages.PAGE_TYPE';
@@ -109,12 +112,12 @@ abstract class BasePagePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'PageType', 'TemplateName', 'IsInactive', 'IsFolder', 'IsHidden', 'IsProtected', 'TreeLeft', 'TreeRight', 'TreeLevel', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'pageType', 'templateName', 'isInactive', 'isFolder', 'isHidden', 'isProtected', 'treeLeft', 'treeRight', 'treeLevel', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::PAGE_TYPE, self::TEMPLATE_NAME, self::IS_INACTIVE, self::IS_FOLDER, self::IS_HIDDEN, self::IS_PROTECTED, self::TREE_LEFT, self::TREE_RIGHT, self::TREE_LEVEL, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'PAGE_TYPE', 'TEMPLATE_NAME', 'IS_INACTIVE', 'IS_FOLDER', 'IS_HIDDEN', 'IS_PROTECTED', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'page_type', 'template_name', 'is_inactive', 'is_folder', 'is_hidden', 'is_protected', 'tree_left', 'tree_right', 'tree_level', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Identifier', 'PageType', 'TemplateName', 'IsInactive', 'IsFolder', 'IsHidden', 'IsProtected', 'TreeLeft', 'TreeRight', 'TreeLevel', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'identifier', 'pageType', 'templateName', 'isInactive', 'isFolder', 'isHidden', 'isProtected', 'treeLeft', 'treeRight', 'treeLevel', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::IDENTIFIER, self::PAGE_TYPE, self::TEMPLATE_NAME, self::IS_INACTIVE, self::IS_FOLDER, self::IS_HIDDEN, self::IS_PROTECTED, self::TREE_LEFT, self::TREE_RIGHT, self::TREE_LEVEL, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'IDENTIFIER', 'PAGE_TYPE', 'TEMPLATE_NAME', 'IS_INACTIVE', 'IS_FOLDER', 'IS_HIDDEN', 'IS_PROTECTED', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'identifier', 'page_type', 'template_name', 'is_inactive', 'is_folder', 'is_hidden', 'is_protected', 'tree_left', 'tree_right', 'tree_level', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -124,12 +127,12 @@ abstract class BasePagePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'PageType' => 2, 'TemplateName' => 3, 'IsInactive' => 4, 'IsFolder' => 5, 'IsHidden' => 6, 'IsProtected' => 7, 'TreeLeft' => 8, 'TreeRight' => 9, 'TreeLevel' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, 'CreatedBy' => 13, 'UpdatedBy' => 14, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'pageType' => 2, 'templateName' => 3, 'isInactive' => 4, 'isFolder' => 5, 'isHidden' => 6, 'isProtected' => 7, 'treeLeft' => 8, 'treeRight' => 9, 'treeLevel' => 10, 'createdAt' => 11, 'updatedAt' => 12, 'createdBy' => 13, 'updatedBy' => 14, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::PAGE_TYPE => 2, self::TEMPLATE_NAME => 3, self::IS_INACTIVE => 4, self::IS_FOLDER => 5, self::IS_HIDDEN => 6, self::IS_PROTECTED => 7, self::TREE_LEFT => 8, self::TREE_RIGHT => 9, self::TREE_LEVEL => 10, self::CREATED_AT => 11, self::UPDATED_AT => 12, self::CREATED_BY => 13, self::UPDATED_BY => 14, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'PAGE_TYPE' => 2, 'TEMPLATE_NAME' => 3, 'IS_INACTIVE' => 4, 'IS_FOLDER' => 5, 'IS_HIDDEN' => 6, 'IS_PROTECTED' => 7, 'TREE_LEFT' => 8, 'TREE_RIGHT' => 9, 'TREE_LEVEL' => 10, 'CREATED_AT' => 11, 'UPDATED_AT' => 12, 'CREATED_BY' => 13, 'UPDATED_BY' => 14, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'page_type' => 2, 'template_name' => 3, 'is_inactive' => 4, 'is_folder' => 5, 'is_hidden' => 6, 'is_protected' => 7, 'tree_left' => 8, 'tree_right' => 9, 'tree_level' => 10, 'created_at' => 11, 'updated_at' => 12, 'created_by' => 13, 'updated_by' => 14, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Identifier' => 2, 'PageType' => 3, 'TemplateName' => 4, 'IsInactive' => 5, 'IsFolder' => 6, 'IsHidden' => 7, 'IsProtected' => 8, 'TreeLeft' => 9, 'TreeRight' => 10, 'TreeLevel' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, 'CreatedBy' => 14, 'UpdatedBy' => 15, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'pageType' => 3, 'templateName' => 4, 'isInactive' => 5, 'isFolder' => 6, 'isHidden' => 7, 'isProtected' => 8, 'treeLeft' => 9, 'treeRight' => 10, 'treeLevel' => 11, 'createdAt' => 12, 'updatedAt' => 13, 'createdBy' => 14, 'updatedBy' => 15, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::IDENTIFIER => 2, self::PAGE_TYPE => 3, self::TEMPLATE_NAME => 4, self::IS_INACTIVE => 5, self::IS_FOLDER => 6, self::IS_HIDDEN => 7, self::IS_PROTECTED => 8, self::TREE_LEFT => 9, self::TREE_RIGHT => 10, self::TREE_LEVEL => 11, self::CREATED_AT => 12, self::UPDATED_AT => 13, self::CREATED_BY => 14, self::UPDATED_BY => 15, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'IDENTIFIER' => 2, 'PAGE_TYPE' => 3, 'TEMPLATE_NAME' => 4, 'IS_INACTIVE' => 5, 'IS_FOLDER' => 6, 'IS_HIDDEN' => 7, 'IS_PROTECTED' => 8, 'TREE_LEFT' => 9, 'TREE_RIGHT' => 10, 'TREE_LEVEL' => 11, 'CREATED_AT' => 12, 'UPDATED_AT' => 13, 'CREATED_BY' => 14, 'UPDATED_BY' => 15, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'page_type' => 3, 'template_name' => 4, 'is_inactive' => 5, 'is_folder' => 6, 'is_hidden' => 7, 'is_protected' => 8, 'tree_left' => 9, 'tree_right' => 10, 'tree_level' => 11, 'created_at' => 12, 'updated_at' => 13, 'created_by' => 14, 'updated_by' => 15, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
 	);
 
 	/**
@@ -203,6 +206,7 @@ abstract class BasePagePeer {
 		if (null === $alias) {
 			$criteria->addSelectColumn(PagePeer::ID);
 			$criteria->addSelectColumn(PagePeer::NAME);
+			$criteria->addSelectColumn(PagePeer::IDENTIFIER);
 			$criteria->addSelectColumn(PagePeer::PAGE_TYPE);
 			$criteria->addSelectColumn(PagePeer::TEMPLATE_NAME);
 			$criteria->addSelectColumn(PagePeer::IS_INACTIVE);
@@ -219,6 +223,7 @@ abstract class BasePagePeer {
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NAME');
+			$criteria->addSelectColumn($alias . '.IDENTIFIER');
 			$criteria->addSelectColumn($alias . '.PAGE_TYPE');
 			$criteria->addSelectColumn($alias . '.TEMPLATE_NAME');
 			$criteria->addSelectColumn($alias . '.IS_INACTIVE');
@@ -1602,9 +1607,9 @@ abstract class BasePagePeer {
 				while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 					$key = PagePeer::getPrimaryKeyHashFromRow($row, 0);
 					if (null !== ($object = PagePeer::getInstanceFromPool($key))) {
-						$object->setLeftValue($row[8]);
-						$object->setRightValue($row[9]);
-						$object->setLevel($row[10]);
+						$object->setLeftValue($row[9]);
+						$object->setRightValue($row[10]);
+						$object->setLevel($row[11]);
 						$object->clearNestedSetChildren();
 					}
 				}

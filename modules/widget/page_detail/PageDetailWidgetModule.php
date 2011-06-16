@@ -146,6 +146,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		foreach($aSetProperties as $sRemainingPropertyName => $sRemainingPropertyValue) {
 			$aResult[$sRemainingPropertyName] = array('value' => $sRemainingPropertyValue, 'defaultValue' => null, 'type' => null);
 		}
+		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
 		return $aResult;
 	}
 	
@@ -279,11 +280,15 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		// set valid posted page properties
 		foreach($aPageData['page_properties'] as $sName => $sValue) {
+			if($sName === 'page_identifier') {
+				$this->oPage->setIdentifier($sValue ? $sValue : null);
+			} else {
 				if(trim($sValue) !== '') {
 					$oPageProperty = new PageProperty();
 					$oPageProperty->setName($sName);
 					$oPageProperty->setValue($sValue);
 					$this->oPage->addPageProperty($oPageProperty);
+				}
 			}
 		}
 	}

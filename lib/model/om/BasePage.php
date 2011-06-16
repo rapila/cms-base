@@ -37,6 +37,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $name;
 
 	/**
+	 * The value for the identifier field.
+	 * @var        string
+	 */
+	protected $identifier;
+
+	/**
 	 * The value for the page_type field.
 	 * @var        string
 	 */
@@ -225,6 +231,16 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Get the [identifier] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getIdentifier()
+	{
+		return $this->identifier;
 	}
 
 	/**
@@ -452,6 +468,26 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		return $this;
 	} // setName()
+
+	/**
+	 * Set the value of [identifier] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setIdentifier($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->identifier !== $v) {
+			$this->identifier = $v;
+			$this->modifiedColumns[] = PagePeer::IDENTIFIER;
+		}
+
+		return $this;
+	} // setIdentifier()
 
 	/**
 	 * Set the value of [page_type] column.
@@ -829,19 +865,20 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->page_type = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->template_name = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->is_inactive = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
-			$this->is_folder = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-			$this->is_hidden = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
-			$this->is_protected = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
-			$this->tree_left = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-			$this->tree_right = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-			$this->tree_level = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->created_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->updated_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->identifier = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->page_type = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->template_name = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->is_inactive = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
+			$this->is_folder = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
+			$this->is_hidden = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
+			$this->is_protected = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
+			$this->tree_left = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->tree_right = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->tree_level = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -850,7 +887,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 15; // 15 = PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 16; // 16 = PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Page object", $e);
@@ -1320,42 +1357,45 @@ abstract class BasePage extends BaseObject  implements Persistent
 				return $this->getName();
 				break;
 			case 2:
-				return $this->getPageType();
+				return $this->getIdentifier();
 				break;
 			case 3:
-				return $this->getTemplateName();
+				return $this->getPageType();
 				break;
 			case 4:
-				return $this->getIsInactive();
+				return $this->getTemplateName();
 				break;
 			case 5:
-				return $this->getIsFolder();
+				return $this->getIsInactive();
 				break;
 			case 6:
-				return $this->getIsHidden();
+				return $this->getIsFolder();
 				break;
 			case 7:
-				return $this->getIsProtected();
+				return $this->getIsHidden();
 				break;
 			case 8:
-				return $this->getTreeLeft();
+				return $this->getIsProtected();
 				break;
 			case 9:
-				return $this->getTreeRight();
+				return $this->getTreeLeft();
 				break;
 			case 10:
-				return $this->getTreeLevel();
+				return $this->getTreeRight();
 				break;
 			case 11:
-				return $this->getCreatedAt();
+				return $this->getTreeLevel();
 				break;
 			case 12:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 13:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 14:
+				return $this->getCreatedBy();
+				break;
+			case 15:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1384,19 +1424,20 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
-			$keys[2] => $this->getPageType(),
-			$keys[3] => $this->getTemplateName(),
-			$keys[4] => $this->getIsInactive(),
-			$keys[5] => $this->getIsFolder(),
-			$keys[6] => $this->getIsHidden(),
-			$keys[7] => $this->getIsProtected(),
-			$keys[8] => $this->getTreeLeft(),
-			$keys[9] => $this->getTreeRight(),
-			$keys[10] => $this->getTreeLevel(),
-			$keys[11] => $this->getCreatedAt(),
-			$keys[12] => $this->getUpdatedAt(),
-			$keys[13] => $this->getCreatedBy(),
-			$keys[14] => $this->getUpdatedBy(),
+			$keys[2] => $this->getIdentifier(),
+			$keys[3] => $this->getPageType(),
+			$keys[4] => $this->getTemplateName(),
+			$keys[5] => $this->getIsInactive(),
+			$keys[6] => $this->getIsFolder(),
+			$keys[7] => $this->getIsHidden(),
+			$keys[8] => $this->getIsProtected(),
+			$keys[9] => $this->getTreeLeft(),
+			$keys[10] => $this->getTreeRight(),
+			$keys[11] => $this->getTreeLevel(),
+			$keys[12] => $this->getCreatedAt(),
+			$keys[13] => $this->getUpdatedAt(),
+			$keys[14] => $this->getCreatedBy(),
+			$keys[15] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUserRelatedByCreatedBy) {
@@ -1443,42 +1484,45 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->setName($value);
 				break;
 			case 2:
-				$this->setPageType($value);
+				$this->setIdentifier($value);
 				break;
 			case 3:
-				$this->setTemplateName($value);
+				$this->setPageType($value);
 				break;
 			case 4:
-				$this->setIsInactive($value);
+				$this->setTemplateName($value);
 				break;
 			case 5:
-				$this->setIsFolder($value);
+				$this->setIsInactive($value);
 				break;
 			case 6:
-				$this->setIsHidden($value);
+				$this->setIsFolder($value);
 				break;
 			case 7:
-				$this->setIsProtected($value);
+				$this->setIsHidden($value);
 				break;
 			case 8:
-				$this->setTreeLeft($value);
+				$this->setIsProtected($value);
 				break;
 			case 9:
-				$this->setTreeRight($value);
+				$this->setTreeLeft($value);
 				break;
 			case 10:
-				$this->setTreeLevel($value);
+				$this->setTreeRight($value);
 				break;
 			case 11:
-				$this->setCreatedAt($value);
+				$this->setTreeLevel($value);
 				break;
 			case 12:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 13:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 14:
+				$this->setCreatedBy($value);
+				break;
+			case 15:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1507,19 +1551,20 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setPageType($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setTemplateName($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setIsInactive($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setIsFolder($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setIsHidden($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIsProtected($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setTreeLeft($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setTreeRight($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setTreeLevel($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedBy($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedBy($arr[$keys[14]]);
+		if (array_key_exists($keys[2], $arr)) $this->setIdentifier($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setPageType($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setTemplateName($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setIsInactive($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIsFolder($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setIsHidden($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIsProtected($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setTreeLeft($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setTreeRight($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setTreeLevel($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedBy($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedBy($arr[$keys[15]]);
 	}
 
 	/**
@@ -1533,6 +1578,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(PagePeer::ID)) $criteria->add(PagePeer::ID, $this->id);
 		if ($this->isColumnModified(PagePeer::NAME)) $criteria->add(PagePeer::NAME, $this->name);
+		if ($this->isColumnModified(PagePeer::IDENTIFIER)) $criteria->add(PagePeer::IDENTIFIER, $this->identifier);
 		if ($this->isColumnModified(PagePeer::PAGE_TYPE)) $criteria->add(PagePeer::PAGE_TYPE, $this->page_type);
 		if ($this->isColumnModified(PagePeer::TEMPLATE_NAME)) $criteria->add(PagePeer::TEMPLATE_NAME, $this->template_name);
 		if ($this->isColumnModified(PagePeer::IS_INACTIVE)) $criteria->add(PagePeer::IS_INACTIVE, $this->is_inactive);
@@ -1608,6 +1654,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setName($this->name);
+		$copyObj->setIdentifier($this->identifier);
 		$copyObj->setPageType($this->page_type);
 		$copyObj->setTemplateName($this->template_name);
 		$copyObj->setIsInactive($this->is_inactive);
@@ -2487,6 +2534,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 	{
 		$this->id = null;
 		$this->name = null;
+		$this->identifier = null;
 		$this->page_type = null;
 		$this->template_name = null;
 		$this->is_inactive = null;

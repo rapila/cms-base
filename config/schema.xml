@@ -1,12 +1,16 @@
 <table name="pages" phpName="Page">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-	<column name="name" type="varchar" size="50" />
+	<column name="name" type="varchar" required="true" size="50" />
+	<column name="identifier" type="varchar" size="30" />
 	<column name="page_type" type="varchar" size="15" />
 	<column name="template_name" type="varchar" size="50" />
 	<column name="is_inactive" type="boolean" size="1" default="1" />
 	<column name="is_folder" type="boolean" size="1" default="0" />
 	<column name="is_hidden" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
+	<unique>
+		<unique-column name="identifier" />
+	</unique>
 	<behavior name="nested_set" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
