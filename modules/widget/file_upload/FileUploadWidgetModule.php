@@ -56,9 +56,9 @@ class FileUploadWidgetModule extends WidgetModule {
     $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
+		$oDocument->setName($sFileName);
 		
 		if($oDocument->isNew()) {
-			$oDocument->setName($sFileName);
 			$oDocument->setLanguageId($aOptions['language_id']);
 			$oDocument->setIsProtected($aOptions['is_protected']);
 			if($aOptions['document_category_id']) {

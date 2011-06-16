@@ -52,7 +52,7 @@ Widget.types.link_detail = {
 			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
 			this.content.find(".created_info").text(link_data.CreatedInfo);
-			this.content.find("select[name='language_id']").val(link_data.LanguageId === null ? '' : link_data.LanguageId);
+			this.content.find("select[name='language_id']").val(link_data.LanguageId || '');
 			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 		});
