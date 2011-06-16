@@ -53,11 +53,11 @@ Widget.types.page_detail = {
 	},
 	
 	disable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', 'disabled');
+		this._element.find('input, textarea, button').attr('disabled', true);
 	},
 	
 	enable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', null);
+		this._element.find('input, textarea, button').attr('disabled', false);
 	},
 	
 	accordion_active: function() {
