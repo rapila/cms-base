@@ -194,29 +194,29 @@ Widget.types.page_detail = {
 			page_properties_header.show();
 			var default_name = "{{writeString=wns.default}}";
 			for(property_name in page_data.page_properties) {
-				var property_container = jQuery("<div/>");
-				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.PagePropertyNameSpace.length)).attr("for", property_name));
-				for(name in page_data.page_properties[property_name]) {
-					if(name === 'value') {
-						var background_color ='';
-						if(page_data.page_properties[property_name]['type'] == 'color') {
-							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default'];
+				var attrs = page_data.page_properties[property_name];
+				var property_container = jQuery.parseHTML('{{includeTemplate=property_container}}');
+				property_container.data('property-name', property_name);
+				var label = property_container.find('label').text(property_name);
+				var input = property_container.find('input').val(attrs.value);
+				var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
+				if(attrs.type === 'color') {
+					input.bind('change', function(defaultValue) {
+						if(this.val()) {
+							this.css({backgroundColor: this.val()});
+						} else {
+							this.css({backgroundColor: defaultValue});
 						}
-						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
-						var type = page_data.page_properties[property_name]['type'] ? page_data.page_properties[property_name]['type'] : 'text';
-						var property_input = jQuery('<input/>').attr({name: property_name, type: type, "class": 'ui-widget-content'+type_class, value: page_data.page_properties[property_name][name], style: 'background-color:'+background_color+';'});
-						property_container.append(property_input);
-					}
-					if(name === 'default') {
-						property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));
-					}
+					}.bind(input, attrs.defaultValue)).triggerHandler('change');
 				}
 				page_properties_container.append(property_container);
 			} 
 		} else {
 			page_properties_header.hide();
 		}
-		page_properties_container.hide();
+		if(!page_properties_header.is('.ui-state-active')) {
+			page_properties_container.hide();
+		}
 	},
 	
 	current_page_name: function() {
@@ -236,8 +236,20 @@ Widget.types.page_detail = {
 			});
 		}
 		
+		var data = this._element.serializeArrayKV();
+		delete data.page_property;
+		data.page_properties = {};
+		this._element.find("div.page_properties .page_property_container").each(function() {
+			var page_property_container = jQuery(this);
+			var property_name = page_property_container.data('property-name');
+			var property_value = page_property_container.find('input').val();
+			if(property_value) {
+				data.page_properties[property_name] = property_value;
+			}
+		});
+		
 		//Save the data
-		this.saveData(this._element.serializeArrayKV(), function() {
+		this.saveData(data, function() {
 			this.fill_data();
 			this.fire('saved');
 			
