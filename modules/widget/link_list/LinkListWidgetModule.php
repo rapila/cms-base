@@ -39,6 +39,7 @@ class LinkListWidgetModule extends WidgetModule {
 		switch($sColumnIdentifier) {
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('wns.name');
@@ -99,7 +100,32 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}
-
+	
+  public function allowSort($sSortColumn) {
+		return $this->oDelegateProxy->getLinkCategoryId() !== CriteriaListWidgetDelegate::SELECT_ALL;
+	}
+	
+	public function doSort($sColumnIdentifier, $oLinkToSort, $oRelatedLink, $sPosition = 'before') {
+		$iNewPosition = $oRelatedLink->getSort() + ($sPosition === 'before' ? 0 : 1);
+		if($oLinkToSort->getSort() < $oRelatedLink->getSort()) {
+			$iNewPosition--;
+		}
+		$oLinkToSort->setSort($iNewPosition);
+		$oLinkToSort->save();
+		$oQuery = $this->oDelegateProxy->getCriteria();
+		$oQuery->filterById($oLinkToSort->getId(), Criteria::NOT_EQUAL);
+		$oQuery->orderBySort();
+		$i = 1;
+		foreach($oQuery->find() as $oLink) {
+			if($i == $iNewPosition) {
+				$i++;
+			}
+			$oLink->setSort($i);
+			$oLink->save();
+			$i++;
+		}
+	}
+	
 	public function getCriteria() {
 		return LinkQuery::create()->excludeExternallyManaged();
 	}
