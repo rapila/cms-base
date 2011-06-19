@@ -19,7 +19,7 @@ Widget.types.document_edit = {
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
 		
-		this.result_list = jQuery('<ul/>');
+		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
 		this.reload_preview();
 		this._element.append(this.result_list);
 		this.result_list.delegate('img', 'click', function() {
