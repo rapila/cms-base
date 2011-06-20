@@ -197,7 +197,7 @@ Widget.types.page_detail = {
 				var attrs = page_data.page_properties[property_name];
 				var property_container = jQuery.parseHTML('{{includeTemplate=property_container}}');
 				property_container.data('property-name', property_name);
-				var label = property_container.find('label').text(property_name);
+				var label = property_container.find('label').text(attrs.display_name);
 				var input = property_container.find('input').val(attrs.value);
 				var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
 				if(attrs.type === 'color') {
