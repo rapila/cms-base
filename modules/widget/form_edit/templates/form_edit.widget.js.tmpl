@@ -65,7 +65,7 @@ Widget.types.form_edit = {
 				if(input.attr('type') !== 'checkbox') {
 					input.val(value);
 				} else {
-					input.attr('checked', value);
+					input.prop('checked', value);
 				}
 			}.bind(this));
 		}
@@ -86,7 +86,7 @@ Widget.types.form_edit = {
 				if(input.attr('type') !== 'checkbox') {
 					input.val(value);
 				} else {
-					input.attr('checked', value);
+					input.prop('checked', value);
 				}
 			}
 		}.bind(this));

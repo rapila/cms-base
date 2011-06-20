@@ -36,7 +36,7 @@ Widget.types.group_input = {
 			value_obj[value] = true;
 		});
 		this._element.find("input[name='group_ids[]']").each(function(i, checkbox) {
-			jQuery(checkbox).attr('checked', !!value_obj[checkbox.value]);
+			jQuery(checkbox).prop('checked', !!value_obj[checkbox.value]);
 		});
 	}
 };

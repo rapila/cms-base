@@ -49,7 +49,7 @@ Widget.types.link_detail = {
 				url_preview.attr('href', link_data.Url);
 			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
-			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
+			this.content.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
 			this.content.find(".created_info").text(link_data.CreatedInfo);
 			this.content.find("select[name='language_id']").val(link_data.LanguageId || '');
