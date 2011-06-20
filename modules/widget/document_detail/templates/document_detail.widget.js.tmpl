@@ -86,7 +86,7 @@ Widget.types.document_detail = {
 	},
 	
 	fill_data: function(upload_mode) {
-		this.detail_widget.set_is_loading(true);
+		this.detail_widget && this.detail_widget.set_is_loading(true);
 		this.documentData(function(document_data) {
 			this.content.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
@@ -131,7 +131,7 @@ Widget.types.document_detail = {
 				this.current_detail_id = document_data.Id;
 				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 			}
-			this.detail_widget.set_is_loading(false);
+			this.detail_widget && this.detail_widget.set_is_loading(false);
 		});
 	},
 	
