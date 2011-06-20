@@ -26,8 +26,8 @@ Widget.types.document_category_detail = {
 		this.categoryData(function(category_data) {
 			this.content.find("input[name='name']").val(category_data.Name);
 			this.content.find("input[name='max_width']").val(category_data.MaxWidth);
-			this.content.find("input[name='is_inactive']").attr('checked', category_data.IsInactive);
-			this.content.find("input[name='is_externally_managed']").attr('checked', category_data.IsExternallyManaged);
+			this.content.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
+			this.content.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
 			this.content.find(".updated_info").text(category_data.UpdatedInfo);
 			this.content.find(".created_info").text(category_data.CreatedInfo);
 			this.content.find("span[class='detail_id']").text(category_data.Id);
