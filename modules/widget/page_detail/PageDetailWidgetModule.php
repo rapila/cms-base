@@ -126,9 +126,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	*/	
 	private function getAvailablePageProperties($oPage) {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
-		if(count($aAvailablePageProperties) === 0) {
-			return array();
-		}
 		$aResult = array();
 		$aSetProperties = array();
 		foreach($oPage->getPageProperties() as $oPageProperty) {
@@ -147,6 +144,11 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult[$sRemainingPropertyName] = array('value' => $sRemainingPropertyValue, 'defaultValue' => null, 'type' => null);
 		}
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
+		
+		foreach($aResult as $sName => &$aValues) {
+			$aValues['display_name'] = StringPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
+		}
+		
 		return $aResult;
 	}
 	
