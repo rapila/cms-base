@@ -31,6 +31,7 @@ special_pages:
   search_result: "search_result"
 
 domain_holder:
+  domain: 'example.com'
   name:   'Example Site'
   email:  'info@example.com'
 
