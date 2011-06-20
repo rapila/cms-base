@@ -44,7 +44,13 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 			}
 			$oSubTemplate = null;
 			try {
-				$oSubTemplate = $this->constructTemplate($sMimeType);
+				try {
+					$oSubTemplate = $this->constructTemplate($sMimeType);
+				} catch (Exception $e) {
+					$sMimeTypePrefix = explode('/', $sMimeType);
+					$sMimeTypePrefix = $sMimeTypePrefix[0];
+					$oSubTemplate = $this->constructTemplate("$sMimeTypePrefix/generic");
+				}
 			} catch (Exception $e) {
 				$oSubTemplate = $this->constructTemplate("generic");
 			}
