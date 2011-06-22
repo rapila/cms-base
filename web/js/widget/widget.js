@@ -200,7 +200,7 @@ jQuery.extend(Widget, {
 	loadInfo: function(widgetType) {
 		var widgetInformation = null;
 		if(!Widget.widgetInformation[widgetType]) {
-			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info, error) {
+			Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info) {
 				widgetInformation = info;
 				if(!Widget.types[widgetType]) {
 					if(widgetInformation.resources !== '') {
