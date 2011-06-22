@@ -283,21 +283,29 @@ class FrontendManager extends Manager {
 	 * @return object Template
 	 * used in fillAttributes to replace page_link identifiers
 	 * - get a page by name
+	 * - get a page by id
+	 * - get a page by identifier string
 	 * - get nearest neighbor page {@link PagePeer::getPageByName()}
 	 */
 	public static function replacePageLinkIdentifier($oTemplateIdentifier) {
 		$oPage = null;
-		$sName = $oTemplateIdentifier->getParameter('name');
-		if($sName !== null) {
-			if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
-				$oPage = self::$CURRENT_PAGE->getPageOfName($sName);
+		$iIdentifier = $oTemplateIdentifier->getParameter('identifier');
+		if($iIdentifier !== null) {
+			$oPage = PagePeer::getPageByIdentifier($iIdentifier);
+		} else {
+			$iId = $oTemplateIdentifier->getParameter('id');
+			if($iId !== null) {
+				$oPage = PagePeer::retrieveByPK($iId);
 			} else {
-				$oPage = PagePeer::getPageByName($sName);
+				$sName = $oTemplateIdentifier->getParameter('name');
+				if($sName !== null) {
+					if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
+						$oPage = self::$CURRENT_PAGE->getPageOfName($sName);
+					} else {
+						$oPage = PagePeer::getPageByName($sName);
+					}
+				}
 			}
-		}
-		$iId = $oTemplateIdentifier->getParameter('id');
-		if($iId !== null) {
-			$oPage = PagePeer::retrieveByPK($iId);
 		}
 		if($oPage === null) {
 			return null;

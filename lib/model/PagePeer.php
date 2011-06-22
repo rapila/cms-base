@@ -50,6 +50,10 @@ class PagePeer extends BasePagePeer {
 		return PageQuery::create()->filterByName($sName)->findOne();
 	}
 
+	public static function getPageByIdentifier($sIdentifier) {
+		return PageQuery::create()->filterByIdentifier($sIdentifier)->findOne();
+	}
+
 	public static function getLastUpdatedTimestamp() {
 		$oCriteria = new Criteria();
 		$oCriteria->addDescendingOrderByColumn(self::UPDATED_AT);

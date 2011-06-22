@@ -38,7 +38,8 @@ class PageTableMap extends TableMap {
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-		$this->addColumn('NAME', 'Name', 'VARCHAR', false, 50, null);
+		$this->addColumn('NAME', 'Name', 'VARCHAR', true, 50, null);
+		$this->addColumn('IDENTIFIER', 'Identifier', 'VARCHAR', false, 30, null);
 		$this->addColumn('PAGE_TYPE', 'PageType', 'VARCHAR', false, 15, null);
 		$this->addColumn('TEMPLATE_NAME', 'TemplateName', 'VARCHAR', false, 50, null);
 		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, true);

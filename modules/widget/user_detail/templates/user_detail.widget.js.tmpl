@@ -10,10 +10,10 @@ Widget.types.user_detail = {
 				width: 600
 			});
 			this.rights_section = this.content.find('div.rights_section');
-			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
+			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");
 			is_admin.bind('change', function() {
-				_this.toggle_rights_section(jQuery(this).attr("checked") === false);
+				_this.toggle_rights_section(jQuery(this).prop('checked') === false);
 			});
 			if(this.auto_open) {
 				this.open();
@@ -51,7 +51,7 @@ Widget.types.user_detail = {
 		});
 		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
 		if(!show_roles_groups) {
-			this.backend_login_enabled.attr('checked', true);
+			this.backend_login_enabled.prop('checked', true);
 		}
 	},
 	
@@ -70,15 +70,15 @@ Widget.types.user_detail = {
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);
 			this.content.find("input[name='email']").val(user_data.Email);
-			this.content.find("select[name='language_id']").val(user_data.LanguageId);
-			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);
+			this.content.find("select[name='language_id']").val(user_data.LanguageId || '');
+			this.content.find("input[name='is_backend_login_enabled']").prop('checked', user_data.IsBackendLoginEnabled);
 			this.content.find("input[name='password']").val('');
 			this.content.find("input[name='password_confirm']").val('');
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
 			this.content.find('div.hide_if_not_saved').show();
-			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
-			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
+			this.content.find("input[name='is_inactive']").prop('checked', user_data.IsInactive);
+			this.content.find("input[name='is_admin']").prop('checked', user_data.IsAdmin);
 
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);

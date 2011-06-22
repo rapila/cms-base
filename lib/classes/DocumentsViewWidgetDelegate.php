@@ -90,33 +90,33 @@ class DocumentsViewWidgetDelegate {
 		return $aResult;
 	}
 	
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'category_name') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
 		}		
-		if($sDisplayColumn === 'name_truncated') {
+		if($sColumnIdentifier === 'name_truncated') {
 			return DocumentPeer::NAME;
 		}
-		if($sDisplayColumn === 'file_info') {
+		if($sColumnIdentifier === 'file_info') {
 			return "OCTET_LENGTH(DATA)";
 		}
-		if($sDisplayColumn === 'updated_at_formatted') {
+		if($sColumnIdentifier === 'updated_at_formatted') {
 			return DocumentPeer::UPDATED_AT;
 		}		
-		if($sDisplayColumn === 'document_kind') {
+		if($sColumnIdentifier === 'document_kind') {
 			return DocumentTypePeer::MIMETYPE;
 		}
 		return null;
 	}
 	
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'document_kind') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
-		if($sColumnName === 'language_id') {
+		if($sColumnIdentifier === 'language_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
-		if($sColumnName === 'document_category_id') {
+		if($sColumnIdentifier === 'document_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
@@ -127,11 +127,11 @@ class DocumentsViewWidgetDelegate {
 		if($aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_ALL || $aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
 			return false;
 		}
-		foreach($aListSettings->allFilterColumns() as $sColumnName) {
-			if($sColumnName === 'document_category_id') {
+		foreach($aListSettings->allFilterColumns() as $sColumnIdentifier) {
+			if($sColumnIdentifier === 'document_category_id') {
 				continue;
 			}
-			if($aListSettings->getFilterColumnValue($sColumnName) !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			if($aListSettings->getFilterColumnValue($sColumnIdentifier) !== CriteriaListWidgetDelegate::SELECT_ALL) {
 				return false;
 			}
 		}

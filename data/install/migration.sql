@@ -351,3 +351,7 @@ ALTER TABLE `link_categories` ADD `is_externally_managed` TINYINT UNSIGNED NOT N
 
 #20110407.1714
 UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' WHERE `object_id` IN (SELECT `id` FROM `objects` WHERE `object_type` = 'login')
+
+#20110616.1019
+ALTER TABLE `pages` ADD `identifier` VARCHAR(30) NULL DEFAULT NULL;
+ALTER TABLE `pages` ADD UNIQUE KEY `pages_U_1` (`identifier`);

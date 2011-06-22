@@ -53,12 +53,12 @@ Widget.types.role_detail = {
 			jQuery.each(role_data.rights, function(right_id, rights_data) {
 				var right_content = _this.right_content.clone();
 				right_content.find('select[name="page_id[]"]').val(rights_data.PageId);
-				right_content.find('input[name="is_inherited[]"]').attr('checked', rights_data.IsInherited);
-				right_content.find('input[name="may_edit_page_details[]"]').attr('checked', rights_data.MayEditPageDetails);
-				right_content.find('input[name="may_edit_page_contents[]"]').attr('checked', rights_data.MayEditPageContents);
-				right_content.find('input[name="may_delete[]"]').attr('checked', rights_data.MayDelete);
-				right_content.find('input[name="may_create_children[]"]').attr('checked', rights_data.MayCreateChildren);
-				right_content.find('input[name="may_view_page[]"]').attr('checked', rights_data.MayViewPage);
+				right_content.find('input[name="is_inherited[]"]').prop('checked', rights_data.IsInherited);
+				right_content.find('input[name="may_edit_page_details[]"]').prop('checked', rights_data.MayEditPageDetails);
+				right_content.find('input[name="may_edit_page_contents[]"]').prop('checked', rights_data.MayEditPageContents);
+				right_content.find('input[name="may_delete[]"]').prop('checked', rights_data.MayDelete);
+				right_content.find('input[name="may_create_children[]"]').prop('checked', rights_data.MayCreateChildren);
+				right_content.find('input[name="may_view_page[]"]').prop('checked', rights_data.MayViewPage);
 				right_content.appendTo(rights_container);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);

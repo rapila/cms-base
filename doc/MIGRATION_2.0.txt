@@ -42,4 +42,3 @@ Installer issues in full demo from github:
 Installer Documentation:
 
 - main config in site: config.yml
-
