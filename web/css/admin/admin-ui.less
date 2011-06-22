@@ -539,11 +539,13 @@ fieldset.option_groups:first-child {
 	border-color: #CCCDCF;
 }
 
-label span.error_display::before {
+label span.error_display::before,
+legend span.error_display::before {
 	content: ' ';
 }
 
-label span.error_display {
+label span.error_display,
+legend span.error_display {
 	color: red;
 }
 
