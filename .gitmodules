@@ -3,4 +3,4 @@
 	url = git://github.com/sabberworm/PHP-CSS-Parser.git
 [submodule "web/js/widget/html5-formdata"]
 	path = web/js/widget/html5-formdata
-	url = https://github.com/francois2metz/html5-formdata.git
+	url = git://github.com/francois2metz/html5-formdata.git
