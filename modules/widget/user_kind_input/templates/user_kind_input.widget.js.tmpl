@@ -11,16 +11,17 @@ Widget.types.user_kind_input = {
 
 	fill_content: function() {
 		this._element.empty();
-		var option = jQuery('<option/>');
-		var user_kinds = this._staticMethods.getUserKinds();
-		jQuery.each(user_kinds, function(value, name) {
-			option.clone().text(name).val(value).appendTo(this._element);
+		this.option = jQuery('<option/>');
+		this._staticMethods.allUserKinds(function(user_kinds) {
+			jQuery.each(user_kinds, function(value, name) {
+				this.option.clone().text(name).val(value).appendTo(this._element);
+			}.bind(this));
+			var current_value = this.getSelectedUserKind();
+			if(current_value === null) {
+				current_value = '';
+			}
+			this._element.val(current_value);
 		}.bind(this));
-		var current_value = this.getSelectedUserKind();
-		if(current_value === null) {
-			current_value = '';
-		}
-		this._element.val(current_value);
 	},
 
 	settings: {

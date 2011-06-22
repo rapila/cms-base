@@ -63,24 +63,24 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'full_name') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'full_name') {
 			return UserPeer::FIRST_NAME;
 		}
-		if($sDisplayColumn === 'updated_at_formatted') {
+		if($sColumnIdentifier === 'updated_at_formatted') {
 			return UserPeer::UPDATED_AT;
 		}
-		if($sDisplayColumn === 'user_kind') {
+		if($sColumnIdentifier === 'user_kind') {
 			return UserPeer::IS_BACKEND_LOGIN_ENABLED;
 		}
-		if($sDisplayColumn === 'group_id') {
+		if($sColumnIdentifier === 'group_id') {
 			return UserGroupPeer::GROUP_ID;
 		}
 		return null;
 	}
 	
 	public function getUserKindName() {
-		$aUserKinds = UserKindInputWidgetModule::getUserKinds();
+		$aUserKinds = UserKindInputWidgetModule::allUserKinds();
 		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) { 
 			return $aUserKinds[$this->oDelegateProxy->getUserKind()];
 		}
@@ -98,11 +98,11 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		return $this->oDelegateProxy->getGroupId();
 	}
 	
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'user_kind') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'user_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
-		if($sColumnName === 'group_id') {
+		if($sColumnIdentifier === 'group_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;

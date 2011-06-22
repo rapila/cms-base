@@ -14,15 +14,6 @@ class AdminManager extends Manager {
 		if($this->sModuleName === null) {
 			$this->sModuleName = self::DEFAULT_MODULE;
 		}
-		// @todo check users permission for module
-		try {
-			$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
-		} catch (Exception $e) {
-			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found', $this->sModuleName)));
-		}
-		if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
-			LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_denied', $this->sModuleName)));
-		}
 		$this->oResourceIncluder = ResourceIncluder::defaultIncluder();
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
 			self::setContentLanguage($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY]);
@@ -69,6 +60,14 @@ class AdminManager extends Manager {
 			$oLoginWindowWidget = new LoginWindowWidgetModule();
 			LoginWindowWidgetModule::includeResources();
 		} else {
+			try {
+				$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
+			} catch (Exception $e) {
+				LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found', $this->sModuleName)));
+			}
+			if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
+				LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_denied', $this->sModuleName)));
+			}
 			$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$this->doAdmin($oTemplate);
 		}
@@ -82,7 +81,7 @@ class AdminManager extends Manager {
 	private function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName);
-		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.5");
+		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.6");
 		$this->oResourceIncluder->addCustomJs($oConstants);
 		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$this->oResourceIncluder->addResource('admin/admin-skeleton.css');

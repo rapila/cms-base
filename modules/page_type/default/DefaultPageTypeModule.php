@@ -22,6 +22,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$this->bIsPreview = $bIsPreview;
 		if($this->bIsPreview) {
 			ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
+			ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 			ResourceIncluder::defaultIncluder()->addResource('preview/jquery.ba-resize.min.js');
 		}
 		if($this->sLanguageId === null) {

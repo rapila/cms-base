@@ -1,19 +1,19 @@
 Widget.types.group_input = {
 	prepare: function() {
-		var input = jQuery('<input/>').attr('type', 'checkbox');
-		var groups = this.getGroups();
-		
-		var fieldset = this._element.find('fieldset');
-		if(groups.length === 0) {
-			jQuery('<div/>').html("{{writeString=wns.groups.none_available}}").appendTo(fieldset);
-		}
-
-		jQuery.each(groups, function(i, group) {
-			var checkbox = input.clone();
-			checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
-			jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(fieldset);
-			jQuery('<br/>').appendTo(fieldset);
-		}.bind(this));
+		this.checkbox_prototype = jQuery('<input/>').attr('type', 'checkbox');
+		this.allGroups(function(groups) {
+			var fieldset = this._element.find('fieldset');
+			if(groups.length === 0) {
+				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.groups.none_available}}").appendTo(fieldset);
+			}
+			
+			jQuery.each(groups, function(i, group) {
+				var checkbox = this.checkbox_prototype.clone();
+				checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
+				jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(fieldset);
+				jQuery('<br/>').appendTo(fieldset);
+			}.bind(this));
+		});
 	},
 	
 	checked_groups: function() {
@@ -36,7 +36,7 @@ Widget.types.group_input = {
 			value_obj[value] = true;
 		});
 		this._element.find("input[name='group_ids[]']").each(function(i, checkbox) {
-			jQuery(checkbox).attr('checked', !!value_obj[checkbox.value]);
+			jQuery(checkbox).prop('checked', !!value_obj[checkbox.value]);
 		});
 	}
 };

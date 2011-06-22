@@ -9,7 +9,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$this->iUserId = $iUserId;
 	}
 	
-	public function getUserData() {
+	public function userData() {
 		$oUser = UserPeer::retrieveByPK($this->iUserId);
 		if(Session::getSession()->getUser()->mayEditUser($oUser)) {
 			$aResult = $oUser->toArray();

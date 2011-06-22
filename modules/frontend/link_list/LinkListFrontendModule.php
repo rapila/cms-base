@@ -31,9 +31,8 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
-			} else {
-				$oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
 			}
+      $oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
 		}
 		try {
 			$oListTemplate = new Template($aOptions['template']);

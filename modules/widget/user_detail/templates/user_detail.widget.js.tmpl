@@ -4,16 +4,16 @@ Widget.types.user_detail = {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
 				width: 600
 			});
 			this.rights_section = this.content.find('div.rights_section');
-			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").attr('checked', true);
+			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");
 			is_admin.bind('change', function() {
-				_this.toggle_rights_section(jQuery(this).attr("checked") === false);
+				_this.toggle_rights_section(jQuery(this).prop('checked') === false);
 			});
 			if(this.auto_open) {
 				this.open();
@@ -37,6 +37,7 @@ Widget.types.user_detail = {
 			return false;
 		}
 		this.detail_widget.open();
+		this.detail_widget.content.find(".show_if_set").hide();
 		this.detail_widget.content.find('input[name=first_name]').focus();
 	},
 	
@@ -50,36 +51,34 @@ Widget.types.user_detail = {
 		});
 		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
 		if(!show_roles_groups) {
-			this.backend_login_enabled.attr('checked', true);
+			this.backend_login_enabled.prop('checked', true);
 		}
 	},
 	
 	fill_data: function() {
-		this.getUserData(function(user_data) {
+		this.userData(function(user_data) {
 			var password_section = this.content.find(".hide_if_saved");
-			if(user_data.UpdatedInfo && !user_data.IsSessionUser) {
+			if(!user_data.IsSessionUser) {
 				password_section.hide();
 			} else {
 				password_section.show();
+				this.detail_widget.content.find(".show_if_set").show();
 			}
 			this.toggle_rights_section(!user_data.IsAdmin);
-			if(user_data.Password == '') {
-				this.content.find(".show_if_set").hide();
-			}
 			this.content.find("input[name='old_password']").val();
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);
 			this.content.find("input[name='email']").val(user_data.Email);
-			this.content.find("select[name='language_id']").val(user_data.LanguageId);
-			this.content.find("input[name='is_backend_login_enabled']").attr('checked', user_data.IsBackendLoginEnabled);
+			this.content.find("select[name='language_id']").val(user_data.LanguageId || '');
+			this.content.find("input[name='is_backend_login_enabled']").prop('checked', user_data.IsBackendLoginEnabled);
 			this.content.find("input[name='password']").val('');
 			this.content.find("input[name='password_confirm']").val('');
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);
 			this.content.find(".created_info").text(user_data.CreatedInfo);
 			this.content.find('div.hide_if_not_saved').show();
-			this.content.find("input[name='is_inactive']").attr('checked', user_data.IsInactive);
-			this.content.find("input[name='is_admin']").attr('checked', user_data.IsAdmin);
+			this.content.find("input[name='is_inactive']").prop('checked', user_data.IsInactive);
+			this.content.find("input[name='is_admin']").prop('checked', user_data.IsAdmin);
 
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);

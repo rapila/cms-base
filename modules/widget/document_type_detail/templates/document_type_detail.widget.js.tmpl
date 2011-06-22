@@ -2,7 +2,7 @@ Widget.types.document_type_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.document_type.create}}",
 				width: 480
@@ -23,7 +23,7 @@ Widget.types.document_type_detail = {
 	},
 	
 	fill_data: function() {
-		this.getTypeData(function(type_data) {
+		this.typeData(function(type_data) {
 			this.content.find("input[name='extension']").val(type_data.Extension);
 			this.content.find("input[name='mimetype']").val(type_data.Mimetype);
 			this.detail_widget.set_title("{{writeString=wns.document_type}}"+" : "+(this.detail_widget.settings.title = type_data.Extension));

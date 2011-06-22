@@ -4,7 +4,7 @@ Widget.types.link_detail = {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
 				width: 530
@@ -35,7 +35,7 @@ Widget.types.link_detail = {
 	
 	fill_data: function() {
 		var _this = this;
-		this.getLinkData(function(link_data) {
+		this.linkData(function(link_data) {
 			if(link_data.LinkCategoryId == null) {
 				link_data.LinkCategoryId = '';
 			}
@@ -44,11 +44,15 @@ Widget.types.link_detail = {
 			if(!_this.settings.predefined_link_category_id) {
 				this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
 			}
+			var url_preview = this.content.find('a.url_preview');
+			if(link_data.Url !== '') {
+				url_preview.attr('href', link_data.Url);
+			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
-			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
+			this.content.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
 			this.content.find(".created_info").text(link_data.CreatedInfo);
-			this.content.find("select[name='language_id']").val(link_data.LanguageId === null ? '' : link_data.LanguageId);
+			this.content.find("select[name='language_id']").val(link_data.LanguageId || '');
 			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 		});

@@ -3,9 +3,14 @@
  * @package modules.widget
  */
 class LanguageInputWidgetModule extends WidgetModule {
-	
+
 	var $sSelectedLanguageId;
-	
+
+	public function __construct($sWidgetId) {
+		parent::__construct($sWidgetId);
+		$this->setSetting('is_monolingual', LanguagePeer::doCount(new Criteria()) <= 1);
+	}
+
 	public function getLanguages($bUseAdminLanguages = false) {
 		if($bUseAdminLanguages) {
 			$aLanguages = LanguagePeer::getAdminLanguages();

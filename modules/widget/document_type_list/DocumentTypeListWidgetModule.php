@@ -51,15 +51,15 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'document_kind') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'document_kind') {
 			return DocumentTypePeer::MIMETYPE;
 		}
 		return null;
 	}
 	
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'document_kind') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
 		return null;

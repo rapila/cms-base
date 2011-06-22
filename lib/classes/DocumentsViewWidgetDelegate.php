@@ -10,7 +10,7 @@ class DocumentsViewWidgetDelegate {
 	private $oLanguageFilter;
 	
 	public function __construct() {
-		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name", "asc");
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
 		$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 	}
@@ -51,6 +51,7 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'file_info':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
@@ -89,36 +90,73 @@ class DocumentsViewWidgetDelegate {
 		return $aResult;
 	}
 	
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'category_name') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
 		}		
-		if($sDisplayColumn === 'name_truncated') {
+		if($sColumnIdentifier === 'name_truncated') {
 			return DocumentPeer::NAME;
 		}
-		if($sDisplayColumn === 'file_info') {
+		if($sColumnIdentifier === 'file_info') {
 			return "OCTET_LENGTH(DATA)";
 		}
-		if($sDisplayColumn === 'updated_at_formatted') {
+		if($sColumnIdentifier === 'updated_at_formatted') {
 			return DocumentPeer::UPDATED_AT;
 		}		
-		if($sDisplayColumn === 'document_kind') {
+		if($sColumnIdentifier === 'document_kind') {
 			return DocumentTypePeer::MIMETYPE;
 		}
 		return null;
 	}
 	
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'document_kind') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
-		if($sColumnName === 'language_id') {
+		if($sColumnIdentifier === 'language_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
-		if($sColumnName === 'document_category_id') {
+		if($sColumnIdentifier === 'document_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
+	}
+	
+	public function allowSort($sSortColumn) {
+		$aListSettings = $this->oDelegateProxy->getListSettings();
+		if($aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_ALL || $aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return false;
+		}
+		foreach($aListSettings->allFilterColumns() as $sColumnIdentifier) {
+			if($sColumnIdentifier === 'document_category_id') {
+				continue;
+			}
+			if($aListSettings->getFilterColumnValue($sColumnIdentifier) !== CriteriaListWidgetDelegate::SELECT_ALL) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public function doSort($sColumnIdentifier, $oDocumentToSort, $oRelatedDocument, $sPosition = 'before') {
+		$iNewPosition = $oRelatedDocument->getSort() + ($sPosition === 'before' ? 0 : 1);
+		if($oDocumentToSort->getSort() < $oRelatedDocument->getSort()) {
+			$iNewPosition--;
+		}
+		$oDocumentToSort->setSort($iNewPosition);
+		$oDocumentToSort->save();
+		$oQuery = $this->oDelegateProxy->getCriteria();
+		$oQuery->filterById($oDocumentToSort->getId(), Criteria::NOT_EQUAL);
+		$oQuery->orderBySort();
+		$i = 1;
+		foreach($oQuery->find() as $oDocument) {
+			if($i == $iNewPosition) {
+				$i++;
+			}
+			$oDocument->setSort($i);
+			$oDocument->save();
+			$i++;
+		}
 	}
 	
 	public function getCriteria() {

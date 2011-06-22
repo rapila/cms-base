@@ -28,6 +28,11 @@
   min-width: 24px;
   min-height: 24px;
 }
+.ui-loading-add {
+  background: transparent url('../../images/admin/loader_add_button.gif') no-repeat scroll top left;
+  min-width: 24px;
+  min-height: 24px;
+}
 .ui-notify > div { padding: 0.3em; }
 .ui-notify .ui-icon {
   float: left;

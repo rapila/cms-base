@@ -1,1 +1,6 @@
 @see bugs.mini-cms.ch
+
+getDatabaseColumnForColumn > getDatabaseColumnForColumn
+
+$sDisplayColumn = $sColumnIdentifier
+$sColumnName = $sColumnIdentifier

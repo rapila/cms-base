@@ -48,19 +48,27 @@ class Document extends BaseDocument {
 		return $this->getLanguageId() === null || $this->getLanguageId() === $sLanguageId;
 	}
 	
-	public function renderListItem($oTemplate) {
+	public function renderListItem($oTemplate, $aUrlParams = array()) {
 		$oTemplate->replaceIdentifier('name', $this->getName());
 		$oTemplate->replaceIdentifier('link_text', $this->getName());
 		$oTemplate->replaceIdentifier('title', $this->getName());
 		$oTemplate->replaceIdentifier('description', $this->getDescription());
 		$oTemplate->replaceIdentifier('extension', $this->getExtension());
 		$oTemplate->replaceIdentifier('mimetype', $this->getMimetype());
-		$oTemplate->replaceIdentifier('url', $this->getDisplayUrl());
+		$oTemplate->replaceIdentifier('url', $this->getDisplayUrl($aUrlParams));
 		$oTemplate->replaceIdentifier('document_category_id', $this->getDocumentCategoryId());
 		$oTemplate->replaceIdentifier('category_id', $this->getDocumentCategoryId());
 		$oTemplate->replaceIdentifier('document_category', $this->getCategoryName());
 		$oTemplate->replaceIdentifier('category', $this->getCategoryName());
 		$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
+		$oDocument = $this;
+		$oTemplate->replaceIdentifierCallback("preview", null, function($oTemplateIdentifier, &$iFlags) use ($oDocument) {
+			$iSize = 190;
+			if($oTemplateIdentifier->getValue()) {
+				$iSize = $oTemplateIdentifier->getValue();
+			}
+			return $oDocument->getPreview($iSize, true);
+		});
 	}
 	
 	public function getCategoryName() {
@@ -70,7 +78,7 @@ class Document extends BaseDocument {
 		return null;
 	}
 	
-	public function getPreview($iSize = 190) {
+	public function getPreview($iSize = 190, $bMayReturnTemplate = false) {
 		$aOptions = array();
 		$aOptions['document_id'] = $this->getId();
 		if($this->getDocumentType()->getDocumentKind() === 'image') {
@@ -84,7 +92,11 @@ class Document extends BaseDocument {
 		}
 		
 		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
-		return $oModule->renderFrontend()->render();
+		$oResult = $oModule->renderFrontend();
+		if($bMayReturnTemplate) {
+			return $oResult;
+		}
+		return $oResult->render();
 	}
 	
 	public function getDataSize(PropelPDO $oConnection = null) {
@@ -119,5 +131,12 @@ class Document extends BaseDocument {
 	
 	public function setDocumentCategoryId($mCategoryId) {
 		parent::setDocumentCategoryId(is_numeric($mCategoryId) && $mCategoryId > 0 ? $mCategoryId : null);
+	}
+	
+	public function isInternallyManaged() {
+	  if($this->getDocumentCategory() === null) {
+	    return false;
+	  }
+	  return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
 }

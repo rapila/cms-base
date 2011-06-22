@@ -10,21 +10,32 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$this->iDocumentId = $iDocumentId;
 	}
 	
-	public function getDocumentData() {
+	public function documentData() {
+		$aResult = array();
 		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocument);
-		$aReferences = ReferencePeer::getReferences($oDocument);
-		if(count($aReferences) > 0) {
-			// $aResult['References'] = $aReferences[0]->toArray();
-		}
+    // self::addReferences($oDocument, $aResult);
 		return $aResult;
 	}
 	
+	private static function addReferences($oDocument, &$aResult) {
+		if($oDocument->isInternallyManaged()) {
+		  $aResult['References'] = array();
+		  foreach(ReferencePeer::getReferences($oDocument) as $oReference) {
+        $aResult['References'][] = $oReference->toArray();
+		  }
+		}
+	}
+	
 	public static function documentPreview($iDocumentId, $iSize) {
-		return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
+		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
+		if($oDocument) {
+			return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
+		}
+		return null;
 	}
 	
 	public function preview() {

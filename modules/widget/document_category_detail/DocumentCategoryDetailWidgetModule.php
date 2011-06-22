@@ -10,7 +10,7 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$this->iCategoryId = $iCategoryId;
 	}
 	
-	public function getCategoryData() {
+	public function categoryData() {
 		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->iCategoryId);
 		$aResult = $oDocumentCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocumentCategory);

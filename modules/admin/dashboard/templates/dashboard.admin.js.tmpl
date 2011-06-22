@@ -139,6 +139,7 @@ jQuery(document).ready(function() {
 			dashboard_control.listDashboardModules(true, function(modules) {
 				info_bar.add_button('add-new-item', function() {
 					var dialog = jQuery.parseHTML('{{includeTemplate=add_dialog}}');
+					
 					var columns = {};
 					db.find('.dashboard-column').each(function() {
 						columns[this.id] = this.id;
@@ -180,7 +181,7 @@ jQuery(document).ready(function() {
 					dialog.dialog({
 						buttons: buttons
 					});
-				}, 'n', true);
+				}, 'n', true, false, "{{wns.dashboard.create_widget}}");
 			});
 			
 			dashboard_control.possibleTemplates(function(templates) {

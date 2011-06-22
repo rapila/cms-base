@@ -28,6 +28,7 @@ find . -type f -print0 | xargs -0 chmod 644
 
 echo "setting file permissions – executable"
 sudo chmod a+x base/scripts/*.sh
+sudo chmod a+x base/lib/vendor/phing/bin/phing
 
 echo "setting folder permissions – apache-writable"
 sudo chmod -R 775 generated base/lib/model base/config site/lib/model site/config site/modules plugins/*/lib/model plugins/*/config >& /dev/null

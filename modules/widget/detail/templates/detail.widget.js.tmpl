@@ -4,15 +4,19 @@ Widget.types.detail = {
 	},
 	
 	set_instance: function(instance) {
+		var _this = this;
 		this.instance = instance;
+		instance.detail_widget = this;
 		this.settings.save_callback = function() {
 			var data = instance.content.serializeArrayKV();
 			instance.fire('saving', data);
+			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
 				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
-				if(!instance.settings.remains_open) {
+				if(!remains_open) {
 					instance.close();
 				}
+				instance.fire.apply(instance, ['saved'].concat(jQuery.makeArray(arguments)));
 				var detail_name = instance.widgetType.replace('_detail', '');
 				Widget.fire(detail_name+'-saved');
 			});
@@ -24,6 +28,13 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
+		
+		var old_fill_data = instance.fill_data;
+		instance.fill_data = function() {
+			_this.clear_validation();
+			old_fill_data.apply(instance, jQuery.makeArray(arguments));
+		};
+		
 		return this;
 	},
 	
@@ -198,7 +209,7 @@ Widget.types.detail = {
 			}
 			related_input.focus();
 			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
-				related_input.attr('checked', !related_input.attr('checked'));
+				related_input.prop('checked', !related_input.prop('checked'));
 				related_input.change();
 			} else {
 				related_input.select();

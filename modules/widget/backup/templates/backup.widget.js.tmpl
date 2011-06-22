@@ -3,7 +3,7 @@ Widget.types.backup = {
 		var _this = this;
 		this.content = jQuery.parseHTML("{{includeTemplate=backup}}");
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=module.admin.backup}}",
 				width: 550,
