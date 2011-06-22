@@ -12,6 +12,7 @@ Widget.types.link_detail = {
 			
 			this.content.find("select[name='language_id']").prepareWidget();
 			this.content.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
+				link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id
 				link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
 			}, function(link_category_input_widget) {
 				if(_this.settings.predefined_link_category_id) { 
@@ -67,6 +68,7 @@ Widget.types.link_detail = {
 	close_callback: jQuery.noop,
 	
 	settings: {
+		initial_category_id: null,
 		predefined_link_category_id: null
 	}
 
