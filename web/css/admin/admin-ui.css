@@ -28,8 +28,8 @@
   min-width: 24px;
   min-height: 24px;
 }
-.ui-loading-small {
-  background: transparent url('../../images/admin/loader_small.gif') no-repeat scroll top left;
+.ui-loading-add {
+  background: transparent url('../../images/admin/loader_add_button.gif') no-repeat scroll top left;
   min-width: 24px;
   min-height: 24px;
 }
