@@ -101,8 +101,10 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	}
 
 	public static function getCategoryOptions() {
-		$oCriteria = DocumentCategoryQuery::create();
-		$oCriteria->orderByName();
+	  /**
+	   * @todo how to make this configurable per site, maybe per user depending on rights or prefs?
+	   */
+		$oCriteria = DocumentCategoryQuery::create()->filterByIsExternallyManaged(false)->orderByName();
 		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentCategoryPeer::ID)->addSelectColumn(DocumentCategoryPeer::NAME);
 		$aResult = array();
 		foreach(DocumentCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
