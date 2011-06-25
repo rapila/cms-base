@@ -197,6 +197,7 @@ body.pages .ui-tabs-nav.ui-widget-header { background-color: #ebedef; }
 .ui-tabs .ui-tabs-panel { border-top: 1px solid #cccdcf; }
 .ui-tabs .ui-tabs-panel { padding: 0; }
 ol.ui-editable-items-list {
+  list-style-type: none;
   margin: 0;
   padding: 0;
 }
