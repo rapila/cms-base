@@ -101,10 +101,11 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	}
 
 	public static function getCategoryOptions() {
-	  /**
-	   * @todo how to make this configurable per site, maybe per user depending on rights or prefs?
-	   */
-		$oCriteria = DocumentCategoryQuery::create()->filterByIsExternallyManaged(false)->orderByName();
+		$oCriteria = DocumentCategoryQuery::create()->orderByName();
+		Util::dumpAll(Settings::getSetting('admin', 'hide_externally_managed_documents', true));
+		if(Settings::getSetting('admin', 'hide_externally_managed_documents', true)) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentCategoryPeer::ID)->addSelectColumn(DocumentCategoryPeer::NAME);
 		$aResult = array();
 		foreach(DocumentCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {

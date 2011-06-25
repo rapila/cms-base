@@ -23,7 +23,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
-	public function allLinks() {
+	public function allLinks($aLinkCategory = null, $sOrderBy = null) {
 		$aOptions = $this->sDisplayMode;
 		$oCriteria = LinkQuery::create();
 

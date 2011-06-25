@@ -89,8 +89,10 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	}	
 	
 	public static function getCategoryOptions() {
-		$oCriteria = LinkCategoryQuery::create();
-		$oCriteria->orderByName();
+		$oCriteria = LinkCategoryQuery::create()->orderByName();
+		if(Settings::getSetting('admin', 'hide_externally_managed_links', true)) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
 		$aResult = array();
 		foreach(LinkCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
