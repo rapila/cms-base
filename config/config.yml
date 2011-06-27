@@ -51,6 +51,11 @@ admin:
   document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
 
+  # hide externally managed categories
+  hide_externally_managed_link_categories: true
+  hide_externally_managed_document_categories: true
+
+
 login:
   password_min_length: 4
 

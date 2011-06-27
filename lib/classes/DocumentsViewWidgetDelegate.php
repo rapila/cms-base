@@ -160,7 +160,11 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		return DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->excludeExternallyManaged();
+		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN);
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
+			$oQuery->excludeExternallyManaged();
+		}
+		return $oQuery;
 	}
 	
 	public function setDocumentKind($sDocumentKind) {
