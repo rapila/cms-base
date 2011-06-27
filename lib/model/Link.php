@@ -25,8 +25,10 @@ class Link extends BaseLink {
 		$oTemplate->replaceIdentifier("url", $this->getUrl());
 		$oTemplate->replaceIdentifier('link_category_id', $this->getLinkCategoryId());
 		$oTemplate->replaceIdentifier('category_id', $this->getLinkCategoryId());
-		$oTemplate->replaceIdentifier('link_category', $this->getLinkCategory()->getName());
-		$oTemplate->replaceIdentifier('category', $this->getLinkCategory()->getName());
+		if($this->getLinkCategory() !== null) {
+			$oTemplate->replaceIdentifier('link_category', $this->getLinkCategory()->getName());
+			$oTemplate->replaceIdentifier('category', $this->getLinkCategory()->getName());
+		}
 	}
 	
 	public function getLanguageName() {
