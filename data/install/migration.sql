@@ -1,4 +1,4 @@
-\#Migration script
+#Migration script
 #Usage: add new changes to the bottom. always use "#svn rREV" as comment before the statement(s)
 
 #svn r1000
