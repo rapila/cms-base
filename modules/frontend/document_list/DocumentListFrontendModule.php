@@ -102,8 +102,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 
 	public static function getCategoryOptions() {
 		$oCriteria = DocumentCategoryQuery::create()->orderByName();
-		Util::dumpAll(Settings::getSetting('admin', 'hide_externally_managed_documents', true));
-		if(Settings::getSetting('admin', 'hide_externally_managed_documents', true)) {
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
 			$oCriteria->filterByIsExternallyManaged(false);
 		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentCategoryPeer::ID)->addSelectColumn(DocumentCategoryPeer::NAME);

@@ -90,7 +90,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	
 	public static function getCategoryOptions() {
 		$oCriteria = LinkCategoryQuery::create()->orderByName();
-		if(Settings::getSetting('admin', 'hide_externally_managed_links', true)) {
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			$oCriteria->filterByIsExternallyManaged(false);
 		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
