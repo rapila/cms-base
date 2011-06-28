@@ -157,6 +157,9 @@ Widget.types.rich_text = {
 	prepare: function() {
 		var _this = this;
 		var textarea = this.textarea = this._element.find('textarea');
+		if(textarea.val() === '') {
+			textarea.val(' ');
+		}
 		var module_content = this.getModuleContents();
 		if(module_content !== null) {
 			textarea.val(module_content);

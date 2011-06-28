@@ -53,11 +53,11 @@ Widget.types.page_detail = {
 	},
 	
 	disable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', 'disabled');
+		this._element.find('input, textarea, button').attr('disabled', true);
 	},
 	
 	enable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', null);
+		this._element.find('input, textarea, button').attr('disabled', false);
 	},
 	
 	accordion_active: function() {
@@ -114,7 +114,7 @@ Widget.types.page_detail = {
 				tab_content.find("input[name='link_text[]']").val(language_data.LinkTextOnly);
 				tab_content.find("input[name='meta_description[]']").val(language_data.MetaDescription);
 				tab_content.find("input[name='meta_keywords[]']").val(language_data.MetaKeywords);
-				tab_content.find("input[name='is_active[]']").attr('checked', !language_data.IsInactive);
+				tab_content.find("input[name='is_active[]']").prop('checked', !language_data.IsInactive);
 				tab_content.find("input[name='page_title[]']").val(language_data.PageTitle);
 			}, false, true);
 		});
@@ -162,10 +162,10 @@ Widget.types.page_detail = {
 		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;
 		this._element.find("input[name='name']").val(page_data.Name);
-		this._element.find("input[name='global_is_active']").attr('checked', !page_data.IsInactive);
-		this._element.find("input[name='is_folder']").attr('checked', page_data.IsFolder);
-		this._element.find("input[name='is_hidden']").attr('checked', page_data.IsHidden);
-		this._element.find("input[name='is_protected']").attr('checked', page_data.IsProtected);
+		this._element.find("input[name='global_is_active']").prop('checked', !page_data.IsInactive);
+		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);
+		this._element.find("input[name='is_hidden']").prop('checked', page_data.IsHidden);
+		this._element.find("input[name='is_protected']").prop('checked', page_data.IsProtected);
 		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
 		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
 			_this.configuration_has_been_loaded = false;
@@ -194,29 +194,29 @@ Widget.types.page_detail = {
 			page_properties_header.show();
 			var default_name = "{{writeString=wns.default}}";
 			for(property_name in page_data.page_properties) {
-				var property_container = jQuery("<div/>");
-				property_container.append(jQuery('<label/>').text(property_name.substring(page_data.PagePropertyNameSpace.length)).attr("for", property_name));
-				for(name in page_data.page_properties[property_name]) {
-					if(name === 'value') {
-						var background_color ='';
-						if(page_data.page_properties[property_name]['type'] == 'color') {
-							background_color = page_data.page_properties[property_name][name] != '' ? page_data.page_properties[property_name][name] : page_data.page_properties[property_name]['default'];
+				var attrs = page_data.page_properties[property_name];
+				var property_container = jQuery.parseHTML('{{includeTemplate=property_container}}');
+				property_container.data('property-name', property_name);
+				var label = property_container.find('label').text(attrs.display_name);
+				var input = property_container.find('input').val(attrs.value);
+				var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
+				if(attrs.type === 'color') {
+					input.bind('change', function(defaultValue) {
+						if(this.val()) {
+							this.css({backgroundColor: this.val()});
+						} else {
+							this.css({backgroundColor: defaultValue});
 						}
-						var type_class = page_data.page_properties[property_name]['type'] ? ' '+page_data.page_properties[property_name]['type'] : '';
-						var type = page_data.page_properties[property_name]['type'] ? page_data.page_properties[property_name]['type'] : 'text';
-						var property_input = jQuery('<input/>').attr({name: property_name, type: type, "class": 'ui-widget-content'+type_class, value: page_data.page_properties[property_name][name], style: 'background-color:'+background_color+';'});
-						property_container.append(property_input);
-					}
-					if(name === 'default') {
-						property_container.append(jQuery('<span/>').text(default_name+": "+page_data.page_properties[property_name][name]));
-					}
+					}.bind(input, attrs.defaultValue)).triggerHandler('change');
 				}
 				page_properties_container.append(property_container);
 			} 
 		} else {
 			page_properties_header.hide();
 		}
-		page_properties_container.hide();
+		if(!page_properties_header.is('.ui-state-active')) {
+			page_properties_container.hide();
+		}
 	},
 	
 	current_page_name: function() {
@@ -236,8 +236,20 @@ Widget.types.page_detail = {
 			});
 		}
 		
+		var data = this._element.serializeArrayKV();
+		delete data.page_property;
+		data.page_properties = {};
+		this._element.find("div.page_properties .page_property_container").each(function() {
+			var page_property_container = jQuery(this);
+			var property_name = page_property_container.data('property-name');
+			var property_value = page_property_container.find('input').val();
+			if(property_value) {
+				data.page_properties[property_name] = property_value;
+			}
+		});
+		
 		//Save the data
-		this.saveData(this._element.serializeArrayKV(), function() {
+		this.saveData(data, function() {
 			this.fill_data();
 			this.fire('saved');
 			

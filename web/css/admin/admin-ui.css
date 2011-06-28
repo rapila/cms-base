@@ -28,6 +28,11 @@
   min-width: 24px;
   min-height: 24px;
 }
+.ui-loading-add {
+  background: transparent url('../../images/admin/loader_add_button.gif') no-repeat scroll top left;
+  min-width: 24px;
+  min-height: 24px;
+}
 .ui-notify > div { padding: 0.3em; }
 .ui-notify .ui-icon {
   float: left;
@@ -366,7 +371,9 @@ fieldset.option_groups:first-child {
   border-color: #cccdcf;
 }
 label span.error_display::before { content: ' '; }
+legend span.error_display::before { content: ' '; }
 label span.error_display { color: red; }
+legend span.error_display { color: red; }
 .delete_drop_zone {
   float: left;
   height: 100px;

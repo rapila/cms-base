@@ -4,7 +4,7 @@ Widget.types.link_detail = {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		Widget.create('detail', function(widget) {
-			this.detail_widget = widget.set_instance(this);
+			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
 				width: 530
@@ -12,6 +12,7 @@ Widget.types.link_detail = {
 			
 			this.content.find("select[name='language_id']").prepareWidget();
 			this.content.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
+				link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id
 				link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
 			}, function(link_category_input_widget) {
 				if(_this.settings.predefined_link_category_id) { 
@@ -49,10 +50,10 @@ Widget.types.link_detail = {
 				url_preview.attr('href', link_data.Url);
 			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
-			this.content.find("input[name='is_inactive']").attr('checked', link_data.IsInactive);
+			this.content.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
 			this.content.find(".updated_info").text(link_data.UpdatedInfo);
 			this.content.find(".created_info").text(link_data.CreatedInfo);
-			this.content.find("select[name='language_id']").val(link_data.LanguageId === null ? '' : link_data.LanguageId);
+			this.content.find("select[name='language_id']").val(link_data.LanguageId || '');
 			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 		});
@@ -67,6 +68,7 @@ Widget.types.link_detail = {
 	close_callback: jQuery.noop,
 	
 	settings: {
+		initial_category_id: null,
 		predefined_link_category_id: null
 	}
 

@@ -23,20 +23,18 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
-	public function allDocuments($mDocumentCategoryId = null) {
-		$aOptions = $this->sDisplayMode;
+	public function allDocuments($aOptions = array()) {
 		$oCriteria = DocumentQuery::create();
 		$aCategories = array();
-		if($mDocumentCategoryId === null) {
-			if(isset($aOptions['document_categories'])) {
-				if(is_array($aOptions['document_categories']) ) {
-					$aCategories = $aOptions['document_categories'];
-				} else {
-					$aCategories = array($aOptions['document_categories']);
-				}
+		if(count($aOptions) === 0) {
+			$aOptions = $this->getDisplayMode();
+		}
+		if(isset($aOptions['document_categories'])) {
+			if(is_array($aOptions['document_categories']) ) {
+				$aCategories = $aOptions['document_categories'];
+			} else {
+				$aCategories = array($aOptions['document_categories']);
 			}
-		} else {
-			$aCategories = is_array($mDocumentCategoryId) ? $mDocumentCategoryId : array($mDocumentCategoryId);
 		}
 		if(count($aCategories) > 0) {
 			if(count($aCategories > 1)) {
@@ -44,9 +42,8 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 			} else {
 				$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
 			}
-			
 		}
-		if(isset($aOptions['sort_option']) && $aOptions['sort_option'] === DocumentListFrontendModule::SORT_BY_SORT) {
+		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === DocumentListFrontendModule::SORT_BY_SORT) {
 			$oCriteria->orderBySort();
 		}
 		$oCriteria->orderByName();
@@ -58,7 +55,7 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();
 		$aResult['document_categories'] = $aDocumentCategories;
-		$aResult['list_template'] = DocumentListFrontendModule::getTemplateOptions();
+		$aResult['template'] = DocumentListFrontendModule::getTemplateOptions();
 		if(count($aDocumentCategories) > 0) {
 		  $aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
 		}

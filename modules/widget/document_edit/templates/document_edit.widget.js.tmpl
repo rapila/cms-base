@@ -9,9 +9,15 @@ Widget.types.document_edit = {
 			if(select_name === 'document_categories') {
 				select_name += '[]';
 			}
-			_this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
+			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
+			if(config_name !== 'template') {
+				select.change(_this.reload_preview.bind(_this));
+			}
 		});
 		this._element.append(this.content);
+
+		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
+		this._element.append(this.result_list);
 
 		var detail_widget;
 		Widget.create('document_detail', function(widget) {
@@ -19,10 +25,8 @@ Widget.types.document_edit = {
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
 		
-		this.result_list = jQuery('<ul/>');
 		this.reload_preview();
-		this._element.append(this.result_list);
-		this.result_list.delegate('img', 'click', function() {
+		this.result_list.delegate('li', 'click', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setDocumentId(id);
 			_this.detail_widget.fill_data();
@@ -33,11 +37,11 @@ Widget.types.document_edit = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		// this.allDocuments(function(documents) {
-		// 	jQuery.each(documents, function(i, document) {
-		// 		_this.result_list.append(jQuery('<img/>').attr({'alt': document.NAME, 'src' : FILE_PREFIX+'/display_document/'+document.ID+'?max_width=100'}).attr({'title' : "{{writeString=wns.edit_entry}}", 'class' : 'pointer'}).data('id', document.ID));
-		// 	});
-		// });
+		this.allDocuments(this._element.serializeArrayKV(), function(files) {
+			jQuery.each(files, function(i, file) {
+				_this.result_list.append(jQuery('<li/>').text(file.NAME).attr('title', "{{writeString=wns.edit_entry}}").data('id', file.ID));
+			});
+		});
 	},
 	
 	save: function(callback) {

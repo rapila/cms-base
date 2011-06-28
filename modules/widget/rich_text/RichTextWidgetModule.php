@@ -100,7 +100,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getElementType() {
-		return new TagWriter('div', array(), new TagWriter('textarea'));
+		return new TagWriter('div', array(), new TagWriter('textarea', array(), ' '));
 	}
 	
 	public function getModuleContents() {

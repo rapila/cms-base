@@ -9,7 +9,7 @@ Widget.types.document_detail = {
 		this.uploader = Widget.create('file_upload');
 		
 		Widget.create('detail', function(widget) {
-			_this.detail_widget = widget.set_instance(_this);
+			widget.set_instance(_this);
 			var old_save_handler = _this.detail_widget.settings.save_callback;
 			_this.current_detail_id = null;
 			_this.detail_widget.settings.save_callback = function() {
@@ -86,7 +86,7 @@ Widget.types.document_detail = {
 	},
 	
 	fill_data: function(upload_mode) {
-		this.detail_widget.set_is_loading(true);
+		this.detail_widget && this.detail_widget.set_is_loading(true);
 		this.documentData(function(document_data) {
 			this.content.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
@@ -98,7 +98,7 @@ Widget.types.document_detail = {
 			this.content.find('div.hide_if_not_saved').show();
 			this.content.find(".detail_id").text(document_data.Id);
 			this.content.find(".file_size").text(document_data.FileInfo);
-			this.content.find(".original_name").text(document_data.OriginalName);
+			this.content.find(".original_name").text(document_data.OriginalName).attr('href', FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true');
 			
 			if(upload_mode === 'new') {
 				if(!jQuery.trim(this.content.find("input[name='name']").val())) {
@@ -125,13 +125,13 @@ Widget.types.document_detail = {
 				} else {
 					this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
 				}
-				this.content.find("select[name='language_id']").val(document_data.LanguageId);
-				this.content.find("input[name='is_protected']").attr('checked', document_data.IsProtected);
-				this.content.find("input[name='is_inactive']").attr('checked', document_data.IsInactive);
+				this.content.find("select[name='language_id']").val(document_data.LanguageId || '');
+				this.content.find("input[name='is_protected']").prop('checked', document_data.IsProtected);
+				this.content.find("input[name='is_inactive']").prop('checked', document_data.IsInactive);
 				this.current_detail_id = document_data.Id;
 				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 			}
-			this.detail_widget.set_is_loading(false);
+			this.detail_widget && this.detail_widget.set_is_loading(false);
 		});
 	},
 	

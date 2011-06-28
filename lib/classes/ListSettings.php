@@ -30,12 +30,8 @@ class ListSettings {
 		return true;
 	}
 	
-	public function setSelectionType($sColumnName, $sSelectionType) {
-		$this->aTagFilters[$sColumnName] = $sSelectionType;
-	}
-	
-	public function usesTagFilter($sColumnName) {
-		return in_array($sColumnName, $this->aTagFilters);
+	public function allFilterColumns() {
+		return array_keys($this->aFilters);
 	}
 	
 	public function addSortColumn($sColumnName, $sSortOrder) {

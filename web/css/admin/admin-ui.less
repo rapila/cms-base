@@ -39,6 +39,12 @@
 	min-height: 24px;
 }
 
+.ui-loading-add {
+  background: transparent url('../../images/admin/loader_add_button.gif') no-repeat scroll top left;
+  min-width: 24px;
+  min-height: 24px;
+}
+
 .ui-notify > div {
 	padding: 0.3em;
 }
@@ -533,11 +539,13 @@ fieldset.option_groups:first-child {
 	border-color: #CCCDCF;
 }
 
-label span.error_display::before {
+label span.error_display::before,
+legend span.error_display::before {
 	content: ' ';
 }
 
-label span.error_display {
+label span.error_display,
+legend span.error_display {
 	color: red;
 }
 

@@ -56,9 +56,9 @@ class FileUploadWidgetModule extends WidgetModule {
     $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
+		$oDocument->setName($sFileName);
 		
 		if($oDocument->isNew()) {
-			$oDocument->setName($sFileName);
 			$oDocument->setLanguageId($aOptions['language_id']);
 			$oDocument->setIsProtected($aOptions['is_protected']);
 			if($aOptions['document_category_id']) {
@@ -83,6 +83,14 @@ class FileUploadWidgetModule extends WidgetModule {
 		
 		$oDocument->save();
 		return $oDocument->getId();
+	}
+	
+	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder == null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addResource('widget/html5-formdata/formdata.js');
+		self::includeWidgetResources(false, $oResourceIncluder);
 	}
 	
 	public function accepts($sFileName, $sMimeType = null) {

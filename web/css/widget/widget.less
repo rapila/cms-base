@@ -98,11 +98,15 @@ textarea.ui-widget-content:hover,	 textarea.ui-widget-content:focus {
 }
 
 .ui-sortable-handle {
-	background-image: url('../../images/admin/sortable_handler.png');
+	background-image: url('../../images/admin/sortable_handler_inactive.png');
 	background-repeat: no-repeat;
 	background-position: center center;
 	min-width: 16px;
 	height: 12px;
+}
+
+.ui-sortable .ui-sortable-handle {
+	background-image: url('../../images/admin/sortable_handler.png');
 }
 
 .ui-placeholder {
@@ -328,6 +332,7 @@ body.pages .ui-tabs-nav.ui-widget-header {
 }
 
 ol.ui-editable-items-list {
+  list-style-type: none;
   margin: 0;
   padding: 0;
 }
@@ -337,11 +342,12 @@ ol.ui-editable-items-list select {
 }
 
 ol.ui-editable-items-list li {
+  list-style: none;
   padding: .2em 0;
 }
 
 ol.ui-editable-items-list li:nth-child(2n+2) {
-	background-color: #FEFFFE;
+	background-color: #FDFDFD;
 }
 
 ol.ui-editable-items-list li::before {

@@ -29,15 +29,14 @@ class DocumentsAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('document_category_id', 'title', 'magic_column');
+		return array('document_category_id', 'name', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
-			case 'title':
+			case 'name':
 				$aResult['heading'] = StringPeer::getString('wns.documents.sidebar_heading');
-				$aResult['field_name'] = 'name';
 				break;
 			case 'document_category_id':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -55,10 +54,10 @@ class DocumentsAdminModule extends AdminModule {
 		if(DocumentCategoryPeer::doCount(new Criteria()) > 0) {
 		 	return array(
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('wns.documents.select_all_title'),
+							'name' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all'),
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'title' => StringPeer::getString('wns.documents.select_without_title'),
+							'name' => StringPeer::getString('wns.documents.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();
@@ -70,7 +69,10 @@ class DocumentsAdminModule extends AdminModule {
 	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-		return $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
+			return $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+		}
+		return $oCriteria;
 	}
 
 }

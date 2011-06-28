@@ -108,7 +108,7 @@ Widget.types.list = {
 		}
 		
 		if(this.settings.row_model_drag_and_drop_identifier) {
-			this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowData[this.settings.row_model_drag_and_drop_identifier]);
+			this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowData[this.settings.row_model_drag_and_drop_identifier], true);
 		}
 		
 		return row;
@@ -153,7 +153,7 @@ Widget.types.list = {
 			if(event.val) {
 				value = event.val();
 			}
-			this.setOption(metadata.field_name, value);
+			this.setOption(metadata.identifier, value);
 			this.reload();
 		}.bind(this);
 		if(is_widget) {
@@ -173,14 +173,15 @@ Widget.types.list = {
 	},
 	
 	prepare_sort: function(row, into, metadata) {
-		var widget = this;
+		var _this = this;
 		into.addClass('sortable');
-		if(this.sort && this.sort[0] == metadata.field_name) {
+		if(this.sort && this.sort[0] == metadata.identifier) {
 			into.addClass(this.sort[1]);
 		}
 		into.click(function(){
-			widget.setOrderColumnSort(metadata.field_name, into.is('.asc') ? 'desc' : 'asc');
-			widget.reload();
+			_this.sort = [metadata.identifier, into.is('.asc') ? 'desc' : 'asc'];
+			_this.setOrderColumnSort.apply(_this, _this.sort);
+			_this.reload();
 		});
 	},
 	
@@ -191,7 +192,7 @@ Widget.types.list = {
 		all_headings.filter('.sortable').removeClass('asc').removeClass('desc').each(function() {
 			var sortable = jQuery(this);
 			var index = all_headings.index(sortable);
-			if(widget.schema_for_col(index).field_name == sort[0]) {
+			if(widget.schema_for_col(index).identifier == sort[0]) {
 				sortable.addClass(sort[1]);
 			}
 		});
@@ -203,7 +204,7 @@ Widget.types.list = {
 		var _this = this;
 		if(this.sort) {
 			jQuery.each(this.schema, function(i, schema) {
-				if(schema.field_name === _this.sort[0]) {
+				if(schema.identifier === _this.sort[0]) {
 					if(schema.display_type === 'reorderable' && _this.sort[1] === 'asc') {
 						currentSortSchema = schema;
 					}
@@ -211,23 +212,18 @@ Widget.types.list = {
 				}
 			});
 		}
-		if(currentSortSchema !== null) {
+		if(currentSortSchema !== null && this.allowSort(currentSortSchema.identifier, WidgetJSONOptions.with_async(false))) {
 			var currentSchema = null;
 			reorderable.sortable({
+				items: '.ui-list-row',
 				handle: '.ui-sortable-handle',
 				containment: this._element,
-				forceHelperSize: true,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
 					currentSchema = _this.schema_for_col(item);
 				},
 				stop: function() {
 					currentSchema = null;
-				},
-				beforeStop: function() {
-					if(!_this.allowSort(currentSchema.identifier, WidgetJSONOptions.with_async(false))) {
-						reorderable.sortable('cancel');
-					}
 				},
 				update: function(event, ui) {
 					_this.update_reorderable_order(ui.item, currentSchema);
@@ -272,7 +268,7 @@ Widget.types.list = {
 		var rowData = {};
 		jQuery.each(this.schema, function(i) {
 			if(this.schema[i].display_type === 'data') {
-				rowData[this.schema[i].field_name] = row.data(this.schema[i].identifier);
+				rowData[this.schema[i].identifier] = row.data(this.schema[i].identifier);
 			}
 		}.bind(this));
 		return rowData;
@@ -430,7 +426,7 @@ Widget.types.list = {
 			var row = jQuery(this);
 			jQuery.each(widget.schema, function(i) {
 				if(widget.schema[i].display_type === 'data') {
-					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].field_name]) {
+					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].identifier]) {
 						is_found = false;
 						return false;
 					}
@@ -452,7 +448,7 @@ Widget.types.list = {
 			var all_data_matches = true;
 			jQuery.each(rowData, function(dataName, dataValue) {
 				jQuery.each(_this.schema, function(i) {
-					if(_this.schema[i].display_type === 'data' && _this.schema[i].field_name == dataName) {
+					if(_this.schema[i].display_type === 'data' && _this.schema[i].identifier == dataName) {
 						if(row.data(_this.schema[i].identifier) !== dataValue) {
 							all_data_matches = false;
 							return false;

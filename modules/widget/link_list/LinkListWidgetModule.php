@@ -39,6 +39,7 @@ class LinkListWidgetModule extends WidgetModule {
 		switch($sColumnIdentifier) {
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'name':
 				$aResult['heading'] = StringPeer::getString('wns.name');
@@ -69,21 +70,21 @@ class LinkListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function getFilterTypeForColumn($sColumnName) {
-		if($sColumnName === 'link_category_id') {
+	public function getFilterTypeForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'link_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
 		return null;
 	}
 
-	public function getDatabaseColumnForDisplayColumn($sDisplayColumn) {
-		if($sDisplayColumn === 'category_name') {
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'category_name') {
 			return LinkPeer::LINK_CATEGORY_ID;
 		}
-		if($sDisplayColumn === 'updated_at_formatted') {
+		if($sColumnIdentifier === 'updated_at_formatted') {
 			return LinkPeer::UPDATED_AT;
 		}
-		if($sDisplayColumn === 'language_name') {
+		if($sColumnIdentifier === 'language_name') {
 			return LinkPeer::LANGUAGE_ID;
 		}
 		return null;
@@ -99,8 +100,37 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}
-
+	
+  public function allowSort($sSortColumn) {
+		return $this->oDelegateProxy->getLinkCategoryId() !== CriteriaListWidgetDelegate::SELECT_ALL;
+	}
+	
+	public function doSort($sColumnIdentifier, $oLinkToSort, $oRelatedLink, $sPosition = 'before') {
+		$iNewPosition = $oRelatedLink->getSort() + ($sPosition === 'before' ? 0 : 1);
+		if($oLinkToSort->getSort() < $oRelatedLink->getSort()) {
+			$iNewPosition--;
+		}
+		$oLinkToSort->setSort($iNewPosition);
+		$oLinkToSort->save();
+		$oQuery = $this->oDelegateProxy->getCriteria();
+		$oQuery->filterById($oLinkToSort->getId(), Criteria::NOT_EQUAL);
+		$oQuery->orderBySort();
+		$i = 1;
+		foreach($oQuery->find() as $oLink) {
+			if($i == $iNewPosition) {
+				$i++;
+			}
+			$oLink->setSort($i);
+			$oLink->save();
+			$i++;
+		}
+	}
+	
 	public function getCriteria() {
-		return LinkQuery::create()->excludeExternallyManaged();
+		$oQuery = LinkQuery::create();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oQuery->excludeExternallyManaged();
+		}
+		return $oQuery;
 	}
 }

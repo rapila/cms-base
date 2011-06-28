@@ -26,14 +26,13 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 
 		  if(count($aCategories) > 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
-		  } else if(count($aCategories === 1)) {
+		  } else if(count($aCategories) === 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories[0]);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
-			} else {
-				$oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
 			}
+      $oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
 		}
 		try {
 			$oListTemplate = new Template($aOptions['template']);
@@ -90,8 +89,10 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	}	
 	
 	public static function getCategoryOptions() {
-		$oCriteria = LinkCategoryQuery::create();
-		$oCriteria->orderByName();
+		$oCriteria = LinkCategoryQuery::create()->orderByName();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
 		$aResult = array();
 		foreach(LinkCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
