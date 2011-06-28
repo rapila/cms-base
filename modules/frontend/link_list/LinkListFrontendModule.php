@@ -44,6 +44,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			foreach($oCriteria->find() as $i => $oLink) {
 				$oItemTemplate = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Link');
+				$oItemTemplate->replaceIdentifier('counter', $i+1);
 				$oLink->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}

@@ -18,7 +18,7 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 				continue;
 			}
 			$aCorrespondingItems = $oTag->getAllCorrespondingDataEntries($aData['types']);
-			foreach($aCorrespondingItems as $oCorrespondingItem) {
+			foreach($aCorrespondingItems as $i => $oCorrespondingItem) {
 				if(!method_exists($oCorrespondingItem, 'renderListItem')) {
 					return;
 				}
@@ -28,6 +28,7 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 				$bItemFound = true;
 				$oItemTemplate = clone $oItemTemplatePrototype;
 				$oItemTemplate->replaceIdentifier('model', get_class($oCorrespondingItem));
+				$oItemTemplate->replaceIdentifier('counter', $i+1);
 				$oCorrespondingItem->renderListItem($oItemTemplate);
 				$oTemplate->replaceIdentifierMultiple("items", $oItemTemplate);
 			}
