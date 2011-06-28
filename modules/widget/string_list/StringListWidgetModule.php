@@ -54,7 +54,7 @@ class StringListWidgetModule extends WidgetModule {
 	
 	public function deleteRow($aRowData, $oCriteria) {
 		$bResult = false;
-		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['string_key']);
+		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['id']);
 		if(StringPeer::doDelete($oCriteria) && $sNameSpace !== null) {
 			$bResult = !StringPeer::nameSpaceExists($sNameSpace);
 		}

@@ -16,16 +16,17 @@ Widget.types.document_edit = {
 		});
 		this._element.append(this.content);
 
+		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
+		this._element.append(this.result_list);
+
 		var detail_widget;
 		Widget.create('document_detail', function(widget) {
 			_this.detail_widget = widget;
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
 		
-		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
 		this.reload_preview();
-		this._element.append(this.result_list);
-		this.result_list.delegate('img', 'click', function() {
+		this.result_list.delegate('li', 'click', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setDocumentId(id);
 			_this.detail_widget.fill_data();
