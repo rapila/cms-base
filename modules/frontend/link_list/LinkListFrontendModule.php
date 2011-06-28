@@ -26,7 +26,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 
 		  if(count($aCategories) > 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
-		  } else if(count($aCategories === 1)) {
+		  } else if(count($aCategories) === 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories[0]);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
