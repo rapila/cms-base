@@ -77,11 +77,6 @@ class StringListWidgetModule extends WidgetModule {
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-    // $oCriteria->setDistinct();
-    // $oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
-		if($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(StringPeer::STRING_KEY, "{$this->oDelegateProxy->getNameSpace()}.%", Criteria::LIKE);
-		}
 		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
 		return $oCriteria;
 	}
