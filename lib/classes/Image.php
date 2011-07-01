@@ -204,6 +204,7 @@ class Image {
 				return imagegif($this->rImageHandle, $sPath);
 				break;
 			case ('png'):
+				imagesavealpha($this->rImageHandle, true);
 				return imagepng($this->rImageHandle, $sPath);
 				break;
 		}
@@ -222,6 +223,7 @@ class Image {
 				break;
 			case ('png'):
 				header("Content-Type: image/png");
+				imagesavealpha($this->rImageHandle, true);
 				return imagepng($this->rImageHandle);
 				break;
 		}
@@ -229,6 +231,11 @@ class Image {
 	
 	public function resizeImage() {
 		$rNewImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
+		if($this->sFileType === 'png') {
+			$rTransparent = imagecolorallocatealpha($rNewImage, 0, 0, 0, 127);
+			imagefill($rNewImage, 0, 0, $rTransparent);
+			imagealphablending($rNewImage, true);
+		}
 		imagecopyresampled($rNewImage, $this->rImageHandle, 0, 0, 0, 0, $this->iWidth, $this->iHeight, $this->iOriginalWidth, $this->iOriginalHeight);
 		imagedestroy($this->rImageHandle);
 		$this->rImageHandle = $rNewImage;
@@ -272,5 +279,9 @@ class Image {
 		$oImage->fill($iBackgoundRed, $iBackgoundGreen, $iBackgoundBlue, $iBackgoundAlpha);
 		$oImage->addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue);
 		return $oImage;
+	}
+	
+	public static function supportsText() {
+		return function_exists('imageftbbox');
 	}
 }
