@@ -91,7 +91,12 @@ class Document extends BaseDocument {
 			$aOptions['height'] = $iSize*0.747;
 		}
 		
-		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions)));
+		$aFallback = $aOptions;
+		$aFallback['document_id'] = '';
+		$aFallback['height'] = $iSize;
+		$aFallback['url'] = LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize));
+		
+		$oModule = FrontendModule::getModuleInstance('media_object', serialize(array($aOptions, $aFallback)));
 		$oResult = $oModule->renderFrontend();
 		if($bMayReturnTemplate) {
 			return $oResult;
