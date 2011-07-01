@@ -3929,7 +3929,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -3941,7 +3941,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -3951,7 +3951,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -3961,7 +3961,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -3971,7 +3971,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -3981,7 +3981,7 @@ abstract class BaseUserQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     UserQuery The current query, for fuid interface
+	 * @return     UserQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{

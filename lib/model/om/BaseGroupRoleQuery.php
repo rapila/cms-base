@@ -621,7 +621,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -633,7 +633,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -643,7 +643,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -653,7 +653,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -663,7 +663,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -673,7 +673,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     GroupRoleQuery The current query, for fuid interface
+	 * @return     GroupRoleQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{
