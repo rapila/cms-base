@@ -654,7 +654,9 @@ jQuery.extend(jQuery, {
 	parseHTML: function(html, instanciateWidgets, elementName) {
 		var element = document.createElement(elementName || 'div');
 		element.innerHTML = jQuery.trim(html);
-		var result = jQuery(element.childNodes);
+		var result = jQuery(element.childNodes).map(function() {
+			return this.nodeType === Node.ELEMENT_NODE ? this : null;
+		});
 		if(instanciateWidgets) {
 			result.widgetElements().each(function() {
 				jQuery(this).prepareWidget();
