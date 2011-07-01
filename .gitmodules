@@ -4,3 +4,9 @@
 [submodule "web/js/widget/html5-formdata"]
 	path = web/js/widget/html5-formdata
 	url = git://github.com/francois2metz/html5-formdata.git
+[submodule "lib/vendor/phing"]
+	path = lib/vendor/phing
+	url = git://github.com/Xosofox/phing.git
+[submodule "lib/vendor/propel"]
+	path = lib/vendor/propel
+	url = git://github.com/Xosofox/propel.git
