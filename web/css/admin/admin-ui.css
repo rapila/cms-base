@@ -91,7 +91,6 @@ form.page_detail {
   padding: 0;
   vertical-align: top;
 }
-form.page_detail h3 { background-color: #ebedef; }
 form.page_detail .status_section { background-color: #ebedef; }
 .pages #admin_main { background-color: #ebedef; }
 .ui-widget-content h3 { background-color: #ebedef; }
@@ -102,23 +101,6 @@ form.page_detail .status_section {
   border-bottom: #c1c2c4 1px solid;
   padding-bottom: 0.5em;
   padding-left: 1.6em;
-}
-form.page_detail .ui-accordion .ui-accordion-content { padding-top: 0; }
-form.page_detail h3 {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  margin: 0;
-  font-weight: 1.5em;
-  border: none;
-  border-bottom: #c1c2c4 1px solid;
-}
-.ui-dialog-content h3 {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  margin: 0;
-  font-weight: 1.5em;
-  border: none;
-  border-bottom: #c1c2c4 1px solid;
 }
 form.page_detail .status_section h3 { border-bottom: none; }
 .status_section h3 {
@@ -138,55 +120,6 @@ form.page_detail h3 a {
 form.page_detail label.for_checkbox {
   margin-right: 2em;
   padding-left: 0.2em;
-}
-h3.ui-state-default a {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.ui-state-default a:link {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.ui-state-default a:visited {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.status {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.ui-state-active a {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.ui-state-active a:link {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
-}
-h3.ui-state-active a:visited {
-  font-size: 1.2em;
-  font-weight: 700;
-  color: #666666;
-  padding: 0.3em 0.3em 0.3em 1.6em;
-  border-bottom: none;
 }
 h3.status { padding-left: 0.3em; }
 .page_detail .filled_modules {
@@ -314,30 +247,6 @@ h3.status { padding-left: 0.3em; }
   color: #5b595b;
   cursor: pointer;
 }
-.ui-accordion .ui-state-default .ui-icon-triangle-1-s {
-  background-image: url("../../images/admin/icon_triangle_open.png");
-  background-position: 3px 3px;
-}
-.ui-accordion .ui-state-active .ui-icon-triangle-1-s {
-  background-image: url("../../images/admin/icon_triangle_open_active.png");
-  background-position: 3px 3px;
-}
-.ui-accordion .ui-state-hover .ui-icon-triangle-1-s {
-  background-image: url("../../images/admin/icon_triangle_open_active.png");
-  background-position: 3px 3px;
-}
-.ui-accordion .ui-state-default .ui-icon-triangle-1-e {
-  background-image: url("../../images/admin/icon_triangle_closed.png");
-  background-position: 3px 3px;
-}
-.ui-accordion .ui-state-active .ui-icon-triangle-1-e {
-  background-image: url("../../images/admin/icon_triangle_closed_active.png");
-  background-position: 3px 3px;
-}
-.ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
-  background-image: url("../../images/admin/icon_triangle_closed_active.png");
-  background-position: 3px 3px;
-}
 *[data-widget-type=tree].ui-widget-content .ui-icon {
   background-image: url("../../images/admin/icon_triangle_open_active.png");
   background-position: 6px 6px;
@@ -350,8 +259,6 @@ h3.status { padding-left: 0.3em; }
   background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 6px 5px;
 }
-.ui-accordion .ui-accordion-content.contents_container { padding: 0; }
-.ui-accordion .ui-accordion-content.configuration_container { padding: 0; }
 fieldset.option_groups {
   margin-top: -1px;
   margin-left: 0;
