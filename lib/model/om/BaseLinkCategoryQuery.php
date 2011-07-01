@@ -560,7 +560,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -572,7 +572,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -582,7 +582,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -592,7 +592,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -602,7 +602,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -612,7 +612,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     LinkCategoryQuery The current query, for fuid interface
+	 * @return     LinkCategoryQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{
