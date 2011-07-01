@@ -12,7 +12,7 @@ Widget.types.detail = {
 			instance.fire('saving', data);
 			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
-				instance.save_callback.apply(instance, jQuery.makeArray(arguments));
+				instance.save_callback && instance.save_callback.apply(instance, jQuery.makeArray(arguments));
 				if(!remains_open) {
 					instance.close();
 				}

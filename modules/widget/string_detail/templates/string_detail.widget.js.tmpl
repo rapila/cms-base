@@ -70,9 +70,6 @@ Widget.types.string_detail = {
 	
 	close: function() {
 		this.detail_widget.close();
-		this.close_callback();
-	},
-	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+		this.close_callback && this.close_callback();
+	}
 };
