@@ -169,11 +169,11 @@ jQuery.extend(Widget, {
 			modal: true,
 			buttons: [{
 				text: okButtonText,
-				className: 'primary ui-state-highlight',
+				'class': 'primary ui-state-highlight',
 				click: destroy.bind(dialog, true)
 			}, {
 				text: cancelButtonText,
-				className: 'secondary',
+				'class': 'secondary',
 				click: destroy.bind(dialog, false)
 			}],
 			close: destroy.bind(dialog, false)
