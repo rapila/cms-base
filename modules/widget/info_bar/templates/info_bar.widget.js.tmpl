@@ -56,7 +56,7 @@ Widget.types.info_bar = {
 	},
 	
 	add_button: function(identifier, action, accesskey, is_right_container, is_before, title_text) {
-		var title_text = title_text === undefined ? "{{writeString=wns.create_new_entry}}" : title_text;
+		title_text = title_text === undefined ? "{{writeString=wns.create_new_entry}}" : title_text;
 		var element = this.button_prototype.clone().addClass(identifier).click(action);
 		element.attr('title', title_text);
 		this.add_element(element, is_right_container, is_before, accesskey);
