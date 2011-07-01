@@ -67,7 +67,7 @@ if(get_magic_quotes_gpc()) {
 	ArrayUtil::runFunctionOnArrayValues($_POST, 'stripslashes');
 }
 
-require_once("propel/Propel.php");
+require_once("propel/runtime/lib/Propel.php");
 $aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
 $sAdapter = $aDbSettings['database']['adapter'];
 unset($aDbSettings['database']);
