@@ -1,0 +1,62 @@
+<?php
+/**
+ * @package modules.file
+ */
+class DocumentTypePreviewFileModule extends FileModule {
+	
+	const MIME_TYPE = 'image/png';
+		
+	protected $oDocumentType;
+	protected $iSize;
+	
+	public function __construct($aRequestPath) {
+		parent::__construct($aRequestPath);
+		if(!isset($this->aPath[0])) {
+			throw new Exception("Error in DocumentTypePreviewFileModule->__construct: no type given");
+		}
+		$this->oDocumentType = DocumentTypePeer::retrieveByPK($this->aPath[0]);
+		if($this->oDocumentType === null) {
+			throw new Exception("Error in DocumentTypePreviewFileModule->__construct: type invalid: {$this->aPath[0]}");
+		}
+		$this->iSize = 512;
+		if(isset($_REQUEST['size'])) {
+			$this->iSize = min($this->iSize, (int)$_REQUEST['size']);
+		}
+	}
+	
+	public function renderFile() {
+		$sCacheString = 'preview_'.$this->oDocumentType->getId().'_'.$this->iSize;
+		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
+		
+		$iTimestamp = $this->oDocumentType->getUpdatedAt();
+		if($oCache->cacheFileExists() && !$oCache->isOlderThan($iTimestamp)) {
+			$oCache->sendCacheControlHeaders($iTimestamp);
+			header("Content-Type: ".self::MIME_TYPE);
+			$oCache->passContents(true);exit;
+		}
+		
+		$sFileName = "{$this->oDocumentType->getDocumentKind()}.png";
+		
+		$sFilePath = ResourceFinder::findResource(array(DIRNAME_MODULES, self::getType(), $this->getModuleName(), ResourceIncluder::RESOURCE_TYPE_ICON, $sFileName));
+		if($sFilePath === null) {
+			$sFileName = 'default.png';
+		}
+		
+		$sFilePath = ResourceFinder::findResource(array(DIRNAME_MODULES, self::getType(), $this->getModuleName(), ResourceIncluder::RESOURCE_TYPE_ICON, $sFileName));
+		if($sFilePath === null) {
+			throw new Exception("Error in DocumentTypePreviewFileModule->renderFile: type has unknown kind: {$this->oDocumentType->getDocumentKind()}");
+		}
+		
+		$sFontFilePath = ResourceFinder::findResource(array(DIRNAME_MODULES, self::getType(), $this->getModuleName(), 'PTS55F.ttf'));
+		$oImage = Image::imageFromPath($sFilePath);
+		if(Image::supportsText()) {
+			$oImage->addText($sFontFilePath, strtoupper($this->oDocumentType->getExtension()), 1, 12, 0, 0, 0);
+		}
+		if($this->iSize < 512) {
+			$oImage->setSize($this->iSize, $this->iSize, Image::STRETCH);
+		}
+		$oImage->setFileType('png');
+		$oImage->render(true, null, $oCache); exit;
+	}
+}
+?>
