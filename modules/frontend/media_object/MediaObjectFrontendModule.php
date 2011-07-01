@@ -2,7 +2,7 @@
 /**
  * @package modules.frontend
  */
-include_once('propel/query/Criteria.php');
+include_once('propel/runtime/lib/query/Criteria.php');
 
 class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
 	
