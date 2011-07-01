@@ -982,7 +982,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -994,7 +994,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -1004,7 +1004,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -1014,7 +1014,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -1024,7 +1024,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -1034,7 +1034,7 @@ abstract class BaseLanguageQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     LanguageQuery The current query, for fuid interface
+	 * @return     LanguageQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{
