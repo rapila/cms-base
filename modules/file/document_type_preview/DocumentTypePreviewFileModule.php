@@ -50,7 +50,25 @@ class DocumentTypePreviewFileModule extends FileModule {
 		$sFontFilePath = ResourceFinder::findResource(array(DIRNAME_MODULES, self::getType(), $this->getModuleName(), 'PTS55F.ttf'));
 		$oImage = Image::imageFromPath($sFilePath);
 		if(Image::supportsText()) {
-			$oImage->addText($sFontFilePath, strtoupper($this->oDocumentType->getExtension()), 1, 12, 0, 0, 0);
+			$sText = strtoupper($this->oDocumentType->getExtension());
+			$fFontSize = 72.0;
+			$aSize = Image::textSize($sFontFilePath, $sText, $fFontSize);
+			$iDesiredWidth = 300;
+			$iDesiredHeight = 165;
+			$fWidthRatio = $iDesiredWidth/$aSize[0];
+			$fHeightRatio = $iDesiredHeight/$aSize[1];
+			
+			$fRatio = min($fWidthRatio, $fHeightRatio);
+			$fFontSize *= $fRatio;
+			
+			$iDesiredPositionX = 107 - (7 * $fRatio);
+			$iDesiredPositionY = 328;
+			$iStartPositionX = $iDesiredPositionX + (($iDesiredWidth - ($aSize[0] * $fRatio))/2);
+			$iStartPositionY = $iDesiredPositionY + ($aSize[1] * $fRatio) + ($iDesiredHeight - ($aSize[1] * $fRatio))/2;
+			
+			// ErrorHandler::log(Image::textSize($sFontFilePath, $sText, $fFontSize), $iStartPositionX, $iStartPositionY);
+			
+			$oImage->addText($sFontFilePath, $sText, 1, $fFontSize, 150, 150, 150, $iStartPositionX, $iStartPositionY);
 		}
 		if($this->iSize < 512) {
 			$oImage->setSize($this->iSize, $this->iSize, Image::STRETCH);
