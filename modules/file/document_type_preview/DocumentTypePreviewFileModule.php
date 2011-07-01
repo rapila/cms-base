@@ -54,7 +54,7 @@ class DocumentTypePreviewFileModule extends FileModule {
 			$fFontSize = 72.0;
 			$aSize = Image::textSize($sFontFilePath, $sText, $fFontSize);
 			$iDesiredWidth = 300;
-			$iDesiredHeight = 165;
+			$iDesiredHeight = 145;
 			$fWidthRatio = $iDesiredWidth/$aSize[0];
 			$fHeightRatio = $iDesiredHeight/$aSize[1];
 			
@@ -62,7 +62,7 @@ class DocumentTypePreviewFileModule extends FileModule {
 			$fFontSize *= $fRatio;
 			
 			$iDesiredPositionX = 107 - (7 * $fRatio);
-			$iDesiredPositionY = 328;
+			$iDesiredPositionY = 338;
 			$iStartPositionX = $iDesiredPositionX + (($iDesiredWidth - ($aSize[0] * $fRatio))/2);
 			$iStartPositionY = $iDesiredPositionY + ($aSize[1] * $fRatio) + ($iDesiredHeight - ($aSize[1] * $fRatio))/2;
 			
