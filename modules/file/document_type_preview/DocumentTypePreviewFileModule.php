@@ -66,8 +66,6 @@ class DocumentTypePreviewFileModule extends FileModule {
 			$iStartPositionX = $iDesiredPositionX + (($iDesiredWidth - ($aSize[0] * $fRatio))/2);
 			$iStartPositionY = $iDesiredPositionY + ($aSize[1] * $fRatio) + ($iDesiredHeight - ($aSize[1] * $fRatio))/2;
 			
-			// ErrorHandler::log(Image::textSize($sFontFilePath, $sText, $fFontSize), $iStartPositionX, $iStartPositionY);
-			
 			$oImage->addText($sFontFilePath, $sText, 1, $fFontSize, 150, 150, 150, $iStartPositionX, $iStartPositionY);
 		}
 		if($this->iSize < 512) {
