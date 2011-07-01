@@ -24,12 +24,12 @@
   padding: 0.2em 0;
 }
 .ui-loading {
-  background: transparent url('../../images/admin/loader.gif') no-repeat scroll top left;
+  background: transparent url("../../images/admin/loader.gif") no-repeat scroll top left;
   min-width: 24px;
   min-height: 24px;
 }
 .ui-loading-add {
-  background: transparent url('../../images/admin/loader_add_button.gif') no-repeat scroll top left;
+  background: transparent url("../../images/admin/loader_add_button.gif") no-repeat scroll top left;
   min-width: 24px;
   min-height: 24px;
 }
@@ -270,7 +270,7 @@ h3.status { padding-left: 0.3em; }
   margin-top: 0.5em;
 }
 .page_detail div.ui-widget-content { border: 0; }
-.ui-icon-trash.delete_inactive { background-image: url(''); }
+.ui-icon-trash.delete_inactive { background-image: none; }
 #admin_sidebar .ui-state-droppable {
   border: 0 solid #b8d600;
   color: #5b595b;
@@ -315,39 +315,39 @@ h3.status { padding-left: 0.3em; }
   cursor: pointer;
 }
 .ui-accordion .ui-state-default .ui-icon-triangle-1-s {
-  background-image: url('../../images/admin/icon_triangle_open.png');
+  background-image: url("../../images/admin/icon_triangle_open.png");
   background-position: 3px 3px;
 }
 .ui-accordion .ui-state-active .ui-icon-triangle-1-s {
-  background-image: url('../../images/admin/icon_triangle_open_active.png');
+  background-image: url("../../images/admin/icon_triangle_open_active.png");
   background-position: 3px 3px;
 }
 .ui-accordion .ui-state-hover .ui-icon-triangle-1-s {
-  background-image: url('../../images/admin/icon_triangle_open_active.png');
+  background-image: url("../../images/admin/icon_triangle_open_active.png");
   background-position: 3px 3px;
 }
 .ui-accordion .ui-state-default .ui-icon-triangle-1-e {
-  background-image: url('../../images/admin/icon_triangle_closed.png');
+  background-image: url("../../images/admin/icon_triangle_closed.png");
   background-position: 3px 3px;
 }
 .ui-accordion .ui-state-active .ui-icon-triangle-1-e {
-  background-image: url('../../images/admin/icon_triangle_closed_active.png');
+  background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 3px 3px;
 }
 .ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
-  background-image: url('../../images/admin/icon_triangle_closed_active.png');
+  background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 3px 3px;
 }
 *[data-widget-type=tree].ui-widget-content .ui-icon {
-  background-image: url('../../images/admin/icon_triangle_open_active.png');
+  background-image: url("../../images/admin/icon_triangle_open_active.png");
   background-position: 6px 6px;
 }
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon {
-  background-image: url('../../images/admin/icon_triangle_closed.png');
+  background-image: url("../../images/admin/icon_triangle_closed.png");
   background-position: 6px 5px;
 }
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon:hover {
-  background-image: url('../../images/admin/icon_triangle_closed_active.png');
+  background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 6px 5px;
 }
 .ui-accordion .ui-accordion-content.contents_container { padding: 0; }
