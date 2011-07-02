@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
 			column = db.find('.dashboard-column').eq(0);
 		}
 		column.append(skeleton.skeleton);
-		column.data('dashboard-skeleton', skeleton);
+		column.data('dashboardSkeleton', skeleton);
 	};
 	
 	Widget.create('dashboard_control', function(dashboard_control) {
