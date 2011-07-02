@@ -15,11 +15,11 @@
 			_is_loaded : function (obj) { 
 				var s = this._get_settings().tree_widget, d;
 				obj = this._get_node(obj);
-				if(obj && obj !== -1 && s.progressive_render && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree-children")) {
-					d = this._parse_json(obj.data("jstree-children"));
+				if(obj && obj !== -1 && s.progressive_render && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstreeChildren")) {
+					d = this._parse_json(obj.data("jstreeChildren"));
 					if(d) {
 						obj.append(d);
-						$.removeData(obj, "jstree-children");
+						$.removeData(obj, "jstreeChildren");
 					}
 					this.clean_node(obj);
 					return true;
@@ -32,8 +32,8 @@
 					success_func = function () {};
 				obj = this._get_node(obj);
 				if(obj && obj !== -1) {
-					if(obj.data("jstree-is-loading")) { return; }
-					else { obj.data("jstree-is-loading",true); }
+					if(obj.data("jstreeIsLoading")) { return; }
+					else { obj.data("jstreeIsLoading",true); }
 				}
 				switch(!0) {
 					case (!s.data && !s.widget): throw "Neither data nor widget settings supplied.";
@@ -55,7 +55,7 @@
 							d = this._parse_json(d);
 							if(d) {
 								if(obj === -1 || !obj) { this.get_container().children("ul").empty().append(d.children()); }
-								else { obj.append(d).children(".jstree-loading").removeClass("jstree-loading"); obj.data("jstree-is-loading",false); }
+								else { obj.append(d).children(".jstree-loading").removeClass("jstree-loading"); obj.data("jstreeIsLoading",false); }
 								this.clean_node(obj);
 								if(s_call) { s_call.call(this); }
 							}
@@ -68,7 +68,7 @@
 								}
 								else {
 									obj.children(".jstree-loading").removeClass("jstree-loading");
-									obj.data("jstree-is-loading",false);
+									obj.data("jstreeIsLoading",false);
 									if(s.correct_state) { 
 										obj.removeClass("jstree-open jstree-closed").addClass("jstree-leaf"); 
 										if(s_call) { s_call.call(this); } 
@@ -151,7 +151,7 @@
 					d.prepend("<ins class='jstree-icon'>&#160;</ins>");
 					if(js.children) { 
 						if(s.progressive_render && js.state !== "open") {
-							d.addClass("jstree-closed").data("jstree-children", js.children);
+							d.addClass("jstree-closed").data("jstreeChildren", js.children);
 						}
 						else {
 							if($.isFunction(js.children)) {
