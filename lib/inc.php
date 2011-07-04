@@ -75,7 +75,7 @@ $aDbSettings['adapter'] = $sAdapter;
 if($sAdapter === 'sqlite' && !StringUtil::startsWith($aDbSettings['connection']['database'], '/')) {
 	$aDbSettings['connection']['database'] = MAIN_DIR.'/'.$aDbSettings['connection']['database'];
 }
-Propel::setConfiguration(array('propel' => array('datasources' => array('mini_cms' => $aDbSettings, 'default' => 'mini_cms'))));
+Propel::setConfiguration(array('propel' => array('datasources' => array('rapila' => $aDbSettings, 'default' => 'rapila'))));
 Propel::initialize();
 
 //Set MySQL connection charset

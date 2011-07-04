@@ -77,7 +77,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'mini_cms', $modelName = 'LanguageObjectHistory', $modelAlias = null)
+	public function __construct($dbName = 'rapila', $modelName = 'LanguageObjectHistory', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}

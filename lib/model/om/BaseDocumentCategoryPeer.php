@@ -11,7 +11,7 @@
 abstract class BaseDocumentCategoryPeer {
 
 	/** the default database name for this class */
-	const DATABASE_NAME = 'mini_cms';
+	const DATABASE_NAME = 'rapila';
 
 	/** the table name for this class */
 	const TABLE_NAME = 'document_categories';

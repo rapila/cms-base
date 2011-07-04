@@ -65,7 +65,7 @@ abstract class BaseTagQuery extends ModelCriteria
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'mini_cms', $modelName = 'Tag', $modelAlias = null)
+	public function __construct($dbName = 'rapila', $modelName = 'Tag', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
