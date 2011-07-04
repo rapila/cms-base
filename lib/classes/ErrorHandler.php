@@ -66,18 +66,21 @@ class ErrorHandler {
 	}
 	
 	public static function shouldPrintErrors() {
-		return self::getEnvironment() === "development" || self::getEnvironment() === "test";
+		return self::getEnvironment() === "development" || self::getEnvironment() === "test" || self::getEnvironment() === "controlled";
 	}
 	
 	public static function shouldLogErrors() {
-		return self::getEnvironment() === "test" || self::getEnvironment() === "development" || self::getEnvironment() === "production";
+		return self::getEnvironment() === "test" || self::getEnvironment() === "development" || self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
 	}
 	
 	public static function shouldMailErrors() {
-		return self::getEnvironment() === "production";
+		return self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
 	}
 	
 	private static function shouldContinue($iErrorNumber) {
+		if(self::getEnvironment() === "controlled") {
+			return false;
+		}
 		return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED;
 	}
 
