@@ -98,7 +98,7 @@ class Util {
 
 	public static function dumpAll() {
 		$aArgs = func_get_args();
-		ob_clean();
+		@ob_clean();
 		header("Content-Type: text/plain;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
 		call_user_func_array('var_dump', $aArgs);
 		exit();
