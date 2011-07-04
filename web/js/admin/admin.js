@@ -13,7 +13,7 @@ jQuery.fn.extend({
 		}).mousemove(function(event) {
 			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
 		});
-	},
+	}
 });
 
 jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {
@@ -61,10 +61,11 @@ jQuery.extend(Widget, {
 			}
 		}
 		var highlight = severity == 'info' ? 'highlight' : 'error';
+		var display;
 		if(options.searchInfo) {
-			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
 		} else {
-			var display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 		}
 		display.hide().appendTo(admin_message).data('identifier', options.identifier);
 		
@@ -87,7 +88,7 @@ jQuery.extend(Widget, {
 				display.find('.ui-state-'+highlight).removeClass('ui-state-'+highlight).addClass('ui-state-'+new_highlight);
 			},
 			increase_badge_count: function() {
-				var count = parseInt(badge.text());
+				var count = parseInt(badge.text(), 10);
 				if(isNaN(count)) {
 					count = 0;
 				}
@@ -137,7 +138,7 @@ jQuery.extend(Widget, {
 	
 	notificationWithIdentifier: function(identifier) {
 		var admin_message = jQuery('#admin_message');
-		var result = null
+		var result = null;
 		admin_message.find('div.ui-notify').each(function() {
 			var notification = jQuery(this);
 			if(notification.data('identifier') === identifier) {
@@ -161,7 +162,7 @@ jQuery.extend(Widget, {
 		}
 		var dialog = jQuery.parseHTML('<div class="cmos_alert"><p><span class="ui-icon ui-icon-alert"></span><span class="text"></span></p></div>').attr('title', title).find('.ui-icon').css('float', 'left').end().find('.text').text(message).end();
 		var destroy = function(result) {
-			callback(!!result)
+			callback(!!result);
 			dialog.dialog('destroy').remove();
 		};
 		var dialog_opts = {
