@@ -55,7 +55,7 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();
 		$aResult['document_categories'] = $aDocumentCategories;
-		$aResult['template'] = DocumentListFrontendModule::getTemplateOptions();
+		$aResult['template'] = array_keys(DocumentListFrontendModule::getTemplateOptions());
 		if(count($aDocumentCategories) > 0) {
 		  $aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
 		}

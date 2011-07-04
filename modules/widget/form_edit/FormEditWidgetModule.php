@@ -6,14 +6,14 @@ class FormEditWidgetModule extends EditWidgetModule {
 	}
 	
 	public function getMethodOptions() {
-		return ArrayUtil::arrayWithValuesAsKeys(array('post', 'get'));
+		return array('post', 'get');
 	}
 	
 	public function getManagerOptions() {
-		return ArrayUtil::arrayWithValuesAsKeys(Manager::listManagers());
+		return array_values(Manager::listManagers());
 	}
 	
 	public function getFieldTypeOptions() {
-		return ArrayUtil::arrayWithValuesAsKeys(FormStorage::getAvailableTypes());
+		return FormStorage::getAvailableTypes();
 	}
 }

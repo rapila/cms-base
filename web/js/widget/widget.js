@@ -740,9 +740,13 @@ jQuery.fn.extend({
 		return jQuery(doc).has(this[0]).length > 0;
 	},
 	
-	populate: function(options, default_value) {
+	populate: function(options, default_value, use_text_as_value) {
 		var _this = this;
+		use_text_as_value = (use_text_as_value === undefined) ? jQuery.isArray(options) : !!use_text_as_value;
 		jQuery.each(options, function(value, text) {
+			if(use_text_as_value) {
+				value = text;
+			}
 			if(default_value === null || default_value === undefined) {
 				default_value = value;
 			}

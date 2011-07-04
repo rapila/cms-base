@@ -41,7 +41,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		$aLinkCategories = LinkListFrontendModule::getCategoryOptions();
 		$aResult['link_categories'] = $aLinkCategories;
-		$aResult['template'] = LinkListFrontendModule::getTemplateOptions();
+		$aResult['template'] = array_keys(LinkListFrontendModule::getTemplateOptions());
 		if(count($aLinkCategories) > 0) {
 			$aResult['sort_by'] = LinkListFrontendModule::getSortOptions();
 		}
