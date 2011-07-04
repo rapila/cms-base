@@ -408,8 +408,9 @@ jQuery.extend(Widget, {
 	
 	confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 		message = title+' '+message;
-		if(cancelButtonText === null) {
-			Widget.notifyUser(Widget.logSeverity.INFO, message);
+		// We don’t support the changing of button texts but still need to follow the convention of not displaying the cancel button if it is false-y but not undefined
+		if(cancelButtonText !== undefined && !cancelButtonText) {
+			alert(message);
 			return callback(true);
 		}
 		callback(confirm(message));
