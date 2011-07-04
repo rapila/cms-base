@@ -1,4 +1,4 @@
 aspects:
   - dashboard
 enabled: true
-admin_required: true
+allowed_roles: []

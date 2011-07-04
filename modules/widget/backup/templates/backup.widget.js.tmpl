@@ -1,31 +1,65 @@
 Widget.types.backup = {
-	initialize: function() {
+	prepare: function() {
 		var _this = this;
-		this.content = jQuery.parseHTML("{{includeTemplate=backup}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=module.admin.backup}}",
-				width: 550,
-				dialogClass: "backup",
-				modal: true
-			});
-			widget.open();
-		}.bind(this));
+		this._element.append(jQuery.parseHTML("{{includeTemplate=backup}}"));
 		
-		var choose_restore_file = this.content.find('#choose_restore_file');
-		choose_restore_file.bind('change', function() {
-		  if(choose_restore_file.val() !== null) {
-		    // enable button to load from file
-		  }
+		//Load
+		var restorer = this._element.find('.load_from_file button').button({disabled: true});
+		var restore_file = this._element.find('select[name="restore_file"]');
+		restore_file.change(function() {
+			restorer.button('option', 'disabled', !jQuery.trim(restore_file.val()));
 		});
-		var option = jQuery('<option/>');
-		var sql_files = this.getSqlFiles();
-		jQuery.each(sql_files, function(file_key, file_name) {
-			option.clone().val(file_key).text(file_name).appendTo(choose_file);
+		
+		this.possibleRestoreFiles(function(files) {
+			restore_file.populate(files).change();
+		});
+		
+		restorer.click(function() {
+			Widget.load();
+			_this.loadFromBackup(restore_file.val(), function(count) {
+				Widget.end_load();
+				if(arguments[1]) {
+					return;
+				}
+				Widget.confirm('{{writeString=module.admin.backup}}', '{{writeString=wns.backup.loader.load_success}} '+count, function() {
+					window.location.href = window.location.href;
+				}, null, '{{writeString=wns.reload}}');
+			});
+		});
+		
+		//Save
+		this.dumper = this._element.find('.dump_to_file button').button({disabled: true});
+		var file_name = this._element.find('input[name="file_name"]');
+		var dumptool = this._element.find('input[name="dumptool"]');
+		this._element.find('input').change(function() {
+			_this.dumper.button('option', 'disabled', !(jQuery.trim(file_name.val()) && jQuery.trim(dumptool.val())));
+		});
+		this.backupInfo(function(info) {
+			file_name.val(info.suggested_backup_name);
+			if(info.mysql_dump_tool) {
+				dumptool.val(info.mysql_dump_tool);
+			} else {
+				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.backup.mysqldump_missing}}');
+			}
+			this._element.find('.dirname').text(info.backup_dir);
+			file_name.change();
+		});
+		
+		this.dumper.click(function() {
+			_this.backupToFile(file_name.val(), dumptool.val(), function(message) {
+				if(message !== null) {
+					Widget.confirm('{{writeString=wns.backup.exporter.export_success}}', message, jQuery.noop, null);
+				}
+			});
 		});
 	},
-		
+	
+	changed_dashboard_config: function() {
+		//Simple way to reload
+		this._element.empty();
+		this.prepare();
+	},
+	
 	save_callback: function(data) {
 		//Do nothing
 	},
