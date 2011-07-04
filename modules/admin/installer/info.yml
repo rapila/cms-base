@@ -1,4 +1,3 @@
-admin_required: true
 name: "Installer"
 description: "Install routines"
 website: "http://www.mini-cms.ch/"
