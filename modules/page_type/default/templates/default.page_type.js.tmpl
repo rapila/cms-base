@@ -140,7 +140,7 @@ Widget.types.page_type.types['default'] = {
 					}];
 					if(widget.additional_buttons) {
 						jQuery.each(widget.additional_buttons, function(i, button) {
-							buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button'});
+							buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button', icons: {primary: 'ui-icon-'+button.icon}});
 						});
 					}
 					element.dialog({
@@ -280,7 +280,7 @@ Widget.types.page_type.types['default'] = {
 				jQuery.each(modules, function(object_type, module_name) {
 					var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
 					element.appendTo(available_modules);
-// not yet but soon		jQuery('<span/>').addClass('handle').appendTo(element);
+					// not yet but soon		jQuery('<span/>').addClass('handle').appendTo(element);
 				});
 			});
 		});
