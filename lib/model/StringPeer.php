@@ -36,7 +36,7 @@ class StringPeer extends BaseStringPeer {
 				}
 				
 				//Get strings for modules
-				foreach(ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_SITE_FIRST) as $sLanguageFile) {
+				foreach(ResourceFinder::findResourcesByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "$sLanguageId.ini"), ResourceFinder::SEARCH_SITE_FIRST) as $sLanguageFile) {
 					self::$STATIC_STRINGS[$sLanguageId] = array_merge(self::$STATIC_STRINGS[$sLanguageId], parse_ini_file($sLanguageFile));
 				}
 				

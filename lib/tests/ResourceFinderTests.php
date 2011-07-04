@@ -30,13 +30,13 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
   }
   
   public function testFindAllMainByExpression() {
-    $aMainPaths = ResourceFinder::findResourceByExpressions(array('lib', 'main.php'));
+    $aMainPaths = ResourceFinder::findResourcesByExpressions(array('lib', 'main.php'));
     $this->assertSame(1, count($aMainPaths));
     $this->assertSame(MAIN_DIR.'/base/lib/main.php', ArrayUtil::assocPeek($aMainPaths));
   }
   
   public function testFindAllMainByExpressionAndObject() {
-    $aMainPaths = ResourceFinder::findResourceByExpressions(array('lib', 'main.php'));
+    $aMainPaths = ResourceFinder::findResourcesByExpressions(array('lib', 'main.php'));
     $this->assertSame(1, count($aMainPaths));
     $oFileRes = new FileResource(ArrayUtil::assocPeek($aMainPaths));
     $this->assertSame(array($oFileRes->getRelativePath() => MAIN_DIR.'/base/lib/main.php'), $aMainPaths);

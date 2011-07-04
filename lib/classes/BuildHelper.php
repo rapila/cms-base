@@ -54,7 +54,7 @@ EOT;
 		if(!file_exists($sAdditionsOutputPath)) {
 			mkdir($sAdditionsOutputPath);
 		}
-		$aBuildClasses = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_LIB, 'propel_additions', '/^[\\w_]+\.php$/'));
+		$aBuildClasses = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_LIB, 'propel_additions', '/^[\\w_]+\.php$/'));
 		foreach($aBuildClasses as $oAddition) {
 			$sNewPath = "$sAdditionsOutputPath/".$oAddition->getFileName();
 			print "Copying propel addition ".$oAddition->getFileName()." to $sNewPath\n";
@@ -168,7 +168,7 @@ EOT;
 	private static function deleteUnusedFiles($bIsDevVersion = false) {
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.xml');
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/build.properties');
-		$aAdditions = ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_GENERATED, 'propel_additions', '/^[\\w_]+\.php$/'), ResourceFinder::SEARCH_MAIN_ONLY);
+		$aAdditions = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, 'propel_additions', '/^[\\w_]+\.php$/'), ResourceFinder::SEARCH_MAIN_ONLY);
 		foreach($aAdditions as $oAddition) {
 			$oAddition->unlink();
 		}

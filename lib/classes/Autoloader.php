@@ -59,7 +59,7 @@ class Autoloader {
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
+		$sPath = ResourceFinder::findResourcesByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
@@ -69,7 +69,7 @@ class Autoloader {
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::findResourceByExpressions(array(DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName));
+		$sPath = ResourceFinder::findResourcesByExpressions(array(DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName));
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
