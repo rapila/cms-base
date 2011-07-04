@@ -66,7 +66,7 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		$sOutput = null;
 		$iCode = null;
 		putenv('LANG=en_US.'.Settings::getSetting('encoding', 'browser', 'utf-8'));
-		$sCommand = '"'.escapeshellcmd($sMysqlDumpUtil).'" -h "'.escapeshellarg($aDbConfig['host']).'" -u "'.escapeshellarg($aDbConfig['user']).'" "'.escapeshellarg('--password='.$aDbConfig['password']).'" --skip-add-locks --opt --lock-tables=FALSE -r "'.escapeshellarg($sFilePath).'" "'.escapeshellarg($aDbConfig['database']).'" 2>&1';
+		$sCommand = '"'.escapeshellcmd($sMysqlDumpUtil).'" -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --opt --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
 		exec($sCommand, $aOutput, $iCode);
 		$sOutput = str_replace("\x7", '', implode("\n", $aOutput));
 		

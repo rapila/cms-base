@@ -47,7 +47,7 @@ Widget.types.backup = {
 		
 		this.dumper.click(function() {
 			_this.backupToFile(file_name.val(), dumptool.val(), function(message) {
-				if(message !== null) {
+				if(message !== undefined) {
 					Widget.confirm('{{writeString=wns.backup.exporter.export_success}}', message, jQuery.noop, null);
 				}
 			});
