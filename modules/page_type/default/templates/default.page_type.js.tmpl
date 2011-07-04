@@ -54,6 +54,7 @@ Widget.types.page_type.types['default'] = {
 				container.removeClass('editing');
 				preview_bar.removeClass('loading');
 				container.position_bar();
+				preview_bar.find('.additional-buttons').empty();
 			});
 		};
 		
@@ -72,6 +73,14 @@ Widget.types.page_type.types['default'] = {
 						container.empty().append(element);
 					});
 				}, function(widget) {
+					if(widget.additional_buttons) {
+						var additional_button_pane = preview_bar.find('.additional-buttons');
+						var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
+						jQuery.each(widget.additional_buttons, function(i, button) {
+							var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
+							additional_button_pane.append(button_element);
+						});
+					}
 					if(widget.setObjectId) {
 						widget.setObjectId(container.attr('data-object-id'));
 					}
@@ -115,10 +124,25 @@ Widget.types.page_type.types['default'] = {
 				if(widget.setObjectId) {
 					widget.setObjectId(item_to_edit.attr('data-object-id'));
 				}
-				// $( ".selector" ).bind( "dialogresize", function(event, ui) {});
 				
 				widget.handle('element_set', function(event, element) {
 					Widget.callStatic('detail', 'clickable_labels_for', element);
+					var buttons = [{
+						text: '{{writeString=wns.save}}',
+						'class': 'primary ui-state-highlight',
+						click: function() {
+							widget.save(function() {
+								Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
+								element.dialog('close');
+							});
+						},
+						accesskey: 's'
+					}];
+					if(widget.additional_buttons) {
+						jQuery.each(widget.additional_buttons, function(i, button) {
+							buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button'});
+						});
+					}
 					element.dialog({
 						close: function() {
 							if(widget.destroy) {
@@ -131,22 +155,12 @@ Widget.types.page_type.types['default'] = {
 						// modal: true,
 						width: widget.settings.preferred_width || 550,
 						// open: function(event, ui){},
-						resize: function(event, ui) { // or use dialogresize see further down
+						resize: function(event, ui) {
 							if(widget.resize_to) {
 								widget.resize_to(null, ui.size.height-200);
 							}
 						},
-						buttons: [{
-							text: '{{writeString=wns.save}}',
-							'class': 'primary ui-state-highlight',
-							click: function() {
-								widget.save(function() {
-									Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
-									element.dialog('close');
-								});
-							},
-							accesskey: 's'
-						}]
+						buttons: buttons
 					});
 				});
 			}, jQuery.noop, result[1]);
