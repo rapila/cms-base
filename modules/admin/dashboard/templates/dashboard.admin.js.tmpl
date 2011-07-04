@@ -151,23 +151,21 @@ jQuery(document).ready(function() {
 							text: "{{writeString=wns.add}}",
 							'class': 'primary ui-state-highlight',
 							click: function() {
-								Widget.createWithElement(type.val(), function(widget) {
-									var module = create_module({
-										type: type.val(),
-										title: type.find(':checked').text(),
-										container: column.val()
-									});
-									dashboard_control.saveSettings(module.uid, module);
-									var skeleton = create_skeleton(module);
-									add_to_column(module.container, skeleton);
-					
-									//Add the controls
-									Dashboard.addWidgetControls();
-									Dashboard.makeSortable();
-					
-									init_widget(skeleton);
-									dialog.dialog("destroy");
+								var module = create_module({
+									type: type.val(),
+									title: type.find(':checked').text(),
+									container: column.val()
 								});
+								dashboard_control.saveSettings(module.uid, module);
+								var skeleton = create_skeleton(module);
+								add_to_column(module.container, skeleton);
+				
+								//Add the controls
+								Dashboard.addWidgetControls();
+								Dashboard.makeSortable();
+				
+								init_widget(skeleton);
+								dialog.dialog("destroy");
 							}
 						},
 						{
