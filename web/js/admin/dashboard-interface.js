@@ -41,10 +41,10 @@ var Dashboard = (function($) {
 			settings = this.settings;
 			
 		$(settings.widgetSelector, $(settings.columns)).each(function () {
-			if($(this).data('is-dashboard-widget')) {
+			if($(this).data('isDashboardWidget')) {
 				return;
 			}
-			$(this).data('is-dashboard-widget', true)
+			$(this).data('isDashboardWidget', true)
 			
 			var thisWidgetSettings = _this.getWidgetSettings(this.id);
 			if (thisWidgetSettings.removable) {

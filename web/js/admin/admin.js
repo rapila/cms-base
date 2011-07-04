@@ -169,11 +169,11 @@ jQuery.extend(Widget, {
 			modal: true,
 			buttons: [{
 				text: okButtonText,
-				className: 'primary ui-state-highlight',
+				'class': 'primary ui-state-highlight',
 				click: destroy.bind(dialog, true)
 			}, {
 				text: cancelButtonText,
-				className: 'secondary',
+				'class': 'secondary',
 				click: destroy.bind(dialog, false)
 			}],
 			close: destroy.bind(dialog, false)
@@ -182,12 +182,12 @@ jQuery.extend(Widget, {
 	},
 	
 	load: function() {
-		window.AdminInterface.loader.data('load-count', (window.AdminInterface.loader.data('load-count')||0)+1).show();
+		window.AdminInterface.loader.data('loadCount', (window.AdminInterface.loader.data('loadCount')||0)+1).show();
 	},
 	
 	end_load: function() {
-		window.AdminInterface.loader.data('load-count', (window.AdminInterface.loader.data('load-count')||0)-1);
-		if(window.AdminInterface.loader.data('load-count') <= 0) {
+		window.AdminInterface.loader.data('loadCount', (window.AdminInterface.loader.data('loadCount')||0)-1);
+		if(window.AdminInterface.loader.data('loadCount') <= 0) {
 			window.AdminInterface.loader.hide();
 		}
 	},

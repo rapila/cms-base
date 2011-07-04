@@ -4,7 +4,7 @@
  */
 class StringDetailWidgetModule extends PersistentWidgetModule {
 	private $sStringId = null;
-	const SIDEBAR_CHANGED = 'sidebar_changed';
+	const SIDEBAR_CHANGED = 'namespaces_changed';
 	
 	public function setStringId($sStringId) {
 		$this->sStringId = $sStringId;
@@ -112,6 +112,6 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		$this->sStringId = $aStringData['string_key'];
-		return array('string_key' => $this->sStringId, self::SIDEBAR_CHANGED => $bSidebarHasChanged);
+		return array('id' => $this->sStringId, self::SIDEBAR_CHANGED => $bSidebarHasChanged);
 	}
 }

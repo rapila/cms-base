@@ -4,6 +4,7 @@ jQuery(document).ready(function() {
 		// init sidebar
 
 		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
+			Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
 			var initial_selection = "{{writeRequestValue=name_space}}";
 			if(initial_selection) {
 				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
@@ -27,7 +28,7 @@ jQuery(document).ready(function() {
 		
 			//Add handlers for changed namespaces
 			string_list.handle('row-updated row-deleted', function(event, returnedResult) {
-				if(returnedResult.sidebar_changed) {
+				if(returnedResult.namespaces_changed) {
 					sidebar.reload();
 				}
 			});
@@ -39,9 +40,6 @@ jQuery(document).ready(function() {
 				Widget.create('string_detail', function(widget) {
 					widget.open();
 					widget.save_callback = function(result, error) {
-						if(result.sidebar_changed) {
-							// sidebar.reload();
-						}
 						string_list.reload();
 					};
 				});

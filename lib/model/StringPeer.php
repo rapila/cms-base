@@ -143,8 +143,8 @@ EOT;
 	}
 	
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
-		$oSearchCriterion = $oCriteria->getNewCriterion(self::STRING_KEY, "%$sSearch%", Criteria::LIKE);
-		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::TEXT, "%$sSearch%", Criteria::LIKE));
+		$oSearchCriterion = $oCriteria->getNewCriterion(self::TEXT, "%$sSearch%", Criteria::LIKE);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::STRING_KEY, "%$sSearch%", Criteria::LIKE));
 		$oCriteria->add($oSearchCriterion);
 	}
 

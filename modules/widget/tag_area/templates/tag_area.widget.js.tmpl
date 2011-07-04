@@ -26,7 +26,7 @@ Widget.types.tag_area = {
 			display_name = name;
 		}
 		var tag = jQuery('<span/>').addClass('tag');
-		tag.data('tag-name', name);
+		tag.data('tagName', name);
 		if(this.dnd) {
 			this.dnd.init_dnd(tag, "Tag", name);
 		}
@@ -56,7 +56,7 @@ Widget.types.tag_area = {
 	},
 	
 	delete_tag: function(tag) {
-		var name = tag.data('tag-name');
+		var name = tag.data('tagName');
 		this.deleteTag(name, function(result) {
 			if(result) {
 				tag.remove();

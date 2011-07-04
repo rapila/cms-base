@@ -92,8 +92,10 @@ class Image {
 			return $this->sFileType;
 	}
 	
-	public function addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue) {
-		imagefttext($this->rImageHandle, $iFontSize, 0, 0, $this->iOriginalHeight-4, imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iOpacity), $sFontFilePath, $sText);
+	public function addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue, $iX = 0, $iY = 0, $iRotationAngle = 0) {
+		$rColor = imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iOpacity);
+		imagefttext($this->rImageHandle, $iFontSize, $iRotationAngle, $iX, $iY, $rColor, $sFontFilePath, $sText);
+		imagecolordeallocate($this->rImageHandle, $rColor);
 	}
 	
 	public function addWatermark($sFontFilePath, $sText) {
@@ -103,11 +105,15 @@ class Image {
 		$iWidth = $aImageInfo[4] - $aImageInfo[6] + $this->iOriginalWidth/20;
 		$iHeight = $this->iOriginalHeight/20;
 		
-		imagefttext($this->rImageHandle, $iFontSize, $iAngle, $this->iOriginalWidth-$iWidth, $this->iOriginalHeight-$iHeight, imagecolorallocatealpha($this->rImageHandle, 255, 255, 255, 30), $sFontFilePath, $sText);
+		$rColor = imagecolorallocatealpha($this->rImageHandle, 255, 255, 255, 30);
+		imagefttext($this->rImageHandle, $iFontSize, $iAngle, $this->iOriginalWidth-$iWidth, $this->iOriginalHeight-$iHeight, $rColor, $sFontFilePath, $sText);
+		imagecolordeallocate($this->rImageHandle, $rColor);
 	}
 	
 	public function fill($iRed, $iGreen, $iBlue, $iAlpha = 0) {
-		imagefill($this->rImageHandle, 0, 0, $iAlpha === 0 ? imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue) : imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iAlpha));
+		$rColor = $iAlpha === 0 ? imagecolorallocate($this->rImageHandle, $iRed, $iGreen, $iBlue) : imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iAlpha);
+		imagefill($this->rImageHandle, 0, 0, $rColor);
+		imagecolordeallocate($this->rImageHandle, $rColor);
 	}
 	
 	public function filterGrayscale() {
@@ -204,6 +210,7 @@ class Image {
 				return imagegif($this->rImageHandle, $sPath);
 				break;
 			case ('png'):
+				imagesavealpha($this->rImageHandle, true);
 				return imagepng($this->rImageHandle, $sPath);
 				break;
 		}
@@ -222,6 +229,7 @@ class Image {
 				break;
 			case ('png'):
 				header("Content-Type: image/png");
+				imagesavealpha($this->rImageHandle, true);
 				return imagepng($this->rImageHandle);
 				break;
 		}
@@ -229,6 +237,12 @@ class Image {
 	
 	public function resizeImage() {
 		$rNewImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
+		if($this->sFileType === 'png') {
+			$rTransparent = imagecolorallocatealpha($rNewImage, 0, 0, 0, 127);
+			imagefill($rNewImage, 0, 0, $rTransparent);
+			imagecolordeallocate($rNewImage, $rTransparent);
+			imagealphablending($rNewImage, true);
+		}
 		imagecopyresampled($rNewImage, $this->rImageHandle, 0, 0, 0, 0, $this->iWidth, $this->iHeight, $this->iOriginalWidth, $this->iOriginalHeight);
 		imagedestroy($this->rImageHandle);
 		$this->rImageHandle = $rNewImage;
@@ -270,7 +284,11 @@ class Image {
 			imagesavealpha($oImage->rImageHandle, true);
 		}
 		$oImage->fill($iBackgoundRed, $iBackgoundGreen, $iBackgoundBlue, $iBackgoundAlpha);
-		$oImage->addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue);
+		$oImage->addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue, 0, $oImage->iOriginalHeight-4);
 		return $oImage;
+	}
+	
+	public static function supportsText() {
+		return function_exists('imageftbbox');
 	}
 }
