@@ -106,22 +106,24 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 			$oFormStorage->addFormOption("manager", $mData['manager']);
 		}
 
-		foreach($mData['field_name'] as $iKey => $sFieldName) {
-			if($sFieldName === "") {
-				continue;
+		if(isset($mData['field_name'])) {
+			foreach($mData['field_name'] as $iKey => $sFieldName) {
+				if($sFieldName === "") {
+					continue;
+				}
+				$oFormObject = null;
+				if($mData['field_type'][$iKey] === 'captcha') {
+					$oFormObject = new CaptchaObject($mData['field_type'][$iKey]);
+				} else {
+					$oFormObject = new FormObject($mData['field_type'][$iKey]);
+				}
+				$oFormObject->setName($sFieldName);
+				$oFormObject->setLabel($mData['field_label'][$iKey]);
+				$oFormObject->setDefaultValue($mData['default_value'][$iKey]);
+				$oFormObject->setClassName($mData['class_name'][$iKey]);
+				$oFormObject->setIsRequired($mData['is_required'][$iKey]);
+				$oFormStorage->addFormObject($oFormObject);
 			}
-			$oFormObject = null;
-			if($mData['field_type'][$iKey] === 'captcha') {
-				$oFormObject = new CaptchaObject($mData['field_type'][$iKey]);
-			} else {
-				$oFormObject = new FormObject($mData['field_type'][$iKey]);
-			}
-			$oFormObject->setName($sFieldName);
-			$oFormObject->setLabel($mData['field_label'][$iKey]);
-			$oFormObject->setDefaultValue($mData['default_value'][$iKey]);
-			$oFormObject->setClassName($mData['class_name'][$iKey]);
-			$oFormObject->setIsRequired($mData['is_required'][$iKey]);
-			$oFormStorage->addFormObject($oFormObject);
 		}
 		
 		$this->oLanguageObject->setData(serialize($oFormStorage));
