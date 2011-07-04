@@ -239,4 +239,3 @@ class TagWriter {
 		return new Template($sOutput, null, true);
 	}
 }
-?>

@@ -75,4 +75,3 @@ class DocumentTypePreviewFileModule extends FileModule {
 		$oImage->render(true, null, $oCache); exit;
 	}
 }
-?>

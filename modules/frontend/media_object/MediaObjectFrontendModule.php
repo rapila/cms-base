@@ -172,4 +172,3 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		$oTemplate->replaceIdentifier("available_documents", TagWriter::optionsFromObjects(DocumentPeer::getDocumentsByKindAndCategory(), "getId", "getNameAndExtension", $iSelectedId));
 	}
 }
-?>
