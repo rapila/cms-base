@@ -31,6 +31,6 @@ sudo chmod a+x base/scripts/*.sh
 sudo chmod a+x base/lib/vendor/phing/bin/phing
 
 echo "setting folder permissions – apache-writable"
-sudo chmod -R 775 generated base/lib/model base/config site/lib/model site/config site/modules plugins/*/lib/model plugins/*/config >& /dev/null
+sudo chmod -R 775 generated base/lib/model base/config base/data site/lib/model site/config site/data site/modules plugins/*/lib/model plugins/*/config plugins/*/data >& /dev/null
 echo "setting file permissions – apache-writable"
-find generated base/lib/model base/config site/lib/model site/config site/modules plugins/*/lib/model plugins/*/config -type f -print0 | xargs -0 chmod 664 >& /dev/null
+find generated base/lib/model base/config base/data site/lib/model site/config site/data site/modules plugins/*/lib/model plugins/*/config plugins/*/data -type f -print0 | xargs -0 chmod 664 >& /dev/null
