@@ -87,6 +87,10 @@ abstract class Module {
 		return @$aModuleInfo['enabled'];
 	}
 	
+	public static function getDefaultRolesForModule() {
+		
+	}
+	
 	public static function isModuleAllowed($sType, $sName, $oUser = null) {
 		if($oUser === null) {
 			if(!self::isModuleEnabled($sType, $sName)) {
@@ -119,6 +123,7 @@ abstract class Module {
 			//Module exists?
 			$aModulePath = array(DIRNAME_MODULES, $sType, $sName);
 			if(ResourceFinder::findResource($aModulePath) === null) {
+				$aModuleMetadata = null;
 				return null;
 			}
 		
