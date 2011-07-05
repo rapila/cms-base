@@ -21,7 +21,7 @@ Widget.types.backup = {
 				if(arguments[1]) {
 					return;
 				}
-				Widget.confirm('{{writeString=module.admin.backup}}', '{{writeString=wns.backup.loader.load_success}} '+count, function() {
+				Widget.confirm('{{writeString=module.admin.backup}}', AdminInterface.strings.get_string('wns.backup.loader.load_success', {query_count: ""+count+"<"}), function() {
 					window.location.href = window.location.href;
 				}, null, '{{writeString=wns.reload}}');
 			});
@@ -31,6 +31,11 @@ Widget.types.backup = {
 		this.dumper = this._element.find('.dump_to_file button').button({disabled: true});
 		var file_name = this._element.find('input[name="file_name"]');
 		var dumptool = this._element.find('input[name="dumptool"]');
+		dumptool.focus(function() {
+			dumptool.addClass('dumpfocus');
+		}).blur(function() {
+			dumptool.removeClass('dumpfocus');
+		});
 		this._element.find('input').change(function() {
 			_this.dumper.button('option', 'disabled', !(jQuery.trim(file_name.val()) && jQuery.trim(dumptool.val())));
 		});
@@ -40,6 +45,7 @@ Widget.types.backup = {
 				dumptool.val(info.mysql_dump_tool);
 			} else {
 				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.backup.mysqldump_missing}}');
+				dumptool.addClass('dumpfocus');
 			}
 			this._element.find('.dirname').text(info.backup_dir);
 			file_name.change();
