@@ -2,7 +2,7 @@
 /**
  * @package modules.frontend
  */
-include_once('propel/query/Criteria.php');
+include_once('propel/runtime/lib/query/Criteria.php');
 
 class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
 	
@@ -172,4 +172,3 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		$oTemplate->replaceIdentifier("available_documents", TagWriter::optionsFromObjects(DocumentPeer::getDocumentsByKindAndCategory(), "getId", "getNameAndExtension", $iSelectedId));
 	}
 }
-?>

@@ -117,11 +117,17 @@ class ResourceFinder {
 		return self::findResource($mRelativePath, $iFlag, false, true, false);
 	}
 	
+	/**
+	* Alias for {@link ResourceFinder::findResourcesByExpressions()}. Exists for historical reasons.
+	*/
+	public static function findResourceByExpressions($aExpressions, $iFlag = null) {
+		return self::findResource($aExpressions, $iFlag, true, false, false);
+	}
 	
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions set.
 	*/
-	public static function findResourceByExpressions($aExpressions, $iFlag = null) {
+	public static function findResourcesByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, false);
 	}
 	
@@ -147,9 +153,16 @@ class ResourceFinder {
 	}
 	
 	/**
-	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions and $bReturnObjects set.
+	* Alias for {@link ResourceFinder::findResourceObjectsByExpressions()}. Exists for historical reasons.
 	*/
 	public static function findResourceObjectByExpressions($aExpressions, $iFlag = null) {
+		return self::findResource($aExpressions, $iFlag, true, false, true);
+	}
+	
+	/**
+	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions and $bReturnObjects set.
+	*/
+	public static function findResourceObjectsByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, true);
 	}
 	
@@ -253,7 +266,7 @@ class ResourceFinder {
 	
 	private static function getPluginPaths() {
 		if(self::$PLUGINS === null) {
-			self::$PLUGINS = array_values(ResourceFinder::findResourceByExpressions(array(DIRNAME_PLUGINS, self::ANY_NAME_OR_TYPE_PATTERN), self::SEARCH_MAIN_ONLY));
+			self::$PLUGINS = array_values(self::findResourcesByExpressions(array(DIRNAME_PLUGINS, self::ANY_NAME_OR_TYPE_PATTERN), self::SEARCH_MAIN_ONLY));
 		}
 		return self::$PLUGINS;
 	}

@@ -5,6 +5,7 @@ Widget.types.link_category_input = {
 	},
 	
 	reload: function() {
+		var _this = this;
 		var current = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
@@ -14,10 +15,20 @@ Widget.types.link_category_input = {
 		}.bind(this));
 		option.text('----').val('').prependTo(this._element);
 		if(current) {
-			this._element.val(current);
+			this.val(current);
+		} else {
+			this.val(_this.settings.initial_selection);
 		}
 		if(this.settings.disabled) {
 			this._element.attr('disabled', true);
 		}
+	},
+	
+	val: function(val) {
+		return this._element.val(val);
+	},
+	
+	settings: {
+		initial_selection: null
 	}
 };

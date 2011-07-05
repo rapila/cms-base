@@ -9,9 +9,15 @@ Widget.types.link_edit = {
 			if(select_name === 'link_categories') {
 				select_name += '[]';
 			}
-			_this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
+			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
+			if(config_name !== 'template') {
+				select.change(_this.reload_preview.bind(_this));
+			}
 		});
 		this._element.append(this.content);
+		
+		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
+		this._element.append(this.result_list);
 
 		var detail_widget;
 		Widget.create('link_detail', function(widget) {
@@ -19,9 +25,7 @@ Widget.types.link_edit = {
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
 		
-		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
 		this.reload_preview();
-		this._element.append(this.result_list);
 		this.result_list.delegate('li', 'click', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setLinkId(id);
@@ -33,7 +37,7 @@ Widget.types.link_edit = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		this.allLinks(function(links) {
+		this.allLinks(this._element.serializeArrayKV(), function(links) {
 			jQuery.each(links, function(i, link) {
 				_this.result_list.append(jQuery('<li/>').text(link.NAME).attr('title', "{{writeString=wns.edit_entry}}").data('id', link.ID));
 			});

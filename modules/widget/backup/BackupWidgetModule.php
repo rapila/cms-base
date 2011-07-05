@@ -4,24 +4,36 @@
  */
 class BackupWidgetModule extends PersistentWidgetModule {
 	
-	public function getSqlFiles() {
-		$aAllSqlFiles = ResourceFinder::findResourceByExpressions(array(DIRNAME_DATA, "sql", "/.*\.sql/"));
-		return array_flip($aAllSqlFiles;
+	public function possibleRestoreFiles() {
+		$aAllSqlFiles = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_DATA, "sql", "/.*\.sql/"));
+		$aResult = array();
+		foreach($aAllSqlFiles as $oFile) {
+			$aResult[$oFile->getFileName()] = $oFile->getInternalPath();
+		}
+		return $aResult;
 	}
 	
-	public function loadFromBackup($sFileName=null) {
+	public function loadFromBackup($sFileName = null) {
+		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql', $sFileName));
 		$oConnection = Propel::getConnection();
 		$bFileError = false;
-		if(!is_readable($sFileName)) {
+		if($sFilePath === null) {
 			$bFileError = true;
 		}
-		$rFile = fopen($sFileName, 'r');
-		if(!$rFile) {
-			$bFileError = true;
+		if(!$bFileError) {
+			if(!is_readable($sFilePath)) {
+				$bFileError = true;
+			}
+			if(!$bFileError) {
+				$rFile = fopen($sFilePath, 'r');
+				if(!$rFile) {
+					$bFileError = true;
+				}
+			}
 		}
-		// return error and filename on error
+		// throw error and filename on error
 		if($bFileError) {
-			return array('error' => $sFileName);
+			throw new LocalizedException('wns.backup.loader.load_error', array('filename' => $sFilePath));
 		}
 		
 		// continue importing from local file
@@ -44,46 +56,34 @@ class BackupWidgetModule extends PersistentWidgetModule {
 			$oConnection->exec($sStatement);
 		}
 		
-		// return success and query count on success
 		Cache::clearAllCaches();
-		return array('success' => $iQueryCount)
-		return $oTemplate;
+		return $iQueryCount;
 	}
 	
-	public function backupToFile($aBackupInfo = array()) {
-	  $sFileName = $aBackupInfo['file_name'];
-		if($sFileName === '') {
-			return;
-		}
-		$sMysqlDumpUtil = $aBackupInfo['dump_tool'];
+	public function backupToFile($sFileName, $sMysqlDumpUtil) {
 		$aDbConfig = $this->getDbConfig();
 		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/$sFileName";
 		$sOutput = null;
 		$iCode = null;
 		putenv('LANG=en_US.'.Settings::getSetting('encoding', 'browser', 'utf-8'));
-		$sCommand = escapeshellcmd($sMysqlDumpUtil).' -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --opt --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
+		$sCommand = '"'.escapeshellcmd($sMysqlDumpUtil).'" -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --opt --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
 		exec($sCommand, $aOutput, $iCode);
-		$sOutput = str_replace("\x7", '', implode('', $aOutput));
+		$sOutput = str_replace("\x7", '', implode("\n", $aOutput));
 		
-		// return error and error message
-		if($iCode !== 0) {
-			$sErrorMessage = "[Output of $sMysqlDumpUtil:\n$sOutput".($iCode === 0 ? '' : '; I am '.exec('whoami'))."]";
-      return array('error' => $sErrorMessage);
+		if($iCode === 0) {
+			return $sOutput;
 		}
-
-		// return success true
-		return array('success' => true)
+		
+		throw new LocalizedException('wns.backup.exporter.export_error', array('util' => $sMysqlDumpUtil, 'iam' => exec('whoami'), 'message' => $sOutput), null, $iCode);
 	}
 	
-	public function getBackupInfo() {
+	public function backupInfo() {
 		$aInfo = array();
 		$aInfo['backup_dir'] = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/";
 		$aDbConfig = $this->getDbConfig();
 		$aInfo['suggested_backup_name'] = "{$aDbConfig['database']}@{$aDbConfig['host']}-".date('Ymd-Hi').".sql";
 		exec('which mysqldump', $sOutput, $iCode);
-		if($iCode !== 0) {
-		  $aInfo['mysql_dump_error'] = 'NO mysqldump in '.exec('echo $PATH');
-		} else {
+		if($iCode === 0) {
 		  $aInfo['mysql_dump_tool'] = $sOutput;
 		}
 		return $aInfo;

@@ -18,9 +18,9 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
     return $aResult;
 	}
 
-	private function validate($aLinkTypeData) {
+	private function validate($aLinkCategoryData) {
 		$oFlash = Flash::getFlash();
-		$oFlash->setArrayToCheck($aLinkTypeData);
+		$oFlash->setArrayToCheck($aLinkCategoryData);
 		$oFlash->checkForValue('name', 'name_required');
 		$oFlash->finishReporting();
 	}
@@ -37,7 +37,6 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-
 		return $oCategory->save();
 	}
 }

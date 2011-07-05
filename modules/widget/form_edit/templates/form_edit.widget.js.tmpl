@@ -67,7 +67,7 @@ Widget.types.form_edit = {
 				} else {
 					input.prop('checked', value);
 				}
-			}.bind(this));
+			});
 		}
 	},
 	
@@ -85,6 +85,7 @@ Widget.types.form_edit = {
 				var input = this._element.find(":input[name='"+name.escapeSelector()+"']");
 				if(input.attr('type') !== 'checkbox') {
 					input.val(value);
+					input.change();
 				} else {
 					input.prop('checked', value);
 				}

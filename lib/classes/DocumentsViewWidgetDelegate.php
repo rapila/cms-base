@@ -12,7 +12,9 @@ class DocumentsViewWidgetDelegate {
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
-		$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
+		if(!LanguagePeer::isMonolingual()) {
+			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
+		}
 	}
 	
 	public function setDelegateProxy($oDelegateProxy) {
@@ -40,7 +42,11 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name_truncated', 'sort', 'file_info', 'document_kind', 'category_name', 'language_id', 'is_protected', 'updated_at_formatted', 'delete');
+		$aResult = array('id', 'name_truncated', 'sort', 'file_info', 'document_kind', 'category_name');
+		if($this->oLanguageFilter !== null) {
+			$aResult[] = 'language_id';
+		}
+		return array_merge($aResult, array('is_protected', 'updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -160,7 +166,11 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		return DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->excludeExternallyManaged();
+		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN);
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
+			$oQuery->excludeExternallyManaged();
+		}
+		return $oQuery;
 	}
 	
 	public function setDocumentKind($sDocumentKind) {

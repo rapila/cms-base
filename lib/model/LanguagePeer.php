@@ -73,6 +73,10 @@ class LanguagePeer extends BaseLanguagePeer {
 	public static function hasNoLanguage() {
 		return self::doCount(new Criteria()) === 0;
 	}
+	
+	public static function isMonolingual() {
+		return self::doCount(new Criteria()) <= 1;
+	}
 
 	public static function getAdminLanguages() {
 		$aLanguages = array();

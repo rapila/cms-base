@@ -117,7 +117,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'mini_cms', $modelName = 'Page', $modelAlias = null)
+	public function __construct($dbName = 'rapila', $modelName = 'Page', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
@@ -1010,7 +1010,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     Page $page The object to use for descendant search
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function descendantsOf($page)
 	{
@@ -1025,7 +1025,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     Page $page The object to use for branch search
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function branchOf($page)
 	{
@@ -1039,7 +1039,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     Page $page The object to use for child search
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function childrenOf($page)
 	{
@@ -1055,7 +1055,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 * @param     Page $page The object to use for sibling search
 	 * @param      PropelPDO $con Connection to use.
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function siblingsOf($page, PropelPDO $con = null)
 	{
@@ -1074,7 +1074,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     Page $page The object to use for ancestors search
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function ancestorsOf($page)
 	{
@@ -1089,7 +1089,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     Page $page The object to use for roots search
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function rootsOf($page)
 	{
@@ -1103,7 +1103,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     bool $reverse if true, reverses the order
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function orderByBranch($reverse = false)
 	{
@@ -1121,7 +1121,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param     bool $reverse if true, reverses the order
 	 *
-	 * @return    PageQuery The current query, for fuid interface
+	 * @return    PageQuery The current query, for fluid interface
 	 */
 	public function orderByLevel($reverse = false)
 	{
@@ -1169,7 +1169,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -1181,7 +1181,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -1191,7 +1191,7 @@ abstract class BasePageQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -1201,7 +1201,7 @@ abstract class BasePageQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -1211,7 +1211,7 @@ abstract class BasePageQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -1221,7 +1221,7 @@ abstract class BasePageQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     PageQuery The current query, for fuid interface
+	 * @return     PageQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{

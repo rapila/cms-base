@@ -78,7 +78,10 @@ a {color:white;}
 	max-height: 400px;
 }
 
-#dashboard-columns .dashboard-widget .dashboard-widget-content p {
+#dashboard-columns .dashboard-widget .dashboard-widget-content p,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h4,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h5,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h6 {
 	padding: 0.4em 0;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content img {

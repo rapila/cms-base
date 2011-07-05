@@ -67,7 +67,7 @@ if(get_magic_quotes_gpc()) {
 	ArrayUtil::runFunctionOnArrayValues($_POST, 'stripslashes');
 }
 
-require_once("propel/Propel.php");
+require_once("propel/runtime/lib/Propel.php");
 $aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
 $sAdapter = $aDbSettings['database']['adapter'];
 unset($aDbSettings['database']);
@@ -75,7 +75,7 @@ $aDbSettings['adapter'] = $sAdapter;
 if($sAdapter === 'sqlite' && !StringUtil::startsWith($aDbSettings['connection']['database'], '/')) {
 	$aDbSettings['connection']['database'] = MAIN_DIR.'/'.$aDbSettings['connection']['database'];
 }
-Propel::setConfiguration(array('propel' => array('datasources' => array('mini_cms' => $aDbSettings, 'default' => 'mini_cms'))));
+Propel::setConfiguration(array('propel' => array('datasources' => array('rapila' => $aDbSettings, 'default' => 'rapila'))));
 Propel::initialize();
 
 //Set MySQL connection charset

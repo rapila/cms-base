@@ -26,7 +26,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 
 		  if(count($aCategories) > 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
-		  } else if(count($aCategories === 1)) {
+		  } else if(count($aCategories) === 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories[0]);
 			}
 			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
@@ -44,6 +44,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			foreach($oCriteria->find() as $i => $oLink) {
 				$oItemTemplate = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Link');
+				$oItemTemplate->replaceIdentifier('counter', $i+1);
 				$oLink->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
@@ -89,8 +90,10 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	}	
 	
 	public static function getCategoryOptions() {
-		$oCriteria = LinkCategoryQuery::create();
-		$oCriteria->orderByName();
+		$oCriteria = LinkCategoryQuery::create()->orderByName();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
 		$aResult = array();
 		foreach(LinkCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {

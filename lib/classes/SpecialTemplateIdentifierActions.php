@@ -40,6 +40,12 @@ class SpecialTemplateIdentifierActions {
 		return '<br />';
 	}
 	
+	public function doCalculation($oTemplateIdentifier, &$iFlags) {
+		//FIXME: We’re allowing this because templates are controlled by privileged users… But we should find a better solution to do calculations without eval.
+    $cFunc = create_function("", "return ({$oTemplateIdentifier->getValue()});" );
+    return $cFunc();
+	}
+	
 	public function truncate($oTemplateIdentifier, &$iFlags) {
 		$iFlags |= Template::NO_HTML_ESCAPE;
 		$iLength=20;
@@ -222,6 +228,6 @@ class SpecialTemplateIdentifierActions {
 	}
 	
 	public static function getAlwaysLastNames() {
-		return array('writeParameterizedString', 'writeFlashValue', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute');
+		return array('writeParameterizedString', 'writeFlashValue', 'doCalculation', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute');
 	}
 }

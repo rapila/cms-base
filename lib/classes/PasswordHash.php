@@ -47,4 +47,3 @@ class PasswordHash {
 		return $sResult;
 	}
 }
-?>

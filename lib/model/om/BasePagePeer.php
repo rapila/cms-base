@@ -11,7 +11,7 @@
 abstract class BasePagePeer {
 
 	/** the default database name for this class */
-	const DATABASE_NAME = 'mini_cms';
+	const DATABASE_NAME = 'rapila';
 
 	/** the table name for this class */
 	const TABLE_NAME = 'pages';
@@ -1587,14 +1587,17 @@ abstract class BasePagePeer {
 	/**
 	 * Reload all already loaded nodes to sync them with updated db
 	 *
+	 * @param      Page $prune		Object to prune from the update
 	 * @param      PropelPDO $con		Connection to use.
 	 */
-	public static function updateLoadedNodes(PropelPDO $con = null)
+	public static function updateLoadedNodes($prune = null, PropelPDO $con = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			$keys = array();
 			foreach (PagePeer::$instances as $obj) {
-				$keys[] = $obj->getPrimaryKey();
+				if (!$prune || !$prune->equals($obj)) {
+					$keys[] = $obj->getPrimaryKey();
+				}
 			}
 	
 			if (!empty($keys)) {
@@ -1602,7 +1605,6 @@ abstract class BasePagePeer {
 				// already in the pool.
 				$criteria = new Criteria(PagePeer::DATABASE_NAME);
 				$criteria->add(PagePeer::ID, $keys, Criteria::IN);
-	
 				$stmt = PagePeer::doSelectStmt($criteria, $con);
 				while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 					$key = PagePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -1622,15 +1624,16 @@ abstract class BasePagePeer {
 	 * Update the tree to allow insertion of a leaf at the specified position
 	 *
 	 * @param      int $left	left column value
+	 * @param      mixed $prune	Object to prune from the shift
 	 * @param      PropelPDO $con	Connection to use.
 	 */
-	public static function makeRoomForLeaf($left, PropelPDO $con = null)
+	public static function makeRoomForLeaf($left, $prune = null, PropelPDO $con = null)
 	{	
 		// Update database nodes
 		PagePeer::shiftRLValues(2, $left, null, $con);
 	
 		// Update all loaded nodes
-		PagePeer::updateLoadedNodes($con);
+		PagePeer::updateLoadedNodes($prune, $con);
 	}
 	
 	/**

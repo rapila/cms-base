@@ -81,7 +81,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'mini_cms', $modelName = 'DocumentCategory', $modelAlias = null)
+	public function __construct($dbName = 'rapila', $modelName = 'DocumentCategory', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
@@ -651,7 +651,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -663,7 +663,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -673,7 +673,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -683,7 +683,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -693,7 +693,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -703,7 +703,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     DocumentCategoryQuery The current query, for fuid interface
+	 * @return     DocumentCategoryQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{

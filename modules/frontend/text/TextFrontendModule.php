@@ -61,4 +61,3 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 		return implode(" ", StringUtil::getWords($sText, true));
 	}
 }
-?>

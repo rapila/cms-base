@@ -4,7 +4,7 @@ path_to_this="$(dirname "$0")";base_path="$(dirname "$path_to_this")";. "$base_p
 
 owner=`whoami`
 
-path_to_buildfile="base/lib/vendor/propel-generator/build.xml"
+path_to_buildfile="base/lib/vendor/propel/generator/build.xml"
 
 if [ "s$PHING_PATH" == "s" ]; then
 	PHING_PATH="./base/lib/vendor/phing/bin/phing"

@@ -1,4 +1,3 @@
-admin_required: false
 name: "Dashboard"
 description: "Context sensitive environment to do specific configurable tasks"
 website: "http://www.mini-cms.ch/"

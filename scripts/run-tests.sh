@@ -14,7 +14,7 @@ fi
 if [ "$1" != "" ]; then
     test_module=$1
   else
-    echo "USAGE: mini_cms_run_tests.sh <test name> [<filter>]"
+    echo "USAGE: run-tests.sh <test name> [<filter>]"
     exit 1
 fi
 
@@ -23,5 +23,5 @@ if [ "$2" != "" ]; then
     filter="--filter $2"
 fi
 
-"$PHPUNIT_PATH" $filter --loader "base_lib_tests_MiniCMSTestLoader" "Test$test_module"
+"$PHPUNIT_PATH" $filter --loader "base_lib_tests_RapilaTestLoader" "Test$test_module"
 

@@ -349,7 +349,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oTemplate = $this->oPage->getTemplate();
 		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
-			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('wns.container.'.$oIdentifier->getValue(), null, $oIdentifier->getValue())), true)), null);
+			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$oIdentifier->getValue(), null, $oIdentifier->getValue())), true)), null);
 			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue(), 'data-container-string' => StringPeer::getString('container_name.'.$oIdentifier->getValue(), null, $oIdentifier->getValue()))));
 		}
 		

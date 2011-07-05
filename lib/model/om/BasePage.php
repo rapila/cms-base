@@ -994,7 +994,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 			if ($this->isRoot()) {
 				throw new PropelException('Deletion of a root node is disabled for nested sets. Use PagePeer::deleteTree() instead to delete an entire tree');
 			}
-			$this->deleteDescendants($con);
+			
+			if ($this->isInTree()) {
+				$this->deleteDescendants($con);
+			}
 
 			// referenceable behavior
 			if(ReferencePeer::hasReference($this)) {
@@ -1006,8 +1009,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 					->delete($con);
 				$this->postDelete($con);
 				// nested_set behavior
-				// fill up the room that was used by the node
-				PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
+				if ($this->isInTree()) {
+					// fill up the room that was used by the node
+					PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
+				}
 
 				// taggable behavior
 				TagPeer::deleteTagsForObject($this);
@@ -1050,6 +1055,15 @@ abstract class BasePage extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preSave($con);
 			// nested_set behavior
+			if ($this->isNew() && $this->isRoot()) {
+				// check if no other root exist in, the tree
+				$nbRoots = PageQuery::create()
+					->addUsingAlias(PagePeer::LEFT_COL, 1, Criteria::EQUAL)
+					->count($con);
+				if ($nbRoots > 0) {
+						throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
+				}
+			}
 			$this->processNestedSetQueries($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
@@ -3132,7 +3146,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		// Keep the tree modification query for the save() transaction
 		$this->nestedSetQueries []= array(
 			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
-			'arguments' => array($left)
+			'arguments' => array($left, $this->isNew() ? null : $this)
 		);
 		return $this;
 	}
@@ -3162,7 +3176,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		// Keep the tree modification query for the save() transaction
 		$this->nestedSetQueries []= array(
 			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
-			'arguments' => array($left)
+			'arguments' => array($left, $this->isNew() ? null : $this)
 		);
 		return $this;
 	}
@@ -3189,7 +3203,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		// Keep the tree modification query for the save() transaction
 		$this->nestedSetQueries []= array(
 			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
-			'arguments' => array($left)
+			'arguments' => array($left, $this->isNew() ? null : $this)
 		);
 		return $this;
 	}
@@ -3216,7 +3230,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		// Keep the tree modification query for the save() transaction
 		$this->nestedSetQueries []= array(
 			'callable'  => array('PagePeer', 'makeRoomForLeaf'),
-			'arguments' => array($left)
+			'arguments' => array($left, $this->isNew() ? null : $this)
 		);
 		return $this;
 	}
@@ -3359,7 +3373,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			PagePeer::shiftRLValues(-$treeSize, $right + 1, null, $con);
 			
 			// update all loaded nodes
-			PagePeer::updateLoadedNodes($con);
+			PagePeer::updateLoadedNodes(null, $con);
 			
 			$con->commit();
 		} catch (PropelException $e) {

@@ -1,4 +1,3 @@
-admin_required: true
 allowed_roles: []
 name: "Groups"
 description: "User groups allowing to define specific rights on pages and available modules"

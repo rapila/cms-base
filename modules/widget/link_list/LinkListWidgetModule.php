@@ -127,6 +127,10 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getCriteria() {
-		return LinkQuery::create()->excludeExternallyManaged();
+		$oQuery = LinkQuery::create();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oQuery->excludeExternallyManaged();
+		}
+		return $oQuery;
 	}
 }

@@ -84,7 +84,7 @@ jQuery.extend(Widget.prototype, {
 			options = new WidgetJSONOptions();
 		}
 		var callback = args.pop();
-		if(!jQuery.isFunction(callback)) {
+		if(!callback || (!jQuery.isFunction(callback) && !callback.resolveWith)) {
 			callback !== undefined && args.push(callback);
 			callback = Widget.defaultMethodHandler;
 		}
@@ -103,12 +103,19 @@ jQuery.extend(Widget.prototype, {
 			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && (/[A-Z]/).test(name[3]));
 		}
 		if(options.callback_handles_error === null) {
-			options.callback_handles_error = callback.length>=2;
+			options.callback_handles_error = !!callback.resolveWith || callback.length>=2;
 		}
 		var action = options.action || 'methodCall';
 		var widget = this;
 		this._widgetJSON([action, name], function(response, exception) {
-			callback.call(widget, response.result, exception);
+			if(callback.resolveWith) {
+				if(exception) {
+					callback.rejectWith(widget, [exception]);
+				}
+				callback.resolveWith(widget, [response.result]);
+			} else {
+				callback.call(widget, response.result, exception);
+			}
 			result = response.result;
 			error = exception;
 		}, options, params);
@@ -268,7 +275,7 @@ jQuery.extend(Widget, {
 					}
 					options.action = 'staticMethodCall';
 					var callback = args.pop();
-					if(!jQuery.isFunction(callback)) {
+					if(!callback || (!jQuery.isFunction(callback) && !callback.resolveWith)) {
 						callback !== undefined && args.push(callback);
 						callback = Widget.defaultMethodHandler;
 					}
@@ -296,7 +303,7 @@ jQuery.extend(Widget, {
 	
 	create: function(widgetType, finishCallback, session) {
 		var intermediateCallback = jQuery.noop;
-		if(jQuery.isFunction(session)) {
+		if(session && (jQuery.isFunction(session) || session.resolveWith)) {
 			//intermediate callback given → shift session
 			intermediateCallback = finishCallback;
 			finishCallback = session;
@@ -304,10 +311,18 @@ jQuery.extend(Widget, {
 		}
 		if(Widget.singletons[widgetType]) {
 			if(intermediateCallback) {
-				intermediateCallback(Widget.singletons[widgetType]);
+				if(intermediateCallback.resolveWith) {
+					intermediateCallback.resolve(Widget.singletons[widgetType]);
+				} else {
+					intermediateCallback(Widget.singletons[widgetType]);
+				}
 			}
 			if(finishCallback) {
-				finishCallback(Widget.singletons[widgetType]);
+				if(finishCallback.resolveWith) {
+					finishCallback.resolve(Widget.singletons[widgetType]);
+				} else {
+					finishCallback(Widget.singletons[widgetType]);
+				}
 			}
 			return Widget.singletons[widgetType];
 		}
@@ -332,13 +347,21 @@ jQuery.extend(Widget, {
 				Widget.singletons[widgetType] = widget;
 			}
 			if(intermediateCallback) {
-				intermediateCallback(widget);
+				if(intermediateCallback.resolveWith) {
+					intermediateCallback.resolve(widget);
+				} else {
+					intermediateCallback(widget);
+				}
 			}
 			if(widget.initialize) {
 				widget.initialize();
 			}
 			if(finishCallback) {
-				finishCallback(widget);
+				if(finishCallback.resolveWith) {
+					finishCallback.resolve(widget);
+				} else {
+					finishCallback(widget);
+				}
 			}
 			if(widget.prepare) {
 				widget.prepare();
@@ -352,7 +375,7 @@ jQuery.extend(Widget, {
 	
 	createWithElement: function(widgetType, finishCallback, session) {
 		var intermediateCallback = jQuery.noop;
-		if(jQuery.isFunction(session)) {
+		if(session && (jQuery.isFunction(session) || session.resolveWith)) {
 			//intermediate callback given → shift session
 			intermediateCallback = finishCallback;
 			finishCallback = session;
@@ -362,7 +385,11 @@ jQuery.extend(Widget, {
 			widget._element = jQuery.parseHTML(widget._instanceInformation.content);
 			widget.fire('element_set', widget._element);
 			widget.handle('prepared', function(event, widget) {
-				finishCallback(widget);
+				if(finishCallback.resolveWith) {
+					finishCallback.resolve(widget);
+				} else {
+					finishCallback(widget);
+				}
 			}, false);
 		}, session);
 	},
@@ -381,8 +408,9 @@ jQuery.extend(Widget, {
 	
 	confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 		message = title+' '+message;
-		if(cancelButtonText === null) {
-			Widget.notifyUser(Widget.logSeverity.INFO, message);
+		// We don’t support the changing of button texts but still need to follow the convention of not displaying the cancel button if it is false-y but not undefined
+		if(cancelButtonText !== undefined && !cancelButtonText) {
+			alert(message);
 			return callback(true);
 		}
 		callback(confirm(message));
@@ -452,7 +480,7 @@ jQuery.extend(Widget, {
 			}
 		}
 		if(options.callback_handles_error === null) {
-			options.callback_handles_error = callback.length>=2;
+			options.callback_handles_error = !!callback.resolveWith || callback.length>=2;
 		}
 		var ajaxOpts = {
 			url: url,
@@ -472,7 +500,7 @@ jQuery.extend(Widget, {
 					xmlhttprequest.upload.addEventListener('progress', options.upload_progess_callback, false);
 				}
 				if(options.send_as_binary && xmlhttprequest.sendAsBinary) {
-					xmlhttprequest.send = xmlhttprequest.sendAsBinary
+					xmlhttprequest.send = xmlhttprequest.sendAsBinary;
 				}
 				return xmlhttprequest;
 			},
@@ -490,7 +518,14 @@ jQuery.extend(Widget, {
 					call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
 				}
 				if(call_callback) {
-					callback.call(this, result, error);
+					if(callback.resolveWith) {
+						if(error) {
+							callback.rejectWith(this, [error]);
+						}
+						callback.resolveWith(this, [result]);
+					} else {
+						callback.call(this, result, error);
+					}
 				}
 			},
 			error: function(request, statusCode, error) {
@@ -502,7 +537,11 @@ jQuery.extend(Widget, {
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 				action.shift();
 				if(options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes)) {
-					callback.call(this, {}, error_object);
+					if(callback.resolveWith) {
+						callback.rejectWith(this, [error_object]);
+					} else {
+						callback.call(this, {}, error_object);
+					}
 				}
 			},
 			complete: function() {
@@ -628,8 +667,18 @@ jQuery.extend(jQuery, {
 	validateEmail: function(email) {
 		var email_regex = /^[\w._\-%+]+@[\w-]+(\.[\w-]+)*(\.\w+)$/;
 		return email.length > 4 && email_regex.test(email);
+	},
+	
+	openLink: function(link, event) {
+		if(event[jQuery.support.linkOpenModifierKey] || event.shiftKey) {
+			window.open(link);
+		} else {
+			window.location.href = link;
+		}
 	}
 });
+
+jQuery.support.linkOpenModifierKey = /Mac OS X/.test(navigator.userAgent) ? 'metaKey' : 'ctrlKey';
 
 jQuery.fn.extend({
 	widgetElements: function(type) {
@@ -701,9 +750,13 @@ jQuery.fn.extend({
 		return jQuery(doc).has(this[0]).length > 0;
 	},
 	
-	populate: function(options, default_value) {
+	populate: function(options, default_value, use_text_as_value) {
 		var _this = this;
+		use_text_as_value = (use_text_as_value === undefined) ? jQuery.isArray(options) : !!use_text_as_value;
 		jQuery.each(options, function(value, text) {
+			if(use_text_as_value) {
+				value = text;
+			}
 			if(default_value === null || default_value === undefined) {
 				default_value = value;
 			}
@@ -720,4 +773,15 @@ jQuery(document).ready(function() {
 	jQuery(document.body).widgetElements().each(function() {
 		jQuery(this).prepareWidget();
 	});
+	
+	var head = jQuery('head'), win = jQuery(window);
+	var style = jQuery('<style/>');
+	head.append(style);
+	var resize_handler = function() {
+		var height = win.height()*0.8;
+		style.text('.ui-dialog {max-height: '+(height)+'px;} .ui-dialog-content {max-height: '+(height-107)+'px;}');
+	};
+	
+	win.resize(resize_handler);
+	resize_handler();
 });

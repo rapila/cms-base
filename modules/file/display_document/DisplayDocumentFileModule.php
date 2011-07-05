@@ -80,4 +80,3 @@ class DisplayDocumentFileModule extends FileModule {
 		fpassthru($rDataStream);
 	}
 }
-?>

@@ -54,7 +54,7 @@ class StringListWidgetModule extends WidgetModule {
 	
 	public function deleteRow($aRowData, $oCriteria) {
 		$bResult = false;
-		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['string_key']);
+		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['id']);
 		if(StringPeer::doDelete($oCriteria) && $sNameSpace !== null) {
 			$bResult = !StringPeer::nameSpaceExists($sNameSpace);
 		}
@@ -77,11 +77,6 @@ class StringListWidgetModule extends WidgetModule {
 
 	public function getCriteria() {
 		$oCriteria = new Criteria();
-    // $oCriteria->setDistinct();
-    // $oCriteria->add(StringPeer::LANGUAGE_ID, AdminManager::getContentLanguage());
-		if($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(StringPeer::STRING_KEY, "{$this->oDelegateProxy->getNameSpace()}.%", Criteria::LIKE);
-		}
 		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
 		return $oCriteria;
 	}

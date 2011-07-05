@@ -23,8 +23,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		return null;
 	}
 	
-	public function allLinks() {
-		$aOptions = $this->sDisplayMode;
+	public function allLinks($aOptions = array()) {
 		$oCriteria = LinkQuery::create();
 
 		if(isset($aOptions['link_categories']) && is_array($aOptions['link_categories']) && (count($aOptions['link_categories']) > 0)) {
@@ -42,7 +41,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		$aLinkCategories = LinkListFrontendModule::getCategoryOptions();
 		$aResult['link_categories'] = $aLinkCategories;
-		$aResult['template'] = LinkListFrontendModule::getTemplateOptions();
+		$aResult['template'] = array_keys(LinkListFrontendModule::getTemplateOptions());
 		if(count($aLinkCategories) > 0) {
 			$aResult['sort_by'] = LinkListFrontendModule::getSortOptions();
 		}

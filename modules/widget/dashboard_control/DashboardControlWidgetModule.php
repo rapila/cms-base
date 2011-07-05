@@ -22,11 +22,11 @@ class DashboardControlWidgetModule extends WidgetModule {
 	
 	public function possibleTemplates() {
 		$aResult = array();
-		foreach(ResourceFinder::findResourceObjectByExpressions(array(DIRNAME_MODULES, AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), DIRNAME_TEMPLATES, 'layouts', '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
+		foreach(ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_MODULES, AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), DIRNAME_TEMPLATES, 'layouts', '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
 			$aResult[] = $oResource->getFileName('.tmpl');
 		}
 		
-		return ArrayUtil::arrayWithValuesAsKeys($aResult);
+		return $aResult;
 	}
 	
 	public function template() {

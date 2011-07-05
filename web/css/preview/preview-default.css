@@ -84,7 +84,6 @@ div.ui-widget-content {
 .preview_bar {
 	display: block;
 	position: absolute;
-	background-color: #C1C1C1;
 	z-index: 100;
 }
 
@@ -99,8 +98,13 @@ div.ui-widget-content {
 	display: none;
 }
 
+.preview_bar .ui-icon {
+	background-color: #C1C1C1;
+}
+
 .preview_bar .ui-icon.edit,
 .preview_bar.editing .ui-icon,
+.preview_bar.editing .additional-buttons,
 .preview_bar.loading .ui-loading {
 	display: block;
 }

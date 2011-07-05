@@ -38,6 +38,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 			foreach($aDocuments as $i => $oDocument) {
 				$oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
 				$oItemTemplate->replaceIdentifier('model', 'Document');
+				$oItemTemplate->replaceIdentifier('counter', $i+1);
 				$oDocument->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
@@ -101,8 +102,10 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 	}
 
 	public static function getCategoryOptions() {
-		$oCriteria = DocumentCategoryQuery::create();
-		$oCriteria->orderByName();
+		$oCriteria = DocumentCategoryQuery::create()->orderByName();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
+			$oCriteria->filterByIsExternallyManaged(false);
+		}
 		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentCategoryPeer::ID)->addSelectColumn(DocumentCategoryPeer::NAME);
 		$aResult = array();
 		foreach(DocumentCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {

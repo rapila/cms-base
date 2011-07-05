@@ -1,0 +1,4 @@
+aspects:
+  - dashboard
+enabled: true
+allowed_roles: []

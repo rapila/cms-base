@@ -121,6 +121,7 @@ Widget.types.admin_menu = {
 			// todo: remove checked or style when no option is selected
 			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'));
 			var separator_class = '';
+			var active_val = false;
 			jQuery.each(items, function(i, item) {
 				if(!item) {
 					//handle Separator
@@ -134,30 +135,32 @@ Widget.types.admin_menu = {
 				if(!item_contents) {
 					return;
 				}
-				var option = jQuery('<option/>').text(item_contents.text).attr('value', args[0]).addClass(separator_class).data('action', item_contents.callback);
-				separator_class = '';
+				var value = args[0];
+				var option = jQuery('<option/>').text(item_contents.text).attr('value', value).addClass(separator_class);
+				option.data('action', item_contents.callback);
+				if(item_contents.is_active) {
+					active_val = value;
+				}
 				result.element.append(option);
+				separator_class = '';
 			});
-			result.element.val(AdminInterface.current_admin_module);
-			if(AdminInterface.current_admin_module == 'dashboard' || AdminInterface.current_admin_module == 'pages') result.element.addClass('inactive');
-			// add current module if not part of
+			if(active_val) {
+				result.element.val(active_val);
+				result.element.addClass('ui-state-active');
+			}
 			if(this.settings.attach_events) {
-				result.element.bind('change', function() {
+				result.element.bind('change', function(event) {
+					return false;
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
 						result.element.addClass('inactive');
 						return false;
 					}
 					result.element.removeClass('inactive');
-					selected.data('action')();
+					selected.data('action')(event);
 				});
 			}
 			result.callback = jQuery.noop;
-			// var current_module = AdminInterface.current_admin_module;
-			// var current_option = result.element.find('option[value=current_module]');
-			// if(current_option.length == 0) {
-			// 	result.element.append(jQuery('<option/>').val(current_module).text(current_module).attr('selected', 'selected'));
-			// }
 			return result;
 		},
 		
@@ -167,9 +170,11 @@ Widget.types.admin_menu = {
 			if(!module_info.may) {
 				return null;
 			}
-			result.callback = function() {
-				window.location.href = module_info.link;
-			};
+			if(AdminInterface.current_admin_module === module) {
+				result.is_active = true;
+			} else {
+				result.callback = jQuery.openLink.bind(window, module_info.link);
+			}
 			result.text = module_info.title;
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
 			return result;
@@ -219,21 +224,10 @@ Widget.types.admin_menu = {
 		preview: function() {
 			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
 			var admin_menu = this;
-			result.callback = function() {
-				window.location = admin_menu.getPreviewLink();
+			result.is_active = !!window.PreviewInterface;
+			result.callback = function(event) {
+				jQuery.openLink(admin_menu.getPreviewLink(), event);
 			};
-			return result;
-		},
-		
-		edit: function() {
-			var result = {text: "{{writeString=wns.page.edit_linktext}}"};
-			if(AdminInterface.current_admin_module == 'pages') {
-				result.is_active = true;
-			} else {
-				result.callback = function() {
-					window.location = '{{writeLink=pages;manager=AdminManager}}';
-				};
-			}
 			return result;
 		},
 		
