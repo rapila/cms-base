@@ -148,16 +148,16 @@ Widget.types.admin_menu = {
 				result.element.val(active_val);
 				result.element.addClass('ui-state-active');
 			}
-			// add current module if not part of
 			if(this.settings.attach_events) {
-				result.element.bind('change', function() {
+				result.element.bind('change', function(event) {
+					return false;
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
 						result.element.addClass('inactive');
 						return false;
 					}
 					result.element.removeClass('inactive');
-					selected.data('action')();
+					selected.data('action')(event);
 				});
 			}
 			result.callback = jQuery.noop;
@@ -173,9 +173,7 @@ Widget.types.admin_menu = {
 			if(AdminInterface.current_admin_module === module) {
 				result.is_active = true;
 			} else {
-				result.callback = function() {
-					window.location.href = module_info.link;
-				};
+				result.callback = jQuery.openLink.bind(window, module_info.link);
 			}
 			result.text = module_info.title;
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
@@ -227,8 +225,8 @@ Widget.types.admin_menu = {
 			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
 			var admin_menu = this;
 			result.is_active = !!window.PreviewInterface;
-			result.callback = function() {
-				window.location = admin_menu.getPreviewLink();
+			result.callback = function(event) {
+				jQuery.openLink(admin_menu.getPreviewLink(), event);
 			};
 			return result;
 		},
