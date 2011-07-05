@@ -1,14 +1,14 @@
-<div class="load_from_file">
+<div class="load_from_file fieldset">
 	<h4>{{writeString=wns.backup.load_from}}</h4>
 	<label for="restore_file">{{writeString=wns.backup.file}}</label>
-	<select name="restore_file"></select>
+	<select name="restore_file"></select><br />
 	<button>{{writeString=wns.backup.load_from_local_file}}</button>
 </div>
-<div class="dump_to_file">
+<div class="dump_to_file fieldset">
 	<h4>{{writeString=wns.backup.store_to}}</h4>
 	<label for="file_name">{{writeString=wns.backup.path_to_export_file}}</label>
-	<span class="dirname"></span><input type="text" name="file_name"/>.sql
+	<span class="dirname"></span><input type="text" class="ui-widget-content autowidth dump_name" name="file_name"/><span class="extension">.sql</span>
 	<label for="dumptool">{{writeString=wns.backup.path_to_mysqldump}}</label>
-	<input type="text" name="dumptool"/>
+	<input type="text" name="dumptool" class="ui-widget-content autowidth dump_tool"/><br />
 	<button>{{writeString=wns.backup.backup_to_local_file}}</button>
 </div>
