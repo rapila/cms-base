@@ -53,7 +53,7 @@ class StringPeer extends BaseStringPeer {
 	private static function getStaticString($sKey, $sLanguageId) {
 		$aStaticStrings = self::getStaticStrings($sLanguageId);
 		if(isset($aStaticStrings[$sKey])) {
-			return html_entity_decode($aStaticStrings[$sKey], ENT_QUOTES, Settings::getSetting("encoding", "browser", "utf-8"));
+			return $aStaticStrings[$sKey];
 		}
 		return null;
 	}
@@ -63,6 +63,7 @@ class StringPeer extends BaseStringPeer {
 	}
 	
 	public static function getString($sKey, $sLanguageId=null, $sDefaultValue=null, $aParameters=null, $bMayReturnTemplate=false, $iFlags=0) {
+		$bNoHTMLInReturnedString = ($bMayReturnTemplate === null);
 		if(Settings::getSetting('frontend', 'display_string_keys', false)) {
 			return $sKey;
 		}
@@ -87,17 +88,26 @@ class StringPeer extends BaseStringPeer {
 				$aParameters = array();
 			}
 			if(!$bMayReturnTemplate) {
+				//NO_HTML_ESCAPE works in any case:
+				//Case $bMayReturnTemplate === false: strings will always be included in templates and thus always be encoded correctly in a second step.
+				//Case $bMayReturnTemplate === null: strings should not contain any HTML-characteristics, including entities. {{br}}-Tags will be stripped as well.
 				$iFlags = $iFlags|Template::NO_HTML_ESCAPE;
 			}
-			$tmpl = new Template(Template::htmlEncode($sString), "db", true, false, Settings::getSetting("encoding", "db", "utf-8"), null, $iFlags);
+			if($bMayReturnTemplate) {
+				//If returned item is a template, it is assumed that nothing will run htmlentities on it later on so we have to run it now.
+				$sString = Template::htmlEncode($sString);
+			}
+			if($bNoHTMLInReturnedString) {
+				$sString = str_replace('{{br}}', "\n", $sString);
+			}
+			$tmpl = new Template($sString, "db", true, false, Settings::getSetting("encoding", "db", "utf-8"), null, $iFlags);
 			foreach($aParameters as $sKey => $sValue) {
-				//NO_HTML_ESCAPE should work in any case since strings will always be included in templates and thus always be encoded correctly in a second step
 				$tmpl->replaceIdentifier($sKey, $sValue);
 			}
 			if($bMayReturnTemplate) {
 				return $tmpl;
 			}
-			return $tmpl->render();
+			$sString = $tmpl->render();
 		}
 		return $sString;
 	}
@@ -197,6 +207,11 @@ EOT;
 			return $aParts[0];
 		}
 		return null;
+	}
+	
+	// Test-use only
+	public static function setStaticStrings($aStatic) {
+		self::$STATIC_STRINGS= $aStatic;
 	}
 }
 
