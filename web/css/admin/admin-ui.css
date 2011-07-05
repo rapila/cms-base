@@ -221,15 +221,20 @@ h3.status { padding-left: 0.3em; }
   background-color: #fbfbfb;
 }
 .pointer { cursor: pointer; }
-.document_detail .preview.file_exists { border: 1px solid #dddddd; }
+.document_detail .preview.file_exists {
+  border: 1px solid #dddddd;
+  text-align: center;
+}
+.document_detail .preview.file_exists img {
+  display: block;
+  margin: 0 auto;
+}
 .document_detail .ui-state-droppable .preview {
-  border: 2px solid #b8d600;
-  margin-left: -2px;
+  border: 1px solid #b8d600;
   cursor: pointer;
 }
 .image_browse_area.ui-state-droppable, div.ui-state-droppable {
-  border: 2px solid #b8d600;
-  margin-left: -2px;
+  border: 1px solid #b8d600;
   cursor: pointer;
 }
 .document_detail .preview .droppable_info {
