@@ -667,8 +667,18 @@ jQuery.extend(jQuery, {
 	validateEmail: function(email) {
 		var email_regex = /^[\w._\-%+]+@[\w-]+(\.[\w-]+)*(\.\w+)$/;
 		return email.length > 4 && email_regex.test(email);
+	},
+	
+	openLink: function(link, event) {
+		if(event[jQuery.support.linkOpenModifierKey] || event.shiftKey) {
+			window.open(link);
+		} else {
+			window.location.href = link;
+		}
 	}
 });
+
+jQuery.support.linkOpenModifierKey = /Mac OS X/.test(navigator.userAgent) ? 'metaKey' : 'ctrlKey';
 
 jQuery.fn.extend({
 	widgetElements: function(type) {
