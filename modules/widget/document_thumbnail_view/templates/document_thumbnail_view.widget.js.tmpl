@@ -53,7 +53,7 @@ Widget.types.document_thumbnail_view = {
 		doc.css({width: px_size, height: px_size});
 		// handle delete
 		jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
-			var delete_message = AdminInterface.strings.get_parameterized_string('wns.document.delete_warning', { document_name: theDocument.name});
+			var delete_message = AdminInterface.strings.get_string('wns.document.delete_warning', { document_name: theDocument.name});
 			Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 				if(confirmed) {
 					_this.deleteDocument({id: document_id}, function(result) {

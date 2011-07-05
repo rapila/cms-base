@@ -9,7 +9,7 @@ Widget.types.document_list = {
 			widget.handle('list.cell-click', function(event, rowIndex, col, row, cell) {
 				if(col.identifier === 'delete') {
 					var document_name = widget.cell_for_identifier('name_truncated', row).text();
-					var delete_message = AdminInterface.strings.get_parameterized_string('wns.document.delete_warning', { document_name: document_name});
+					var delete_message = AdminInterface.strings.get_string('wns.document.delete_warning', { document_name: document_name});
 					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
