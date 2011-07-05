@@ -1,5 +1,5 @@
-.ui-state-droppable { background: #e3ef99 !important; }
-.ui-state-droppable td { background: #e3ef99 !important; }
+.ui-state-droppable { background-color: #e3ef99 !important; }
+.ui-state-droppable td { background-color: #e3ef99 !important; }
 .ui-state-hover {
   background: none;
   border-width: 0;
