@@ -193,8 +193,8 @@ input.ui-widget-content.input_medium { width: 15em; }
 .ui-tabs-nav.ui-widget-header { background: transparent url(''); }
 body.pages .ui-tabs-nav.ui-widget-header { background-color: #ebedef; }
 .ui-state-default a.tab_content_active { color: black; }
-.ui-tabs .ui-tabs-nav li.ui-state-active { background-color: #fcfcfc; }
-.ui-tabs-nav li.ui-state-active { background-color: #fcfcfc; }
+.ui-tabs .ui-tabs-nav li.ui-state-active { background-color: #ffffff; }
+.ui-tabs-nav li.ui-state-active { background-color: #ffffff; }
 .ui-tabs .ui-tabs-nav li {
   margin: 2px 2px 0 2px;
   background-color: #ebedef;
