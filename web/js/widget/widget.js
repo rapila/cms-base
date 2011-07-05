@@ -763,4 +763,15 @@ jQuery(document).ready(function() {
 	jQuery(document.body).widgetElements().each(function() {
 		jQuery(this).prepareWidget();
 	});
+	
+	var head = jQuery('head'), win = jQuery(window);
+	var style = jQuery('<style/>');
+	head.append(style);
+	var resize_handler = function() {
+		var height = win.height()*0.8;
+		style.text('.ui-dialog {max-height: '+(height)+'px;} .ui-dialog-content {max-height: '+(height-107)+'px;}');
+	};
+	
+	win.resize(resize_handler);
+	resize_handler();
 });
