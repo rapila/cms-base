@@ -140,9 +140,9 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
   border-top: 0;
 }
 .ui-dialog-titlebar.ui-widget-header { background: #2d3238; }
-.ui-dialog-buttonpane button.ui-state-focus { color: #e3ef99; }
-.ui-dialog-buttonpane button.ui-state-highlight { color: #e3ef99; }
-.ui-dialog-buttonpane button.ui-state-hover { color: #e3ef99; }
+.ui-dialog button.ui-state-focus { color: #e3ef99; }
+.ui-dialog button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog button.ui-state-hover { color: #e3ef99; }
 .ui-dialog .ui-dialog-content {
   cursor: auto;
   overflow-y: auto;
