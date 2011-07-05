@@ -42,7 +42,7 @@
 .ui-icon-audio { background-position: -144px -160px; }
 .ui-icon-text { background-position: -240px -128px; }
 .ui-state-default { background: transparent; }
-.ui-widget-content .ui-state-default { background: transparent; }
+#admin_sidebar .ui-state-default { background: transparent; }
 .cmos_alert.ui-dialog-content {
   background-color: #2d3238;
   color: #ffffff;
