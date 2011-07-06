@@ -150,7 +150,6 @@ Widget.types.admin_menu = {
 			}
 			if(this.settings.attach_events) {
 				result.element.bind('change', function(event) {
-					return false;
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
 						result.element.addClass('inactive');
