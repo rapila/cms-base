@@ -13,7 +13,7 @@ class NotFoundFrontendModule extends FrontendModule {
   }
 
   public function renderBackend() {
-    return StringPeer::getString('wns.save');
+    return StringPeer::getString('frontend_module.save_to_activate');
   }
 
   public function getSaveData() {
