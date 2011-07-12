@@ -3,7 +3,7 @@
  * @package modules.widget
  * description: general usage for custom list filtering
  */
-class BooleanInputWidgetModule extends WidgetModule {
+class BooleanInputWidgetModule extends PersistentWidgetModule {
 	
 	private $bIsTrue;
 	
