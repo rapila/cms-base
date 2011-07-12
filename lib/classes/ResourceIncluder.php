@@ -181,6 +181,10 @@ class ResourceIncluder {
 				$bUseLocalProxy = ErrorHandler::getEnvironment() === 'development';
 			}
 		}
+		if(!ini_get('allow_url_fopen')) {
+			// Never use proxy if fopen_wrappers are disabled
+			$bUseLocalProxy = false;
+		}
 		if($bUseCompression === null) {
 			$bUseCompression = Settings::getSetting('general', 'use_compressed_libraries', 'auto', 'resource_includer');
 			if($bUseCompression === 'auto') {
