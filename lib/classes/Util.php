@@ -101,6 +101,8 @@ class Util {
 		@ob_clean();
 		if(!function_exists('xdebug_break')) {
 			header("Content-Type: text/plain;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
+		} else {
+			header("Content-Type: text/html;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
 		}
 		call_user_func_array('var_dump', $aArgs);
 		exit();
