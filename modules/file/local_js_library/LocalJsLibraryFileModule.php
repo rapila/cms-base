@@ -21,8 +21,12 @@ class LocalJsLibraryFileModule extends FileModule {
 		$bUseSsl = BooleanParser::booleanForString($_GET['use_ssl']);
 		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $sLibraryVersion, $bUseCompression, false, $bUseSsl, ResourceIncluder::PRIORITY_NORMAL, false);
 		$sContents = '';
-		foreach($oIncluder->getLocationsForIncludedResourcesOfPriority() as $sLocation) {
-			$sContents .= file_get_contents($sLocation);
+		foreach($oIncluder->getResourceInfosForIncludedResourcesOfPriority() as $aInfo) {
+			if(isset($aInfo['file_resource'])) {
+				$sContents .= file_get_contents($aInfo['file_resource']->getFullPath());
+			} else {
+				$sContents .= file_get_contents($aInfo['location']);
+			}
 		}
 		$oCache->setContents($sContents);
 		$oCache->sendCacheControlHeaders();

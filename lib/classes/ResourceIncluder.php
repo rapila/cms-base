@@ -21,26 +21,6 @@ class ResourceIncluder {
 
 	private static $INSTANCES = array();
 	
-	private static $LIBRARY_URLS = array('jquery' => 'http://ajax.googleapis.com/ajax/libs/jquery/${version}/jquery.min.js', 
-																			 'jquery-uncomp' => 'http://ajax.googleapis.com/ajax/libs/jquery/${version}/jquery.js',
-																			 'jqueryui' => 'http://ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.min.js',
-																			 'jqueryui-uncomp' => 'http://ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.js',
-																			 'prototype' => 'http://ajax.googleapis.com/ajax/libs/prototype/${version}/prototype.js',
-																			 'scriptaculous' => 'http://ajax.googleapis.com/ajax/libs/scriptaculous/${version}/${library_name}.js',
-																			 'webfont' => 'http://ajax.googleapis.com/ajax/libs/webfont/${version}/webfont.js',
-																			 'mootools' => 'http://ajax.googleapis.com/ajax/libs/mootools/${version}/mootools-yui-compressed.js',
-																			 'mootools-uncomp' => 'http://ajax.googleapis.com/ajax/libs/mootools/${version}/mootools.js',
-																			 'dojo' => 'http://ajax.googleapis.com/ajax/libs/dojo/${version}/dojo/dojo.xd.js',
-																			 'dojo-uncomp' => 'http://ajax.googleapis.com/ajax/libs/dojo/${version}/dojo/dojo.xd.js.uncompressed.js',
-																			 'swfobject' => 'http://ajax.googleapis.com/ajax/libs/swfobject/${version}/swfobject.js',
-																			 'swfobject-uncomp' => 'http://ajax.googleapis.com/ajax/libs/swfobject/${version}/swfobject_src.js',
-																			 'yui' => 'http://ajax.googleapis.com/ajax/libs/yui/${version}/build/yuiloader/yuiloader-min.js',
-																			 'yui-uncomp' => 'http://ajax.googleapis.com/ajax/libs/yui/${version}/build/yuiloader/yuiloader.js',
-																			 'ext-core' => 'http://ajax.googleapis.com/ajax/libs/ext-core/${version}/ext-core.js',
-																			 'ext-core-uncomp' => 'http://ajax.googleapis.com/ajax/libs/ext-core/${version}/ext-core-debug.js');
-	
-	private static $LIBRARY_DEPENDENCIES = array('scriptaculous' => array('prototype' => 1.6),
-																							 'jqueryui' => array('jquery' => 1.4));
 	private static $IE_CONDITIONAL = null;
 	
 	private $aIncludedResources;
@@ -194,12 +174,18 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalUrl = null) {
-		if($bUseLocalUrl === null) {
-			$bUseLocalUrl = ErrorHandler::getEnvironment() === 'development';
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null) {
+		if($bUseLocalProxy === null) {
+			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', 'auto', 'resource_includer');
+			if($bUseLocalProxy === 'auto') {
+				$bUseLocalProxy = ErrorHandler::getEnvironment() === 'development';
+			}
 		}
 		if($bUseCompression === null) {
-			$bUseCompression = ErrorHandler::getEnvironment() !== 'development';
+			$bUseCompression = Settings::getSetting('general', 'use_compressed_libraries', 'auto', 'resource_includer');
+			if($bUseCompression === 'auto') {
+				$bUseCompression = ErrorHandler::getEnvironment() !== 'development';
+			}
 		}
 		if(!is_string($sLibraryVersion)) {
 			$sLibraryVersion = "$sLibraryVersion";
@@ -210,36 +196,40 @@ class ResourceIncluder {
 			$sLibraryName = substr($sLibraryName, 0, strpos($sLibraryName, '?load='));
 		}
 		$sResourceIdentifier = self::RESOURCE_PREFIX_LIBRARY.$sLibraryName;
-		if(!$bUseCompression && !isset(self::$LIBRARY_URLS["$sLibraryName-uncomp"])) {
+		$aLibraryOptions = Settings::getSetting('libraries', $sLibraryName, null, 'resource_includer');
+		if($aLibraryOptions === null) {
+			throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName not found. Libraries must be configured in the resource_includer.yml config file.");
+		}
+		if(is_string($aLibraryOptions)) {
+			$aLibraryOptions = array('url' => $aLibraryOptions);
+		}
+		if(!$bUseCompression && !isset($aLibraryOptions['url_uncompressed'])) {
 			$bUseCompression = true;
 		}
-		$sLibraryUrlIdentifier = $bUseCompression ? $sLibraryName : "$sLibraryName-uncomp";
-		if(!isset(self::$LIBRARY_URLS[$sLibraryUrlIdentifier])) {
-			throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName not found");
-		}
+		$sLibraryUrl = $aLibraryOptions[$bUseCompression ? 'url' : 'url_uncompressed'];
 		
 		//Handle duplicate includes
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
 			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '>')) {
-				// throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName already included with different version");
+				// throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName ($sLibraryVersion) already included with different version ({$aResourceInfo['version']})");
 				return;
 			}
-			if((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression)) {
+			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '==') && ((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression))) {
 				return;
 			}
 		}
 		
 		//Handle dependencies
-		$bHasDependencies = isset(self::$LIBRARY_DEPENDENCIES[$sLibraryName]) && $bInlcudeDependencies;
-		if($bHasDependencies) {
+		$aLibraryDependencies = $bInlcudeDependencies && Settings::getSetting('library_dependencies', $sLibraryName, null, 'resource_includer') !== null;
+		if(is_array($aLibraryDependencies)) {
 			$this->startDependencies();
-			foreach(self::$LIBRARY_DEPENDENCIES[$sLibraryName] as $sDependencyName => $sDependencyVersion) {
+			foreach($aLibraryDependencies as $sDependencyName => $sDependencyVersion) {
 				$this->addJavaScriptLibrary($sDependencyName, $sDependencyVersion, $bUseCompression, true, $bUseSsl, $iPriority);
 			}
 		}
 		
-		if($bUseLocalUrl) {
+		if($bUseLocalProxy) {
 			if(count($aIncludes) > 0) {
 				$sLibraryName .= "?load=".implode(',', $aIncludes);
 			}
@@ -248,13 +238,13 @@ class ResourceIncluder {
 		}
 		
 		//Add resource
-		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, self::$LIBRARY_URLS[$sLibraryUrlIdentifier]);
+		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, $sLibraryUrl);
 		if($bUseSsl) {
 			$sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
 		}
-		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, $bHasDependencies);
+		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, is_array($aLibraryDependencies));
 		
-		//If includes are used (for scriptaculous only)
+		//If includes are used (currently only scriptaculous does this)
 		foreach($aIncludes as $sIncludeName) {
 			$this->addResource(str_replace('${library_name}', $sIncludeName, $sLibraryUrl), self::RESOURCE_TYPE_JS, "$sResourceIdentifier-include_$sIncludeName", array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression, 'dependees' => array($sResourceIdentifier)), $iPriority);
 		}
