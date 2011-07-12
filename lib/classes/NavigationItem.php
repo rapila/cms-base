@@ -98,6 +98,10 @@ abstract class NavigationItem {
 	public abstract function getDescription($sLanguageId = null);
 	public abstract function getName();
 	
+	public function getIdentifier() {
+		return null;
+	}
+	
 	public function getLink() {
 		if($this->isRoot()) {
 			return array();
