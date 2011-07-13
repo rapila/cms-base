@@ -215,10 +215,13 @@ class SpecialTemplateIdentifierActions {
 	
 	public function writeResourceIncludes($oTemplateIdentifier) {
 		$oResourceIncluder = null;
-		if($oTemplateIdentifier->hasParameter('name')) {
+		if($oTemplateIdentifier->getValue() !== null) {
+			$oResourceIncluder = ResourceIncluder::namedIncluder($oTemplateIdentifier->getValue());
+		} else if($oTemplateIdentifier->hasParameter('name')) {
+			// Fall back to 'name' param for backwards compatiblity
 			$oResourceIncluder = ResourceIncluder::namedIncluder($oTemplateIdentifier->getParameter('name'));
 		} else {
-			$oResourceIncluder = ResourceIncluder::defaultIncluder($oTemplateIdentifier->getParameter('name'));
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
 		return $oResourceIncluder->getIncludes();
 	}

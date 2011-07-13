@@ -354,7 +354,11 @@ class ResourceIncluder {
 		$aParams = $oIdentifier->getParameters();
 		$aParams['from_template'] = true;
 		
-		$sResourceType = $oIdentifier->hasParameter('resource_type') ? $oIdentifier->getParameter('resource_type') : null;
+		$sResourceType = $oIdentifier->hasParameter('type') ? $oIdentifier->getParameter('type') : null;
+		// Fall back to 'resource_type' param for backwards compatiblity
+		if($sResourceType === null && $oIdentifier->hasParameter('resource_type')) {
+			$sResourceType = $oIdentifier->getParameter('resource_type');
+		}
 		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
 		$bIncludeAll = $oIdentifier->hasParameter('include_all');
 		
