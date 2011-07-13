@@ -14,7 +14,16 @@ class User extends BaseUser {
 	private static $ADMIN_SETTINGS_SET = array();
 
 	public function getFullName() {
-		return $this->getFirstName(). ' '.$this->getLastName();
+		if($this->getFirstName() && $this->getLastName()) {
+			return $this->getFirstName(). ' '.$this->getLastName();
+		}
+		if($this->getFirstName()) {
+			return $this->getFirstName();
+		}
+		if($this->getLastName()) {
+			return $this->getLastName();
+		}
+		return $this->getUsername();
 	}
 	
 	public function getInitials() {
