@@ -46,5 +46,13 @@ Widget.types.document_edit = {
 	
 	save: function(callback) {
 		this.saveData(this._element.serializeArrayKV(), callback);
-	}
+	},
+		
+	additional_buttons: [
+		{
+			text: '{{writeString=documents.do_admin}}',
+			icon: 'wrench',
+			action: jQuery.openLink.bind(window, "{{writeLink=documents;manager=AdminManager}}")
+		}
+	]
 };
