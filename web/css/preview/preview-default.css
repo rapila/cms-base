@@ -22,6 +22,8 @@ div.ui-widget-content {
 
 .filled-container.editing {
 	margin-bottom: 20px;
+	position: relative;
+	z-index: 1000;
 }
 
 .filled-container.editing form {
@@ -32,7 +34,7 @@ div.ui-widget-content {
 	position: fixed;
 	bottom: 10px;
 	right: 10px;
-	z-index: 90;
+	z-index: 1002;
 }
 
 .ui-loading {
@@ -84,7 +86,7 @@ div.ui-widget-content {
 .preview_bar {
 	display: block;
 	position: absolute;
-	z-index: 100;
+	z-index: 1001;
 }
 
 .preview_bar .ui-icon {
