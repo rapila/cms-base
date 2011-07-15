@@ -212,6 +212,7 @@ jQuery.extend(Widget, {
 				if(!Widget.types[widgetType]) {
 					if(widgetInformation.resources !== '') {
 						var resources = jQuery.parseHTML(widgetInformation.resources);
+						Widget.fire('loadInfo-resources', resources);
 						var head = jQuery('head');
 						//Add scripts
 						resources.filter('script').each(function() {

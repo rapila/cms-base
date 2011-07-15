@@ -42,7 +42,7 @@ Widget.types.login_window = {
 						var sent_text = "{{writeString=wns.request.sent_info}}";
 						forgotten_alert.find('div.password_forgotten_info').text(sent_text);
 						setTimeout(function() {
-							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy')});
+							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy');});
 						}, 2000);
 					}
 				});
