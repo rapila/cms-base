@@ -50,7 +50,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 					$aNewSelector[] = $sSelector;
 				} else {
 					foreach($aPrependages as $sPrependage) {
-						if(StringUtil::startsWith($sSelector, "$sPrependage ") || $sSelector === $sPrependage) {
+						if(StringUtil::startsWith($sSelector, "$sPrependage ") || StringUtil::startsWith($sSelector, "$sPrependage.") || $sSelector === $sPrependage) {
 							$aNewSelector[] = $sSelector;
 						} else {
 							$aNewSelector[] = "$sPrependage $sSelector";
