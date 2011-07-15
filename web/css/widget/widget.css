@@ -53,19 +53,22 @@ textarea.ui-widget-content:hover { border-color: #b5b5b5; }
 textarea.ui-widget-content:focus { border-color: #b5b5b5; }
 .ui-image-picker-image {
   float: left;
-  line-height: 77px;
+  line-height: 160px;
   margin: 0 5px 5px 0;
   padding: 5px;
   vertical-align: middle;
   text-align: center;
+}
+.ui-image-picker-image .ui-icon.ui-icon-trash {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
 }
 .ui-image-picker-image object { vertical-align: middle; }
 .ui-image-picker-image.ui-widget-content {
   position: relative;
   border: none;
   background-color: white;
-  height: 72px;
-  width: 72px;
   margin: 0 1px 2px;
   text-align: center;
   vertical-align: middle;
@@ -140,10 +143,13 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
   border-top: 0;
 }
 .ui-dialog-titlebar.ui-widget-header { background: #2d3238; }
-.ui-dialog button.ui-state-focus { color: #e3ef99; }
-.ui-dialog button.ui-state-highlight { color: #e3ef99; }
-.ui-dialog button.ui-state-hover { color: #e3ef99; }
-.ui-dialog .ui-dialog-content {
+.ui-dialog-buttonpane button.ui-state-focus { color: #e3ef99; }
+.ui-dialog-buttonpane button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog-buttonpane button.ui-state-hover { color: #e3ef99; }
+.ui-dialog-content button.ui-state-focus { color: #e3ef99; }
+.ui-dialog-content button.ui-state-highlight { color: #e3ef99; }
+.ui-dialog-content button.ui-state-hover { color: #e3ef99; }
+.ui-dialog-content {
   cursor: auto;
   overflow-y: auto;
 }
