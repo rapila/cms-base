@@ -1,7 +1,6 @@
-
 .ui-state-droppable,
 .ui-state-droppable td {
-	background-color: #e3ef99 !important;
+  background-color: #e3ef99 !important;
 }
 
 .ui-state-hover {
@@ -430,4 +429,41 @@ ol.ui-editable-items-list li::before {
 .ui-accordion .ui-state-hover .ui-icon-triangle-1-e {
 	background-image: url("../../images/admin/icon_triangle_closed_active.png");
 	background-position: 3px 3px;
+}
+
+/* Widget-Notifications */
+
+#widget-notifications {
+	position: fixed;
+	left: 278px;
+	top: 58px;
+	z-index: 2005;
+	
+  .ui-notify {
+  	margin-bottom: 5px;
+  }
+
+  .ui-notify .ui-badge,
+  .ui-notify .close-handle.ui-icon {
+  	float: right;
+  	display: block;
+  	margin-top: -8px;
+  	margin-right: -8px;
+  }
+
+  .ui-notify .ui-badge {
+  	background-color: red;
+  	-moz-border-radius: 12px;
+  	-webkit-border-radius: 12px;
+  	border-radius: 12px;
+  	font-weight: bold;
+  	color: white;
+  	padding: 1px 5px;
+  }
+
+  .ui-notify .close-handle.ui-icon {
+  	margin-right: 0;
+  	margin-top: -12px;
+  	cursor: pointer;
+  }
 }

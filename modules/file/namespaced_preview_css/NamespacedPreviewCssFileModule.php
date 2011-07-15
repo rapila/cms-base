@@ -39,12 +39,20 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		}
 		
 		//Triple all rules and prepend specific strings
-		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents');
+		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications');
 		foreach($oCssContents->getAllSelectors() as $oSelector) {
 			$aNewSelector = array();
 			foreach($oSelector->getSelector() as $iKey => $sSelector) {
-				foreach($aPrependages as $sPrependage) {
-					$aNewSelector[] = "$sPrependage $sSelector";
+				if(StringUtil::startsWith($sSelector, "body ") || StringUtil::startsWith($sSelector, "html ")) {
+					$aNewSelector[] = $sSelector;
+				} else {
+					foreach($aPrependages as $sPrependage) {
+						if(StringUtil::startsWith($sSelector, "$sPrependage ") || $sSelector === $sPrependage) {
+							$aNewSelector[] = $sSelector;
+						} else {
+							$aNewSelector[] = "$sPrependage $sSelector";
+						}
+					}
 				}
 			}
 			$oSelector->setSelector($aNewSelector);

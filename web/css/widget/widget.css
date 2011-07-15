@@ -287,3 +287,36 @@ ol.ui-editable-items-list li::before {
   background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 3px 3px;
 }
+#widget-notifications {
+  position: fixed;
+  left: 278px;
+  top: 58px;
+  z-index: 2005;
+}
+#widget-notifications .ui-notify { margin-bottom: 5px; }
+#widget-notifications .ui-notify .ui-badge {
+  float: right;
+  display: block;
+  margin-top: -8px;
+  margin-right: -8px;
+}
+#widget-notifications .ui-notify .close-handle.ui-icon {
+  float: right;
+  display: block;
+  margin-top: -8px;
+  margin-right: -8px;
+}
+#widget-notifications .ui-notify .ui-badge {
+  background-color: red;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  padding: 1px 5px;
+}
+#widget-notifications .ui-notify .close-handle.ui-icon {
+  margin-right: 0;
+  margin-top: -12px;
+  cursor: pointer;
+}

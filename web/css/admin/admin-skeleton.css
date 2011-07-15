@@ -11,13 +11,13 @@ body.login h1 {
   font-size: 5em;
   color: #c2c2c2;
 }
-#admin_message {
+#widget-notifications {
   position: fixed;
   left: 278px;
   top: 58px;
   z-index: 2005;
 }
-#admin_message .ui-notify { margin-bottom: 5px; }
+#widget-notifications .ui-notify { margin-bottom: 5px; }
 .ui-notify .ui-badge {
   float: right;
   display: block;

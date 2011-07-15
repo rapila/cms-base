@@ -395,11 +395,117 @@ jQuery.extend(Widget, {
 	},
 	
 	notifyUser: function(severity, message) {
-		alert("Message of severity "+severity+": "+message);
+		var options = {
+			closeDelay: 5000,
+			identifier: null,
+			isHTML: false,
+			closable: false,
+			searchInfo: false
+		};
+		if(severity === Widget.logSeverity.ALERT) {
+			delete options.closeDelay;
+			options.closable = true;
+		}
+		jQuery.extend(options, arguments[2] || {});
+		
+		var notification_area = jQuery('#widget-notifications');
+		
+		//Handle messages with identical identifier
+		if(options.identifier) {
+			var prev_message = Widget.notificationWithIdentifier(options.identifier);
+			if(prev_message) {
+				prev_message.data('functions').increase_badge_count();
+				prev_message.data('functions').set_message(message);
+				return;
+			}
+		}
+		var highlight = severity == 'info' ? 'highlight' : 'error';
+		var display;
+		if(options.searchInfo) {
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
+		} else {
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
+		}
+		display.hide().appendTo(notification_area).data('identifier', options.identifier);
+		
+		var badge = display.find('.ui-badge').hide();
+		var close_button = display.find('.close-handle').hide();
+		var message_container = display.find('.message');
+		
+		var functions = {
+			element: display,
+			options: options,
+			close: function() {
+				if(options.searchInfo) {
+					display.hide('blind', function() {display.remove();});
+				} else {
+					display.hide('blind', function() {display.remove();});
+				}
+			},
+			set_severity: function(severity) {
+				var new_highlight = severity == 'info' ? 'highlight' : 'error';
+				display.find('.ui-state-'+highlight).removeClass('ui-state-'+highlight).addClass('ui-state-'+new_highlight);
+			},
+			increase_badge_count: function() {
+				var count = parseInt(badge.text(), 10);
+				if(isNaN(count)) {
+					count = 0;
+				}
+				count++;
+				badge.show().text(count);
+				this.reset_timeout();
+			},
+			reset_timeout: function(closeDelay) {
+				if(closeDelay !== undefined) {
+					this.options.closeDelay = closeDelay;
+				}
+				this.clear_timeout();
+				if(this.options.closeDelay) {
+					this.options.timeout = window.setTimeout(this.close, this.options.closeDelay);
+				}
+			},
+			clear_timeout: function() {
+				if(this.options.timeout) {
+					window.clearTimeout(this.options.timeout);
+				}
+			},
+			set_message: function(message) {
+				if(message.constructor === String) {
+					if(this.options.isHTML) {
+						message_container.html(message);
+					} else {
+						message_container.text(message);
+					}
+				} else {
+					message_container.empty().append(message);
+				}
+			},
+			enable_close_button: function() {
+				close_button.show().click(function() {
+					this.close();
+				}.bind(this));
+			}
+		};
+		functions.set_message(message);
+		display.data('functions', functions).show('blind');
+		functions.reset_timeout();
+		if(options.closable) {
+			functions.enable_close_button();
+		}
+		return functions;
 	},
 	
-	notificationWithIdentifier: function() {
-		return null;
+	notificationWithIdentifier: function(identifier) {
+		var notification_area = jQuery('#widget-notifications');
+		var result = null;
+		notification_area.find('div.ui-notify').each(function() {
+			var notification = jQuery(this);
+			if(notification.data('identifier') === identifier) {
+				result = notification;
+				return false;
+			}
+		});
+		return result;
 	},
 	
 	tooltip: function(element, text) {

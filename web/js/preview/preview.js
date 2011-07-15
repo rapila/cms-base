@@ -1,4 +1,6 @@
 jQuery(document).ready(function() {
+	jQuery('<div/>', {'id': 'widget-notifications'}).appendTo(document.body);
+	
 	var loader = jQuery(document.createElement('div')).addClass('ui-loading').attr('id', 'activity-indicator').appendTo(document.body);
 	
 	jQuery.extend(Widget, {
