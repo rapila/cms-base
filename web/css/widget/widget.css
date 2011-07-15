@@ -125,6 +125,7 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
 .ui-widget-content .status_section select { width: 15em; }
 .ui-widget-header {
   color: #efefef;
+  font-weight: bold;
   border: 0;
 }
 .ui-dialog-titlebar.ui-widget-header {
