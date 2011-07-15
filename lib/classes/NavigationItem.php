@@ -28,25 +28,52 @@ abstract class NavigationItem {
 		}
 	}
 	
+	protected function getCustomChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
+		//Language id is ignored in this implementation
+		if($bIncludeDisabled && $bIncludeInvisible) {
+			return $this->aCustomChildren;
+		}
+		$aCustomChildren = array();
+		foreach($this->aCustomChildren as $oChild) {
+			if($bIncludeDisabled || $oChild->isEnabled()) {
+				if($bIncludeInvisible || $oChild->isVisible()) {
+					$aCustomChildren[$oChild->getName()] = $oChild;
+				}
+			}
+		}
+		return $aCustomChildren;
+	}
+	
+	protected function hasCustomChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
+		//Language id is ignored in this implementation
+		if($bIncludeDisabled && $bIncludeInvisible) {
+			return count($this->aCustomChildren) > 0;
+		}
+		foreach($this->aCustomChildren as $oChild) {
+			if(!$bIncludeDisabled || $oChild->isEnabled()) {
+				if(!$bIncludeInvisible || $oChild->isVisible()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public function getChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		$sKey = "{$sLanguageId}_{$bIncludeDisabled}_{$bIncludeInvisible}";
 		if(!isset($this->aChildren[$sKey])) {
 			$this->aChildren[$sKey] = $this->getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 		}
 		$this->prepareChildren();
-		return array_merge($this->aCustomChildren, $this->aChildren[$sKey]);
+		return array_merge($this->getCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible), $this->aChildren[$sKey]);
 	}
 	
 	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		$this->prepareChildren();
-		if($this->hasCustomChildren()) {
+		if($this->hasCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible)) {
 			return true;
 		}
 		return $this->hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
-	}
-	
-	private function hasCustomChildren() {
-		return count($this->aCustomChildren) > 0;
 	}
 	
 	public function isRoot() {
