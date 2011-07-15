@@ -1,4 +1,16 @@
 jQuery(document).ready(function() {
+	jQuery('<div/>', {'id': 'widget-notifications'}).appendTo(document.body);
+	
+	var link_rewriter = function() {
+		if(this.href.indexOf('/widget_resource/css/') > -1) {
+			this.href = this.href.replace('/widget_resource/css/', '/namespaced_preview_resource/css/');
+		}
+	};
+	jQuery('head link').each(link_rewriter);
+	Widget.handle('loadInfo-resources', function(event, resources) {
+		resources.filter('link').each(link_rewriter);
+	});
+	
 	var loader = jQuery(document.createElement('div')).addClass('ui-loading').attr('id', 'activity-indicator').appendTo(document.body);
 	
 	jQuery.extend(Widget, {

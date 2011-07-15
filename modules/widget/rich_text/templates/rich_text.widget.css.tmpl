@@ -11,68 +11,68 @@
 	padding-left: 1em;
 }
 
-.cke_skin_kama .image_browse_area {
+body > .cke_skin_kama .image_browse_area {
 	min-height: 150px;
 	max-height: 400px;
 	overflow-y: auto;
 }
 
-.cke_skin_kama .ui-widget-content.ui-image-picker-image {
+body > .cke_skin_kama .ui-widget-content.ui-image-picker-image {
 	height: 72px;
 	line-height: 72px;
 	width: 72px;
 }
 
-.cke_skin_kama .ui-image-picker-image img {
+body > .cke_skin_kama .ui-image-picker-image img {
 	vertical-align: middle;
 }
 
-.cke_skin_kama .image_browse_area:hover {
+body > .cke_skin_kama .image_browse_area:hover {
 	background-color: #f2f2f2;
 }
 
 /* clearfix */
-.cke_skin_kama .image_browse_area:before,
-.cke_skin_kama .image_browse_area:after {
+body > .cke_skin_kama .image_browse_area:before,
+body > .cke_skin_kama .image_browse_area:after {
 	content: "\0020";
 	display: block;
 	height: 0;
 	visibility: hidden;
 }
 
-.cke_skin_kama .image_browse_area:after {
+body > .cke_skin_kama .image_browse_area:after {
 	clear: both;
 }
 
-.cke_skin_kama .image_browse_area {
+body > .cke_skin_kama .image_browse_area {
 	zoom: 1;
 	margin-bottom: 6px;
 }
 
-.cke_skin_kama .cke_dialog {
+body > .cke_skin_kama .cke_dialog {
 	border: 1px solid #999999;
 }
 
-.cke_skin_kama .cke_dialog .cke_dialog_body {
+body > .cke_skin_kama .cke_dialog .cke_dialog_body {
 	border: 0;
 }
 
-.cke_skin_kama .cke_dialog .cke_dialog_title {
+body > .cke_skin_kama .cke_dialog .cke_dialog_title {
 	background: #2d3238;
 	color: #EFEFEF;
 	padding: 0.6em 0.8em 2em;
 }
 
-.cke_skin_kama .cke_dialog .cke_dialog_footer {
+body > .cke_skin_kama .cke_dialog .cke_dialog_footer {
 	background: #2d3238;
 	color: #EFEFEF;
 }
 
-.cke_skin_kama .cke_dialog .cke_dialog_body {
+body > .cke_skin_kama .cke_dialog .cke_dialog_body {
 	padding: 0;
 }
 
-div.cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button {
+body > .cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button {
 	background-image: url("{{writeDirectInclude=web/css/admin/theme/images/ui-icons_b9b9b9_256x240.png;template=location_only;fromBase}}");
 	background-position: -96px -128px;
 	height: 18px;
@@ -80,16 +80,21 @@ div.cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button {
 	width: 19px;
 }
 
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel,
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel:hover,
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok,
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok:hover {
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel,
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel:hover,
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok,
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok:hover {
 	background: url("{{writeDirectInclude=admin/button_gradient_dark.png;template=location_only;}}") repeat scroll 0 0 transparent;
 }
 
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel span.cke_dialog_ui_button {
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel span.cke_dialog_ui_button {
 	color: #B9B9B9;
 }
-.cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok span.cke_dialog_ui_button {
+
+body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok span.cke_dialog_ui_button {
 	color: #E3EF99;
+}
+
+.cke_dialog_background_cover {
+  z-index: 1500 !important;
 }
