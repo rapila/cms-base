@@ -5,10 +5,10 @@ class VirtualNavigationItem extends NavigationItem {
 	private $sTitle;
 	private $sLinkText;
 	private $mData;
-	private $sIdentifier;
+	private $sType;
 	
-	public function __construct($sIdentifier, $sName, $sTitle, $sLinkText = null, $mData = null) {
-		$this->sIdentifier = $sIdentifier;
+	public function __construct($sType, $sName, $sTitle, $sLinkText = null, $mData = null) {
+		$this->sType = $sType;
 		$this->sName = $sName;
 		$this->sTitle = $sTitle;
 		$this->sLinkText = ($sLinkText === null ? $sTitle : $sLinkText);
@@ -32,8 +32,8 @@ class VirtualNavigationItem extends NavigationItem {
 	    return $this->mData;
 	}
 	
-	public function getIdentifier() {
-	    return $this->sIdentifier;
+	public function getType() {
+	    return $this->sType;
 	}
 	
 	public function getTitle($sLanguageId = null) {
