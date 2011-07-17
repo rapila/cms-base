@@ -104,7 +104,7 @@ class ResourceIncluder {
 				$mFileResource = ResourceFinder::findResourceObject($aLocation);
 			}
 		}
-		
+
 		if($sFinalLocation === null && $mFileResource === null && !$bIncludeAll) {
 			throw new Exception("Error in ResourceIncluder->addResource(): Specified internal file $mLocation could not be found.");
 		}
@@ -112,17 +112,17 @@ class ResourceIncluder {
 		if(!is_array($mFileResource)) {
 			$mFileResource = array($mFileResource);
 		}
-		
+				
 		foreach($mFileResource as $oFileResource) {
 			if($sFinalLocation === null) {
 				$sFinalLocation = $oFileResource->getFrontendPath();
 				$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
 			}
-			
+		
 			if($sTemplateName === null) {
 				$sTemplateName = $this->findTemplateNameForLocation($sFinalLocation);
 			}
-
+			
 			if($sIdentifier === null) {
 				$sIdentifier = $sResourcePrefix.$sFinalLocation;
 			}
@@ -286,11 +286,11 @@ class ResourceIncluder {
 	}
 
 	public function getIncludedResources() {
-			return $this->aIncludedResources;
+		return $this->aIncludedResources;
 	}
 
 	public function getAllIncludedResources() {
-			return array_merge($this->aIncludedResources[self::PRIORITY_LAST], $this->aIncludedResources[self::PRIORITY_NORMAL], $this->aIncludedResources[self::PRIORITY_FIRST]);
+		return array_merge($this->aIncludedResources[self::PRIORITY_LAST], $this->aIncludedResources[self::PRIORITY_NORMAL], $this->aIncludedResources[self::PRIORITY_FIRST]);
 	}
 	
 	public function getResourceInfosForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
@@ -353,7 +353,7 @@ class ResourceIncluder {
 		}
 		$aParams = $oIdentifier->getParameters();
 		$aParams['from_template'] = true;
-		
+
 		$sResourceType = $oIdentifier->hasParameter('type') ? $oIdentifier->getParameter('type') : null;
 		// Fall back to 'resource_type' param for backwards compatiblity
 		if($sResourceType === null && $oIdentifier->hasParameter('resource_type')) {
