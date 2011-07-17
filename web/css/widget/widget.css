@@ -1,9 +1,6 @@
 .ui-state-droppable { background-color: #e3ef99 !important; }
 .ui-state-droppable td { background-color: #e3ef99 !important; }
-.ui-state-hover {
-  background: none;
-  border-width: 0;
-}
+.ui-state-hover { border-width: 0; }
 label {
   color: #666666;
   float: none;
@@ -125,6 +122,7 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
 .ui-widget-content .status_section select { width: 15em; }
 .ui-widget-header {
   color: #efefef;
+  font-weight: bold;
   border: 0;
 }
 .ui-dialog-titlebar.ui-widget-header {
