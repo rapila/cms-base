@@ -178,10 +178,7 @@ button.cmos-button.logout_link {
 .ui-widget-content select { background-color: #ffffff; }
 .ui-widget-content textarea { background-color: #ffffff; }
 .ui-state-active { color: #e3ef99; }
-.group_fields { float: left; }
-.group_fields:last-child { float: none; }
-.group_fields + * { clear: left; }
-.group_fields + .group_fields { clear: none; }
+.group_fields { display: inline-block; }
 input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
 input.ui-widget-content.input_short { width: 6em; }
