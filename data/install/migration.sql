@@ -356,3 +356,4 @@ UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' 
 ALTER TABLE `pages` DROP INDEX pages_U_1;
 ALTER TABLE `pages` ADD `identifier` VARCHAR(30) NULL DEFAULT NULL;
 ALTER TABLE `pages` ADD UNIQUE KEY `pages_U_1` (`identifier`);
+

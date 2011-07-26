@@ -70,7 +70,7 @@ text_module:
       - ["Undo", "Redo", "-", "Find"]
       - ["Styles", "Format"]
     -
-      - ["Subscript", "Superscript", "-", "Maximize"]    -
+      - ["Subscript", "Superscript", "-", "Maximize"]
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
