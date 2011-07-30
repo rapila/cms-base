@@ -70,7 +70,7 @@ text_module:
       - ["Undo", "Redo", "-", "Find"]
       - ["Styles", "Format"]
     -
-      - ["Subscript", "Superscript", "-", "Maximize"]    -
+      - ["Subscript", "Superscript", "-", "Maximize"]
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
@@ -80,7 +80,7 @@ security:
   generate_digest_secrets: false
   
 frontend:
-  title: '» rapila'
+  title: ''
   main_template: general
 #possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
   doctype: strict
