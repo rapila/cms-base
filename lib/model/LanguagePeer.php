@@ -39,7 +39,7 @@ class LanguagePeer extends BaseLanguagePeer {
 		return self::doCount($oCriteria) > 1;
 	}
 
-	public static function getLanguages($bActiveOnly=false, $bSortBySort = false, $mExcludeCurrent = false) {
+	public static function getLanguages($bActiveOnly = false, $bSortBySort = false, $mExcludeCurrent = false) {
 		$oCriteria = new Criteria();
 		if($bActiveOnly) {
 			$oCriteria->add(self::IS_ACTIVE, true);
