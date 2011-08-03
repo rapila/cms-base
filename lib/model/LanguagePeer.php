@@ -47,7 +47,7 @@ class LanguagePeer extends BaseLanguagePeer {
 		if($mExcludeCurrent === 'default') {
 			$mExcludeCurrent = Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'de');
 		}
-		if($mExcludeCurrent === null) {
+		if($mExcludeCurrent === true) {
 			$mExcludeCurrent = Session::language();
 		}
 		if($mExcludeCurrent !== false) {
