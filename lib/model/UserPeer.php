@@ -198,7 +198,7 @@ class UserPeer extends BaseUserPeer {
 		return UserPeer::doSelectOne($oCriteria);
 	}
 	
-	public static function getUserByUserName($sUserName, $bActiveOnly = false) {
+	public static function getUserByUsername($sUserName, $bActiveOnly = false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::USERNAME, $sUserName);
 		if($bActiveOnly) {

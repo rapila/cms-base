@@ -121,7 +121,7 @@ class LoginManager extends Manager {
 		}
 		
 		$oFlash->addMessage('login.recovery_link_sent');
-		$oUser = UserPeer::getUserByUserName($_POST['password_reset_user_name'], true);
+		$oUser = UserPeer::getUserByUsername($_POST['password_reset_user_name'], true);
 		if($oUser === null) {
 			return 'login';
 		}
@@ -164,7 +164,7 @@ class LoginManager extends Manager {
 	
 	public static function passwordReset() {
 		$oFlash = Flash::getFlash();
-		$oUser = UserPeer::getUserByUserName(trim($_REQUEST['recover_username']), true);
+		$oUser = UserPeer::getUserByUsername(trim($_REQUEST['recover_username']), true);
 		if($oUser === null || md5($oUser->getPasswordRecoverHint()) !== $_REQUEST['recover_hint']) {
 			$oFlash->addMessage('login.recovery.invalid');
 			return 'login';
@@ -177,7 +177,7 @@ class LoginManager extends Manager {
 	
 	public static function loginNewPassword($sReferrer = '') {
 		$oFlash = Flash::getFlash();
-		$oUser = UserPeer::getUserByUserName(trim($_REQUEST['recover_username']), true);
+		$oUser = UserPeer::getUserByUsername(trim($_REQUEST['recover_username']), true);
 		if($oUser === null || md5($oUser->getPasswordRecoverHint()) !== $_REQUEST['recover_hint']) {
 			$oFlash->addMessage('login.recovery.invalid');
 			return 'login';

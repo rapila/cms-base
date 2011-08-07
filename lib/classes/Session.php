@@ -49,7 +49,7 @@ class Session {
 	}
 
 	public function login($sUsername, $sPassword) {
-		$oUser = UserPeer::getUserByUserName($sUsername);
+		$oUser = UserPeer::getUserByUsername($sUsername);
 		if($oUser === null) {
 			return 0;
 		}
@@ -79,7 +79,7 @@ class Session {
 		}
 		
 		// analyze the PHP_AUTH_DIGEST variable
-		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUserName($aDigestContent['username'])) === null) {
+		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUsername($aDigestContent['username'])) === null) {
 			return 0;
 		}
 		

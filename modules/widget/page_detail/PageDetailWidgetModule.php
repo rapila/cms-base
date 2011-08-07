@@ -281,6 +281,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oProperty->delete();
 		}
 		// set valid posted page properties
+		if(!isset($aPageData['page_properties']['page_identifier'])) {
+			$this->oPage->setIdentifier(null);
+		}
 		foreach($aPageData['page_properties'] as $sName => $sValue) {
 			if($sName === 'page_identifier') {
 				$this->oPage->setIdentifier($sValue ? $sValue : null);

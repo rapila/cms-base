@@ -4,7 +4,6 @@
 }
 
 .ui-state-hover {
-	background: none;
 	border-width: 0;
 }
 
@@ -169,6 +168,7 @@ select[data-widget-type=page_input] option.level3 {
 
 .ui-widget-header {
 	color: #EFEFEF;
+	font-weight: bold;
 	border: 0;
 }
 
@@ -250,19 +250,20 @@ button.cmos-button.logout_link {
 }
 
 .group_fields {
-	float: left;
+/*  float: left;*/
+  display:inline-block;
 }
 
 .group_fields:last-child {
-	float: none;
+/*  float: none;*/
 }
 
 .group_fields + * {
-	clear: left;
+/*  clear: left;*/
 }
 
 .group_fields + .group_fields {
-	clear: none;
+/*  clear: none;*/
 }
 
 input.ui-widget-content.input_long {
