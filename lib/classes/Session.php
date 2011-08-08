@@ -116,7 +116,7 @@ class Session {
 				$iReturnValue |= self::USER_IS_DEFAULT_USER;
 			}
 		}
-		FilterModule::getFilters()->handleUserLoggedIn($oUser, array('user_status' => $iReturnValue));
+		FilterModule::getFilters()->handleUserLoggedIn($oUser, array(&$iReturnValue));
 		return $iReturnValue;
 	}
 

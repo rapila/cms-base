@@ -86,10 +86,6 @@ abstract class WidgetModule extends Module {
 		return array('static' => $aStaticMethods, 'instance' => $aMethods);
 	}
 	
-	public static function getStaticMethods($sClassName) {
-		
-	}
-	
 	public static function removeStoredWidgets() {
 		Session::getSession()->setAttribute(self::WIDGET_SESSION_KEY, array());
 	}

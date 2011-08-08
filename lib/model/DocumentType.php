@@ -27,5 +27,9 @@ class DocumentType extends BaseDocumentType {
 		return '-';
 	}
 	
+	public function setExtension($sExtension) {
+		return parent::setExtension(strtolower($sExtension));
+	}
+	
 }
 
