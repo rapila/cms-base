@@ -144,7 +144,7 @@ class FrontendManager extends Manager {
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
 		
 		$this->bIsNotFound = $this->bIsNotFound || $bParamsNotAllowed;
-		FilterModule::getFilters()->handlePageNotFoundDetectionComplete($this->bIsNotFound, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM, array('not_found' => &$this->bIsNotFound));
+		FilterModule::getFilters()->handlePageNotFoundDetectionComplete($this->bIsNotFound, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM, array(&$this->bIsNotFound));
 		
 		if($this->bIsNotFound) {
 			FilterModule::getFilters()->handlePageNotFound();
