@@ -744,10 +744,10 @@ var WidgetJSONOptions = function(options) {
 
 jQuery.extend(WidgetJSONOptions.prototype, {
 	options: {
-		upload_progess_callback: null,
-		download_progress_callback: null,
-		content_type: 'application/json',
 		async: null, //defaults to false for getters and setters, true otherwise
+		upload_progess_callback: null, //"progress" event handlers on request
+		download_progress_callback: null, //"progress" event handlers on response
+		content_type: 'application/json', //determines interpretation of the data
 		action: null,
 		callback_handles_error: null
 	}
