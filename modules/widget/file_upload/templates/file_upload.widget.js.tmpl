@@ -114,7 +114,9 @@ Widget.types.file_upload = {
 			content_type: 'multipart/form-data',
 			additional_params: {
 				file: file
-			}
+			},
+			call_callback: true,
+			callback_handles_error: false
 		});
 		file_uploader.uploadFile('file', options, create_type, function(result, error) {
 			if(!error) {
@@ -126,9 +128,7 @@ Widget.types.file_upload = {
 				this.fire('file-uploaded', result, options);
 				options.callback(result, options);
 			} else {
-				notification.enable_close_button();
-				notification.set_severity('error');
-				options.error ? options.error(error, notification, options) : notification.set_message(error.message);
+				notification.close();
 			}
 		}, json_options);
 	}
