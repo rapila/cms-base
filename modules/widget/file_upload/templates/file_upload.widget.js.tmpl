@@ -121,7 +121,7 @@ Widget.types.file_upload = {
 				jQuery('.ui-state-droppable').removeClass('ui-state-droppable');
 				progress.progressbar('value', 100);
 				notification.enable_close_button();
-				// notification.reset_timeout(3000);
+				notification.reset_timeout(2000);
 				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
 				this.fire('file-uploaded', result, options);
 				options.callback(result, options);
