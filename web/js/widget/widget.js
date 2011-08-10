@@ -720,6 +720,18 @@ jQuery.extend(Widget, {
 			} else if (widgetOrId.detail_widget) {
 				widgetOrId.detail_widget.validate_with(error.parameters, widgetOrId.detail_widget.content);
 				return false;
+			} else {
+				message = jQuery('<div/>').text(error.message);
+				var error_list = jQuery('<ul/>').appendTo(message);
+				jQuery.each(error.parameters, function(counter, item) {
+					if(item.string) error_list.append(jQuery('<li/>').html(item.string));
+				});
+				Widget.notifyUser(Widget.logSeverity.ALERT, message, {
+					closeDelay: false,
+					isHTML: true,
+					closable: true
+				});
+				return false;
 			}
 			return true;
 		}
