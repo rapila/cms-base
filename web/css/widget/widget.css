@@ -70,7 +70,7 @@ textarea.ui-widget-content:focus { border-color: #b5b5b5; }
   text-align: center;
   vertical-align: middle;
 }
-.ui-sortable-handle {
+.ui-sortable-handle, .ui-sortable-handle_inactive {
   background-image: url('../../images/admin/sortable_handler_inactive.png');
   background-repeat: no-repeat;
   background-position: center center;
@@ -133,6 +133,10 @@ select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
   padding: 0.6em 0.8em 2em;
 }
 .ui-dialog-titlebar .ui-dialog-titlebar-close { margin-top: -20px; }
+.ui-dialog .ui-dialog-title {
+  float: left;
+  margin: 0.1em 1em 0.2em 0;
+}
 .ui-state-active .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
 .ui-state-hover .ui-icon { background-image: url("../admin/theme/images/ui-icons_000000_256x240.png"); }
 .ui-dialog-buttonpane.ui-widget-content {

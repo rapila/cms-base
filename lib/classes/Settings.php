@@ -26,8 +26,7 @@ class Settings {
 				}
 			}
 		}
-		// var_dump($this->aSettings);exit;
-	} // getInstance();
+	}
 		
 	/**
 	 * getConfigurationSetting()

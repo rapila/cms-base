@@ -97,7 +97,8 @@ textarea.ui-widget-content:hover,	 textarea.ui-widget-content:focus {
 	vertical-align: middle;
 }
 
-.ui-sortable-handle {
+.ui-sortable-handle,
+.ui-sortable-handle_inactive {
 	background-image: url('../../images/admin/sortable_handler_inactive.png');
 	background-repeat: no-repeat;
 	background-position: center center;
@@ -183,6 +184,11 @@ select[data-widget-type=page_input] option.level3 {
 .ui-dialog-titlebar .ui-dialog-titlebar-close {
 	margin-top:-20px;
 }
+// overwrite margin right to avoid overlap of close button and title on long texts
+.ui-dialog .ui-dialog-title { 
+  float: left; 
+  margin: .1em 1em .2em 0;
+} 
 
 .ui-state-active .ui-icon,
 .ui-state-hover .ui-icon {
