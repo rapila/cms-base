@@ -620,14 +620,16 @@ jQuery.extend(Widget, {
 			success: function(result) {
 				callback = (callback || Widget.defaultJSONHandler);
 				var error = null;
-				var call_callback = true;
 				if(result && result.exception) {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					if(options.call_callback === null) {
+						options.call_callback = call_callback;
+					}
 				}
-				if(call_callback) {
+				if(options.call_callback === null || options.call_callback) {
 					if(callback.resolveWith) {
 						if(error) {
 							callback.rejectWith(this, [error]);
@@ -646,7 +648,11 @@ jQuery.extend(Widget, {
 				}
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 				action.shift();
-				if(options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes)) {
+				var call_callback = options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes);
+				if(options.call_callback === null) {
+					options.call_callback = call_callback;
+				}
+				if(options.call_callback) {
 					if(callback.resolveWith) {
 						callback.rejectWith(this, [error_object]);
 					} else {
@@ -749,7 +755,8 @@ jQuery.extend(WidgetJSONOptions.prototype, {
 		download_progress_callback: null, //"progress" event handlers on response
 		content_type: 'application/json', //determines interpretation of the data
 		action: null,
-		callback_handles_error: null
+		callback_handles_error: null, //defaults to true if the callback has two params
+		call_callback: null //defaults to true if callback_handles_error || the default error handler returns true
 	}
 });
 
