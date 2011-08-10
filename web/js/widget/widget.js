@@ -443,9 +443,12 @@ jQuery.extend(Widget, {
 					display.hide('blind', function() {display.remove();});
 				}
 			},
-			set_severity: function(severity) {
-				var new_highlight = severity == 'info' ? 'highlight' : 'error';
+			set_severity: function(new_severity) {
+				var new_highlight = new_severity == 'info' ? 'highlight' : 'error';
 				display.find('.ui-state-'+highlight).removeClass('ui-state-'+highlight).addClass('ui-state-'+new_highlight);
+				display.find('.ui-icon-'+severity).removeClass('ui-icon-'+severity).addClass('ui-icon-'+new_severity);
+				severity = new_severity;
+				highlight = new_highlight;
 			},
 			increase_badge_count: function() {
 				var count = parseInt(badge.text(), 10);
