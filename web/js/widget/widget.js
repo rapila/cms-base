@@ -98,7 +98,7 @@ jQuery.extend(Widget.prototype, {
 		}
 		var result = null;
 		var error = null;
-		if(options.async) {
+		if(options.async === null) {
 			//Make getters and setter synchronous, Char after set or get must be uppercase
 			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && (/[A-Z]/).test(name[3]));
 		}
@@ -595,7 +595,7 @@ jQuery.extend(Widget, {
 			type: 'POST',
 			processData: false,
 			dataType: 'json',
-			async: options.async,
+			async: (options.async === null || options.async),
 			contentType: options.content_type,
 			cache: true,
 			xhr: function() {
@@ -741,10 +741,10 @@ var WidgetJSONOptions = function(options) {
 
 jQuery.extend(WidgetJSONOptions.prototype, {
 	options: {
-		async: true,
 		upload_progess_callback: null,
 		download_progress_callback: null,
 		content_type: 'application/json',
+		async: null, //defaults to false for getters and setters, true otherwise
 		action: null,
 		callback_handles_error: null
 	}
