@@ -209,7 +209,7 @@ Widget.types.detail = {
 				related_input = jQuery(all_inputs[0]);
 			}
 			related_input.focus();
-			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
+			if(related_input.is(':checkbox, :radio') && related_input.prop('disabled') === false) {
 				related_input.prop('checked', !related_input.prop('checked'));
 				related_input.change();
 			} else {

@@ -220,8 +220,8 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push unboxing_php_filter_method('onUserLoggedIn', ['iUserLoginBitmap'], '', ['oUser', 'aContainer'])
 		php_methods.push php_method('onDefaultPageTypeFilledContainer', '', ['oContainer', 'oPage', '$oTemplate', 'oFrontendTemplate', 'iModuleId'])
 		php_methods.push php_method('onDefaultPageTypeFilledContainerWithModule', '', ['oContentObject', 'oModule', '$oTemplate', 'oFrontendTemplate', 'iModuleId'])
-		php_methods.push unboxing_php_filter_method('onExternalMailGroups', ['aMailGroups'])
-		php_methods.push unboxing_php_filter_method('onExternalMailGroupsRecipients', ['aRecipients'], '', ['aMailGroups', 'aContainer'])
+		php_methods.push unboxing_php_filter_method('onMailGroups', ['aMailGroups'])
+		php_methods.push unboxing_php_filter_method('onMailGroupsRecipients', ['aRecipients'], '', ['aMailGroups', 'aContainer'])
 	elsif $options[:type] == :file then
 		php_methods.push php_method('__construct', 'parent::__construct($aRequestPath);', ['aRequestPath'])
 			php_methods.push php_method('renderFile')
