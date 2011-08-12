@@ -9,7 +9,7 @@ class VirtualNavigationItem extends NavigationItem {
 	
 	public function __construct($sType, $sName, $sTitle, $sLinkText = null, $mData = null) {
 		$this->sType = $sType;
-		$this->sName = $sName;
+		$this->sName = (string) $sName;
 		$this->sTitle = $sTitle;
 		$this->sLinkText = ($sLinkText === null ? $sTitle : $sLinkText);
 		$this->mData = $mData;
