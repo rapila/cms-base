@@ -37,11 +37,11 @@ class ErrorHandler {
 			ob_end_clean();
 		}
 		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
+		header('Content-Type: text/html;charset=utf-8');
+		header('HTTP/1.0 500 Internal Server Error');
 		if(!file_exists($sErrorFileName)) {
 			die("An Error occured, exiting");
 		}
-		header('Content-Type: text/html;charset=utf-8');
-		header('HTTP/1.0 500 Internal Server Error');
 		include($sErrorFileName);
 		exit;
 	}
