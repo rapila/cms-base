@@ -69,19 +69,19 @@ class ErrorHandler {
 	}
 	
 	public static function shouldPrintErrors() {
-		return self::getEnvironment() === "development" || self::getEnvironment() === "test" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'print_errors', false);
 	}
 	
 	public static function shouldLogErrors() {
-		return self::getEnvironment() === "test" || self::getEnvironment() === "development" || self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'log_errors', false);
 	}
 	
 	public static function shouldMailErrors() {
-		return self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'mail_errors', false);
 	}
 	
 	private static function shouldContinue($iErrorNumber) {
-		if(self::getEnvironment() === "controlled") {
+		if(Settings::getSetting('error_handling', 'should_stop_on_recoverable_errors', false)) {
 			return false;
 		}
 		return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED;

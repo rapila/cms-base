@@ -5,8 +5,6 @@ general:
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  # possible environments: development, production, test, automatic (should only be used while in testing phase since it slows down)
-  environment: 'auto'
   # those don’t work well in some environments
   send_not_modified_headers: true
 
@@ -55,7 +53,12 @@ admin:
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
 
-
+error_handling:
+	should_stop_on_recoverable_errors: false
+	print_errors: false
+	log_errors: true
+	mail_errors: false
+	
 login:
   password_min_length: 4
 
