@@ -107,6 +107,16 @@ select[data-widget-type=page_input] {
 select[data-widget-type=page_input] option.level1 { padding-left: 1em; }
 select[data-widget-type=page_input] option.level2 { padding-left: 2em; }
 select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
+fieldset.option_groups {
+  border: 1px #dfdfdf solid;
+  margin-top: -1px;
+  margin-left: 0;
+  padding: 1px 0.75em 0.75em;
+}
+fieldset.option_groups:first-child {
+  margin-left: 0;
+  margin-top: 0.1em;
+}
 .ui-widget-content .status_section {
   font-family: Arial;
   padding-right: 2em;
@@ -187,7 +197,7 @@ input.ui-widget-content.input_long { width: 35em; }
 select.ui-widget-content.input_short { width: 18em; }
 input.ui-widget-content.input_short { width: 6em; }
 input.ui-widget-content.input_medium { width: 15em; }
-.autowidth, input.ui-widget-content.autowidth { width: auto !important; }
+.autowidth, input.ui-widget-content.autowidth, select.ui-widget-content.autowidth { width: auto !important; }
 .ui-tabs-nav .ui-state-active a { margin-top: -1px; }
 .ui-tabs-nav .ui-state-active {
   position: relative;
@@ -215,6 +225,10 @@ body.pages .ui-tabs-nav.ui-widget-header { background-color: #ebedef; }
 }
 .ui-tabs .ui-tabs-panel { border-top: 1px solid #cccdcf; }
 .ui-tabs .ui-tabs-panel { padding: 0; }
+.add-new-item {
+  background-image: url('../../images/admin/add_new_item.png');
+  background-repeat: no-repeat;
+}
 ol.ui-editable-items-list {
   list-style-type: none;
   margin: 0;
