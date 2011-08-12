@@ -108,9 +108,10 @@ select[data-widget-type=page_input] option.level1 { padding-left: 1em; }
 select[data-widget-type=page_input] option.level2 { padding-left: 2em; }
 select[data-widget-type=page_input] option.level3 { padding-left: 3em; }
 fieldset.option_groups {
+  border: 1px #dfdfdf solid;
   margin-top: -1px;
   margin-left: 0;
-  border: 1px #dfdfdf solid;
+  padding: 1px 0.75em 0.75em;
 }
 fieldset.option_groups:first-child {
   margin-left: 0;
