@@ -9,7 +9,7 @@ Widget.types.document_edit = {
 			if(select_name === 'document_categories') {
 				select_name += '[]';
 			}
-			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name], (select_name === 'document_categories[]' ? undefined : true));
+			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name], (select_name === 'list_template'));
 			if(config_name !== 'list_template') {
 				select.change(_this.reload_preview.bind(_this));
 			}
