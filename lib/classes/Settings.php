@@ -14,7 +14,7 @@ class Settings {
 		require_once("spyc/Spyc.php");
 		$oSpyc = new Spyc();
 		$oSpyc->setting_use_syck_is_possible = true;
-		$aConfigPaths = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, $sFileName), ResourceFinder::SEARCH_BASE_FIRST);
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST);
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
 			foreach($oSpyc->loadFile($sConfigPath) as $sSection => $aSection) {
@@ -75,17 +75,18 @@ class Settings {
 		if($sFileName === null) {
 			$sFileName = "config";
 		}
-		$sFileName = $sFileName.".yml";
+		$sFileName = "$sFileName.yml";
+		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
 		if(!isset(self::$INSTANCES[$sFileName])) {
-			$oCache = new Cache($sFileName, DIRNAME_CONFIG);
-			if($oCache->cacheFileExists() && !$oCache->isOutdated(ResourceFinder::findAllResources(array(DIRNAME_CONFIG, $sFileName)))) {
-				self::$INSTANCES[$sFileName] = $oCache->getContentsAsVariable();
+			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
+			if($oCache->cacheFileExists() && !$oCache->isOutdated(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST))) {
+				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {
-				self::$INSTANCES[$sFileName] = new Settings($sFileName);
-				$oCache->setContents(self::$INSTANCES[$sFileName]);
+				self::$INSTANCES[$sCacheKey] = new Settings($sFileName);
+				$oCache->setContents(self::$INSTANCES[$sCacheKey]);
 			}
 		}
-		return self::$INSTANCES[$sFileName];
+		return self::$INSTANCES[$sCacheKey];
 	}
 	
 }

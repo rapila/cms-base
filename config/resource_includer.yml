@@ -1,6 +1,6 @@
 general:
-  use_local_library_cache: 'auto' #true, false or 'auto'. 'auto' will use local proxy in development environment
-  use_compressed_libraries: 'auto' #true, false or 'auto'. 'auto' will use compressed versions in production environment
+  use_local_library_cache: false
+  use_compressed_libraries: false
 
 libraries:
   jquery:
