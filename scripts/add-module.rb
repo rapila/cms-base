@@ -7,7 +7,7 @@ require 'set'
 require 'fileutils'
 
 # Default options
-$options = {:type => :widget, :location => :site, :force => false}
+$options = {:type => :widget, :location => :site, :force => false, :enabled => true}
 $aspects = Set.new
 $files = [:php, :yaml].to_set
 
@@ -17,12 +17,8 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	## GENERAL
 	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e; default: widget)') do |type|
 		$options[:type] = type if type
-		if type == :frontend then
-			$aspects << 'dynamic'
-			$aspects << 'widget_based'
-		end
+		$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
 	end
-	$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
 	
 	opts.on('-f', '--[no-]force', 'Override files if they exist') do |force|
 		$options[:force] = force
@@ -89,6 +85,10 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	
 	opts.on('--ver VERSION', 'Sets the module’s version in its info.yml to VERSION') do |version|
 		$options[:version] = version
+	end
+
+	opts.on('--[no-]enabled', 'Sets the module to be enabled (default)') do |enabled|
+		$options[:enabled] = enabled
 	end
 	
 	## ADDITIONAL FILES
@@ -240,6 +240,7 @@ write_file(:yaml, 'info.yml') do |f|
 	info['description'] = $options[:description] if $options[:description]
 	info['version'] = $options[:version] if $options[:version]
 	info['aspects'] = $aspects.to_a unless $aspects.empty?
+	info['enabled'] = $options[:enabled]
 	YAML.dump(info, f)
 end
 
