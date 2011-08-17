@@ -15,6 +15,15 @@ if(!Function.prototype.bind) {
 	};
 }
 
+Function.prototype.deferred = function(list) {
+	var d = jQuery.Deferred();
+	if(list) {
+		list.push(d.promise());
+	}
+	d.done(this);
+	return d;
+};
+
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
 	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
@@ -633,8 +642,9 @@ jQuery.extend(Widget, {
 					if(callback.resolveWith) {
 						if(error) {
 							callback.rejectWith(this, [error]);
+						} else {
+							callback.resolveWith(this, [result]);
 						}
-						callback.resolveWith(this, [result]);
 					} else {
 						callback.call(this, result, error);
 					}
@@ -716,10 +726,8 @@ jQuery.extend(Widget, {
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
 				widgetOrId.validate_with(error.parameters);
-				return false;
 			} else if (widgetOrId.detail_widget) {
 				widgetOrId.detail_widget.validate_with(error.parameters, widgetOrId.detail_widget.content);
-				return false;
 			} else {
 				message = jQuery('<div/>').text(error.message);
 				var error_list = jQuery('<ul/>').appendTo(message);
@@ -731,9 +739,8 @@ jQuery.extend(Widget, {
 					isHTML: true,
 					closable: true
 				});
-				return false;
 			}
-			return true;
+			return false;
 		}
 	}
 });
@@ -886,7 +893,7 @@ jQuery.fn.extend({
 			if(use_text_as_value) {
 				value = text;
 			}
-			if(default_value === null || default_value === undefined) {
+			if((default_value === null && !_this.prop('multiple')) || default_value === undefined) {
 				default_value = value;
 			}
 			var option = jQuery('<option/>').text(text).attr('value', value);
