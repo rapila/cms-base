@@ -1,6 +1,6 @@
 general:
-	# for plugins that need to call php via cli
-	php_path: "php"
+  # for plugins that need to call php via cli
+  php_path: 'php'
   multilingual: true
   # general caching of files like configuration yaml files and language ini files
   caching: true
@@ -56,11 +56,11 @@ admin:
   hide_externally_managed_document_categories: true
 
 error_handling:
-	should_stop_on_recoverable_errors: false
-	print_errors: false
-	log_errors: true
-	mail_errors: false
-	
+  should_stop_on_recoverable_errors: false
+  print_errors: false
+  log_errors: true
+  mail_errors: false
+  
 login:
   password_min_length: 4
 
