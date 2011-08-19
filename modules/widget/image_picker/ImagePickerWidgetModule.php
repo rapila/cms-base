@@ -12,6 +12,9 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->aAllowedCategories, Criteria::IN);
 		}
 		$oCriteria->add(DocumentPeer::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image')), Criteria::IN);
+		// always exclude externally managed images
+		$oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID);
+		$oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
 		$aDocuments = DocumentPeer::doSelect($oCriteria);
 		return WidgetJsonFileModule::jsonBaseObjects($aDocuments, array('name', 'description', 'id', 'language_id'));
 	}
