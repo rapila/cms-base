@@ -27,13 +27,13 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row);
+			widget.activate_row(row, event);
 			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row);
+			widget.activate_row(row, event);
 			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
 		});
 		
@@ -58,7 +58,7 @@ Widget.types.list = {
 		this.reload(true);
 	},
 	
-	activate_row: function(row) {
+	activate_row: function(row, event) {
 		if(row === null || row === undefined) {
 			if(this.settings.row_click_active_exclusive) {
 				this.all_rows().removeClass(this.settings.row_click_active_class);
@@ -68,13 +68,36 @@ Widget.types.list = {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
+		if(!event) {
+			row.addClass(this.settings.row_click_active_class);
+			return;
+		}
 		if(this.settings.row_click_active_mode) {
+			var do_toggle = this.settings.row_click_active_mode === 'toggle';
+			var exclusive = !!this.settings.row_click_active_exclusive;
+			if(this.settings.row_click_active_exclusive === 'modifiers' && event && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+				//Ignore toggle mode on modifier keys
+				exclusive = false;
+				do_toggle = false;
+				if(event.ctrlKey || event.metaKey) {
+					do_toggle = true;
+				}
+				if(event.shiftKey) {
+					var topmost_active_row = this.all_rows().index(this.active_row().eq(0));
+					var current_row = this.all_rows().index(row);
+					for(var i = Math.min(topmost_active_row, current_row); i <= Math.max(topmost_active_row, current_row); i++) {
+						this.activate_row(i);
+					}
+				}
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			if(exclusive) {
+				this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
+			}
 			if(!row.hasClass(this.settings.row_click_active_class)) {
 				row.addClass(this.settings.row_click_active_class);
-				if(this.settings.row_click_active_exclusive) {
-					this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
-				}
-			} else if(this.settings.row_click_active_mode === 'toggle') {
+			} else if(do_toggle) {
 				row.removeClass(this.settings.row_click_active_class);
 			}
 		}
@@ -570,6 +593,7 @@ Widget.types.list = {
 		persist_active_rows: true,
 		// false (do not allow row activation on click), "toggle", "activate"
 		row_click_active_mode: false,
+		// false (many rows can be active at a time), true (activating a row deactivates all others), 'modifiers' (allow multiple selections using modifier keys [cmd to toggle, shift for continuous selections])
 		row_click_active_exclusive: true,
 		row_click_active_class: 'ui-state-active',
 		row_model_drag_and_drop_identifier: false
