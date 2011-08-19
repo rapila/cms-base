@@ -83,6 +83,13 @@ Widget.types.list = {
 	active_row: function() {
 		return this.all_rows().filter('.'+this.settings.row_click_active_class);
 	},
+
+	active_row_datas: function() {
+		var _this = this;
+		return this.active_row().map(function() {
+			return _this.collect_row_data(jQuery(this));
+		}).get();
+	},
 	
 	insert_row: function(rowData, isHeading, position) {
 		isHeading = !!isHeading;
@@ -330,6 +337,8 @@ Widget.types.list = {
 	reload: function(load_heading) {
 		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
+		// store active rows by row data
+		var active_rows = this.settings.persist_active_rows && this.active_row_datas();
 		if(load_heading) {
 			this._element.empty();
 		} else {
@@ -361,6 +370,12 @@ Widget.types.list = {
 			}
 			this.toggle_loader(false);
 			this.update_reorderable();
+			if(active_rows) {
+				jQuery.each(active_rows, function(id, row) {
+					row = this.row_from_row_data(row);
+					row && this.activate_row(row);
+				}.bind(this));
+			}
 			if(load_heading) {
 				this.fire('loaded', list.length);
 			}
@@ -481,15 +496,6 @@ Widget.types.list = {
 		}
 	},
 	
-	settings: {
-		row_hover: true,
-		//false, "toggle", "activate"
-		row_click_active_mode: false,
-		row_click_active_exclusive: true,
-		row_click_active_class: 'ui-state-active',
-		row_model_drag_and_drop_identifier: false
-	},
-	
 	schema: null,
 	
 	types: {
@@ -557,5 +563,15 @@ Widget.types.list = {
 			}
 			column.append(data);
 		}
+	},
+
+	settings: {
+		row_hover: true,
+		persist_active_rows: true,
+		// false (do not allow row activation on click), "toggle", "activate"
+		row_click_active_mode: false,
+		row_click_active_exclusive: true,
+		row_click_active_class: 'ui-state-active',
+		row_model_drag_and_drop_identifier: false
 	}
 };
