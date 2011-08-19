@@ -21,7 +21,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 	public function display(Template $oTemplate, $bIsPreview = false) {
 		$this->bIsPreview = $bIsPreview;
 		if($this->bIsPreview) {
-			ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 			ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
 			ResourceIncluder::defaultIncluder()->addResource('preview/jquery.ba-resize.min.js');
 		}
