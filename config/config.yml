@@ -1,12 +1,12 @@
 general:
-  multilingual:   true
-  #general caching of files like configuration yaml files and language ini files
-  caching:        true
+  # for plugins that need to call php via cli
+  php_path: 'php'
+  multilingual: true
+  # general caching of files like configuration yaml files and language ini files
+  caching: true
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  # possible environments: development, production, test, automatic (should only be used while in testing phase since it slows down)
-  environment: 'auto'
   # those don’t work well in some environments
   send_not_modified_headers: true
 
@@ -55,7 +55,12 @@ admin:
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
 
-
+error_handling:
+  should_stop_on_recoverable_errors: false
+  print_errors: false
+  log_errors: true
+  mail_errors: false
+  
 login:
   password_min_length: 4
 
@@ -80,7 +85,7 @@ security:
   generate_digest_secrets: false
   
 frontend:
-  title: '» rapila'
+  title: ''
   main_template: general
 #possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
   doctype: strict

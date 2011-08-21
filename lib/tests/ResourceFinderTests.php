@@ -41,4 +41,14 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
 		$oFileRes = new FileResource(ArrayUtil::assocPeek($aMainPaths));
 		$this->assertSame(array($oFileRes->getRelativePath() => MAIN_DIR.'/base/lib/main.php'), $aMainPaths);
 	}
+
+	public function testOptionalPathItemByExpressionPlaintext() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array('production'), 'config.yml'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/production/config.yml'), $aConfigPaths);
+	}
+
+	public function testOptionalPathItemByExpression() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ResourceFinder::ANY_NAME_OR_TYPE_PATTERN), 'config.yml'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging/config.yml',MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
+	}
 }

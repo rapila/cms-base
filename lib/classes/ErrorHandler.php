@@ -37,26 +37,29 @@ class ErrorHandler {
 			ob_end_clean();
 		}
 		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
+		header('HTTP/1.0 500 Internal Server Error');
 		if(!file_exists($sErrorFileName)) {
+			header('Content-Type: text/plain;charset=utf-8');
 			die("An Error occured, exiting");
 		}
 		header('Content-Type: text/html;charset=utf-8');
-		header('HTTP/1.0 500 Internal Server Error');
 		include($sErrorFileName);
 		exit;
 	}
 	
 	public static function getEnvironment() {
 		if(self::$ENVIRONMENT === null) {
-			self::$ENVIRONMENT = Settings::getSetting('general', 'environment', null);
+			self::$ENVIRONMENT = isset($_SERVER['RAPILA_ENVIRONMENT']) ? $_SERVER['RAPILA_ENVIRONMENT'] : (isset($_ENV['RAPILA_ENVIRONMENT']) ? $_ENV['RAPILA_ENVIRONMENT'] : 'auto');
 			if(self::$ENVIRONMENT === 'developer') {
 				self::$ENVIRONMENT = 'development';
 			}
-			if(self::$ENVIRONMENT === 'auto' || self::$ENVIRONMENT === null) {
+			if(self::$ENVIRONMENT === 'auto' || !self::$ENVIRONMENT) {
 				if(php_sapi_name() === 'cli') {
 					self::$ENVIRONMENT = 'development';
 				} else if(strpos(@$_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.local')) {
 					self::$ENVIRONMENT = ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1' || $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
+				} else if(strpos(@$_SERVER['HTTP_HOST'], 'test.') === 0 || strpos(@$_SERVER['HTTP_HOST'], 'stage.') === 0) {
+					self::$ENVIRONMENT = 'staging';
 				} else {
 					self::$ENVIRONMENT = 'production';
 				}
@@ -66,19 +69,19 @@ class ErrorHandler {
 	}
 	
 	public static function shouldPrintErrors() {
-		return self::getEnvironment() === "development" || self::getEnvironment() === "test" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'print_errors', false);
 	}
 	
 	public static function shouldLogErrors() {
-		return self::getEnvironment() === "test" || self::getEnvironment() === "development" || self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'log_errors', false);
 	}
 	
 	public static function shouldMailErrors() {
-		return self::getEnvironment() === "production" || self::getEnvironment() === "controlled";
+		return Settings::getSetting('error_handling', 'mail_errors', false);
 	}
 	
 	private static function shouldContinue($iErrorNumber) {
-		if(self::getEnvironment() === "controlled") {
+		if(Settings::getSetting('error_handling', 'should_stop_on_recoverable_errors', false)) {
 			return false;
 		}
 		return $iErrorNumber == E_NOTICE || $iErrorNumber == E_USER_NOTICE || $iErrorNumber == E_STRICT || $iErrorNumber == E_DEPRECATED || $iErrorNumber == E_USER_DEPRECATED;

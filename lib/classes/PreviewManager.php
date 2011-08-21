@@ -17,6 +17,7 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 		

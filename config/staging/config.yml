@@ -1,0 +1,3 @@
+error_handling:
+  should_stop_on_recoverable_errors: true
+  mail_errors: true

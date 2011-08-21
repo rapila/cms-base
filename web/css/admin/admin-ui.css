@@ -221,28 +221,9 @@ h3.status { padding-left: 0.3em; }
   background-color: #fbfbfb;
 }
 .pointer { cursor: pointer; }
-.document_detail .preview.file_exists {
-  border: 1px solid #dddddd;
-  text-align: center;
-}
-.document_detail .preview.file_exists img {
-  display: block;
-  margin: 0 auto;
-}
-.document_detail .ui-state-droppable .preview {
-  border: 1px solid #b8d600;
-  cursor: pointer;
-}
 .image_browse_area.ui-state-droppable, div.ui-state-droppable {
   border: 1px solid #b8d600;
   cursor: pointer;
-}
-.document_detail .preview .droppable_info {
-  display: block;
-  line-height: 1.6em;
-  min-height: 7em;
-  padding: 2em 1em;
-  color: #bebebe;
 }
 .ui-state-droppable a {
   color: #5b595b;
@@ -263,15 +244,6 @@ h3.status { padding-left: 0.3em; }
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon:hover {
   background-image: url("../../images/admin/icon_triangle_closed_active.png");
   background-position: 6px 5px;
-}
-fieldset.option_groups {
-  margin-top: -1px;
-  margin-left: 0;
-  border: 1px #dfdfdf solid;
-}
-fieldset.option_groups:first-child {
-  margin-left: 0;
-  margin-top: 0.1em;
 }
 .users fieldset.option_groups { padding: 0; }
 .ui-accordion .ui-accordion-content.contents_container div.ui-widget-content {

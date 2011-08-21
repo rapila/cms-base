@@ -11,39 +11,6 @@ body.login h1 {
   font-size: 5em;
   color: #c2c2c2;
 }
-#widget-notifications {
-  position: fixed;
-  left: 278px;
-  top: 58px;
-  z-index: 2005;
-}
-#widget-notifications .ui-notify { margin-bottom: 5px; }
-.ui-notify .ui-badge {
-  float: right;
-  display: block;
-  margin-top: -8px;
-  margin-right: -8px;
-}
-.ui-notify .close-handle.ui-icon {
-  float: right;
-  display: block;
-  margin-top: -8px;
-  margin-right: -8px;
-}
-.ui-notify .ui-badge {
-  background-color: red;
-  -moz-border-radius: 12px;
-  -webkit-border-radius: 12px;
-  border-radius: 12px;
-  font-weight: bold;
-  color: white;
-  padding: 1px 5px;
-}
-.ui-notify .close-handle.ui-icon {
-  margin-right: 0;
-  margin-top: -12px;
-  cursor: pointer;
-}
 #admin_area, #admin_info_bar, #viewscreen_loader {
   position: absolute;
   overflow: hidden;
@@ -184,14 +151,6 @@ body.login h1 {
   padding-left: 1em;
   color: #888888;
   border-right: 0;
-}
-#admin_info_bar .add-new-item {
-  background-image: url('../../images/admin/add_new_item.png');
-  background-repeat: no-repeat;
-}
-.add-new-item {
-  background-image: url('../../images/admin/add_new_item.png');
-  background-repeat: no-repeat;
 }
 #admin_info_bar .remove-item {
   background-image: url('../../images/admin/remove_item.png');

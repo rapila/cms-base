@@ -71,7 +71,8 @@ class ResourceFinder {
 			}
 			$mPath = null;
 			if($bByExpressions) {
-				$mPath = self::findInPathByExpressions($mRelativePath, $sSearchPath, $sInstancePrefix);
+				$mPath = array();
+				self::findInPathByExpressions($mPath, $mRelativePath, $sSearchPath, $sInstancePrefix);
 				if($bWaitForAll) {
 					$mPath = array_values($mPath);
 				}
@@ -210,19 +211,19 @@ class ResourceFinder {
 		return new FileResource($sPath, $sInstancePrefix, implode('/', $aPath));
 	}
 	
-	private static function findInPathByExpressions($aExpressions, $sPath, $sInstancePrefix, $sRelativePath = null) {
+	private static function findInPathByExpressions(&$aResult, $aExpressions, $sPath, $sInstancePrefix, $sParentName = null, $sRelativePath = null) {
 		if(count($aExpressions) === 0) {
-			return array();
+			return;
 		}
 		
-		$aResult = array();
 		$sPathExpression = $aExpressions[0];
-		$sParentName = null;
-		if($sRelativePath !== null) {
-			$sParentName = explode('/', $sRelativePath);
-			$sParentName = $sParentName[count($sParentName)-1];
-		}
 		
+		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
+		if($bAllowPathItemToBeSkipped) {
+			$sPathExpression = $sPathExpression[0];
+			self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sPath, $sInstancePrefix, $sParentName, $sRelativePath);
+		}
+
 		if($sParentName !== null) {
 			$sPathExpression = str_replace('${parent_name}', $sParentName, $sPathExpression);
 			$sPathExpression = str_replace('${parent_name_camelized}', StringUtil::camelize($sParentName, true), $sPathExpression);
@@ -236,13 +237,12 @@ class ResourceFinder {
 			} else {
 				$sNextRelativePath = "$sRelativePath/$sPathExpression";
 			}
-			if(!file_exists($sFilePath)) {
-				return array();
-			}
-			if(count($aExpressions) > 1) {
-				return self::findInPathByExpressions(array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sNextRelativePath);
-			} else {
-				return array($sNextRelativePath => new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath));
+			if(file_exists($sFilePath)) {
+				if(count($aExpressions) > 1) {
+					self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sPathExpression, $sNextRelativePath);
+				} else {
+					$aResult[$sNextRelativePath] = new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath);
+				}
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
@@ -252,16 +252,13 @@ class ResourceFinder {
 						$sNextRelativePath = "$sRelativePath/$sFileName";
 					}
 					if(count($aExpressions) > 1) {
-						$aNewResult = self::findInPathByExpressions(array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sNextRelativePath);
-						$aResult = array_merge($aResult, $aNewResult);
+						self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sFileName, $sNextRelativePath);
 					} else {
 						$aResult[$sNextRelativePath] = new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath);
 					}
 				}
 			}
 		}
-		
-		return $aResult;
 	}
 	
 	private static function getPluginPaths() {

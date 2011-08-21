@@ -40,6 +40,9 @@ jQuery(document).ready(function() {
 				Widget.create('string_detail', function(widget) {
 					widget.open();
 					widget.save_callback = function(result, error) {
+						if(result.namespaces_changed) {
+							Widget.fire('strings-namespaces-changed');
+						}
 						string_list.reload();
 					};
 				});

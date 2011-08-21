@@ -31,7 +31,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		}
 		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
 		$aDocuments = $oCriteria->find();
-		
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
 			$oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));

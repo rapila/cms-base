@@ -188,6 +188,31 @@ Widget.types.rich_text = {
 		var _this = this;
 		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
+			instance.dataProcessor.htmlFilter.addRules({
+				elements: {
+					img: function( element ) {
+						var styling;
+						if(!element.attributes.width) {
+							if(element.attributes.style) {
+								styling = element.attributes.style;
+								var findwidth = new RegExp("\[width: \]\s*(((?!\[width: \]|\[px\]).)+)\s*\[px\]");
+								var sWidth = findwidth.exec(styling);
+								sWidth = sWidth[1];
+								if(sWidth) element.attributes.width = sWidth;
+							}
+						}
+						if(!element.attributes.height) {
+							if(element.attributes.style) {
+								styling = element.attributes.style;
+								var findheight = new RegExp("\[height: \]\s*(((?!\[height: \]|\[px\]).)+)\s*\[px\]");
+								var sHeight = findheight.exec(styling);
+								sHeight = sHeight[1];
+								if(sHeight) element.attributes.height = sHeight;
+							}
+						}
+					}
+				}
+			});
 			instance.document.appendStyleText(_this.settings.inline_css);
 		});
 	},

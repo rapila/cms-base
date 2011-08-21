@@ -176,20 +176,14 @@ class ResourceIncluder {
 	
 	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null) {
 		if($bUseLocalProxy === null) {
-			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', 'auto', 'resource_includer');
-			if($bUseLocalProxy === 'auto') {
-				$bUseLocalProxy = ErrorHandler::getEnvironment() === 'development';
-			}
+			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', false, 'resource_includer');
 		}
 		if(!ini_get('allow_url_fopen')) {
 			// Never use proxy if fopen_wrappers are disabled
 			$bUseLocalProxy = false;
 		}
 		if($bUseCompression === null) {
-			$bUseCompression = Settings::getSetting('general', 'use_compressed_libraries', 'auto', 'resource_includer');
-			if($bUseCompression === 'auto') {
-				$bUseCompression = ErrorHandler::getEnvironment() !== 'development';
-			}
+			$bUseCompression = Settings::getSetting('general', 'use_compressed_libraries', false, 'resource_includer');
 		}
 		if(!is_string($sLibraryVersion)) {
 			$sLibraryVersion = "$sLibraryVersion";
@@ -225,7 +219,10 @@ class ResourceIncluder {
 		}
 		
 		//Handle dependencies
-		$aLibraryDependencies = $bInlcudeDependencies && Settings::getSetting('library_dependencies', $sLibraryName, null, 'resource_includer') !== null;
+		$aLibraryDependencies = null;
+		if($bInlcudeDependencies) {
+			$aLibraryDependencies = Settings::getSetting('library_dependencies', $sLibraryName, null, 'resource_includer');
+		}
 		if(is_array($aLibraryDependencies)) {
 			$this->startDependencies();
 			foreach($aLibraryDependencies as $sDependencyName => $sDependencyVersion) {

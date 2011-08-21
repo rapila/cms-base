@@ -8,7 +8,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function uploadFile($sFileKey, $aOptions, $bCreateType = false) {
+	public function uploadFile($sFileKey = 'file', $aOptions = null, $bCreateType = false) {
 		$aFileInfo = $_FILES[$sFileKey];
 		
 		$oFlash = Flash::getFlash();

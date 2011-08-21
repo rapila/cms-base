@@ -148,35 +148,25 @@ class Util {
 		return $aBitsDissected;
 	}
 	
-	public static function formatCreatedInfo($oObject) {
-		return self::formatCreatedAtForAdmin($oObject).' / '.self::getCreatedByIfSet($oObject);
-	}
-	
-	public static function formatUpdatedInfo($oObject) {
-		return self::formatUpdatedAtForAdmin($oObject).' / '.self::getUpdatedByIfSet($oObject);
-	}
-
-	public static function formatCreatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
-		if($oObject->getCreatedAt() != null) {
-	  	return $oObject->getCreatedAtFormatted().', '.$oObject->getCreatedAt($sTimeFormat);
+	public static function formatCreatedInfo($oObject, $sFormat = 'x %H:%M') {
+		$aResult = array();
+		if($oObject->getCreatedAt() !== null) {
+			$aResult[] = $oObject->getCreatedAtFormatted(null, $sFormat);
 		}
-	}
-	
-	public static function formatUpdatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
-		if($oObject->getUpdatedAt() != null) {
-	  return $oObject->getUpdatedAtFormatted().', '.$oObject->getUpdatedAt($sTimeFormat);
+		if($oObject->getUserRelatedByCreatedBy() !== null) {
+			$aResult[] = $oObject->getUserRelatedByCreatedBy()->getInitials();
 		}
-	}
-
-	public static function getCreatedByIfSet($oObject) {
-	  if($oObject->getUserRelatedByCreatedBy()) {
-	    return $oObject->getUserRelatedByCreatedBy()->getInitials();
-	  }
+		return implode(' / ', $aResult);
 	}
 	
-	public static function getUpdatedByIfSet($oObject) {
-	  if($oObject->getUserRelatedByUpdatedBy()) {
-	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();
-	  }
+	public static function formatUpdatedInfo($oObject, $sFormat = 'x %H:%M') {
+		$aResult = array();
+		if($oObject->getUpdatedAt() !== null) {
+			$aResult[] = $oObject->getUpdatedAtFormatted(null, $sFormat);
+		}
+		if($oObject->getUserRelatedByUpdatedBy() !== null) {
+			$aResult[] = $oObject->getUserRelatedByUpdatedBy()->getInitials();
+		}
+		return implode(' / ', $aResult);
 	}
 }
