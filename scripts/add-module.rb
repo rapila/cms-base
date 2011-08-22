@@ -7,7 +7,7 @@ require 'set'
 require 'fileutils'
 
 # Default options
-$options = {:type => :widget, :location => :site, :force => false, :enabled => true}
+$options = {:type => :widget, :location => :site, :force => false, :enabled => true, :sidebar_widget => 'list', :content_widget => 'list'}
 $aspects = Set.new
 $files = [:php, :yaml].to_set
 
@@ -42,7 +42,7 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$aspects << "dashboard"
 	end
 	
-	opts.on('-l', '--[no]-list', 'Add the list aspect. Applicable to widget modules (default for modules ending in _list)') do |list|
+	opts.on('-l', '--[no-]list', 'Add the list aspect. Applicable to widget modules (default for modules ending in _list)') do |list|
 		$options[:list_aspect] = list
 	end
 	
@@ -98,6 +98,14 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	
 	opts.on('-c', '--css', 'Adds a css template. Applicable with widgets and admin modules') do
 		$files << :css
+	end
+
+	opts.on('--sidebar WIDGET_TYPE=list', 'Sets this admin module’s sidebar widget type to WIDGET_TYPE') do |type|
+		$options[:sidebar_widget] = type
+	end
+
+	opts.on('--content WIDGET_TYPE=list', 'Sets this admin module’s sidebar widget type to WIDGET_TYPE') do |type|
+		$options[:content_widget] = type
 	end
 
 	opts.on('-h', '--help', 'Display this screen') do
@@ -156,6 +164,12 @@ def write_file(identifier, name, dir = nil, &block)
 	end
 end
 
+def php_field(name, mod = 'private')
+	name = (name=~ /\$/) ? name : '$' + name
+	name = name.gsub('this->', '')
+	"#{mod} #{name};"
+end
+
 def php_method(name, body = '', args = [], mod = 'public')
 	args.map! do |arg|
 		arg=~ /\$/ ? arg : '$' + arg
@@ -196,15 +210,42 @@ write_file(:php, "#{class_name}.php") do
 	php_methods = []
 	
 	if $options[:type] == :widget then
+		constructor_content = "";
+		if $aspects.include? 'list' then
+			php_methods.push php_field('oListWidget')
+			php_methods.push php_field('oCriteriaListWidgetDelegate')
+			constructor_content += "$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, 'ModelName');
+		$this->oListWidget = Widget::create('list', null, $this->oCriteriaListWidgetDelegate);"
+			php_methods.push php_method('doWidget', 'return $this->oListWidget->doWidget();')
+			php_methods.push php_method('getColumnIdentifiers', 'return array();')
+			php_methods.push php_method('getMetadataForColumn', '', ['aColumnIdentifier'])
+			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
+			php_methods.push php_method('getCriteria', '$oCriteria = new Criteria();
+		return $oCriteria;')
+		end
+		
+		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
+		#{constructor_content}", ['sSessionKey = null']) if $aspects.include? 'persistent'
+		php_methods.push php_method('__construct', constructor_content) unless $aspects.include? 'persistent'
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['LanguageObject $oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
 	elsif $options[:type] == :admin then
+		widgets = {}
+		widgets[:sidebar_widget] = '$this->oSidebarWidget' unless $aspects.include? 'single_screen'
+		widgets[:content_widget] = '$this->oMainWidget'
+		constructor_content = ""
+		widgets.each_pair do |widget, field|
+			php_methods.push php_field(field)
+			constructor_content += "#{field} = WidgetModule::getWidget('#{$options[widget]}');
+		"
+		end
+		php_methods.push php_method('__construct', constructor_content)
 		retnull = 'return null;'
-		php_methods.push php_method('mainContent', retnull)
-		php_methods.push php_method('sidebarContent', retnull) unless $aspects.include? 'single_screen'
+		php_methods.push php_method('mainContent', "return $this->oMainWidget->doWidget();")
+		php_methods.push php_method('sidebarContent', "return $this->oSidebarWidget->doWidget();") unless $aspects.include? 'single_screen'
 		php_methods.push php_method('sidebarContent', 'return false;') if $aspects.include? 'single_screen'
-		php_methods.push php_method('usedWidgets', 'return array();')
+		php_methods.push php_method('usedWidgets', "return array(#{widgets.values.join(', ')});")
 	elsif $options[:type] == :filter then
 		php_methods.push unboxing_php_filter_method('onAnyError', ['aError'])
 		php_methods.push unboxing_php_filter_method('onErrorEmailSend', ['sAddress'])
@@ -232,7 +273,7 @@ write_file(:php, "#{class_name}.php") do
 	
 	"<?php
 class #{class_name} extends #{extends}#{implements} {
-	#{php_methods.join('
+	#{php_methods.sort.join('
 	
 	')}
 }"
@@ -265,10 +306,20 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 }"
 	elsif $options[:type] == :admin then
 		res = ""
-		res += "var sidebar = AdminInterface.sidebar;
+		res += "var sidebar;
 	" unless $aspects.include? "single_screen"
-		res += "var main_content = AdminInterface.content;
+		res += "var content;
 	"
+		res += "AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+		sidebar = widget;
+	});
+	" unless $aspects.include? "single_screen" 
+		
+		res += "AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
+		content = widget;
+	});
+	"
+
 		"jQuery(function() {
 	#{res}
 });"		
