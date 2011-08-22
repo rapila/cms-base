@@ -212,11 +212,12 @@ write_file(:php, "#{class_name}.php") do
 	if $options[:type] == :widget then
 		constructor_content = "";
 		if $aspects.include? 'list' then
+			model_name = module_name.gsub('_list', '').capitalize
 			php_methods.push php_field('oListWidget')
 			php_methods.push php_field('oCriteriaListWidgetDelegate')
-			constructor_content += "$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, 'ModelName');
-		$this->oListWidget = Widget::create('list', null, $this->oCriteriaListWidgetDelegate);"
-			php_methods.push php_method('doWidget', 'return $this->oListWidget->doWidget();')
+			constructor_content += "$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, '#{model_name}');
+		$this->oListWidget = WidgetModule::getWidget('list', null, $this->oCriteriaListWidgetDelegate);"
+			php_methods.push php_method('doWidget', "return $this->oListWidget->doWidget('#{module_name}');")
 			php_methods.push php_method('getColumnIdentifiers', 'return array();')
 			php_methods.push php_method('getMetadataForColumn', '', ['aColumnIdentifier'])
 			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
