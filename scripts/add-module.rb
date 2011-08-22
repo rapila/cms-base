@@ -261,7 +261,14 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	#{res}
 }"
 	elsif $options[:type] == :admin then
-		
+		res = ""
+		res += "var sidebar = AdminInterface.sidebar;
+	" unless $aspects.include? "single_screen"
+		res += "var main_content = AdminInterface.content;
+	"
+		"jQuery(function() {
+	#{res}
+});"		
 	end
 end
 
