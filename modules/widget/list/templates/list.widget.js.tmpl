@@ -62,9 +62,9 @@ Widget.types.list = {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
-		if(!event) {
-			row.addClass(this.settings.row_click_active_class);
-			return;
+		var previous_selection = this.active_row_datas().sort();
+		if(row === null || row === undefined) {
+			this.all_rows().removeClass(this.settings.row_click_active_class);
 		}
 		if(this.settings.row_click_active_mode) {
 			var do_toggle = this.settings.row_click_active_mode === 'toggle';
@@ -80,7 +80,7 @@ Widget.types.list = {
 					var topmost_active_row = this.row_number(this.active_row().eq(0));
 					var current_row = this.row_number(row);
 					for(var i = Math.min(topmost_active_row, current_row); i <= Math.max(topmost_active_row, current_row); i++) {
-						this.activate_row(i);
+						this.row_from_number(i).addClass(this.settings.row_click_active_class);
 					}
 				}
 				event.preventDefault();
@@ -94,6 +94,10 @@ Widget.types.list = {
 			} else if(do_toggle) {
 				row.removeClass(this.settings.row_click_active_class);
 			}
+		}
+		var new_selection = this.active_row_datas().sort();
+		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
+			this.fire('list-selection_changed', event, new_selection, previous_selection);
 		}
 	},
 	
