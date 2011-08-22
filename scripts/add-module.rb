@@ -42,8 +42,8 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$aspects << "dashboard"
 	end
 	
-	opts.on('-l', '--list', 'Add the list aspect. Applicable to widget modules') do
-		$aspects << "list"
+	opts.on('-l', '--[no]-list', 'Add the list aspect. Applicable to widget modules (default for modules ending in _list)') do |list|
+		$options[:list_aspect] = list
 	end
 	
 	opts.on('--detail', 'Add the detail aspect. Applicable to widget modules') do
@@ -113,6 +113,9 @@ raise OptionParser::MissingArgument if module_name.nil?
 
 if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit') then
 	$aspects << 'edit'
+end
+if $options[:list_aspect] or ($options[:list_aspect].nil? and module_name.end_with? '_list') then
+	$aspects << 'list'
 end
 
 $folder = $options[:location]
