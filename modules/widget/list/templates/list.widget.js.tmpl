@@ -59,12 +59,6 @@ Widget.types.list = {
 	},
 	
 	activate_row: function(row, event) {
-		if(row === null || row === undefined) {
-			if(this.settings.row_click_active_exclusive) {
-				this.all_rows().removeClass(this.settings.row_click_active_class);
-			}
-			return;
-		}
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
@@ -83,8 +77,8 @@ Widget.types.list = {
 					do_toggle = true;
 				}
 				if(event.shiftKey) {
-					var topmost_active_row = this.all_rows().index(this.active_row().eq(0));
-					var current_row = this.all_rows().index(row);
+					var topmost_active_row = this.row_number(this.active_row().eq(0));
+					var current_row = this.row_number(row);
 					for(var i = Math.min(topmost_active_row, current_row); i <= Math.max(topmost_active_row, current_row); i++) {
 						this.activate_row(i);
 					}
@@ -296,12 +290,21 @@ Widget.types.list = {
 	
 	collect_row_data: function(row) {
 		var rowData = {};
+		var has_data = false;
 		jQuery.each(this.schema, function(i) {
 			if(this.schema[i].display_type === 'data') {
+				has_data = true;
 				rowData[this.schema[i].identifier] = row.data(this.schema[i].identifier);
 			}
 		}.bind(this));
+		if(!has_data) {
+			return this.row_number(row);
+		}
 		return rowData;
+	},
+
+	row_number: function(row) {
+		return this.all_rows().index(row);
 	},
 
 	toggle_boolean: function(row, boolean_name, reload_all) {
@@ -457,6 +460,9 @@ Widget.types.list = {
 	},
 	
 	row_from_row_data: function(rowData) {
+		if(rowData.constructor === Number) {
+			return this.row_from_number(rowData);
+		}
 		var result = null;
 		var widget = this;
 		this.all_rows().each(function() {
