@@ -877,7 +877,13 @@ jQuery.fn.extend({
 			queue = new jQuery.Deferred();
 			this.data(data_name, queue);
 		}
-		queue.done(callback);
+		if(callback.resolveWith) {
+			queue.done(function() {
+				callback.resolveWith(this, jQuery.makeArray(arguments));
+			});
+		} else {
+			queue.done(callback);
+		}
 		return this;
 	},
 	
