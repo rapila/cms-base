@@ -1,4 +1,11 @@
 <?php
+/** @mainpage rapila: another PHP CMS
+ * @section intro_sec The rapila CMS
+ * Find out more at the <a href="http://rapi.la">web site</a>.
+ * @section install_sec Installation
+ * @subsection step1 Include ckeditor.php in your PHP web site.
+ * Installation is <a href="https://github.com/rapila/cms-base/wiki/Installation">documented</a> in the <a href="https://github.com/rapila/cms-base/wiki">Wiki</a>
+ */
 try {
 	require_once 'inc.php';
 	set_error_handler(array('ErrorHandler', "handleError"));
