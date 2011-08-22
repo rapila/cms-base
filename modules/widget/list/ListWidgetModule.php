@@ -23,6 +23,11 @@ class ListWidgetModule extends PersistentWidgetModule {
 	private $oDelegate;
 	private $oListTag;
 	private $aSchema = null;
+
+	public function __construct($sSessionKey = null, $oDelegate = null) {
+		parent::__construct($sSessionKey);
+		$this->oDelegate = $oDelegate;
+	}
 	
 	public function setDelegate($oDelegate) {
 		$this->oDelegate = $oDelegate;
