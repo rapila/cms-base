@@ -35,11 +35,11 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		$oCssContents = $oParser->parse();
 		
 		//Make all rules important
-		foreach($oCssContents->getAllRuleSets() as $oCssRuleSet) {
-			foreach($oCssRuleSet->getRules() as $oRule) {
-				$oRule->setIsImportant(true);
-			}
-		}
+		// foreach($oCssContents->getAllRuleSets() as $oCssRuleSet) {
+		//	foreach($oCssRuleSet->getRules() as $oRule) {
+		//		$oRule->setIsImportant(true);
+		//	}
+		// }
 		
 		//Triple all rules and prepend specific strings
 		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications', 'body > .cke_skin_kama');
