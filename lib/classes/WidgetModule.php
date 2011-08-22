@@ -90,6 +90,13 @@ abstract class WidgetModule extends Module {
 		Session::getSession()->setAttribute(self::WIDGET_SESSION_KEY, array());
 	}
 	
+	/**
+	 * Instanciates a widget or extracts it from the session.
+	 * This method is preferred over using “new MyWidgetModule()” because it takes into account the session key as well as the disabled flag.
+	 * Pass additional arguments to the module’s constructor after the session key. If your module is not persistent, do not pass a session key.
+	 * @param $sWidgetType The widget_type (in underscore notation)
+	 * @param $sSessionKey The session key (most often null, but still required for persistent modules if you wish to pass additional parameters)
+	*/
 	public static function getWidget($sWidgetType, $sSessionKey = null) {
 		if($sSessionKey !== null) {
 			$oWidget = Session::getSession()->getArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $sSessionKey);
