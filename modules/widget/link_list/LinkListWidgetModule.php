@@ -16,10 +16,7 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function doWidget() {
-		$aTagAttributes = array('class' => 'link_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		return $this->oListWidget->doWidget('link_list');
 	}
 	
 	public function toggleIsInactive($aRowData) {

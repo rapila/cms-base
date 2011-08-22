@@ -52,7 +52,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		return !in_array($sDisplayType, array(self::DISPLAY_TYPE_DATA, self::DISPLAY_TYPE_CLASSNAME));
 	}
 
-	public function doWidget() {
+	public function doWidget($sClassName = '') {
 		if(!$this->oListTag) {
 			$aSchema = $this->getSchema();
 			$iVisibleColumnCount = 0;
@@ -63,7 +63,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 			}
 			$this->oListTag = new TagWriter($iVisibleColumnCount > 1 ? 'table' : 'ul');
 		}
-		$this->oListTag->addToParameter('class', 'ui-list');
+		$this->oListTag->addToParameter('class', "ui-list $sClassName");
 		$this->oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$this->oListTag->setParameter('data-widget-type', $this->getModuleName());
 		return $this->oListTag->parse();
