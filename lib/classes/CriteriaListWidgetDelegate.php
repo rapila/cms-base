@@ -72,6 +72,13 @@ class CriteriaListWidgetDelegate {
 		default_function:
 		return call_user_func_array(array($this->oCriteriaDelegate, $sMethodName), $aArguments);
 	}
+
+	public function getMetadataForColumn($sColumnIdentifier) {
+		if(method_exists($this->oCriteriaDelegate, 'getMetadataForColumn')) {
+			return $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
+		}
+		return array();
+	}
 	
 	public function getCriteria($bSortIsIrrelevant = false) {
 		$oCriteria = null;
@@ -152,7 +159,7 @@ class CriteriaListWidgetDelegate {
 		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForColumn($sColumnIdentifier)) !== null) {
 			return $sSortOverride;
 		}
-		$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
+		$aMetadata = $this->getMetadataForColumn($sColumnIdentifier);
 		$sFieldName = $sColumnIdentifier;
 		if(isset($aMetadata['field_name'])) {
 			$sFieldName = $aMetadata['field_name'];
