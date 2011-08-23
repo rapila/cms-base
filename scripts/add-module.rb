@@ -124,7 +124,7 @@ $aspects << 'detail' if $options[:detail_aspect] or ($options[:detail_aspect].ni
 $aspects << 'edit' if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit')
 
 $aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
-if ($options[:persistent].nil? and $aspects.include? 'list') or not $options[:persistent] then
+if ($options[:persistent].nil? and $aspects.include? 'list') or $options[:persistent] == false then
 	$aspects.delete 'persistent'
 end
 
