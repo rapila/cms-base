@@ -5,6 +5,7 @@ require 'optparse'
 require 'yaml'
 require 'set'
 require 'fileutils'
+require 'json'
 
 # Default options
 $options = {:type => :widget, :location => :site, :force => false, :enabled => true, :sidebar_widget => 'list', :content_widget => 'list'}
@@ -222,6 +223,7 @@ write_file(:php, "#{class_name}.php") do
 		return $oCriteria;')
 		elsif $aspects.include? 'detail' then
 			php_methods.push php_method('getElementType', 'return "form";')
+			php_methods.push php_method('fillData')
 		end
 		
 		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
@@ -290,20 +292,34 @@ end
 
 write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	if $options[:type] == :widget then
+		init = ''
+		prep = ''
+		sett = {}
+		add = ''
+		if $aspects.include? 'detail' then
+			sett['detail_widget'] = {}
+			prep += "Widget.callStatic('detail', 'set_instance', this);
+		"
+			add += "
+	fill_data: function() {
+		this.fillData(function(data) {
+			
+		});
+	},
+	"
+		end
 		res = "initialize: function() {
-		
+		#{init}
 	},
 
 	prepare: function() {
-		
+		#{prep}
 	},
-	
-	settings: {
-		
-	}"
+	#{add}
+	settings: #{sett.to_json}"
 		"Widget.types['#{module_name}'] = {
 	#{res}
-}"
+};"
 	elsif $options[:type] == :admin then
 		res = ""
 		res += "var sidebar;
