@@ -180,7 +180,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		return $aRow[0];
 	}
 	
-	public function setOption($sName, $mValue) {
+	public function setOption($sName, $mValue = null) {
 		$sName = 'set'.StringUtil::camelize($sName, true);
 		return $this->oDelegate->$sName($mValue);
 	}
