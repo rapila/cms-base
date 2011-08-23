@@ -18,7 +18,6 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	## GENERAL
 	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e; default: widget)') do |type|
 		$options[:type] = type if type
-		$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
 	end
 	
 	opts.on('-f', '--[no-]force', 'Override files if they exist') do |force|
@@ -64,7 +63,7 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	end
 	
 	opts.on('--[no-]persistent', 'Add the persistent aspect. Applicable to widget modules (default)') do |persistent|
-		$aspects.delete "persistent" unless persistent
+		$options[:not_persistent] = true unless persistent
 	end
 	
 	opts.on('--[no-]widget-based', 'Add the widget_based aspect. Applicable to frontend modules (default)') do |widget_based|
@@ -116,6 +115,9 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	
 	opts.parse!
 end
+
+$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
+$aspects.delete "persistent" if $options[:not_persistent]
 
 module_name = ARGV.pop
 raise OptionParser::MissingArgument if module_name.nil?
