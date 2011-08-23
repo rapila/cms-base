@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @brief Generic delegate for list widgets (#ListWidgetModule) whose contents are determined by database entries of a specific model
+ * @brief Generic delegate for list widgets (ListWidgetModule) whose contents are determined by database entries of a specific model
  *
  * Usage:
  * @code
@@ -9,11 +9,9 @@
  * $this->oListWidget = WidgetModule::getWidget('list', null, $this->oCriteriaListWidgetDelegate);
  * @endcode
  * CriteriaListWidgetDelegate still needs its own delegate. The required method for this is #getColumnIdentifiers. Optional methods are as follows:
- * <ul>
- * 	<li>#getCriteria to customize the database query</li>
- * 	<li>#getDatabaseColumnForColumn for columns whose identifier or field_name does not correspond to a database field directly (you only need this if you wish to sort or filter by a column)</li>
- * 	<li>#getFilterTypeForColumn return one of the given FILTER_TYPE_* constants to allow filtering by a specific column (the column does not need to be displayed). Set the filters using #ListWidgetModule->setOption (also from JavaScript).</li>
- * </ul>
+ * - <code>getCriteria</code> to customize the database query
+ * - <code>getDatabaseColumnForColumn</code> for columns whose identifier or field_name does not correspond to a database field directly (you only need this if you wish to sort or filter by a column)
+ * - <code>getFilterTypeForColumn</code> return one of the given FILTER_TYPE_* constants to allow filtering by a specific column (the column does not need to be displayed). Set the filters using ListWidgetModule::setOption (also from JavaScript).
  */
 class CriteriaListWidgetDelegate {
 	private $oCriteriaDelegate;
