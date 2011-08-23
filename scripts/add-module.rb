@@ -227,7 +227,8 @@ write_file(:php, "#{class_name}.php") do
 		return $oCriteria;')
 		elsif $aspects.include? 'detail' then
 			php_methods.push php_method('getElementType', 'return "form";')
-			php_methods.push php_method('fillData')
+			php_methods.push php_method('loadData')
+			php_methods.push php_method('saveData', '', ['oData'])
 		end
 		
 		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
@@ -306,7 +307,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		"
 			add += "
 	fill_data: function() {
-		this.fillData(function(data) {
+		this.loadData(function(data) {
 			
 		});
 	},
