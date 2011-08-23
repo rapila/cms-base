@@ -46,16 +46,16 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$options[:list_aspect] = list
 	end
 	
-	opts.on('--detail', 'Add the detail aspect. Applicable to widget modules') do
-		$aspects << "detail"
-	end
-	
-	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
-		$aspects << "single_screen"
+	opts.on('--[no-]detail', 'Add the detail aspect. Applicable to widget modules (default for modules ending in _detail)') do |detail|
+		$options[:detail_aspect] = detail
 	end
 	
 	opts.on('-e', '--[no-]edit', 'Add the edit aspect. Applicable to widget modules (default for modules ending in _edit)') do |edit|
 		$options[:edit_aspect] = edit
+	end
+	
+	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
+		$aspects << "single_screen"
 	end
 	
 	opts.on('--[no-]dynamic', 'Add the dynamic aspect. Applicable to frontend modules (default)') do |dynamic|
@@ -104,7 +104,7 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$options[:sidebar_widget] = type
 	end
 
-	opts.on('--content WIDGET_TYPE=list', 'Sets this admin module’s sidebar widget type to WIDGET_TYPE') do |type|
+	opts.on('--content WIDGET_TYPE=list', 'Sets this admin module’s main content widget type to WIDGET_TYPE') do |type|
 		$options[:content_widget] = type
 	end
 
@@ -119,12 +119,9 @@ end
 module_name = ARGV.pop
 raise OptionParser::MissingArgument if module_name.nil?
 
-if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit') then
-	$aspects << 'edit'
-end
-if $options[:list_aspect] or ($options[:list_aspect].nil? and module_name.end_with? '_list') then
-	$aspects << 'list'
-end
+$aspects << 'list' if $options[:list_aspect] or ($options[:list_aspect].nil? and module_name.end_with? '_list')
+$aspects << 'detail' if $options[:detail_aspect] or ($options[:detail_aspect].nil? and module_name.end_with? '_detail')
+$aspects << 'edit' if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit')
 
 $folder = $options[:location]
 if($folder.instance_of?(Symbol)) then
@@ -223,6 +220,8 @@ write_file(:php, "#{class_name}.php") do
 			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
 			php_methods.push php_method('getCriteria', '$oCriteria = new Criteria();
 		return $oCriteria;')
+		elsif $aspects.include? 'detail' then
+			php_methods.push php_method('getElementType', 'return "form";')
 		end
 		
 		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
