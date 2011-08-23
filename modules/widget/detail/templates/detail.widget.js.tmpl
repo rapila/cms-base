@@ -4,11 +4,42 @@ Widget.types.detail = {
 	},
 	
 	set_instance: function(instance) {
+		if(this === Widget.types.detail.prototype) {
+			//Static call means do the whole initialisation
+			var prototype = Object.getPrototypeOf(instance);
+			var instance_props = jQuery.extend({
+				open: function() {
+					if(!this.detail_widget) {
+						this.auto_open = true;
+						return false;
+					}
+					this.detail_widget.open();
+				},
+
+				close: function() {
+					this.detail_widget.close();
+					this.close_callback();
+				},
+
+				close_callback: jQuery.noop,
+				save_callback: jQuery.noop
+			}, prototype);
+			jQuery.extend(prototype, instance_props);
+			Widget.create('detail', function(detail) {
+				detail.set_instance(instance);
+				jQuery.extend(detail.settings, instance.settings.detail_widget);
+				if(instance.auto_open) {
+					detail.open();
+				}
+			});
+			return;
+		}
 		var _this = this;
 		this.instance = instance;
 		instance.detail_widget = this;
+		this.content = instance.content || instance._element;
 		this.settings.save_callback = function() {
-			var data = instance.content.serializeArrayKV();
+			var data = _this.content.serializeArrayKV();
 			instance.fire('saving', data);
 			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
@@ -21,7 +52,6 @@ Widget.types.detail = {
 				Widget.fire(detail_name+'-saved');
 			});
 		};
-		this.content = instance.content;
 		if(this.has_dialog) {
 			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+instance._type);
 		} else {
@@ -174,7 +204,6 @@ Widget.types.detail = {
 			if(message.constructor === String) {
 				message = jQuery.parseHTML(message);
 			}
-			console.log(element.find('.validate-'+key.escapeSelector()), key.escapeSelector());
 			element.find('.validate-'+key.escapeSelector()).each(function(index) {
 				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {
 					var validate_element = jQuery(this);
@@ -225,7 +254,7 @@ Widget.types.detail = {
 			colName: false,
 			eventName: 'dblclick'
 		}, (options || {}));
-		options.eventName = 'list.'+(options.colName ? 'cell' : 'row')+'-'+options.eventName
+		options.eventName = 'list.'+(options.colName ? 'cell' : 'row')+'-'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
 		list.settings.row_click_active_class = 'ui-state-highlight';
 		Widget.create(detail_name+"_detail", function(detail) {
