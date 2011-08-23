@@ -27,7 +27,6 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row, event);
 			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
 		});
 		
@@ -35,13 +34,6 @@ Widget.types.list = {
 			var row = jQuery(this);
 			widget.activate_row(row, event);
 			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
-		});
-		
-		this._element.delegate('.ui-list-cell', 'click', function(event) {
-			if(!widget._element.is('table')) {
-				return;
-			}
-			return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
 		});
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
@@ -52,9 +44,15 @@ Widget.types.list = {
 			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
 		});
 		
-		this._element.delegate('.ui-list-cell', 'hover', function(event) {
-			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
-		});
+		if(widget._element.is('table')) {
+			this._element.delegate('.ui-list-cell', 'click', function(event) {
+				return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
+			});
+			this._element.delegate('.ui-list-cell', 'hover', function(event) {
+				return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
+			});
+		}
+
 		this.reload(true);
 	},
 	
