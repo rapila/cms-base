@@ -56,15 +56,14 @@ Widget.types.list = {
 		this.reload(true);
 	},
 	
-	activate_row: function(row, event) {
+	activate_row: function(row, event, previous_selection) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
 		var previous_selection = this.active_row_datas().sort();
-		if(row === null || row === undefined) {
+		if(!row) {
 			this.all_rows().removeClass(this.settings.row_click_active_class);
-		}
-		if(this.settings.row_click_active_mode) {
+		} else if(this.settings.row_click_active_mode) {
 			var do_toggle = this.settings.row_click_active_mode === 'toggle';
 			var exclusive = !!this.settings.row_click_active_exclusive;
 			if(this.settings.row_click_active_exclusive === 'modifiers' && event && (event.ctrlKey || event.metaKey || event.shiftKey)) {
@@ -93,9 +92,17 @@ Widget.types.list = {
 				row.removeClass(this.settings.row_click_active_class);
 			}
 		}
+		this.fire_selection_changed(previous_selection, event);
+	},
+
+	fire_selection_changed: function(previous_selection, event) {
 		var new_selection = this.active_row_datas().sort();
 		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
-			this.fire('list-selection_changed', event, new_selection, previous_selection);
+			if(event) {
+				this.fire('list-selection_changed', event, new_selection, previous_selection);
+			} else {
+				this.fire('list-selection_changed', new_selection, previous_selection);
+			}
 		}
 	},
 	
@@ -282,7 +289,12 @@ Widget.types.list = {
 		var rowData = this.collect_row_data(row);
 		this.deleteRow(rowData, function(result, error) {
 			if(!error) {
+				var active_rows = null;
+				if(row.hasClass(this.settings.row_click_active_class)) {
+					active_rows = this.active_row_datas().sort();
+				}
 				row.remove();
+				active_rows && this.fire_selection_changed(active_rows);
 				this.fire('row-deleted', result);
 			} else {
 				Widget.notifyUser('error', error.message);
@@ -332,8 +344,12 @@ Widget.types.list = {
 		jQuery.extend(rowData, (additonalData || {}));
 		this.rowFromData(rowData, function(row_contents) {
 			var newRow = null;
+			var was_active = row.hasClass(this.settings.row_click_active_class);
 			if(row_contents !== null) {
 				newRow = this.insert_row(row_contents, false, row);
+				if(was_active) {
+					newRow.addClass(this.settings.row_click_active_class);
+				}
 			}
 			row.remove();
 			this.fire('row-updated', additonalData, newRow, rowData);
@@ -401,8 +417,9 @@ Widget.types.list = {
 			if(active_rows) {
 				jQuery.each(active_rows, function(id, row) {
 					row = this.row_from_row_data(row);
-					row && this.activate_row(row);
+					row && row.addClass(this.settings.row_click_active_class);
 				}.bind(this));
+				this.fire_selection_changed(active_rows.sort());
 			}
 			if(load_heading) {
 				this.fire('loaded', list.length);
