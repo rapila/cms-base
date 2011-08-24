@@ -1,11 +1,15 @@
 #! /usr/bin/env ruby
 # encoding: UTF-8
 
+require 'rubygems'
 require 'optparse'
 require 'yaml'
 require 'set'
 require 'fileutils'
-require 'json'
+begin
+	require 'json'
+rescue LoadError
+end
 
 # Default options
 $options = {:type => :widget, :location => :site, :force => false, :enabled => true, :sidebar_widget => 'list', :content_widget => 'list'}
@@ -314,6 +318,11 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	},
 	"
 		end
+		if sett.respond_to? :to_json then
+			sett = sett.to_json
+		else
+			sett = ''
+		end
 		res = "initialize: function() {
 		#{init}
 	},
@@ -322,7 +331,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		#{prep}
 	},
 	#{add}
-	settings: #{sett.to_json}"
+	settings: #{sett}"
 		"Widget.types['#{module_name}'] = {
 	#{res}
 };"
