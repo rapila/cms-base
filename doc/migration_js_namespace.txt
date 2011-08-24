@@ -8,9 +8,7 @@ faster:
 list.row-			list-row_
 list.cell-		list-cell_
 
-
 list-row_click >>> list-selection_changed
-
 
 find all list-selection_changed handles where there is still (event, col, element)
 setOpion value directly with selection[0] && selection[0].anykey
