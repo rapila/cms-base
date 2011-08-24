@@ -191,7 +191,7 @@ button.cmos-button.logout_link {
 .ui-widget-content input { background-color: #ffffff; }
 .ui-widget-content select { background-color: #ffffff; }
 .ui-widget-content textarea { background-color: #ffffff; }
-.ui-state-active { color: #e3ef99; }
+.ui-state-active { color: inherit; }
 .group_fields {
   display: inline-block;
   vertical-align: top;
