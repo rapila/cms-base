@@ -28,23 +28,10 @@ jQuery(document).ready(function() {
 				}, true, true);
 			}
 
-			// sidebar list row dblclick
-			sidebar.handle('list.row-dblclick', function(event, row, element) {
-				alert(element.data('document_category_id'));
-			});
-
 			// sidebar list row click
-			sidebar.handle('list.row-click', function(event, row, element) {
-				var document_category_id = element.data('document_category_id');
-				if(!element.is('.ui-state-active')) {
-					// TODO: handle highlight of default element or initial selection
-					document_category_id = null;
-				}
-				documents_view.set_document_category_id(document_category_id);
-				//DECIDE: Always allow this to achieve a quick reload via re-click?
-				if(documents_view.changed) {
-					documents_view.reload();
-				}
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				documents_view.set_document_category_id(selection[0] && selection[0].document_category_id);
+				documents_view.reload();
 				
 				jQuery('#new_sidebar_input').remove();
 			});

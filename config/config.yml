@@ -40,7 +40,6 @@ developer:
 
 admin:
   title: 'CMS Admin — {{module_name}}'
-  inherit_children_enable: true
   delete_pagetree_enable: true
   page_properties_allow: false
   

@@ -1,13 +1,18 @@
 #! /usr/bin/env ruby
 # encoding: UTF-8
 
+require 'rubygems'
 require 'optparse'
 require 'yaml'
 require 'set'
 require 'fileutils'
+begin
+	require 'json'
+rescue LoadError
+end
 
 # Default options
-$options = {:type => :widget, :location => :site, :force => false, :enabled => true}
+$options = {:type => :widget, :location => :site, :force => false, :enabled => true, :sidebar_widget => 'list', :content_widget => 'list'}
 $aspects = Set.new
 $files = [:php, :yaml].to_set
 
@@ -17,7 +22,6 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	## GENERAL
 	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e; default: widget)') do |type|
 		$options[:type] = type if type
-		$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
 	end
 	
 	opts.on('-f', '--[no-]force', 'Override files if they exist') do |force|
@@ -42,20 +46,20 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$aspects << "dashboard"
 	end
 	
-	opts.on('-l', '--list', 'Add the list aspect. Applicable to widget modules') do
-		$aspects << "list"
+	opts.on('-l', '--[no-]list', 'Add the list aspect. Applicable to widget modules (default for modules ending in _list)') do |list|
+		$options[:list_aspect] = list
 	end
 	
-	opts.on('--detail', 'Add the detail aspect. Applicable to widget modules') do
-		$aspects << "detail"
-	end
-	
-	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
-		$aspects << "single_screen"
+	opts.on('--[no-]detail', 'Add the detail aspect. Applicable to widget modules (default for modules ending in _detail)') do |detail|
+		$options[:detail_aspect] = detail
 	end
 	
 	opts.on('-e', '--[no-]edit', 'Add the edit aspect. Applicable to widget modules (default for modules ending in _edit)') do |edit|
 		$options[:edit_aspect] = edit
+	end
+	
+	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
+		$aspects << "single_screen"
 	end
 	
 	opts.on('--[no-]dynamic', 'Add the dynamic aspect. Applicable to frontend modules (default)') do |dynamic|
@@ -63,7 +67,7 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	end
 	
 	opts.on('--[no-]persistent', 'Add the persistent aspect. Applicable to widget modules (default)') do |persistent|
-		$aspects.delete "persistent" unless persistent
+		$options[:persistent] = persistent
 	end
 	
 	opts.on('--[no-]widget-based', 'Add the widget_based aspect. Applicable to frontend modules (default)') do |widget_based|
@@ -100,6 +104,14 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$files << :css
 	end
 
+	opts.on('--sidebar WIDGET_TYPE=list', 'Sets this admin module’s sidebar widget type to WIDGET_TYPE') do |type|
+		$options[:sidebar_widget] = type
+	end
+
+	opts.on('--content WIDGET_TYPE=list', 'Sets this admin module’s main content widget type to WIDGET_TYPE') do |type|
+		$options[:content_widget] = type
+	end
+
 	opts.on('-h', '--help', 'Display this screen') do
 		puts opts
 		exit
@@ -111,8 +123,13 @@ end
 module_name = ARGV.pop
 raise OptionParser::MissingArgument if module_name.nil?
 
-if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit') then
-	$aspects << 'edit'
+$aspects << 'list' if $options[:list_aspect] or ($options[:list_aspect].nil? and module_name.end_with? '_list')
+$aspects << 'detail' if $options[:detail_aspect] or ($options[:detail_aspect].nil? and module_name.end_with? '_detail')
+$aspects << 'edit' if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit')
+
+$aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
+if ($options[:persistent].nil? and $aspects.include? 'list') or $options[:persistent] == false then
+	$aspects.delete 'persistent'
 end
 
 $folder = $options[:location]
@@ -151,6 +168,12 @@ def write_file(identifier, name, dir = nil, &block)
 		contents = yield f
 		f.write(contents) if contents
 	end
+end
+
+def php_field(name, mod = 'private')
+	name = (name=~ /\$/) ? name : '$' + name
+	name = name.gsub('this->', '')
+	"#{mod} #{name};"
 end
 
 def php_method(name, body = '', args = [], mod = 'public')
@@ -193,15 +216,47 @@ write_file(:php, "#{class_name}.php") do
 	php_methods = []
 	
 	if $options[:type] == :widget then
+		constructor_content = "";
+		if $aspects.include? 'list' then
+			model_name = module_name.gsub('_list', '').capitalize
+			php_methods.push php_field('oListWidget')
+			php_methods.push php_field('oCriteriaListWidgetDelegate')
+			constructor_content += "$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, '#{model_name}');
+		$this->oListWidget = WidgetModule::getWidget('list', null, $this->oCriteriaListWidgetDelegate);"
+			php_methods.push php_method('doWidget', "return $this->oListWidget->doWidget('#{module_name}');")
+			php_methods.push php_method('getColumnIdentifiers', 'return array();')
+			php_methods.push php_method('getMetadataForColumn', '', ['aColumnIdentifier'])
+			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
+			php_methods.push php_method('getCriteria', '$oCriteria = new Criteria();
+		return $oCriteria;')
+		elsif $aspects.include? 'detail' then
+			php_methods.push php_method('getElementType', 'return "form";')
+			php_methods.push php_method('loadData')
+			php_methods.push php_method('saveData', '', ['oData'])
+		end
+		
+		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
+		#{constructor_content}", ['sSessionKey = null']) if $aspects.include? 'persistent'
+		php_methods.push php_method('__construct', constructor_content) unless $aspects.include? 'persistent'
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['LanguageObject $oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
 	elsif $options[:type] == :admin then
+		widgets = {}
+		widgets[:sidebar_widget] = '$this->oSidebarWidget' unless $aspects.include? 'single_screen'
+		widgets[:content_widget] = '$this->oMainWidget'
+		constructor_content = ""
+		widgets.each_pair do |widget, field|
+			php_methods.push php_field(field)
+			constructor_content += "#{field} = WidgetModule::getWidget('#{$options[widget]}');
+		"
+		end
+		php_methods.push php_method('__construct', constructor_content)
 		retnull = 'return null;'
-		php_methods.push php_method('mainContent', retnull)
-		php_methods.push php_method('sidebarContent', retnull) unless $aspects.include? 'single_screen'
+		php_methods.push php_method('mainContent', "return $this->oMainWidget->doWidget();")
+		php_methods.push php_method('sidebarContent', "return $this->oSidebarWidget->doWidget();") unless $aspects.include? 'single_screen'
 		php_methods.push php_method('sidebarContent', 'return false;') if $aspects.include? 'single_screen'
-		php_methods.push php_method('usedWidgets', 'return array();')
+		php_methods.push php_method('usedWidgets', "return array(#{widgets.values.join(', ')});")
 	elsif $options[:type] == :filter then
 		php_methods.push unboxing_php_filter_method('onAnyError', ['aError'])
 		php_methods.push unboxing_php_filter_method('onErrorEmailSend', ['sAddress'])
@@ -229,7 +284,7 @@ write_file(:php, "#{class_name}.php") do
 	
 	"<?php
 class #{class_name} extends #{extends}#{implements} {
-	#{php_methods.join('
+	#{php_methods.sort.join('
 	
 	')}
 }"
@@ -246,22 +301,59 @@ end
 
 write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	if $options[:type] == :widget then
+		init = ''
+		prep = ''
+		sett = {}
+		add = ''
+		if $aspects.include? 'detail' then
+			sett['detail_widget'] = {}
+			init += "this._element = jQuery.parseHTML(this._instanceInformation.content);
+		Widget.callStatic('detail', 'set_instance', this);
+		"
+			add += "
+	fill_data: function() {
+		this.loadData(function(data) {
+			
+		});
+	},
+	"
+		end
+		if sett.respond_to? :to_json then
+			sett = sett.to_json
+		else
+			sett = ''
+		end
 		res = "initialize: function() {
-		
+		#{init}
 	},
 
 	prepare: function() {
-		
+		#{prep}
 	},
-	
-	settings: {
-		
-	}"
+	#{add}
+	settings: #{sett}"
 		"Widget.types['#{module_name}'] = {
 	#{res}
-}"
+};"
 	elsif $options[:type] == :admin then
+		res = ""
+		res += "var sidebar;
+	" unless $aspects.include? "single_screen"
+		res += "var content;
+	"
+		res += "AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+		sidebar = widget;
+	});
+	" unless $aspects.include? "single_screen" 
 		
+		res += "AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
+		content = widget;
+	});
+	"
+
+		"jQuery(function() {
+	#{res}
+});"		
 	end
 end
 

@@ -23,6 +23,13 @@ class ListWidgetModule extends PersistentWidgetModule {
 	private $oDelegate;
 	private $oListTag;
 	private $aSchema = null;
+
+	public $sStringPrefix = 'column';
+
+	public function __construct($sSessionKey = null, $oDelegate = null) {
+		parent::__construct($sSessionKey);
+		$this->oDelegate = $oDelegate;
+	}
 	
 	public function setDelegate($oDelegate) {
 		$this->oDelegate = $oDelegate;
@@ -47,7 +54,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		return !in_array($sDisplayType, array(self::DISPLAY_TYPE_DATA, self::DISPLAY_TYPE_CLASSNAME));
 	}
 
-	public function doWidget() {
+	public function doWidget($sClassName = '') {
 		if(!$this->oListTag) {
 			$aSchema = $this->getSchema();
 			$iVisibleColumnCount = 0;
@@ -58,7 +65,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 			}
 			$this->oListTag = new TagWriter($iVisibleColumnCount > 1 ? 'table' : 'ul');
 		}
-		$this->oListTag->addToParameter('class', 'ui-list');
+		$this->oListTag->addToParameter('class', "ui-list $sClassName");
 		$this->oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$this->oListTag->setParameter('data-widget-type', $this->getModuleName());
 		return $this->oListTag->parse();
@@ -83,7 +90,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 				$aMetadata['display_heading'] = self::displayTypeVisible($aMetadata['display_type']);
 			}
 			if(!isset($aMetadata['heading']) && $aMetadata['display_heading']) {
-				$aMetadata['heading'] = StringPeer::getString("column.$sColumnIdentifier");
+				$aMetadata['heading'] = StringPeer::getString("$this->sStringPrefix.$sColumnIdentifier");
 			}
 			if(!isset($aMetadata['field_name'])) {
 				$aMetadata['field_name'] = $sColumnIdentifier;
@@ -173,7 +180,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		return $aRow[0];
 	}
 	
-	public function setOption($sName, $mValue) {
+	public function setOption($sName, $mValue = null) {
 		$sName = 'set'.StringUtil::camelize($sName, true);
 		return $this->oDelegate->$sName($mValue);
 	}

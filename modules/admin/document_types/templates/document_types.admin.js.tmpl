@@ -10,12 +10,9 @@ jQuery(document).ready(function() {
 				}, true, true);
 			}
 			sidebar.settings.row_click_active_mode = 'activate';
-			sidebar.handle('list.row-click', function(event, row, element) {
-				var document_kind = element.data('document_kind');
-				if(!element.is('.ui-state-active')) {
-				 	document_kind = null;
-				}
-				document_type_list.setOption('document_kind', document_kind);
+			
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				document_type_list.setOption('document_kind', selection[0] && selection[0].document_kind);
 				document_type_list.reload();
 			});	
 		});

@@ -39,7 +39,7 @@ abstract class FrontendModule extends Module {
 	
 	protected function getData() {
 		if($this->oLanguageObject !== null && $this->oLanguageObject->getData() !== null) {
-			return stream_get_contents($this->oLanguageObject->getData());
+			return stream_get_contents($this->oLanguageObject->getData(), -1, 0);
 		}
 		return $this->oData;
 	}

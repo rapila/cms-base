@@ -5,15 +5,10 @@
 *[data-widget-type=list] .ui-state-active {
 	background: none;
 	border: 0;
-	color: white;
 }
 
 *[data-widget-type=list] .ui-state-hover {
 	cursor: default;
-}
-
-#admin_sidebar *[data-widget-type=list] .ui-state-hover {
-	cursor: pointer;
 }
 
 tr.ui-list-headrow th.file_info, 
@@ -51,110 +46,8 @@ table.ui-list .ui-list-cell a {
 	text-decoration: underline;
 }
 
-#admin_main .ui-list .ui-list-row,
-tr.ui-list-row td {
-	background-color: #F6F6F6;
-}
-
-#admin_main .ui-list .ui-list-row:nth-child(2n+2),
-tr.ui-list-row:nth-child(2n+2) td {
-	background-color: #E9E9E9;
-}
-
-#admin_main .ui-list tr.ui-list-row.ui-state-hover,
-#admin_main .ui-list tr.ui-list-row.ui-state-highlight {
-	background-image: url("");
-	border: 0;
-	background-color: #E3EF99;
-}
-
-#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon,
-#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon {
-	background-image: url("{{writeConstantValue=INT_CSS_DIR_FE}}/admin/theme/images/ui-icons_000000_256x240.png"); 
-}
-
-#admin_main .ui-list td:first-child,
-#admin_main .ui-list th:first-child {
-	min-width: 15em;
-	padding-left:5px;
-}
-
-#admin_sidebar .ui-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-
-#admin_sidebar .ui-list li a {
-	color: #444;
-	text-decoration: none;
-}
-
-#admin_sidebar .ui-list li,
-#admin_sidebar div.ui-list-row {
-	font-size: 1.2em;
-	padding: 3px 3px 3px 10px;
-	border-bottom: 1px solid #DDD;
-}
-
-#admin_sidebar .ui-list li.ui-list-row {
-	line-height: 20px;
-}
-
-#admin_sidebar li.ui-list-row.ui-state-active,
-#admin_sidebar li.ui-list-row.ui-state-hover {
-	background-color: #728697;
-}
-
-#admin_sidebar ol > li.ui-list-row.ui-state-hover {
-	border: none;
-}
-
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row {
-	padding-left: 1.4em;
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/folder_collapsed.png");
-	background-repeat: no-repeat;
-	background-position: .3em .3em;
-}
-
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/folder_open.png");
-}
-
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.magic_column-all,
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.magic_column-without {
-	font-style: oblique;
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/folder_magic.png");
-	background-repeat: none;
-}
-
-
-#admin_sidebar ul.ui-list li.ui-list-row {
-	padding-left: 5px;
-}
-
-#admin_sidebar li.ui-list-row.magic_column-all,
-#admin_sidebar li.ui-list-row.magic_column-without {
-	font-style: oblique;
-	color: #777;
-}
-
-#admin_sidebar li.ui-list-row.magic_column-all.ui-state-active,
-#admin_sidebar li.ui-list-row.magic_column-without.ui-state-active,
-#admin_sidebar li.ui-list-row.magic_column-all.ui-state-hover,
-#admin_sidebar li.ui-list-row.magic_column-without.ui-state-hover {
-	color: #FFF;
-}
-
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active.magic_column-all,
-#admin_sidebar ul.ui-list.use_sidebar_icons li.ui-list-row.ui-state-active.magic_column-without {
-	font-style: oblique;
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/folder_magic_open.png");
-	background-repeat: none;
-}
-
-#admin_sidebar ul.ui-list li.ui-list-headrow,
-tr.ui-list-headrow th {
+ul.ui-list li.ui-list-headrow,
+table.ui-list tr.ui-list-headrow th {
 	color: #000;
 	text-align: left;
 	vertical-align: bottom;
@@ -165,15 +58,18 @@ tr.ui-list-headrow th {
 	border-bottom: solid 1px #E9E9E9;
 }
 
-#admin_main th span,
-#admin_sidebar li.ui-list-headrow span {
-	padding-top: 3px;
-	padding-bottom: 1px;
-	display: inline-block;
+*[data-widget-type=list] .ui-list-row {
+	background-color: #F6F6F6;
 }
 
-#admin_sidebar li.ui-list-headrow span {
-	padding-left: 5px;
+*[data-widget-type=list] .ui-list-row:nth-child(2n+2) {
+	background-color: #E9E9E9;
+}
+
+.ui-list-row.magic_column-all,
+.ui-list-row.magic_column-without {
+	font-style: oblique;
+	color: #777;
 }
 
 th.ui-list-heading select {
@@ -218,6 +114,3 @@ th.ui-list-heading.sortable {
 	cursor: pointer;
 }
 
-#admin_sidebar .ui-list th {
-	line-height: 14px;
-}

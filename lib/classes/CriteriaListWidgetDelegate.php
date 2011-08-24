@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * @brief Generic delegate for list widgets (ListWidgetModule) whose contents are determined by database entries of a specific model
+ *
+ * Usage:
+ * @code
+ * $this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, 'ModelName');
+ * $this->oListWidget = WidgetModule::getWidget('list', null, $this->oCriteriaListWidgetDelegate);
+ * @endcode
+ * CriteriaListWidgetDelegate still needs its own delegate. The required method for this is <code>getColumnIdentifiers</code>. Optional methods are as follows:
+ * - <code>getCriteria</code> to customize the database query
+ * - <code>getDatabaseColumnForColumn</code> for columns whose identifier or field_name does not correspond to a database field directly (you only need this if you wish to sort or filter by a column)
+ * - <code>getFilterTypeForColumn</code> return one of the given FILTER_TYPE_* constants to allow filtering by a specific column (the column does not need to be displayed). Set the filters using ListWidgetModule::setOption() (also from JavaScript).
+ */
 class CriteriaListWidgetDelegate {
 	private $oCriteriaDelegate;
 	private $sModelName;
@@ -71,6 +84,13 @@ class CriteriaListWidgetDelegate {
 		}
 		default_function:
 		return call_user_func_array(array($this->oCriteriaDelegate, $sMethodName), $aArguments);
+	}
+
+	public function getMetadataForColumn($sColumnIdentifier) {
+		if(method_exists($this->oCriteriaDelegate, 'getMetadataForColumn')) {
+			return $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
+		}
+		return array();
 	}
 	
 	public function getCriteria($bSortIsIrrelevant = false) {
@@ -152,7 +172,7 @@ class CriteriaListWidgetDelegate {
 		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForColumn($sColumnIdentifier)) !== null) {
 			return $sSortOverride;
 		}
-		$aMetadata = $this->oCriteriaDelegate->getMetadataForColumn($sColumnIdentifier);
+		$aMetadata = $this->getMetadataForColumn($sColumnIdentifier);
 		$sFieldName = $sColumnIdentifier;
 		if(isset($aMetadata['field_name'])) {
 			$sFieldName = $aMetadata['field_name'];
@@ -220,6 +240,9 @@ class CriteriaListWidgetDelegate {
 		return $this->oListSettings->setSearchPhrase($sSearch);
 	}
 	
+	/**
+	* Searching only works if the ModelNamePeer class has a Method named <code>addSearchToCriteria($sSearchString, $oCriteria)</code> which should set all the necessary search query params on the criteria.
+	*/
 	public function getSearch() {
 		return $this->oListSettings->getSearchPhrase();
 	}

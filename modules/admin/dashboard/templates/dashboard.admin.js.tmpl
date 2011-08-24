@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
 		if(column.length !== 1) {
 			column = db.find('.dashboard-column').eq(0);
 		}
-		column.append(skeleton.skeleton);
+		column.append(skeleton.container);
 		column.data('dashboardSkeleton', skeleton);
 	};
 	
@@ -28,25 +28,25 @@ jQuery(document).ready(function() {
 		
 		var create_skeleton = function(module) {
 			var uid = module.uid;
-			var skeleton = jQuery.parseHTML('{{includeTemplate=skeleton}}');
-			var heading = skeleton.find('.dashboard-widget-head h3').text(module.title);
-			skeleton.attr('id', uid);
-			skeleton.css({backgroundColor: module.color});
+			var container = jQuery.parseHTML('{{includeTemplate=container}}').hide();
+			var heading = container.find('.dashboard-widget-head h3').text(module.title);
+			container.attr('id', uid);
+			container.css({backgroundColor: module.color});
 			heading.css({color: module.contrastColor});
 			
 			var result = {
 				module: module,
-				skeleton: skeleton,
+				container: container,
 				heading: heading,
-				content: skeleton.find('.dashboard-widget-content'),
+				content: container.find('.dashboard-widget-content'),
 				collapse: function() {
-					skeleton.find('a.collapse').click();
+					container.find('a.collapse').click();
 				}
 			};
 			
 			//Change handlers
-			skeleton.bind('db-configured.dashboard', function(event) {
-				module.color = skeleton.css('backgroundColor');
+			container.bind('db-configured.dashboard', function(event) {
+				module.color = container.css('backgroundColor');
 				module.title = heading.text();
 				module.contrastColor = heading.css('color');
 				result.config_form.triggerHandler('db-configured'); //For Rich-Text areas and other elements that need to clean up before serializeArrayKV gives the correct value
@@ -57,20 +57,20 @@ jQuery(document).ready(function() {
 				}
 				dashboard_control.saveSettings(uid, module);
 			});
-			skeleton.bind('db-collapsed.dashboard', function(event, state) {
+			container.bind('db-collapsed.dashboard', function(event, state) {
 				module.collapsed = state;
 				dashboard_control.changeCollapsed(uid, state);
 			});
-			skeleton.bind('db-moved.dashboard', function(event, move) {
+			container.bind('db-moved.dashboard', function(event, move) {
 				module.container = move.to;
 				dashboard_control.move(uid, move.to, move.pos);
 			});
-			skeleton.bind('db-removing.dashboard', function(event) {
+			container.bind('db-removing.dashboard', function(event) {
 				Widget.confirm('{{writeString=wns.dashboard.remove}}', '{{writeString=wns.dashboard.remove_widget}}', function(removed) {
 					if(removed) {
 						dashboard_control.remove(uid, function() {
-							skeleton.unbind('.dashboard');
-							skeleton.remove();
+							container.unbind('.dashboard');
+							container.remove();
 						});
 					}
 				});
@@ -81,6 +81,12 @@ jQuery(document).ready(function() {
 		
 		var init_widget = function(skeleton) {
 			var module = skeleton.module;
+			if(module.collapsed) {
+				skeleton.collapse();
+				skeleton.container.one('db-collapsed', arguments.callee.bind(this, skeleton));
+				skeleton.container.show();
+				return;
+			}
 			Widget.createWithElement(module.type, function(widget) {
 				skeleton.widget = widget;
 				widget.settings.is_dashboard = true;
@@ -93,15 +99,12 @@ jQuery(document).ready(function() {
 				var form = widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>');
 				Widget.callStatic('detail', 'clickable_labels_for', form);
 				skeleton.config_form = form;
-				form.appendTo(skeleton.skeleton.find('.dashboard-edit-box'));
+				form.appendTo(skeleton.container.find('.dashboard-edit-box'));
 				form.bind('submit', function(event) {
 					event.preventDefault();
 				});
-			}, function(widget) {
-				if(module.collapsed) {
-					skeleton.collapse();
-				}
-			});
+				skeleton.container.show();
+			}, jQuery.noop);
 		};
 		
 		var reload;

@@ -58,7 +58,7 @@ var Dashboard = (function($) {
 			}
 			
 			if (thisWidgetSettings.editable) {
-				$('<a href="#" class="edit">EDIT</a>').mousedown(function (e) {
+				var widget_edit = $('<a href="#" class="edit">EDIT</a>').mousedown(function (e) {
 					e.stopPropagation();	
 				}).toggle(function () {
 					$(this).css({backgroundPosition: '-66px 0', width: '55px'})
@@ -90,11 +90,13 @@ var Dashboard = (function($) {
 				}).toggle(function () {
 					var widget = $(this).css({backgroundPosition: '-38px 0'}).parents(settings.widgetSelector);
 					widget.find(settings.contentSelector).hide();
+					widget_edit.hide();
 					widget.triggerHandler('db-collapsed', true);
 					return false;
 				},function () {
 					var widget = $(this).css({backgroundPosition: ''}).parents(settings.widgetSelector);
 					widget.find(settings.contentSelector).show();
+					widget_edit.show();
 					widget.triggerHandler('db-collapsed', false);
 					return false;
 				}).prependTo($(settings.handleSelector,this));

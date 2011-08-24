@@ -27,21 +27,13 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row, event);
-			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
 			widget.activate_row(row, event);
-			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
-		});
-		
-		this._element.delegate('.ui-list-cell', 'click', function(event) {
-			if(!widget._element.is('table')) {
-				return;
-			}
-			return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
+			return widget.fire.apply(widget, ['list-row_click', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
@@ -49,30 +41,29 @@ Widget.types.list = {
 			if(widget.settings.row_hover) {
 				row.toggleClass('ui-state-hover');
 			}
-			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_hover', event].concat(row_metadata(row)));
 		});
 		
-		this._element.delegate('.ui-list-cell', 'hover', function(event) {
-			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
-		});
+		if(widget._element.is('table')) {
+			this._element.delegate('.ui-list-cell', 'click', function(event) {
+				return widget.fire.apply(widget, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
+			});
+			this._element.delegate('.ui-list-cell', 'hover', function(event) {
+				return widget.fire.apply(widget, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
+			});
+		}
+
 		this.reload(true);
 	},
 	
-	activate_row: function(row, event) {
-		if(row === null || row === undefined) {
-			if(this.settings.row_click_active_exclusive) {
-				this.all_rows().removeClass(this.settings.row_click_active_class);
-			}
-			return;
-		}
+	activate_row: function(row, event, previous_selection) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
-		if(!event) {
-			row.addClass(this.settings.row_click_active_class);
-			return;
-		}
-		if(this.settings.row_click_active_mode) {
+		var previous_selection = this.active_row_datas().sort();
+		if(!row) {
+			this.all_rows().removeClass(this.settings.row_click_active_class);
+		} else if(this.settings.row_click_active_mode) {
 			var do_toggle = this.settings.row_click_active_mode === 'toggle';
 			var exclusive = !!this.settings.row_click_active_exclusive;
 			if(this.settings.row_click_active_exclusive === 'modifiers' && event && (event.ctrlKey || event.metaKey || event.shiftKey)) {
@@ -83,10 +74,10 @@ Widget.types.list = {
 					do_toggle = true;
 				}
 				if(event.shiftKey) {
-					var topmost_active_row = this.all_rows().index(this.active_row().eq(0));
-					var current_row = this.all_rows().index(row);
+					var topmost_active_row = this.row_number(this.active_row().eq(0));
+					var current_row = this.row_number(row);
 					for(var i = Math.min(topmost_active_row, current_row); i <= Math.max(topmost_active_row, current_row); i++) {
-						this.activate_row(i);
+						this.row_from_number(i).addClass(this.settings.row_click_active_class);
 					}
 				}
 				event.preventDefault();
@@ -99,6 +90,18 @@ Widget.types.list = {
 				row.addClass(this.settings.row_click_active_class);
 			} else if(do_toggle) {
 				row.removeClass(this.settings.row_click_active_class);
+			}
+		}
+		this.fire_selection_changed(previous_selection, event);
+	},
+
+	fire_selection_changed: function(previous_selection, event) {
+		var new_selection = this.active_row_datas().sort();
+		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
+			if(event) {
+				this.fire('list-selection_changed', event, new_selection, previous_selection);
+			} else {
+				this.fire('list-selection_changed', new_selection, previous_selection);
 			}
 		}
 	},
@@ -286,7 +289,12 @@ Widget.types.list = {
 		var rowData = this.collect_row_data(row);
 		this.deleteRow(rowData, function(result, error) {
 			if(!error) {
+				var active_rows = null;
+				if(row.hasClass(this.settings.row_click_active_class)) {
+					active_rows = this.active_row_datas().sort();
+				}
 				row.remove();
+				active_rows && this.fire_selection_changed(active_rows);
 				this.fire('row-deleted', result);
 			} else {
 				Widget.notifyUser('error', error.message);
@@ -296,12 +304,21 @@ Widget.types.list = {
 	
 	collect_row_data: function(row) {
 		var rowData = {};
+		var has_data = false;
 		jQuery.each(this.schema, function(i) {
 			if(this.schema[i].display_type === 'data') {
+				has_data = true;
 				rowData[this.schema[i].identifier] = row.data(this.schema[i].identifier);
 			}
 		}.bind(this));
+		if(!has_data) {
+			return this.row_number(row);
+		}
 		return rowData;
+	},
+
+	row_number: function(row) {
+		return this.all_rows().index(row);
 	},
 
 	toggle_boolean: function(row, boolean_name, reload_all) {
@@ -327,8 +344,12 @@ Widget.types.list = {
 		jQuery.extend(rowData, (additonalData || {}));
 		this.rowFromData(rowData, function(row_contents) {
 			var newRow = null;
+			var was_active = row.hasClass(this.settings.row_click_active_class);
 			if(row_contents !== null) {
 				newRow = this.insert_row(row_contents, false, row);
+				if(was_active) {
+					newRow.addClass(this.settings.row_click_active_class);
+				}
 			}
 			row.remove();
 			this.fire('row-updated', additonalData, newRow, rowData);
@@ -396,8 +417,9 @@ Widget.types.list = {
 			if(active_rows) {
 				jQuery.each(active_rows, function(id, row) {
 					row = this.row_from_row_data(row);
-					row && this.activate_row(row);
+					row && row.addClass(this.settings.row_click_active_class);
 				}.bind(this));
+				this.fire_selection_changed(active_rows.sort());
 			}
 			if(load_heading) {
 				this.fire('loaded', list.length);
@@ -457,6 +479,9 @@ Widget.types.list = {
 	},
 	
 	row_from_row_data: function(rowData) {
+		if(rowData.constructor === Number) {
+			return this.row_from_number(rowData);
+		}
 		var result = null;
 		var widget = this;
 		this.all_rows().each(function() {
