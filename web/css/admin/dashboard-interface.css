@@ -43,7 +43,7 @@ a {color:white;}
 #dashboard-columns .dashboard-widget-placeholder { border: 2px dashed #999; }
 
 #dashboard-columns .dashboard-widget,
-#dashboard-columns .dashboard-widget-placeholder {margin: 20px 5px 0 5px;}
+#dashboard-columns .dashboard-widget-placeholder {margin: 10px 10px 0 5px;}
 
 #dashboard-columns .dashboard-column:first-child .dashboard-widget,
 #dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder { margin-left: 10px; }
@@ -112,11 +112,21 @@ a {color:white;}
 	float: left;
 	margin: 0 0 7px 7px;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content table tr {
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr,
+#dashboard-columns .dashboard-widget .dashboard-widget-content table th {
   background-color: #444444;
+  color: inherit;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n) {
   background-color: #555555;
+}
+
+
+#dashboard-columns ul.ui-list li.ui-list-headrow, 
+#dashboard-columns table.ui-list tr.ui-list-headrow th {
+  border-bottom: none;
+  background-color: inherit;
+  font-size: .85em;
 }
 /* End Columns section */
 
