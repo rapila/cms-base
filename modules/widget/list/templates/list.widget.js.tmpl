@@ -27,13 +27,13 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
-			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
 			widget.activate_row(row, event);
-			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_click', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
@@ -41,15 +41,15 @@ Widget.types.list = {
 			if(widget.settings.row_hover) {
 				row.toggleClass('ui-state-hover');
 			}
-			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_hover', event].concat(row_metadata(row)));
 		});
 		
 		if(widget._element.is('table')) {
 			this._element.delegate('.ui-list-cell', 'click', function(event) {
-				return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
+				return widget.fire.apply(widget, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
 			});
 			this._element.delegate('.ui-list-cell', 'hover', function(event) {
-				return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
+				return widget.fire.apply(widget, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
 			});
 		}
 

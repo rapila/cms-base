@@ -254,7 +254,7 @@ Widget.types.detail = {
 			colName: false,
 			eventName: 'dblclick'
 		}, (options || {}));
-		options.eventName = 'list.'+(options.colName ? 'cell' : 'row')+'-'+options.eventName;
+		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
 		list.settings.row_click_active_class = 'ui-state-highlight';
 		Widget.create(detail_name+"_detail", function(detail) {

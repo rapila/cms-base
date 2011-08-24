@@ -14,13 +14,8 @@ jQuery(document).ready(function() {
 				}, true, true);
 			}
 			
-			sidebar.handle('list.row-click', function(event, row, element) {
-				var group_id = element.data('group_id');
-				if(!element.is('.ui-state-active')) {
-					// handle initial_selection for custom elements
-				 	group_id = null;
-				}
-				role_list.setOption('group_id', group_id);
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				role_list.setOption('group_id', selection[0] && selection[0].group_id);
 				role_list.reload();
 			});
 		});

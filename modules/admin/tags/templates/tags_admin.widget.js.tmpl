@@ -12,12 +12,8 @@ jQuery(document).ready(function() {
 				}, true, true);
 			}	
 			sidebar.settings.row_click_active_mode = 'activate';
-			sidebar.handle('list.row-click', function(event, row, element) {
-				var model_name = element.data('model_name');
-				if(!element.is('.ui-state-active')) {
-				 	model_name = null;
-				}
-				tags_list.setOption('model_name', model_name);
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				tags_list.setOption('model_name', selection[0] && selection[0].model_name);
 				tags_list.reload();
 			});
 		

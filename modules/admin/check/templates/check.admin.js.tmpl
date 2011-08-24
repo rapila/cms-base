@@ -1,12 +1,8 @@
 jQuery(document).ready(function() {
 	AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 		sidebar.settings.row_click_active_mode = 'activate';
-		sidebar.handle('list.row-click', function(event, row, element) {
-			var action = element.data('action');
-			if(!element.is('.ui-state-active')) {
-			 	action = null;
-			}
-			sidebar.setOption('action', action);
+		sidebar.handle('list-selection_changed', function(event, selection) {
+			sidebar.setOption('action', selection[0] && selection[0].action);
 			sidebar.reload();
 		});
 	});

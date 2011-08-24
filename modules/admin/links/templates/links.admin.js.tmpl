@@ -15,13 +15,8 @@ jQuery(document).ready(function() {
 				}, true, true);
 			}
 			
-			sidebar.handle('list.row-click', function(event, row, element) {
-				var link_category_id = element.data('link_category_id');
-				if(!element.is('.ui-state-active')) {
-					// handle initial_selection for custom elements
-				 	link_category_id = null;
-				}
-				link_list.setOption('link_category_id', link_category_id);
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				link_list.setOption('link_category_id', selection[0] && selection[0].link_category_id);
 				link_list.reload();
 			});
 		});
