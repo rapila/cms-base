@@ -25,6 +25,7 @@ class CriteriaListWidgetDelegate {
 	const SELECT_WITHOUT = '__without';
 	
 	const FILTER_TYPE_IS = 'is';
+	const FILTER_TYPE_IN = 'in';
 	const FILTER_TYPE_BEGINS = 'begins';
 	const FILTER_TYPE_CONTAINS = 'contains';
 	const FILTER_TYPE_TAG = 'tag';
@@ -137,29 +138,38 @@ class CriteriaListWidgetDelegate {
 	}
 	
 	private function handleListFiltering($oCriteria) {
-		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $sFilterValue) {
+		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $mFilterValue) {
 			$sFilterColumn = $this->getDatabaseColumnForColumn($sFilterIdentifier);
-			if($sFilterValue === self::SELECT_ALL || $this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_MANUAL) {
+			$sFilterType = $this->aFilterTypes[$sFilterIdentifier];
+			if($mFilterValue === self::SELECT_ALL || $sFilterType === self::FILTER_TYPE_MANUAL) {
 				continue;
 			}
-			$bInverted = $sFilterValue === self::SELECT_WITHOUT;
-			$sFilterValue = $bInverted ? null : $sFilterValue;
-			if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_IS) {
-				$oCriteria->add($sFilterColumn, $sFilterValue, Criteria::EQUAL);
+			$bInverted = $mFilterValue === self::SELECT_WITHOUT;
+			$mFilterValue = $bInverted ? null : $mFilterValue;
+			if($sFilterType === self::FILTER_TYPE_IS) {
+				$oCriteria->add($sFilterColumn, $mFilterValue, Criteria::EQUAL);
 			//LIKE criterias are not compatible with $bInverted == true
-			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_BEGINS) {
-				$oCriteria->add($sFilterColumn, "$sFilterValue%", Criteria::LIKE);
-			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_CONTAINS) {
-				$oCriteria->add($sFilterColumn, "%$sFilterValue%", Criteria::LIKE);
-			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_IS_NULL) {
-				if($sFilterValue) {
+			} else if($sFilterType === self::FILTER_TYPE_BEGINS) {
+				$oCriteria->add($sFilterColumn, "$mFilterValue%", Criteria::LIKE);
+			} else if($sFilterType === self::FILTER_TYPE_CONTAINS) {
+				$oCriteria->add($sFilterColumn, "%$mFilterValue%", Criteria::LIKE);
+			} else if($sFilterType === self::FILTER_TYPE_IS_NULL) {
+				if($mFilterValue) {
 					$oCriteria->add($sFilterColumn, null, Criteria::ISNULL);
 				} else {
 					$oCriteria->add($sFilterColumn, null, Criteria::ISNOTNULL);
 				}
-			} else if($this->aFilterTypes[$sFilterIdentifier] === self::FILTER_TYPE_TAG) {
+			} else if($sFilterType === self::FILTER_TYPE_IN) {
+				if(!is_array($mFilterValue)) {
+					$mFilterValue = array($mFilterValue);
+				}
+				if(count($mFilterValue) === 0) {
+					$bInverted = true;
+				}
+				$oCriteria->add($sFilterColumn, $mFilterValue, $bInverted ? Criteria::NOT_IN : Criteria::IN);
+			} else if($sFilterType === self::FILTER_TYPE_TAG) {
 				$aTaggedItemIds = array();
-				foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $sFilterValue) as $oTagInstance) {
+				foreach(TagInstancePeer::getByModelNameAndTagName($this->sModelName, $mFilterValue) as $oTagInstance) {
 					$aTaggedItemIds[] = $oTagInstance->getTaggedItemId();
 				}
 				$oCriteria->add($sFilterColumn, $aTaggedItemIds, $bInverted ? Criteria::NOT_IN : Criteria::IN);
@@ -252,7 +262,8 @@ class CriteriaListWidgetDelegate {
 		if(method_exists($this->oCriteriaDelegate, 'deleteRow')) {
 			return $this->oCriteriaDelegate->deleteRow($aRowData, $oCriteria);
 		}
-		return call_user_func(array($this->sPeerClassName, 'doDelete'), $oCriteria);
+		$oObj = call_user_func(array($this->sPeerClassName, 'doSelectOne'), $oCriteria);
+		return $oObj->delete();
 	}
 	
 	public function rowFromData($aRowData) {
