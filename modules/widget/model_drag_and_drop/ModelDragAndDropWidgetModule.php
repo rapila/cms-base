@@ -7,19 +7,18 @@
 class ModelDragAndDropWidgetModule extends WidgetModule {
 	
 	public function drop($sDroppedModelName, $mDroppedId, $sDroppableModelName, $mDroppableId) {
-		if($sDroppedModelName === 'Tag') {
-			TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
-			return 'tagged';
+		$sPeerClass = "{$sDroppedModelName}Peer";
+		if(method_exists($sPeerClass, 'droppedOnto')) {
+			return $sPeerClass::droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId);
 		}
 		return false;
 	}
 	
 	public function getPossibleTargetsFor($sModelName) {
-		//Everything can be tagged
-		if($sModelName === 'Tag') {
-			return '*';
+		$sPeerClass = "{$sModelName}Peer";
+		if(method_exists($sPeerClass, 'dropTargets')) {
+			return $sPeerClass::dropTargets();
 		}
-		
 		return array();
 	}
 	

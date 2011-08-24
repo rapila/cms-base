@@ -20,6 +20,15 @@ class TagPeer extends BaseTagPeer {
 		$oCriteria->select('TaggedItemId');
 		return $oCriteria->find();
 	}
+
+	public static function dropTargets() {
+		return '*';
+	}
+
+	public static function droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId) {
+		TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
+		return 'tagged';
+	}
 	
 	public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {
 		$oCriteria = new Criteria();
