@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 			container.css({backgroundColor: module.color});
 			heading.css({color: module.contrastColor});
 			
-			var result = {
+			var skeleton = {
 				module: module,
 				container: container,
 				heading: heading,
@@ -49,11 +49,15 @@ jQuery(document).ready(function() {
 				module.color = container.css('backgroundColor');
 				module.title = heading.text();
 				module.contrastColor = heading.css('color');
-				result.config_form.triggerHandler('db-configured'); //For Rich-Text areas and other elements that need to clean up before serializeArrayKV gives the correct value
-				module.config = result.config_form.serializeArrayKV();
-				if(result.widget.changed_dashboard_config) {
-					result.widget.settings.dashboard = jQuery.extend(result.widget.settings.dashboard || {}, module.config);
-					result.widget.changed_dashboard_config();
+				if(!skeleton.config_form) {
+					//Still uninitialized
+					return;
+				}
+				skeleton.config_form.triggerHandler('db-configured'); //For Rich-Text areas and other elements that need to clean up before serializeArrayKV gives the correct value
+				module.config = skeleton.config_form.serializeArrayKV();
+				if(skeleton.widget.changed_dashboard_config) {
+					skeleton.widget.settings.dashboard = jQuery.extend(skeleton.widget.settings.dashboard || {}, module.config);
+					skeleton.widget.changed_dashboard_config();
 				}
 				dashboard_control.saveSettings(uid, module);
 			});
@@ -76,7 +80,7 @@ jQuery(document).ready(function() {
 				});
 			});
 			
-			return result;
+			return skeleton;
 		};
 		
 		var init_widget = function(skeleton) {

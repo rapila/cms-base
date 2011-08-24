@@ -110,14 +110,12 @@ h3.status { padding-left: 0.3em; }
   background-repeat: repeat;
   background-attachment: scroll;
   border: 0;
-  color: black;
 }
 #admin_main .ui-list .ui-list-row.ui-state-active {
   background-image: url('theme/images/selected_row.png');
   background-repeat: repeat;
   background-attachment: scroll;
   border: 0;
-  color: black;
 }
 #admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
 #admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon { background-image: url("theme/images/ui-icons_000000_256x240.png"); }
