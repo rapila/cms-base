@@ -256,7 +256,6 @@ Widget.types.detail = {
 		}, (options || {}));
 		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
-		list.settings.row_click_active_class = 'ui-state-highlight';
 		Widget.create(detail_name+"_detail", function(detail) {
 			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
 				if(options.colName && col.identifier !== options.colName) {

@@ -77,17 +77,6 @@
 	background-image: url("theme/images/ui-icons_b8d600_256x240.png");
 }
 
-#admin_sidebar .ui-tree,
-#admin_sidebar .ui-list,
-#admin_sidebar li.ui-state-active,
-#admin_sidebar li.ui-state-hover {
-	font-weight: 700;
-}
-
-#admin_sidebar li.ui-state-active li {
-	color: #000;
-}
-
 .active-sidebar-list-item {
 	border: none;
 	background-color: @sidebar_highlight_color;
@@ -95,15 +84,15 @@
 	border-bottom: 1px solid @border_color;
 }
 
-#admin_sidebar .ui-list li.ui-state-hover,
-#admin_sidebar .ui-list li.ui-state-active {
-	.active-sidebar-list-item;
+#admin_sidebar .ui-tree,
+#admin_sidebar .ui-list,
+#admin_sidebar .ui-list-row.ui-state-active,
+#admin_sidebar .ui-list-row.ui-state-hover {
+	font-weight: 700;
 }
 
-#admin_sidebar .ui-list li.ui-state-highlight {
-	border: none;
-	background-image: none;
-	border-bottom: 1px solid @border_color;
+#admin_sidebar .ui-tree li.ui-state-active li {
+	color: #000;
 }
 
 #admin_sidebar .ui-state-droppable {
@@ -198,6 +187,96 @@ h3.status {
 	padding-left: .3em;
 }
 
+//List style for the content area (mostly table lists)
+#admin_main {
+	.ui-list {
+		.ui-list-row.ui-state-hover,
+		.ui-list-row.ui-state-active {
+			background-image: url('theme/images/selected_row.png');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			border: 0;
+			color: black;
+		}
+
+		tr.ui-list-row.ui-state-hover .ui-icon,
+		tr.ui-list-row.ui-state-highlight .ui-icon {
+			background-image: url("theme/images/ui-icons_000000_256x240.png"); 
+		}
+
+		td:first-child,
+		th:first-child {
+			min-width: 15em;
+			padding-left:5px;
+		}
+	}
+}
+
+#admin_sidebar .ui-list th:first-child {
+	padding-left:5px;
+}
+
+
+//List style for the sidebar (mostly ul lists)
+#admin_sidebar {
+	.ui-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+
+		.ui-list-row.ui-state-hover,
+		.ui-list-row.ui-state-active {
+			.active-sidebar-list-item;
+		}
+
+		.ui-list-row.ui-state-highlight {
+			border: none;
+			background-image: none;
+			border-bottom: 1px solid @border_color;
+		}
+
+		.ui-list-row {
+			cursor: pointer;
+			background-color: transparent;
+		}
+
+		.ui-state-active {
+			color: white;
+		}
+
+		.ui-list-row {
+			font-size: 1.2em;
+			padding: 3px 3px 3px 10px;
+			border-bottom: 1px solid #DDD;
+			line-height: 20px;
+		}
+
+		ol > li.ui-list-row.ui-state-hover {
+			border: none;
+		}
+
+		.ui-list-row,
+		.ui-list-row .ui-list-cell:first-child {
+			padding-left: 5px;
+		}
+
+		.ui-list-headrow span {
+			padding-top: 3px;
+			padding-bottom: 1px;
+			display: inline-block;
+		}
+
+		li.ui-list-headrow span {
+			padding-left: 5px;
+		}
+
+		th {
+			line-height: 14px;
+		}
+	}
+}
+
+// For the default page type
 .page_detail {
 	.filled_modules {
 		min-width: 350px;
