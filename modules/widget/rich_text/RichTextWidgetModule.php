@@ -21,7 +21,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 				$this->aModuleSettings['css_files'] = array($this->aModuleSettings['css_files']);
 			}
 			foreach($this->aModuleSettings['css_files'] as $sCssFile) {
-				$oFileUrl = ResourceFinder::findResourceObject(array('web', 'css', "$sCssFile.css"));
+				$oFileUrl = ResourceFinder::findResourceObject(array(DIRNAME_WEB, 'css', "$sCssFile.css"));
 				if($oFileUrl !== null) {
 					$this->aCssUrls[] = $oFileUrl->getFrontendPath();
 				}
@@ -51,11 +51,18 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$mTemplate->render();
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 			$aResources = $oResourceIncluder->getAllIncludedResources();
-			$this->aCssUrls = array();
 			foreach($aResources as $aResourceInfo) {
-				if($aResourceInfo['resource_type'] === 'css') {
-					$this->aCssUrls[] = $aResourceInfo['location'];
+				if($aResourceInfo['resource_type'] !== 'css') {
+					continue;
 				}
+				if(isset($aResourceInfo['media']) && !preg_match('/\\b(screen|all)\\b/', $aResourceInfo['media'])) {
+					continue;
+				}
+				$this->aCssUrls[] = $aResourceInfo['location'];
+			}
+			//Always include an editor.css file if found
+			foreach(ResourceFinder::findAllResourceObjects(array(DIRNAME_WEB, 'css', 'editor.css')) as $oFileUrl) {
+				$this->aCssUrls[] = $oFileUrl->getFrontendPath();
 			}
 		}
 	}
