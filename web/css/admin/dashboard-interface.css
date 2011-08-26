@@ -113,11 +113,14 @@ a {color:white;}
 	margin: 0 0 7px 7px;
 }
 #dashboard-columns .dashboard-widget .dashboard-widget-content table tr,
-#dashboard-columns .dashboard-widget .dashboard-widget-content table th {
+#dashboard-columns .dashboard-widget .dashboard-widget-content table th,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li
+ {
   background-color: #444444;
   color: inherit;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n) {
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n),
+#dashboard-columns .dashboard-widget .dashboard-widget-content li:nth-child(2n) {
   background-color: #555555;
 }
 
