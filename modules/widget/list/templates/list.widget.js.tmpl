@@ -57,7 +57,7 @@ Widget.types.list = {
 	},
 	
 	activate_row: function(row, event, previous_selection) {
-		if(row.constructor === Number) {
+		if(row && row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
 		var previous_selection = this.active_row_datas().sort();
