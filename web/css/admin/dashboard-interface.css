@@ -97,6 +97,10 @@ a {color:white;}
 	padding: 5px 0 5px 20px;
 	list-style: disc;
 }
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li,
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li:nth-child(2n) {
+	background-color: transparent;
+}
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul.images {
 	padding: 7px 0 0 0;
 	list-style: none;
