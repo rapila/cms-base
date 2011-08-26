@@ -164,11 +164,6 @@ h3.status { padding-left: 0.3em; }
 #admin_sidebar .ui-list ol > li.ui-list-row.ui-state-hover { border: none; }
 #admin_sidebar .ui-list .ui-list-row { padding-left: 5px; }
 #admin_sidebar .ui-list .ui-list-row .ui-list-cell:first-child { padding-left: 5px; }
-#admin_sidebar .ui-list .ui-list-headrow span {
-  padding-top: 3px;
-  padding-bottom: 1px;
-  display: inline-block;
-}
 #admin_sidebar .ui-list li.ui-list-headrow span { padding-left: 5px; }
 #admin_sidebar .ui-list th { line-height: 14px; }
 .page_detail .filled_modules {
