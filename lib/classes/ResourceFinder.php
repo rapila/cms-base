@@ -216,20 +216,28 @@ class ResourceFinder {
 			return;
 		}
 		
-		$sPathExpression = $aExpressions[0];
+		$sPathExpression = array_shift($aExpressions);
 		
 		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
 		if($bAllowPathItemToBeSkipped) {
-			$sPathExpression = $sPathExpression[0];
-			self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sPath, $sInstancePrefix, $sParentName, $sRelativePath);
+			//call current function without the optional element
+			self::findInPathByExpressions($aResult, $aExpressions, $sPath, $sInstancePrefix, $sParentName, $sRelativePath);
+			if(count($sPathExpression) === 0) {
+				//emtpy array means look recursively in all subdirs => put the any-item-specifier (true) and the empty array on the local stack
+				array_unshift($aExpressions, array());
+				$sPathExpression = true;
+			} else {
+				//array has a path element => put the optional argument on the local stack
+				$sPathExpression = $sPathExpression[0];
+			}
 		}
 
-		if($sParentName !== null) {
+		if($sParentName !== null && is_string($sPathExpression)) {
 			$sPathExpression = str_replace('${parent_name}', $sParentName, $sPathExpression);
 			$sPathExpression = str_replace('${parent_name_camelized}', StringUtil::camelize($sParentName, true), $sPathExpression);
 		}
 		
-		if(!StringUtil::startsWith($sPathExpression, "/")) {
+		if(is_string($sPathExpression) && !StringUtil::startsWith($sPathExpression, "/")) {
 			//Take the shortcut when only dealing with a static file name
 			$sFilePath = "$sPath/$sPathExpression";
 			if($sRelativePath === null) {
@@ -238,21 +246,21 @@ class ResourceFinder {
 				$sNextRelativePath = "$sRelativePath/$sPathExpression";
 			}
 			if(file_exists($sFilePath)) {
-				if(count($aExpressions) > 1) {
-					self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sPathExpression, $sNextRelativePath);
+				if(count($aExpressions) > 0) {
+					self::findInPathByExpressions($aResult, $aExpressions, $sFilePath, $sInstancePrefix, $sPathExpression, $sNextRelativePath);
 				} else {
 					$aResult[$sNextRelativePath] = new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath);
 				}
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-				if(preg_match($sPathExpression, $sFileName) !== 0) {
+				if($sPathExpression === true || preg_match($sPathExpression, $sFileName) !== 0) {
 					$sNextRelativePath = $sFileName;
 					if($sRelativePath !== null) {
 						$sNextRelativePath = "$sRelativePath/$sFileName";
 					}
-					if(count($aExpressions) > 1) {
-						self::findInPathByExpressions($aResult, array_slice($aExpressions, 1), $sFilePath, $sInstancePrefix, $sFileName, $sNextRelativePath);
+					if(count($aExpressions) > 0) {
+						self::findInPathByExpressions($aResult, $aExpressions, $sFilePath, $sInstancePrefix, $sFileName, $sNextRelativePath);
 					} else {
 						$aResult[$sNextRelativePath] = new FileResource($sFilePath, $sInstancePrefix, $sNextRelativePath);
 					}

@@ -51,4 +51,24 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ResourceFinder::ANY_NAME_OR_TYPE_PATTERN), 'config.yml'), ResourceFinder::SEARCH_BASE_ONLY);
 		$this->assertSame(array(MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging/config.yml',MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
 	}
+
+	public function testAnyPathItemByExpression() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, true, 'config.yml'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging/config.yml',MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
+	}
+
+	public function testAnyOptionalPathItemByExpression() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(true), 'config.yml'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging/config.yml',MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
+	}
+
+	public function testRecursivePathItemByExpression() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_WEB, 'css', array(), '/^.+\.custom\.css$/'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(MAIN_DIR.'/base/web/css/admin/theme/jquery-ui-1.7.2.custom.css', MAIN_DIR.'/base/web/css/preview/theme/jquery-ui-1.7.2.custom.css'), $aConfigPaths);
+	}
+
+	public function testNoRecursivePathItemByExpression() {
+		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_WEB, 'css', array(true), '/^.+\.custom\.css$/'), ResourceFinder::SEARCH_BASE_ONLY);
+		$this->assertSame(array(), $aConfigPaths);
+	}
 }
