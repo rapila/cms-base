@@ -10,6 +10,7 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		foreach($aAllSqlFiles as $oFile) {
 			$aResult[$oFile->getFileName()] = $oFile->getInternalPath();
 		}
+		rsort($aResult);
 		return $aResult;
 	}
 	
