@@ -51,7 +51,12 @@ table.ui-list {
 }
 
 table.ui-list { border-collapse: collapse; border-spacing: 0;}
-table.ui-list td { padding: .3em .5em .3em 0.2em; vertical-align: top;}
+.ui-list td, .ui-list li { padding: .3em .5em .3em 0.2em; vertical-align: top;}
+
+table.ui-list td:first-child,
+.ui-list li {
+	padding-left: 5px;
+}
 
 table.ui-list .ui-list-cell a {
 	color: #333 !important;
