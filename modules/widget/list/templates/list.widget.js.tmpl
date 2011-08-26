@@ -140,7 +140,7 @@ Widget.types.list = {
 			this._element.append(row);
 		}
 		
-		if(this.settings.row_model_drag_and_drop_identifier) {
+		if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
 			this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowData[this.settings.row_model_drag_and_drop_identifier], true);
 		}
 		
