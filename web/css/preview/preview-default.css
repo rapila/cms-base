@@ -120,10 +120,6 @@ div.ui-widget-content {
 	border-color: #21669b;
 }
 
-.preview_edit {
-	cursor: pointer;
-}
-
 #widget-notifications {
   left: 20px !important;
   min-width: 400px;
