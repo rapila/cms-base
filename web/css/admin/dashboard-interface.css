@@ -93,7 +93,7 @@ a {color:white;}
 	color: #EEE;
 	font-size: 12px;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content ul {
+#dashboard-columns *[data-widget-type=static_text] ul {
 	padding: 5px 0 5px 20px;
 	list-style: disc;
 }
