@@ -23,7 +23,7 @@ Widget.types.link_category_detail = {
 	},
 	
 	fill_data: function() {
-		this.getCategoryData(function(category_data) {
+		this.getLinkCategoryData(function(category_data) {
 			this.content.find("input[name='name']").val(category_data.Name);
 			this.content.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
 			this.content.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
