@@ -1,67 +1,102 @@
 jQuery(document).ready(function() {
-	// init main content
-	AdminInterface.content.find('div[data-widget-type="documents_view"]').prepareWidget(function(documents_view) {
-		// init sidebar
-		var sidebar;
-		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(widget) {
-			sidebar = widget;
-		
-			//File upload
-			Widget.create('file_upload', function(file_upload) {
-				file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
-					var dropped_on_document_category_id = sidebar.collect_row_data(target).document_category_id;
-					return {document_category_id: dropped_on_document_category_id, callback: function(document_id) {
-						var selected_document_category_id = documents_view.getDocumentCategoryId();
-						if(selected_document_category_id == '__all' || selected_document_category_id == dropped_on_document_category_id) {
-							documents_view.append_document(document_id);
-						}
-					}};
-				});
-			});
-		
-			sidebar.settings.row_click_active_mode = 'activate';
-			var initial_selection = "{{writeRequestValue=document_category_id}}";
-			if(initial_selection) {
-				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
-				sidebar.handle('loaded', function() {
-					sidebar.activate_row(sidebar.row_from_row_data({document_category_id: initial_selection}));
-				}, true, true);
-			}
 
-			// sidebar list row click
-			sidebar.handle('list-selection_changed', function(event, selection) {
-				documents_view.set_document_category_id(selection[0] && selection[0].document_category_id);
-				documents_view.reload();
-				
-				jQuery('#new_sidebar_input').remove();
+	var sidebar = AdminInterface.sidebar;
+	var content_list = AdminInterface.content;
+	var info_bar = AdminInterface.info_bar;
+	
+	var handlers = [];
+	
+	sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+		sidebar = widget;
+	}.deferred(handlers));
+	content_list.children('[data-widget-type]').prepareWidget(function(widget) {
+		content_list = widget;
+	}.deferred(handlers));
+	info_bar.prepareWidget(function(widget) {
+		info_bar = widget;
+	}.deferred(handlers));
+
+	jQuery.when.apply(jQuery, handlers).then(function() {
+		//File upload
+		Widget.create('file_upload', function(file_upload) {
+			file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
+				var dropped_on_document_category_id = sidebar.collect_row_data(target).document_category_id;
+				return {document_category_id: dropped_on_document_category_id, callback: function(document_id) {
+					var selected_document_category_id = content_list.getDocumentCategoryId();
+					if(selected_document_category_id == '__all' || selected_document_category_id == dropped_on_document_category_id) {
+						content_list.append_document(document_id);
+					}
+				}};
 			});
 		});
 	
-		// init infobar
-		AdminInterface.info_bar.prepareWidget(function(info_bar) {
-			info_bar.add_button('add-new-item', function() {
-				Widget.create('document_detail', function(widget) {
-					widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
-					widget.content.find("select[name='language_id']").val('');
-					widget.open();
-					widget.save_callback = function() {
-						documents_view.reload();
-					};
-				});
-			}, 'n', true).add_button('add-new-item', function() {
-				Widget.create('sidebar_input', function(widget) {
-					widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', sidebar, 'cmos-document_categories_changed');
-				});
-			}).add_button('action', function() {
-					alert('action example: delete all currently shown documents');
-			}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
-				documents_view.set_search_string(search);
-				if(documents_view.changed) {
-					documents_view.reload();
-				}
+		// add buttons
+		info_bar.add_button('add-new-item', function() {
+			Widget.create('document_detail', function(widget) {
+				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
+				widget.content.find("select[name='language_id']").val('');
+				widget.open();
+				widget.save_callback = function() {
+					content_list.reload();
+				};
 			});
-			// add row_count_info
-			info_bar.add_row_count_info_for_list(documents_view);
+		}, 'n', true).add_button('add-new-item', function() {
+			Widget.create('sidebar_input', function(widget) {
+				widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', sidebar, 'cmos-document_categories_changed');
+			});
 		});
+		
+		/// @todo remove and edit buttons, only show if has permission
+		var remove_item = info_bar.add_button('remove-item', function() {
+			sidebar.delete_row(sidebar.active_row());
+		}).disable();
+		
+		var edit_item = info_bar.add_button('edit-item', function() {
+			Widget.create('document_category_detail', function(widget) {
+				widget.setDocumentCategoryId(sidebar.active_row_datas()[0].document_category_id);
+				widget.open();
+				widget.fill_data();
+				widget.save_callback = function() {
+					sidebar.reload();
+				};
+			});
+		}).disable();
+
+		/// @todo implement delete actions etc
+		var action_item = info_bar.add_button('item-action', function() {
+				alert('action example: delete all currently shown documents');
+		}).disable();
+		
+		// search field
+		info_bar.add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
+			content_list.set_search_string(search);
+			if(content_list.changed) {
+				content_list.reload();
+			}
+		});
+		
+		// add row_count_info
+		info_bar.add_row_count_info_for_list(content_list);
+		
+		// sidebar selection changed
+		sidebar.handle('list-selection_changed', function(event, selection) {
+			var document_category_id = selection[0] && selection[0].document_category_id;
+			var has_detail = selection.length === 1 && document_category_id.constructor === Number;
+			remove_item[has_detail ? 'enable' : 'disable']();
+			edit_item[has_detail ? 'enable' : 'disable']();
+			content_list.set_document_category_id(document_category_id);
+			content_list.reload();
+			
+			jQuery('#new_sidebar_input').remove();
+		});
+		
+		sidebar.settings.row_click_active_mode = 'activate';
+		var initial_selection = "{{writeRequestValue=document_category_id}}";
+		if(initial_selection) {
+			initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
+			sidebar.handle('loaded', function() {
+				sidebar.activate_row(sidebar.row_from_row_data({document_category_id: initial_selection}));
+			}, true, true);
+		}
 	});
 });
