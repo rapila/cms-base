@@ -43,9 +43,10 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		
 		//Triple all rules and prepend specific strings
 		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications', 'body > .cke_skin_kama');
-		foreach($oCssContents->getAllSelectors() as $oSelector) {
+		foreach($oCssContents->getAllDeclarationBlocks() as $oBlock) {
 			$aNewSelector = array();
-			foreach($oSelector->getSelector() as $iKey => $sSelector) {
+			foreach($oBlock->getSelectors() as $iKey => $oSelector) {
+				$sSelector = $oSelector->getSelector();
 				if(StringUtil::startsWith($sSelector, "body ") || StringUtil::startsWith($sSelector, "html ")) {
 					$aNewSelector[] = $sSelector;
 				} else {
@@ -58,7 +59,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 					}
 				}
 			}
-			$oSelector->setSelector($aNewSelector);
+			$oBlock->setSelector($aNewSelector);
 		}
 		
 		//Absolutize all URLs

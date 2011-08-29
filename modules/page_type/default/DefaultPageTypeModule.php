@@ -433,24 +433,25 @@ class DefaultPageTypeModule extends PageTypeModule {
 		//Change selectors
 		$sContainerClass = '.filled_modules';
 		$aMatches;
-		foreach($oCss->getAllSelectors() as $oSelector) {
-			$aSelector = $oSelector->getSelector();
-			foreach($aSelector as $iKey => $sSelector) {
+		foreach($oCss->getAllDeclarationBlocks() as $oBlock) {
+			$aSelectors = $oBlock->getSelectors();
+			foreach($aSelectors as $iKey => $oSelector) {
+				$sSelector = $oSelector->getSelector();
 				if(preg_match('/\\bhtml\\b.+\\bbody\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
-					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+					$sSelector = substr($sSelector, 0, $aMatches[0][1]).substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
 				}
 				if(preg_match('/\\b(html|body)\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
-					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).$sContainerClass.substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+					$sSelector = substr($sSelector, 0, $aMatches[0][1]).$sContainerClass.substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
 				} else {
-					$aSelector[$iKey] = "$sContainerClass $sSelector";
+					$sSelector = "$sContainerClass $sSelector";
 				}
+				$oSelector->setSelector($sSelector);
 			}
-			$oSelector->setSelector($aSelector);
 		}
 		
 		//Change values
-		foreach($oCss->getAllValues() as $mValue) {
-			if($mValue instanceof CSSSize && !$mValue->isRelative()) {
+		foreach($oCss->getAllValues(null, true) as $mValue) {
+			if($mValue instanceof CSSSize && $mValue->isSize() && !$mValue->isRelative()) {
 				$mValue->setSize($mValue->getSize()/3);
 			}
 		}
@@ -461,6 +462,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oRuleSet->removeRule('background-');
 			$oRuleSet->removeRule('list-');
 			$oRuleSet->removeRule('cursor');
+			$oRuleSet->removeRule('z-index');
 		}
 	}
 }
