@@ -121,6 +121,7 @@
 	</foreign-key>
 	<column name="is_admin" type="boolean" size="1" default="0" />
 	<column name="is_backend_login_enabled" type="boolean" size="1" default="1" />
+	<column name="is_admin_login_enabled" type="boolean" size="1" default="1" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="password_recover_hint" type="varchar" size="10" />
 	<column name="backend_settings" type="blob" required="false" />

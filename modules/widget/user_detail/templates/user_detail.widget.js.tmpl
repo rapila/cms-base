@@ -11,6 +11,7 @@ Widget.types.user_detail = {
 			});
 			this.rights_section = this.content.find('div.rights_section');
 			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
+			this.admin_login_enabled = this.content.find("input[name='is_admin_login_enabled']").prop('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");
 			is_admin.bind('change', function() {
 				_this.toggle_rights_section(jQuery(this).prop('checked') === false);
@@ -50,8 +51,10 @@ Widget.types.user_detail = {
 			}
 		});
 		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
+		this.admin_login_enabled.attr('disabled', !show_roles_groups);	
 		if(!show_roles_groups) {
 			this.backend_login_enabled.prop('checked', true);
+			this.admin_login_enabled.prop('checked', true);
 		}
 	},
 	
@@ -64,14 +67,21 @@ Widget.types.user_detail = {
 				password_section.show();
 				this.detail_widget.content.find(".show_if_set").show();
 			}
+			if(!user_data.IsSessionUser) {
+				this.content.find('.status_section input').prop('disabled', false);
+			}
 			this.toggle_rights_section(!user_data.IsAdmin);
+			if(user_data.IsSessionUser) {
+				this.content.find('.status_section input').prop('disabled', true);
+			}
 			this.content.find("input[name='old_password']").val();
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);
 			this.content.find("input[name='email']").val(user_data.Email);
 			this.content.find("select[name='language_id']").val(user_data.LanguageId || '');
-			this.content.find("input[name='is_backend_login_enabled']").prop('checked', user_data.IsBackendLoginEnabled);
+			this.backend_login_enabled.prop('checked', user_data.IsBackendLoginEnabled);
+			this.admin_login_enabled.prop('checked', user_data.IsAdminLoginEnabled);
 			this.content.find("input[name='password']").val('');
 			this.content.find("input[name='password_confirm']").val('');
 			this.content.find(".updated_info").text(user_data.UpdatedInfo);

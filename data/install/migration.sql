@@ -365,3 +365,6 @@ ALTER TABLE `languages` ADD `path_prefix` VARCHAR(20) NOT NULL;
 UPDATE `languages` SET `path_prefix` = `id` WHERE `path_prefix` = '';
 ALTER TABLE `languages` ADD UNIQUE KEY `languages_U_1` (`path_prefix`);
 
+#20110931.2130
+ALTER TABLE `users` ADD `is_admin_login_enabled` TINYINT(1) default 1;
+UPDATE `users` SET `is_admin_login_enabled` = `is_backend_login_enabled` WHERE 1;

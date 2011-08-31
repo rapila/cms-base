@@ -16,6 +16,7 @@
  * @method     UserQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     UserQuery orderByIsAdmin($order = Criteria::ASC) Order by the is_admin column
  * @method     UserQuery orderByIsBackendLoginEnabled($order = Criteria::ASC) Order by the is_backend_login_enabled column
+ * @method     UserQuery orderByIsAdminLoginEnabled($order = Criteria::ASC) Order by the is_admin_login_enabled column
  * @method     UserQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method     UserQuery orderByPasswordRecoverHint($order = Criteria::ASC) Order by the password_recover_hint column
  * @method     UserQuery orderByBackendSettings($order = Criteria::ASC) Order by the backend_settings column
@@ -34,6 +35,7 @@
  * @method     UserQuery groupByLanguageId() Group by the language_id column
  * @method     UserQuery groupByIsAdmin() Group by the is_admin column
  * @method     UserQuery groupByIsBackendLoginEnabled() Group by the is_backend_login_enabled column
+ * @method     UserQuery groupByIsAdminLoginEnabled() Group by the is_admin_login_enabled column
  * @method     UserQuery groupByIsInactive() Group by the is_inactive column
  * @method     UserQuery groupByPasswordRecoverHint() Group by the password_recover_hint column
  * @method     UserQuery groupByBackendSettings() Group by the backend_settings column
@@ -255,6 +257,7 @@
  * @method     User findOneByLanguageId(string $language_id) Return the first User filtered by the language_id column
  * @method     User findOneByIsAdmin(boolean $is_admin) Return the first User filtered by the is_admin column
  * @method     User findOneByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return the first User filtered by the is_backend_login_enabled column
+ * @method     User findOneByIsAdminLoginEnabled(boolean $is_admin_login_enabled) Return the first User filtered by the is_admin_login_enabled column
  * @method     User findOneByIsInactive(boolean $is_inactive) Return the first User filtered by the is_inactive column
  * @method     User findOneByPasswordRecoverHint(string $password_recover_hint) Return the first User filtered by the password_recover_hint column
  * @method     User findOneByBackendSettings(resource $backend_settings) Return the first User filtered by the backend_settings column
@@ -273,6 +276,7 @@
  * @method     array findByLanguageId(string $language_id) Return User objects filtered by the language_id column
  * @method     array findByIsAdmin(boolean $is_admin) Return User objects filtered by the is_admin column
  * @method     array findByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return User objects filtered by the is_backend_login_enabled column
+ * @method     array findByIsAdminLoginEnabled(boolean $is_admin_login_enabled) Return User objects filtered by the is_admin_login_enabled column
  * @method     array findByIsInactive(boolean $is_inactive) Return User objects filtered by the is_inactive column
  * @method     array findByPasswordRecoverHint(string $password_recover_hint) Return User objects filtered by the password_recover_hint column
  * @method     array findByBackendSettings(resource $backend_settings) Return User objects filtered by the backend_settings column
@@ -592,6 +596,23 @@ abstract class BaseUserQuery extends ModelCriteria
 			$is_backend_login_enabled = in_array(strtolower($isBackendLoginEnabled), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(UserPeer::IS_BACKEND_LOGIN_ENABLED, $isBackendLoginEnabled, $comparison);
+	}
+
+	/**
+	 * Filter the query on the is_admin_login_enabled column
+	 * 
+	 * @param     boolean|string $isAdminLoginEnabled The value to use as filter.
+	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UserQuery The current query, for fluid interface
+	 */
+	public function filterByIsAdminLoginEnabled($isAdminLoginEnabled = null, $comparison = null)
+	{
+		if (is_string($isAdminLoginEnabled)) {
+			$is_admin_login_enabled = in_array(strtolower($isAdminLoginEnabled), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		}
+		return $this->addUsingAlias(UserPeer::IS_ADMIN_LOGIN_ENABLED, $isAdminLoginEnabled, $comparison);
 	}
 
 	/**

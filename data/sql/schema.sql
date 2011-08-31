@@ -313,6 +313,7 @@ CREATE TABLE `users`
 	`language_id` VARCHAR(3),
 	`is_admin` TINYINT(1) default 0,
 	`is_backend_login_enabled` TINYINT(1) default 1,
+	`is_admin_login_enabled` TINYINT(1) default 1,
 	`is_inactive` TINYINT(1) default 0,
 	`password_recover_hint` VARCHAR(10),
 	`backend_settings` LONGBLOB,

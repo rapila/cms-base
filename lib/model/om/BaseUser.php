@@ -87,6 +87,13 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected $is_backend_login_enabled;
 
 	/**
+	 * The value for the is_admin_login_enabled field.
+	 * Note: this column has a database default value of: true
+	 * @var        boolean
+	 */
+	protected $is_admin_login_enabled;
+
+	/**
 	 * The value for the is_inactive field.
 	 * Note: this column has a database default value of: false
 	 * @var        boolean
@@ -398,6 +405,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	{
 		$this->is_admin = false;
 		$this->is_backend_login_enabled = true;
+		$this->is_admin_login_enabled = true;
 		$this->is_inactive = false;
 	}
 
@@ -509,6 +517,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	public function getIsBackendLoginEnabled()
 	{
 		return $this->is_backend_login_enabled;
+	}
+
+	/**
+	 * Get the [is_admin_login_enabled] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getIsAdminLoginEnabled()
+	{
+		return $this->is_admin_login_enabled;
 	}
 
 	/**
@@ -842,6 +860,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	} // setIsBackendLoginEnabled()
 
 	/**
+	 * Set the value of [is_admin_login_enabled] column.
+	 * 
+	 * @param      boolean $v new value
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function setIsAdminLoginEnabled($v)
+	{
+		if ($v !== null) {
+			$v = (boolean) $v;
+		}
+
+		if ($this->is_admin_login_enabled !== $v || $this->isNew()) {
+			$this->is_admin_login_enabled = $v;
+			$this->modifiedColumns[] = UserPeer::IS_ADMIN_LOGIN_ENABLED;
+		}
+
+		return $this;
+	} // setIsAdminLoginEnabled()
+
+	/**
 	 * Set the value of [is_inactive] column.
 	 * 
 	 * @param      boolean $v new value
@@ -1060,6 +1098,10 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				return false;
 			}
 
+			if ($this->is_admin_login_enabled !== true) {
+				return false;
+			}
+
 			if ($this->is_inactive !== false) {
 				return false;
 			}
@@ -1096,19 +1138,20 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->language_id = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->is_admin = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
 			$this->is_backend_login_enabled = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->is_inactive = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
-			$this->password_recover_hint = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			if ($row[$startcol + 12] !== null) {
+			$this->is_admin_login_enabled = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
+			$this->is_inactive = ($row[$startcol + 11] !== null) ? (boolean) $row[$startcol + 11] : null;
+			$this->password_recover_hint = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			if ($row[$startcol + 13] !== null) {
 				$this->backend_settings = fopen('php://memory', 'r+');
-				fwrite($this->backend_settings, $row[$startcol + 12]);
+				fwrite($this->backend_settings, $row[$startcol + 13]);
 				rewind($this->backend_settings);
 			} else {
 				$this->backend_settings = null;
 			}
-			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->created_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
-			$this->updated_by = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+			$this->created_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->created_by = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+			$this->updated_by = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1117,7 +1160,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 17; // 17 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 18; // 18 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating User object", $e);
@@ -2375,24 +2418,27 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				return $this->getIsBackendLoginEnabled();
 				break;
 			case 10:
-				return $this->getIsInactive();
+				return $this->getIsAdminLoginEnabled();
 				break;
 			case 11:
-				return $this->getPasswordRecoverHint();
+				return $this->getIsInactive();
 				break;
 			case 12:
-				return $this->getBackendSettings();
+				return $this->getPasswordRecoverHint();
 				break;
 			case 13:
-				return $this->getCreatedAt();
+				return $this->getBackendSettings();
 				break;
 			case 14:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 15:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 16:
+				return $this->getCreatedBy();
+				break;
+			case 17:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -2429,13 +2475,14 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$keys[7] => $this->getLanguageId(),
 			$keys[8] => $this->getIsAdmin(),
 			$keys[9] => $this->getIsBackendLoginEnabled(),
-			$keys[10] => $this->getIsInactive(),
-			$keys[11] => $this->getPasswordRecoverHint(),
-			$keys[12] => $this->getBackendSettings(),
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
-			$keys[15] => $this->getCreatedBy(),
-			$keys[16] => $this->getUpdatedBy(),
+			$keys[10] => $this->getIsAdminLoginEnabled(),
+			$keys[11] => $this->getIsInactive(),
+			$keys[12] => $this->getPasswordRecoverHint(),
+			$keys[13] => $this->getBackendSettings(),
+			$keys[14] => $this->getCreatedAt(),
+			$keys[15] => $this->getUpdatedAt(),
+			$keys[16] => $this->getCreatedBy(),
+			$keys[17] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguageRelatedByLanguageId) {
@@ -2503,24 +2550,27 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->setIsBackendLoginEnabled($value);
 				break;
 			case 10:
-				$this->setIsInactive($value);
+				$this->setIsAdminLoginEnabled($value);
 				break;
 			case 11:
-				$this->setPasswordRecoverHint($value);
+				$this->setIsInactive($value);
 				break;
 			case 12:
-				$this->setBackendSettings($value);
+				$this->setPasswordRecoverHint($value);
 				break;
 			case 13:
-				$this->setCreatedAt($value);
+				$this->setBackendSettings($value);
 				break;
 			case 14:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 15:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 16:
+				$this->setCreatedBy($value);
+				break;
+			case 17:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -2557,13 +2607,14 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if (array_key_exists($keys[7], $arr)) $this->setLanguageId($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setIsAdmin($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setIsBackendLoginEnabled($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setIsInactive($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setPasswordRecoverHint($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setBackendSettings($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
+		if (array_key_exists($keys[10], $arr)) $this->setIsAdminLoginEnabled($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setIsInactive($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setPasswordRecoverHint($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setBackendSettings($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setCreatedBy($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setUpdatedBy($arr[$keys[17]]);
 	}
 
 	/**
@@ -2585,6 +2636,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($this->isColumnModified(UserPeer::LANGUAGE_ID)) $criteria->add(UserPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(UserPeer::IS_ADMIN)) $criteria->add(UserPeer::IS_ADMIN, $this->is_admin);
 		if ($this->isColumnModified(UserPeer::IS_BACKEND_LOGIN_ENABLED)) $criteria->add(UserPeer::IS_BACKEND_LOGIN_ENABLED, $this->is_backend_login_enabled);
+		if ($this->isColumnModified(UserPeer::IS_ADMIN_LOGIN_ENABLED)) $criteria->add(UserPeer::IS_ADMIN_LOGIN_ENABLED, $this->is_admin_login_enabled);
 		if ($this->isColumnModified(UserPeer::IS_INACTIVE)) $criteria->add(UserPeer::IS_INACTIVE, $this->is_inactive);
 		if ($this->isColumnModified(UserPeer::PASSWORD_RECOVER_HINT)) $criteria->add(UserPeer::PASSWORD_RECOVER_HINT, $this->password_recover_hint);
 		if ($this->isColumnModified(UserPeer::BACKEND_SETTINGS)) $criteria->add(UserPeer::BACKEND_SETTINGS, $this->backend_settings);
@@ -2662,6 +2714,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$copyObj->setLanguageId($this->language_id);
 		$copyObj->setIsAdmin($this->is_admin);
 		$copyObj->setIsBackendLoginEnabled($this->is_backend_login_enabled);
+		$copyObj->setIsAdminLoginEnabled($this->is_admin_login_enabled);
 		$copyObj->setIsInactive($this->is_inactive);
 		$copyObj->setPasswordRecoverHint($this->password_recover_hint);
 		$copyObj->setBackendSettings($this->backend_settings);
@@ -9529,6 +9582,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$this->language_id = null;
 		$this->is_admin = null;
 		$this->is_backend_login_enabled = null;
+		$this->is_admin_login_enabled = null;
 		$this->is_inactive = null;
 		$this->password_recover_hint = null;
 		$this->backend_settings = null;

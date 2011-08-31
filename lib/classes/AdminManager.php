@@ -21,8 +21,8 @@ class AdminManager extends Manager {
 		if(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			$oUser = Session::getSession()->getUser();
 			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
-			if(isset($_REQUEST['preview'])) {
-				LinkUtil::redirect(LinkUtil::link($_REQUEST['preview'], 'PreviewManager'));
+			if(isset($_REQUEST['preview']) || !$oUser->getIsAdminLoginEnabled()) {
+				LinkUtil::redirect(LinkUtil::link(@$_REQUEST['preview'], 'PreviewManager'));
 			}
 		}
 	}

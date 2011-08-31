@@ -47,6 +47,7 @@ class UserTableMap extends TableMap {
 		$this->addForeignKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR', 'languages', 'ID', false, 3, null);
 		$this->addColumn('IS_ADMIN', 'IsAdmin', 'BOOLEAN', false, 1, false);
 		$this->addColumn('IS_BACKEND_LOGIN_ENABLED', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
+		$this->addColumn('IS_ADMIN_LOGIN_ENABLED', 'IsAdminLoginEnabled', 'BOOLEAN', false, 1, true);
 		$this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
 		$this->addColumn('PASSWORD_RECOVER_HINT', 'PasswordRecoverHint', 'VARCHAR', false, 10, null);
 		$this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'BLOB', false, null, null);

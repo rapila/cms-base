@@ -12,8 +12,8 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
-		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, UserKindInputWidgetModule::IS_BACKEND_LOGIN_ENABLED);
-		$this->oDelegateProxy->setUserKind(UserKindInputWidgetModule::IS_BACKEND_LOGIN_ENABLED);
+		$this->oDelegateProxy->setUserKind(CriteriaListWidgetDelegate::SELECT_ALL);
+		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, $this->oDelegateProxy->getUserKind());
 	}
 	
 	public function doWidget() {
@@ -24,7 +24,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'full_name', 'username', 'email', 'user_kind', 'is_admin', 'language_id', 'updated_at_formatted', 'delete');
+		return array('id', 'full_name', 'username', 'email', 'user_kind', 'language_id', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -40,13 +40,12 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.email');
 				break;
 			case 'user_kind':
+			  $aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
 				$aResult['heading'] = '';
+				$aResult['has_data'] = true;
 				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;			
-			case 'is_admin':
-				$aResult['heading'] = StringPeer::getString('wns.user.admin');
-				break;
 			case 'language_id':
 				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
@@ -69,9 +68,6 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		if($sColumnIdentifier === 'updated_at_formatted') {
 			return UserPeer::UPDATED_AT;
-		}
-		if($sColumnIdentifier === 'user_kind') {
-			return UserPeer::IS_BACKEND_LOGIN_ENABLED;
 		}
 		if($sColumnIdentifier === 'group_id') {
 			return UserGroupPeer::GROUP_ID;
@@ -100,7 +96,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'user_kind') {
-			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
 		}
 		if($sColumnIdentifier === 'group_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
@@ -109,7 +105,19 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = new Criteria();
+		$oCriteria = UserQuery::create();
+		$sUserKind = $this->oDelegateProxy->getUserKind();
+		if($sUserKind !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			if($sUserKind === User::IS_ADMIN_USER) {
+				$oCriteria->filterByIsAdmin(true);
+			} else if($sUserKind === User::IS_BACKEND_LOGIN_ENABLED) {
+				$oCriteria->filterByIsBackendLoginEnabled(true);
+			} else if($sUserKind === User::IS_ADMIN_LOGIN_ENABLED) {
+				$oCriteria->filterByIsBackendLoginEnabled(true)->filterByIsAdminLoginEnabled(true);
+			} else {
+				$oCriteria->filterByIsAdmin(false)->filterByIsBackendLoginEnabled(false)->filterByIsAdminLoginEnabled(false);
+			}
+		}
 		$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);
 		return $oCriteria;
 	}

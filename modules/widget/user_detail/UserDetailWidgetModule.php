@@ -80,9 +80,6 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oUser->setLastName($aUserData['last_name']);
 		$oUser->setEmail($aUserData['email']);
 		$oUser->setLanguageId($aUserData['language_id']); 
-		if(!$oUser->isSessionUser()) { 
-			$oUser->setIsBackendLoginEnabled($aUserData['is_admin'] || $aUserData['is_backend_login_enabled']);
-		}
 		
 		//Password
 		if($aUserData['password'] !== '') {
@@ -93,8 +90,10 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		//This also means the user’s an admin because non-admins can only edit themselves
 		if(!$oUser->isSessionUser()) {
 			//Admin & inactive flags
-			$oUser->setIsInactive($aUserData['is_inactive']);
+			$oUser->setIsBackendLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled'] || $aUserData['is_backend_login_enabled']);
+			$oUser->setIsAdminLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled']);
 			$oUser->setIsAdmin($aUserData['is_admin']);
+			$oUser->setIsInactive($aUserData['is_inactive']);
 			
 			//Groups
 			foreach($oUser->getUserGroupsRelatedByUserId() as $oUserGroup) {
