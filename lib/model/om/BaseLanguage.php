@@ -31,6 +31,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	protected $id;
 
 	/**
+	 * The value for the path_prefix field.
+	 * @var        string
+	 */
+	protected $path_prefix;
+
+	/**
 	 * The value for the is_active field.
 	 * @var        boolean
 	 */
@@ -133,6 +139,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	/**
+	 * Get the [path_prefix] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getPathPrefix()
+	{
+		return $this->path_prefix;
 	}
 
 	/**
@@ -270,6 +286,26 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 		return $this;
 	} // setId()
+
+	/**
+	 * Set the value of [path_prefix] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setPathPrefix($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->path_prefix !== $v) {
+			$this->path_prefix = $v;
+			$this->modifiedColumns[] = LanguagePeer::PATH_PREFIX;
+		}
+
+		return $this;
+	} // setPathPrefix()
 
 	/**
 	 * Set the value of [is_active] column.
@@ -490,12 +526,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		try {
 
 			$this->id = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-			$this->is_active = ($row[$startcol + 1] !== null) ? (boolean) $row[$startcol + 1] : null;
-			$this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->created_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->updated_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->created_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->updated_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->path_prefix = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->is_active = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
+			$this->sort = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->updated_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->created_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->updated_by = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -504,7 +541,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 8; // 8 = LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Language object", $e);
@@ -999,21 +1036,24 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getIsActive();
+				return $this->getPathPrefix();
 				break;
 			case 2:
-				return $this->getSort();
+				return $this->getIsActive();
 				break;
 			case 3:
-				return $this->getCreatedAt();
+				return $this->getSort();
 				break;
 			case 4:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 5:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 6:
+				return $this->getCreatedBy();
+				break;
+			case 7:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1041,12 +1081,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$keys = LanguagePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getIsActive(),
-			$keys[2] => $this->getSort(),
-			$keys[3] => $this->getCreatedAt(),
-			$keys[4] => $this->getUpdatedAt(),
-			$keys[5] => $this->getCreatedBy(),
-			$keys[6] => $this->getUpdatedBy(),
+			$keys[1] => $this->getPathPrefix(),
+			$keys[2] => $this->getIsActive(),
+			$keys[3] => $this->getSort(),
+			$keys[4] => $this->getCreatedAt(),
+			$keys[5] => $this->getUpdatedAt(),
+			$keys[6] => $this->getCreatedBy(),
+			$keys[7] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUserRelatedByCreatedBy) {
@@ -1090,21 +1131,24 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setIsActive($value);
+				$this->setPathPrefix($value);
 				break;
 			case 2:
-				$this->setSort($value);
+				$this->setIsActive($value);
 				break;
 			case 3:
-				$this->setCreatedAt($value);
+				$this->setSort($value);
 				break;
 			case 4:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 5:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 6:
+				$this->setCreatedBy($value);
+				break;
+			case 7:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1132,12 +1176,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$keys = LanguagePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setIsActive($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[1], $arr)) $this->setPathPrefix($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setIsActive($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setSort($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setCreatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setUpdatedBy($arr[$keys[7]]);
 	}
 
 	/**
@@ -1150,6 +1195,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$criteria = new Criteria(LanguagePeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(LanguagePeer::ID)) $criteria->add(LanguagePeer::ID, $this->id);
+		if ($this->isColumnModified(LanguagePeer::PATH_PREFIX)) $criteria->add(LanguagePeer::PATH_PREFIX, $this->path_prefix);
 		if ($this->isColumnModified(LanguagePeer::IS_ACTIVE)) $criteria->add(LanguagePeer::IS_ACTIVE, $this->is_active);
 		if ($this->isColumnModified(LanguagePeer::SORT)) $criteria->add(LanguagePeer::SORT, $this->sort);
 		if ($this->isColumnModified(LanguagePeer::CREATED_AT)) $criteria->add(LanguagePeer::CREATED_AT, $this->created_at);
@@ -1218,6 +1264,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setId($this->id);
+		$copyObj->setPathPrefix($this->path_prefix);
 		$copyObj->setIsActive($this->is_active);
 		$copyObj->setSort($this->sort);
 		$copyObj->setCreatedAt($this->created_at);
@@ -2683,6 +2730,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id = null;
+		$this->path_prefix = null;
 		$this->is_active = null;
 		$this->sort = null;
 		$this->created_at = null;

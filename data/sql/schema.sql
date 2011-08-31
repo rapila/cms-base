@@ -240,7 +240,8 @@ DROP TABLE IF EXISTS `languages`;
 
 CREATE TABLE `languages`
 (
-	`id` VARCHAR(3)  NOT NULL,
+	`id` VARCHAR(5)  NOT NULL,
+	`path_prefix` VARCHAR(20)  NOT NULL,
 	`is_active` TINYINT(1),
 	`sort` TINYINT(2),
 	`created_at` DATETIME,
@@ -248,6 +249,7 @@ CREATE TABLE `languages`
 	`created_by` INTEGER,
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
+	UNIQUE KEY `languages_U_1` (`path_prefix`),
 	INDEX `languages_FI_1` (`created_by`),
 	CONSTRAINT `languages_FK_1`
 		FOREIGN KEY (`created_by`)

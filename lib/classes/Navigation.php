@@ -272,7 +272,7 @@ class Navigation {
 			}
 			// if language is included, replace it by oLanguage->getId() and set include_language param to false
 			if($bCurrentPathIncludesLanguage) {
-				$aRequestPath[0] = $oLanguage->getId();	 
+				$aRequestPath[0] = $oLanguage->getPathPrefix();	 
 				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
 			} else {
 				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));

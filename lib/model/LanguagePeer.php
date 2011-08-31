@@ -18,20 +18,31 @@ class LanguagePeer extends BaseLanguagePeer {
 		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 
-	public static function languageIsActive($sLanguageId) {
-		$sLanguage = LanguagePeer::retrieveByPK($sLanguageId);
-		if($sLanguage === null) {
+	public static function languageIsActive($sLanguageId, $bByPath = false) {
+		$oLanguage = null;
+		if($bByPath) {
+			$oLanguage = LanguagePeer::retrieveByPath($sLanguageId);
+		} else {
+			$oLanguage = LanguagePeer::retrieveByPK($sLanguageId);
+		}
+		if($oLanguage === null) {
 			return false;
 		}
-		return $sLanguage->getIsActive();
+		return $oLanguage->getIsActive();
 	}
 
-	public static function languageExists($sLanguageId) {
-		$sLanguage = LanguagePeer::retrieveByPK($sLanguageId);
-		if($sLanguage === null) {
-			return false;
+	public static function retrieveByPath($sLanguagePathPrefix) {
+		return LanguageQuery::create()->filterByPathPrefix($sLanguagePathPrefix)->findOne();
+	}
+
+	public static function languageExists($sLanguageId, $bByPath = false) {
+		$oQuery = LanguageQuery::create();
+		if($bByPath) {
+			$oQuery->filterByPathPrefix($sLanguageId);
+		} else {
+			$oQuery->filterById($sLanguageId);
 		}
-		return true;
+		return $oQuery->count() > 0;
 	}
 
 	public static function hasLanguageOptions() {

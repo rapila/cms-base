@@ -86,7 +86,11 @@
 </table>
 
 <table name="languages" phpName="Language">
-	<column name="id" type="varchar" size="3" required="true" primaryKey="true" />
+	<column name="id" type="varchar" size="5" required="true" primaryKey="true" />
+	<column name="path_prefix" type="varchar" size="20" required="true" />
+	<unique>
+		<unique-column name="path_prefix" />
+	</unique>
 	<column name="is_active" type="boolean" size="1" />
 	<column name="sort" type="tinyint" size="2" />
 </table>

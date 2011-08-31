@@ -17,10 +17,11 @@ class LinkUtil {
 		if($sLanguageId == null) {
 			$sLanguageId = Session::language();
 		}
-		if(Manager::hasNextPathItem() && (strlen(Manager::peekNextPathItem()) === 2 || LanguagePeer::languageExists(Manager::peekNextPathItem()))) {
+		$oLanguage = LanguagePeer::retrieveByPK($sLanguageId);
+		if(Manager::hasNextPathItem() && (strlen(Manager::peekNextPathItem()) === 2 || LanguagePeer::languageExists(Manager::peekNextPathItem(), true))) {
 			Manager::usePath();
 		}
-		self::redirectToManager(array_merge(array($sLanguageId), Manager::getRequestPath()), null, array(), false);
+		self::redirectToManager(array_merge(array($oLanguage->getPathPrefix()), Manager::getRequestPath()), null, array(), false);
 	}
 
 	/**
@@ -100,8 +101,9 @@ class LinkUtil {
 		}
 
 		if($bIncludeLanguage === true) {
-			array_unshift($mPath, Session::language());
+			array_unshift($mPath, Session::language(true)->getPathPrefix());
 		} elseif(is_string($bIncludeLanguage)) {
+			$bIncludeLanguage = LanguagePeer::retrieveByPK($bIncludeLanguage)->getPathPrefix();
 			array_unshift($mPath, $bIncludeLanguage);
 		}
 

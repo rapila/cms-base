@@ -7,6 +7,7 @@
  * 
  *
  * @method     LanguageQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     LanguageQuery orderByPathPrefix($order = Criteria::ASC) Order by the path_prefix column
  * @method     LanguageQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
  * @method     LanguageQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method     LanguageQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -15,6 +16,7 @@
  * @method     LanguageQuery orderByUpdatedBy($order = Criteria::ASC) Order by the updated_by column
  *
  * @method     LanguageQuery groupById() Group by the id column
+ * @method     LanguageQuery groupByPathPrefix() Group by the path_prefix column
  * @method     LanguageQuery groupByIsActive() Group by the is_active column
  * @method     LanguageQuery groupBySort() Group by the sort column
  * @method     LanguageQuery groupByCreatedAt() Group by the created_at column
@@ -66,6 +68,7 @@
  * @method     Language findOneOrCreate(PropelPDO $con = null) Return the first Language matching the query, or a new Language object populated from the query conditions when no match is found
  *
  * @method     Language findOneById(string $id) Return the first Language filtered by the id column
+ * @method     Language findOneByPathPrefix(string $path_prefix) Return the first Language filtered by the path_prefix column
  * @method     Language findOneByIsActive(boolean $is_active) Return the first Language filtered by the is_active column
  * @method     Language findOneBySort(int $sort) Return the first Language filtered by the sort column
  * @method     Language findOneByCreatedAt(string $created_at) Return the first Language filtered by the created_at column
@@ -74,6 +77,7 @@
  * @method     Language findOneByUpdatedBy(int $updated_by) Return the first Language filtered by the updated_by column
  *
  * @method     array findById(string $id) Return Language objects filtered by the id column
+ * @method     array findByPathPrefix(string $path_prefix) Return Language objects filtered by the path_prefix column
  * @method     array findByIsActive(boolean $is_active) Return Language objects filtered by the is_active column
  * @method     array findBySort(int $sort) Return Language objects filtered by the sort column
  * @method     array findByCreatedAt(string $created_at) Return Language objects filtered by the created_at column
@@ -209,6 +213,28 @@ abstract class BaseLanguageQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(LanguagePeer::ID, $id, $comparison);
+	}
+
+	/**
+	 * Filter the query on the path_prefix column
+	 * 
+	 * @param     string $pathPrefix The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    LanguageQuery The current query, for fluid interface
+	 */
+	public function filterByPathPrefix($pathPrefix = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($pathPrefix)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $pathPrefix)) {
+				$pathPrefix = str_replace('*', '%', $pathPrefix);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(LanguagePeer::PATH_PREFIX, $pathPrefix, $comparison);
 	}
 
 	/**

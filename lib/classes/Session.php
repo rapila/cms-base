@@ -140,11 +140,18 @@ class Session {
 		$this->iUserId = null;
 	}
 
-	public function getLanguage() {
-		return $this->getAttribute(self::SESSION_LANGUAGE_KEY);
+	public function getLanguage($bObject = false) {
+		$sResult = $this->getAttribute(self::SESSION_LANGUAGE_KEY);
+		if($bObject) {
+			$sResult = LanguagePeer::retrieveByPK($sResult);
+		}
+		return $sResult;
 	}
 
 	public function setLanguage($sLanguage) {
+		if($sLanguage instanceof Language) {
+			$sLanguage = $sLanguage->getId();
+		}
 		return $this->setAttribute(self::SESSION_LANGUAGE_KEY, strtolower($sLanguage));
 	}
 
@@ -201,8 +208,8 @@ class Session {
 		return isset($this->aAttributes[$sAttribute]);
 	}
 
-	public static function language() {
-		return self::getSession()->getLanguage();
+	public static function language($bObject = false) {
+		return self::getSession()->getLanguage($bObject);
 	}
 
 	public static function getSession() {

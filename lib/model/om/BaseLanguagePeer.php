@@ -26,13 +26,16 @@ abstract class BaseLanguagePeer {
 	const TM_CLASS = 'LanguageTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 7;
+	const NUM_COLUMNS = 8;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** the column name for the ID field */
 	const ID = 'languages.ID';
+
+	/** the column name for the PATH_PREFIX field */
+	const PATH_PREFIX = 'languages.PATH_PREFIX';
 
 	/** the column name for the IS_ACTIVE field */
 	const IS_ACTIVE = 'languages.IS_ACTIVE';
@@ -68,12 +71,12 @@ abstract class BaseLanguagePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'IsActive', 'Sort', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'isActive', 'sort', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::IS_ACTIVE, self::SORT, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'IS_ACTIVE', 'SORT', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'is_active', 'sort', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'PathPrefix', 'IsActive', 'Sort', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'pathPrefix', 'isActive', 'sort', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::PATH_PREFIX, self::IS_ACTIVE, self::SORT, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'PATH_PREFIX', 'IS_ACTIVE', 'SORT', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'path_prefix', 'is_active', 'sort', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -83,12 +86,12 @@ abstract class BaseLanguagePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IsActive' => 1, 'Sort' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'isActive' => 1, 'sort' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::IS_ACTIVE => 1, self::SORT => 2, self::CREATED_AT => 3, self::UPDATED_AT => 4, self::CREATED_BY => 5, self::UPDATED_BY => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'IS_ACTIVE' => 1, 'SORT' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'CREATED_BY' => 5, 'UPDATED_BY' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'is_active' => 1, 'sort' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'PathPrefix' => 1, 'IsActive' => 2, 'Sort' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, 'CreatedBy' => 6, 'UpdatedBy' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'pathPrefix' => 1, 'isActive' => 2, 'sort' => 3, 'createdAt' => 4, 'updatedAt' => 5, 'createdBy' => 6, 'updatedBy' => 7, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::PATH_PREFIX => 1, self::IS_ACTIVE => 2, self::SORT => 3, self::CREATED_AT => 4, self::UPDATED_AT => 5, self::CREATED_BY => 6, self::UPDATED_BY => 7, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'PATH_PREFIX' => 1, 'IS_ACTIVE' => 2, 'SORT' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, 'CREATED_BY' => 6, 'UPDATED_BY' => 7, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'path_prefix' => 1, 'is_active' => 2, 'sort' => 3, 'created_at' => 4, 'updated_at' => 5, 'created_by' => 6, 'updated_by' => 7, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -161,6 +164,7 @@ abstract class BaseLanguagePeer {
 	{
 		if (null === $alias) {
 			$criteria->addSelectColumn(LanguagePeer::ID);
+			$criteria->addSelectColumn(LanguagePeer::PATH_PREFIX);
 			$criteria->addSelectColumn(LanguagePeer::IS_ACTIVE);
 			$criteria->addSelectColumn(LanguagePeer::SORT);
 			$criteria->addSelectColumn(LanguagePeer::CREATED_AT);
@@ -169,6 +173,7 @@ abstract class BaseLanguagePeer {
 			$criteria->addSelectColumn(LanguagePeer::UPDATED_BY);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.PATH_PREFIX');
 			$criteria->addSelectColumn($alias . '.IS_ACTIVE');
 			$criteria->addSelectColumn($alias . '.SORT');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');

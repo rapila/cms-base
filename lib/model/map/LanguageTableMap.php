@@ -37,7 +37,8 @@ class LanguageTableMap extends TableMap {
 		$this->setPackage('model');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('ID', 'Id', 'VARCHAR', true, 3, null);
+		$this->addPrimaryKey('ID', 'Id', 'VARCHAR', true, 5, null);
+		$this->addColumn('PATH_PREFIX', 'PathPrefix', 'VARCHAR', true, 20, null);
 		$this->addColumn('IS_ACTIVE', 'IsActive', 'BOOLEAN', false, 1, null);
 		$this->addColumn('SORT', 'Sort', 'TINYINT', false, 2, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
