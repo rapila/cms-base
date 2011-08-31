@@ -10,6 +10,48 @@
  * @package model
  */
 class DocumentPeer extends BaseDocumentPeer {
+	public static $LICENSES = array(
+	  "by" => array(
+	    'image' => 'http://i.creativecommons.org/l/by/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by/3.0/'
+	  ),
+	  "by-nc-nd" => array(
+	    'image' => 'http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by-nc-nd/3.0/'
+	  ),
+	  "by-nc-sa" => array(
+	    'image' => 'http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by-nc-sa/3.0/'
+	  ),
+	  "by-nc" => array(
+	    'image' => 'http://i.creativecommons.org/l/by-nc/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by-nc/3.0/'
+	  ),
+	  "by-nd" => array(
+	    'image' => 'http://i.creativecommons.org/l/by-nd/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by-nd/3.0/'
+	  ),
+	  "by-sa" => array(
+	    'image' => 'http://i.creativecommons.org/l/by-sa/3.0/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/by-sa/3.0/'
+	  ),
+	  "publicdomain" => array(
+	    'image' => 'http://i.creativecommons.org/l/publicdomain/80x15.png',
+	    'url' => 'http://creativecommons.org/licenses/publicdomain/',
+			'disclaimer' => 'no'
+	  ),
+	  "gpl" => array(
+	    'image' => 'http://creativecommons.org/images/license/40gnugpl.gif',
+	    'url' => 'http://www.opensource.org/licenses/gpl-license.php'
+	  ),
+	  "lgpl" => array(
+	    'image' => 'http://creativecommons.org/images/license/40gnulgpl.gif',
+	    'url' => 'http://www.opensource.org/licenses/lgpl-license.php'
+	  ),
+		'NULL' => array(
+			'disclaimer' => 'all'
+		)
+	);
 	public static function getDocumentSize($mDocContent = null, $sFormat = 'auto', $iRoundCount=1) {
 		$iDocLength = 0;
 		if(is_string($mDocContent)) {
@@ -152,7 +194,7 @@ class DocumentPeer extends BaseDocumentPeer {
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
 		return self::doSelect($oCriteria);
 	}
-		
+
 	public static function getMostRecent($bIsProtected = false) {
 		$oCriteria = new Criteria();
 		$oCriteria->addDescendingOrderByColumn(self::CREATED_AT);

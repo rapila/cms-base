@@ -103,6 +103,14 @@ form.page_detail h3 a {
 form.page_detail label.for_checkbox {
   margin-right: 2em;
   padding-left: 0.2em;
+  display: inline-block;
+  padding-right: 0.5em;
+}
+input[type=checkbox] + label.for_checkbox {
+  margin-right: 2em;
+  padding-left: 0.2em;
+  display: inline-block;
+  padding-right: 0.5em;
 }
 h3.status { padding-left: 0.3em; }
 #admin_main .ui-list .ui-list-row.ui-state-hover {

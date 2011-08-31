@@ -60,6 +60,10 @@ class Document extends BaseDocument {
 		$oTemplate->replaceIdentifier('category_id', $this->getDocumentCategoryId());
 		$oTemplate->replaceIdentifier('document_category', $this->getCategoryName());
 		$oTemplate->replaceIdentifier('category', $this->getCategoryName());
+		$oTemplate->replaceIdentifier('license', $this->getLicense());
+		$oTemplate->replaceIdentifier('license_url', $this->getLicenseUrl());
+		$oTemplate->replaceIdentifier('license_image', $this->getLicenseImageUrl());
+		$oTemplate->replaceIdentifier('license_disclaimer', $this->getLicenseDisclaimer());
 		$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
 		$oDocument = $this;
 		$oTemplate->replaceIdentifierCallback("preview", null, function($oTemplateIdentifier, &$iFlags) use ($oDocument) {
@@ -125,6 +129,64 @@ class Document extends BaseDocument {
 	*/
 	public function getLink() {
 		return $this->getDisplayUrl(array(), 'display_document');
+	}
+
+	public function getLicenseInfo() {
+		$sLicense = $this->getLicense();
+		if($sLicense === null) {
+			$sLicense = 'NULL';
+		}
+		if(!isset(DocumentPeer::$LICENSES[$sLicense])) {
+			return array();
+		}
+		return DocumentPeer::$LICENSES[$sLicense];
+	}
+
+	public function getLicenseUrl() {
+		$aInfo = $this->getLicenseInfo();
+		if(!isset($aInfo['url'])) {
+			return null;
+		}
+		return $aInfo['url'];
+	}
+
+	public function getLicenseImageUrl() {
+		$aInfo = $this->getLicenseInfo();
+		if(!isset($aInfo['image'])) {
+			return null;
+		}
+		return $aInfo['image'];
+	}
+
+	public function getLicenseDisclaimer() {
+		$aInfo = $this->getLicenseInfo();
+		$sDisclaimer = 'some';
+		if(isset($aInfo['disclaimer'])) {
+			$sDisclaimer = $aInfo['disclaimer'];
+		}
+		$sUser = $this->getAuthor();
+		if($sUser === null) {
+			$sUser = $this->getUserRelatedByCreatedBy();
+			if($sUser) {
+				$sUser = $sUser->getFullName();
+			}
+		}
+		if($sUser === null) {
+			$sUser = $this->getUserRelatedByUpdatedBy();
+			if($sUser) {
+				$sUser = $sUser->getFullName();
+			}
+		}
+		$iYear = $this->getContentCreatedAt('Y');
+		if($iYear === null) {
+			$iYear = $this->getCreatedAt('Y');
+		}
+		$aOptions = array(
+			'author' => $sUser,
+			'year' => $iYear,
+			'license' => $this->getLicense()
+		);
+		return StringPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
 	}
 	
 	public function getDocumentCategory(PropelPDO $con = null) {

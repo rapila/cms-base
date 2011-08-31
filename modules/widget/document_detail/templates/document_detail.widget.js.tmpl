@@ -36,6 +36,12 @@ Widget.types.document_detail = {
 				category_widget.settings.initial_selection = _this.settings.initial_category_id;
 			}, jQuery.noop);
 			_this.content.find("select[name='language_id']").prepareWidget();
+			_this.content.find('input[name=content_created_at]').datepicker({dateFormat: 'dd.mm.yy'});
+			_this.content.find('input[name=license]').attr('data-widget-session', _this.settings.popover).prepareWidget(function(popover) {
+				popover.handle('popover-chosen', function(event, chosen) {
+					popover._element.val(chosen.children('img').data('license'));
+				});
+			});
 			
 			_this.uploader.allow_drag_to(_this.content, null, function(target) {
 				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this)};
@@ -129,6 +135,9 @@ Widget.types.document_detail = {
 				this.content.find("select[name='language_id']").val(document_data.LanguageId || '');
 				this.content.find("input[name='is_protected']").prop('checked', document_data.IsProtected);
 				this.content.find("input[name='is_inactive']").prop('checked', document_data.IsInactive);
+				this.content.find("input[name='author']").val(document_data.Author);
+				this.content.find("input[name='license']").val(document_data.License);
+				this.content.find("input[name='content_created_at']").val(document_data.ContentCreatedAt);
 				this.current_detail_id = document_data.Id;
 				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 			}

@@ -166,9 +166,12 @@ form.page_detail h3 a,
 	color: #666;
 }
 
-form.page_detail label.for_checkbox {
+form.page_detail label.for_checkbox,
+input[type=checkbox] + label.for_checkbox {
 	margin-right: 2em;
 	padding-left:.2em;
+	display: inline-block;
+	padding-right: 0.5em;
 }
 /*
 h3.ui-state-default a, 
