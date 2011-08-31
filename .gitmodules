@@ -10,3 +10,6 @@
 [submodule "lib/vendor/propel"]
 	path = lib/vendor/propel
 	url = git://github.com/Xosofox/propel.git
+[submodule "web/js/popover"]
+	path = web/js/popover
+	url = git://github.com/BrazilianJoe/jquery-popover.git
