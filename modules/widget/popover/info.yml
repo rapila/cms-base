@@ -1,5 +1,5 @@
 --- 
 aspects: 
-- persistent
+  - persistent
 enabled: true
 #<File:0x0000010281c358>
