@@ -357,3 +357,7 @@ ALTER TABLE `pages` DROP INDEX pages_U_1;
 ALTER TABLE `pages` ADD `identifier` VARCHAR(30) NULL DEFAULT NULL;
 ALTER TABLE `pages` ADD UNIQUE KEY `pages_U_1` (`identifier`);
 
+#20110931.1041
+ALTER TABLE `documents` ADD (`content_created_at` DATE, `license` VARCHAR(30), `author` VARCHAR(50));
+
+

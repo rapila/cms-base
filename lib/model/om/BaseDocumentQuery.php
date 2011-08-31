@@ -10,6 +10,9 @@
  * @method     DocumentQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     DocumentQuery orderByOriginalName($order = Criteria::ASC) Order by the original_name column
  * @method     DocumentQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     DocumentQuery orderByContentCreatedAt($order = Criteria::ASC) Order by the content_created_at column
+ * @method     DocumentQuery orderByLicense($order = Criteria::ASC) Order by the license column
+ * @method     DocumentQuery orderByAuthor($order = Criteria::ASC) Order by the author column
  * @method     DocumentQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     DocumentQuery orderByOwnerId($order = Criteria::ASC) Order by the owner_id column
  * @method     DocumentQuery orderByDocumentTypeId($order = Criteria::ASC) Order by the document_type_id column
@@ -28,6 +31,9 @@
  * @method     DocumentQuery groupByName() Group by the name column
  * @method     DocumentQuery groupByOriginalName() Group by the original_name column
  * @method     DocumentQuery groupByDescription() Group by the description column
+ * @method     DocumentQuery groupByContentCreatedAt() Group by the content_created_at column
+ * @method     DocumentQuery groupByLicense() Group by the license column
+ * @method     DocumentQuery groupByAuthor() Group by the author column
  * @method     DocumentQuery groupByLanguageId() Group by the language_id column
  * @method     DocumentQuery groupByOwnerId() Group by the owner_id column
  * @method     DocumentQuery groupByDocumentTypeId() Group by the document_type_id column
@@ -77,6 +83,9 @@
  * @method     Document findOneByName(string $name) Return the first Document filtered by the name column
  * @method     Document findOneByOriginalName(string $original_name) Return the first Document filtered by the original_name column
  * @method     Document findOneByDescription(string $description) Return the first Document filtered by the description column
+ * @method     Document findOneByContentCreatedAt(string $content_created_at) Return the first Document filtered by the content_created_at column
+ * @method     Document findOneByLicense(string $license) Return the first Document filtered by the license column
+ * @method     Document findOneByAuthor(string $author) Return the first Document filtered by the author column
  * @method     Document findOneByLanguageId(string $language_id) Return the first Document filtered by the language_id column
  * @method     Document findOneByOwnerId(int $owner_id) Return the first Document filtered by the owner_id column
  * @method     Document findOneByDocumentTypeId(int $document_type_id) Return the first Document filtered by the document_type_id column
@@ -95,6 +104,9 @@
  * @method     array findByName(string $name) Return Document objects filtered by the name column
  * @method     array findByOriginalName(string $original_name) Return Document objects filtered by the original_name column
  * @method     array findByDescription(string $description) Return Document objects filtered by the description column
+ * @method     array findByContentCreatedAt(string $content_created_at) Return Document objects filtered by the content_created_at column
+ * @method     array findByLicense(string $license) Return Document objects filtered by the license column
+ * @method     array findByAuthor(string $author) Return Document objects filtered by the author column
  * @method     array findByLanguageId(string $language_id) Return Document objects filtered by the language_id column
  * @method     array findByOwnerId(int $owner_id) Return Document objects filtered by the owner_id column
  * @method     array findByDocumentTypeId(int $document_type_id) Return Document objects filtered by the document_type_id column
@@ -298,6 +310,81 @@ abstract class BaseDocumentQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(DocumentPeer::DESCRIPTION, $description, $comparison);
+	}
+
+	/**
+	 * Filter the query on the content_created_at column
+	 * 
+	 * @param     string|array $contentCreatedAt The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    DocumentQuery The current query, for fluid interface
+	 */
+	public function filterByContentCreatedAt($contentCreatedAt = null, $comparison = null)
+	{
+		if (is_array($contentCreatedAt)) {
+			$useMinMax = false;
+			if (isset($contentCreatedAt['min'])) {
+				$this->addUsingAlias(DocumentPeer::CONTENT_CREATED_AT, $contentCreatedAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($contentCreatedAt['max'])) {
+				$this->addUsingAlias(DocumentPeer::CONTENT_CREATED_AT, $contentCreatedAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(DocumentPeer::CONTENT_CREATED_AT, $contentCreatedAt, $comparison);
+	}
+
+	/**
+	 * Filter the query on the license column
+	 * 
+	 * @param     string $license The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    DocumentQuery The current query, for fluid interface
+	 */
+	public function filterByLicense($license = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($license)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $license)) {
+				$license = str_replace('*', '%', $license);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(DocumentPeer::LICENSE, $license, $comparison);
+	}
+
+	/**
+	 * Filter the query on the author column
+	 * 
+	 * @param     string $author The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    DocumentQuery The current query, for fluid interface
+	 */
+	public function filterByAuthor($author = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($author)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $author)) {
+				$author = str_replace('*', '%', $author);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(DocumentPeer::AUTHOR, $author, $comparison);
 	}
 
 	/**

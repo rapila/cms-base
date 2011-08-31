@@ -197,6 +197,9 @@
 	<column name="name" type="varchar" size="100" />
 	<column name="original_name" type="varchar" size="100" />
 	<column name="description" type="varchar" size="255" />
+	<column name="content_created_at" type="date" />
+	<column name="license" type="varchar" size="30" />
+	<column name="author" type="varchar" size="50" />
 	<column name="language_id" type="varchar" size="3" />
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />

@@ -49,6 +49,24 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	protected $description;
 
 	/**
+	 * The value for the content_created_at field.
+	 * @var        string
+	 */
+	protected $content_created_at;
+
+	/**
+	 * The value for the license field.
+	 * @var        string
+	 */
+	protected $license;
+
+	/**
+	 * The value for the author field.
+	 * @var        string
+	 */
+	protected $author;
+
+	/**
 	 * The value for the language_id field.
 	 * @var        string
 	 */
@@ -241,6 +259,64 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	public function getDescription()
 	{
 		return $this->description;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [content_created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getContentCreatedAt($format = '%x')
+	{
+		if ($this->content_created_at === null) {
+			return null;
+		}
+
+
+		if ($this->content_created_at === '0000-00-00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->content_created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->content_created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [license] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getLicense()
+	{
+		return $this->license;
+	}
+
+	/**
+	 * Get the [author] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getAuthor()
+	{
+		return $this->author;
 	}
 
 	/**
@@ -544,6 +620,95 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 		return $this;
 	} // setDescription()
+
+	/**
+	 * Sets the value of [content_created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setContentCreatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->content_created_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->content_created_at !== null && $tmpDt = new DateTime($this->content_created_at)) ? $tmpDt->format('Y-m-d') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->content_created_at = ($dt ? $dt->format('Y-m-d') : null);
+				$this->modifiedColumns[] = DocumentPeer::CONTENT_CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setContentCreatedAt()
+
+	/**
+	 * Set the value of [license] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setLicense($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->license !== $v) {
+			$this->license = $v;
+			$this->modifiedColumns[] = DocumentPeer::LICENSE;
+		}
+
+		return $this;
+	} // setLicense()
+
+	/**
+	 * Set the value of [author] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setAuthor($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->author !== $v) {
+			$this->author = $v;
+			$this->modifiedColumns[] = DocumentPeer::AUTHOR;
+		}
+
+		return $this;
+	} // setAuthor()
 
 	/**
 	 * Set the value of [language_id] column.
@@ -944,18 +1109,21 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->original_name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->description = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->language_id = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->owner_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->document_type_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->document_category_id = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->is_private = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->is_protected = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
-			$this->sort = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->content_created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->license = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->author = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->language_id = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->owner_id = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->document_type_id = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->document_category_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->is_private = ($row[$startcol + 11] !== null) ? (boolean) $row[$startcol + 11] : null;
+			$this->is_inactive = ($row[$startcol + 12] !== null) ? (boolean) $row[$startcol + 12] : null;
+			$this->is_protected = ($row[$startcol + 13] !== null) ? (boolean) $row[$startcol + 13] : null;
+			$this->sort = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->created_by = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+			$this->updated_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -964,7 +1132,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 19; // 19 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Document object", $e);
@@ -1433,42 +1601,51 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				return $this->getDescription();
 				break;
 			case 4:
-				return $this->getLanguageId();
+				return $this->getContentCreatedAt();
 				break;
 			case 5:
-				return $this->getOwnerId();
+				return $this->getLicense();
 				break;
 			case 6:
-				return $this->getDocumentTypeId();
+				return $this->getAuthor();
 				break;
 			case 7:
-				return $this->getDocumentCategoryId();
+				return $this->getLanguageId();
 				break;
 			case 8:
-				return $this->getIsPrivate();
+				return $this->getOwnerId();
 				break;
 			case 9:
-				return $this->getIsInactive();
+				return $this->getDocumentTypeId();
 				break;
 			case 10:
-				return $this->getIsProtected();
+				return $this->getDocumentCategoryId();
 				break;
 			case 11:
-				return $this->getSort();
+				return $this->getIsPrivate();
 				break;
 			case 12:
-				return $this->getData();
+				return $this->getIsInactive();
 				break;
 			case 13:
-				return $this->getCreatedAt();
+				return $this->getIsProtected();
 				break;
 			case 14:
-				return $this->getUpdatedAt();
+				return $this->getSort();
 				break;
 			case 15:
-				return $this->getCreatedBy();
+				return $this->getData();
 				break;
 			case 16:
+				return $this->getCreatedAt();
+				break;
+			case 17:
+				return $this->getUpdatedAt();
+				break;
+			case 18:
+				return $this->getCreatedBy();
+				break;
+			case 19:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1499,19 +1676,22 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$keys[1] => $this->getName(),
 			$keys[2] => $this->getOriginalName(),
 			$keys[3] => $this->getDescription(),
-			$keys[4] => $this->getLanguageId(),
-			$keys[5] => $this->getOwnerId(),
-			$keys[6] => $this->getDocumentTypeId(),
-			$keys[7] => $this->getDocumentCategoryId(),
-			$keys[8] => $this->getIsPrivate(),
-			$keys[9] => $this->getIsInactive(),
-			$keys[10] => $this->getIsProtected(),
-			$keys[11] => $this->getSort(),
-			$keys[12] => ($includeLazyLoadColumns) ? $this->getData() : null,
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
-			$keys[15] => $this->getCreatedBy(),
-			$keys[16] => $this->getUpdatedBy(),
+			$keys[4] => $this->getContentCreatedAt(),
+			$keys[5] => $this->getLicense(),
+			$keys[6] => $this->getAuthor(),
+			$keys[7] => $this->getLanguageId(),
+			$keys[8] => $this->getOwnerId(),
+			$keys[9] => $this->getDocumentTypeId(),
+			$keys[10] => $this->getDocumentCategoryId(),
+			$keys[11] => $this->getIsPrivate(),
+			$keys[12] => $this->getIsInactive(),
+			$keys[13] => $this->getIsProtected(),
+			$keys[14] => $this->getSort(),
+			$keys[15] => ($includeLazyLoadColumns) ? $this->getData() : null,
+			$keys[16] => $this->getCreatedAt(),
+			$keys[17] => $this->getUpdatedAt(),
+			$keys[18] => $this->getCreatedBy(),
+			$keys[19] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguage) {
@@ -1576,42 +1756,51 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->setDescription($value);
 				break;
 			case 4:
-				$this->setLanguageId($value);
+				$this->setContentCreatedAt($value);
 				break;
 			case 5:
-				$this->setOwnerId($value);
+				$this->setLicense($value);
 				break;
 			case 6:
-				$this->setDocumentTypeId($value);
+				$this->setAuthor($value);
 				break;
 			case 7:
-				$this->setDocumentCategoryId($value);
+				$this->setLanguageId($value);
 				break;
 			case 8:
-				$this->setIsPrivate($value);
+				$this->setOwnerId($value);
 				break;
 			case 9:
-				$this->setIsInactive($value);
+				$this->setDocumentTypeId($value);
 				break;
 			case 10:
-				$this->setIsProtected($value);
+				$this->setDocumentCategoryId($value);
 				break;
 			case 11:
-				$this->setSort($value);
+				$this->setIsPrivate($value);
 				break;
 			case 12:
-				$this->setData($value);
+				$this->setIsInactive($value);
 				break;
 			case 13:
-				$this->setCreatedAt($value);
+				$this->setIsProtected($value);
 				break;
 			case 14:
-				$this->setUpdatedAt($value);
+				$this->setSort($value);
 				break;
 			case 15:
-				$this->setCreatedBy($value);
+				$this->setData($value);
 				break;
 			case 16:
+				$this->setCreatedAt($value);
+				break;
+			case 17:
+				$this->setUpdatedAt($value);
+				break;
+			case 18:
+				$this->setCreatedBy($value);
+				break;
+			case 19:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1642,19 +1831,22 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setOriginalName($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setLanguageId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setOwnerId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDocumentTypeId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setDocumentCategoryId($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsPrivate($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setIsProtected($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setSort($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setData($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
+		if (array_key_exists($keys[4], $arr)) $this->setContentCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setLicense($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setAuthor($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setLanguageId($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setOwnerId($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setDocumentTypeId($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setDocumentCategoryId($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setIsPrivate($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setIsInactive($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setIsProtected($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setSort($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setData($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setCreatedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setUpdatedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setCreatedBy($arr[$keys[18]]);
+		if (array_key_exists($keys[19], $arr)) $this->setUpdatedBy($arr[$keys[19]]);
 	}
 
 	/**
@@ -1670,6 +1862,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->isColumnModified(DocumentPeer::NAME)) $criteria->add(DocumentPeer::NAME, $this->name);
 		if ($this->isColumnModified(DocumentPeer::ORIGINAL_NAME)) $criteria->add(DocumentPeer::ORIGINAL_NAME, $this->original_name);
 		if ($this->isColumnModified(DocumentPeer::DESCRIPTION)) $criteria->add(DocumentPeer::DESCRIPTION, $this->description);
+		if ($this->isColumnModified(DocumentPeer::CONTENT_CREATED_AT)) $criteria->add(DocumentPeer::CONTENT_CREATED_AT, $this->content_created_at);
+		if ($this->isColumnModified(DocumentPeer::LICENSE)) $criteria->add(DocumentPeer::LICENSE, $this->license);
+		if ($this->isColumnModified(DocumentPeer::AUTHOR)) $criteria->add(DocumentPeer::AUTHOR, $this->author);
 		if ($this->isColumnModified(DocumentPeer::LANGUAGE_ID)) $criteria->add(DocumentPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(DocumentPeer::OWNER_ID)) $criteria->add(DocumentPeer::OWNER_ID, $this->owner_id);
 		if ($this->isColumnModified(DocumentPeer::DOCUMENT_TYPE_ID)) $criteria->add(DocumentPeer::DOCUMENT_TYPE_ID, $this->document_type_id);
@@ -1747,6 +1942,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$copyObj->setName($this->name);
 		$copyObj->setOriginalName($this->original_name);
 		$copyObj->setDescription($this->description);
+		$copyObj->setContentCreatedAt($this->content_created_at);
+		$copyObj->setLicense($this->license);
+		$copyObj->setAuthor($this->author);
 		$copyObj->setLanguageId($this->language_id);
 		$copyObj->setOwnerId($this->owner_id);
 		$copyObj->setDocumentTypeId($this->document_type_id);
@@ -2106,6 +2304,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->name = null;
 		$this->original_name = null;
 		$this->description = null;
+		$this->content_created_at = null;
+		$this->license = null;
+		$this->author = null;
 		$this->language_id = null;
 		$this->owner_id = null;
 		$this->document_type_id = null;
