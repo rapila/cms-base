@@ -139,11 +139,11 @@ class CriteriaListWidgetDelegate {
 	
 	private function handleListFiltering($oCriteria) {
 		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $mFilterValue) {
-			$sFilterColumn = $this->getDatabaseColumnForColumn($sFilterIdentifier);
 			$sFilterType = $this->aFilterTypes[$sFilterIdentifier];
 			if($mFilterValue === self::SELECT_ALL || $sFilterType === self::FILTER_TYPE_MANUAL) {
 				continue;
 			}
+			$sFilterColumn = $this->getDatabaseColumnForColumn($sFilterIdentifier);
 			$bInverted = $mFilterValue === self::SELECT_WITHOUT;
 			$mFilterValue = $bInverted ? null : $mFilterValue;
 			if($sFilterType === self::FILTER_TYPE_IS) {

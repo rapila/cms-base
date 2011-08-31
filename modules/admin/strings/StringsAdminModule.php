@@ -8,12 +8,11 @@ class StringsAdminModule extends AdminModule {
 	private $oSidebarWidget;
 	
 	public function __construct() {
-		$this->oListWidget 		= new StringListWidgetModule();
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'name_space', $this->oListWidget->oDelegateProxy->getNameSpace());
-
+		$this->oListWidget = new StringListWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate($this);
+    $this->oSidebarWidget->setSetting('initial_selection', array('name_space' => $this->oListWidget->oDelegateProxy->getNameSpace()));
 	}
 	
 	public function mainContent() {

@@ -21,16 +21,8 @@ class RoleListWidgetModule extends WidgetModule {
 		return $this->oListWidget->doWidget();
 	}
 	
-	public function getGroupId() {
-		return $this->iGroupId;
-	}
-	
-	public function setGroupId($iGroupId) {
-		$this->iGroupId = $iGroupId;
-	}
-	
 	public function getColumnIdentifiers() {
-		return array('id', 'role_key', 'description', 'user_with_role_count', 'group_with_role_count', 'delete');
+		return array('id', 'role_key', 'description', 'user_id', 'group_id', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -49,11 +41,13 @@ class RoleListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.role.description');
 				$aResult['is_sortable'] = true;
 				break;
-			case 'user_with_role_count':
+			case 'user_id':
 				$aResult['heading'] = StringPeer::getString('wns.role.user_with_role_count');
+				$aResult['field_name'] = 'user_with_role_count';
 				break;
-			case 'group_with_role_count':
+			case 'group_id':
 				$aResult['heading'] = StringPeer::getString('wns.role.group_with_role_count');
+				$aResult['field_name'] = 'group_with_role_count';
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -62,6 +56,12 @@ class RoleListWidgetModule extends WidgetModule {
 				break;
 		}
 		return $aResult;
+	}
+	
+	public function getFilterTypeForColumn($sColumn) {
+		if($sColumn === 'group_id') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
+		}
 	}
 	
 	public function getGroupName() {
@@ -83,7 +83,7 @@ class RoleListWidgetModule extends WidgetModule {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(RolePeer::ROLE_KEY, GroupRolePeer::ROLE_KEY, Criteria::LEFT_JOIN);
 		$oCriteria->addJoin(GroupRolePeer::GROUP_ID, GroupPeer::ID, Criteria::LEFT_JOIN);
-		if($this->iGroupId && $this->iGroupId !== CriteriaListWidgetDelegate::SELECT_ALL) {
+		if($this->oDelegateProxy->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oCriteria->add(GroupRolePeer::GROUP_ID, $this->iGroupId);
 		}
 		return $oCriteria;

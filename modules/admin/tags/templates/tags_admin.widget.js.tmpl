@@ -4,13 +4,7 @@ jQuery(document).ready(function() {
 		// init sidebar
 
 		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
-			var initial_selection = "{{writeRequestValue=model_name}}";
-			if(initial_selection) {
-				initial_selection = isNaN(initial_selection) ? initial_selection : parseInt(initial_selection, 10);
-				sidebar.handle('loaded', function() {
-					sidebar.activate_row(sidebar.row_from_row_data({model_name: initial_selection}));
-				}, true, true);
-			}	
+
 			sidebar.settings.row_click_active_mode = 'activate';
 			sidebar.handle('list-selection_changed', function(event, selection) {
 				tags_list.setOption('model_name', selection[0] && selection[0].model_name);
