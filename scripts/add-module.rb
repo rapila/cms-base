@@ -67,11 +67,11 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	end
 	
 	opts.on('--[no-]persistent', 'Add the persistent aspect. Applicable to widget modules (default)') do |persistent|
-		$options[:persistent] = persistent
+		$options[:persistent_aspect] = persistent
 	end
 	
 	opts.on('--[no-]widget-based', 'Add the widget_based aspect. Applicable to frontend modules (default)') do |widget_based|
-		$aspects.delete "widget_based" unless widget_based
+		$options[:widget_based_aspect] = widget_based
 	end
 	
 	opts.on('--[no-]php', 'Write a php class file (default)') do |php|
@@ -128,7 +128,8 @@ $aspects << 'detail' if $options[:detail_aspect] or ($options[:detail_aspect].ni
 $aspects << 'edit' if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit')
 
 $aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
-if ($options[:persistent].nil? and $aspects.include? 'list') or $options[:persistent] == false then
+$aspects.delete 'widget_based' unless $options[:widget_based_aspect] or $options[:widget_based_aspect].nil?
+if ($options[:persistent_aspect].nil? and $aspects.include? 'list') or $options[:persistent_aspect] == false then
 	$aspects.delete 'persistent'
 end
 
@@ -144,7 +145,7 @@ class_name = "#{module_name}_#{$options[:type]}_module".gsub(/^[a-z]|_[a-z]/) { 
 super_class_name = "#{$options[:type]}_module".gsub(/^[a-z]|_[a-z]/) { |a| a.upcase }.gsub(/_/, '')
 
 puts "Creating “#{class_name}” in #{$folder}."
-puts "Frontend Module is NOT widget-based" if not $options[:widget_based] and $options[:type] == :frontend
+puts "Frontend Module is NOT widget-based" if not $aspects.include? 'widget_based' and $options[:type] == :frontend
 puts "Module exists. Overriding existing files" if $options[:force] and File.exists?($folder)
 puts "Module exists. Creating non-existant files only" if not $options[:force] and File.exists?($folder)
 puts "Adding aspects #{$aspects.to_a.join(', ')}" unless $aspects.empty?
