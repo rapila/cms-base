@@ -21,6 +21,9 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		} else if(count($aCategories === 1)) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
 		}
+		if(isset($aOptions['document_kind']) && $aOptions['document_kind']) {
+			$oCriteria->filterByDocumentKind($aOptions['document_kind']);
+		}
 		
 		$oLangCriterion = $oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, Session::language());
 		$oLangCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, null));
