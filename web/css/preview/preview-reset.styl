@@ -1,8 +1,12 @@
-#cmos_admin_menu, .filled-container.editing, .ui-dialog, .cke_dialog {
-	/* http://meyerweb.com/eric/tools/css/reset/ 
-	   v2.0 | 20110126
-	   License: none (public domain)
-	*/
+#cmos_admin_menu, .filled-container.editing, .ui-dialog, .cke_dialog
+	//General styles
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	color: black;
+
+	// http://meyerweb.com/eric/tools/css/reset/ 
+	// v2.0 | 20110126
+	// License: none (public domain)
 
 	html, body, div, span, applet, object, iframe,
 	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -49,31 +53,18 @@
 	}
 	
 	// Own reset styles
+	span
+		display: inline
 	
-	span {
-		display: inline;
-	}
+	.cke_skin_kama .cke_wrapper
+		display: block
+		padding: 5px
 	
-	.cke_skin_kama .cke_wrapper {
-		display: block;
-		padding: 5px;
-	}
+	.cke_skin_kama .cke_voice_label
+		display: none
 	
-	.cke_skin_kama .cke_voice_label {
-		display: none;
-	}
+	.cke_skin_kama .cke_toolgroup
+		margin-right: 6px
 	
-	.cke_skin_kama .cke_toolgroup {
-		margin-right: 6px;
-	}
-	
-	.cke_dialog_body a {
-		display: inline;
-	}
-	
-	
-	//General styles
-	font-family: Arial,Helvetica,sans-serif;
-	font-size: 12px;
-	color: black;
-}
+	.cke_dialog_body a
+		display: inline
