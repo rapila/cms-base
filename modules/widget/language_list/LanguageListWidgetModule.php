@@ -46,6 +46,9 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.name');
 				$aResult['field_name'] = 'language_name';
 				break;
+			case 'path_prefix':
+				$aResult['heading'] = StringPeer::getString('wns.language.path_prefix');
+				break;
 			case 'is_default':
 				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
 				break;
