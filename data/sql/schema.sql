@@ -557,7 +557,7 @@ CREATE TABLE `documents`
 	`description` VARCHAR(255),
 	`content_created_at` DATE,
 	`license` VARCHAR(30),
-	`author` VARCHAR(50),
+	`author` VARCHAR(150),
 	`language_id` VARCHAR(3),
 	`owner_id` INTEGER  NOT NULL,
 	`document_type_id` INTEGER  NOT NULL,
