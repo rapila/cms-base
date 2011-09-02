@@ -87,6 +87,10 @@ class FileResource {
 	public function getDirectoryPath() {
 		return dirname($this->sFullPath);
 	}
+
+	public function isFile() {
+		return is_file($this->sFullPath);
+	}
 	
 	public function getFrontendDirectoryPath() {
 		if(self::$MAIN_DIR_CANONICAL === null) {
