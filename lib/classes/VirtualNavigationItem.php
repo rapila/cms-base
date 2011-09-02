@@ -32,6 +32,10 @@ class VirtualNavigationItem extends NavigationItem {
 	    return $this->mData;
 	}
 	
+	public function hasData($mKey) {
+		return isset($this->mData[$mKey]);
+	}
+	
 	public function getType() {
 	    return $this->sType;
 	}
