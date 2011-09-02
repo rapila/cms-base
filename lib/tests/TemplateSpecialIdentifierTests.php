@@ -5,6 +5,11 @@
 define("CONSTANT", "myTest is great");
 define("MANAGER", "AdminManager");
 class TemplateSpecialIdentifierTests extends PHPUnit_Framework_TestCase {
+	public function setUp() {
+		ResourceIncluder::defaultIncluder()->clearIncludedResources();
+		ErrorHandler::setEnvironment('production');
+	}
+	
 	public function testConstant() {
 		$sTemplateText = <<<EOT
 {{writeConstantValue=CONSTANT}}
@@ -99,5 +104,21 @@ EOT;
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+	}
+
+	public function testStringReplace() {
+		$sTemplateText = <<<EOT
+{{replaceIn=TeSt;string=t;with=1}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame('TeS1', $oTemplate->render());
+	}
+
+	public function testRegexReplace() {
+		$sTemplateText = <<<EOT
+{{replaceIn=TeSt;matching=[tT];with=1}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame('1eS1', $oTemplate->render());
 	}
 }

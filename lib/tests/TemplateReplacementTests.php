@@ -302,5 +302,22 @@ EOT;
 		
 		$this->assertSame("{{test=\{\{text1\}\};param=\{\{text2\}\}}}", $oTemplate->__toString());
 	}
+
+	public function testIdentifierEscaping() {
+		$sTemplateText = <<<EOT
+{{test=\\\\}}{{test=\\{\\{t1=\\\\\\\\\\\\}\\}\\}}}{{test=val2}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame("{{test=\\\\}}{{test=\\{\\{t1\\=\\\\\\}\\}\\}}}{{test=val2}}", $oTemplate->__toString());
+		
+		$oTemplate->replaceIdentifier('test', "val", '\\', Template::NO_IDENTIFIER_VALUE_REPLACEMENT);
+		$this->assertSame("val{{test=\\{\\{t1\\=\\\\\\}\\}\\}}}{{test=val2}}", $oTemplate->__toString());
+		$oTemplate->replaceIdentifier('t1', "val2");
+		$this->assertSame("val{{test=\\{\\{t1\\=\\\\\\}\\}\\}}}{{test=val2}}", $oTemplate->__toString());
+		/// @todo
+		// $oTemplate->replaceIdentifier('t1', "val3", '\\}');
+		// $this->assertSame("val{{test=val3}}{{test=val2}}", $oTemplate->__toString());
+		$this->assertSame("val", $oTemplate->render());
+	}
 	
 }
