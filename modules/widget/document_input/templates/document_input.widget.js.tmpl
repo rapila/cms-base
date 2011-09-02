@@ -24,6 +24,7 @@ Widget.types.document_input = {
 				this._element.val(selected);
 				this._element.change();
 			}
+			this.fire('reloaded');
 		});
 	},
 	

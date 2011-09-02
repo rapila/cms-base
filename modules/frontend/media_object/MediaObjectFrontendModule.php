@@ -35,7 +35,11 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 					$sMimeType = $oDocument->getMimetype();
 				}
 			} else if ((@$aDocumentInfo['url'])) {
-				if(file_exists(MAIN_DIR.'/'.$aDocumentInfo['url'])) {
+				$sSrcToCheck = $aDocumentInfo['url'];
+				if(($iQSPos = strrpos($sSrcToCheck, '?')) !== false) {
+					$sSrcToCheck = substr($sSrcToCheck, 0, $iQSPos);
+				}
+				if(file_exists(MAIN_DIR.'/'.$sSrcToCheck)) {
 					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
 				}
 				$sSrc = @$aDocumentInfo['url'];
@@ -86,38 +90,18 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		if(isset($aPostData['document_id'])) {
 			foreach($aPostData['document_id'] as $iKey => $sId) {
 				$sSrc = $aPostData['url'][$iKey];
+				if(!$sId && !$sSrc) {
+					continue;
+				}
 				if($sId && !is_numeric($sId)) {
 					$sSrc = $sId;
 					$sId = '';
 				}
-				if(!$sId && !$sSrc) {
-					continue;
-				}
 				if(!$sId && !$aPostData['mimetype'][$iKey]) {
-					$bGetHeadersEnabled = ini_get('allow_url_fopen') == '1';
-					if(!StringUtil::startsWith($sSrc, '/') && !$aPostData['mimetype'][$iKey] && file_exists(MAIN_DIR.'/'.$sSrc)) {
-						//Relative url, assume it’s from the MAIN_DIR_FE
-						$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$sSrc);
-						$aPostData['mimetype'][$iKey] = $aMimeTypes[0];
-					} else {
-						if($bGetHeadersEnabled && !$aPostData['mimetype'][$iKey]) {
-							$aHeaders = @get_headers($sSrc, true);
-							if($aHeaders && isset($aHeaders['Content-Type'])) {
-								$sContentType = $aHeaders['Content-Type'];
-								if(is_array($sContentType)) {
-									$sContentType = array_pop($sContentType);
-								}
-								$iCharsetLocation = strpos($sContentType, ';');
-								if($iCharsetLocation !== false) {
-									$sContentType = substr($sContentType, 0, $iCharsetLocation);
-								}
-								$aPostData['mimetype'][$iKey] = $sContentType;
-							}
-						}
+					$aPostData['mimetype'][$iKey] = $this->mimetypeFor(null, $sSrc);
+					if(!$aPostData['mimetype'][$iKey]) {
+						$aPostData['mimetype'][$iKey] = 'application/octet-stream';
 					}
-				}
-				if(!$sId && !$aPostData['mimetype'][$iKey]) {
-					$aPostData['mimetype'][$iKey] = 'application/octet-stream';
 				}
 				$aResults[] = array("document_id" => $sId, 'url' => $sSrc, "width" => $aPostData["width"][$iKey], "height" => $aPostData["height"][$iKey], "mimetype" => $aPostData["mimetype"][$iKey]);
 			}
@@ -131,6 +115,9 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 			$sId = '';
 		}
 		if($sSrc) {
+			if(($iQSPos = strrpos($sSrc, '?')) !== false) {
+				$sSrc = substr($sSrc, 0, $iQSPos);
+			}
 			$bGetHeadersEnabled = ini_get('allow_url_fopen') == '1';
 			if(!StringUtil::startsWith($sSrc, '/') && file_exists(MAIN_DIR.'/'.$sSrc)) {
 				//Relative url, assume it’s from the MAIN_DIR_FE

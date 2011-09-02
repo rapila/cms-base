@@ -220,8 +220,13 @@ class ResourceFinder {
 		
 		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
 		if($bAllowPathItemToBeSkipped) {
-			//call current function without the optional element
-			self::findInPathByExpressions($aResult, $aExpressions, $sPath, $sInstancePrefix, $sParentName, $sRelativePath);
+			if(count($aExpressions) === 0) {
+				//Add the current path (parent recursive invocation added nothing because there were still items on the stack, next invocation will return empty since the stack is empty)
+				$aResult[$sRelativePath] = new FileResource($sPath, $sInstancePrefix, $sRelativePath);
+			} else {
+				//call current function without the optional element
+				self::findInPathByExpressions($aResult, $aExpressions, $sPath, $sInstancePrefix, $sParentName, $sRelativePath);
+			}
 			if(count($sPathExpression) === 0) {
 				//emtpy array means look recursively in all subdirs => put the any-item-specifier (true) and the empty array on the local stack
 				array_unshift($aExpressions, array());
@@ -254,7 +259,7 @@ class ResourceFinder {
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-				if($sPathExpression === true || preg_match($sPathExpression, $sFileName) !== 0) {
+				if($sPathExpression === true || ($sPathExpression === false && is_dir($sFilePath)) || ($sPathExpression !== false && preg_match($sPathExpression, $sFileName) !== 0)) {
 					$sNextRelativePath = $sFileName;
 					if($sRelativePath !== null) {
 						$sNextRelativePath = "$sRelativePath/$sFileName";
