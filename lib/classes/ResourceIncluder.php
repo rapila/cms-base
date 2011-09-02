@@ -127,11 +127,6 @@ class ResourceIncluder {
 				$sIdentifier = $sResourcePrefix.$sFinalLocation;
 			}
 			
-			if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
-				$aExtraInfo = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier], $aExtraInfo);
-				unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
-			}
-		
 			$aExtraInfo['location'] = $sFinalLocation;
 			if(!isset($aExtraInfo['resource_type'])) {
 				$aExtraInfo['resource_type'] = $sTemplateName;
@@ -151,6 +146,12 @@ class ResourceIncluder {
 			if($bEndsDependencyList) {
 				$this->endDependencyList($sIdentifier);
 			}
+
+			if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
+				$aExtraInfo = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier], $aExtraInfo);
+				$aExtraInfo['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'] + $aExtraInfo['dependees']);
+				unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
+			}
 			
 			//Include resource
 			$this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfo;
@@ -165,9 +166,7 @@ class ResourceIncluder {
 			}
 			
 			//Add dependency
-			if(count($this->aCurrentDependencyStack) > 0) {
-				$this->aCurrentDependencyStack[0][$sIdentifier] = true;
-			}
+			$this->registerAsDependency($sIdentifier);
 			
 			$sFinalLocation = null;
 			$sIdentifier = null;
@@ -188,11 +187,6 @@ class ResourceIncluder {
 		if(!is_string($sLibraryVersion)) {
 			$sLibraryVersion = "$sLibraryVersion";
 		}
-		$aIncludes = array();
-		if(strpos($sLibraryName, '?load=') !== false) {
-			$aIncludes = explode(',', substr($sLibraryName, strpos($sLibraryName, '?load=')+strlen('?load=')));
-			$sLibraryName = substr($sLibraryName, 0, strpos($sLibraryName, '?load='));
-		}
 		$sResourceIdentifier = self::RESOURCE_PREFIX_LIBRARY.$sLibraryName;
 		$aLibraryOptions = Settings::getSetting('libraries', $sLibraryName, null, 'resource_includer');
 		if($aLibraryOptions === null) {
@@ -210,10 +204,11 @@ class ResourceIncluder {
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
 			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '>')) {
-				// throw new Exception("Error in ResourceIncluder->addJavaScriptLibrary(): Library $sLibraryName ($sLibraryVersion) already included with different version ({$aResourceInfo['version']})");
+				$this->registerAsDependency($sResourceIdentifier);
 				return;
 			}
 			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '==') && ((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression))) {
+				$this->registerAsDependency($sResourceIdentifier);
 				return;
 			}
 		}
@@ -231,10 +226,7 @@ class ResourceIncluder {
 		}
 		
 		if($bUseLocalProxy) {
-			if(count($aIncludes) > 0) {
-				$sLibraryName .= "?load=".implode(',', $aIncludes);
-			}
-			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, false);
+			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, is_array($aLibraryDependencies));
 			return;
 		}
 		
@@ -243,12 +235,8 @@ class ResourceIncluder {
 		if($bUseSsl) {
 			$sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
 		}
+
 		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, is_array($aLibraryDependencies));
-		
-		//If includes are used (currently only scriptaculous does this)
-		foreach($aIncludes as $sIncludeName) {
-			$this->addResource(str_replace('${library_name}', $sIncludeName, $sLibraryUrl), self::RESOURCE_TYPE_JS, "$sResourceIdentifier-include_$sIncludeName", array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression, 'dependees' => array($sResourceIdentifier)), $iPriority);
-		}
 	}
 	
 	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
@@ -387,6 +375,12 @@ class ResourceIncluder {
 			return self::RESOURCE_TYPE_JS;
 		} else {
 			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type found for $sLocation");
+		}
+	}
+
+	private function registerAsDependency($sResourceIdentifier) {
+		if(count($this->aCurrentDependencyStack) > 0) {
+			$this->aCurrentDependencyStack[0][$sResourceIdentifier] = true;
 		}
 	}
 	

@@ -10,7 +10,7 @@ libraries:
     url: 'http://ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.min.js'
     url_uncompressed: 'http://ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.js'
   prototype: 'http://ajax.googleapis.com/ajax/libs/prototype/${version}/prototype.js'
-  scriptaculous: 'http://ajax.googleapis.com/ajax/libs/scriptaculous/${version}/${library_name}.js'
+  scriptaculous: 'http://ajax.googleapis.com/ajax/libs/scriptaculous/${version}/scriptaculous.js'
   webfont: 'http://ajax.googleapis.com/ajax/libs/webfont/${version}/webfont.js'
   mootools:
     url: 'http://ajax.googleapis.com/ajax/libs/mootools/${version}/mootools-yui-compressed.js'
