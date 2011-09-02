@@ -35,9 +35,7 @@ class Cache {
 	/**
 	 * Returns the full path to the cache file. Note that this file may not yet exist
 	 */
-	//
-	public function getFilePath()
-	{
+	public function getFilePath() {
 			return $this->sFilePath;
 	}
 	
@@ -198,8 +196,8 @@ class Cache {
 	* Returns true if, for whatever reason, no data should be read from the cache.
 	* This returns true if either
 	* The cache is off for writing
-	* The request parameter nocache with a value that evaluates to true is set
-	* The cache-control headers are set to no-cache (i.e. the user forced a super reload in the browser)
+	* The request parameter nocache is set
+	* The cache-control headers are set to no-cache (i.e. the user forced a-super reload in the browser)
 	*/
 	public function cacheIsOff() {
 		if($this->cacheIsOffForWriting()) {
