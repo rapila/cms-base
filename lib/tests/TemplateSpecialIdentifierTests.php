@@ -121,4 +121,12 @@ EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('1eS1', $oTemplate->render());
 	}
+	
+	public function testRegexCaptureReplace() {
+		$sTemplateText = <<<EOT
+{{replaceIn=Wonderful World;matching=\\\\w+(ful);with=1$1}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame('1ful World', $oTemplate->render());
+	}
 }
