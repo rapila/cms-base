@@ -1,4 +1,5 @@
 <?php
+///Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
 class Cache {
 	
 	private $bCacheIsNeverOff;

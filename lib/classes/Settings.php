@@ -1,9 +1,6 @@
 <?php
-/**
- * class Settings
- */
+///Reads and consolidates .yml files from the config dirs for the current environment.
 class Settings {
-	
 	private $aSettings;
 	private static $INSTANCES = array();
 	
