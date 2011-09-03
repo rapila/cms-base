@@ -77,7 +77,7 @@ class Settings {
 		}
 		$sFileName = "$sFileName.yml";
 		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
-		if(!isset(self::$INSTANCES[$sFileName])) {
+		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
 			if($oCache->cacheFileExists() && !$oCache->isOutdated(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST))) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
