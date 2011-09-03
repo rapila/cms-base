@@ -84,6 +84,11 @@ a {color:white;}
 #dashboard-columns .dashboard-widget .dashboard-widget-content h6 {
 	padding: 0.4em 0;
 }
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content p,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li {
+	line-height: 1.5em;
+}
 #dashboard-columns .dashboard-widget .dashboard-widget-content img {
 	float: right;
 	margin: 10px;
