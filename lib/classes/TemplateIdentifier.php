@@ -36,7 +36,7 @@ class TemplateIdentifier {
 			$aParameters = preg_split("/(?<!\\\\)".preg_quote(TEMPLATE_PARAMETER_SEPARATOR, "/")."/", $sParameters);
 		}
 		foreach($aParameters as $sParameter) {
-			$aKeyValuePair = explode(TEMPLATE_KEY_VALUE_SEPARATOR, $sParameter);
+			$aKeyValuePair = preg_split("/(?<!\\\\)".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."/", $sParameter);
 			$sParameterValue = self::$PARAMETER_EMPTY_VALUE;
 			if(isset($aKeyValuePair[1])) {
 				$sParameterValue = implode(TEMPLATE_KEY_VALUE_SEPARATOR, array_slice($aKeyValuePair, 1));

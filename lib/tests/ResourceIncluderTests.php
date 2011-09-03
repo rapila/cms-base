@@ -151,8 +151,8 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 	
 	public function testLibraryIncludeScriptaculousRequires() {
 		$oIncluder = ResourceIncluder::defaultIncluder();
-		$oIncluder->addJavaScriptLibrary('scriptaculous?load=builder,effects,dragdrop,controls,slider,sound', 1);
-		$this->assertSame(array('http://ajax.googleapis.com/ajax/libs/prototype/1.6/prototype.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/scriptaculous.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/builder.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/effects.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/dragdrop.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/controls.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/slider.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/sound.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
+		$oIncluder->addJavaScriptLibrary('scriptaculous', 1);
+		$this->assertSame(array('http://ajax.googleapis.com/ajax/libs/prototype/1.6/prototype.js', 'http://ajax.googleapis.com/ajax/libs/scriptaculous/1/scriptaculous.js'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
 	}
 	
 	public function testLibraryIncludejQueryUISslNodepsUncomp() {

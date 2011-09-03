@@ -225,12 +225,24 @@ class SpecialTemplateIdentifierActions {
 		}
 		return $oResourceIncluder->getIncludes();
 	}
+
+	public function replaceIn($oIdentifier) {
+		$sText = $oIdentifier->getValue();
+		$sReplacement = $oIdentifier->getParameter('with');
+		if($oIdentifier->hasParameter('matching')) {
+			$sPattern = '/'.$oIdentifier->getParameter('matching').'/';
+			return preg_replace($sPattern, $sReplacement, $sText);
+		} else {
+			$sSearch = $oIdentifier->getParameter('string');
+			return str_replace($sSearch, $sReplacement, $sText);
+		}
+	}
 	
 	public static function getSpecialIdentifierNames() {
 		return array_diff(get_class_methods('SpecialTemplateIdentifierActions'), array('getSpecialIdentifierNames', 'getAlwaysLastNames', '__construct'));
 	}
 	
 	public static function getAlwaysLastNames() {
-		return array('writeParameterizedString', 'writeFlashValue', 'doCalculation', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute');
+		return array('writeParameterizedString', 'writeFlashValue', 'doCalculation', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute', 'replaceIn');
 	}
 }

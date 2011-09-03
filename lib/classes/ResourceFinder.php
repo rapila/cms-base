@@ -3,6 +3,7 @@
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/FileResource.php");
 
+///Allows to easily find files residing inside rapila’s site structure, following the precedence rules (site < plugins < base).
 class ResourceFinder {
 	const SEARCH_MAIN_ONLY = 0;
 	const SEARCH_BASE_ONLY = 1;
