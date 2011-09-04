@@ -3,7 +3,7 @@
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/FileResource.php");
 
-///Allows to easily find files residing inside rapila’s site structure, following the precedence rules (site < plugins < base).
+///Allows to easily find files residing inside rapila’s site structure, following the precedence rules (site > plugins > base).
 class ResourceFinder {
 	const SEARCH_MAIN_ONLY = 0;
 	const SEARCH_BASE_ONLY = 1;
@@ -53,7 +53,7 @@ class ResourceFinder {
 	* If $bFindAll is set, the returned array is index-based; if only $bByExpressions is set, the returned array’s keys are the relative paths of the respective files.
 	* @param array|string $mRelativePath relative path to search for in base, plugins or site folders. This can be an array or a string of /-separated directory/file names (or expressions if $bByExpressions is true).
 	* @param int $iFlag can be one of either ResourceFinder::SEARCH_MAIN_ONLY, ResourceFinder::SEARCH_BASE_ONLY, ResourceFinder::SEARCH_SITE_ONLY, ResourceFinder::SEARCH_PLUGINS_ONLY, ResourceFinder::SEARCH_BASE_FIRST, ResourceFinder::SEARCH_SITE_FIRST, ResourceFinder::SEARCH_PLUGINS_FIRST. The *_ONLY constants are just for convenience: since they only find files in specific directories, you might just as well do file_exists(MAIN_DIR.'my/dir').
-	* @param boolean $bByExpressions If set, $mRelativePath becomes not a fixed set of names but an array of regular expressions to evaluate against possible matches. This is slow when used on large directories. There are the following special values which can be used in the expression: ${parent_name} and ${parent_name_camelized} which do exactly what you would expect. For convenience, any array item not starting with a slash is considered to be a regular file name. This means that a slash is the only accepted delimiter.
+	* @param boolean $bByExpressions If set, $mRelativePath becomes not a fixed set of names but an array of regular expressions to evaluate against possible matches. This is slow when used on large directories. There are the following values which can be used as part of the expression: ${parent_name} and ${parent_name_camelized} which do exactly what you would expect. For convenience, any array item not starting with a slash is considered to be a regular file name. This means that a slash is the only accepted delimiter. In addition to regular strings and expressions, you can also pass null for a complete wildcard, true to match all files and false for a wildcard matching only directories. Any expression item packed into an array will be optional. An empty array (as an item of $mRelativePath) will match all items recursively (should not be used in frontend-production environments).
 	* @param boolean $bFindAll If set, all matching files will be returned even if they have the same relative path inside different instance prefixes. Note: when used in conjunction with $bByExpressions, the return value becomes an index-based array since there could be duplicate relative urls.
 	* @param boolean $bReturnObjects If set, all returned paths become FileResource objects. This is much cheaper than calling new FileResource() on the returned value(s) because a) FileResource objects are used internally by findResource and b) the additional information maintained by FileResource was added when it was already known and does not have to be deducted.
 	* @return mixed
@@ -222,7 +222,7 @@ class ResourceFinder {
 		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
 		if($bAllowPathItemToBeSkipped) {
 			if(count($aExpressions) === 0) {
-				//Add the current path (parent recursive invocation added nothing because there were still items on the stack, next invocation will return empty since the stack is empty)
+				//Add the current path (parent recursive invocation added nothing because there were still items on the stack, next invocation would return empty since the stack is empty)
 				$aResult[$sRelativePath] = new FileResource($sPath, $sInstancePrefix, $sRelativePath);
 			} else {
 				//call current function without the optional element
@@ -231,7 +231,7 @@ class ResourceFinder {
 			if(count($sPathExpression) === 0) {
 				//emtpy array means look recursively in all subdirs => put the any-item-specifier (true) and the empty array on the local stack
 				array_unshift($aExpressions, array());
-				$sPathExpression = true;
+				$sPathExpression = null;
 			} else {
 				//array has a path element => put the optional argument on the local stack
 				$sPathExpression = $sPathExpression[0];
@@ -260,7 +260,7 @@ class ResourceFinder {
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-				if($sPathExpression === true || ($sPathExpression === false && is_dir($sFilePath)) || ($sPathExpression !== false && preg_match($sPathExpression, $sFileName) !== 0)) {
+				if($sPathExpression === null || ($sPathExpression === true && is_file($sFilePath)) || ($sPathExpression === false && is_dir($sFilePath)) || (is_string($sPathExpression) && preg_match($sPathExpression, $sFileName) !== 0)) {
 					$sNextRelativePath = $sFileName;
 					if($sRelativePath !== null) {
 						$sNextRelativePath = "$sRelativePath/$sFileName";

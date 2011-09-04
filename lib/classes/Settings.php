@@ -1,9 +1,6 @@
 <?php
-/**
- * class Settings
- */
+///Reads and consolidates .yml files from the config dirs for the current environment.
 class Settings {
-	
 	private $aSettings;
 	private static $INSTANCES = array();
 	
@@ -77,7 +74,7 @@ class Settings {
 		}
 		$sFileName = "$sFileName.yml";
 		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
-		if(!isset(self::$INSTANCES[$sFileName])) {
+		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
 			if($oCache->cacheFileExists() && !$oCache->isOutdated(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST))) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
