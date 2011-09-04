@@ -317,6 +317,7 @@ class Page extends BasePage {
 	}
 	
 	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier("id", $this->getId());
 		$oTemplate->replaceIdentifier("name", $this->getName());
 		$oTemplate->replaceIdentifier("link_text", $this->getLinkText());
 		$oTemplate->replaceIdentifier("title", $this->getPageTitle());

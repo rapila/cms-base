@@ -49,6 +49,7 @@ class Document extends BaseDocument {
 	}
 	
 	public function renderListItem($oTemplate, $aUrlParams = array()) {
+		$oTemplate->replaceIdentifier('id', $this->getId());
 		$oTemplate->replaceIdentifier('name', $this->getName());
 		$oTemplate->replaceIdentifier('link_text', $this->getName());
 		$oTemplate->replaceIdentifier('title', $this->getName());
