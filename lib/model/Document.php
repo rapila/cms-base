@@ -65,7 +65,17 @@ class Document extends BaseDocument {
 		$oTemplate->replaceIdentifier('license_url', $this->getLicenseUrl());
 		$oTemplate->replaceIdentifier('license_image', $this->getLicenseImageUrl());
 		$oTemplate->replaceIdentifier('license_disclaimer', $this->getLicenseDisclaimer());
-		$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
+		$oTemplate->replaceIdentifier('document_type', $this->getMimetype());
+		$oTemplate->replaceIdentifier('document_kind', $this->getDocumentKind());
+		if($oTemplate->hasIdentifier('size')) {
+			$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
+		}
+		if($this->isImage() && $oTemplate->hasIdentifier('dimension', Template::$ANY_VALUE)) {
+			$oImage = $this->getImage();
+			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalWidth(), 'width');
+			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalHeight(), 'height');
+			$oImage->destroy();
+		}
 		$oDocument = $this;
 		$oTemplate->replaceIdentifierCallback("preview", null, function($oTemplateIdentifier, &$iFlags) use ($oDocument) {
 			$iSize = 190;
@@ -107,6 +117,10 @@ class Document extends BaseDocument {
 			return $oResult;
 		}
 		return $oResult->render();
+	}
+
+	public function getImage() {
+		return Image::imageFromStream($this->getData());
 	}
 	
 	public function getDataSize(PropelPDO $oConnection = null) {

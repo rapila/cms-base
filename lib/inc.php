@@ -22,7 +22,7 @@ define('DIRNAME_BASE',					'base');
 define('DIRNAME_PLUGINS',				'plugins');
 define('DIRNAME_GENERATED',			'generated');
 
-// mai dir constants
+// main dir constants
 define('MAIN_DIR' ,							dirname(dirname(dirname(__FILE__))));
 define('SITE_DIR',							MAIN_DIR.'/'.DIRNAME_SITE);
 define('BASE_DIR',							MAIN_DIR.'/'.DIRNAME_BASE);
