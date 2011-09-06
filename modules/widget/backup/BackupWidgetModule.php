@@ -5,7 +5,7 @@
 class BackupWidgetModule extends PersistentWidgetModule {
 	
 	public function possibleRestoreFiles() {
-		$aAllSqlFiles = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_DATA, "sql", "/.*\.sql/"));
+		$aAllSqlFiles = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_DATA, "sql", "/.*\.sql$/"));
 		$aResult = array();
 		foreach($aAllSqlFiles as $oFile) {
 			$aResult[$oFile->getFileName()] = $oFile->getInternalPath();
