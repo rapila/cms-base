@@ -13,3 +13,6 @@
 [submodule "web/js/popover"]
 	path = web/js/popover
 	url = git://github.com/BrazilianJoe/jquery-popover.git
+[submodule "lib/vendor/nib"]
+	path = lib/vendor/nib
+	url = git://github.com/visionmedia/nib.git
