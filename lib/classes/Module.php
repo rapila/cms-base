@@ -111,9 +111,9 @@ abstract class Module {
 		if($aModuleMetadata !== null) {
 			return $aModuleMetadata;
 		}
-		$aInfoFilePaths = ResourceFinder::findAllResources(array(DIRNAME_MODULES, $sType, $sName, self::INFO_FILE));
+		$oInfoFileFinder = ResourceFinder::create(array(DIRNAME_MODULES, $sType, $sName, self::INFO_FILE))->findAll();
 		$oCache = new Cache("module_md_$sType-$sName", DIRNAME_PRELOAD);
-		if($oCache->cacheFileExists() && !$oCache->isOutdated($aInfoFilePaths)) {
+		if($oCache->cacheFileExists() && !$oCache->isOutdated($oInfoFileFinder)) {
 			$aModuleMetadata = $oCache->getContentsAsVariable();
 		} else {
 			//Module exists?
@@ -139,7 +139,7 @@ abstract class Module {
 			//Module-info
 			$aModuleInfo = array();
 			require_once("spyc/Spyc.php");
-			foreach($aInfoFilePaths as $sPath) {
+			foreach($oInfoFileFinder->find() as $sPath) {
 				$aModuleInfo = array_merge($aModuleInfo, Spyc::YAMLLoad($sPath));
 			}
 			if(!isset($aModuleInfo['enabled'])) {

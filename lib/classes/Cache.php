@@ -56,9 +56,20 @@ class Cache {
 	
 	/**
 	 * Looks if the cached contents are older than the modified dates of any of the given files
-	 * @param string array $mOriginalFilePath
+	 * Pass a ResourceFinder instance rather than an array to prevent the (potentially expensive) call to ResourceFinder->find() in production.
+	 * @param string|array|ResourceFinder $mOriginalFilePath
 	 */
 	public function isOutdated($mOriginalFilePath) {
+		if(ErrorHandler::getEnvironment() === 'production') {
+			//Files are never out of date in production (clear the cache manually when deploying)… no need to check
+			return false;
+		}
+		if($mOriginalFilePath instanceof ResourceFinder) {
+			$mOriginalFilePath = $mOriginalFilePath->find();
+		}
+		if($mOriginalFilePath === null) {
+			return false;
+		}
 		if(!is_array($mOriginalFilePath)) {
 			$mOriginalFilePath = array($mOriginalFilePath);
 		}
