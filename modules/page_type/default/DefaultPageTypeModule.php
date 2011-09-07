@@ -145,25 +145,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 	}
 
-	public function getAjax($aPath) {
-		$sContainerName = $_REQUEST['container'];
-		$iItemNumber = $_REQUEST['item_number']+0;
-		foreach($this->oPage->getObjectsForContainer($sContainerName) as $iCount => $oContentObject) {
-			if($iItemNumber === $iCount+1) {
-				$iCount++;
-			} else if($iItemNumber === $iCount) {
-				$iCount--;
-			}
-			$oContentObject->setSort($iCount);
-			$oContentObject->save();
-		}
-		$oDocument = new DOMDocument();
-		$oRoot = $oDocument->createElement("success");
-		$oDocument->appendChild($oRoot);
-		return $oDocument;
-	}
-	
-	
 	//Admin stuff
 	private $aContentObjects = array();
 	private $aModuleInstances = array();
@@ -360,31 +341,41 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oStyle = null;
 		
 		if($bUseParsedCss) {
+			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
+			$sCacheKey = 'parsed-css-'.$sTemplateName;
+			$oCssCache = new Cache($sCacheKey, DIRNAME_PRELOAD);
+
 			$sCssContents = "";
-			foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
-				if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition']) && !isset($aResource['frontend_specific'])) {
-					if(isset($aResource['media'])) {
-						$sCssContents.= "@media {$aResource['media']} {";
-					}
-					if(isset($aResource['file_resource'])) {
-						$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
-					} else {
-						// Absolute link, requires fopen wrappers
-						$sCssContents .= file_get_contents($aResource['location']);
-					}
-					if(isset($aResource['media'])) {
-						$sCssContents.= "}";
+			if(!$oCssCache->cacheFileExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
+				foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
+					if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition']) && !isset($aResource['frontend_specific'])) {
+						if(isset($aResource['media'])) {
+							$sCssContents.= "@media {$aResource['media']} {";
+						}
+						if(isset($aResource['file_resource'])) {
+							$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
+						} else {
+							// Absolute link, requires fopen wrappers
+							$sCssContents .= file_get_contents($aResource['location']);
+						}
+						if(isset($aResource['media'])) {
+							$sCssContents.= "}";
+						}
 					}
 				}
-			}
 		
-			$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
-			$oCss = $oParser->parse();
-			$this->cleanupCSS($oCss);
+				$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
+				$oCss = $oParser->parse();
+				$this->cleanupCSS($oCss);
+				$sCssContents = Template::htmlEncode($oCss->__toString());
+				$oCssCache->setContents($sCssContents);
+			} else {
+				$sCssContents = $oCssCache->getContentsAsString();
+			}
 			
 			$oStyle = new HtmlTag('style');
 			$oStyle->addParameters(array('scoped' => 'scoped'));
-			$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+			$oStyle->appendChild($sCssContents);
 		}
 		
 		$sTemplate = $oTemplate->render();
