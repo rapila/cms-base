@@ -7,12 +7,12 @@ class Cache {
 	private $bCacheControlHeaderSent;
 	
 	public function __construct($sKey, $mPath=null) {
-		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG;
+		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
-		$sPath = ResourceFinder::findResource($mPath, ResourceFinder::SEARCH_MAIN_ONLY);
-		if($sPath === null) {
-			if(!mkdir($sPath = MAIN_DIR.'/'.implode('/', $mPath), 0775, true)) {
+		$sPath = MAIN_DIR.'/'.implode('/', $mPath);
+		if(!is_dir($sPath)) {
+			if(!@mkdir($sPath, 0775, true)) {
 				throw new Exception("Error in Cache->__construct(): Cache folder $sPath does not exist and we do not have rights to create it");
 			}
 		}
@@ -140,11 +140,11 @@ class Cache {
 	/**
 	* Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
 	*/
-	public function setContents($mContents) {
+	public function setContents($mContents, $bForceSerialize = false) {
 		if($this->cacheIsOffForWriting()) {
 			return;
 		}
-		if(is_string($mContents)) {
+		if(!$bForceSerialize && is_string($mContents)) {
 			return file_put_contents($this->sFilePath, $mContents);
 		}
 		return file_put_contents($this->sFilePath, serialize($mContents));

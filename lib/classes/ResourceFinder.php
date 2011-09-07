@@ -144,7 +144,13 @@ class ResourceFinder {
 
 	public function find() {
 		if($this->mResult === false) {
-			$this->mResult = $this->doFind();
+			$oCache = new Cache(serialize($this), 'resource_finder');
+			if($oCache->cacheFileExists()) {
+				$this->mResult = $oCache->getContentsAsVariable();
+			} else {
+				$this->mResult = $this->doFind();
+				$oCache->setContents($this->mResult, true);
+			}
 		}
 		return $this->mResult;
 	}
@@ -314,6 +320,12 @@ class ResourceFinder {
 			return $mResult;
 		}
 		return $mResult->getFullPath();
+	}
+
+	private function __sleep() {
+		$aVars = get_object_vars($this);
+		unset($aVars['mResult']);
+		return array_keys($aVars);
 	}
 	
 	private static function findInPath($aPath, $sPath, $sInstancePrefix) {
