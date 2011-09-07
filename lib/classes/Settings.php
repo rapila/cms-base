@@ -76,7 +76,7 @@ class Settings {
 		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
-			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->findAll();
+			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
 			if($oCache->cacheFileExists() && !$oCache->isOutdated($oFinder)) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {

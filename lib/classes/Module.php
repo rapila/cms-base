@@ -111,7 +111,7 @@ abstract class Module {
 		if($aModuleMetadata !== null) {
 			return $aModuleMetadata;
 		}
-		$oInfoFileFinder = ResourceFinder::create(array(DIRNAME_MODULES, $sType, $sName, self::INFO_FILE))->findAll();
+		$oInfoFileFinder = ResourceFinder::create(array(DIRNAME_MODULES, $sType, $sName, self::INFO_FILE))->all();
 		$oCache = new Cache("module_md_$sType-$sName", DIRNAME_PRELOAD);
 		if($oCache->cacheFileExists() && !$oCache->isOutdated($oInfoFileFinder)) {
 			$aModuleMetadata = $oCache->getContentsAsVariable();

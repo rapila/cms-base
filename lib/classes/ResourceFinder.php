@@ -48,7 +48,7 @@ class ResourceFinder {
 		return $this;
 	}
 
-	public function findAll($bFindAll = true) {
+	public function all($bFindAll = true) {
 		$this->bFindAll = $bFindAll;
 		$this->mResult = false;
 		return $this;
@@ -217,7 +217,7 @@ class ResourceFinder {
 			$iFlag = constant("ResourceFinder::".$mRelativePath['flag']);
 			unset($mRelativePath['flag']);
 		}
-		return ResourceFinder::create($mRelativePath, $iFlag)->byExpressions($bByExpressions)->findAll($bFindAll)->returnObjects($bReturnObjects)->find();
+		return ResourceFinder::create($mRelativePath, $iFlag)->byExpressions($bByExpressions)->all($bFindAll)->returnObjects($bReturnObjects)->find();
 	}
 	
 	/**
