@@ -14,6 +14,7 @@ class TemplateStringTests extends PHPUnit_Framework_TestCase {
 				'simple_quote' => '>{{quoted}}<'
 			)
 		));
+		Session::getSession()->setLanguage('de');
 	}
 	
 	public function testStringWithoutHTMLAsNormal() {
