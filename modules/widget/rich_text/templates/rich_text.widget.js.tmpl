@@ -213,6 +213,15 @@ Widget.types.rich_text = {
 					}
 				}
 			});
+			for(var i=1;i<=6;i++) {
+				instance.dataProcessor.writer.setRules('h'+i, {
+					indent : false,
+					breakBeforeOpen : true,
+					breakAfterOpen : false,
+					breakBeforeClose : false,
+					breakAfterClose : true
+				});
+			}
 			instance.document.appendStyleText(_this.settings.inline_css);
 		});
 	},

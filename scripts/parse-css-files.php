@@ -54,7 +54,10 @@ function call_parser($sCommand, $aArguments) {
 
 // Stylus-convert all .styl files
 $aFiles = find_files('styl');
-$sNibLocation = isset($aOptions['nib']) ? $aOptions['nib'] : '/usr/local/lib/node_modules/nib';
+$sNibLocation = isset($aOptions['nib']) ? $aOptions['nib'] : null;
+if($sNibLocation === null) {
+	$sNibLocation = ResourceFinder::findResource(array(DIRNAME_LIB, DIRNAME_VENDOR, 'nib'));
+}
 foreach(ResourceFinder::findAllResources(array(DIRNAME_LIB, 'stylus_includes')) as $sIncludeDir) {
 	array_unshift($aFiles, '-I', $sIncludeDir);
 }
