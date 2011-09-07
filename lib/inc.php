@@ -34,10 +34,9 @@ Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
 // include path for all classes
-$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR, ResourceFinder::SEARCH_SITE_FIRST);
-$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB, ResourceFinder::SEARCH_SITE_FIRST);
+$aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRNAME_VENDOR)->findAll()->searchSiteFirst()->find();
 
-set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
+set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
 // frontend dir constants
 define('MAIN_DIR_FE',				 php_sapi_name() === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));

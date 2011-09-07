@@ -16,30 +16,154 @@ class ResourceFinder {
 	const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
 	
 	private static $PLUGINS = null;
-	
-	private static function getDefaultFlag($bFindAll) {
-		return $bFindAll ? self::SEARCH_BASE_FIRST : self::SEARCH_SITE_FIRST;
-	}
-	
-	private static function processArguments(&$mRelativePath, &$iFlag, $bFindAll) {
-		if($iFlag === null) {
-			$iFlag = self::getDefaultFlag($bFindAll);
-		}
-		
-		if(is_array($mRelativePath) && array_key_exists('flag', $mRelativePath)) {
-			$iFlag = constant("ResourceFinder::".$mRelativePath['flag']);
-			unset($mRelativePath['flag']);
-		}
-		
-		if(is_string($mRelativePath)) {
-			$mRelativePath = explode('/', $mRelativePath);
-		} else if(!is_array($mRelativePath)) {
+
+	private $aPath;
+	private $bByExpressions;
+	private $bFindAll;
+	private $bReturnObjects;
+	private $iFlag;
+
+	public function __construct($aPath = array(), $iFlag = null) {
+		if(is_string($aPath)) {
+			$aPath = explode('/', $aPath);
+		} else if(!is_array($aPath)) {
 			throw new Exception("Exception in ResourceFinder: given path is neither array nor string");
 		}
-		
-		if($mRelativePath[0] === DIRNAME_CLASSES || $mRelativePath[0] === DIRNAME_VENDOR || $mRelativePath[0] === DIRNAME_MODEL) {
-			array_unshift($mRelativePath, DIRNAME_LIB);
+		$this->aPath = $aPath;
+		$this->bByExpressions = false;
+		$this->bFindAll = false;
+		$this->bReturnObjects = false;
+		$this->iFlag = $iFlag;
+	}
+
+	public static function create($aPath = array(), $iFlag = null) {
+		return new ResourceFinder($aPath, $iFlag);
+	}
+
+	public function byExpressions($bByExpressions = true) {
+		$this->bByExpressions = $bByExpressions;
+		return $this;
+	}
+
+	public function findAll($bFindAll = true) {
+		$this->bFindAll = $bFindAll;
+		return $this;
+	}
+
+	public function returnObjects($bReturnObjects = true) {
+		$this->bReturnObjects = $bReturnObjects;
+		return $this;
+	}
+
+	public function searchMainOnly() {
+		$this->iFlag = self::SEARCH_MAIN_ONLY;
+		$this->bFindAll = false;
+		return $this;
+	}
+
+	public function searchBaseOnly() {
+		$this->iFlag = self::SEARCH_BASE_ONLY;
+		$this->bFindAll = false;
+		return $this;
+	}
+
+	public function searchSiteOnly() {
+		$this->iFlag = self::SEARCH_SITE_ONLY;
+		$this->bFindAll = false;
+		return $this;
+	}
+
+	public function searchPluginsOnly() {
+		$this->iFlag = self::SEARCH_PLUGINS_ONLY;
+		return $this;
+	}
+
+	public function searchBaseFirst() {
+		$this->iFlag = self::SEARCH_BASE_FIRST;
+		return $this;
+	}
+
+	public function searchSiteFirst() {
+		$this->iFlag = self::SEARCH_SITE_FIRST;
+		return $this;
+	}
+
+	public function searchPluginsFirst() {
+		$this->iFlag = self::SEARCH_PLUGINS_FIRST;
+		return $this;
+	}
+
+	public function resultIsArray() {
+		return $this->bByExpressions || $this->bFindAll;
+	}
+
+	public function resultIsAssoc() {
+		return $this->bByExpressions && !$this->bFindAll;
+	}
+
+	public function returnsObjects() {
+		return $this->bReturnObjects;
+	}
+
+	public function addPath() {
+		$this->aPath = array_merge($this->aPath, func_get_args());
+		return $this;
+	}
+
+	public function addOptionalPath($mPathItem) {
+		$this->aPath[] = array($mPathItem);
+		$this->bByExpressions = true;
+		return $this;
+	}
+
+	public function addAnyPath($bOptional = false) {
+		return $bOptional ? $this->addOptionalPath(null) : $this->addPath(null);
+	}
+
+	public function addDirPath($bOptional = false) {
+		return $bOptional ? $this->addOptionalPath(false) : $this->addPath(false);
+	}
+
+	public function addFilePath($bOptional = false) {
+		return $bOptional ? $this->addOptionalPath(true) : $this->addPath(true);
+	}
+
+	public function find() {
+		if($this->iFlag === null) {
+			$this->iFlag = $this->bFindAll ? self::SEARCH_BASE_FIRST : self::SEARCH_SITE_FIRST;
 		}
+		$mResult = array();
+		foreach($this->buildSearchPathList() as $sSearchPath) {
+			$sInstancePrefix = substr(realpath($sSearchPath), strlen(realpath(MAIN_DIR))+1);
+			if($sInstancePrefix === false) {
+				$sInstancePrefix = '';
+			}
+			$mPath = null;
+			if($this->bByExpressions) {
+				$mPath = array();
+				self::findInPathByExpressions($mPath, $this->aPath, $sSearchPath, $sInstancePrefix);
+			} else {
+				$mPath = self::findInPath($this->aPath, $sSearchPath, $sInstancePrefix);
+			}
+			if($mPath) {
+				if($this->bFindAll || $this->bByExpressions) {
+					if(!$this->bByExpressions) {
+						$mPath = array($mPath);
+					} else if($this->bFindAll) {
+						$mPath = array_values($mPath);
+					}
+					$mResult = array_merge($mResult, $mPath);
+				} else {
+					return $this->returnFromFindResource($mPath);
+				}
+			}
+		}
+		
+		if($this->bFindAll || $this->bByExpressions) {
+			return $this->returnFromFindResource($mResult);
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -52,64 +176,21 @@ class ResourceFinder {
 	* If $bByExpressions and $bFindAll are set to false, only a single string/object is returned (null if not found). Otherwise, an array is returned.
 	* If $bFindAll is set, the returned array is index-based; if only $bByExpressions is set, the returned array’s keys are the relative paths of the respective files.
 	* @param array|string $mRelativePath relative path to search for in base, plugins or site folders. This can be an array or a string of /-separated directory/file names (or expressions if $bByExpressions is true).
-	* @param int $iFlag can be one of either ResourceFinder::SEARCH_MAIN_ONLY, ResourceFinder::SEARCH_BASE_ONLY, ResourceFinder::SEARCH_SITE_ONLY, ResourceFinder::SEARCH_PLUGINS_ONLY, ResourceFinder::SEARCH_BASE_FIRST, ResourceFinder::SEARCH_SITE_FIRST, ResourceFinder::SEARCH_PLUGINS_FIRST. The *_ONLY constants are just for convenience: since they only find files in specific directories, you might just as well do file_exists(MAIN_DIR.'my/dir').
+	* @param int $iFlag can be one of either ResourceFinder::SEARCH_MAIN_ONLY, ResourceFinder::SEARCH_BASE_ONLY, ResourceFinder::SEARCH_SITE_ONLY, ResourceFinder::SEARCH_PLUGINS_ONLY, ResourceFinder::SEARCH_BASE_FIRST, ResourceFinder::SEARCH_SITE_FIRST, ResourceFinder::SEARCH_PLUGINS_FIRST. The *_ONLY constants are – except for SEARCH_PLUGINS_ONLY – just for convenience: since they only find files in specific directories, you might just as well do file_exists(MAIN_DIR.'my/dir').
 	* @param boolean $bByExpressions If set, $mRelativePath becomes not a fixed set of names but an array of regular expressions to evaluate against possible matches. This is slow when used on large directories. There are the following values which can be used as part of the expression: ${parent_name} and ${parent_name_camelized} which do exactly what you would expect. For convenience, any array item not starting with a slash is considered to be a regular file name. This means that a slash is the only accepted delimiter. In addition to regular strings and expressions, you can also pass null for a complete wildcard, true to match all files and false for a wildcard matching only directories. Any expression item packed into an array will be optional. An empty array (as an item of $mRelativePath) will match all items recursively (should not be used in frontend-production environments).
 	* @param boolean $bFindAll If set, all matching files will be returned even if they have the same relative path inside different instance prefixes. Note: when used in conjunction with $bByExpressions, the return value becomes an index-based array since there could be duplicate relative urls.
 	* @param boolean $bReturnObjects If set, all returned paths become FileResource objects. This is much cheaper than calling new FileResource() on the returned value(s) because a) FileResource objects are used internally by findResource and b) the additional information maintained by FileResource was added when it was already known and does not have to be deducted.
 	* @return mixed
 	*/
 	public static function findResource($mRelativePath, $iFlag = null, $bByExpressions = false, $bFindAll = false, $bReturnObjects = false) {
-		$bWaitForAll = $bByExpressions && $bFindAll;
-		if($bByExpressions) {
-			$bFindAll = true;
+		if($mRelativePath instanceof ResourceFinder) {
+			return $mRelativePath->find();
 		}
-		self::processArguments($mRelativePath, $iFlag, $bFindAll);
-		$mResult = array();
-		foreach(self::buildSearchPathList($iFlag) as $sSearchPath) {
-			$sInstancePrefix = substr(realpath($sSearchPath), strlen(realpath(MAIN_DIR))+1);
-			if($sInstancePrefix === false) {
-				$sInstancePrefix = '';
-			}
-			$mPath = null;
-			if($bByExpressions) {
-				$mPath = array();
-				self::findInPathByExpressions($mPath, $mRelativePath, $sSearchPath, $sInstancePrefix);
-				if($bWaitForAll) {
-					$mPath = array_values($mPath);
-				}
-			} else {
-				$mPath = self::findInPath($mRelativePath, $sSearchPath, $sInstancePrefix);
-			}
-			if($mPath) {
-				if($bFindAll) {
-					if(!$bByExpressions) {
-						$mPath = array($mPath);
-					}
-					$mResult = array_merge($mResult, $mPath);
-				} else {
-					return self::returnFromFindResource($mPath, $bReturnObjects);
-				}
-			}
+		if(is_array($mRelativePath) && array_key_exists('flag', $mRelativePath)) {
+			$iFlag = constant("ResourceFinder::".$mRelativePath['flag']);
+			unset($mRelativePath['flag']);
 		}
-		
-		if($bFindAll) {
-			return self::returnFromFindResource($mResult, $bReturnObjects);
-		}
-		
-		return null;
-	}
-	
-	private static function returnFromFindResource(&$mResult, $bReturnObjects) {
-		if($bReturnObjects) {
-			return $mResult;
-		}
-		if(is_array($mResult)) {
-			foreach($mResult as $mKey => $oValue) {
-				$mResult[$mKey] = $oValue->getFullPath();
-			}
-			return $mResult;
-		}
-		return $mResult->getFullPath();
+		return ResourceFinder::create($mRelativePath, $iFlag)->byExpressions($bByExpressions)->findAll($bFindAll)->returnObjects($bReturnObjects)->find();
 	}
 	
 	/**
@@ -175,15 +256,15 @@ class ResourceFinder {
 		return self::findResource($aExpressions, $iFlag, true, true, true);
 	}
 	
-	public static function buildSearchPathList($iFlag) {
-		switch($iFlag) {
+	private function buildSearchPathList() {
+		switch($this->iFlag) {
 			case self::SEARCH_MAIN_ONLY: return array(MAIN_DIR);
 			case self::SEARCH_BASE_ONLY: return array(BASE_DIR);
 			case self::SEARCH_SITE_ONLY: return array(SITE_DIR);
 			case self::SEARCH_PLUGINS_ONLY: return self::getPluginPaths();
 		}
 		$aResult = self::getPluginPaths();
-		switch($iFlag) {
+		switch($this->iFlag) {
 			case self::SEARCH_BASE_FIRST:
 				array_unshift($aResult, BASE_DIR);
 				array_push($aResult, SITE_DIR);
@@ -199,6 +280,19 @@ class ResourceFinder {
 		}
 		
 		return $aResult;
+	}
+	
+	private function returnFromFindResource(&$mResult) {
+		if($this->bReturnObjects) {
+			return $mResult;
+		}
+		if(is_array($mResult)) {
+			foreach($mResult as $mKey => $oValue) {
+				$mResult[$mKey] = $oValue->getFullPath();
+			}
+			return $mResult;
+		}
+		return $mResult->getFullPath();
 	}
 	
 	private static function findInPath($aPath, $sPath, $sInstancePrefix) {
@@ -282,7 +376,7 @@ class ResourceFinder {
 		return self::$PLUGINS;
 	}
 	
-	//Helper function for classes that are given a filename, base path and path name
+	///Helper function for classes that are given a filename, base path and path name
 	public static function parsePathArguments($sBaseDirname = null, $mPath = null, $sFileName = null) {
 		if($mPath === null) {
 			$mPath = array();
