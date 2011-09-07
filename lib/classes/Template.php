@@ -10,15 +10,15 @@ define("TEMPLATE_PARAMETER_SEPARATOR", ";");
 
 define("TEMPLATE_IDENTIFIER_MATCHER", "/".preg_quote(TEMPLATE_IDENTIFIER_START, "/")."([^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_KEY_VALUE_SEPARATOR.TEMPLATE_PARAMETER_SEPARATOR, "/")."]+?)(".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])+)?)?(".preg_quote(TEMPLATE_PARAMETER_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])*))?".preg_quote(TEMPLATE_IDENTIFIER_END, "/")."/sm");
 
-// Util::dumpAll(TEMPLATE_IDENTIFIER_MATCHER);
-
 /**
  * class Template
  * is used to manage building a tree with static template texts and dynamic identifiers that have the form of <code>{{identifier=value;param=value}}</code>. Those can have special meaning ({@link SpecialTemplateIdentifierActions}) and be replaced by the Template class or can be replaced by the user of the template using {@link replaceIdentifier()} or {@link replaceIdentifierMultiple()}.
  * All replaceIdentifier… methods take a flag parameter. The possible flags can be bitwise ORed together. The flags are described in the constants section. You can also provide a new template with some default flags. All Templates whose file name start with “e_mail_” will automatically get the NO_HTML_ESCAPE flag while those ending in .css.tmpl or .js.tmpl will automatically get NO_HTML_ESCAPE|ESCAPE.
  */
+
+/// Manages a rapila Template (*.tmpl)
 class Template {
-	// template suffix
+	/// template suffix
 	public static $SUFFIX = '.tmpl';
 	
 	public static $ANY_VALUE = -1;
@@ -119,13 +119,13 @@ class Template {
 	
 	/**
 	 * __construct()
-	 * @param string template name
-	 * @param string|array template dir path
-	 * @param boolean template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
-	 * @param boolean template will output directly to stream? only one the main template should have set this to true
-	 * @param string target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding
-	 * @param string root template name, used internally when including subtemplates, default=null
-	 * @param int default flags, will be ORed to the flags you provide when calling {@link replaceIdentifier()} and {@link replaceIdentifierMultiple()}
+	 * @param string $sTemplateName template name
+	 * @param (string|array) $mPath template dir path
+	 * @param boolean $bTemplateIsTextOnly template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
+	 * @param boolean $bDirectOutput template will output directly to stream? only one the main template should have set this to true
+	 * @param string $sTargetEncoding target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding
+	 * @param string $sRootTemplateName root template name, used internally when including subtemplates, default=null
+	 * @param int $iDefaultFlags default flags, will be ORed to the flags you provide when calling {@link replaceIdentifier()} and {@link replaceIdentifierMultiple()}
 	 */
 	public function __construct($sTemplateName, $mPath=null, $bTemplateIsTextOnly=false, $bDirectOutput=false, $sTargetEncoding=null, $sRootTemplateName=null, $iDefaultFlags = 0) {
 		if($sTargetEncoding === null) {
