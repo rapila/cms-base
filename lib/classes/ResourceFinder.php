@@ -22,6 +22,7 @@ class ResourceFinder {
 	private $bFindAll;
 	private $bReturnObjects;
 	private $iFlag;
+	private $mResult;
 
 	public function __construct($aPath = array(), $iFlag = null) {
 		if(is_string($aPath)) {
@@ -34,6 +35,7 @@ class ResourceFinder {
 		$this->bFindAll = false;
 		$this->bReturnObjects = false;
 		$this->iFlag = $iFlag;
+		$this->mResult = false;
 	}
 
 	public static function create($aPath = array(), $iFlag = null) {
@@ -42,54 +44,64 @@ class ResourceFinder {
 
 	public function byExpressions($bByExpressions = true) {
 		$this->bByExpressions = $bByExpressions;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function findAll($bFindAll = true) {
 		$this->bFindAll = $bFindAll;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function returnObjects($bReturnObjects = true) {
 		$this->bReturnObjects = $bReturnObjects;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchMainOnly() {
 		$this->iFlag = self::SEARCH_MAIN_ONLY;
 		$this->bFindAll = false;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchBaseOnly() {
 		$this->iFlag = self::SEARCH_BASE_ONLY;
 		$this->bFindAll = false;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchSiteOnly() {
 		$this->iFlag = self::SEARCH_SITE_ONLY;
 		$this->bFindAll = false;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchPluginsOnly() {
 		$this->iFlag = self::SEARCH_PLUGINS_ONLY;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchBaseFirst() {
 		$this->iFlag = self::SEARCH_BASE_FIRST;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchSiteFirst() {
 		$this->iFlag = self::SEARCH_SITE_FIRST;
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function searchPluginsFirst() {
 		$this->iFlag = self::SEARCH_PLUGINS_FIRST;
+		$this->mResult = false;
 		return $this;
 	}
 
@@ -107,12 +119,14 @@ class ResourceFinder {
 
 	public function addPath() {
 		$this->aPath = array_merge($this->aPath, func_get_args());
+		$this->mResult = false;
 		return $this;
 	}
 
 	public function addOptionalPath($mPathItem) {
 		$this->aPath[] = array($mPathItem);
 		$this->bByExpressions = true;
+		$this->mResult = false;
 		return $this;
 	}
 
@@ -129,6 +143,13 @@ class ResourceFinder {
 	}
 
 	public function find() {
+		if($this->mResult === false) {
+			$this->mResult = $this->doFind();
+		}
+		return $this->mResult;
+	}
+
+	private function doFind() {
 		if($this->iFlag === null) {
 			$this->iFlag = $this->bFindAll ? self::SEARCH_BASE_FIRST : self::SEARCH_SITE_FIRST;
 		}
