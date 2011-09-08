@@ -228,26 +228,9 @@ class Cache {
 	* Removes all cache files but not their parent directories.
 	*/
 	public static function clearAllCaches() {
-		$aCachesDirs = ResourceFinder::findAllResources(array(DIRNAME_GENERATED, DIRNAME_CACHES), ResourceFinder::SEARCH_MAIN_ONLY);
-		foreach($aCachesDirs as $sCachesDir) {
-			if($rCachesDir = opendir($sCachesDir)) {
-				while(false !== ($sFileName = readdir($rCachesDir))) {
-					$sFilePath = $sCachesDir."/".$sFileName;
-					if(is_dir($sFilePath) && strpos($sFileName, ".") !== 0) {
-						if($rSubDir = opendir($sFilePath)) {
-							while(false !== ($sSubFileName = readdir($rSubDir))) {
-								if(!is_dir("$sFilePath/$sSubFileName")) {
-									unlink("$sFilePath/$sSubFileName");
-								}
-							}
-							closedir($rSubDir);
-						}
-					} elseif(strpos($sFileName, ".") !== 0) {
-						unlink($sFilePath);
-					}
-				}
-				closedir($rCachesDir);
-			}
+		$oFinder = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_CACHES)->addDirPath(true)->addPath('/^.*\\.cache$/')->searchMainOnly()->noCache();
+		foreach($oFinder->find() as $sCachesFile) {
+			unlink($sCachesFile);
 		}
 	} //clearAllCaches()
 }
