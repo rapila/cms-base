@@ -21,6 +21,7 @@ class ResourceFinder {
 	private $bByExpressions;
 	private $bFindAll;
 	private $bReturnObjects;
+	private $bNoCache;
 	private $iFlag;
 	private $mResult;
 
@@ -34,6 +35,7 @@ class ResourceFinder {
 		$this->bByExpressions = false;
 		$this->bFindAll = false;
 		$this->bReturnObjects = false;
+		$this->bNoCache = false;
 		$this->iFlag = $iFlag;
 		$this->mResult = false;
 	}
@@ -57,6 +59,11 @@ class ResourceFinder {
 	public function returnObjects($bReturnObjects = true) {
 		$this->bReturnObjects = $bReturnObjects;
 		$this->mResult = false;
+		return $this;
+	}
+
+	public function noCache($bNoCache = true) {
+		$this->bNoCache = $bNoCache;
 		return $this;
 	}
 
@@ -144,12 +151,16 @@ class ResourceFinder {
 
 	public function find() {
 		if($this->mResult === false) {
-			$oCache = new Cache(serialize($this), 'resource_finder');
-			if($oCache->cacheFileExists()) {
-				$this->mResult = $oCache->getContentsAsVariable();
+			if(!$this->bNoCache) {
+				$oCache = new Cache(serialize($this), 'resource_finder');
+				if($oCache->cacheFileExists()) {
+					$this->mResult = $oCache->getContentsAsVariable();
+				} else {
+					$this->mResult = $this->doFind();
+					$oCache->setContents($this->mResult, true);
+				}
 			} else {
 				$this->mResult = $this->doFind();
-				$oCache->setContents($this->mResult, true);
 			}
 		}
 		return $this->mResult;
@@ -325,6 +336,7 @@ class ResourceFinder {
 	private function __sleep() {
 		$aVars = get_object_vars($this);
 		unset($aVars['mResult']);
+		unset($aVars['bNoCache']);
 		return array_keys($aVars);
 	}
 	
