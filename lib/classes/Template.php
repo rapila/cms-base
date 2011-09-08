@@ -120,7 +120,7 @@ class Template {
 	/**
 	 * __construct()
 	 * @param string $sTemplateName template name
-	 * @param (string|array) $mPath template dir path
+	 * @param string|array $mPath template dir path
 	 * @param boolean $bTemplateIsTextOnly template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
 	 * @param boolean $bDirectOutput template will output directly to stream? only one the main template should have set this to true
 	 * @param string $sTargetEncoding target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding

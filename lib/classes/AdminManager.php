@@ -111,7 +111,7 @@ class AdminManager extends Manager {
 	}
 	
 	/**
-	* @param optional string of template 'list item' identifier
+	* @param string $sPostfix string of template 'list item' identifier
 	* retrieve all templates from site template dir that follow a naming convention
 	* list template name: examplename.tmpl
 	* list_item template name: examplename_item.tmpl

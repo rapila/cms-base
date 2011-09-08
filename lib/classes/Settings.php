@@ -26,11 +26,10 @@ class Settings {
 	}
 		
 	/**
-	 * getConfigurationSetting()
-	 * @param string config.yml section name
-	 * @param string section var key
-	 * @param mixed default value
-	 * @return mixed value
+	 * @param string $sSection config.yml section name
+	 * @param string $sKey section var key
+	 * @param mixed $mDefaultValue default value
+	 * @return string|int|float|array The setting value
 	 */
 	public function _getSetting($sSection, $sKey, $mDefaultValue) {
 		if(isset($_REQUEST["setting-override-$sSection/$sKey"]) && Session::getSession()->isBackendAuthenticated()) {

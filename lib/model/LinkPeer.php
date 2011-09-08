@@ -33,8 +33,8 @@ class LinkPeer extends BaseLinkPeer {
 
 	/** 
 	 * getLinksByTagName()
-	 * @param mixed string|array tagname
-	 * @param boolean optional sortorder
+	 * @param string|array $mTagName The name(s) of the tag(s) for which links are to be found $mTagName
+	 * @param boolean $bOrderByLinkName optional sortorder
 	 * @return array of objects
 	 */
 	public static function getLinksByTagName($mTagName, $bOrderByLinkName=true) {

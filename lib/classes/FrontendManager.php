@@ -281,8 +281,8 @@ class FrontendManager extends Manager {
 
 	/**
 	 * replacePageLinkIdentifier()
-	 * @param object TemplateIdentifier
-	 * @return object Template
+	 * @param TemplateIdentifier $oTemplateIdentifier The TemplateIdentifier whose name is “page_link”
+	 * @return Template the Template containing a link
 	 * used in fillAttributes to replace page_link identifiers
 	 * - get a page by name
 	 * - get a page by id

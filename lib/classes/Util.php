@@ -127,11 +127,9 @@ class Util {
 		$oCriteria->$sMethod($sSortColumn);
 	}
 	
-		/**
-	 * hasBitsSet()
-	 *
-	 * @param int bitmap of bits to be checked (needle)
-	 * @param int bitmap to check against (haystack)
+	/**
+	 * @param int $iBits bitmap of bits to be checked (needle)
+	 * @param int $iBitmap bitmap to check against (haystack)
 	 * @return bolean, true if _ALL_ bits of needle are set in haystack, false otherwise
 	 */
 	public static function hasBitsSet($iBits, $iBitmap) {
