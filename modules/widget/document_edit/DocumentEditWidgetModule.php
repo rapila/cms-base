@@ -49,7 +49,7 @@ class DocumentEditWidgetModule extends PersistentWidgetModule {
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === DocumentListFrontendModule::SORT_BY_SORT) {
 			$oCriteria->orderBySort();
 		}
-		$oCriteria->orderByName();
+		$oCriteria->orderByName()->filterByDisplayLanguage(AdminManager::getContentLanguage());
 		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentPeer::ID)->addSelectColumn(DocumentPeer::NAME);
 		return DocumentPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC);
 	}

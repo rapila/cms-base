@@ -25,9 +25,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 			$oCriteria->filterByDocumentKind($aOptions['document_kind']);
 		}
 		
-		$oLangCriterion = $oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, Session::language());
-		$oLangCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, null));
-		$oCriteria->add($oLangCriterion);
+		$oCriteria->filterByDisplayLanguage();
 
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
