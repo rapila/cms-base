@@ -21,6 +21,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		$this->cleanupCss();
 		$this->cleanupStyles();
 		$this->cleanupFormatTags();
+		$this->cleanupInsertableParts();
 		$this->cleanupToolbar();
 		foreach($this->aModuleSettings as $sKey => $mSetting) {
 			$this->setSetting($sKey, $mSetting);
@@ -108,6 +109,19 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$this->setSetting('stylesSet', 'default');
 		} else {
 			$this->setSetting('stylesSet', $aResult);
+		}
+	}
+
+	private function cleanupInsertableParts() {
+		if(isset($this->aModuleSettings['insertable_parts'])) {
+			foreach($this->aModuleSettings['insertable_parts'] as &$aPartSpec) {
+				if(!isset($aPartSpec['template'])) {
+					continue;
+				}
+				$oTemplate = new Template($aPartSpec['template']);
+				$aPartSpec['content'] = $oTemplate->render();
+				unset($aPartSpec['template']);
+			}
 		}
 	}
 

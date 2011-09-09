@@ -183,8 +183,9 @@ Widget.types.rich_text = {
 	
 	replace: function() {
 		var _this = this;
-		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
+		var instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
+			_this.instance = instance;
 			instance.dataProcessor.htmlFilter.addRules({
 				elements: {
 					img: function( element ) {
@@ -221,6 +222,24 @@ Widget.types.rich_text = {
 			}
 			instance.document.appendStyleText(_this.settings.inline_css);
 		});
+		jQuery.each(_this.settings.insertable_parts, function(i, part) {
+			var commandName = 'insert_'+part.name;
+			console.log(commandName, instance);
+			instance.addCommand(commandName, {
+				exec: function(editor) {
+					if(part.type === 'end_of_body') {
+						instance.document.getBody().appendHtml(part.content);
+					} else if(part.type === 'inline') {
+						instance.insertHtml(part.content);
+					}
+				},
+				async: false
+			});
+			instance.ui.addButton(commandName, {
+				label: part.tooltip,
+				command: commandName
+			});
+		});
 	},
 	
 	prepare_chooser: function(dialog, name, widget, url_function) {
@@ -244,6 +263,7 @@ Widget.types.rich_text = {
 	set_inline_css: function(css) {
 		this.settings.inline_css = css;
 		if(this.instance) {
+			console.log(this.instance.document);
 			this.instance.document.appendStyleText(css);
 		}
 	},
