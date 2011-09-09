@@ -78,8 +78,7 @@ text_module:
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
-
-  
+ 
 security:
   generate_digest_secrets: false
   

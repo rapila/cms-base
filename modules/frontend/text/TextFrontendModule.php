@@ -15,19 +15,11 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	}
 	
 	public function getWidget() {
-		$oRichTextWidget = WidgetModule::getWidget('rich_text', null, $this->widgetData());
+		$oRichTextWidget = WidgetModule::getWidget('rich_text', null, $this->widgetData(), 'admin');
 		$aToolbarSettings = Settings::getSetting('text_module','toolbar', null);
-		if($aToolbarSettings) {
-			$aResult = array();
-			foreach($aToolbarSettings as $i => $aRowElements) {
-				$aResult = array_merge($aResult, $aRowElements, array('/'));
-			}
-			array_pop($aResult);
-			$oRichTextWidget->setSetting('toolbar_Full', $aResult);
-		}
 		$oRichTextWidget->setSetting('contentsLanguage', $this->oLanguageObject->getLanguageId());
 		$oGenericWidget = WidgetModule::getWidget('generic_frontend_module', null, $this, $oRichTextWidget);
-		$oGenericWidget->setSetting('preferred_width', Settings::getSetting('text_module', 'richtext_width', 600));
+		$oGenericWidget->setSetting('preferred_width', $oRichTextWidget->getSettings('richtext_width', 600));
     
 		return $oGenericWidget;
 	}

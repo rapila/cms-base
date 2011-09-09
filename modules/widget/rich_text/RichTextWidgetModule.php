@@ -6,26 +6,24 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	
 	private $sModuleContents;
 	private $aModuleSettings;
-	private $aCssUrls;
 	
-	public function __construct($sSessionKey = null, $sModuleContents = null, $aModuleSettings = null) {
+	public function __construct($sSessionKey = null, $sModuleContents = null, $mModuleSettings = null) {
 		parent::__construct($sSessionKey);
 		$this->sModuleContents = $sModuleContents;
-		if($aModuleSettings === null) {
-			$aModuleSettings = Settings::getSetting('admin', 'text_module', array());
+		if($mModuleSettings === null || is_string($mModuleSettings)) {
+			$this->aModuleSettings = Settings::getSetting('text_module', null, array());
+			if($mModuleSettings !== null) {
+				$this->aModuleSettings = array_merge($this->aModuleSettings, Settings::getSetting($mModuleSettings, 'text_module', array()));
+			}
+		} else {
+			$this->aModuleSettings = $mModuleSettings;
 		}
-		$this->aModuleSettings = $aModuleSettings;
-		$this->aCssUrls = array();
-		if(isset($this->aModuleSettings['css_files'])) {
-			if(!is_array($this->aModuleSettings['css_files'])) {
-				$this->aModuleSettings['css_files'] = array($this->aModuleSettings['css_files']);
-			}
-			foreach($this->aModuleSettings['css_files'] as $sCssFile) {
-				$oFileUrl = ResourceFinder::findResourceObject(array(DIRNAME_WEB, 'css', "$sCssFile.css"));
-				if($oFileUrl !== null) {
-					$this->aCssUrls[] = $oFileUrl->getFrontendPath();
-				}
-			}
+		$this->cleanupCss();
+		$this->cleanupStyles();
+		$this->cleanupFormatTags();
+		$this->cleanupToolbar();
+		foreach($this->aModuleSettings as $sKey => $mSetting) {
+			$this->setSetting($sKey, $mSetting);
 		}
     $this->setSetting('language', Session::language());
 	}
@@ -43,6 +41,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function setTemplate($mTemplate) {
+		$aCssUrls = array();
 		//Important for CSS
 		if(!isset($this->aModuleSettings['css_files'])) {
 			if(is_string($mTemplate)) {
@@ -58,23 +57,38 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 				if(isset($aResourceInfo['media']) && !preg_match('/\\b(screen|all)\\b/', $aResourceInfo['media'])) {
 					continue;
 				}
-				$this->aCssUrls[] = $aResourceInfo['location'];
+				$aCssUrls[] = $aResourceInfo['location'];
 			}
 			//Always include an editor.css file if found
 			foreach(ResourceFinder::findAllResourceObjects(array(DIRNAME_WEB, 'css', 'editor.css')) as $oFileUrl) {
-				$this->aCssUrls[] = $oFileUrl->getFrontendPath();
+				$aCssUrls[] = $oFileUrl->getFrontendPath();
 			}
 		}
+		$this->setSetting('contentsCss', $aCssUrls);
 	}
 	
-	public function getCssUrls() {
-		return $this->aCssUrls;
+	private function cleanupCss() {
+		$aCssUrls = array();
+		if(isset($this->aModuleSettings['css_files'])) {
+			if(!is_array($this->aModuleSettings['css_files'])) {
+				$this->aModuleSettings['css_files'] = array($this->aModuleSettings['css_files']);
+			}
+			foreach($this->aModuleSettings['css_files'] as $sCssFile) {
+				$oFileUrl = ResourceFinder::findResourceObject(array(DIRNAME_WEB, 'css', "$sCssFile.css"));
+				if($oFileUrl !== null) {
+					$aCssUrls[] = $oFileUrl->getFrontendPath();
+				}
+			}
+		}
+		unset($this->aModuleSettings['css_files']);
+		$this->setSetting('contentsCss', $aCssUrls);
 	}
 	
-	public function getStyles() {
+	private function cleanupStyles() {
 		$aClasses = array();
 		if(isset($this->aModuleSettings['classes'])) {
 			$aClasses = $this->aModuleSettings['classes'];
+			unset($this->aModuleSettings['classes']);
 		}
 		$aResult = array();
 		foreach($aClasses as $mKey => $sClassName) {
@@ -86,24 +100,49 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$aResult[] = array('name' => StringUtil::makeReadableName($sClassName), 'element' => $sTagName, 'attributes' => array('class' => $sClassName));
 		}
 		if(count($aResult) == 0) {
-			return 'default';
+			$this->setSetting('stylesSet', 'default');
+		} else {
+			$this->setSetting('stylesSet', $aResult);
 		}
-		return $aResult;
+	}
+
+	private function cleanupToolbar() {
+		if(isset($this->aModuleSettings['toolbar'])) {
+			$aResult = array();
+			foreach($this->aModuleSettings['toolbar'] as $i => $aRowElements) {
+				$aResult = array_merge($aResult, $aRowElements, array('/'));
+			}
+			array_pop($aResult);
+			$this->setSetting('toolbar_Full', $aResult);
+			unset($this->aModuleSettings['toolbar']);
+		}
 	}
 	
-	public function getFormatTags() {
+	private function cleanupFormatTags() {
 		$aTags = array();
 		if(isset($this->aModuleSettings['blockformats'])) {
-			$aTags = $this->aModuleSettings['blockformats'];
+			foreach($this->aModuleSettings['blockformats'] as $mFormat) {
+				if(is_string($mFormat)) {
+					$mFormat = array('element' => $mFormat);
+				}
+				$sKey = 'format_'.Util::uuid();
+				$this->setSetting($sKey, $mFormat);
+				$aTags[] = $mFormat['element'];
+			}
+			unset($this->aModuleSettings['blockformats']);
 		}
 		if(count($aTags) == 0) {
-			return 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+			$this->setSetting('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
+		} else {
+			$this->setSetting('format_tags', implode(';', $aTags));
 		}
-		return implode(';', $aTags);
 	}
 	
-	public function getCustomConfiguration() {
-		return Settings::getSetting('newsletter_plugin', 'richtext_settings', null);
+	public function getSettings($sKey, $mDefault = null) {
+		if(isset($this->aModuleSettings[$sKey])) {
+			return $this->aModuleSettings[$sKey];
+		}
+		return $mDefault;
 	}
 	
 	public function getElementType() {
