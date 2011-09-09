@@ -47,11 +47,16 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			if(is_string($mTemplate)) {
 				$mTemplate = new Template($mTemplate);
 			}
-			$mTemplate->render();
-			$oResourceIncluder = ResourceIncluder::defaultIncluder();
-			$aResources = $oResourceIncluder->getAllIncludedResources();
+			$oIncluder = new ResourceIncluder();
+			foreach($mTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
+				$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
+			}
+			$aResources = $oIncluder->getAllIncludedResources();
 			foreach($aResources as $aResourceInfo) {
-				if($aResourceInfo['resource_type'] !== 'css') {
+				if($aResourceInfo['resource_type'] !== ResourceIncluder::RESOURCE_TYPE_CSS) {
+					continue;
+				}
+				if(isset($aResourceInfo['ie_condition'])) {
 					continue;
 				}
 				if(isset($aResourceInfo['media']) && !preg_match('/\\b(screen|all)\\b/', $aResourceInfo['media'])) {
