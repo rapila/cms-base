@@ -2,6 +2,7 @@
 
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/FileResource.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ErrorHandler.php");
 
 ///Allows to easily find files residing inside rapila’s site structure, following the precedence rules (site > plugins > base).
 class ResourceFinder {
@@ -151,7 +152,7 @@ class ResourceFinder {
 
 	public function find() {
 		if($this->mResult === false) {
-			if(!$this->bNoCache) {
+			if(!$this->bNoCache && ErrorHandler::getEnvironment() !== 'development') {
 				$oCache = new Cache(serialize($this), 'resource_finder');
 				if($oCache->cacheFileExists()) {
 					$this->mResult = $oCache->getContentsAsVariable();
@@ -299,9 +300,9 @@ class ResourceFinder {
 			case self::SEARCH_MAIN_ONLY: return array(MAIN_DIR);
 			case self::SEARCH_BASE_ONLY: return array(BASE_DIR);
 			case self::SEARCH_SITE_ONLY: return array(SITE_DIR);
-			case self::SEARCH_PLUGINS_ONLY: return self::getPluginPaths();
+			case self::SEARCH_PLUGINS_ONLY: return self::getPluginPaths(!$this->bFindAll);
 		}
-		$aResult = self::getPluginPaths();
+		$aResult = self::getPluginPaths($this->iFlag === self::SEARCH_SITE_FIRST);
 		switch($this->iFlag) {
 			case self::SEARCH_BASE_FIRST:
 				array_unshift($aResult, BASE_DIR);
@@ -414,9 +415,12 @@ class ResourceFinder {
 		}
 	}
 	
-	private static function getPluginPaths() {
+	private static function getPluginPaths($bReverseOrder = false) {
 		if(self::$PLUGINS === null) {
 			self::$PLUGINS = array_values(self::findResourcesByExpressions(array(DIRNAME_PLUGINS, self::ANY_NAME_OR_TYPE_PATTERN), self::SEARCH_MAIN_ONLY));
+		}
+		if($bReverseOrder === true) {
+			return array_reverse(self::$PLUGINS);
 		}
 		return self::$PLUGINS;
 	}
