@@ -13,6 +13,17 @@ class LinkQuery extends BaseLinkQuery {
 		$this->addAnd($oManagedFalse);
 		return $this;
 	}
+	
+	public function filterByDisplayLanguage($sLanguageId = null) {
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
+		$oLangCriterion = $this->getNewCriterion(LinkPeer::LANGUAGE_ID, $sLanguageId);
+		$oLangCriterion->addOr($this->getNewCriterion(LinkPeer::LANGUAGE_ID, null));
+		$this->add($oLangCriterion);
+		return $this;
+	}
+
 
 }
 

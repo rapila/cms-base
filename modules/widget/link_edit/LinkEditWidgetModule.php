@@ -32,7 +32,7 @@ class LinkEditWidgetModule extends PersistentWidgetModule {
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === LinkListFrontendModule::SORT_BY_SORT) {
 			$oCriteria->orderBySort();
 		}
-		$oCriteria->orderByName();
+		$oCriteria->filterByDisplayLanguage(AdminManager::getContentLanguage())->orderByName();
 		$oCriteria->clearSelectColumns()->addSelectColumn(LinkPeer::ID)->addSelectColumn(LinkPeer::NAME);
 		return LinkPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC);
 	}

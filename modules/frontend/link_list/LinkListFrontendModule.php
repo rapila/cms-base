@@ -20,9 +20,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		} else {
       $aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
 
-			$oLangCriterion = $oCriteria->getNewCriterion(LinkPeer::LANGUAGE_ID, Session::language());
-			$oLangCriterion->addOr($oCriteria->getNewCriterion(LinkPeer::LANGUAGE_ID, null));
-			$oCriteria->add($oLangCriterion);
+			$oCriteria->filterByDisplayLanguage();
 
 		  if(count($aCategories) > 1) {
 				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
