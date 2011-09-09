@@ -167,9 +167,6 @@ Widget.types.rich_text = {
 		if(!textarea.attr('id')) {
 			textarea.attr('id', Widget.uuid());
 		}
-		this.settings.contentsCss = this.settings.contentsCss || this.getCssUrls();
-		this.settings.stylesSet = this.settings.stylesSet || this.getStyles();
-		
 		if(this._element.isInDom()) {
 			this.replace();
 		} else {

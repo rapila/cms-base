@@ -69,6 +69,9 @@ Widget.types.page_type.types['default'] = {
 			preview_bar.addClass('loading');
 			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
 				Widget.createWithElement(result[0], function(widget) {
+					if(widget.setObjectId) {
+						widget.setObjectId(container.attr('data-object-id'));
+					}
 					widget.handle('element_set', function(event, element) {
 						container.empty().append(element);
 					});
@@ -80,9 +83,6 @@ Widget.types.page_type.types['default'] = {
 							var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
 							additional_button_pane.append(button_element);
 						});
-					}
-					if(widget.setObjectId) {
-						widget.setObjectId(container.attr('data-object-id'));
 					}
 					preview_bar.removeClass('loading').addClass('editing');
 					container.data('edit_widget', widget);

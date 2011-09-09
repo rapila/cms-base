@@ -325,16 +325,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 
 	public function adminGetContainers() {
-		$oIncluder = ResourceIncluder::namedIncluder(get_class($this));
-		
 		$oTemplate = $this->oPage->getTemplate();
 		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
 			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$oIdentifier->getValue(), null, $oIdentifier->getValue())), true)), null);
 			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue(), 'data-container-string' => StringPeer::getString('container_name.'.$oIdentifier->getValue(), null, $oIdentifier->getValue()))));
-		}
-		
-		foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
-			$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
 		}
 		
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
@@ -347,6 +341,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 			$sCssContents = "";
 			if(!$oCssCache->cacheFileExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
+				$oIncluder = new ResourceIncluder();
+				foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
+					$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
+				}
 				foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
 					if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition']) && !isset($aResource['frontend_specific'])) {
 						if(isset($aResource['media'])) {
