@@ -45,9 +45,7 @@ function call_parser($sCommand, $aArguments) {
 	}
 	if($aOptions['w']) {
 		array_unshift($aArguments, '-w');
-		if(pcntl_fork() !== 0) {
-			return;
-		}
+		array_push($aArguments, '&');
 	}
 	passthru($sCommand.' '.implode(' ', $aArguments));
 }
@@ -58,7 +56,7 @@ $sNibLocation = isset($aOptions['nib']) ? $aOptions['nib'] : null;
 if($sNibLocation === null) {
 	$sNibLocation = ResourceFinder::findResource(array(DIRNAME_LIB, DIRNAME_VENDOR, 'nib'));
 }
-foreach(ResourceFinder::findAllResources(array(DIRNAME_LIB, 'stylus_includes')) as $sIncludeDir) {
+foreach(ResourceFinder::create()->addPath(DIRNAME_LIB, 'stylus_includes')->searchSiteFirst()->all()->find() as $sIncludeDir) {
 	array_unshift($aFiles, '-I', $sIncludeDir);
 }
 array_unshift($aFiles, '-u', $sNibLocation);
