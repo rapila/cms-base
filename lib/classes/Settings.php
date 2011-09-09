@@ -42,13 +42,16 @@ class Settings {
 			}
 			$aSettingsPart = $aSettingsPart[$sSection];
 		}
+		if($sKey === null) {
+			return $aSettingsPart;
+		}
 		if(!isset($aSettingsPart[$sKey])) {
 			return $mDefaultValue;
 		}
 		return $aSettingsPart[$sKey];
 	}
 	
-	public function &getSettingsArray() {
+	public function &getSettingsArray($sSection = null) {
 		return $this->aSettings;
 	}
 	
