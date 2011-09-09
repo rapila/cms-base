@@ -32,7 +32,18 @@ class AdminManager extends Manager {
 	}
 	
 	public static function setContentLanguage($sLanguageId) {
-    Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
+		if(!LanguagePeer::languageExists($sLanguageId)) {
+			if(LanguagePeer::languageExists(Session::language())) {
+				$sLanguageId = Session::language();
+			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY))) {
+				$sLanguageId = Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY);
+			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
+				$sLanguageId = Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY);
+			} else {
+				return;
+			}
+		}
+		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
   }
   
   public static function getContentLanguage() {
@@ -56,6 +67,7 @@ class AdminManager extends Manager {
 				Flash::getFlash()->addMessage('admin_login_denied');
 				Session::getSession()->logout();
 			}
+			self::setContentLanguage(Session::language());
 			$oTemplate = new Template('login', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$oLoginWindowWidget = new LoginWindowWidgetModule();
 			LoginWindowWidgetModule::includeResources();
@@ -99,7 +111,7 @@ class AdminManager extends Manager {
 	}
 	
 	/**
-	* @param optional string of template 'list item' identifier
+	* @param string $sPostfix string of template 'list item' identifier
 	* retrieve all templates from site template dir that follow a naming convention
 	* list template name: examplename.tmpl
 	* list_item template name: examplename_item.tmpl

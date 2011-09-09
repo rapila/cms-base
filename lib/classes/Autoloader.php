@@ -48,27 +48,27 @@ class Autoloader {
 		$sFileName = "$sClassName.php";
 		
 		//Standard Classes
-		$sPath = ResourceFinder::findResource(array(DIRNAME_CLASSES, $sFileName));
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES, $sFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
 	
 		//Generated Model classes
-		$sPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName)->searchMainOnly()->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::findResourcesByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName), ResourceFinder::SEARCH_MAIN_ONLY);
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, false, $sFileName)->byExpressions()->searchMainOnly()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
 	
 		//Model classes
-		$sPath = ResourceFinder::findResource(array(DIRNAME_MODEL, $sFileName));
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, $sFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::findResourcesByExpressions(array(DIRNAME_MODEL, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, $sFileName));
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, false, $sFileName)->byExpressions()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
@@ -81,7 +81,7 @@ class Autoloader {
 				}
 			
 				if($sModuleBaseClass::isValidModuleClassName($sClassName)) {
-					$sPath = ResourceFinder::findResource(array(DIRNAME_MODULES, $sModuleType, call_user_func(array($sModuleBaseClass, 'getNameByClassName'), $sClassName), $sFileName));
+					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, call_user_func(array($sModuleBaseClass, 'getNameByClassName'), $sClassName), $sFileName))->find();
 					if($sPath) {
 						return $sPath;
 					}

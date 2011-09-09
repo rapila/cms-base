@@ -1,11 +1,11 @@
-list.row-dblclick		list-row_dblclick
-list.row-click			list-row_click
-list.row-hover			list-row_hover
+list-row_dblclick		list-row_dblclick
+list-row_click			list-row_click
+list-row_hover			list-row_hover
 list.cell-click			list-cell_click
 list.cell-hover			list-cell_hover
 
 faster:
-list.row-			list-row_
+list-row_			list-row_
 list.cell-		list-cell_
 
 list-row_click >>> list-selection_changed

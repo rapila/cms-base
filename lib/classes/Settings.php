@@ -7,11 +7,11 @@ class Settings {
 	/**
 	 * __construct()
 	 */
-	private function __construct($sFileName) {
+	private function __construct($oFinder) {
 		require_once("spyc/Spyc.php");
 		$oSpyc = new Spyc();
 		$oSpyc->setting_use_syck_is_possible = true;
-		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST);
+		$aConfigPaths = $oFinder->find();
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
 			foreach($oSpyc->loadFile($sConfigPath) as $sSection => $aSection) {
@@ -26,11 +26,10 @@ class Settings {
 	}
 		
 	/**
-	 * getConfigurationSetting()
-	 * @param string config.yml section name
-	 * @param string section var key
-	 * @param mixed default value
-	 * @return mixed value
+	 * @param string $sSection config.yml section name
+	 * @param string $sKey section var key
+	 * @param mixed $mDefaultValue default value
+	 * @return string|int|float|array The setting value
 	 */
 	public function _getSetting($sSection, $sKey, $mDefaultValue) {
 		if(isset($_REQUEST["setting-override-$sSection/$sKey"]) && Session::getSession()->isBackendAuthenticated()) {
@@ -76,10 +75,11 @@ class Settings {
 		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
-			if($oCache->cacheFileExists() && !$oCache->isOutdated(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(ErrorHandler::getEnvironment()), $sFileName), ResourceFinder::SEARCH_BASE_FIRST))) {
+			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
+			if($oCache->cacheFileExists() && !$oCache->isOutdated($oFinder)) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {
-				self::$INSTANCES[$sCacheKey] = new Settings($sFileName);
+				self::$INSTANCES[$sCacheKey] = new Settings($oFinder);
 				$oCache->setContents(self::$INSTANCES[$sCacheKey]);
 			}
 		}

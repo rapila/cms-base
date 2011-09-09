@@ -68,6 +68,7 @@ class TagPeer extends BaseTagPeer {
 	
 	public static function getTagsUsedInModelCriteria($sModelName) {
 		$oCriteria = new Criteria();
+		$oCriteria->setDistinct();
 		$oCriteria->addJoin(self::ID, TagInstancePeer::TAG_ID, Criteria::INNER_JOIN);
 		$oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);

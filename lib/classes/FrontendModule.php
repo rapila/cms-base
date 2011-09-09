@@ -83,10 +83,10 @@ abstract class FrontendModule extends Module {
 	}
 	
 	/**
-	 * @param object language object with the data
+	 * @param LanguageObject $oLanguageObject The language object with the data whose content info you want
 	 * description: should return some helpful information in page_detail filled_module, displaying filtered unserialized language object data
 	 * mainly for custom modules with options
-	 * @return string/Template object/null
+	 * @return string|Template|null Something that describes the content, preferably text-only
  */
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {

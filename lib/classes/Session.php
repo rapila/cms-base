@@ -183,7 +183,7 @@ class Session {
 		if($this->hasAttribute($sAttribute)) {
 			return $this->aAttributes[$sAttribute];
 		}
-		return Settings::getSetting("session_default", $sAttribute, null);
+		return self::sessionDefaultFor($sAttribute);
 	}
 	
 	public function getArrayAttributeValueForKey($sAttribute, $sKey) {
@@ -206,6 +206,10 @@ class Session {
 
 	public function hasAttribute($sAttribute) {
 		return isset($this->aAttributes[$sAttribute]);
+	}
+
+	public static function sessionDefaultFor($sAttribute) {
+		return Settings::getSetting("session_default", $sAttribute, null);
 	}
 
 	public static function language($bObject = false) {

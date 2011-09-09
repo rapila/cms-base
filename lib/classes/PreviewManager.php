@@ -40,12 +40,6 @@ class PreviewManager extends FrontendManager {
 				AdminManager::setContentLanguage($this->sOldSessionLanguage);
 			}
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
-				Session::getSession()->resetAttribute(AdminManager::CONTENT_LANGUAGE_SESSION_KEY);
-			}
-			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
-				AdminManager::setContentLanguage(Settings::getSetting('session_default', Session::SESSION_LANGUAGE_KEY, 'en'));
-			}
-			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				LinkUtil::redirectToManager('', "AdminManager");
 			}
 		}
