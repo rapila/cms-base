@@ -1,27 +1,44 @@
 Widget.types.generic_frontend_module = {
 	prepare: function() {
-		if(!this._element.attr('data-widget-type')) {
-			this.internal_widget = null;
-		} else {
+		var _this = this;
+		if(this._element.attr('data-widget-type')) {
 			this._element.prepareWidget(function(widget) {
 				this.internal_widget = widget;
 			}.bind(this), jQuery.noop);
+		} else {
+			this.internal_widget = null;
+			var inner_widgets_prepared = [];
+			this._element.widgetElements().each(function() {
+				jQuery(this).prepareWidget({}.deferred(inner_widgets_prepared));
+			});
+			jQuery.when.apply(jQuery, inner_widgets_prepared).then(function() {
+				_this.currentData(function(current_data) {
+					jQuery.each(current_data, function(key, data) {
+						_this._element.find('[name='+key.escapeSelector()+']').val(data);
+					});
+				});
+			});
 		}
 	},
 	
 	save: function(callback) {
-		if(!this.internal_widget) {
-			return this.saveData('', callback);
-		}
-		
 		var data = null;
-		
-		switch(this.internal_widget.widgetType) {
-			case 'rich_text':
-				data = this.internal_widget.get_data() || '';
-				break;
+		if(this.internal_widget) {
+			switch(this.internal_widget.widgetType) {
+				case 'rich_text':
+					data = this.internal_widget.get_data() || '';
+					break;
+			}
+		}
+
+		if(!data && this._element.is('form')) {
+			data = this._element.serializeArrayKV();
 		}
 		
+		if(!data) {
+			data = '';
+		}
+
 		this.saveData(data, callback);
 	},
 	

@@ -79,7 +79,7 @@ abstract class FrontendModule extends Module {
 	}
 	
 	public function getLanguageObject() {
-	    return $this->oLanguageObject;
+		return $this->oLanguageObject;
 	}
 	
 	/**
