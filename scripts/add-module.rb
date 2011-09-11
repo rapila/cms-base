@@ -242,6 +242,17 @@ write_file(:php, "#{class_name}.php") do
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['LanguageObject $oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
+		if $aspects.include? 'widget_based' then
+			php_methods.push php_method('widgetData', '$mData = $this->getData();
+		if($mData !== null) {
+			$mData = unserialize($mData);
+		}
+		return $mData;')
+			php_methods.push php_method('widgetSave', '$this->getLanguageObject()->setData(serialize($oWidgetData));
+		return $this->getLanguageObject()->save();', ['oWidgetData'])
+			php_methods.push php_method('getWidget', '$oWidget = WidgetModule::getWidget("generic_frontend_module");
+		return $oWidget;')
+		end
 	elsif $options[:type] == :admin then
 		widgets = {}
 		widgets[:sidebar_widget] = '$this->oSidebarWidget' unless $aspects.include? 'single_screen'
