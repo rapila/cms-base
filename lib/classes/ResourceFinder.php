@@ -27,6 +27,10 @@ class ResourceFinder {
 	private $mResult;
 
 	public function __construct($aPath = array(), $iFlag = null) {
+		if(is_int($aPath) && $iFlag === null) {
+			$iFlag = $aPath;
+			$aPath = array();
+		}
 		if(is_string($aPath)) {
 			$aPath = explode('/', $aPath);
 		} else if(!is_array($aPath)) {
@@ -131,11 +135,22 @@ class ResourceFinder {
 		return $this;
 	}
 
+	public function addExpression() {
+		$this->aPath = array_merge($this->aPath, func_get_args());
+		$this->mResult = false;
+		$this->bByExpressions = true;
+		return $this;
+	}
+
 	public function addOptionalPath($mPathItem) {
 		$this->aPath[] = array($mPathItem);
-		$this->bByExpressions = true;
 		$this->mResult = false;
+		$this->bByExpressions = true;
 		return $this;
+	}
+
+	public function addRecursive() {
+		return $this->addExpression(array());
 	}
 
 	public function addAnyPath($bOptional = false) {
