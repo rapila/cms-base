@@ -1930,7 +1930,7 @@ abstract class BaseLanguageObjectPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, PropelPDO $con = null)
+	 private static function doDeleteBeforeReferencing($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
 			$con = Propel::getConnection(LanguageObjectPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -2044,6 +2044,29 @@ abstract class BaseLanguageObjectPeer {
 		$v = LanguageObjectPeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;
+	}
+	// referencing behavior
+	public static function doDelete($values, PropelPDO $con = null) {
+			if ($con === null) {
+				$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			}
+	
+			if($values instanceof Criteria) {
+				// rename for clarity
+				$criteria = clone $values;
+			} elseif ($values instanceof LanguageObject) { // it's a model object
+				// create criteria based on pk values
+				$criteria = $values->buildPkeyCriteria();
+			} else { // it's a primary key, or an array of pks
+				$criteria = new Criteria(self::DATABASE_NAME);
+				$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
+			}
+			
+			foreach(LanguageObjectPeer::doSelect(clone $criteria, $con) as $object) {
+				ReferencePeer::removeReferences($object);
+			}
+	
+			return self::doDeleteBeforeReferencing($criteria, $con);
 	}
 } // BaseLanguageObjectPeer
 

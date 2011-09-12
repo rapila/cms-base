@@ -1014,8 +1014,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 					PagePeer::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
 				}
 
-				// taggable behavior
-				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {

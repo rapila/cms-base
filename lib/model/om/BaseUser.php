@@ -1352,8 +1352,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
-				// taggable behavior
-				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -9980,7 +9978,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		/**
 		 * Get the associated User object
 		 *
-		 * @param      PropelPDO Optional Connection object.
+		 * @param     PropelPDO $con Optional Connection object.
 		 * @return     User The associated User object.
 		 * @throws     PropelException
 		 */
@@ -9991,7 +9989,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		/**
 		 * Get the associated User object
 		 *
-		 * @param      PropelPDO Optional Connection object.
+		 * @param      PropelPDO $con Optional Connection object.
 		 * @return     User The associated User object.
 		 * @throws     PropelException
 		 */

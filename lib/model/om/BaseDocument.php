@@ -1256,8 +1256,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
-				// taggable behavior
-				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {

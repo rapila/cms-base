@@ -1265,7 +1265,7 @@ abstract class BasePagePeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, PropelPDO $con = null)
+	 private static function doDeleteBeforeTaggable($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
 			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1685,6 +1685,29 @@ abstract class BasePagePeer {
 		$stmt->closeCursor();
 	}
 
+	// taggable behavior
+	public static function doDelete($values, PropelPDO $con = null) {
+			if ($con === null) {
+				$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			}
+	
+			if($values instanceof Criteria) {
+				// rename for clarity
+				$criteria = clone $values;
+			} elseif ($values instanceof Page) { // it's a model object
+				// create criteria based on pk values
+				$criteria = $values->buildPkeyCriteria();
+			} else { // it's a primary key, or an array of pks
+				$criteria = new Criteria(self::DATABASE_NAME);
+				$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
+			}
+			
+			foreach(PagePeer::doSelect(clone $criteria, $con) as $object) {
+				TagPeer::deleteTagsForObject($object);
+			}
+	
+			return self::doDeleteBeforeTaggable($criteria, $con);
+	}
 } // BasePagePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

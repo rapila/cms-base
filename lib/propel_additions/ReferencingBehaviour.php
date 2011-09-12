@@ -9,7 +9,7 @@ class ReferencingBehaviour extends Behavior
 {
 	public function staticMethods($oBuilder) {
 		$oBuilder->declareClassFromBuilder($oBuilder->getStubQueryBuilder());
-		return "public static function doDelete2(\$values, PropelPDO \$con = null) {
+		return "public static function doDeleteWithReferencing(\$values, PropelPDO \$con = null) {
 		if (\$con === null) {
 			\$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
@@ -25,20 +25,20 @@ class ReferencingBehaviour extends Behavior
 			\$criteria->add(PagePeer::ID, (array) \$values, Criteria::IN);
 		}
 		
-		foreach(PagePeer::doSelect(\$criteria, \$con) as \$object) {
-			ReferencePeer::removeReferences(\$this);
+		foreach({$this->getTable()->getPhpName()}Peer::doSelect(clone \$criteria, \$con) as \$object) {
+			ReferencePeer::removeReferences(\$object);
 		}
 
-		return self::originalDoDelete(\$criteria, \$con);
+		return self::doDeleteBeforeReferencing(\$criteria, \$con);
 }";
 	}
 
 	public function peerFilter(&$sScript) {
 		$sScript = str_replace(array(
 			'public static function doDelete(', 
-			'public static function doDelete2('
+			'public static function doDeleteWithReferencing('
 		), array(
-			'private static function originalDoDelete(',
+			'private static function doDeleteBeforeReferencing(',
 			'public static function doDelete('
 		), $sScript);
 	}
