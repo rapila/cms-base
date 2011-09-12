@@ -56,7 +56,7 @@ class ErrorHandler {
 			if(self::$ENVIRONMENT === 'auto' || !self::$ENVIRONMENT) {
 				if(php_sapi_name() === 'cli') {
 					self::$ENVIRONMENT = 'development';
-				} else if(strpos(@$_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.local')) {
+				} else if(strpos(@$_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.local') || @$_SERVER['HTTP_HOST'] === $_SERVER['SERVER_ADDR']) {
 					self::$ENVIRONMENT = ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1' || $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
 				} else if(strpos(@$_SERVER['HTTP_HOST'], 'test.') === 0 || strpos(@$_SERVER['HTTP_HOST'], 'stage.') === 0) {
 					self::$ENVIRONMENT = 'staging';
