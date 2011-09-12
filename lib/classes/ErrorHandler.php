@@ -64,6 +64,7 @@ class ErrorHandler {
 					self::$ENVIRONMENT = 'production';
 				}
 			}
+			define('RAPILA_ENVIRONMENT', self::$ENVIRONMENT);
 		}
 		return self::$ENVIRONMENT;
 	}
