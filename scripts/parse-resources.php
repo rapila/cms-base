@@ -89,10 +89,12 @@ if(count($aCoffeeFiles) > 0) {
 }
 
 if($aOptions['w']) {
-	pcntl_signal(SIGTERM, 'trap');  
-	pcntl_signal(SIGINT, 'trap');  
+	if(function_exists('pcntl_signal')) {
+		pcntl_signal(SIGTERM, 'trap');  
+		pcntl_signal(SIGINT, 'trap');  
+	}
 	while(true) {
-		sleep(1);
+		sleep(100);
 	}
 }
 
