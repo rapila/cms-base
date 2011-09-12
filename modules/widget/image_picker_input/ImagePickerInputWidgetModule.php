@@ -4,7 +4,7 @@
  */
 class ImagePickerInputWidgetModule extends PersistentWidgetModule {
 	
-	private $aAllowedCategories = null;
+	private $aDisplayedCategories = null;
 	private $oImagePicker = null;
 	
 	public function __construct($sSessionKey = null) {
@@ -26,7 +26,7 @@ class ImagePickerInputWidgetModule extends PersistentWidgetModule {
 		return new TagWriter('input', array('type' => 'hidden'));
 	}
 
-	public function setAllowedCategories($aAllowedCategories) {
-		$this->aAllowedCategories = $aAllowedCategories;
+	public function setDisplayedCategories($aDisplayedCategories) {
+		$this->aDisplayedCategories = $aDisplayedCategories;
 	}
 }
