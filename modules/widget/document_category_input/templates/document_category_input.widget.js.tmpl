@@ -8,10 +8,16 @@ Widget.types.document_category_input = {
 		var current = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
+		var has_categories = false;
 		this.allCategories(this.settings.categories_with_documents_only, function(categories) {
 			jQuery.each(categories, function(i, category) {
+				has_categories = true;
 				option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 			}.bind(this));
+			if(has_categories) {
+				option = option.clone();
+				option.text("{{writeString=wns.document_category_input.without_category}}").val('__all').prependTo(this._element);
+			} 
 			option.text(this.settings.custom_option).val('').prependTo(this._element);
 			if(current) {
 				this._element.val(current);
