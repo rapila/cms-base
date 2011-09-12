@@ -7,25 +7,24 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 	private $aDisplayedCategories = null;
 	
 	public function listImages() {
-		$oCriteria = new Criteria();
+		$oCriteria = DocumentQuery::create();
 		if($this->aDisplayedCategories !== null) {
 			$oCategoriesCriterion = null;
 			foreach($this->aDisplayedCategories as $sValue) {
-				$sValue = CriteriaListWidgetDelegate::SELECT_WITHOUT === $sValue ? null : $sValue;
+				$mComparison = $sValue === CriteriaListWidgetDelegate::SELECT_WITHOUT ? Criteria::ISNULL : Criteria::EQUAL;
+				$sValue = $mComparison === Criteria::ISNULL ? null : $sValue;
 				if($oCategoriesCriterion === null) {
-					$oCategoriesCriterion = $oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue);
+					$oCategoriesCriterion = $oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue, $mComparison);
 				} else {
-					$oCategoriesCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue));
+					$oCategoriesCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue, $mComparison));
 				}
 			}			
 			$oCriteria->add($oCategoriesCriterion);
 		}
-		$oCriteria->add(DocumentPeer::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image')), Criteria::IN);
+		$oCriteria->filterByDocumentKind('image');
 		// always exclude externally managed images
-		$oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-		$oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
-		$aDocuments = DocumentPeer::doSelect($oCriteria);
-		return WidgetJsonFileModule::jsonBaseObjects($aDocuments, array('name', 'description', 'id', 'language_id'));
+		$oCriteria->excludeExternallyManaged();
+		return WidgetJsonFileModule::jsonBaseObjects($oCriteria->find(), array('name', 'description', 'id', 'language_id'));
 	}
 		
 	public function setAllowsMultiselect($bAllowsMultiselect) {

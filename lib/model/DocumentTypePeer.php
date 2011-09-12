@@ -11,17 +11,6 @@
  */ 
 class DocumentTypePeer extends BaseDocumentTypePeer {
 	
-	public static function getAllDocumentKindsWhereDocumentsExist() {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_TYPE_ID, Criteria::INNER_JOIN);
-		$aResult = array();
-		foreach(self::doSelect($oCriteria) as $oDocumentType) {
-			$aKind = explode('/', $oDocumentType->getMimeType());
-			$aResult[$aKind[0]] = StringPeer::getString('wns.document_kind.'.$aKind[0]);
-		}
-		return $aResult;
-	}
-
 	public static function getDocumentKindsAssoc() {
 		$oCriteria = new Criteria();
 		$aResult = array();
@@ -36,26 +25,11 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return StringPeer::getString('wns.document_kind.'.$sKey);
 	}
 	
-	public static function documentKindExists($sDocumentKind = 'application') {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(self::ID, DocumentPeer::DOCUMENT_TYPE_ID, Criteria::INNER_JOIN);
-		$oCriteria->add(self::MIMETYPE, "$sDocumentKind%", Criteria::LIKE);
-		return self::doCount($oCriteria) > 0;
-	}
-	
 	public static function getMimeTypes() {
 		$oCriteria = new Criteria();
 		$oCriteria->setDistinct();
 		$oCriteria->addAscendingOrderByColumn(self::MIMETYPE);
 		return self::doSelect($oCriteria);
-	}
-	
-	public static function getMimeTypesAssoc() {
-		$aResult = array();
-		foreach(self::getMimeTypes() as $oMimeType) {
-			$aResult[$oMimeType->getDocumentKind()] = ucfirst($oMimeType->getDocumentKind());
-		}
-		return $aResult;
 	}
 	
 	public static function getDocumentTypeByMimetype($sMimetype=null) {
@@ -71,13 +45,18 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 	}
 	
 	public static function getDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind='image', $bLike=true) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::MIMETYPE, "$sMimeTypeKind/%", $bLike ? Criteria::LIKE : Criteria::NOT_LIKE);
+		$oQuery = DocumentTypeQuery::create()->filterByDocumentKind($sMimeTypeKind, $bLike);
 		$aResult = array();
-		foreach(self::doSelect($oCriteria) as $aDocumentType) {
+		foreach($oQuery->find() as $aDocumentType) {
 			$aResult[$aDocumentType->getId()]=$aDocumentType->getMimetype();
 		}
 		return $aResult;
+	}
+
+	public static function getDocumentTypeIDsByKind($sMimeTypeKind, $bLike = true) {
+		$oQuery = DocumentTypeQuery::create()->filterByDocumentKind($sMimeTypeKind, $bLike);
+		$oQuery->clearSelectColumns()->addSelectColumn(DocumentTypePeer::ID);
+		return DocumentTypePeer::doSelectStmt($oQuery)->fetchAll(PDO::FETCH_COLUMN);
 	}
 	
 	public static function getMostAgreedMimetypes($sFileName, $aDocTypeCompare = array(), $sBaseName = null) {
