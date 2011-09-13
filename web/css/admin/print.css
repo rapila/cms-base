@@ -1,18 +1,4 @@
-#chooser, #admin_navigation {
-  display: none;
-}
-
-#detail {
-  position: absolute;
-  top: 0;
-  left: 0pt;
-  width: 100%;
-}
-
-#detail .noprint {
-  display:none;
-}
-
-#detail a {
-  display: none;
+#cmos_admin_menu,
+#admin_sidebar {
+  display: none !important;
 }
