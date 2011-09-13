@@ -32,8 +32,8 @@ function trap($iSignal) {
 function find_files($sType) {
 	global $iResourceFinderFlags;
 	return array_merge(
-		ResourceFinder::create($iResourceFinderFlags)->addPath(DIRNAME_WEB)->addRecursive()->addExpression('/^.+\.'.$sType.'$/')->noCache()->all()->find(),
-		ResourceFinder::create($iResourceFinderFlags)->addPath(DIRNAME_MODULES)->addExpression('/^(widget|admin)$/')->addDirPath()->addPath(DIRNAME_TEMPLATES)->addExpression('/(widget|admin)\.'.$sType.'\.tmpl$/')->noCache()->all()->find()
+		ResourceFinder::create($iResourceFinderFlags)->addPath(DIRNAME_WEB)->addRecursion()->addExpression('/^.+\.'.$sType.'$/')->noCache()->all()->find(),
+		ResourceFinder::create($iResourceFinderFlags)->addOptionalPath(DIRNAME_MODULES, '/^(widget|admin)$/', false)->addPath(DIRNAME_TEMPLATES)->addRecursion()->addExpression('/\.'.$sType.'\.tmpl$/')->noCache()->all()->find()
 	);
 }
 

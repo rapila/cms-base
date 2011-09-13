@@ -142,14 +142,14 @@ class ResourceFinder {
 		return $this;
 	}
 
-	public function addOptionalPath($mPathItem) {
-		$this->aPath[] = array($mPathItem);
+	public function addOptionalPath() {
+		$this->aPath[] = func_get_args();
 		$this->mResult = false;
 		$this->bByExpressions = true;
 		return $this;
 	}
 
-	public function addRecursive() {
+	public function addRecursion() {
 		return $this->addExpression(array());
 	}
 
@@ -388,8 +388,10 @@ class ResourceFinder {
 				array_unshift($aExpressions, array());
 				$sPathExpression = null;
 			} else {
-				//array has a path element => put the optional argument on the local stack
-				$sPathExpression = $sPathExpression[0];
+				//array has a path element => put the optional argument(s) on the local stack
+				$sNextItem = array_shift($sPathExpression);
+				$aExpressions = array_merge($sPathExpression, $aExpressions);
+				$sPathExpression = $sNextItem;
 			}
 		}
 
