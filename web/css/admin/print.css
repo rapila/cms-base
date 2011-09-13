@@ -1,4 +1,5 @@
-#cmos_admin_menu,
-#admin_sidebar {
-  display: none !important;
-}
+html{overflow:auto !important}
+body{font-family:Eurostile,Helvetica,Verdana,Arial;font-size:10pt}
+*{position:static !important}
+body > *,body > * > *{display:none !important}
+body > #admin_area,body > #admin_area > #admin_main{display:block !important}

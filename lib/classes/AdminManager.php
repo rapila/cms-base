@@ -100,7 +100,7 @@ class AdminManager extends Manager {
 		$this->oResourceIncluder->addResource('admin/theme/jquery-ui-1.7.2.custom.css');
 		$this->oResourceIncluder->addResource('widget/widget.css');
 		$this->oResourceIncluder->addResource('admin/admin-ui.css');
-		$this->oResourceIncluder->addResource('admin/print.css');
+		$this->oResourceIncluder->addResource('admin/print.css', null, null, array('media' => 'print'), ResourceIncluder::PRIORITY_NORMAL, null, true);
 		$this->oResourceIncluder->addResource('widget/widget.js');
 		$this->oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		$this->oResourceIncluder->addResource('admin/admin.js');
