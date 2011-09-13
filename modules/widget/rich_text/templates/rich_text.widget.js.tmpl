@@ -224,7 +224,6 @@ Widget.types.rich_text = {
 		});
 		jQuery.each(_this.settings.insertable_parts, function(i, part) {
 			var commandName = 'insert_'+part.name;
-			console.log(commandName, instance);
 			instance.addCommand(commandName, {
 				exec: function(editor) {
 					if(part.type === 'end_of_body') {

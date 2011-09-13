@@ -58,7 +58,7 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 			}
 		}
 		
-		$oTemplate->replaceIdentifier('login_title', StringPeer::getString('login'));
+		$oTemplate->replaceIdentifier('login_title', StringPeer::getString('wns.login'));
 		$sOrigin = isset($_REQUEST['origin']) ? $_REQUEST['origin'] : LinkUtil::linkToSelf();
 		$oTemplate->replaceIdentifier('origin', $sOrigin);
 		
