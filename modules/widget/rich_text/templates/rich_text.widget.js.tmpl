@@ -222,7 +222,7 @@ Widget.types.rich_text = {
 			}
 			instance.document.appendStyleText(_this.settings.inline_css);
 		});
-		jQuery.each(_this.settings.insertable_parts, function(i, part) {
+		_this.settings.insertable_parts && jQuery.each(_this.settings.insertable_parts, function(i, part) {
 			var commandName = 'insert_'+part.name;
 			instance.addCommand(commandName, {
 				exec: function(editor) {
