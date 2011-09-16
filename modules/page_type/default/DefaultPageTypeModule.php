@@ -205,17 +205,19 @@ class DefaultPageTypeModule extends PageTypeModule {
 			
 			$iCount = 0;	
 			foreach($aObjects as $iCount => $oObject) {
+				$aObject = array('id' => $oObject->getId());
 				$iCount++;
 				$oLanguageObject = $oObject->getLanguageObject($this->sLanguageId);
 				if($oLanguageObject === null) {
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = false;
+					$aObject['content_info'] = false;
 				} else {
 					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
 					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
+					$aObject['content_info'] = $mContentInfo;
 				}		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();	
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());		
+				$aObject['object_type'] = $oObject->getObjectType();
+				$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
+				$aResult[$sContainerName]['contents'][] = $aObject;
 			}
 		}
 		return $aResult;
