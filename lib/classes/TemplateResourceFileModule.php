@@ -10,7 +10,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->sResourceType = Manager::usePath();
-		if(!in_array($this->sResourceType, array(ResourceIncluder::RESOURCE_TYPE_CSS, ResourceIncluder::RESOURCE_TYPE_JS, 'html'))) {
+		if(!in_array($this->sResourceType, self::$RESOURCE_TYPES)) {
 			throw new Exception("Error in ".__METHOD__.": Resource type $this->sResourceType not allowed");
 		}
 		$this->sModuleName = Manager::usePath();
@@ -19,16 +19,36 @@ abstract class TemplateResourceFileModule extends FileModule {
 	
 	public function renderFile() {
 		$iTemplateFlags = 0;
+		$oResourceFinder = ResourceFinder::create(array(DIRNAME_MODULES, $this->sModuleType, $this->sModuleName, DIRNAME_TEMPLATES))->returnObjects();
+		$sFileName = "$this->sModuleName.$this->sModuleType.$this->sResourceType".Template::$SUFFIX;
+		$oResourceFinder->addPath($sFileName);
 		if($this->sResourceType === ResourceIncluder::RESOURCE_TYPE_CSS) {
 			header("Content-Type: text/css;charset=utf-8");
+			$oResourceFinder->all();
 		} else if($this->sResourceType === ResourceIncluder::RESOURCE_TYPE_JS) {
 			header("Content-Type: text/javascript;charset=utf-8");
-			$iTemplateFlags = Template::ESCAPE;
+			$iTemplateFlags = Template::ESCAPE|Template::NO_HTML_ESCAPE;
 		} else {
 			header("Content-Type: text/html;charset=utf-8");
 		}
-		$oTemplate = new Template("$this->sModuleName.$this->sModuleType.$this->sResourceType", array(DIRNAME_MODULES, $this->sModuleType, $this->sModuleName, DIRNAME_TEMPLATES), false, true, null, null, $iTemplateFlags);
-		$oTemplate->render();
+		$oCache = new Cache('template_resource-'.$sFileName, DIRNAME_TEMPLATES);
+		if($oCache->cacheFileExists() && !$oCache->isOutdated($oResourceFinder)) {
+			$oCache->sendCacheControlHeaders();
+			$oCache->passContents();
+		} else {
+			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, true);
+			$aResources = $oResourceFinder->find();
+			if($aResources instanceof FileResource) {
+				$aResources = array($aResources);
+			}
+			foreach($aResources as $oResource) {
+				$oSubTemplate = new Template($oResource, null, false, false, null, null, $iTemplateFlags);
+				$oTemplate->replaceIdentifierMultiple('contents', $oSubTemplate);
+			}
+			$oTemplate->render();
+			$oCache->setContents($oTemplate->getSentOutput());
+			$oCache->sendCacheControlHeaders();
+		}
 	}
 	
 	protected abstract function getModuleType();
