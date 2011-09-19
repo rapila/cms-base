@@ -166,7 +166,7 @@ class ErrorHandler {
 		//Add additional information for logging/sending
 		$aError['referrer'] = @$_SERVER['HTTP_REFERER'];
 		$aError['host'] = @$_SERVER['HTTP_HOST'];
-		$aError['path'] = @$_REQUEST['path'];
+		$aError['path'] = @$_SERVER['REQUEST_URI'];
 		
 		FilterModule::getFilters()->handleAnyError(array(&$aError));
 		if(self::shouldMailErrors()) {
