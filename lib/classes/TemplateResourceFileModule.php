@@ -20,8 +20,8 @@ abstract class TemplateResourceFileModule extends FileModule {
 	public function renderFile() {
 		$iTemplateFlags = 0;
 		$oResourceFinder = ResourceFinder::create(array(DIRNAME_MODULES, $this->sModuleType, $this->sModuleName, DIRNAME_TEMPLATES))->returnObjects();
-		$sFileName = "$this->sModuleName.$this->sModuleType.$this->sResourceType".Template::$SUFFIX;
-		$oResourceFinder->addPath($sFileName);
+		$sFileName = "$this->sModuleName.$this->sModuleType.$this->sResourceType";
+		$oResourceFinder->addPath($sFileName.Template::$SUFFIX);
 		if($this->sResourceType === ResourceIncluder::RESOURCE_TYPE_CSS) {
 			header("Content-Type: text/css;charset=utf-8");
 			$oResourceFinder->all();
@@ -36,7 +36,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 			$oCache->sendCacheControlHeaders();
 			$oCache->passContents();
 		} else {
-			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, true);
+			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, true, null, $sFileName);
 			$aResources = $oResourceFinder->find();
 			if($aResources instanceof FileResource) {
 				$aResources = array($aResources);
