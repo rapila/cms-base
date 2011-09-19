@@ -141,8 +141,10 @@ class Template {
 		if($mPath === null || $mPath === "db" || $mPath === "browser") {
 			$mPath = DIRNAME_TEMPLATES;
 		}
-		
-		if($sRootTemplateName === null && !$bTemplateIsTextOnly) {
+
+		if($sTemplateName instanceof FileResource) {
+			$sRootTemplateName = $sTemplateName->getFileName(self::$SUFFIX);
+		} else if($sRootTemplateName === null && !$bTemplateIsTextOnly) {
 			$sRootTemplateName = $sTemplateName;
 		}
 		$this->sTemplateName = $sRootTemplateName;
@@ -156,14 +158,19 @@ class Template {
 		if($bTemplateIsTextOnly) {
 			$sTemplateText = $sTemplateName;
 		} else {
-			$aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
-			$oPath = ResourceFinder::findResourceObject($aPath);
+			if($sTemplateName instanceof FileResource) {
+				$oPath = $sTemplateName;
+				$aPath = explode('/', $oPath->getInternalPath());
+			} else {
+				$aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
+				$oPath = ResourceFinder::findResourceObject($aPath);
+			}
 			if($oPath === null) {
 				throw new Exception("Error in Template construct: Template file ".implode("/", $aPath+array($sTemplateName.self::$SUFFIX))." does not exist");
 			}
 			
 			if(Settings::getSetting('general', 'template_caching', false)) {
-				$oCache = new Cache($oPath->getRelativePath()."_".Session::language()."_".$sTargetEncoding."_".$this->sTemplateName, DIRNAME_TEMPLATES);
+				$oCache = new Cache($oPath->getFullPath()."_".Session::language()."_".$sTargetEncoding."_".$this->sTemplateName, DIRNAME_TEMPLATES);
 				$bCacheIsCurrent = $oCache->cacheFileExists() && !$oCache->isOutdated($oPath->getFullPath());
 			}
 			
@@ -911,8 +918,7 @@ class Template {
 		}
 	}
 
-	public function getSentOutput()
-	{
+	public function getSentOutput() {
 			return $this->sSentOutput;
 	}
 	
