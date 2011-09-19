@@ -74,6 +74,9 @@ class Cache {
 			$mOriginalFilePath = array($mOriginalFilePath);
 		}
 		foreach($mOriginalFilePath as $sOriginalFilePath) {
+			if($sOriginalFilePath instanceof FileResource) {
+				$sOriginalFilePath = $sOriginalFilePath->getFullPath();
+			}
 			$iFileModDate = 0;
 			if(file_exists($sOriginalFilePath)) {
 				$iFileModDate = filemtime($sOriginalFilePath);
