@@ -333,6 +333,14 @@ class ResourceIncluder {
 			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), !$oIdentifier->hasParameter('uncompressed'), !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
 			return null;
 		}
+		if($oIdentifier->hasParameter('inline')) {
+			if($oIdentifier->getParameter('inline') === 'css') {
+				$this->addCustomCss($mLocation);
+			} else if($oIdentifier->getParameter('inline') === 'js') {
+				$this->addCustomJs($mLocation);
+			}
+			return null;
+		}
 		if($oIdentifier->hasParameter('fromBase')) { //Is named the same in include so we leave it in camel case
 			$mLocation = explode('/', $mLocation);
 		}
