@@ -54,7 +54,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			}
 			$aResources = $oIncluder->getAllIncludedResources();
 			foreach($aResources as $aResourceInfo) {
-				if($aResourceInfo['resource_type'] !== ResourceIncluder::RESOURCE_TYPE_CSS) {
+				if(!(isset($aResourceInfo['resource_type']) && $aResourceInfo['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS)) {
 					continue;
 				}
 				if(isset($aResourceInfo['ie_condition'])) {
