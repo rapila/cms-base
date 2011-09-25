@@ -171,7 +171,7 @@ class FrontendManager extends Manager {
 			$oOutput->render();
 		}
 		
-		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.Session::language();
+		$sPageIdentifier = implode('/', self::$CURRENT_NAVIGATION_ITEM->getLink()).'_'.Session::language();
 		if($bIsAjaxRequest) {
 			$sPageIdentifier .= '_'.$_REQUEST['container_only'];
 		}
