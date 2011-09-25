@@ -138,9 +138,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 				continue;
 			}
 			$sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
-			if(call_user_func(array($sModuleName, "isDynamic"))) {
+			if($sModuleName::isDynamic()) {
 				$bIsDynamic = true;
-				$aAllowedParams = array_merge($aAllowedParams, call_user_func(array($sModuleName, "acceptedRequestParams")));
+				$aAllowedParams = array_merge($aAllowedParams, $sModuleName::acceptedRequestParams());
 			}
 		}
 	}
