@@ -35,6 +35,7 @@ Widget.types.document_detail = {
 			_this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
 				category_widget.settings.initial_selection = _this.settings.initial_category_id;
 				category_widget.settings.show_all = false;
+				category_widget.settings.show_without	= true;	
 			}, jQuery.noop);
 			_this.content.find("select[name='language_id']").prepareWidget();
 			_this.content.find('input[name=content_created_at]').datepicker({dateFormat: 'dd.mm.yy'});
