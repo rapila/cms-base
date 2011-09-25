@@ -36,7 +36,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 			$oCache->sendCacheControlHeaders();
 			$oCache->passContents();
 		} else {
-			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, true, null, $sFileName);
+			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, false, null, $sFileName);
 			$aResources = $oResourceFinder->find();
 			if($aResources instanceof FileResource) {
 				$aResources = array($aResources);
@@ -45,9 +45,10 @@ abstract class TemplateResourceFileModule extends FileModule {
 				$oSubTemplate = new Template($oResource, null, false, false, null, null, $iTemplateFlags);
 				$oTemplate->replaceIdentifierMultiple('contents', $oSubTemplate);
 			}
-			$oTemplate->render();
-			$oCache->setContents($oTemplate->getSentOutput());
+			$sContents = $oTemplate->render();
+			$oCache->setContents($sContents);
 			$oCache->sendCacheControlHeaders();
+			print($sContents);
 		}
 	}
 	
