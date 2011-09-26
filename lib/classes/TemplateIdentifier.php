@@ -11,7 +11,7 @@ class TemplateIdentifier {
 
 	public static $PARAMETER_EMPTY_VALUE = null;
 
-	function __construct($sName, $sValue, $sParameters, $oTemplate=null) {
+	function __construct($sName, $sValue, $sParameters = null, $oTemplate = null) {
 		$this->aParameters = array();
 		$this->oTemplate = $oTemplate;
 		$this->iFlags = 0;
