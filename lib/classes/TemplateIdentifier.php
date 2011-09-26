@@ -115,6 +115,16 @@ class TemplateIdentifier {
 		return $this->aParameters[$sName];
 	}
 
+	public function __sleep() {
+		$aVars = get_object_vars($this);
+		unset($aVars['oTemplate']);
+		return array_keys($aVars);
+	}
+
+	public function setTemplate(Template $oTemplate) {
+		$this->oTemplate = $oTemplate;
+	}
+	
 	public function __toString() {
 		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
 	}

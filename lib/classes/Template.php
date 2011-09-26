@@ -200,6 +200,11 @@ class Template {
 
 		if($bCacheIsCurrent) {
 			$this->aTemplateContents = $oCache->getContentsAsVariable();
+			foreach($this->aTemplateContents as &$mContent) {
+				if($mContent instanceof TemplateIdentifier) {
+					$mContent->setTemplate($this);
+				}
+			}
 		} else {
 			if(is_array($sTemplateText)) {
 				$this->aTemplateContents = $sTemplateText;
