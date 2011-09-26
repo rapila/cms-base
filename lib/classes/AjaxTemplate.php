@@ -83,9 +83,6 @@ class AjaxTemplate extends Template {
 			$mIdentifier = $mIdentifier->getName();
 		}
 
-		if($mIdentifier === 'navigation') {
-			ErrorHandler::log($mIdentifier, $sValue, $this->aRequested, $this->identifiersMatching($mIdentifier, $sValue));
-		}
 		foreach($this->identifiersMatching($mIdentifier, $sValue) as $oIdentifier) {
 			if($mFunction !== null) {
 				$mText = call_user_func_array($mFunction, array($oIdentifier, &$iFlags));
