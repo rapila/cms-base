@@ -32,9 +32,10 @@ abstract class TemplateResourceFileModule extends FileModule {
 			header("Content-Type: text/html;charset=utf-8");
 		}
 		$oCache = new Cache('template_resource-'.$sFileName, DIRNAME_TEMPLATES);
+		$oTemplate = null;
 		if($oCache->cacheFileExists() && !$oCache->isOutdated($oResourceFinder)) {
 			$oCache->sendCacheControlHeaders();
-			$oCache->passContents();
+			$oTemplate = $oCache->getContentsAsVariable();
 		} else {
 			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, false, null, $sFileName);
 			$aResources = $oResourceFinder->find();
@@ -43,13 +44,12 @@ abstract class TemplateResourceFileModule extends FileModule {
 			}
 			foreach($aResources as $oResource) {
 				$oSubTemplate = new Template($oResource, null, false, false, null, null, $iTemplateFlags);
-				$oTemplate->replaceIdentifierMultiple('contents', $oSubTemplate);
+				$oTemplate->replaceIdentifierMultiple('contents', $oSubTemplate, null, Template::LEAVE_IDENTIFIERS);
 			}
-			$sContents = $oTemplate->render();
-			$oCache->setContents($sContents);
+			$oCache->setContents($oTemplate);
 			$oCache->sendCacheControlHeaders();
-			print($sContents);
 		}
+		print($oTemplate->render());
 	}
 	
 	protected abstract function getModuleType();
