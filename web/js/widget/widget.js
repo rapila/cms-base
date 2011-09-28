@@ -224,7 +224,7 @@ jQuery.extend(Widget, {
 							if(!script.attr('src')) {
 								head.append(this.cloneNode(true));
 							} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
-								head.append(this.cloneNode(true));
+								head[0].appendChild(this.cloneNode(true));
 								// jQuery.ajax({
 								// 	url: script.attr('src'),
 								// 	dataType: 'script',
