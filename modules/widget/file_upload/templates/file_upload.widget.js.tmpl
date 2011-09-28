@@ -18,40 +18,31 @@ Widget.types.file_upload = {
 			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
 			}
-			if(!selector) {
-				element.addClass('ui-state-droppable');
-			}
 		}).bind('dragover', function(event) {
-			
-			if(!selector) {
-				event.originalEvent.preventDefault();
-				if(element.has(event.target).length > 0) {
-					element.addClass('ui-state-droppable');
-				}
-				return false;
-			}
 			if(!current_drag_is_file) {
 				return;
 			}
 			var target = jQuery(event.target);
-			if(!target.is(selector)) {
+			var inner = selector ? target.closest(selector, element) : element;
+			//Drag did not occur on the wanted element (inner) but on a child
+			if(!inner.length || inner.has(target).length) {
 				return;
 			}
-			//console.log('dragover', element.find(selector));
-			element.find(selector).removeClass('ui-state-droppable');
-			target.addClass('ui-state-droppable');
+			inner.addClass('ui-state-droppable');
 			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
 			
-			//if (event.target != element[0]) 
-			//console.log('dragleave', event.target);
-		
-			if(selector) {
-				element.find(selector).removeClass('ui-state-droppable');
-			} else {
-				element.removeClass('ui-state-droppable');
+			var target = jQuery(event.target);
+			var inner = selector ? target.closest(selector) : element;
+			//Leave did not occur on the wanted element (inner) but on a child
+			console.log(inner.has(target).length || inner.has(event.relatedTarget).length);
+			if(inner.has(target).length || inner.has(event.relatedTarget).length) {
+				///@fixme this will also return if the user left the `inner` directly from a child, in which case the highlight should be released but isn’t
+				return;
 			}
+		
+			inner.removeClass('ui-state-droppable');
 		}).bind('drop', function(event) {
 			if(single_file_only && event.dataTransfer.files.length > 1) {
 				return false;
