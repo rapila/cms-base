@@ -16,24 +16,6 @@ jQuery.fn.extend({
 	}
 });
 
-jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {
-	jQuery(this).addClass('ui-state-hover');
-}).live("mouseout", function() {
-	jQuery(this).removeClass('ui-state-hover');
-}).live("mousedown", function() {
-	jQuery(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
-	if(jQuery(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active')){
-		jQuery(this).removeClass("ui-state-active");
-	}
-	else {
-		jQuery(this).addClass("ui-state-active");
-	}
-}).live('mouseup', function() {
-	if(!jQuery(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button')) {
-		jQuery(this).removeClass("ui-state-active");
-	}
-});
-
 jQuery.extend(Widget, {
 	tooltip: function(element, text) {
 		jQuery(element).tooltip(text);
