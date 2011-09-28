@@ -152,7 +152,7 @@ class FrontendManager extends Manager {
 				$aAjaxSections['navigation'] = $_REQUEST['ajax_navigations'];
 			}
 			if(isset($_REQUEST['ajax_title'])) {
-				$aAjaxSections = array_merge($aAjaxSections, array('page_title' => true, 'link_text' => true));
+				$aAjaxSections = array_merge($aAjaxSections, array('page_title' => true, 'link_text' => true, 'title' => true));
 			}
 			asort($aAjaxSections);
 		}
