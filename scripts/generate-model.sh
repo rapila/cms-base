@@ -6,11 +6,6 @@ owner=`whoami`
 
 path_to_buildfile="base/lib/vendor/propel/generator/build.xml"
 
-if [ "s$PHING_PATH" == "s" ]; then
-	PHING_PATH="./base/lib/vendor/phing/bin/phing"
-	export PHING_HOME="./base/lib/vendor/phing"
-fi
-
 if [ "$1" = "help" ]; then
 	echo "USAGE: generate-model.sh [dev] [<path-to-buildfile (default $path_to_buildfile)>] [<php-user (default `whoami`)>]"
 	exit 0
