@@ -22,7 +22,7 @@ select.ui-widget-content:hover,input.ui-widget-content:hover,textarea.ui-widget-
 .ui-sortable-handle,.ui-sortable-handle_inactive{background-image:url("../../images/admin/sortable_handler_inactive.png");background-repeat:no-repeat;background-position:center center;min-width:16px;height:12px}
 .ui-sortable .ui-sortable-handle{background-image:url("../../images/admin/sortable_handler.png");cursor:pointer}
 .ui-placeholder{background-color:#d3d3d3}
-.cmos-button{padding:.2em 1em .1em 1em;margin-right:.2em;cursor:pointer}
+.rapila-button{padding:.2em 1em .1em 1em;margin-right:.2em;cursor:pointer}
 *[data-widget-type=document_thumbnail_view] .ui-state-hover{background:#e3ef99;background-image:none}
 *[data-widget-type=image_picker] select{background-color:#fff;border:1px solid #dbdbdb;min-width:15em;margin-bottom:.5em}
 select[data-widget-type=page_input]{background-color:#fff;border:1px solid #dbdbdb;min-width:15em;margin-bottom:.5em}
@@ -47,8 +47,8 @@ fieldset.option_groups:first-child{margin-left:0;margin-top:.1em}
 .ui-dialog-content{cursor:auto;overflow-y:auto}
 button.ui-button.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-moz-border-radius:3px;-webkit-border-radius:3px}
 #admin_info_bar button.ui-button.info-bar-element.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-moz-border-radius:3px;-webkit-border-radius:3px}
-button.cmos-button.dashboard{background:transparent url("../../images/admin/dashboard_icon.gif") no-repeat center}
-button.cmos-button.logout_link{-moz-border-radius:12px;-webkit-border-radius:12px;background:transparent url("../../images/admin/logout_icon.gif") no-repeat center}
+button.rapila-button.dashboard{background:transparent url("../../images/admin/dashboard_icon.gif") no-repeat center}
+button.rapila-button.logout_link{-moz-border-radius:12px;-webkit-border-radius:12px;background:transparent url("../../images/admin/logout_icon.gif") no-repeat center}
 .ui-widget-content{background-image:none}
 .ui-widget-content input{background-color:#fff}
 .ui-widget-content select{background-color:#fff}

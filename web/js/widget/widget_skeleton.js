@@ -1,4 +1,4 @@
-jQuery('.cmos-button:not(.ui-state-disabled), .cmos-clickable').live("mouseover", function() {
+jQuery('.rapila-button:not(.ui-state-disabled), .rapila-clickable').live("mouseover", function() {
 	jQuery(this).addClass('ui-state-hover');
 }).live("mouseout", function() {
 	jQuery(this).removeClass('ui-state-hover');

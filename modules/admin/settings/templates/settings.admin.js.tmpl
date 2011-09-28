@@ -3,7 +3,7 @@
 		admin_menu: function(content) {
 			content.html('{{includeTemplate=interface.admin_menu}}');
 			var menu = {};
-			jQuery.extend(true, menu, jQuery("#cmos_admin_menu").data('widget'));
+			jQuery.extend(true, menu, jQuery("#rapila_admin_menu").data('widget'));
 			var clone = content.find('#menu_customizer');
 			menu._element = clone;
 			menu.settings.attach_events = false;

@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 			});
 		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
-				widget.add_new_sidebar_input("{{writeString=wns.link_category.default_name}}", 'LinkCategory', sidebar, 'cmos-link_categories_changed');
+				widget.add_new_sidebar_input("{{writeString=wns.link_category.default_name}}", 'LinkCategory', sidebar, 'rapila-link_categories_changed');
 			});
 		}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 			if(content_list.setSearch(search)) {
