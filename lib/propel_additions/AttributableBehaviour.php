@@ -49,7 +49,7 @@ class AttributableBehaviour extends Behavior {
 	private function addRelation($oLocalColumn, $oUsersTable, $oUsersId) {
 		$oFk = new ForeignKey();
 		$oFk->setTable($this->getTable());
-		$oFk->setForeignTableName($oUsersTable->getName());
+		$oFk->setForeignTableCommonName($oUsersTable->getName());
 		if(!$oFk->isMatchedByInverseFK()) {
 			$oFk->setOnDelete(ForeignKey::SETNULL);
 			$oFk->setOnUpdate(null);
