@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class UserTableMap extends TableMap {
+class UserTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class UserTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('users');
 		$this->setPhpName('User');
 		$this->setClassname('User');
@@ -63,61 +64,61 @@ class UserTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('LanguageRelatedByLanguageId', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
-    $this->addRelation('PageRelatedByCreatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('PageRelatedByUpdatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('PagePropertyRelatedByCreatedBy', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('PagePropertyRelatedByUpdatedBy', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('PageStringRelatedByCreatedBy', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('PageStringRelatedByUpdatedBy', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('ContentObjectRelatedByCreatedBy', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('ContentObjectRelatedByUpdatedBy', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageObjectRelatedByCreatedBy', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageObjectRelatedByUpdatedBy', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageObjectHistoryRelatedByCreatedBy', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageObjectHistoryRelatedByUpdatedBy', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageRelatedByCreatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('LanguageRelatedByUpdatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('StringRelatedByCreatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('StringRelatedByUpdatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('UserGroupRelatedByUserId', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), 'CASCADE', null);
-    $this->addRelation('UserGroupRelatedByCreatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('UserGroupRelatedByUpdatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('GroupRelatedByCreatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('GroupRelatedByUpdatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('GroupRoleRelatedByCreatedBy', 'GroupRole', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('GroupRoleRelatedByUpdatedBy', 'GroupRole', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('RoleRelatedByCreatedBy', 'Role', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('RoleRelatedByUpdatedBy', 'Role', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('UserRoleRelatedByUserId', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), 'CASCADE', null);
-    $this->addRelation('UserRoleRelatedByCreatedBy', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('UserRoleRelatedByUpdatedBy', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('RightRelatedByCreatedBy', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('RightRelatedByUpdatedBy', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentRelatedByOwnerId', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'owner_id', ), null, null);
-    $this->addRelation('DocumentRelatedByCreatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentRelatedByUpdatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentTypeRelatedByCreatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentTypeRelatedByUpdatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentCategoryRelatedByCreatedBy', 'DocumentCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('DocumentCategoryRelatedByUpdatedBy', 'DocumentCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('TagRelatedByCreatedBy', 'Tag', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('TagRelatedByUpdatedBy', 'Tag', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('TagInstanceRelatedByCreatedBy', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('TagInstanceRelatedByUpdatedBy', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('LinkRelatedByOwnerId', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'owner_id', ), null, null);
-    $this->addRelation('LinkRelatedByCreatedBy', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('LinkRelatedByUpdatedBy', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('LinkCategoryRelatedByCreatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('LinkCategoryRelatedByUpdatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
-    $this->addRelation('ReferenceRelatedByCreatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null);
-    $this->addRelation('ReferenceRelatedByUpdatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null);
+		$this->addRelation('LanguageRelatedByLanguageId', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
+		$this->addRelation('UserGroupRelatedByUserId', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), 'CASCADE', null, 'UserGroupsRelatedByUserId');
+		$this->addRelation('UserRoleRelatedByUserId', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), 'CASCADE', null, 'UserRolesRelatedByUserId');
+		$this->addRelation('DocumentRelatedByOwnerId', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'owner_id', ), null, null, 'DocumentsRelatedByOwnerId');
+		$this->addRelation('LinkRelatedByOwnerId', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'owner_id', ), null, null, 'LinksRelatedByOwnerId');
+		$this->addRelation('PageRelatedByCreatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'PagesRelatedByCreatedBy');
+		$this->addRelation('PageRelatedByUpdatedBy', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'PagesRelatedByUpdatedBy');
+		$this->addRelation('PagePropertyRelatedByCreatedBy', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'PagePropertysRelatedByCreatedBy');
+		$this->addRelation('PagePropertyRelatedByUpdatedBy', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'PagePropertysRelatedByUpdatedBy');
+		$this->addRelation('PageStringRelatedByCreatedBy', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'PageStringsRelatedByCreatedBy');
+		$this->addRelation('PageStringRelatedByUpdatedBy', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'PageStringsRelatedByUpdatedBy');
+		$this->addRelation('ContentObjectRelatedByCreatedBy', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'ContentObjectsRelatedByCreatedBy');
+		$this->addRelation('ContentObjectRelatedByUpdatedBy', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'ContentObjectsRelatedByUpdatedBy');
+		$this->addRelation('LanguageObjectRelatedByCreatedBy', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LanguageObjectsRelatedByCreatedBy');
+		$this->addRelation('LanguageObjectRelatedByUpdatedBy', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LanguageObjectsRelatedByUpdatedBy');
+		$this->addRelation('LanguageObjectHistoryRelatedByCreatedBy', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LanguageObjectHistorysRelatedByCreatedBy');
+		$this->addRelation('LanguageObjectHistoryRelatedByUpdatedBy', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LanguageObjectHistorysRelatedByUpdatedBy');
+		$this->addRelation('LanguageRelatedByCreatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LanguagesRelatedByCreatedBy');
+		$this->addRelation('LanguageRelatedByUpdatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LanguagesRelatedByUpdatedBy');
+		$this->addRelation('StringRelatedByCreatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'StringsRelatedByCreatedBy');
+		$this->addRelation('StringRelatedByUpdatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'StringsRelatedByUpdatedBy');
+		$this->addRelation('UserGroupRelatedByCreatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'UserGroupsRelatedByCreatedBy');
+		$this->addRelation('UserGroupRelatedByUpdatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'UserGroupsRelatedByUpdatedBy');
+		$this->addRelation('GroupRelatedByCreatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'GroupsRelatedByCreatedBy');
+		$this->addRelation('GroupRelatedByUpdatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'GroupsRelatedByUpdatedBy');
+		$this->addRelation('GroupRoleRelatedByCreatedBy', 'GroupRole', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'GroupRolesRelatedByCreatedBy');
+		$this->addRelation('GroupRoleRelatedByUpdatedBy', 'GroupRole', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'GroupRolesRelatedByUpdatedBy');
+		$this->addRelation('RoleRelatedByCreatedBy', 'Role', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'RolesRelatedByCreatedBy');
+		$this->addRelation('RoleRelatedByUpdatedBy', 'Role', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'RolesRelatedByUpdatedBy');
+		$this->addRelation('UserRoleRelatedByCreatedBy', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'UserRolesRelatedByCreatedBy');
+		$this->addRelation('UserRoleRelatedByUpdatedBy', 'UserRole', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'UserRolesRelatedByUpdatedBy');
+		$this->addRelation('RightRelatedByCreatedBy', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'RightsRelatedByCreatedBy');
+		$this->addRelation('RightRelatedByUpdatedBy', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'RightsRelatedByUpdatedBy');
+		$this->addRelation('DocumentRelatedByCreatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentsRelatedByCreatedBy');
+		$this->addRelation('DocumentRelatedByUpdatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentsRelatedByUpdatedBy');
+		$this->addRelation('DocumentTypeRelatedByCreatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentTypesRelatedByCreatedBy');
+		$this->addRelation('DocumentTypeRelatedByUpdatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentTypesRelatedByUpdatedBy');
+		$this->addRelation('DocumentCategoryRelatedByCreatedBy', 'DocumentCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentCategorysRelatedByCreatedBy');
+		$this->addRelation('DocumentCategoryRelatedByUpdatedBy', 'DocumentCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentCategorysRelatedByUpdatedBy');
+		$this->addRelation('TagRelatedByCreatedBy', 'Tag', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'TagsRelatedByCreatedBy');
+		$this->addRelation('TagRelatedByUpdatedBy', 'Tag', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'TagsRelatedByUpdatedBy');
+		$this->addRelation('TagInstanceRelatedByCreatedBy', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'TagInstancesRelatedByCreatedBy');
+		$this->addRelation('TagInstanceRelatedByUpdatedBy', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'TagInstancesRelatedByUpdatedBy');
+		$this->addRelation('LinkRelatedByCreatedBy', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LinksRelatedByCreatedBy');
+		$this->addRelation('LinkRelatedByUpdatedBy', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LinksRelatedByUpdatedBy');
+		$this->addRelation('LinkCategoryRelatedByCreatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LinkCategorysRelatedByCreatedBy');
+		$this->addRelation('LinkCategoryRelatedByUpdatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LinkCategorysRelatedByUpdatedBy');
+		$this->addRelation('ReferenceRelatedByCreatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'ReferencesRelatedByCreatedBy');
+		$this->addRelation('ReferenceRelatedByUpdatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'ReferencesRelatedByUpdatedBy');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()

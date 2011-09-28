@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class TagTableMap extends TableMap {
+class TagTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class TagTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('tags');
 		$this->setPhpName('Tag');
 		$this->setClassname('Tag');
@@ -51,15 +52,15 @@ class TagTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('TagInstance', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'tag_id', ), 'CASCADE', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('TagInstance', 'TagInstance', RelationMap::ONE_TO_MANY, array('id' => 'tag_id', ), 'CASCADE', null, 'TagInstances');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()

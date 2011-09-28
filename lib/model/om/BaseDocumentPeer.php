@@ -24,12 +24,15 @@ abstract class BaseDocumentPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'DocumentTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 20;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 1;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 19;
 
 	/** the column name for the ID field */
 	const ID = 'documents.ID';
@@ -91,6 +94,9 @@ abstract class BaseDocumentPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'documents.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Document objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -106,7 +112,7 @@ abstract class BaseDocumentPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'ContentCreatedAt', 'License', 'Author', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Sort', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'contentCreatedAt', 'license', 'author', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'sort', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::ORIGINAL_NAME, self::DESCRIPTION, self::CONTENT_CREATED_AT, self::LICENSE, self::AUTHOR, self::LANGUAGE_ID, self::OWNER_ID, self::DOCUMENT_TYPE_ID, self::DOCUMENT_CATEGORY_ID, self::IS_PRIVATE, self::IS_INACTIVE, self::IS_PROTECTED, self::SORT, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -121,7 +127,7 @@ abstract class BaseDocumentPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'ContentCreatedAt' => 4, 'License' => 5, 'Author' => 6, 'LanguageId' => 7, 'OwnerId' => 8, 'DocumentTypeId' => 9, 'DocumentCategoryId' => 10, 'IsPrivate' => 11, 'IsInactive' => 12, 'IsProtected' => 13, 'Sort' => 14, 'Data' => 15, 'CreatedAt' => 16, 'UpdatedAt' => 17, 'CreatedBy' => 18, 'UpdatedBy' => 19, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'contentCreatedAt' => 4, 'license' => 5, 'author' => 6, 'languageId' => 7, 'ownerId' => 8, 'documentTypeId' => 9, 'documentCategoryId' => 10, 'isPrivate' => 11, 'isInactive' => 12, 'isProtected' => 13, 'sort' => 14, 'data' => 15, 'createdAt' => 16, 'updatedAt' => 17, 'createdBy' => 18, 'updatedBy' => 19, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::ORIGINAL_NAME => 2, self::DESCRIPTION => 3, self::CONTENT_CREATED_AT => 4, self::LICENSE => 5, self::AUTHOR => 6, self::LANGUAGE_ID => 7, self::OWNER_ID => 8, self::DOCUMENT_TYPE_ID => 9, self::DOCUMENT_CATEGORY_ID => 10, self::IS_PRIVATE => 11, self::IS_INACTIVE => 12, self::IS_PROTECTED => 13, self::SORT => 14, self::DATA => 15, self::CREATED_AT => 16, self::UPDATED_AT => 17, self::CREATED_BY => 18, self::UPDATED_BY => 19, ),
@@ -285,7 +291,7 @@ abstract class BaseDocumentPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -304,7 +310,7 @@ abstract class BaseDocumentPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -358,7 +364,7 @@ abstract class BaseDocumentPeer {
 	 * @param      Document $value A Document object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Document $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -453,7 +459,7 @@ abstract class BaseDocumentPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -513,7 +519,7 @@ abstract class BaseDocumentPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + DocumentPeer::NUM_COLUMNS;
+			$col = $startcol + DocumentPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = DocumentPeer::OM_CLASS;
 			$obj = new $cls();
@@ -522,6 +528,7 @@ abstract class BaseDocumentPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Language table
@@ -549,9 +556,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -599,9 +606,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -649,9 +656,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -699,9 +706,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -749,9 +756,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -799,9 +806,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -842,7 +849,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		LanguagePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
@@ -908,7 +915,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
@@ -974,7 +981,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		DocumentTypePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
@@ -1040,7 +1047,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		DocumentCategoryPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
@@ -1106,7 +1113,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -1172,7 +1179,7 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -1245,9 +1252,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1298,25 +1305,25 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -1480,7 +1487,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1488,9 +1495,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1538,7 +1545,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1546,9 +1553,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1592,7 +1599,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1600,9 +1607,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1650,7 +1657,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1658,9 +1665,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1708,7 +1715,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1716,9 +1723,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1762,7 +1769,7 @@ abstract class BaseDocumentPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1770,9 +1777,9 @@ abstract class BaseDocumentPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1820,22 +1827,22 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
 
@@ -1989,16 +1996,16 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -2110,22 +2117,22 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -2279,22 +2286,22 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -2448,16 +2455,16 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -2569,16 +2576,16 @@ abstract class BaseDocumentPeer {
 		}
 
 		DocumentPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -2708,7 +2715,7 @@ abstract class BaseDocumentPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Document or Criteria object.
+	 * Performs an INSERT on the database, given a Document or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Document object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -2751,7 +2758,7 @@ abstract class BaseDocumentPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Document or Criteria object.
+	 * Performs an UPDATE on the database, given a Document or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Document object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -2790,11 +2797,12 @@ abstract class BaseDocumentPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the documents table.
+	 * Deletes all rows from the documents table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(DocumentPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -2819,7 +2827,7 @@ abstract class BaseDocumentPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Document or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Document or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Document object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -2888,7 +2896,7 @@ abstract class BaseDocumentPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Document $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

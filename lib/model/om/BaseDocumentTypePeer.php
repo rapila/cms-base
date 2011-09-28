@@ -24,12 +24,15 @@ abstract class BaseDocumentTypePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'DocumentTypeTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 8;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 8;
 
 	/** the column name for the ID field */
 	const ID = 'document_types.ID';
@@ -55,6 +58,9 @@ abstract class BaseDocumentTypePeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'document_types.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of DocumentType objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -70,7 +76,7 @@ abstract class BaseDocumentTypePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Extension', 'Mimetype', 'IsOfficeDoc', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'extension', 'mimetype', 'isOfficeDoc', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::EXTENSION, self::MIMETYPE, self::IS_OFFICE_DOC, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -85,7 +91,7 @@ abstract class BaseDocumentTypePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Extension' => 1, 'Mimetype' => 2, 'IsOfficeDoc' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, 'CreatedBy' => 6, 'UpdatedBy' => 7, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'extension' => 1, 'mimetype' => 2, 'isOfficeDoc' => 3, 'createdAt' => 4, 'updatedAt' => 5, 'createdBy' => 6, 'updatedBy' => 7, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::EXTENSION => 1, self::MIMETYPE => 2, self::IS_OFFICE_DOC => 3, self::CREATED_AT => 4, self::UPDATED_AT => 5, self::CREATED_BY => 6, self::UPDATED_BY => 7, ),
@@ -227,7 +233,7 @@ abstract class BaseDocumentTypePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -246,7 +252,7 @@ abstract class BaseDocumentTypePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -300,7 +306,7 @@ abstract class BaseDocumentTypePeer {
 	 * @param      DocumentType $value A DocumentType object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(DocumentType $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -373,7 +379,7 @@ abstract class BaseDocumentTypePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in DocumentPeer instance pool, 
+		// Invalidate objects in DocumentPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
 	}
@@ -398,7 +404,7 @@ abstract class BaseDocumentTypePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -458,7 +464,7 @@ abstract class BaseDocumentTypePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + DocumentTypePeer::NUM_COLUMNS;
+			$col = $startcol + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = DocumentTypePeer::OM_CLASS;
 			$obj = new $cls();
@@ -467,6 +473,7 @@ abstract class BaseDocumentTypePeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -494,9 +501,9 @@ abstract class BaseDocumentTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -544,9 +551,9 @@ abstract class BaseDocumentTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -587,7 +594,7 @@ abstract class BaseDocumentTypePeer {
 		}
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol = (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentTypePeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -653,7 +660,7 @@ abstract class BaseDocumentTypePeer {
 		}
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol = (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentTypePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -726,9 +733,9 @@ abstract class BaseDocumentTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -771,13 +778,13 @@ abstract class BaseDocumentTypePeer {
 		}
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentTypePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -861,7 +868,7 @@ abstract class BaseDocumentTypePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentTypePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -869,9 +876,9 @@ abstract class BaseDocumentTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -909,7 +916,7 @@ abstract class BaseDocumentTypePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentTypePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -917,9 +924,9 @@ abstract class BaseDocumentTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -961,7 +968,7 @@ abstract class BaseDocumentTypePeer {
 		}
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1010,7 +1017,7 @@ abstract class BaseDocumentTypePeer {
 		}
 
 		DocumentTypePeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentTypePeer::NUM_COLUMNS - DocumentTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1077,7 +1084,7 @@ abstract class BaseDocumentTypePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a DocumentType or Criteria object.
+	 * Performs an INSERT on the database, given a DocumentType or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or DocumentType object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1120,7 +1127,7 @@ abstract class BaseDocumentTypePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a DocumentType or Criteria object.
+	 * Performs an UPDATE on the database, given a DocumentType or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or DocumentType object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1159,11 +1166,12 @@ abstract class BaseDocumentTypePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the document_types table.
+	 * Deletes all rows from the document_types table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(DocumentTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1189,7 +1197,7 @@ abstract class BaseDocumentTypePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a DocumentType or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a DocumentType or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or DocumentType object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1297,7 +1305,7 @@ abstract class BaseDocumentTypePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(DocumentType $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -24,12 +24,15 @@ abstract class BaseUserPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'UserTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 18;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 18;
 
 	/** the column name for the ID field */
 	const ID = 'users.ID';
@@ -85,6 +88,9 @@ abstract class BaseUserPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'users.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of User objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -100,7 +106,7 @@ abstract class BaseUserPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'DigestHA1', 'FirstName', 'LastName', 'Email', 'LanguageId', 'IsAdmin', 'IsBackendLoginEnabled', 'IsAdminLoginEnabled', 'IsInactive', 'PasswordRecoverHint', 'BackendSettings', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'password', 'digestHA1', 'firstName', 'lastName', 'email', 'languageId', 'isAdmin', 'isBackendLoginEnabled', 'isAdminLoginEnabled', 'isInactive', 'passwordRecoverHint', 'backendSettings', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::USERNAME, self::PASSWORD, self::DIGEST_HA1, self::FIRST_NAME, self::LAST_NAME, self::EMAIL, self::LANGUAGE_ID, self::IS_ADMIN, self::IS_BACKEND_LOGIN_ENABLED, self::IS_ADMIN_LOGIN_ENABLED, self::IS_INACTIVE, self::PASSWORD_RECOVER_HINT, self::BACKEND_SETTINGS, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -115,7 +121,7 @@ abstract class BaseUserPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'DigestHA1' => 3, 'FirstName' => 4, 'LastName' => 5, 'Email' => 6, 'LanguageId' => 7, 'IsAdmin' => 8, 'IsBackendLoginEnabled' => 9, 'IsAdminLoginEnabled' => 10, 'IsInactive' => 11, 'PasswordRecoverHint' => 12, 'BackendSettings' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, 'CreatedBy' => 16, 'UpdatedBy' => 17, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'digestHA1' => 3, 'firstName' => 4, 'lastName' => 5, 'email' => 6, 'languageId' => 7, 'isAdmin' => 8, 'isBackendLoginEnabled' => 9, 'isAdminLoginEnabled' => 10, 'isInactive' => 11, 'passwordRecoverHint' => 12, 'backendSettings' => 13, 'createdAt' => 14, 'updatedAt' => 15, 'createdBy' => 16, 'updatedBy' => 17, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::USERNAME => 1, self::PASSWORD => 2, self::DIGEST_HA1 => 3, self::FIRST_NAME => 4, self::LAST_NAME => 5, self::EMAIL => 6, self::LANGUAGE_ID => 7, self::IS_ADMIN => 8, self::IS_BACKEND_LOGIN_ENABLED => 9, self::IS_ADMIN_LOGIN_ENABLED => 10, self::IS_INACTIVE => 11, self::PASSWORD_RECOVER_HINT => 12, self::BACKEND_SETTINGS => 13, self::CREATED_AT => 14, self::UPDATED_AT => 15, self::CREATED_BY => 16, self::UPDATED_BY => 17, ),
@@ -277,7 +283,7 @@ abstract class BaseUserPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -296,7 +302,7 @@ abstract class BaseUserPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -350,7 +356,7 @@ abstract class BaseUserPeer {
 	 * @param      User $value A User object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(User $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -423,142 +429,142 @@ abstract class BaseUserPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in PagePeer instance pool, 
+		// Invalidate objects in UserGroupPeer instance pool,
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		UserGroupPeer::clearInstancePool();
+		// Invalidate objects in UserRolePeer instance pool,
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		UserRolePeer::clearInstancePool();
+		// Invalidate objects in PagePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePeer::clearInstancePool();
-		// Invalidate objects in PagePeer instance pool, 
+		// Invalidate objects in PagePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePeer::clearInstancePool();
-		// Invalidate objects in PagePropertyPeer instance pool, 
+		// Invalidate objects in PagePropertyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-		// Invalidate objects in PagePropertyPeer instance pool, 
+		// Invalidate objects in PagePropertyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-		// Invalidate objects in PageStringPeer instance pool, 
+		// Invalidate objects in PageStringPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-		// Invalidate objects in PageStringPeer instance pool, 
+		// Invalidate objects in PageStringPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-		// Invalidate objects in ContentObjectPeer instance pool, 
+		// Invalidate objects in ContentObjectPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-		// Invalidate objects in ContentObjectPeer instance pool, 
+		// Invalidate objects in ContentObjectPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-		// Invalidate objects in LanguageObjectPeer instance pool, 
+		// Invalidate objects in LanguageObjectPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectPeer::clearInstancePool();
-		// Invalidate objects in LanguageObjectPeer instance pool, 
+		// Invalidate objects in LanguageObjectPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectPeer::clearInstancePool();
-		// Invalidate objects in LanguageObjectHistoryPeer instance pool, 
+		// Invalidate objects in LanguageObjectHistoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectHistoryPeer::clearInstancePool();
-		// Invalidate objects in LanguageObjectHistoryPeer instance pool, 
+		// Invalidate objects in LanguageObjectHistoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguageObjectHistoryPeer::clearInstancePool();
-		// Invalidate objects in LanguagePeer instance pool, 
+		// Invalidate objects in LanguagePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguagePeer::clearInstancePool();
-		// Invalidate objects in LanguagePeer instance pool, 
+		// Invalidate objects in LanguagePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LanguagePeer::clearInstancePool();
-		// Invalidate objects in StringPeer instance pool, 
+		// Invalidate objects in StringPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		StringPeer::clearInstancePool();
-		// Invalidate objects in StringPeer instance pool, 
+		// Invalidate objects in StringPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		StringPeer::clearInstancePool();
-		// Invalidate objects in UserGroupPeer instance pool, 
+		// Invalidate objects in UserGroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-		// Invalidate objects in UserGroupPeer instance pool, 
+		// Invalidate objects in UserGroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-		// Invalidate objects in UserGroupPeer instance pool, 
-		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		UserGroupPeer::clearInstancePool();
-		// Invalidate objects in GroupPeer instance pool, 
+		// Invalidate objects in GroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupPeer::clearInstancePool();
-		// Invalidate objects in GroupPeer instance pool, 
+		// Invalidate objects in GroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupPeer::clearInstancePool();
-		// Invalidate objects in GroupRolePeer instance pool, 
+		// Invalidate objects in GroupRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
-		// Invalidate objects in GroupRolePeer instance pool, 
+		// Invalidate objects in GroupRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
-		// Invalidate objects in RolePeer instance pool, 
+		// Invalidate objects in RolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RolePeer::clearInstancePool();
-		// Invalidate objects in RolePeer instance pool, 
+		// Invalidate objects in RolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RolePeer::clearInstancePool();
-		// Invalidate objects in UserRolePeer instance pool, 
+		// Invalidate objects in UserRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-		// Invalidate objects in UserRolePeer instance pool, 
+		// Invalidate objects in UserRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-		// Invalidate objects in UserRolePeer instance pool, 
-		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		UserRolePeer::clearInstancePool();
-		// Invalidate objects in RightPeer instance pool, 
+		// Invalidate objects in RightPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
-		// Invalidate objects in RightPeer instance pool, 
+		// Invalidate objects in RightPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
-		// Invalidate objects in DocumentPeer instance pool, 
+		// Invalidate objects in DocumentPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
-		// Invalidate objects in DocumentPeer instance pool, 
+		// Invalidate objects in DocumentPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
-		// Invalidate objects in DocumentTypePeer instance pool, 
+		// Invalidate objects in DocumentTypePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentTypePeer::clearInstancePool();
-		// Invalidate objects in DocumentTypePeer instance pool, 
+		// Invalidate objects in DocumentTypePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentTypePeer::clearInstancePool();
-		// Invalidate objects in DocumentCategoryPeer instance pool, 
+		// Invalidate objects in DocumentCategoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentCategoryPeer::clearInstancePool();
-		// Invalidate objects in DocumentCategoryPeer instance pool, 
+		// Invalidate objects in DocumentCategoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentCategoryPeer::clearInstancePool();
-		// Invalidate objects in TagPeer instance pool, 
+		// Invalidate objects in TagPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagPeer::clearInstancePool();
-		// Invalidate objects in TagPeer instance pool, 
+		// Invalidate objects in TagPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagPeer::clearInstancePool();
-		// Invalidate objects in TagInstancePeer instance pool, 
+		// Invalidate objects in TagInstancePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
-		// Invalidate objects in TagInstancePeer instance pool, 
+		// Invalidate objects in TagInstancePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
-		// Invalidate objects in LinkPeer instance pool, 
+		// Invalidate objects in LinkPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkPeer::clearInstancePool();
-		// Invalidate objects in LinkPeer instance pool, 
+		// Invalidate objects in LinkPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkPeer::clearInstancePool();
-		// Invalidate objects in LinkCategoryPeer instance pool, 
+		// Invalidate objects in LinkCategoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkCategoryPeer::clearInstancePool();
-		// Invalidate objects in LinkCategoryPeer instance pool, 
+		// Invalidate objects in LinkCategoryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		LinkCategoryPeer::clearInstancePool();
-		// Invalidate objects in ReferencePeer instance pool, 
+		// Invalidate objects in ReferencePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ReferencePeer::clearInstancePool();
-		// Invalidate objects in ReferencePeer instance pool, 
+		// Invalidate objects in ReferencePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ReferencePeer::clearInstancePool();
 	}
@@ -583,7 +589,7 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -643,7 +649,7 @@ abstract class BaseUserPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + UserPeer::NUM_COLUMNS;
+			$col = $startcol + UserPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = UserPeer::OM_CLASS;
 			$obj = new $cls();
@@ -652,6 +658,7 @@ abstract class BaseUserPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related LanguageRelatedByLanguageId table
@@ -679,9 +686,9 @@ abstract class BaseUserPeer {
 		if (!$criteria->hasSelectClause()) {
 			UserPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -722,7 +729,7 @@ abstract class BaseUserPeer {
 		}
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol = (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = UserPeer::NUM_HYDRATE_COLUMNS;
 		LanguagePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(UserPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
@@ -795,9 +802,9 @@ abstract class BaseUserPeer {
 		if (!$criteria->hasSelectClause()) {
 			UserPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -838,10 +845,10 @@ abstract class BaseUserPeer {
 		}
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol2 = (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = UserPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(UserPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -927,7 +934,7 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a User or Criteria object.
+	 * Performs an INSERT on the database, given a User or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or User object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -970,7 +977,7 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a User or Criteria object.
+	 * Performs an UPDATE on the database, given a User or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or User object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1009,11 +1016,12 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the users table.
+	 * Deletes all rows from the users table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1040,7 +1048,7 @@ abstract class BaseUserPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a User or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a User or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or User object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1533,7 +1541,7 @@ abstract class BaseUserPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(User $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class GroupRoleTableMap extends TableMap {
+class GroupRoleTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class GroupRoleTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('group_roles');
 		$this->setPhpName('GroupRole');
 		$this->setClassname('GroupRole');
@@ -51,16 +52,16 @@ class GroupRoleTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Group', 'Group', RelationMap::MANY_TO_ONE, array('group_id' => 'id', ), 'CASCADE', null);
-    $this->addRelation('Role', 'Role', RelationMap::MANY_TO_ONE, array('role_key' => 'role_key', ), 'CASCADE', null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Group', 'Group', RelationMap::MANY_TO_ONE, array('group_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Role', 'Role', RelationMap::MANY_TO_ONE, array('role_key' => 'role_key', ), 'CASCADE', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()

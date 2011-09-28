@@ -142,6 +142,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected $aLanguageRelatedByLanguageId;
 
 	/**
+	 * @var        array UserGroup[] Collection to store aggregation of UserGroup objects.
+	 */
+	protected $collUserGroupsRelatedByUserId;
+
+	/**
+	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
+	 */
+	protected $collUserRolesRelatedByUserId;
+
+	/**
+	 * @var        array Document[] Collection to store aggregation of Document objects.
+	 */
+	protected $collDocumentsRelatedByOwnerId;
+
+	/**
+	 * @var        array Link[] Collection to store aggregation of Link objects.
+	 */
+	protected $collLinksRelatedByOwnerId;
+
+	/**
 	 * @var        array Page[] Collection to store aggregation of Page objects.
 	 */
 	protected $collPagesRelatedByCreatedBy;
@@ -224,11 +244,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * @var        array UserGroup[] Collection to store aggregation of UserGroup objects.
 	 */
-	protected $collUserGroupsRelatedByUserId;
-
-	/**
-	 * @var        array UserGroup[] Collection to store aggregation of UserGroup objects.
-	 */
 	protected $collUserGroupsRelatedByCreatedBy;
 
 	/**
@@ -269,11 +284,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
 	 */
-	protected $collUserRolesRelatedByUserId;
-
-	/**
-	 * @var        array UserRole[] Collection to store aggregation of UserRole objects.
-	 */
 	protected $collUserRolesRelatedByCreatedBy;
 
 	/**
@@ -290,11 +300,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @var        array Right[] Collection to store aggregation of Right objects.
 	 */
 	protected $collRightsRelatedByUpdatedBy;
-
-	/**
-	 * @var        array Document[] Collection to store aggregation of Document objects.
-	 */
-	protected $collDocumentsRelatedByOwnerId;
 
 	/**
 	 * @var        array Document[] Collection to store aggregation of Document objects.
@@ -345,11 +350,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @var        array TagInstance[] Collection to store aggregation of TagInstance objects.
 	 */
 	protected $collTagInstancesRelatedByUpdatedBy;
-
-	/**
-	 * @var        array Link[] Collection to store aggregation of Link objects.
-	 */
-	protected $collLinksRelatedByOwnerId;
 
 	/**
 	 * @var        array Link[] Collection to store aggregation of Link objects.
@@ -820,18 +820,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	} // setLanguageId()
 
 	/**
-	 * Set the value of [is_admin] column.
+	 * Sets the value of the [is_admin] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setIsAdmin($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_admin !== $v || $this->isNew()) {
+		if ($this->is_admin !== $v) {
 			$this->is_admin = $v;
 			$this->modifiedColumns[] = UserPeer::IS_ADMIN;
 		}
@@ -840,18 +848,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	} // setIsAdmin()
 
 	/**
-	 * Set the value of [is_backend_login_enabled] column.
+	 * Sets the value of the [is_backend_login_enabled] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setIsBackendLoginEnabled($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_backend_login_enabled !== $v || $this->isNew()) {
+		if ($this->is_backend_login_enabled !== $v) {
 			$this->is_backend_login_enabled = $v;
 			$this->modifiedColumns[] = UserPeer::IS_BACKEND_LOGIN_ENABLED;
 		}
@@ -860,18 +876,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	} // setIsBackendLoginEnabled()
 
 	/**
-	 * Set the value of [is_admin_login_enabled] column.
+	 * Sets the value of the [is_admin_login_enabled] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setIsAdminLoginEnabled($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_admin_login_enabled !== $v || $this->isNew()) {
+		if ($this->is_admin_login_enabled !== $v) {
 			$this->is_admin_login_enabled = $v;
 			$this->modifiedColumns[] = UserPeer::IS_ADMIN_LOGIN_ENABLED;
 		}
@@ -880,18 +904,26 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	} // setIsAdminLoginEnabled()
 
 	/**
-	 * Set the value of [is_inactive] column.
+	 * Sets the value of the [is_inactive] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setIsInactive($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_inactive !== $v || $this->isNew()) {
+		if ($this->is_inactive !== $v) {
 			$this->is_inactive = $v;
 			$this->modifiedColumns[] = UserPeer::IS_INACTIVE;
 		}
@@ -945,45 +977,18 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = UserPeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -994,45 +999,18 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     User The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = UserPeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -1160,7 +1138,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 18; // 18 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 18; // 18 = UserPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating User object", $e);
@@ -1226,6 +1204,14 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->aLanguageRelatedByLanguageId = null;
+			$this->collUserGroupsRelatedByUserId = null;
+
+			$this->collUserRolesRelatedByUserId = null;
+
+			$this->collDocumentsRelatedByOwnerId = null;
+
+			$this->collLinksRelatedByOwnerId = null;
+
 			$this->collPagesRelatedByCreatedBy = null;
 
 			$this->collPagesRelatedByUpdatedBy = null;
@@ -1258,8 +1244,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			$this->collStringsRelatedByUpdatedBy = null;
 
-			$this->collUserGroupsRelatedByUserId = null;
-
 			$this->collUserGroupsRelatedByCreatedBy = null;
 
 			$this->collUserGroupsRelatedByUpdatedBy = null;
@@ -1276,8 +1260,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			$this->collRolesRelatedByUpdatedBy = null;
 
-			$this->collUserRolesRelatedByUserId = null;
-
 			$this->collUserRolesRelatedByCreatedBy = null;
 
 			$this->collUserRolesRelatedByUpdatedBy = null;
@@ -1285,8 +1267,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collRightsRelatedByCreatedBy = null;
 
 			$this->collRightsRelatedByUpdatedBy = null;
-
-			$this->collDocumentsRelatedByOwnerId = null;
 
 			$this->collDocumentsRelatedByCreatedBy = null;
 
@@ -1307,8 +1287,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collTagInstancesRelatedByCreatedBy = null;
 
 			$this->collTagInstancesRelatedByUpdatedBy = null;
-
-			$this->collLinksRelatedByOwnerId = null;
 
 			$this->collLinksRelatedByCreatedBy = null;
 
@@ -1346,11 +1324,11 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = UserQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				UserQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -1501,6 +1479,38 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
+			if ($this->collUserGroupsRelatedByUserId !== null) {
+				foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collUserRolesRelatedByUserId !== null) {
+				foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collDocumentsRelatedByOwnerId !== null) {
+				foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collLinksRelatedByOwnerId !== null) {
+				foreach ($this->collLinksRelatedByOwnerId as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collPagesRelatedByCreatedBy !== null) {
 				foreach ($this->collPagesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1629,14 +1639,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collUserGroupsRelatedByUserId !== null) {
-				foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			if ($this->collUserGroupsRelatedByCreatedBy !== null) {
 				foreach ($this->collUserGroupsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1701,14 +1703,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collUserRolesRelatedByUserId !== null) {
-				foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			if ($this->collUserRolesRelatedByCreatedBy !== null) {
 				foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1735,14 +1729,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			if ($this->collRightsRelatedByUpdatedBy !== null) {
 				foreach ($this->collRightsRelatedByUpdatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collDocumentsRelatedByOwnerId !== null) {
-				foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1823,14 +1809,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 			if ($this->collTagInstancesRelatedByUpdatedBy !== null) {
 				foreach ($this->collTagInstancesRelatedByUpdatedBy as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collLinksRelatedByOwnerId !== null) {
-				foreach ($this->collLinksRelatedByOwnerId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1968,6 +1946,38 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			}
 
 
+				if ($this->collUserGroupsRelatedByUserId !== null) {
+					foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collUserRolesRelatedByUserId !== null) {
+					foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collDocumentsRelatedByOwnerId !== null) {
+					foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collLinksRelatedByOwnerId !== null) {
+					foreach ($this->collLinksRelatedByOwnerId as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 				if ($this->collPagesRelatedByCreatedBy !== null) {
 					foreach ($this->collPagesRelatedByCreatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -2096,14 +2106,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					}
 				}
 
-				if ($this->collUserGroupsRelatedByUserId !== null) {
-					foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
 				if ($this->collUserGroupsRelatedByCreatedBy !== null) {
 					foreach ($this->collUserGroupsRelatedByCreatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -2168,14 +2170,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					}
 				}
 
-				if ($this->collUserRolesRelatedByUserId !== null) {
-					foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
 				if ($this->collUserRolesRelatedByCreatedBy !== null) {
 					foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -2202,14 +2196,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 				if ($this->collRightsRelatedByUpdatedBy !== null) {
 					foreach ($this->collRightsRelatedByUpdatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collDocumentsRelatedByOwnerId !== null) {
-					foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2290,14 +2276,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 				if ($this->collTagInstancesRelatedByUpdatedBy !== null) {
 					foreach ($this->collTagInstancesRelatedByUpdatedBy as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collLinksRelatedByOwnerId !== null) {
-					foreach ($this->collLinksRelatedByOwnerId as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2455,12 +2433,17 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['User'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['User'][$this->getPrimaryKey()] = true;
 		$keys = UserPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -2484,7 +2467,151 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguageRelatedByLanguageId) {
-				$result['LanguageRelatedByLanguageId'] = $this->aLanguageRelatedByLanguageId->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['LanguageRelatedByLanguageId'] = $this->aLanguageRelatedByLanguageId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collUserGroupsRelatedByUserId) {
+				$result['UserGroupsRelatedByUserId'] = $this->collUserGroupsRelatedByUserId->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUserRolesRelatedByUserId) {
+				$result['UserRolesRelatedByUserId'] = $this->collUserRolesRelatedByUserId->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentsRelatedByOwnerId) {
+				$result['DocumentsRelatedByOwnerId'] = $this->collDocumentsRelatedByOwnerId->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinksRelatedByOwnerId) {
+				$result['LinksRelatedByOwnerId'] = $this->collLinksRelatedByOwnerId->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPagesRelatedByCreatedBy) {
+				$result['PagesRelatedByCreatedBy'] = $this->collPagesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPagesRelatedByUpdatedBy) {
+				$result['PagesRelatedByUpdatedBy'] = $this->collPagesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPagePropertysRelatedByCreatedBy) {
+				$result['PagePropertysRelatedByCreatedBy'] = $this->collPagePropertysRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPagePropertysRelatedByUpdatedBy) {
+				$result['PagePropertysRelatedByUpdatedBy'] = $this->collPagePropertysRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPageStringsRelatedByCreatedBy) {
+				$result['PageStringsRelatedByCreatedBy'] = $this->collPageStringsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPageStringsRelatedByUpdatedBy) {
+				$result['PageStringsRelatedByUpdatedBy'] = $this->collPageStringsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collContentObjectsRelatedByCreatedBy) {
+				$result['ContentObjectsRelatedByCreatedBy'] = $this->collContentObjectsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collContentObjectsRelatedByUpdatedBy) {
+				$result['ContentObjectsRelatedByUpdatedBy'] = $this->collContentObjectsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectsRelatedByCreatedBy) {
+				$result['LanguageObjectsRelatedByCreatedBy'] = $this->collLanguageObjectsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectsRelatedByUpdatedBy) {
+				$result['LanguageObjectsRelatedByUpdatedBy'] = $this->collLanguageObjectsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectHistorysRelatedByCreatedBy) {
+				$result['LanguageObjectHistorysRelatedByCreatedBy'] = $this->collLanguageObjectHistorysRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
+				$result['LanguageObjectHistorysRelatedByUpdatedBy'] = $this->collLanguageObjectHistorysRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguagesRelatedByCreatedBy) {
+				$result['LanguagesRelatedByCreatedBy'] = $this->collLanguagesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguagesRelatedByUpdatedBy) {
+				$result['LanguagesRelatedByUpdatedBy'] = $this->collLanguagesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collStringsRelatedByCreatedBy) {
+				$result['StringsRelatedByCreatedBy'] = $this->collStringsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collStringsRelatedByUpdatedBy) {
+				$result['StringsRelatedByUpdatedBy'] = $this->collStringsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUserGroupsRelatedByCreatedBy) {
+				$result['UserGroupsRelatedByCreatedBy'] = $this->collUserGroupsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUserGroupsRelatedByUpdatedBy) {
+				$result['UserGroupsRelatedByUpdatedBy'] = $this->collUserGroupsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collGroupsRelatedByCreatedBy) {
+				$result['GroupsRelatedByCreatedBy'] = $this->collGroupsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collGroupsRelatedByUpdatedBy) {
+				$result['GroupsRelatedByUpdatedBy'] = $this->collGroupsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collGroupRolesRelatedByCreatedBy) {
+				$result['GroupRolesRelatedByCreatedBy'] = $this->collGroupRolesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collGroupRolesRelatedByUpdatedBy) {
+				$result['GroupRolesRelatedByUpdatedBy'] = $this->collGroupRolesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collRolesRelatedByCreatedBy) {
+				$result['RolesRelatedByCreatedBy'] = $this->collRolesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collRolesRelatedByUpdatedBy) {
+				$result['RolesRelatedByUpdatedBy'] = $this->collRolesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUserRolesRelatedByCreatedBy) {
+				$result['UserRolesRelatedByCreatedBy'] = $this->collUserRolesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUserRolesRelatedByUpdatedBy) {
+				$result['UserRolesRelatedByUpdatedBy'] = $this->collUserRolesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collRightsRelatedByCreatedBy) {
+				$result['RightsRelatedByCreatedBy'] = $this->collRightsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collRightsRelatedByUpdatedBy) {
+				$result['RightsRelatedByUpdatedBy'] = $this->collRightsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentsRelatedByCreatedBy) {
+				$result['DocumentsRelatedByCreatedBy'] = $this->collDocumentsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentsRelatedByUpdatedBy) {
+				$result['DocumentsRelatedByUpdatedBy'] = $this->collDocumentsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentTypesRelatedByCreatedBy) {
+				$result['DocumentTypesRelatedByCreatedBy'] = $this->collDocumentTypesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentTypesRelatedByUpdatedBy) {
+				$result['DocumentTypesRelatedByUpdatedBy'] = $this->collDocumentTypesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentCategorysRelatedByCreatedBy) {
+				$result['DocumentCategorysRelatedByCreatedBy'] = $this->collDocumentCategorysRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocumentCategorysRelatedByUpdatedBy) {
+				$result['DocumentCategorysRelatedByUpdatedBy'] = $this->collDocumentCategorysRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTagsRelatedByCreatedBy) {
+				$result['TagsRelatedByCreatedBy'] = $this->collTagsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTagsRelatedByUpdatedBy) {
+				$result['TagsRelatedByUpdatedBy'] = $this->collTagsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTagInstancesRelatedByCreatedBy) {
+				$result['TagInstancesRelatedByCreatedBy'] = $this->collTagInstancesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTagInstancesRelatedByUpdatedBy) {
+				$result['TagInstancesRelatedByUpdatedBy'] = $this->collTagInstancesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinksRelatedByCreatedBy) {
+				$result['LinksRelatedByCreatedBy'] = $this->collLinksRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinksRelatedByUpdatedBy) {
+				$result['LinksRelatedByUpdatedBy'] = $this->collLinksRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinkCategorysRelatedByCreatedBy) {
+				$result['LinkCategorysRelatedByCreatedBy'] = $this->collLinkCategorysRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinkCategorysRelatedByUpdatedBy) {
+				$result['LinkCategorysRelatedByUpdatedBy'] = $this->collLinkCategorysRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collReferencesRelatedByCreatedBy) {
+				$result['ReferencesRelatedByCreatedBy'] = $this->collReferencesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collReferencesRelatedByUpdatedBy) {
+				$result['ReferencesRelatedByUpdatedBy'] = $this->collReferencesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -2699,32 +2826,57 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of User (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setUsername($this->username);
-		$copyObj->setPassword($this->password);
-		$copyObj->setDigestHA1($this->digest_ha1);
-		$copyObj->setFirstName($this->first_name);
-		$copyObj->setLastName($this->last_name);
-		$copyObj->setEmail($this->email);
-		$copyObj->setLanguageId($this->language_id);
-		$copyObj->setIsAdmin($this->is_admin);
-		$copyObj->setIsBackendLoginEnabled($this->is_backend_login_enabled);
-		$copyObj->setIsAdminLoginEnabled($this->is_admin_login_enabled);
-		$copyObj->setIsInactive($this->is_inactive);
-		$copyObj->setPasswordRecoverHint($this->password_recover_hint);
-		$copyObj->setBackendSettings($this->backend_settings);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
-		$copyObj->setCreatedBy($this->created_by);
-		$copyObj->setUpdatedBy($this->updated_by);
+		$copyObj->setUsername($this->getUsername());
+		$copyObj->setPassword($this->getPassword());
+		$copyObj->setDigestHA1($this->getDigestHA1());
+		$copyObj->setFirstName($this->getFirstName());
+		$copyObj->setLastName($this->getLastName());
+		$copyObj->setEmail($this->getEmail());
+		$copyObj->setLanguageId($this->getLanguageId());
+		$copyObj->setIsAdmin($this->getIsAdmin());
+		$copyObj->setIsBackendLoginEnabled($this->getIsBackendLoginEnabled());
+		$copyObj->setIsAdminLoginEnabled($this->getIsAdminLoginEnabled());
+		$copyObj->setIsInactive($this->getIsInactive());
+		$copyObj->setPasswordRecoverHint($this->getPasswordRecoverHint());
+		$copyObj->setBackendSettings($this->getBackendSettings());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setCreatedBy($this->getCreatedBy());
+		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+
+			foreach ($this->getUserGroupsRelatedByUserId() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserGroupRelatedByUserId($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getUserRolesRelatedByUserId() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addUserRoleRelatedByUserId($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getDocumentsRelatedByOwnerId() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addDocumentRelatedByOwnerId($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getLinksRelatedByOwnerId() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLinkRelatedByOwnerId($relObj->copy($deepCopy));
+				}
+			}
 
 			foreach ($this->getPagesRelatedByCreatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2822,12 +2974,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getUserGroupsRelatedByUserId() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addUserGroupRelatedByUserId($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getUserGroupsRelatedByCreatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addUserGroupRelatedByCreatedBy($relObj->copy($deepCopy));
@@ -2876,12 +3022,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getUserRolesRelatedByUserId() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addUserRoleRelatedByUserId($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getUserRolesRelatedByCreatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addUserRoleRelatedByCreatedBy($relObj->copy($deepCopy));
@@ -2903,12 +3043,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			foreach ($this->getRightsRelatedByUpdatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addRightRelatedByUpdatedBy($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getDocumentsRelatedByOwnerId() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addDocumentRelatedByOwnerId($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2972,12 +3106,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getLinksRelatedByOwnerId() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addLinkRelatedByOwnerId($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getLinksRelatedByCreatedBy() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addLinkRelatedByCreatedBy($relObj->copy($deepCopy));
@@ -3016,9 +3144,10 @@ abstract class BaseUser extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -3098,2208 +3227,171 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		if ($this->aLanguageRelatedByLanguageId === null && (($this->language_id !== "" && $this->language_id !== null))) {
 			$this->aLanguageRelatedByLanguageId = LanguageQuery::create()->findPk($this->language_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aLanguageRelatedByLanguageId->addUsersRelatedByLanguageId($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aLanguageRelatedByLanguageId->addUsersRelatedByLanguageId($this);
 			 */
 		}
 		return $this->aLanguageRelatedByLanguageId;
 	}
 
-	/**
-	 * Clears out the collPagesRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPagesRelatedByCreatedBy()
-	 */
-	public function clearPagesRelatedByCreatedBy()
-	{
-		$this->collPagesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
 
 	/**
-	 * Initializes the collPagesRelatedByCreatedBy collection.
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name
+	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
-	 * By default this just sets the collPagesRelatedByCreatedBy collection to an empty array (like clearcollPagesRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
+	 * @param      string $relationName The name of the relation to initialize
 	 * @return     void
 	 */
-	public function initPagesRelatedByCreatedBy()
+	public function initRelation($relationName)
 	{
-		$this->collPagesRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collPagesRelatedByCreatedBy->setModel('Page');
-	}
-
-	/**
-	 * Gets an array of Page objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Page[] List of Page objects
-	 * @throws     PropelException
-	 */
-	public function getPagesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedByCreatedBy) {
-				// return empty collection
-				$this->initPagesRelatedByCreatedBy();
-			} else {
-				$collPagesRelatedByCreatedBy = PageQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPagesRelatedByCreatedBy;
-				}
-				$this->collPagesRelatedByCreatedBy = $collPagesRelatedByCreatedBy;
-			}
-		}
-		return $this->collPagesRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Page objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Page objects.
-	 * @throws     PropelException
-	 */
-	public function countPagesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = PageQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPagesRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Page object to this object
-	 * through the Page foreign key attribute.
-	 *
-	 * @param      Page $l Page
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPageRelatedByCreatedBy(Page $l)
-	{
-		if ($this->collPagesRelatedByCreatedBy === null) {
-			$this->initPagesRelatedByCreatedBy();
-		}
-		if (!$this->collPagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collPagesRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPagesRelatedByUpdatedBy()
-	 */
-	public function clearPagesRelatedByUpdatedBy()
-	{
-		$this->collPagesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPagesRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collPagesRelatedByUpdatedBy collection to an empty array (like clearcollPagesRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPagesRelatedByUpdatedBy()
-	{
-		$this->collPagesRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collPagesRelatedByUpdatedBy->setModel('Page');
-	}
-
-	/**
-	 * Gets an array of Page objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Page[] List of Page objects
-	 * @throws     PropelException
-	 */
-	public function getPagesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initPagesRelatedByUpdatedBy();
-			} else {
-				$collPagesRelatedByUpdatedBy = PageQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPagesRelatedByUpdatedBy;
-				}
-				$this->collPagesRelatedByUpdatedBy = $collPagesRelatedByUpdatedBy;
-			}
-		}
-		return $this->collPagesRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Page objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Page objects.
-	 * @throws     PropelException
-	 */
-	public function countPagesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPagesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagesRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = PageQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPagesRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Page object to this object
-	 * through the Page foreign key attribute.
-	 *
-	 * @param      Page $l Page
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPageRelatedByUpdatedBy(Page $l)
-	{
-		if ($this->collPagesRelatedByUpdatedBy === null) {
-			$this->initPagesRelatedByUpdatedBy();
-		}
-		if (!$this->collPagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collPagePropertysRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPagePropertysRelatedByCreatedBy()
-	 */
-	public function clearPagePropertysRelatedByCreatedBy()
-	{
-		$this->collPagePropertysRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPagePropertysRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collPagePropertysRelatedByCreatedBy collection to an empty array (like clearcollPagePropertysRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPagePropertysRelatedByCreatedBy()
-	{
-		$this->collPagePropertysRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collPagePropertysRelatedByCreatedBy->setModel('PageProperty');
-	}
-
-	/**
-	 * Gets an array of PageProperty objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
-	 * @throws     PropelException
-	 */
-	public function getPagePropertysRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPagePropertysRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagePropertysRelatedByCreatedBy) {
-				// return empty collection
-				$this->initPagePropertysRelatedByCreatedBy();
-			} else {
-				$collPagePropertysRelatedByCreatedBy = PagePropertyQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPagePropertysRelatedByCreatedBy;
-				}
-				$this->collPagePropertysRelatedByCreatedBy = $collPagePropertysRelatedByCreatedBy;
-			}
-		}
-		return $this->collPagePropertysRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related PageProperty objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related PageProperty objects.
-	 * @throws     PropelException
-	 */
-	public function countPagePropertysRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPagePropertysRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagePropertysRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = PagePropertyQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPagePropertysRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a PageProperty object to this object
-	 * through the PageProperty foreign key attribute.
-	 *
-	 * @param      PageProperty $l PageProperty
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPagePropertyRelatedByCreatedBy(PageProperty $l)
-	{
-		if ($this->collPagePropertysRelatedByCreatedBy === null) {
-			$this->initPagePropertysRelatedByCreatedBy();
-		}
-		if (!$this->collPagePropertysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagePropertysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PagePropertysRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
-	 */
-	public function getPagePropertysRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PagePropertyQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getPagePropertysRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collPagePropertysRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPagePropertysRelatedByUpdatedBy()
-	 */
-	public function clearPagePropertysRelatedByUpdatedBy()
-	{
-		$this->collPagePropertysRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPagePropertysRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collPagePropertysRelatedByUpdatedBy collection to an empty array (like clearcollPagePropertysRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPagePropertysRelatedByUpdatedBy()
-	{
-		$this->collPagePropertysRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collPagePropertysRelatedByUpdatedBy->setModel('PageProperty');
-	}
-
-	/**
-	 * Gets an array of PageProperty objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
-	 * @throws     PropelException
-	 */
-	public function getPagePropertysRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPagePropertysRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagePropertysRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initPagePropertysRelatedByUpdatedBy();
-			} else {
-				$collPagePropertysRelatedByUpdatedBy = PagePropertyQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPagePropertysRelatedByUpdatedBy;
-				}
-				$this->collPagePropertysRelatedByUpdatedBy = $collPagePropertysRelatedByUpdatedBy;
-			}
-		}
-		return $this->collPagePropertysRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related PageProperty objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related PageProperty objects.
-	 * @throws     PropelException
-	 */
-	public function countPagePropertysRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPagePropertysRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPagePropertysRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = PagePropertyQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPagePropertysRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a PageProperty object to this object
-	 * through the PageProperty foreign key attribute.
-	 *
-	 * @param      PageProperty $l PageProperty
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPagePropertyRelatedByUpdatedBy(PageProperty $l)
-	{
-		if ($this->collPagePropertysRelatedByUpdatedBy === null) {
-			$this->initPagePropertysRelatedByUpdatedBy();
-		}
-		if (!$this->collPagePropertysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagePropertysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PagePropertysRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
-	 */
-	public function getPagePropertysRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PagePropertyQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getPagePropertysRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collPageStringsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPageStringsRelatedByCreatedBy()
-	 */
-	public function clearPageStringsRelatedByCreatedBy()
-	{
-		$this->collPageStringsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPageStringsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collPageStringsRelatedByCreatedBy collection to an empty array (like clearcollPageStringsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPageStringsRelatedByCreatedBy()
-	{
-		$this->collPageStringsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collPageStringsRelatedByCreatedBy->setModel('PageString');
-	}
-
-	/**
-	 * Gets an array of PageString objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 * @throws     PropelException
-	 */
-	public function getPageStringsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPageStringsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPageStringsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initPageStringsRelatedByCreatedBy();
-			} else {
-				$collPageStringsRelatedByCreatedBy = PageStringQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPageStringsRelatedByCreatedBy;
-				}
-				$this->collPageStringsRelatedByCreatedBy = $collPageStringsRelatedByCreatedBy;
-			}
+		if ('UserGroupRelatedByUserId' == $relationName) {
+			return $this->initUserGroupsRelatedByUserId();
 		}
-		return $this->collPageStringsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related PageString objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related PageString objects.
-	 * @throws     PropelException
-	 */
-	public function countPageStringsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPageStringsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPageStringsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = PageStringQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPageStringsRelatedByCreatedBy);
+		if ('UserRoleRelatedByUserId' == $relationName) {
+			return $this->initUserRolesRelatedByUserId();
 		}
-	}
-
-	/**
-	 * Method called to associate a PageString object to this object
-	 * through the PageString foreign key attribute.
-	 *
-	 * @param      PageString $l PageString
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPageStringRelatedByCreatedBy(PageString $l)
-	{
-		if ($this->collPageStringsRelatedByCreatedBy === null) {
-			$this->initPageStringsRelatedByCreatedBy();
+		if ('DocumentRelatedByOwnerId' == $relationName) {
+			return $this->initDocumentsRelatedByOwnerId();
 		}
-		if (!$this->collPageStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStringsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('LinkRelatedByOwnerId' == $relationName) {
+			return $this->initLinksRelatedByOwnerId();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PageStringsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 */
-	public function getPageStringsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageStringQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getPageStringsRelatedByCreatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PageStringsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 */
-	public function getPageStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageStringQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getPageStringsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collPageStringsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addPageStringsRelatedByUpdatedBy()
-	 */
-	public function clearPageStringsRelatedByUpdatedBy()
-	{
-		$this->collPageStringsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collPageStringsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collPageStringsRelatedByUpdatedBy collection to an empty array (like clearcollPageStringsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initPageStringsRelatedByUpdatedBy()
-	{
-		$this->collPageStringsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collPageStringsRelatedByUpdatedBy->setModel('PageString');
-	}
-
-	/**
-	 * Gets an array of PageString objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 * @throws     PropelException
-	 */
-	public function getPageStringsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collPageStringsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPageStringsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initPageStringsRelatedByUpdatedBy();
-			} else {
-				$collPageStringsRelatedByUpdatedBy = PageStringQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collPageStringsRelatedByUpdatedBy;
-				}
-				$this->collPageStringsRelatedByUpdatedBy = $collPageStringsRelatedByUpdatedBy;
-			}
+		if ('PageRelatedByCreatedBy' == $relationName) {
+			return $this->initPagesRelatedByCreatedBy();
 		}
-		return $this->collPageStringsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related PageString objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related PageString objects.
-	 * @throws     PropelException
-	 */
-	public function countPageStringsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collPageStringsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPageStringsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = PageStringQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collPageStringsRelatedByUpdatedBy);
+		if ('PageRelatedByUpdatedBy' == $relationName) {
+			return $this->initPagesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a PageString object to this object
-	 * through the PageString foreign key attribute.
-	 *
-	 * @param      PageString $l PageString
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addPageStringRelatedByUpdatedBy(PageString $l)
-	{
-		if ($this->collPageStringsRelatedByUpdatedBy === null) {
-			$this->initPageStringsRelatedByUpdatedBy();
+		if ('PagePropertyRelatedByCreatedBy' == $relationName) {
+			return $this->initPagePropertysRelatedByCreatedBy();
 		}
-		if (!$this->collPageStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStringsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('PagePropertyRelatedByUpdatedBy' == $relationName) {
+			return $this->initPagePropertysRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PageStringsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 */
-	public function getPageStringsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageStringQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getPageStringsRelatedByUpdatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related PageStringsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array PageString[] List of PageString objects
-	 */
-	public function getPageStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = PageStringQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getPageStringsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collContentObjectsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addContentObjectsRelatedByCreatedBy()
-	 */
-	public function clearContentObjectsRelatedByCreatedBy()
-	{
-		$this->collContentObjectsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collContentObjectsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collContentObjectsRelatedByCreatedBy collection to an empty array (like clearcollContentObjectsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initContentObjectsRelatedByCreatedBy()
-	{
-		$this->collContentObjectsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collContentObjectsRelatedByCreatedBy->setModel('ContentObject');
-	}
-
-	/**
-	 * Gets an array of ContentObject objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
-	 * @throws     PropelException
-	 */
-	public function getContentObjectsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collContentObjectsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collContentObjectsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initContentObjectsRelatedByCreatedBy();
-			} else {
-				$collContentObjectsRelatedByCreatedBy = ContentObjectQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collContentObjectsRelatedByCreatedBy;
-				}
-				$this->collContentObjectsRelatedByCreatedBy = $collContentObjectsRelatedByCreatedBy;
-			}
+		if ('PageStringRelatedByCreatedBy' == $relationName) {
+			return $this->initPageStringsRelatedByCreatedBy();
 		}
-		return $this->collContentObjectsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related ContentObject objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related ContentObject objects.
-	 * @throws     PropelException
-	 */
-	public function countContentObjectsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collContentObjectsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collContentObjectsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = ContentObjectQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collContentObjectsRelatedByCreatedBy);
+		if ('PageStringRelatedByUpdatedBy' == $relationName) {
+			return $this->initPageStringsRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a ContentObject object to this object
-	 * through the ContentObject foreign key attribute.
-	 *
-	 * @param      ContentObject $l ContentObject
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addContentObjectRelatedByCreatedBy(ContentObject $l)
-	{
-		if ($this->collContentObjectsRelatedByCreatedBy === null) {
-			$this->initContentObjectsRelatedByCreatedBy();
+		if ('ContentObjectRelatedByCreatedBy' == $relationName) {
+			return $this->initContentObjectsRelatedByCreatedBy();
 		}
-		if (!$this->collContentObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collContentObjectsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('ContentObjectRelatedByUpdatedBy' == $relationName) {
+			return $this->initContentObjectsRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related ContentObjectsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
-	 */
-	public function getContentObjectsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = ContentObjectQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getContentObjectsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collContentObjectsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addContentObjectsRelatedByUpdatedBy()
-	 */
-	public function clearContentObjectsRelatedByUpdatedBy()
-	{
-		$this->collContentObjectsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collContentObjectsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collContentObjectsRelatedByUpdatedBy collection to an empty array (like clearcollContentObjectsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initContentObjectsRelatedByUpdatedBy()
-	{
-		$this->collContentObjectsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collContentObjectsRelatedByUpdatedBy->setModel('ContentObject');
-	}
-
-	/**
-	 * Gets an array of ContentObject objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
-	 * @throws     PropelException
-	 */
-	public function getContentObjectsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collContentObjectsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collContentObjectsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initContentObjectsRelatedByUpdatedBy();
-			} else {
-				$collContentObjectsRelatedByUpdatedBy = ContentObjectQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collContentObjectsRelatedByUpdatedBy;
-				}
-				$this->collContentObjectsRelatedByUpdatedBy = $collContentObjectsRelatedByUpdatedBy;
-			}
+		if ('LanguageObjectRelatedByCreatedBy' == $relationName) {
+			return $this->initLanguageObjectsRelatedByCreatedBy();
 		}
-		return $this->collContentObjectsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related ContentObject objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related ContentObject objects.
-	 * @throws     PropelException
-	 */
-	public function countContentObjectsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collContentObjectsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collContentObjectsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = ContentObjectQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collContentObjectsRelatedByUpdatedBy);
+		if ('LanguageObjectRelatedByUpdatedBy' == $relationName) {
+			return $this->initLanguageObjectsRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a ContentObject object to this object
-	 * through the ContentObject foreign key attribute.
-	 *
-	 * @param      ContentObject $l ContentObject
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addContentObjectRelatedByUpdatedBy(ContentObject $l)
-	{
-		if ($this->collContentObjectsRelatedByUpdatedBy === null) {
-			$this->initContentObjectsRelatedByUpdatedBy();
+		if ('LanguageObjectHistoryRelatedByCreatedBy' == $relationName) {
+			return $this->initLanguageObjectHistorysRelatedByCreatedBy();
 		}
-		if (!$this->collContentObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collContentObjectsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('LanguageObjectHistoryRelatedByUpdatedBy' == $relationName) {
+			return $this->initLanguageObjectHistorysRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related ContentObjectsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
-	 */
-	public function getContentObjectsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = ContentObjectQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getContentObjectsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collLanguageObjectsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguageObjectsRelatedByCreatedBy()
-	 */
-	public function clearLanguageObjectsRelatedByCreatedBy()
-	{
-		$this->collLanguageObjectsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguageObjectsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collLanguageObjectsRelatedByCreatedBy collection to an empty array (like clearcollLanguageObjectsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguageObjectsRelatedByCreatedBy()
-	{
-		$this->collLanguageObjectsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collLanguageObjectsRelatedByCreatedBy->setModel('LanguageObject');
-	}
-
-	/**
-	 * Gets an array of LanguageObject objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 * @throws     PropelException
-	 */
-	public function getLanguageObjectsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initLanguageObjectsRelatedByCreatedBy();
-			} else {
-				$collLanguageObjectsRelatedByCreatedBy = LanguageObjectQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguageObjectsRelatedByCreatedBy;
-				}
-				$this->collLanguageObjectsRelatedByCreatedBy = $collLanguageObjectsRelatedByCreatedBy;
-			}
+		if ('LanguageRelatedByCreatedBy' == $relationName) {
+			return $this->initLanguagesRelatedByCreatedBy();
 		}
-		return $this->collLanguageObjectsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related LanguageObject objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related LanguageObject objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguageObjectsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = LanguageObjectQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguageObjectsRelatedByCreatedBy);
+		if ('LanguageRelatedByUpdatedBy' == $relationName) {
+			return $this->initLanguagesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a LanguageObject object to this object
-	 * through the LanguageObject foreign key attribute.
-	 *
-	 * @param      LanguageObject $l LanguageObject
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageObjectRelatedByCreatedBy(LanguageObject $l)
-	{
-		if ($this->collLanguageObjectsRelatedByCreatedBy === null) {
-			$this->initLanguageObjectsRelatedByCreatedBy();
+		if ('StringRelatedByCreatedBy' == $relationName) {
+			return $this->initStringsRelatedByCreatedBy();
 		}
-		if (!$this->collLanguageObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('StringRelatedByUpdatedBy' == $relationName) {
+			return $this->initStringsRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 */
-	public function getLanguageObjectsRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectQuery::create(null, $criteria);
-		$query->joinWith('ContentObject', $join_behavior);
-
-		return $this->getLanguageObjectsRelatedByCreatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 */
-	public function getLanguageObjectsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getLanguageObjectsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collLanguageObjectsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguageObjectsRelatedByUpdatedBy()
-	 */
-	public function clearLanguageObjectsRelatedByUpdatedBy()
-	{
-		$this->collLanguageObjectsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguageObjectsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collLanguageObjectsRelatedByUpdatedBy collection to an empty array (like clearcollLanguageObjectsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguageObjectsRelatedByUpdatedBy()
-	{
-		$this->collLanguageObjectsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collLanguageObjectsRelatedByUpdatedBy->setModel('LanguageObject');
-	}
-
-	/**
-	 * Gets an array of LanguageObject objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 * @throws     PropelException
-	 */
-	public function getLanguageObjectsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initLanguageObjectsRelatedByUpdatedBy();
-			} else {
-				$collLanguageObjectsRelatedByUpdatedBy = LanguageObjectQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguageObjectsRelatedByUpdatedBy;
-				}
-				$this->collLanguageObjectsRelatedByUpdatedBy = $collLanguageObjectsRelatedByUpdatedBy;
-			}
+		if ('UserGroupRelatedByCreatedBy' == $relationName) {
+			return $this->initUserGroupsRelatedByCreatedBy();
 		}
-		return $this->collLanguageObjectsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related LanguageObject objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related LanguageObject objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguageObjectsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = LanguageObjectQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguageObjectsRelatedByUpdatedBy);
+		if ('UserGroupRelatedByUpdatedBy' == $relationName) {
+			return $this->initUserGroupsRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a LanguageObject object to this object
-	 * through the LanguageObject foreign key attribute.
-	 *
-	 * @param      LanguageObject $l LanguageObject
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageObjectRelatedByUpdatedBy(LanguageObject $l)
-	{
-		if ($this->collLanguageObjectsRelatedByUpdatedBy === null) {
-			$this->initLanguageObjectsRelatedByUpdatedBy();
+		if ('GroupRelatedByCreatedBy' == $relationName) {
+			return $this->initGroupsRelatedByCreatedBy();
 		}
-		if (!$this->collLanguageObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('GroupRelatedByUpdatedBy' == $relationName) {
+			return $this->initGroupsRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 */
-	public function getLanguageObjectsRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectQuery::create(null, $criteria);
-		$query->joinWith('ContentObject', $join_behavior);
-
-		return $this->getLanguageObjectsRelatedByUpdatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
-	 */
-	public function getLanguageObjectsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getLanguageObjectsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collLanguageObjectHistorysRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguageObjectHistorysRelatedByCreatedBy()
-	 */
-	public function clearLanguageObjectHistorysRelatedByCreatedBy()
-	{
-		$this->collLanguageObjectHistorysRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguageObjectHistorysRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collLanguageObjectHistorysRelatedByCreatedBy collection to an empty array (like clearcollLanguageObjectHistorysRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguageObjectHistorysRelatedByCreatedBy()
-	{
-		$this->collLanguageObjectHistorysRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collLanguageObjectHistorysRelatedByCreatedBy->setModel('LanguageObjectHistory');
-	}
-
-	/**
-	 * Gets an array of LanguageObjectHistory objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 * @throws     PropelException
-	 */
-	public function getLanguageObjectHistorysRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectHistorysRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByCreatedBy) {
-				// return empty collection
-				$this->initLanguageObjectHistorysRelatedByCreatedBy();
-			} else {
-				$collLanguageObjectHistorysRelatedByCreatedBy = LanguageObjectHistoryQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguageObjectHistorysRelatedByCreatedBy;
-				}
-				$this->collLanguageObjectHistorysRelatedByCreatedBy = $collLanguageObjectHistorysRelatedByCreatedBy;
-			}
+		if ('GroupRoleRelatedByCreatedBy' == $relationName) {
+			return $this->initGroupRolesRelatedByCreatedBy();
 		}
-		return $this->collLanguageObjectHistorysRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related LanguageObjectHistory objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related LanguageObjectHistory objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguageObjectHistorysRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectHistorysRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = LanguageObjectHistoryQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguageObjectHistorysRelatedByCreatedBy);
+		if ('GroupRoleRelatedByUpdatedBy' == $relationName) {
+			return $this->initGroupRolesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a LanguageObjectHistory object to this object
-	 * through the LanguageObjectHistory foreign key attribute.
-	 *
-	 * @param      LanguageObjectHistory $l LanguageObjectHistory
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageObjectHistoryRelatedByCreatedBy(LanguageObjectHistory $l)
-	{
-		if ($this->collLanguageObjectHistorysRelatedByCreatedBy === null) {
-			$this->initLanguageObjectHistorysRelatedByCreatedBy();
+		if ('RoleRelatedByCreatedBy' == $relationName) {
+			return $this->initRolesRelatedByCreatedBy();
 		}
-		if (!$this->collLanguageObjectHistorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectHistorysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('RoleRelatedByUpdatedBy' == $relationName) {
+			return $this->initRolesRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 */
-	public function getLanguageObjectHistorysRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectHistoryQuery::create(null, $criteria);
-		$query->joinWith('ContentObject', $join_behavior);
-
-		return $this->getLanguageObjectHistorysRelatedByCreatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 */
-	public function getLanguageObjectHistorysRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectHistoryQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getLanguageObjectHistorysRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collLanguageObjectHistorysRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguageObjectHistorysRelatedByUpdatedBy()
-	 */
-	public function clearLanguageObjectHistorysRelatedByUpdatedBy()
-	{
-		$this->collLanguageObjectHistorysRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguageObjectHistorysRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collLanguageObjectHistorysRelatedByUpdatedBy collection to an empty array (like clearcollLanguageObjectHistorysRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguageObjectHistorysRelatedByUpdatedBy()
-	{
-		$this->collLanguageObjectHistorysRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collLanguageObjectHistorysRelatedByUpdatedBy->setModel('LanguageObjectHistory');
-	}
-
-	/**
-	 * Gets an array of LanguageObjectHistory objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 * @throws     PropelException
-	 */
-	public function getLanguageObjectHistorysRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectHistorysRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initLanguageObjectHistorysRelatedByUpdatedBy();
-			} else {
-				$collLanguageObjectHistorysRelatedByUpdatedBy = LanguageObjectHistoryQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguageObjectHistorysRelatedByUpdatedBy;
-				}
-				$this->collLanguageObjectHistorysRelatedByUpdatedBy = $collLanguageObjectHistorysRelatedByUpdatedBy;
-			}
+		if ('UserRoleRelatedByCreatedBy' == $relationName) {
+			return $this->initUserRolesRelatedByCreatedBy();
 		}
-		return $this->collLanguageObjectHistorysRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related LanguageObjectHistory objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related LanguageObjectHistory objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguageObjectHistorysRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguageObjectHistorysRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = LanguageObjectHistoryQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguageObjectHistorysRelatedByUpdatedBy);
+		if ('UserRoleRelatedByUpdatedBy' == $relationName) {
+			return $this->initUserRolesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a LanguageObjectHistory object to this object
-	 * through the LanguageObjectHistory foreign key attribute.
-	 *
-	 * @param      LanguageObjectHistory $l LanguageObjectHistory
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageObjectHistoryRelatedByUpdatedBy(LanguageObjectHistory $l)
-	{
-		if ($this->collLanguageObjectHistorysRelatedByUpdatedBy === null) {
-			$this->initLanguageObjectHistorysRelatedByUpdatedBy();
+		if ('RightRelatedByCreatedBy' == $relationName) {
+			return $this->initRightsRelatedByCreatedBy();
 		}
-		if (!$this->collLanguageObjectHistorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectHistorysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('RightRelatedByUpdatedBy' == $relationName) {
+			return $this->initRightsRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 */
-	public function getLanguageObjectHistorysRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectHistoryQuery::create(null, $criteria);
-		$query->joinWith('ContentObject', $join_behavior);
-
-		return $this->getLanguageObjectHistorysRelatedByUpdatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
-	 */
-	public function getLanguageObjectHistorysRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LanguageObjectHistoryQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getLanguageObjectHistorysRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collLanguagesRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguagesRelatedByCreatedBy()
-	 */
-	public function clearLanguagesRelatedByCreatedBy()
-	{
-		$this->collLanguagesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguagesRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collLanguagesRelatedByCreatedBy collection to an empty array (like clearcollLanguagesRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguagesRelatedByCreatedBy()
-	{
-		$this->collLanguagesRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collLanguagesRelatedByCreatedBy->setModel('Language');
-	}
-
-	/**
-	 * Gets an array of Language objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Language[] List of Language objects
-	 * @throws     PropelException
-	 */
-	public function getLanguagesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguagesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguagesRelatedByCreatedBy) {
-				// return empty collection
-				$this->initLanguagesRelatedByCreatedBy();
-			} else {
-				$collLanguagesRelatedByCreatedBy = LanguageQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguagesRelatedByCreatedBy;
-				}
-				$this->collLanguagesRelatedByCreatedBy = $collLanguagesRelatedByCreatedBy;
-			}
+		if ('DocumentRelatedByCreatedBy' == $relationName) {
+			return $this->initDocumentsRelatedByCreatedBy();
 		}
-		return $this->collLanguagesRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Language objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Language objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguagesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguagesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguagesRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = LanguageQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguagesRelatedByCreatedBy);
+		if ('DocumentRelatedByUpdatedBy' == $relationName) {
+			return $this->initDocumentsRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a Language object to this object
-	 * through the Language foreign key attribute.
-	 *
-	 * @param      Language $l Language
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageRelatedByCreatedBy(Language $l)
-	{
-		if ($this->collLanguagesRelatedByCreatedBy === null) {
-			$this->initLanguagesRelatedByCreatedBy();
+		if ('DocumentTypeRelatedByCreatedBy' == $relationName) {
+			return $this->initDocumentTypesRelatedByCreatedBy();
 		}
-		if (!$this->collLanguagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguagesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('DocumentTypeRelatedByUpdatedBy' == $relationName) {
+			return $this->initDocumentTypesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Clears out the collLanguagesRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLanguagesRelatedByUpdatedBy()
-	 */
-	public function clearLanguagesRelatedByUpdatedBy()
-	{
-		$this->collLanguagesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLanguagesRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collLanguagesRelatedByUpdatedBy collection to an empty array (like clearcollLanguagesRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLanguagesRelatedByUpdatedBy()
-	{
-		$this->collLanguagesRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collLanguagesRelatedByUpdatedBy->setModel('Language');
-	}
-
-	/**
-	 * Gets an array of Language objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Language[] List of Language objects
-	 * @throws     PropelException
-	 */
-	public function getLanguagesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguagesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguagesRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initLanguagesRelatedByUpdatedBy();
-			} else {
-				$collLanguagesRelatedByUpdatedBy = LanguageQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLanguagesRelatedByUpdatedBy;
-				}
-				$this->collLanguagesRelatedByUpdatedBy = $collLanguagesRelatedByUpdatedBy;
-			}
+		if ('DocumentCategoryRelatedByCreatedBy' == $relationName) {
+			return $this->initDocumentCategorysRelatedByCreatedBy();
 		}
-		return $this->collLanguagesRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Language objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Language objects.
-	 * @throws     PropelException
-	 */
-	public function countLanguagesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLanguagesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLanguagesRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = LanguageQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLanguagesRelatedByUpdatedBy);
+		if ('DocumentCategoryRelatedByUpdatedBy' == $relationName) {
+			return $this->initDocumentCategorysRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a Language object to this object
-	 * through the Language foreign key attribute.
-	 *
-	 * @param      Language $l Language
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLanguageRelatedByUpdatedBy(Language $l)
-	{
-		if ($this->collLanguagesRelatedByUpdatedBy === null) {
-			$this->initLanguagesRelatedByUpdatedBy();
+		if ('TagRelatedByCreatedBy' == $relationName) {
+			return $this->initTagsRelatedByCreatedBy();
 		}
-		if (!$this->collLanguagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguagesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('TagRelatedByUpdatedBy' == $relationName) {
+			return $this->initTagsRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Clears out the collStringsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addStringsRelatedByCreatedBy()
-	 */
-	public function clearStringsRelatedByCreatedBy()
-	{
-		$this->collStringsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collStringsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collStringsRelatedByCreatedBy collection to an empty array (like clearcollStringsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initStringsRelatedByCreatedBy()
-	{
-		$this->collStringsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collStringsRelatedByCreatedBy->setModel('String');
-	}
-
-	/**
-	 * Gets an array of String objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array String[] List of String objects
-	 * @throws     PropelException
-	 */
-	public function getStringsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collStringsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initStringsRelatedByCreatedBy();
-			} else {
-				$collStringsRelatedByCreatedBy = StringQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collStringsRelatedByCreatedBy;
-				}
-				$this->collStringsRelatedByCreatedBy = $collStringsRelatedByCreatedBy;
-			}
+		if ('TagInstanceRelatedByCreatedBy' == $relationName) {
+			return $this->initTagInstancesRelatedByCreatedBy();
 		}
-		return $this->collStringsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related String objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related String objects.
-	 * @throws     PropelException
-	 */
-	public function countStringsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collStringsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = StringQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collStringsRelatedByCreatedBy);
+		if ('TagInstanceRelatedByUpdatedBy' == $relationName) {
+			return $this->initTagInstancesRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a String object to this object
-	 * through the String foreign key attribute.
-	 *
-	 * @param      String $l String
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addStringRelatedByCreatedBy(String $l)
-	{
-		if ($this->collStringsRelatedByCreatedBy === null) {
-			$this->initStringsRelatedByCreatedBy();
+		if ('LinkRelatedByCreatedBy' == $relationName) {
+			return $this->initLinksRelatedByCreatedBy();
 		}
-		if (!$this->collStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collStringsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+		if ('LinkRelatedByUpdatedBy' == $relationName) {
+			return $this->initLinksRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related StringsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array String[] List of String objects
-	 */
-	public function getStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = StringQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getStringsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collStringsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addStringsRelatedByUpdatedBy()
-	 */
-	public function clearStringsRelatedByUpdatedBy()
-	{
-		$this->collStringsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collStringsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collStringsRelatedByUpdatedBy collection to an empty array (like clearcollStringsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initStringsRelatedByUpdatedBy()
-	{
-		$this->collStringsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collStringsRelatedByUpdatedBy->setModel('String');
-	}
-
-	/**
-	 * Gets an array of String objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array String[] List of String objects
-	 * @throws     PropelException
-	 */
-	public function getStringsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collStringsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initStringsRelatedByUpdatedBy();
-			} else {
-				$collStringsRelatedByUpdatedBy = StringQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collStringsRelatedByUpdatedBy;
-				}
-				$this->collStringsRelatedByUpdatedBy = $collStringsRelatedByUpdatedBy;
-			}
+		if ('LinkCategoryRelatedByCreatedBy' == $relationName) {
+			return $this->initLinkCategorysRelatedByCreatedBy();
 		}
-		return $this->collStringsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related String objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related String objects.
-	 * @throws     PropelException
-	 */
-	public function countStringsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collStringsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = StringQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collStringsRelatedByUpdatedBy);
+		if ('LinkCategoryRelatedByUpdatedBy' == $relationName) {
+			return $this->initLinkCategorysRelatedByUpdatedBy();
 		}
-	}
-
-	/**
-	 * Method called to associate a String object to this object
-	 * through the String foreign key attribute.
-	 *
-	 * @param      String $l String
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addStringRelatedByUpdatedBy(String $l)
-	{
-		if ($this->collStringsRelatedByUpdatedBy === null) {
-			$this->initStringsRelatedByUpdatedBy();
+		if ('ReferenceRelatedByCreatedBy' == $relationName) {
+			return $this->initReferencesRelatedByCreatedBy();
 		}
-		if (!$this->collStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collStringsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+		if ('ReferenceRelatedByUpdatedBy' == $relationName) {
+			return $this->initReferencesRelatedByUpdatedBy();
 		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related StringsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array String[] List of String objects
-	 */
-	public function getStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = StringQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getStringsRelatedByUpdatedBy($query, $con);
 	}
 
 	/**
@@ -5323,10 +3415,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initUserGroupsRelatedByUserId()
+	public function initUserGroupsRelatedByUserId($overrideExisting = true)
 	{
+		if (null !== $this->collUserGroupsRelatedByUserId && !$overrideExisting) {
+			return;
+		}
 		$this->collUserGroupsRelatedByUserId = new PropelObjectCollection();
 		$this->collUserGroupsRelatedByUserId->setModel('UserGroup');
 	}
@@ -5397,8 +3495,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the UserGroup foreign key attribute.
 	 *
 	 * @param      UserGroup $l UserGroup
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addUserGroupRelatedByUserId(UserGroup $l)
 	{
@@ -5409,6 +3506,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collUserGroupsRelatedByUserId[]= $l;
 			$l->setUserRelatedByUserId($this);
 		}
+
+		return $this;
 	}
 
 
@@ -5437,1028 +3536,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collUserGroupsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUserGroupsRelatedByCreatedBy()
-	 */
-	public function clearUserGroupsRelatedByCreatedBy()
-	{
-		$this->collUserGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUserGroupsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collUserGroupsRelatedByCreatedBy collection to an empty array (like clearcollUserGroupsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUserGroupsRelatedByCreatedBy()
-	{
-		$this->collUserGroupsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collUserGroupsRelatedByCreatedBy->setModel('UserGroup');
-	}
-
-	/**
-	 * Gets an array of UserGroup objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
-	 * @throws     PropelException
-	 */
-	public function getUserGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUserGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserGroupsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initUserGroupsRelatedByCreatedBy();
-			} else {
-				$collUserGroupsRelatedByCreatedBy = UserGroupQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUserGroupsRelatedByCreatedBy;
-				}
-				$this->collUserGroupsRelatedByCreatedBy = $collUserGroupsRelatedByCreatedBy;
-			}
-		}
-		return $this->collUserGroupsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related UserGroup objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related UserGroup objects.
-	 * @throws     PropelException
-	 */
-	public function countUserGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUserGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserGroupsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = UserGroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUserGroupsRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a UserGroup object to this object
-	 * through the UserGroup foreign key attribute.
-	 *
-	 * @param      UserGroup $l UserGroup
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserGroupRelatedByCreatedBy(UserGroup $l)
-	{
-		if ($this->collUserGroupsRelatedByCreatedBy === null) {
-			$this->initUserGroupsRelatedByCreatedBy();
-		}
-		if (!$this->collUserGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroupsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UserGroupsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
-	 */
-	public function getUserGroupsRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserGroupQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
-
-		return $this->getUserGroupsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collUserGroupsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUserGroupsRelatedByUpdatedBy()
-	 */
-	public function clearUserGroupsRelatedByUpdatedBy()
-	{
-		$this->collUserGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUserGroupsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collUserGroupsRelatedByUpdatedBy collection to an empty array (like clearcollUserGroupsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUserGroupsRelatedByUpdatedBy()
-	{
-		$this->collUserGroupsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collUserGroupsRelatedByUpdatedBy->setModel('UserGroup');
-	}
-
-	/**
-	 * Gets an array of UserGroup objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
-	 * @throws     PropelException
-	 */
-	public function getUserGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUserGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserGroupsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initUserGroupsRelatedByUpdatedBy();
-			} else {
-				$collUserGroupsRelatedByUpdatedBy = UserGroupQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUserGroupsRelatedByUpdatedBy;
-				}
-				$this->collUserGroupsRelatedByUpdatedBy = $collUserGroupsRelatedByUpdatedBy;
-			}
-		}
-		return $this->collUserGroupsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related UserGroup objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related UserGroup objects.
-	 * @throws     PropelException
-	 */
-	public function countUserGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUserGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserGroupsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = UserGroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUserGroupsRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a UserGroup object to this object
-	 * through the UserGroup foreign key attribute.
-	 *
-	 * @param      UserGroup $l UserGroup
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserGroupRelatedByUpdatedBy(UserGroup $l)
-	{
-		if ($this->collUserGroupsRelatedByUpdatedBy === null) {
-			$this->initUserGroupsRelatedByUpdatedBy();
-		}
-		if (!$this->collUserGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroupsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UserGroupsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
-	 */
-	public function getUserGroupsRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserGroupQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
-
-		return $this->getUserGroupsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collGroupsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupsRelatedByCreatedBy()
-	 */
-	public function clearGroupsRelatedByCreatedBy()
-	{
-		$this->collGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collGroupsRelatedByCreatedBy collection to an empty array (like clearcollGroupsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupsRelatedByCreatedBy()
-	{
-		$this->collGroupsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collGroupsRelatedByCreatedBy->setModel('Group');
-	}
-
-	/**
-	 * Gets an array of Group objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Group[] List of Group objects
-	 * @throws     PropelException
-	 */
-	public function getGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initGroupsRelatedByCreatedBy();
-			} else {
-				$collGroupsRelatedByCreatedBy = GroupQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupsRelatedByCreatedBy;
-				}
-				$this->collGroupsRelatedByCreatedBy = $collGroupsRelatedByCreatedBy;
-			}
-		}
-		return $this->collGroupsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Group objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Group objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = GroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupsRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Group object to this object
-	 * through the Group foreign key attribute.
-	 *
-	 * @param      Group $l Group
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRelatedByCreatedBy(Group $l)
-	{
-		if ($this->collGroupsRelatedByCreatedBy === null) {
-			$this->initGroupsRelatedByCreatedBy();
-		}
-		if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collGroupsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupsRelatedByUpdatedBy()
-	 */
-	public function clearGroupsRelatedByUpdatedBy()
-	{
-		$this->collGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collGroupsRelatedByUpdatedBy collection to an empty array (like clearcollGroupsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupsRelatedByUpdatedBy()
-	{
-		$this->collGroupsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collGroupsRelatedByUpdatedBy->setModel('Group');
-	}
-
-	/**
-	 * Gets an array of Group objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Group[] List of Group objects
-	 * @throws     PropelException
-	 */
-	public function getGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initGroupsRelatedByUpdatedBy();
-			} else {
-				$collGroupsRelatedByUpdatedBy = GroupQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupsRelatedByUpdatedBy;
-				}
-				$this->collGroupsRelatedByUpdatedBy = $collGroupsRelatedByUpdatedBy;
-			}
-		}
-		return $this->collGroupsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Group objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Group objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = GroupQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupsRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Group object to this object
-	 * through the Group foreign key attribute.
-	 *
-	 * @param      Group $l Group
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRelatedByUpdatedBy(Group $l)
-	{
-		if ($this->collGroupsRelatedByUpdatedBy === null) {
-			$this->initGroupsRelatedByUpdatedBy();
-		}
-		if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collGroupRolesRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupRolesRelatedByCreatedBy()
-	 */
-	public function clearGroupRolesRelatedByCreatedBy()
-	{
-		$this->collGroupRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupRolesRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collGroupRolesRelatedByCreatedBy collection to an empty array (like clearcollGroupRolesRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupRolesRelatedByCreatedBy()
-	{
-		$this->collGroupRolesRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collGroupRolesRelatedByCreatedBy->setModel('GroupRole');
-	}
-
-	/**
-	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 * @throws     PropelException
-	 */
-	public function getGroupRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
-				// return empty collection
-				$this->initGroupRolesRelatedByCreatedBy();
-			} else {
-				$collGroupRolesRelatedByCreatedBy = GroupRoleQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupRolesRelatedByCreatedBy;
-				}
-				$this->collGroupRolesRelatedByCreatedBy = $collGroupRolesRelatedByCreatedBy;
-			}
-		}
-		return $this->collGroupRolesRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related GroupRole objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related GroupRole objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = GroupRoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupRolesRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a GroupRole object to this object
-	 * through the GroupRole foreign key attribute.
-	 *
-	 * @param      GroupRole $l GroupRole
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRoleRelatedByCreatedBy(GroupRole $l)
-	{
-		if ($this->collGroupRolesRelatedByCreatedBy === null) {
-			$this->initGroupRolesRelatedByCreatedBy();
-		}
-		if (!$this->collGroupRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 */
-	public function getGroupRolesRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = GroupRoleQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
-
-		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 */
-	public function getGroupRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = GroupRoleQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collGroupRolesRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addGroupRolesRelatedByUpdatedBy()
-	 */
-	public function clearGroupRolesRelatedByUpdatedBy()
-	{
-		$this->collGroupRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collGroupRolesRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collGroupRolesRelatedByUpdatedBy collection to an empty array (like clearcollGroupRolesRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initGroupRolesRelatedByUpdatedBy()
-	{
-		$this->collGroupRolesRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collGroupRolesRelatedByUpdatedBy->setModel('GroupRole');
-	}
-
-	/**
-	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 * @throws     PropelException
-	 */
-	public function getGroupRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initGroupRolesRelatedByUpdatedBy();
-			} else {
-				$collGroupRolesRelatedByUpdatedBy = GroupRoleQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collGroupRolesRelatedByUpdatedBy;
-				}
-				$this->collGroupRolesRelatedByUpdatedBy = $collGroupRolesRelatedByUpdatedBy;
-			}
-		}
-		return $this->collGroupRolesRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related GroupRole objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related GroupRole objects.
-	 * @throws     PropelException
-	 */
-	public function countGroupRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = GroupRoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collGroupRolesRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a GroupRole object to this object
-	 * through the GroupRole foreign key attribute.
-	 *
-	 * @param      GroupRole $l GroupRole
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addGroupRoleRelatedByUpdatedBy(GroupRole $l)
-	{
-		if ($this->collGroupRolesRelatedByUpdatedBy === null) {
-			$this->initGroupRolesRelatedByUpdatedBy();
-		}
-		if (!$this->collGroupRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 */
-	public function getGroupRolesRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = GroupRoleQuery::create(null, $criteria);
-		$query->joinWith('Group', $join_behavior);
-
-		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
-	 */
-	public function getGroupRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = GroupRoleQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collRolesRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addRolesRelatedByCreatedBy()
-	 */
-	public function clearRolesRelatedByCreatedBy()
-	{
-		$this->collRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collRolesRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collRolesRelatedByCreatedBy collection to an empty array (like clearcollRolesRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initRolesRelatedByCreatedBy()
-	{
-		$this->collRolesRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collRolesRelatedByCreatedBy->setModel('Role');
-	}
-
-	/**
-	 * Gets an array of Role objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Role[] List of Role objects
-	 * @throws     PropelException
-	 */
-	public function getRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
-				// return empty collection
-				$this->initRolesRelatedByCreatedBy();
-			} else {
-				$collRolesRelatedByCreatedBy = RoleQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collRolesRelatedByCreatedBy;
-				}
-				$this->collRolesRelatedByCreatedBy = $collRolesRelatedByCreatedBy;
-			}
-		}
-		return $this->collRolesRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Role objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Role objects.
-	 * @throws     PropelException
-	 */
-	public function countRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = RoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collRolesRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Role object to this object
-	 * through the Role foreign key attribute.
-	 *
-	 * @param      Role $l Role
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addRoleRelatedByCreatedBy(Role $l)
-	{
-		if ($this->collRolesRelatedByCreatedBy === null) {
-			$this->initRolesRelatedByCreatedBy();
-		}
-		if (!$this->collRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-	/**
-	 * Clears out the collRolesRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addRolesRelatedByUpdatedBy()
-	 */
-	public function clearRolesRelatedByUpdatedBy()
-	{
-		$this->collRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collRolesRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collRolesRelatedByUpdatedBy collection to an empty array (like clearcollRolesRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initRolesRelatedByUpdatedBy()
-	{
-		$this->collRolesRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collRolesRelatedByUpdatedBy->setModel('Role');
-	}
-
-	/**
-	 * Gets an array of Role objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Role[] List of Role objects
-	 * @throws     PropelException
-	 */
-	public function getRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initRolesRelatedByUpdatedBy();
-			} else {
-				$collRolesRelatedByUpdatedBy = RoleQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collRolesRelatedByUpdatedBy;
-				}
-				$this->collRolesRelatedByUpdatedBy = $collRolesRelatedByUpdatedBy;
-			}
-		}
-		return $this->collRolesRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Role objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Role objects.
-	 * @throws     PropelException
-	 */
-	public function countRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = RoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collRolesRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Role object to this object
-	 * through the Role foreign key attribute.
-	 *
-	 * @param      Role $l Role
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addRoleRelatedByUpdatedBy(Role $l)
-	{
-		if ($this->collRolesRelatedByUpdatedBy === null) {
-			$this->initRolesRelatedByUpdatedBy();
-		}
-		if (!$this->collRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-	/**
 	 * Clears out the collUserRolesRelatedByUserId collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -6479,10 +3556,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initUserRolesRelatedByUserId()
+	public function initUserRolesRelatedByUserId($overrideExisting = true)
 	{
+		if (null !== $this->collUserRolesRelatedByUserId && !$overrideExisting) {
+			return;
+		}
 		$this->collUserRolesRelatedByUserId = new PropelObjectCollection();
 		$this->collUserRolesRelatedByUserId->setModel('UserRole');
 	}
@@ -6553,8 +3636,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the UserRole foreign key attribute.
 	 *
 	 * @param      UserRole $l UserRole
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addUserRoleRelatedByUserId(UserRole $l)
 	{
@@ -6565,6 +3647,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collUserRolesRelatedByUserId[]= $l;
 			$l->setUserRelatedByUserId($this);
 		}
+
+		return $this;
 	}
 
 
@@ -6593,592 +3677,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collUserRolesRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUserRolesRelatedByCreatedBy()
-	 */
-	public function clearUserRolesRelatedByCreatedBy()
-	{
-		$this->collUserRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUserRolesRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collUserRolesRelatedByCreatedBy collection to an empty array (like clearcollUserRolesRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUserRolesRelatedByCreatedBy()
-	{
-		$this->collUserRolesRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collUserRolesRelatedByCreatedBy->setModel('UserRole');
-	}
-
-	/**
-	 * Gets an array of UserRole objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array UserRole[] List of UserRole objects
-	 * @throws     PropelException
-	 */
-	public function getUserRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
-				// return empty collection
-				$this->initUserRolesRelatedByCreatedBy();
-			} else {
-				$collUserRolesRelatedByCreatedBy = UserRoleQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUserRolesRelatedByCreatedBy;
-				}
-				$this->collUserRolesRelatedByCreatedBy = $collUserRolesRelatedByCreatedBy;
-			}
-		}
-		return $this->collUserRolesRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related UserRole objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related UserRole objects.
-	 * @throws     PropelException
-	 */
-	public function countUserRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = UserRoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUserRolesRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a UserRole object to this object
-	 * through the UserRole foreign key attribute.
-	 *
-	 * @param      UserRole $l UserRole
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserRoleRelatedByCreatedBy(UserRole $l)
-	{
-		if ($this->collUserRolesRelatedByCreatedBy === null) {
-			$this->initUserRolesRelatedByCreatedBy();
-		}
-		if (!$this->collUserRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UserRolesRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array UserRole[] List of UserRole objects
-	 */
-	public function getUserRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserRoleQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getUserRolesRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collUserRolesRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUserRolesRelatedByUpdatedBy()
-	 */
-	public function clearUserRolesRelatedByUpdatedBy()
-	{
-		$this->collUserRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUserRolesRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collUserRolesRelatedByUpdatedBy collection to an empty array (like clearcollUserRolesRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUserRolesRelatedByUpdatedBy()
-	{
-		$this->collUserRolesRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collUserRolesRelatedByUpdatedBy->setModel('UserRole');
-	}
-
-	/**
-	 * Gets an array of UserRole objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array UserRole[] List of UserRole objects
-	 * @throws     PropelException
-	 */
-	public function getUserRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initUserRolesRelatedByUpdatedBy();
-			} else {
-				$collUserRolesRelatedByUpdatedBy = UserRoleQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUserRolesRelatedByUpdatedBy;
-				}
-				$this->collUserRolesRelatedByUpdatedBy = $collUserRolesRelatedByUpdatedBy;
-			}
-		}
-		return $this->collUserRolesRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related UserRole objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related UserRole objects.
-	 * @throws     PropelException
-	 */
-	public function countUserRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = UserRoleQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUserRolesRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a UserRole object to this object
-	 * through the UserRole foreign key attribute.
-	 *
-	 * @param      UserRole $l UserRole
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addUserRoleRelatedByUpdatedBy(UserRole $l)
-	{
-		if ($this->collUserRolesRelatedByUpdatedBy === null) {
-			$this->initUserRolesRelatedByUpdatedBy();
-		}
-		if (!$this->collUserRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related UserRolesRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array UserRole[] List of UserRole objects
-	 */
-	public function getUserRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = UserRoleQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getUserRolesRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collRightsRelatedByCreatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addRightsRelatedByCreatedBy()
-	 */
-	public function clearRightsRelatedByCreatedBy()
-	{
-		$this->collRightsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collRightsRelatedByCreatedBy collection.
-	 *
-	 * By default this just sets the collRightsRelatedByCreatedBy collection to an empty array (like clearcollRightsRelatedByCreatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initRightsRelatedByCreatedBy()
-	{
-		$this->collRightsRelatedByCreatedBy = new PropelObjectCollection();
-		$this->collRightsRelatedByCreatedBy->setModel('Right');
-	}
-
-	/**
-	 * Gets an array of Right objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 * @throws     PropelException
-	 */
-	public function getRightsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collRightsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRightsRelatedByCreatedBy) {
-				// return empty collection
-				$this->initRightsRelatedByCreatedBy();
-			} else {
-				$collRightsRelatedByCreatedBy = RightQuery::create(null, $criteria)
-					->filterByUserRelatedByCreatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collRightsRelatedByCreatedBy;
-				}
-				$this->collRightsRelatedByCreatedBy = $collRightsRelatedByCreatedBy;
-			}
-		}
-		return $this->collRightsRelatedByCreatedBy;
-	}
-
-	/**
-	 * Returns the number of related Right objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Right objects.
-	 * @throws     PropelException
-	 */
-	public function countRightsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collRightsRelatedByCreatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRightsRelatedByCreatedBy) {
-				return 0;
-			} else {
-				$query = RightQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByCreatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collRightsRelatedByCreatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Right object to this object
-	 * through the Right foreign key attribute.
-	 *
-	 * @param      Right $l Right
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addRightRelatedByCreatedBy(Right $l)
-	{
-		if ($this->collRightsRelatedByCreatedBy === null) {
-			$this->initRightsRelatedByCreatedBy();
-		}
-		if (!$this->collRightsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRightsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related RightsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 */
-	public function getRightsRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getRightsRelatedByCreatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related RightsRelatedByCreatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 */
-	public function getRightsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getRightsRelatedByCreatedBy($query, $con);
-	}
-
-	/**
-	 * Clears out the collRightsRelatedByUpdatedBy collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addRightsRelatedByUpdatedBy()
-	 */
-	public function clearRightsRelatedByUpdatedBy()
-	{
-		$this->collRightsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collRightsRelatedByUpdatedBy collection.
-	 *
-	 * By default this just sets the collRightsRelatedByUpdatedBy collection to an empty array (like clearcollRightsRelatedByUpdatedBy());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initRightsRelatedByUpdatedBy()
-	{
-		$this->collRightsRelatedByUpdatedBy = new PropelObjectCollection();
-		$this->collRightsRelatedByUpdatedBy->setModel('Right');
-	}
-
-	/**
-	 * Gets an array of Right objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 * @throws     PropelException
-	 */
-	public function getRightsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collRightsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRightsRelatedByUpdatedBy) {
-				// return empty collection
-				$this->initRightsRelatedByUpdatedBy();
-			} else {
-				$collRightsRelatedByUpdatedBy = RightQuery::create(null, $criteria)
-					->filterByUserRelatedByUpdatedBy($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collRightsRelatedByUpdatedBy;
-				}
-				$this->collRightsRelatedByUpdatedBy = $collRightsRelatedByUpdatedBy;
-			}
-		}
-		return $this->collRightsRelatedByUpdatedBy;
-	}
-
-	/**
-	 * Returns the number of related Right objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Right objects.
-	 * @throws     PropelException
-	 */
-	public function countRightsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collRightsRelatedByUpdatedBy || null !== $criteria) {
-			if ($this->isNew() && null === $this->collRightsRelatedByUpdatedBy) {
-				return 0;
-			} else {
-				$query = RightQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByUpdatedBy($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collRightsRelatedByUpdatedBy);
-		}
-	}
-
-	/**
-	 * Method called to associate a Right object to this object
-	 * through the Right foreign key attribute.
-	 *
-	 * @param      Right $l Right
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addRightRelatedByUpdatedBy(Right $l)
-	{
-		if ($this->collRightsRelatedByUpdatedBy === null) {
-			$this->initRightsRelatedByUpdatedBy();
-		}
-		if (!$this->collRightsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRightsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related RightsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 */
-	public function getRightsRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Role', $join_behavior);
-
-		return $this->getRightsRelatedByUpdatedBy($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related RightsRelatedByUpdatedBy from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Right[] List of Right objects
-	 */
-	public function getRightsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = RightQuery::create(null, $criteria);
-		$query->joinWith('Page', $join_behavior);
-
-		return $this->getRightsRelatedByUpdatedBy($query, $con);
-	}
-
-	/**
 	 * Clears out the collDocumentsRelatedByOwnerId collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -7199,10 +3697,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentsRelatedByOwnerId()
+	public function initDocumentsRelatedByOwnerId($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentsRelatedByOwnerId && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentsRelatedByOwnerId = new PropelObjectCollection();
 		$this->collDocumentsRelatedByOwnerId->setModel('Document');
 	}
@@ -7273,8 +3777,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Document foreign key attribute.
 	 *
 	 * @param      Document $l Document
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentRelatedByOwnerId(Document $l)
 	{
@@ -7285,6 +3788,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentsRelatedByOwnerId[]= $l;
 			$l->setUserRelatedByOwnerId($this);
 		}
+
+		return $this;
 	}
 
 
@@ -7363,6 +3868,4170 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collLinksRelatedByOwnerId collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLinksRelatedByOwnerId()
+	 */
+	public function clearLinksRelatedByOwnerId()
+	{
+		$this->collLinksRelatedByOwnerId = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLinksRelatedByOwnerId collection.
+	 *
+	 * By default this just sets the collLinksRelatedByOwnerId collection to an empty array (like clearcollLinksRelatedByOwnerId());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLinksRelatedByOwnerId($overrideExisting = true)
+	{
+		if (null !== $this->collLinksRelatedByOwnerId && !$overrideExisting) {
+			return;
+		}
+		$this->collLinksRelatedByOwnerId = new PropelObjectCollection();
+		$this->collLinksRelatedByOwnerId->setModel('Link');
+	}
+
+	/**
+	 * Gets an array of Link objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Link[] List of Link objects
+	 * @throws     PropelException
+	 */
+	public function getLinksRelatedByOwnerId($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLinksRelatedByOwnerId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinksRelatedByOwnerId) {
+				// return empty collection
+				$this->initLinksRelatedByOwnerId();
+			} else {
+				$collLinksRelatedByOwnerId = LinkQuery::create(null, $criteria)
+					->filterByUserRelatedByOwnerId($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLinksRelatedByOwnerId;
+				}
+				$this->collLinksRelatedByOwnerId = $collLinksRelatedByOwnerId;
+			}
+		}
+		return $this->collLinksRelatedByOwnerId;
+	}
+
+	/**
+	 * Returns the number of related Link objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Link objects.
+	 * @throws     PropelException
+	 */
+	public function countLinksRelatedByOwnerId(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLinksRelatedByOwnerId || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLinksRelatedByOwnerId) {
+				return 0;
+			} else {
+				$query = LinkQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByOwnerId($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLinksRelatedByOwnerId);
+		}
+	}
+
+	/**
+	 * Method called to associate a Link object to this object
+	 * through the Link foreign key attribute.
+	 *
+	 * @param      Link $l Link
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLinkRelatedByOwnerId(Link $l)
+	{
+		if ($this->collLinksRelatedByOwnerId === null) {
+			$this->initLinksRelatedByOwnerId();
+		}
+		if (!$this->collLinksRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLinksRelatedByOwnerId[]= $l;
+			$l->setUserRelatedByOwnerId($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LinksRelatedByOwnerId from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
+	 */
+	public function getLinksRelatedByOwnerIdJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getLinksRelatedByOwnerId($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LinksRelatedByOwnerId from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Link[] List of Link objects
+	 */
+	public function getLinksRelatedByOwnerIdJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LinkQuery::create(null, $criteria);
+		$query->joinWith('LinkCategory', $join_behavior);
+
+		return $this->getLinksRelatedByOwnerId($query, $con);
+	}
+
+	/**
+	 * Clears out the collPagesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPagesRelatedByCreatedBy()
+	 */
+	public function clearPagesRelatedByCreatedBy()
+	{
+		$this->collPagesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPagesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collPagesRelatedByCreatedBy collection to an empty array (like clearcollPagesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPagesRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPagesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPagesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collPagesRelatedByCreatedBy->setModel('Page');
+	}
+
+	/**
+	 * Gets an array of Page objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 * @throws     PropelException
+	 */
+	public function getPagesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initPagesRelatedByCreatedBy();
+			} else {
+				$collPagesRelatedByCreatedBy = PageQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPagesRelatedByCreatedBy;
+				}
+				$this->collPagesRelatedByCreatedBy = $collPagesRelatedByCreatedBy;
+			}
+		}
+		return $this->collPagesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Page objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Page objects.
+	 * @throws     PropelException
+	 */
+	public function countPagesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = PageQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPagesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Page object to this object
+	 * through the Page foreign key attribute.
+	 *
+	 * @param      Page $l Page
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPageRelatedByCreatedBy(Page $l)
+	{
+		if ($this->collPagesRelatedByCreatedBy === null) {
+			$this->initPagesRelatedByCreatedBy();
+		}
+		if (!$this->collPagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPagesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collPagesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPagesRelatedByUpdatedBy()
+	 */
+	public function clearPagesRelatedByUpdatedBy()
+	{
+		$this->collPagesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPagesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collPagesRelatedByUpdatedBy collection to an empty array (like clearcollPagesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPagesRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPagesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPagesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collPagesRelatedByUpdatedBy->setModel('Page');
+	}
+
+	/**
+	 * Gets an array of Page objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 * @throws     PropelException
+	 */
+	public function getPagesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initPagesRelatedByUpdatedBy();
+			} else {
+				$collPagesRelatedByUpdatedBy = PageQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPagesRelatedByUpdatedBy;
+				}
+				$this->collPagesRelatedByUpdatedBy = $collPagesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collPagesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Page objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Page objects.
+	 * @throws     PropelException
+	 */
+	public function countPagesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = PageQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPagesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Page object to this object
+	 * through the Page foreign key attribute.
+	 *
+	 * @param      Page $l Page
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPageRelatedByUpdatedBy(Page $l)
+	{
+		if ($this->collPagesRelatedByUpdatedBy === null) {
+			$this->initPagesRelatedByUpdatedBy();
+		}
+		if (!$this->collPagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPagesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collPagePropertysRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPagePropertysRelatedByCreatedBy()
+	 */
+	public function clearPagePropertysRelatedByCreatedBy()
+	{
+		$this->collPagePropertysRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPagePropertysRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collPagePropertysRelatedByCreatedBy collection to an empty array (like clearcollPagePropertysRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPagePropertysRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPagePropertysRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPagePropertysRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collPagePropertysRelatedByCreatedBy->setModel('PageProperty');
+	}
+
+	/**
+	 * Gets an array of PageProperty objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
+	 * @throws     PropelException
+	 */
+	public function getPagePropertysRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPagePropertysRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagePropertysRelatedByCreatedBy) {
+				// return empty collection
+				$this->initPagePropertysRelatedByCreatedBy();
+			} else {
+				$collPagePropertysRelatedByCreatedBy = PagePropertyQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPagePropertysRelatedByCreatedBy;
+				}
+				$this->collPagePropertysRelatedByCreatedBy = $collPagePropertysRelatedByCreatedBy;
+			}
+		}
+		return $this->collPagePropertysRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related PageProperty objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PageProperty objects.
+	 * @throws     PropelException
+	 */
+	public function countPagePropertysRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPagePropertysRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagePropertysRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = PagePropertyQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPagePropertysRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a PageProperty object to this object
+	 * through the PageProperty foreign key attribute.
+	 *
+	 * @param      PageProperty $l PageProperty
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPagePropertyRelatedByCreatedBy(PageProperty $l)
+	{
+		if ($this->collPagePropertysRelatedByCreatedBy === null) {
+			$this->initPagePropertysRelatedByCreatedBy();
+		}
+		if (!$this->collPagePropertysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPagePropertysRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PagePropertysRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
+	 */
+	public function getPagePropertysRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PagePropertyQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getPagePropertysRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collPagePropertysRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPagePropertysRelatedByUpdatedBy()
+	 */
+	public function clearPagePropertysRelatedByUpdatedBy()
+	{
+		$this->collPagePropertysRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPagePropertysRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collPagePropertysRelatedByUpdatedBy collection to an empty array (like clearcollPagePropertysRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPagePropertysRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPagePropertysRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPagePropertysRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collPagePropertysRelatedByUpdatedBy->setModel('PageProperty');
+	}
+
+	/**
+	 * Gets an array of PageProperty objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
+	 * @throws     PropelException
+	 */
+	public function getPagePropertysRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPagePropertysRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagePropertysRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initPagePropertysRelatedByUpdatedBy();
+			} else {
+				$collPagePropertysRelatedByUpdatedBy = PagePropertyQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPagePropertysRelatedByUpdatedBy;
+				}
+				$this->collPagePropertysRelatedByUpdatedBy = $collPagePropertysRelatedByUpdatedBy;
+			}
+		}
+		return $this->collPagePropertysRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related PageProperty objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PageProperty objects.
+	 * @throws     PropelException
+	 */
+	public function countPagePropertysRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPagePropertysRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagePropertysRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = PagePropertyQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPagePropertysRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a PageProperty object to this object
+	 * through the PageProperty foreign key attribute.
+	 *
+	 * @param      PageProperty $l PageProperty
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPagePropertyRelatedByUpdatedBy(PageProperty $l)
+	{
+		if ($this->collPagePropertysRelatedByUpdatedBy === null) {
+			$this->initPagePropertysRelatedByUpdatedBy();
+		}
+		if (!$this->collPagePropertysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPagePropertysRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PagePropertysRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageProperty[] List of PageProperty objects
+	 */
+	public function getPagePropertysRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PagePropertyQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getPagePropertysRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collPageStringsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPageStringsRelatedByCreatedBy()
+	 */
+	public function clearPageStringsRelatedByCreatedBy()
+	{
+		$this->collPageStringsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPageStringsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collPageStringsRelatedByCreatedBy collection to an empty array (like clearcollPageStringsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPageStringsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPageStringsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPageStringsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collPageStringsRelatedByCreatedBy->setModel('PageString');
+	}
+
+	/**
+	 * Gets an array of PageString objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 * @throws     PropelException
+	 */
+	public function getPageStringsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPageStringsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStringsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initPageStringsRelatedByCreatedBy();
+			} else {
+				$collPageStringsRelatedByCreatedBy = PageStringQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPageStringsRelatedByCreatedBy;
+				}
+				$this->collPageStringsRelatedByCreatedBy = $collPageStringsRelatedByCreatedBy;
+			}
+		}
+		return $this->collPageStringsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related PageString objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PageString objects.
+	 * @throws     PropelException
+	 */
+	public function countPageStringsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPageStringsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStringsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = PageStringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPageStringsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a PageString object to this object
+	 * through the PageString foreign key attribute.
+	 *
+	 * @param      PageString $l PageString
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPageStringRelatedByCreatedBy(PageString $l)
+	{
+		if ($this->collPageStringsRelatedByCreatedBy === null) {
+			$this->initPageStringsRelatedByCreatedBy();
+		}
+		if (!$this->collPageStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPageStringsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PageStringsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 */
+	public function getPageStringsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getPageStringsRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PageStringsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 */
+	public function getPageStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getPageStringsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collPageStringsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPageStringsRelatedByUpdatedBy()
+	 */
+	public function clearPageStringsRelatedByUpdatedBy()
+	{
+		$this->collPageStringsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPageStringsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collPageStringsRelatedByUpdatedBy collection to an empty array (like clearcollPageStringsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPageStringsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collPageStringsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collPageStringsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collPageStringsRelatedByUpdatedBy->setModel('PageString');
+	}
+
+	/**
+	 * Gets an array of PageString objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 * @throws     PropelException
+	 */
+	public function getPageStringsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPageStringsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStringsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initPageStringsRelatedByUpdatedBy();
+			} else {
+				$collPageStringsRelatedByUpdatedBy = PageStringQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPageStringsRelatedByUpdatedBy;
+				}
+				$this->collPageStringsRelatedByUpdatedBy = $collPageStringsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collPageStringsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related PageString objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PageString objects.
+	 * @throws     PropelException
+	 */
+	public function countPageStringsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPageStringsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPageStringsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = PageStringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPageStringsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a PageString object to this object
+	 * through the PageString foreign key attribute.
+	 *
+	 * @param      PageString $l PageString
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addPageStringRelatedByUpdatedBy(PageString $l)
+	{
+		if ($this->collPageStringsRelatedByUpdatedBy === null) {
+			$this->initPageStringsRelatedByUpdatedBy();
+		}
+		if (!$this->collPageStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPageStringsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PageStringsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 */
+	public function getPageStringsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getPageStringsRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PageStringsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array PageString[] List of PageString objects
+	 */
+	public function getPageStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageStringQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getPageStringsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collContentObjectsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addContentObjectsRelatedByCreatedBy()
+	 */
+	public function clearContentObjectsRelatedByCreatedBy()
+	{
+		$this->collContentObjectsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collContentObjectsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collContentObjectsRelatedByCreatedBy collection to an empty array (like clearcollContentObjectsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initContentObjectsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collContentObjectsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collContentObjectsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collContentObjectsRelatedByCreatedBy->setModel('ContentObject');
+	}
+
+	/**
+	 * Gets an array of ContentObject objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
+	 * @throws     PropelException
+	 */
+	public function getContentObjectsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collContentObjectsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collContentObjectsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initContentObjectsRelatedByCreatedBy();
+			} else {
+				$collContentObjectsRelatedByCreatedBy = ContentObjectQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collContentObjectsRelatedByCreatedBy;
+				}
+				$this->collContentObjectsRelatedByCreatedBy = $collContentObjectsRelatedByCreatedBy;
+			}
+		}
+		return $this->collContentObjectsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related ContentObject objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related ContentObject objects.
+	 * @throws     PropelException
+	 */
+	public function countContentObjectsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collContentObjectsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collContentObjectsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = ContentObjectQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collContentObjectsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a ContentObject object to this object
+	 * through the ContentObject foreign key attribute.
+	 *
+	 * @param      ContentObject $l ContentObject
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addContentObjectRelatedByCreatedBy(ContentObject $l)
+	{
+		if ($this->collContentObjectsRelatedByCreatedBy === null) {
+			$this->initContentObjectsRelatedByCreatedBy();
+		}
+		if (!$this->collContentObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collContentObjectsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related ContentObjectsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
+	 */
+	public function getContentObjectsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = ContentObjectQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getContentObjectsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collContentObjectsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addContentObjectsRelatedByUpdatedBy()
+	 */
+	public function clearContentObjectsRelatedByUpdatedBy()
+	{
+		$this->collContentObjectsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collContentObjectsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collContentObjectsRelatedByUpdatedBy collection to an empty array (like clearcollContentObjectsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initContentObjectsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collContentObjectsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collContentObjectsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collContentObjectsRelatedByUpdatedBy->setModel('ContentObject');
+	}
+
+	/**
+	 * Gets an array of ContentObject objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
+	 * @throws     PropelException
+	 */
+	public function getContentObjectsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collContentObjectsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collContentObjectsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initContentObjectsRelatedByUpdatedBy();
+			} else {
+				$collContentObjectsRelatedByUpdatedBy = ContentObjectQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collContentObjectsRelatedByUpdatedBy;
+				}
+				$this->collContentObjectsRelatedByUpdatedBy = $collContentObjectsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collContentObjectsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related ContentObject objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related ContentObject objects.
+	 * @throws     PropelException
+	 */
+	public function countContentObjectsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collContentObjectsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collContentObjectsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = ContentObjectQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collContentObjectsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a ContentObject object to this object
+	 * through the ContentObject foreign key attribute.
+	 *
+	 * @param      ContentObject $l ContentObject
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addContentObjectRelatedByUpdatedBy(ContentObject $l)
+	{
+		if ($this->collContentObjectsRelatedByUpdatedBy === null) {
+			$this->initContentObjectsRelatedByUpdatedBy();
+		}
+		if (!$this->collContentObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collContentObjectsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related ContentObjectsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array ContentObject[] List of ContentObject objects
+	 */
+	public function getContentObjectsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = ContentObjectQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getContentObjectsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguageObjectsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjectsRelatedByCreatedBy()
+	 */
+	public function clearLanguageObjectsRelatedByCreatedBy()
+	{
+		$this->collLanguageObjectsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjectsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collLanguageObjectsRelatedByCreatedBy collection to an empty array (like clearcollLanguageObjectsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguageObjectsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguageObjectsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguageObjectsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collLanguageObjectsRelatedByCreatedBy->setModel('LanguageObject');
+	}
+
+	/**
+	 * Gets an array of LanguageObject objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 * @throws     PropelException
+	 */
+	public function getLanguageObjectsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initLanguageObjectsRelatedByCreatedBy();
+			} else {
+				$collLanguageObjectsRelatedByCreatedBy = LanguageObjectQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjectsRelatedByCreatedBy;
+				}
+				$this->collLanguageObjectsRelatedByCreatedBy = $collLanguageObjectsRelatedByCreatedBy;
+			}
+		}
+		return $this->collLanguageObjectsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related LanguageObject objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObject objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguageObjectsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = LanguageObjectQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjectsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a LanguageObject object to this object
+	 * through the LanguageObject foreign key attribute.
+	 *
+	 * @param      LanguageObject $l LanguageObject
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageObjectRelatedByCreatedBy(LanguageObject $l)
+	{
+		if ($this->collLanguageObjectsRelatedByCreatedBy === null) {
+			$this->initLanguageObjectsRelatedByCreatedBy();
+		}
+		if (!$this->collLanguageObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjectsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 */
+	public function getLanguageObjectsRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
+
+		return $this->getLanguageObjectsRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 */
+	public function getLanguageObjectsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getLanguageObjectsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguageObjectsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjectsRelatedByUpdatedBy()
+	 */
+	public function clearLanguageObjectsRelatedByUpdatedBy()
+	{
+		$this->collLanguageObjectsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjectsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collLanguageObjectsRelatedByUpdatedBy collection to an empty array (like clearcollLanguageObjectsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguageObjectsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguageObjectsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguageObjectsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collLanguageObjectsRelatedByUpdatedBy->setModel('LanguageObject');
+	}
+
+	/**
+	 * Gets an array of LanguageObject objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 * @throws     PropelException
+	 */
+	public function getLanguageObjectsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initLanguageObjectsRelatedByUpdatedBy();
+			} else {
+				$collLanguageObjectsRelatedByUpdatedBy = LanguageObjectQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjectsRelatedByUpdatedBy;
+				}
+				$this->collLanguageObjectsRelatedByUpdatedBy = $collLanguageObjectsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collLanguageObjectsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related LanguageObject objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObject objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguageObjectsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = LanguageObjectQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjectsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a LanguageObject object to this object
+	 * through the LanguageObject foreign key attribute.
+	 *
+	 * @param      LanguageObject $l LanguageObject
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageObjectRelatedByUpdatedBy(LanguageObject $l)
+	{
+		if ($this->collLanguageObjectsRelatedByUpdatedBy === null) {
+			$this->initLanguageObjectsRelatedByUpdatedBy();
+		}
+		if (!$this->collLanguageObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjectsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 */
+	public function getLanguageObjectsRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
+
+		return $this->getLanguageObjectsRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObject[] List of LanguageObject objects
+	 */
+	public function getLanguageObjectsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getLanguageObjectsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguageObjectHistorysRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjectHistorysRelatedByCreatedBy()
+	 */
+	public function clearLanguageObjectHistorysRelatedByCreatedBy()
+	{
+		$this->collLanguageObjectHistorysRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjectHistorysRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collLanguageObjectHistorysRelatedByCreatedBy collection to an empty array (like clearcollLanguageObjectHistorysRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguageObjectHistorysRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguageObjectHistorysRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguageObjectHistorysRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collLanguageObjectHistorysRelatedByCreatedBy->setModel('LanguageObjectHistory');
+	}
+
+	/**
+	 * Gets an array of LanguageObjectHistory objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 * @throws     PropelException
+	 */
+	public function getLanguageObjectHistorysRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectHistorysRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByCreatedBy) {
+				// return empty collection
+				$this->initLanguageObjectHistorysRelatedByCreatedBy();
+			} else {
+				$collLanguageObjectHistorysRelatedByCreatedBy = LanguageObjectHistoryQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjectHistorysRelatedByCreatedBy;
+				}
+				$this->collLanguageObjectHistorysRelatedByCreatedBy = $collLanguageObjectHistorysRelatedByCreatedBy;
+			}
+		}
+		return $this->collLanguageObjectHistorysRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related LanguageObjectHistory objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObjectHistory objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguageObjectHistorysRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectHistorysRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = LanguageObjectHistoryQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjectHistorysRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a LanguageObjectHistory object to this object
+	 * through the LanguageObjectHistory foreign key attribute.
+	 *
+	 * @param      LanguageObjectHistory $l LanguageObjectHistory
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageObjectHistoryRelatedByCreatedBy(LanguageObjectHistory $l)
+	{
+		if ($this->collLanguageObjectHistorysRelatedByCreatedBy === null) {
+			$this->initLanguageObjectHistorysRelatedByCreatedBy();
+		}
+		if (!$this->collLanguageObjectHistorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjectHistorysRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 */
+	public function getLanguageObjectHistorysRelatedByCreatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
+
+		return $this->getLanguageObjectHistorysRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 */
+	public function getLanguageObjectHistorysRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getLanguageObjectHistorysRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguageObjectHistorysRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguageObjectHistorysRelatedByUpdatedBy()
+	 */
+	public function clearLanguageObjectHistorysRelatedByUpdatedBy()
+	{
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguageObjectHistorysRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collLanguageObjectHistorysRelatedByUpdatedBy collection to an empty array (like clearcollLanguageObjectHistorysRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguageObjectHistorysRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguageObjectHistorysRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy->setModel('LanguageObjectHistory');
+	}
+
+	/**
+	 * Gets an array of LanguageObjectHistory objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 * @throws     PropelException
+	 */
+	public function getLanguageObjectHistorysRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectHistorysRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initLanguageObjectHistorysRelatedByUpdatedBy();
+			} else {
+				$collLanguageObjectHistorysRelatedByUpdatedBy = LanguageObjectHistoryQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguageObjectHistorysRelatedByUpdatedBy;
+				}
+				$this->collLanguageObjectHistorysRelatedByUpdatedBy = $collLanguageObjectHistorysRelatedByUpdatedBy;
+			}
+		}
+		return $this->collLanguageObjectHistorysRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related LanguageObjectHistory objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LanguageObjectHistory objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguageObjectHistorysRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguageObjectHistorysRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = LanguageObjectHistoryQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguageObjectHistorysRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a LanguageObjectHistory object to this object
+	 * through the LanguageObjectHistory foreign key attribute.
+	 *
+	 * @param      LanguageObjectHistory $l LanguageObjectHistory
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageObjectHistoryRelatedByUpdatedBy(LanguageObjectHistory $l)
+	{
+		if ($this->collLanguageObjectHistorysRelatedByUpdatedBy === null) {
+			$this->initLanguageObjectHistorysRelatedByUpdatedBy();
+		}
+		if (!$this->collLanguageObjectHistorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguageObjectHistorysRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 */
+	public function getLanguageObjectHistorysRelatedByUpdatedByJoinContentObject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('ContentObject', $join_behavior);
+
+		return $this->getLanguageObjectHistorysRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related LanguageObjectHistorysRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LanguageObjectHistory[] List of LanguageObjectHistory objects
+	 */
+	public function getLanguageObjectHistorysRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LanguageObjectHistoryQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getLanguageObjectHistorysRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collLanguagesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguagesRelatedByCreatedBy()
+	 */
+	public function clearLanguagesRelatedByCreatedBy()
+	{
+		$this->collLanguagesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguagesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collLanguagesRelatedByCreatedBy collection to an empty array (like clearcollLanguagesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguagesRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguagesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguagesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collLanguagesRelatedByCreatedBy->setModel('Language');
+	}
+
+	/**
+	 * Gets an array of Language objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Language[] List of Language objects
+	 * @throws     PropelException
+	 */
+	public function getLanguagesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguagesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguagesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initLanguagesRelatedByCreatedBy();
+			} else {
+				$collLanguagesRelatedByCreatedBy = LanguageQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguagesRelatedByCreatedBy;
+				}
+				$this->collLanguagesRelatedByCreatedBy = $collLanguagesRelatedByCreatedBy;
+			}
+		}
+		return $this->collLanguagesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Language objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Language objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguagesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguagesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguagesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = LanguageQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguagesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Language object to this object
+	 * through the Language foreign key attribute.
+	 *
+	 * @param      Language $l Language
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageRelatedByCreatedBy(Language $l)
+	{
+		if ($this->collLanguagesRelatedByCreatedBy === null) {
+			$this->initLanguagesRelatedByCreatedBy();
+		}
+		if (!$this->collLanguagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguagesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collLanguagesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguagesRelatedByUpdatedBy()
+	 */
+	public function clearLanguagesRelatedByUpdatedBy()
+	{
+		$this->collLanguagesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguagesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collLanguagesRelatedByUpdatedBy collection to an empty array (like clearcollLanguagesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLanguagesRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collLanguagesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collLanguagesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collLanguagesRelatedByUpdatedBy->setModel('Language');
+	}
+
+	/**
+	 * Gets an array of Language objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Language[] List of Language objects
+	 * @throws     PropelException
+	 */
+	public function getLanguagesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguagesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguagesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initLanguagesRelatedByUpdatedBy();
+			} else {
+				$collLanguagesRelatedByUpdatedBy = LanguageQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLanguagesRelatedByUpdatedBy;
+				}
+				$this->collLanguagesRelatedByUpdatedBy = $collLanguagesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collLanguagesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Language objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Language objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguagesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLanguagesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLanguagesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = LanguageQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLanguagesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Language object to this object
+	 * through the Language foreign key attribute.
+	 *
+	 * @param      Language $l Language
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addLanguageRelatedByUpdatedBy(Language $l)
+	{
+		if ($this->collLanguagesRelatedByUpdatedBy === null) {
+			$this->initLanguagesRelatedByUpdatedBy();
+		}
+		if (!$this->collLanguagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collLanguagesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collStringsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addStringsRelatedByCreatedBy()
+	 */
+	public function clearStringsRelatedByCreatedBy()
+	{
+		$this->collStringsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collStringsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collStringsRelatedByCreatedBy collection to an empty array (like clearcollStringsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initStringsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collStringsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collStringsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collStringsRelatedByCreatedBy->setModel('String');
+	}
+
+	/**
+	 * Gets an array of String objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array String[] List of String objects
+	 * @throws     PropelException
+	 */
+	public function getStringsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collStringsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initStringsRelatedByCreatedBy();
+			} else {
+				$collStringsRelatedByCreatedBy = StringQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collStringsRelatedByCreatedBy;
+				}
+				$this->collStringsRelatedByCreatedBy = $collStringsRelatedByCreatedBy;
+			}
+		}
+		return $this->collStringsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related String objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related String objects.
+	 * @throws     PropelException
+	 */
+	public function countStringsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collStringsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = StringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collStringsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a String object to this object
+	 * through the String foreign key attribute.
+	 *
+	 * @param      String $l String
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addStringRelatedByCreatedBy(String $l)
+	{
+		if ($this->collStringsRelatedByCreatedBy === null) {
+			$this->initStringsRelatedByCreatedBy();
+		}
+		if (!$this->collStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collStringsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related StringsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array String[] List of String objects
+	 */
+	public function getStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = StringQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getStringsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collStringsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addStringsRelatedByUpdatedBy()
+	 */
+	public function clearStringsRelatedByUpdatedBy()
+	{
+		$this->collStringsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collStringsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collStringsRelatedByUpdatedBy collection to an empty array (like clearcollStringsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initStringsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collStringsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collStringsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collStringsRelatedByUpdatedBy->setModel('String');
+	}
+
+	/**
+	 * Gets an array of String objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array String[] List of String objects
+	 * @throws     PropelException
+	 */
+	public function getStringsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collStringsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initStringsRelatedByUpdatedBy();
+			} else {
+				$collStringsRelatedByUpdatedBy = StringQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collStringsRelatedByUpdatedBy;
+				}
+				$this->collStringsRelatedByUpdatedBy = $collStringsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collStringsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related String objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related String objects.
+	 * @throws     PropelException
+	 */
+	public function countStringsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collStringsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = StringQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collStringsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a String object to this object
+	 * through the String foreign key attribute.
+	 *
+	 * @param      String $l String
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addStringRelatedByUpdatedBy(String $l)
+	{
+		if ($this->collStringsRelatedByUpdatedBy === null) {
+			$this->initStringsRelatedByUpdatedBy();
+		}
+		if (!$this->collStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collStringsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related StringsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array String[] List of String objects
+	 */
+	public function getStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = StringQuery::create(null, $criteria);
+		$query->joinWith('Language', $join_behavior);
+
+		return $this->getStringsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserGroupsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserGroupsRelatedByCreatedBy()
+	 */
+	public function clearUserGroupsRelatedByCreatedBy()
+	{
+		$this->collUserGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserGroupsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collUserGroupsRelatedByCreatedBy collection to an empty array (like clearcollUserGroupsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initUserGroupsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collUserGroupsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collUserGroupsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collUserGroupsRelatedByCreatedBy->setModel('UserGroup');
+	}
+
+	/**
+	 * Gets an array of UserGroup objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
+	 * @throws     PropelException
+	 */
+	public function getUserGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserGroupsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initUserGroupsRelatedByCreatedBy();
+			} else {
+				$collUserGroupsRelatedByCreatedBy = UserGroupQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserGroupsRelatedByCreatedBy;
+				}
+				$this->collUserGroupsRelatedByCreatedBy = $collUserGroupsRelatedByCreatedBy;
+			}
+		}
+		return $this->collUserGroupsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserGroup objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserGroup objects.
+	 * @throws     PropelException
+	 */
+	public function countUserGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserGroupsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = UserGroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserGroupsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserGroup object to this object
+	 * through the UserGroup foreign key attribute.
+	 *
+	 * @param      UserGroup $l UserGroup
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addUserGroupRelatedByCreatedBy(UserGroup $l)
+	{
+		if ($this->collUserGroupsRelatedByCreatedBy === null) {
+			$this->initUserGroupsRelatedByCreatedBy();
+		}
+		if (!$this->collUserGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserGroupsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserGroupsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
+	 */
+	public function getUserGroupsRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserGroupQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getUserGroupsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserGroupsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserGroupsRelatedByUpdatedBy()
+	 */
+	public function clearUserGroupsRelatedByUpdatedBy()
+	{
+		$this->collUserGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserGroupsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collUserGroupsRelatedByUpdatedBy collection to an empty array (like clearcollUserGroupsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initUserGroupsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collUserGroupsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collUserGroupsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collUserGroupsRelatedByUpdatedBy->setModel('UserGroup');
+	}
+
+	/**
+	 * Gets an array of UserGroup objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
+	 * @throws     PropelException
+	 */
+	public function getUserGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserGroupsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initUserGroupsRelatedByUpdatedBy();
+			} else {
+				$collUserGroupsRelatedByUpdatedBy = UserGroupQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserGroupsRelatedByUpdatedBy;
+				}
+				$this->collUserGroupsRelatedByUpdatedBy = $collUserGroupsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collUserGroupsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserGroup objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserGroup objects.
+	 * @throws     PropelException
+	 */
+	public function countUserGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserGroupsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = UserGroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserGroupsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserGroup object to this object
+	 * through the UserGroup foreign key attribute.
+	 *
+	 * @param      UserGroup $l UserGroup
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addUserGroupRelatedByUpdatedBy(UserGroup $l)
+	{
+		if ($this->collUserGroupsRelatedByUpdatedBy === null) {
+			$this->initUserGroupsRelatedByUpdatedBy();
+		}
+		if (!$this->collUserGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserGroupsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserGroupsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserGroup[] List of UserGroup objects
+	 */
+	public function getUserGroupsRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserGroupQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getUserGroupsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collGroupsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupsRelatedByCreatedBy()
+	 */
+	public function clearGroupsRelatedByCreatedBy()
+	{
+		$this->collGroupsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collGroupsRelatedByCreatedBy collection to an empty array (like clearcollGroupsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initGroupsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collGroupsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collGroupsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collGroupsRelatedByCreatedBy->setModel('Group');
+	}
+
+	/**
+	 * Gets an array of Group objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Group[] List of Group objects
+	 * @throws     PropelException
+	 */
+	public function getGroupsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initGroupsRelatedByCreatedBy();
+			} else {
+				$collGroupsRelatedByCreatedBy = GroupQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupsRelatedByCreatedBy;
+				}
+				$this->collGroupsRelatedByCreatedBy = $collGroupsRelatedByCreatedBy;
+			}
+		}
+		return $this->collGroupsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Group objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Group objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = GroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Group object to this object
+	 * through the Group foreign key attribute.
+	 *
+	 * @param      Group $l Group
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addGroupRelatedByCreatedBy(Group $l)
+	{
+		if ($this->collGroupsRelatedByCreatedBy === null) {
+			$this->initGroupsRelatedByCreatedBy();
+		}
+		if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collGroupsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupsRelatedByUpdatedBy()
+	 */
+	public function clearGroupsRelatedByUpdatedBy()
+	{
+		$this->collGroupsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collGroupsRelatedByUpdatedBy collection to an empty array (like clearcollGroupsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initGroupsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collGroupsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collGroupsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collGroupsRelatedByUpdatedBy->setModel('Group');
+	}
+
+	/**
+	 * Gets an array of Group objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Group[] List of Group objects
+	 * @throws     PropelException
+	 */
+	public function getGroupsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initGroupsRelatedByUpdatedBy();
+			} else {
+				$collGroupsRelatedByUpdatedBy = GroupQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupsRelatedByUpdatedBy;
+				}
+				$this->collGroupsRelatedByUpdatedBy = $collGroupsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collGroupsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Group objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Group objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = GroupQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Group object to this object
+	 * through the Group foreign key attribute.
+	 *
+	 * @param      Group $l Group
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addGroupRelatedByUpdatedBy(Group $l)
+	{
+		if ($this->collGroupsRelatedByUpdatedBy === null) {
+			$this->initGroupsRelatedByUpdatedBy();
+		}
+		if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collGroupRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupRolesRelatedByCreatedBy()
+	 */
+	public function clearGroupRolesRelatedByCreatedBy()
+	{
+		$this->collGroupRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collGroupRolesRelatedByCreatedBy collection to an empty array (like clearcollGroupRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initGroupRolesRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collGroupRolesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collGroupRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collGroupRolesRelatedByCreatedBy->setModel('GroupRole');
+	}
+
+	/**
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 * @throws     PropelException
+	 */
+	public function getGroupRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initGroupRolesRelatedByCreatedBy();
+			} else {
+				$collGroupRolesRelatedByCreatedBy = GroupRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupRolesRelatedByCreatedBy;
+				}
+				$this->collGroupRolesRelatedByCreatedBy = $collGroupRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collGroupRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related GroupRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related GroupRole objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = GroupRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
+	 *
+	 * @param      GroupRole $l GroupRole
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addGroupRoleRelatedByCreatedBy(GroupRole $l)
+	{
+		if ($this->collGroupRolesRelatedByCreatedBy === null) {
+			$this->initGroupRolesRelatedByCreatedBy();
+		}
+		if (!$this->collGroupRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByCreatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getGroupRolesRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collGroupRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupRolesRelatedByUpdatedBy()
+	 */
+	public function clearGroupRolesRelatedByUpdatedBy()
+	{
+		$this->collGroupRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collGroupRolesRelatedByUpdatedBy collection to an empty array (like clearcollGroupRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initGroupRolesRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collGroupRolesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collGroupRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collGroupRolesRelatedByUpdatedBy->setModel('GroupRole');
+	}
+
+	/**
+	 * Gets an array of GroupRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 * @throws     PropelException
+	 */
+	public function getGroupRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initGroupRolesRelatedByUpdatedBy();
+			} else {
+				$collGroupRolesRelatedByUpdatedBy = GroupRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupRolesRelatedByUpdatedBy;
+				}
+				$this->collGroupRolesRelatedByUpdatedBy = $collGroupRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collGroupRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related GroupRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related GroupRole objects.
+	 * @throws     PropelException
+	 */
+	public function countGroupRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = GroupRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a GroupRole object to this object
+	 * through the GroupRole foreign key attribute.
+	 *
+	 * @param      GroupRole $l GroupRole
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addGroupRoleRelatedByUpdatedBy(GroupRole $l)
+	{
+		if ($this->collGroupRolesRelatedByUpdatedBy === null) {
+			$this->initGroupRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collGroupRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collGroupRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByUpdatedByJoinGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Group', $join_behavior);
+
+		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related GroupRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array GroupRole[] List of GroupRole objects
+	 */
+	public function getGroupRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = GroupRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getGroupRolesRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRolesRelatedByCreatedBy()
+	 */
+	public function clearRolesRelatedByCreatedBy()
+	{
+		$this->collRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collRolesRelatedByCreatedBy collection to an empty array (like clearcollRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initRolesRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collRolesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collRolesRelatedByCreatedBy->setModel('Role');
+	}
+
+	/**
+	 * Gets an array of Role objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Role[] List of Role objects
+	 * @throws     PropelException
+	 */
+	public function getRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initRolesRelatedByCreatedBy();
+			} else {
+				$collRolesRelatedByCreatedBy = RoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRolesRelatedByCreatedBy;
+				}
+				$this->collRolesRelatedByCreatedBy = $collRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Role objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Role objects.
+	 * @throws     PropelException
+	 */
+	public function countRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = RoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Role object to this object
+	 * through the Role foreign key attribute.
+	 *
+	 * @param      Role $l Role
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addRoleRelatedByCreatedBy(Role $l)
+	{
+		if ($this->collRolesRelatedByCreatedBy === null) {
+			$this->initRolesRelatedByCreatedBy();
+		}
+		if (!$this->collRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRolesRelatedByUpdatedBy()
+	 */
+	public function clearRolesRelatedByUpdatedBy()
+	{
+		$this->collRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collRolesRelatedByUpdatedBy collection to an empty array (like clearcollRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initRolesRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collRolesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collRolesRelatedByUpdatedBy->setModel('Role');
+	}
+
+	/**
+	 * Gets an array of Role objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Role[] List of Role objects
+	 * @throws     PropelException
+	 */
+	public function getRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initRolesRelatedByUpdatedBy();
+			} else {
+				$collRolesRelatedByUpdatedBy = RoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRolesRelatedByUpdatedBy;
+				}
+				$this->collRolesRelatedByUpdatedBy = $collRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Role objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Role objects.
+	 * @throws     PropelException
+	 */
+	public function countRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = RoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Role object to this object
+	 * through the Role foreign key attribute.
+	 *
+	 * @param      Role $l Role
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addRoleRelatedByUpdatedBy(Role $l)
+	{
+		if ($this->collRolesRelatedByUpdatedBy === null) {
+			$this->initRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Clears out the collUserRolesRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRolesRelatedByCreatedBy()
+	 */
+	public function clearUserRolesRelatedByCreatedBy()
+	{
+		$this->collUserRolesRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRolesRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collUserRolesRelatedByCreatedBy collection to an empty array (like clearcollUserRolesRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initUserRolesRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collUserRolesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collUserRolesRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collUserRolesRelatedByCreatedBy->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRolesRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
+				// return empty collection
+				$this->initUserRolesRelatedByCreatedBy();
+			} else {
+				$collUserRolesRelatedByCreatedBy = UserRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRolesRelatedByCreatedBy;
+				}
+				$this->collUserRolesRelatedByCreatedBy = $collUserRolesRelatedByCreatedBy;
+			}
+		}
+		return $this->collUserRolesRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRolesRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRolesRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addUserRoleRelatedByCreatedBy(UserRole $l)
+	{
+		if ($this->collUserRolesRelatedByCreatedBy === null) {
+			$this->initUserRolesRelatedByCreatedBy();
+		}
+		if (!$this->collUserRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRolesRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserRolesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getUserRolesRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collUserRolesRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUserRolesRelatedByUpdatedBy()
+	 */
+	public function clearUserRolesRelatedByUpdatedBy()
+	{
+		$this->collUserRolesRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUserRolesRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collUserRolesRelatedByUpdatedBy collection to an empty array (like clearcollUserRolesRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initUserRolesRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collUserRolesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collUserRolesRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collUserRolesRelatedByUpdatedBy->setModel('UserRole');
+	}
+
+	/**
+	 * Gets an array of UserRole objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 * @throws     PropelException
+	 */
+	public function getUserRolesRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initUserRolesRelatedByUpdatedBy();
+			} else {
+				$collUserRolesRelatedByUpdatedBy = UserRoleQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUserRolesRelatedByUpdatedBy;
+				}
+				$this->collUserRolesRelatedByUpdatedBy = $collUserRolesRelatedByUpdatedBy;
+			}
+		}
+		return $this->collUserRolesRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related UserRole objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related UserRole objects.
+	 * @throws     PropelException
+	 */
+	public function countUserRolesRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = UserRoleQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUserRolesRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a UserRole object to this object
+	 * through the UserRole foreign key attribute.
+	 *
+	 * @param      UserRole $l UserRole
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addUserRoleRelatedByUpdatedBy(UserRole $l)
+	{
+		if ($this->collUserRolesRelatedByUpdatedBy === null) {
+			$this->initUserRolesRelatedByUpdatedBy();
+		}
+		if (!$this->collUserRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collUserRolesRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related UserRolesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array UserRole[] List of UserRole objects
+	 */
+	public function getUserRolesRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = UserRoleQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getUserRolesRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collRightsRelatedByCreatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRightsRelatedByCreatedBy()
+	 */
+	public function clearRightsRelatedByCreatedBy()
+	{
+		$this->collRightsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRightsRelatedByCreatedBy collection.
+	 *
+	 * By default this just sets the collRightsRelatedByCreatedBy collection to an empty array (like clearcollRightsRelatedByCreatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initRightsRelatedByCreatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collRightsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collRightsRelatedByCreatedBy = new PropelObjectCollection();
+		$this->collRightsRelatedByCreatedBy->setModel('Right');
+	}
+
+	/**
+	 * Gets an array of Right objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @throws     PropelException
+	 */
+	public function getRightsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRightsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRightsRelatedByCreatedBy) {
+				// return empty collection
+				$this->initRightsRelatedByCreatedBy();
+			} else {
+				$collRightsRelatedByCreatedBy = RightQuery::create(null, $criteria)
+					->filterByUserRelatedByCreatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRightsRelatedByCreatedBy;
+				}
+				$this->collRightsRelatedByCreatedBy = $collRightsRelatedByCreatedBy;
+			}
+		}
+		return $this->collRightsRelatedByCreatedBy;
+	}
+
+	/**
+	 * Returns the number of related Right objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Right objects.
+	 * @throws     PropelException
+	 */
+	public function countRightsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRightsRelatedByCreatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRightsRelatedByCreatedBy) {
+				return 0;
+			} else {
+				$query = RightQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByCreatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRightsRelatedByCreatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Right object to this object
+	 * through the Right foreign key attribute.
+	 *
+	 * @param      Right $l Right
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addRightRelatedByCreatedBy(Right $l)
+	{
+		if ($this->collRightsRelatedByCreatedBy === null) {
+			$this->initRightsRelatedByCreatedBy();
+		}
+		if (!$this->collRightsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRightsRelatedByCreatedBy[]= $l;
+			$l->setUserRelatedByCreatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related RightsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsRelatedByCreatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getRightsRelatedByCreatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related RightsRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsRelatedByCreatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getRightsRelatedByCreatedBy($query, $con);
+	}
+
+	/**
+	 * Clears out the collRightsRelatedByUpdatedBy collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addRightsRelatedByUpdatedBy()
+	 */
+	public function clearRightsRelatedByUpdatedBy()
+	{
+		$this->collRightsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collRightsRelatedByUpdatedBy collection.
+	 *
+	 * By default this just sets the collRightsRelatedByUpdatedBy collection to an empty array (like clearcollRightsRelatedByUpdatedBy());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initRightsRelatedByUpdatedBy($overrideExisting = true)
+	{
+		if (null !== $this->collRightsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
+		$this->collRightsRelatedByUpdatedBy = new PropelObjectCollection();
+		$this->collRightsRelatedByUpdatedBy->setModel('Right');
+	}
+
+	/**
+	 * Gets an array of Right objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 * @throws     PropelException
+	 */
+	public function getRightsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collRightsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRightsRelatedByUpdatedBy) {
+				// return empty collection
+				$this->initRightsRelatedByUpdatedBy();
+			} else {
+				$collRightsRelatedByUpdatedBy = RightQuery::create(null, $criteria)
+					->filterByUserRelatedByUpdatedBy($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collRightsRelatedByUpdatedBy;
+				}
+				$this->collRightsRelatedByUpdatedBy = $collRightsRelatedByUpdatedBy;
+			}
+		}
+		return $this->collRightsRelatedByUpdatedBy;
+	}
+
+	/**
+	 * Returns the number of related Right objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Right objects.
+	 * @throws     PropelException
+	 */
+	public function countRightsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collRightsRelatedByUpdatedBy || null !== $criteria) {
+			if ($this->isNew() && null === $this->collRightsRelatedByUpdatedBy) {
+				return 0;
+			} else {
+				$query = RightQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUserRelatedByUpdatedBy($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collRightsRelatedByUpdatedBy);
+		}
+	}
+
+	/**
+	 * Method called to associate a Right object to this object
+	 * through the Right foreign key attribute.
+	 *
+	 * @param      Right $l Right
+	 * @return     User The current object (for fluent API support)
+	 */
+	public function addRightRelatedByUpdatedBy(Right $l)
+	{
+		if ($this->collRightsRelatedByUpdatedBy === null) {
+			$this->initRightsRelatedByUpdatedBy();
+		}
+		if (!$this->collRightsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collRightsRelatedByUpdatedBy[]= $l;
+			$l->setUserRelatedByUpdatedBy($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related RightsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsRelatedByUpdatedByJoinRole($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('Role', $join_behavior);
+
+		return $this->getRightsRelatedByUpdatedBy($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related RightsRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Right[] List of Right objects
+	 */
+	public function getRightsRelatedByUpdatedByJoinPage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = RightQuery::create(null, $criteria);
+		$query->joinWith('Page', $join_behavior);
+
+		return $this->getRightsRelatedByUpdatedBy($query, $con);
+	}
+
+	/**
 	 * Clears out the collDocumentsRelatedByCreatedBy collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -7383,10 +8052,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentsRelatedByCreatedBy()
+	public function initDocumentsRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentsRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collDocumentsRelatedByCreatedBy->setModel('Document');
 	}
@@ -7457,8 +8132,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Document foreign key attribute.
 	 *
 	 * @param      Document $l Document
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentRelatedByCreatedBy(Document $l)
 	{
@@ -7469,6 +8143,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentsRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -7567,10 +8243,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentsRelatedByUpdatedBy()
+	public function initDocumentsRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentsRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collDocumentsRelatedByUpdatedBy->setModel('Document');
 	}
@@ -7641,8 +8323,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Document foreign key attribute.
 	 *
 	 * @param      Document $l Document
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentRelatedByUpdatedBy(Document $l)
 	{
@@ -7653,6 +8334,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentsRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -7751,10 +8434,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentTypesRelatedByCreatedBy()
+	public function initDocumentTypesRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentTypesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentTypesRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collDocumentTypesRelatedByCreatedBy->setModel('DocumentType');
 	}
@@ -7825,8 +8514,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the DocumentType foreign key attribute.
 	 *
 	 * @param      DocumentType $l DocumentType
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentTypeRelatedByCreatedBy(DocumentType $l)
 	{
@@ -7837,6 +8525,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentTypesRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -7860,10 +8550,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentTypesRelatedByUpdatedBy()
+	public function initDocumentTypesRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentTypesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentTypesRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collDocumentTypesRelatedByUpdatedBy->setModel('DocumentType');
 	}
@@ -7934,8 +8630,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the DocumentType foreign key attribute.
 	 *
 	 * @param      DocumentType $l DocumentType
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentTypeRelatedByUpdatedBy(DocumentType $l)
 	{
@@ -7946,6 +8641,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentTypesRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -7969,10 +8666,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentCategorysRelatedByCreatedBy()
+	public function initDocumentCategorysRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentCategorysRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentCategorysRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collDocumentCategorysRelatedByCreatedBy->setModel('DocumentCategory');
 	}
@@ -8043,8 +8746,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the DocumentCategory foreign key attribute.
 	 *
 	 * @param      DocumentCategory $l DocumentCategory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentCategoryRelatedByCreatedBy(DocumentCategory $l)
 	{
@@ -8055,6 +8757,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentCategorysRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -8078,10 +8782,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocumentCategorysRelatedByUpdatedBy()
+	public function initDocumentCategorysRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collDocumentCategorysRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collDocumentCategorysRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collDocumentCategorysRelatedByUpdatedBy->setModel('DocumentCategory');
 	}
@@ -8152,8 +8862,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the DocumentCategory foreign key attribute.
 	 *
 	 * @param      DocumentCategory $l DocumentCategory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addDocumentCategoryRelatedByUpdatedBy(DocumentCategory $l)
 	{
@@ -8164,6 +8873,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collDocumentCategorysRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -8187,10 +8898,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initTagsRelatedByCreatedBy()
+	public function initTagsRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collTagsRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collTagsRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collTagsRelatedByCreatedBy->setModel('Tag');
 	}
@@ -8261,8 +8978,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Tag foreign key attribute.
 	 *
 	 * @param      Tag $l Tag
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addTagRelatedByCreatedBy(Tag $l)
 	{
@@ -8273,6 +8989,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collTagsRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -8296,10 +9014,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initTagsRelatedByUpdatedBy()
+	public function initTagsRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collTagsRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collTagsRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collTagsRelatedByUpdatedBy->setModel('Tag');
 	}
@@ -8370,8 +9094,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Tag foreign key attribute.
 	 *
 	 * @param      Tag $l Tag
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addTagRelatedByUpdatedBy(Tag $l)
 	{
@@ -8382,6 +9105,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collTagsRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -8405,10 +9130,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initTagInstancesRelatedByCreatedBy()
+	public function initTagInstancesRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collTagInstancesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collTagInstancesRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collTagInstancesRelatedByCreatedBy->setModel('TagInstance');
 	}
@@ -8479,8 +9210,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the TagInstance foreign key attribute.
 	 *
 	 * @param      TagInstance $l TagInstance
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addTagInstanceRelatedByCreatedBy(TagInstance $l)
 	{
@@ -8491,6 +9221,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collTagInstancesRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -8539,10 +9271,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initTagInstancesRelatedByUpdatedBy()
+	public function initTagInstancesRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collTagInstancesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collTagInstancesRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collTagInstancesRelatedByUpdatedBy->setModel('TagInstance');
 	}
@@ -8613,8 +9351,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the TagInstance foreign key attribute.
 	 *
 	 * @param      TagInstance $l TagInstance
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addTagInstanceRelatedByUpdatedBy(TagInstance $l)
 	{
@@ -8625,6 +9362,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collTagInstancesRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -8653,165 +9392,6 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collLinksRelatedByOwnerId collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addLinksRelatedByOwnerId()
-	 */
-	public function clearLinksRelatedByOwnerId()
-	{
-		$this->collLinksRelatedByOwnerId = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collLinksRelatedByOwnerId collection.
-	 *
-	 * By default this just sets the collLinksRelatedByOwnerId collection to an empty array (like clearcollLinksRelatedByOwnerId());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initLinksRelatedByOwnerId()
-	{
-		$this->collLinksRelatedByOwnerId = new PropelObjectCollection();
-		$this->collLinksRelatedByOwnerId->setModel('Link');
-	}
-
-	/**
-	 * Gets an array of Link objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this User is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array Link[] List of Link objects
-	 * @throws     PropelException
-	 */
-	public function getLinksRelatedByOwnerId($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collLinksRelatedByOwnerId || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLinksRelatedByOwnerId) {
-				// return empty collection
-				$this->initLinksRelatedByOwnerId();
-			} else {
-				$collLinksRelatedByOwnerId = LinkQuery::create(null, $criteria)
-					->filterByUserRelatedByOwnerId($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collLinksRelatedByOwnerId;
-				}
-				$this->collLinksRelatedByOwnerId = $collLinksRelatedByOwnerId;
-			}
-		}
-		return $this->collLinksRelatedByOwnerId;
-	}
-
-	/**
-	 * Returns the number of related Link objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related Link objects.
-	 * @throws     PropelException
-	 */
-	public function countLinksRelatedByOwnerId(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collLinksRelatedByOwnerId || null !== $criteria) {
-			if ($this->isNew() && null === $this->collLinksRelatedByOwnerId) {
-				return 0;
-			} else {
-				$query = LinkQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUserRelatedByOwnerId($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collLinksRelatedByOwnerId);
-		}
-	}
-
-	/**
-	 * Method called to associate a Link object to this object
-	 * through the Link foreign key attribute.
-	 *
-	 * @param      Link $l Link
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addLinkRelatedByOwnerId(Link $l)
-	{
-		if ($this->collLinksRelatedByOwnerId === null) {
-			$this->initLinksRelatedByOwnerId();
-		}
-		if (!$this->collLinksRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinksRelatedByOwnerId[]= $l;
-			$l->setUserRelatedByOwnerId($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LinksRelatedByOwnerId from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Link[] List of Link objects
-	 */
-	public function getLinksRelatedByOwnerIdJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LinkQuery::create(null, $criteria);
-		$query->joinWith('Language', $join_behavior);
-
-		return $this->getLinksRelatedByOwnerId($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this User is new, it will return
-	 * an empty collection; or if this User has previously
-	 * been saved, it will retrieve related LinksRelatedByOwnerId from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in User.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array Link[] List of Link objects
-	 */
-	public function getLinksRelatedByOwnerIdJoinLinkCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = LinkQuery::create(null, $criteria);
-		$query->joinWith('LinkCategory', $join_behavior);
-
-		return $this->getLinksRelatedByOwnerId($query, $con);
-	}
-
-	/**
 	 * Clears out the collLinksRelatedByCreatedBy collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -8832,10 +9412,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLinksRelatedByCreatedBy()
+	public function initLinksRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collLinksRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collLinksRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collLinksRelatedByCreatedBy->setModel('Link');
 	}
@@ -8906,8 +9492,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Link foreign key attribute.
 	 *
 	 * @param      Link $l Link
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addLinkRelatedByCreatedBy(Link $l)
 	{
@@ -8918,6 +9503,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collLinksRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -8991,10 +9578,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLinksRelatedByUpdatedBy()
+	public function initLinksRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collLinksRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collLinksRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collLinksRelatedByUpdatedBy->setModel('Link');
 	}
@@ -9065,8 +9658,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Link foreign key attribute.
 	 *
 	 * @param      Link $l Link
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addLinkRelatedByUpdatedBy(Link $l)
 	{
@@ -9077,6 +9669,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collLinksRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 
@@ -9150,10 +9744,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLinkCategorysRelatedByCreatedBy()
+	public function initLinkCategorysRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collLinkCategorysRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collLinkCategorysRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collLinkCategorysRelatedByCreatedBy->setModel('LinkCategory');
 	}
@@ -9224,8 +9824,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the LinkCategory foreign key attribute.
 	 *
 	 * @param      LinkCategory $l LinkCategory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addLinkCategoryRelatedByCreatedBy(LinkCategory $l)
 	{
@@ -9236,6 +9835,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collLinkCategorysRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -9259,10 +9860,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLinkCategorysRelatedByUpdatedBy()
+	public function initLinkCategorysRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collLinkCategorysRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collLinkCategorysRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collLinkCategorysRelatedByUpdatedBy->setModel('LinkCategory');
 	}
@@ -9333,8 +9940,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the LinkCategory foreign key attribute.
 	 *
 	 * @param      LinkCategory $l LinkCategory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addLinkCategoryRelatedByUpdatedBy(LinkCategory $l)
 	{
@@ -9345,6 +9951,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collLinkCategorysRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -9368,10 +9976,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initReferencesRelatedByCreatedBy()
+	public function initReferencesRelatedByCreatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collReferencesRelatedByCreatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collReferencesRelatedByCreatedBy = new PropelObjectCollection();
 		$this->collReferencesRelatedByCreatedBy->setModel('Reference');
 	}
@@ -9442,8 +10056,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Reference foreign key attribute.
 	 *
 	 * @param      Reference $l Reference
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addReferenceRelatedByCreatedBy(Reference $l)
 	{
@@ -9454,6 +10067,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collReferencesRelatedByCreatedBy[]= $l;
 			$l->setUserRelatedByCreatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -9477,10 +10092,16 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initReferencesRelatedByUpdatedBy()
+	public function initReferencesRelatedByUpdatedBy($overrideExisting = true)
 	{
+		if (null !== $this->collReferencesRelatedByUpdatedBy && !$overrideExisting) {
+			return;
+		}
 		$this->collReferencesRelatedByUpdatedBy = new PropelObjectCollection();
 		$this->collReferencesRelatedByUpdatedBy->setModel('Reference');
 	}
@@ -9551,8 +10172,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * through the Reference foreign key attribute.
 	 *
 	 * @param      Reference $l Reference
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     User The current object (for fluent API support)
 	 */
 	public function addReferenceRelatedByUpdatedBy(Reference $l)
 	{
@@ -9563,6 +10183,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->collReferencesRelatedByUpdatedBy[]= $l;
 			$l->setUserRelatedByUpdatedBy($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -9598,308 +10220,462 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collPagesRelatedByCreatedBy) {
-				foreach ((array) $this->collPagesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collPagesRelatedByUpdatedBy) {
-				foreach ((array) $this->collPagesRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collPagePropertysRelatedByCreatedBy) {
-				foreach ((array) $this->collPagePropertysRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collPagePropertysRelatedByUpdatedBy) {
-				foreach ((array) $this->collPagePropertysRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collPageStringsRelatedByCreatedBy) {
-				foreach ((array) $this->collPageStringsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collPageStringsRelatedByUpdatedBy) {
-				foreach ((array) $this->collPageStringsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collContentObjectsRelatedByCreatedBy) {
-				foreach ((array) $this->collContentObjectsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collContentObjectsRelatedByUpdatedBy) {
-				foreach ((array) $this->collContentObjectsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguageObjectsRelatedByCreatedBy) {
-				foreach ((array) $this->collLanguageObjectsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguageObjectsRelatedByUpdatedBy) {
-				foreach ((array) $this->collLanguageObjectsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguageObjectHistorysRelatedByCreatedBy) {
-				foreach ((array) $this->collLanguageObjectHistorysRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguageObjectHistorysRelatedByUpdatedBy) {
-				foreach ((array) $this->collLanguageObjectHistorysRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguagesRelatedByCreatedBy) {
-				foreach ((array) $this->collLanguagesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collLanguagesRelatedByUpdatedBy) {
-				foreach ((array) $this->collLanguagesRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collStringsRelatedByCreatedBy) {
-				foreach ((array) $this->collStringsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collStringsRelatedByUpdatedBy) {
-				foreach ((array) $this->collStringsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collUserGroupsRelatedByUserId) {
-				foreach ((array) $this->collUserGroupsRelatedByUserId as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collUserGroupsRelatedByCreatedBy) {
-				foreach ((array) $this->collUserGroupsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collUserGroupsRelatedByUpdatedBy) {
-				foreach ((array) $this->collUserGroupsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collGroupsRelatedByCreatedBy) {
-				foreach ((array) $this->collGroupsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collGroupsRelatedByUpdatedBy) {
-				foreach ((array) $this->collGroupsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collGroupRolesRelatedByCreatedBy) {
-				foreach ((array) $this->collGroupRolesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collGroupRolesRelatedByUpdatedBy) {
-				foreach ((array) $this->collGroupRolesRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collRolesRelatedByCreatedBy) {
-				foreach ((array) $this->collRolesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collRolesRelatedByUpdatedBy) {
-				foreach ((array) $this->collRolesRelatedByUpdatedBy as $o) {
+				foreach ($this->collUserGroupsRelatedByUserId as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collUserRolesRelatedByUserId) {
-				foreach ((array) $this->collUserRolesRelatedByUserId as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collUserRolesRelatedByCreatedBy) {
-				foreach ((array) $this->collUserRolesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collUserRolesRelatedByUpdatedBy) {
-				foreach ((array) $this->collUserRolesRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collRightsRelatedByCreatedBy) {
-				foreach ((array) $this->collRightsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collRightsRelatedByUpdatedBy) {
-				foreach ((array) $this->collRightsRelatedByUpdatedBy as $o) {
+				foreach ($this->collUserRolesRelatedByUserId as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collDocumentsRelatedByOwnerId) {
-				foreach ((array) $this->collDocumentsRelatedByOwnerId as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentsRelatedByCreatedBy) {
-				foreach ((array) $this->collDocumentsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentsRelatedByUpdatedBy) {
-				foreach ((array) $this->collDocumentsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentTypesRelatedByCreatedBy) {
-				foreach ((array) $this->collDocumentTypesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentTypesRelatedByUpdatedBy) {
-				foreach ((array) $this->collDocumentTypesRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentCategorysRelatedByCreatedBy) {
-				foreach ((array) $this->collDocumentCategorysRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collDocumentCategorysRelatedByUpdatedBy) {
-				foreach ((array) $this->collDocumentCategorysRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collTagsRelatedByCreatedBy) {
-				foreach ((array) $this->collTagsRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collTagsRelatedByUpdatedBy) {
-				foreach ((array) $this->collTagsRelatedByUpdatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collTagInstancesRelatedByCreatedBy) {
-				foreach ((array) $this->collTagInstancesRelatedByCreatedBy as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collTagInstancesRelatedByUpdatedBy) {
-				foreach ((array) $this->collTagInstancesRelatedByUpdatedBy as $o) {
+				foreach ($this->collDocumentsRelatedByOwnerId as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinksRelatedByOwnerId) {
-				foreach ((array) $this->collLinksRelatedByOwnerId as $o) {
+				foreach ($this->collLinksRelatedByOwnerId as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPagesRelatedByCreatedBy) {
+				foreach ($this->collPagesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPagesRelatedByUpdatedBy) {
+				foreach ($this->collPagesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPagePropertysRelatedByCreatedBy) {
+				foreach ($this->collPagePropertysRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPagePropertysRelatedByUpdatedBy) {
+				foreach ($this->collPagePropertysRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPageStringsRelatedByCreatedBy) {
+				foreach ($this->collPageStringsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collPageStringsRelatedByUpdatedBy) {
+				foreach ($this->collPageStringsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collContentObjectsRelatedByCreatedBy) {
+				foreach ($this->collContentObjectsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collContentObjectsRelatedByUpdatedBy) {
+				foreach ($this->collContentObjectsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguageObjectsRelatedByCreatedBy) {
+				foreach ($this->collLanguageObjectsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguageObjectsRelatedByUpdatedBy) {
+				foreach ($this->collLanguageObjectsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguageObjectHistorysRelatedByCreatedBy) {
+				foreach ($this->collLanguageObjectHistorysRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguageObjectHistorysRelatedByUpdatedBy) {
+				foreach ($this->collLanguageObjectHistorysRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguagesRelatedByCreatedBy) {
+				foreach ($this->collLanguagesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collLanguagesRelatedByUpdatedBy) {
+				foreach ($this->collLanguagesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collStringsRelatedByCreatedBy) {
+				foreach ($this->collStringsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collStringsRelatedByUpdatedBy) {
+				foreach ($this->collStringsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserGroupsRelatedByCreatedBy) {
+				foreach ($this->collUserGroupsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserGroupsRelatedByUpdatedBy) {
+				foreach ($this->collUserGroupsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupsRelatedByCreatedBy) {
+				foreach ($this->collGroupsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupsRelatedByUpdatedBy) {
+				foreach ($this->collGroupsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupRolesRelatedByCreatedBy) {
+				foreach ($this->collGroupRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupRolesRelatedByUpdatedBy) {
+				foreach ($this->collGroupRolesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRolesRelatedByCreatedBy) {
+				foreach ($this->collRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRolesRelatedByUpdatedBy) {
+				foreach ($this->collRolesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRolesRelatedByCreatedBy) {
+				foreach ($this->collUserRolesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUserRolesRelatedByUpdatedBy) {
+				foreach ($this->collUserRolesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRightsRelatedByCreatedBy) {
+				foreach ($this->collRightsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collRightsRelatedByUpdatedBy) {
+				foreach ($this->collRightsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentsRelatedByCreatedBy) {
+				foreach ($this->collDocumentsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentsRelatedByUpdatedBy) {
+				foreach ($this->collDocumentsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentTypesRelatedByCreatedBy) {
+				foreach ($this->collDocumentTypesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentTypesRelatedByUpdatedBy) {
+				foreach ($this->collDocumentTypesRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentCategorysRelatedByCreatedBy) {
+				foreach ($this->collDocumentCategorysRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collDocumentCategorysRelatedByUpdatedBy) {
+				foreach ($this->collDocumentCategorysRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collTagsRelatedByCreatedBy) {
+				foreach ($this->collTagsRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collTagsRelatedByUpdatedBy) {
+				foreach ($this->collTagsRelatedByUpdatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collTagInstancesRelatedByCreatedBy) {
+				foreach ($this->collTagInstancesRelatedByCreatedBy as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collTagInstancesRelatedByUpdatedBy) {
+				foreach ($this->collTagInstancesRelatedByUpdatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinksRelatedByCreatedBy) {
-				foreach ((array) $this->collLinksRelatedByCreatedBy as $o) {
+				foreach ($this->collLinksRelatedByCreatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinksRelatedByUpdatedBy) {
-				foreach ((array) $this->collLinksRelatedByUpdatedBy as $o) {
+				foreach ($this->collLinksRelatedByUpdatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinkCategorysRelatedByCreatedBy) {
-				foreach ((array) $this->collLinkCategorysRelatedByCreatedBy as $o) {
+				foreach ($this->collLinkCategorysRelatedByCreatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinkCategorysRelatedByUpdatedBy) {
-				foreach ((array) $this->collLinkCategorysRelatedByUpdatedBy as $o) {
+				foreach ($this->collLinkCategorysRelatedByUpdatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collReferencesRelatedByCreatedBy) {
-				foreach ((array) $this->collReferencesRelatedByCreatedBy as $o) {
+				foreach ($this->collReferencesRelatedByCreatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collReferencesRelatedByUpdatedBy) {
-				foreach ((array) $this->collReferencesRelatedByUpdatedBy as $o) {
+				foreach ($this->collReferencesRelatedByUpdatedBy as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
-		$this->collPagesRelatedByCreatedBy = null;
-		$this->collPagesRelatedByUpdatedBy = null;
-		$this->collPagePropertysRelatedByCreatedBy = null;
-		$this->collPagePropertysRelatedByUpdatedBy = null;
-		$this->collPageStringsRelatedByCreatedBy = null;
-		$this->collPageStringsRelatedByUpdatedBy = null;
-		$this->collContentObjectsRelatedByCreatedBy = null;
-		$this->collContentObjectsRelatedByUpdatedBy = null;
-		$this->collLanguageObjectsRelatedByCreatedBy = null;
-		$this->collLanguageObjectsRelatedByUpdatedBy = null;
-		$this->collLanguageObjectHistorysRelatedByCreatedBy = null;
-		$this->collLanguageObjectHistorysRelatedByUpdatedBy = null;
-		$this->collLanguagesRelatedByCreatedBy = null;
-		$this->collLanguagesRelatedByUpdatedBy = null;
-		$this->collStringsRelatedByCreatedBy = null;
-		$this->collStringsRelatedByUpdatedBy = null;
+		if ($this->collUserGroupsRelatedByUserId instanceof PropelCollection) {
+			$this->collUserGroupsRelatedByUserId->clearIterator();
+		}
 		$this->collUserGroupsRelatedByUserId = null;
-		$this->collUserGroupsRelatedByCreatedBy = null;
-		$this->collUserGroupsRelatedByUpdatedBy = null;
-		$this->collGroupsRelatedByCreatedBy = null;
-		$this->collGroupsRelatedByUpdatedBy = null;
-		$this->collGroupRolesRelatedByCreatedBy = null;
-		$this->collGroupRolesRelatedByUpdatedBy = null;
-		$this->collRolesRelatedByCreatedBy = null;
-		$this->collRolesRelatedByUpdatedBy = null;
+		if ($this->collUserRolesRelatedByUserId instanceof PropelCollection) {
+			$this->collUserRolesRelatedByUserId->clearIterator();
+		}
 		$this->collUserRolesRelatedByUserId = null;
-		$this->collUserRolesRelatedByCreatedBy = null;
-		$this->collUserRolesRelatedByUpdatedBy = null;
-		$this->collRightsRelatedByCreatedBy = null;
-		$this->collRightsRelatedByUpdatedBy = null;
+		if ($this->collDocumentsRelatedByOwnerId instanceof PropelCollection) {
+			$this->collDocumentsRelatedByOwnerId->clearIterator();
+		}
 		$this->collDocumentsRelatedByOwnerId = null;
-		$this->collDocumentsRelatedByCreatedBy = null;
-		$this->collDocumentsRelatedByUpdatedBy = null;
-		$this->collDocumentTypesRelatedByCreatedBy = null;
-		$this->collDocumentTypesRelatedByUpdatedBy = null;
-		$this->collDocumentCategorysRelatedByCreatedBy = null;
-		$this->collDocumentCategorysRelatedByUpdatedBy = null;
-		$this->collTagsRelatedByCreatedBy = null;
-		$this->collTagsRelatedByUpdatedBy = null;
-		$this->collTagInstancesRelatedByCreatedBy = null;
-		$this->collTagInstancesRelatedByUpdatedBy = null;
+		if ($this->collLinksRelatedByOwnerId instanceof PropelCollection) {
+			$this->collLinksRelatedByOwnerId->clearIterator();
+		}
 		$this->collLinksRelatedByOwnerId = null;
+		if ($this->collPagesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collPagesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collPagesRelatedByCreatedBy = null;
+		if ($this->collPagesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collPagesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collPagesRelatedByUpdatedBy = null;
+		if ($this->collPagePropertysRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collPagePropertysRelatedByCreatedBy->clearIterator();
+		}
+		$this->collPagePropertysRelatedByCreatedBy = null;
+		if ($this->collPagePropertysRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collPagePropertysRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collPagePropertysRelatedByUpdatedBy = null;
+		if ($this->collPageStringsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collPageStringsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collPageStringsRelatedByCreatedBy = null;
+		if ($this->collPageStringsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collPageStringsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collPageStringsRelatedByUpdatedBy = null;
+		if ($this->collContentObjectsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collContentObjectsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collContentObjectsRelatedByCreatedBy = null;
+		if ($this->collContentObjectsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collContentObjectsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collContentObjectsRelatedByUpdatedBy = null;
+		if ($this->collLanguageObjectsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collLanguageObjectsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collLanguageObjectsRelatedByCreatedBy = null;
+		if ($this->collLanguageObjectsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collLanguageObjectsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collLanguageObjectsRelatedByUpdatedBy = null;
+		if ($this->collLanguageObjectHistorysRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collLanguageObjectHistorysRelatedByCreatedBy->clearIterator();
+		}
+		$this->collLanguageObjectHistorysRelatedByCreatedBy = null;
+		if ($this->collLanguageObjectHistorysRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collLanguageObjectHistorysRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy = null;
+		if ($this->collLanguagesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collLanguagesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collLanguagesRelatedByCreatedBy = null;
+		if ($this->collLanguagesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collLanguagesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collLanguagesRelatedByUpdatedBy = null;
+		if ($this->collStringsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collStringsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collStringsRelatedByCreatedBy = null;
+		if ($this->collStringsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collStringsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collStringsRelatedByUpdatedBy = null;
+		if ($this->collUserGroupsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collUserGroupsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collUserGroupsRelatedByCreatedBy = null;
+		if ($this->collUserGroupsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collUserGroupsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collUserGroupsRelatedByUpdatedBy = null;
+		if ($this->collGroupsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collGroupsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collGroupsRelatedByCreatedBy = null;
+		if ($this->collGroupsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collGroupsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collGroupsRelatedByUpdatedBy = null;
+		if ($this->collGroupRolesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collGroupRolesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collGroupRolesRelatedByCreatedBy = null;
+		if ($this->collGroupRolesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collGroupRolesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collGroupRolesRelatedByUpdatedBy = null;
+		if ($this->collRolesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collRolesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collRolesRelatedByCreatedBy = null;
+		if ($this->collRolesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collRolesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collRolesRelatedByUpdatedBy = null;
+		if ($this->collUserRolesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collUserRolesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collUserRolesRelatedByCreatedBy = null;
+		if ($this->collUserRolesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collUserRolesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collUserRolesRelatedByUpdatedBy = null;
+		if ($this->collRightsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collRightsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collRightsRelatedByCreatedBy = null;
+		if ($this->collRightsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collRightsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collRightsRelatedByUpdatedBy = null;
+		if ($this->collDocumentsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collDocumentsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collDocumentsRelatedByCreatedBy = null;
+		if ($this->collDocumentsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collDocumentsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collDocumentsRelatedByUpdatedBy = null;
+		if ($this->collDocumentTypesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collDocumentTypesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collDocumentTypesRelatedByCreatedBy = null;
+		if ($this->collDocumentTypesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collDocumentTypesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collDocumentTypesRelatedByUpdatedBy = null;
+		if ($this->collDocumentCategorysRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collDocumentCategorysRelatedByCreatedBy->clearIterator();
+		}
+		$this->collDocumentCategorysRelatedByCreatedBy = null;
+		if ($this->collDocumentCategorysRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collDocumentCategorysRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collDocumentCategorysRelatedByUpdatedBy = null;
+		if ($this->collTagsRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collTagsRelatedByCreatedBy->clearIterator();
+		}
+		$this->collTagsRelatedByCreatedBy = null;
+		if ($this->collTagsRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collTagsRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collTagsRelatedByUpdatedBy = null;
+		if ($this->collTagInstancesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collTagInstancesRelatedByCreatedBy->clearIterator();
+		}
+		$this->collTagInstancesRelatedByCreatedBy = null;
+		if ($this->collTagInstancesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collTagInstancesRelatedByUpdatedBy->clearIterator();
+		}
+		$this->collTagInstancesRelatedByUpdatedBy = null;
+		if ($this->collLinksRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collLinksRelatedByCreatedBy->clearIterator();
+		}
 		$this->collLinksRelatedByCreatedBy = null;
+		if ($this->collLinksRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collLinksRelatedByUpdatedBy->clearIterator();
+		}
 		$this->collLinksRelatedByUpdatedBy = null;
+		if ($this->collLinkCategorysRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collLinkCategorysRelatedByCreatedBy->clearIterator();
+		}
 		$this->collLinkCategorysRelatedByCreatedBy = null;
+		if ($this->collLinkCategorysRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collLinkCategorysRelatedByUpdatedBy->clearIterator();
+		}
 		$this->collLinkCategorysRelatedByUpdatedBy = null;
+		if ($this->collReferencesRelatedByCreatedBy instanceof PropelCollection) {
+			$this->collReferencesRelatedByCreatedBy->clearIterator();
+		}
 		$this->collReferencesRelatedByCreatedBy = null;
+		if ($this->collReferencesRelatedByUpdatedBy instanceof PropelCollection) {
+			$this->collReferencesRelatedByUpdatedBy->clearIterator();
+		}
 		$this->collReferencesRelatedByUpdatedBy = null;
 		$this->aLanguageRelatedByLanguageId = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(UserPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	// taggable behavior
@@ -9997,24 +10773,5 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		{
 			return UserQuery::create()->findPk($this->updated_by);
 		}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
-	}
 
 } // BaseUser

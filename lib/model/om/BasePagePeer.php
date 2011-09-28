@@ -24,12 +24,15 @@ abstract class BasePagePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'PageTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 16;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 16;
 
 	/** the column name for the ID field */
 	const ID = 'pages.ID';
@@ -79,6 +82,9 @@ abstract class BasePagePeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'pages.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Page objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -111,7 +117,7 @@ abstract class BasePagePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Identifier', 'PageType', 'TemplateName', 'IsInactive', 'IsFolder', 'IsHidden', 'IsProtected', 'TreeLeft', 'TreeRight', 'TreeLevel', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'identifier', 'pageType', 'templateName', 'isInactive', 'isFolder', 'isHidden', 'isProtected', 'treeLeft', 'treeRight', 'treeLevel', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::IDENTIFIER, self::PAGE_TYPE, self::TEMPLATE_NAME, self::IS_INACTIVE, self::IS_FOLDER, self::IS_HIDDEN, self::IS_PROTECTED, self::TREE_LEFT, self::TREE_RIGHT, self::TREE_LEVEL, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -126,7 +132,7 @@ abstract class BasePagePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Identifier' => 2, 'PageType' => 3, 'TemplateName' => 4, 'IsInactive' => 5, 'IsFolder' => 6, 'IsHidden' => 7, 'IsProtected' => 8, 'TreeLeft' => 9, 'TreeRight' => 10, 'TreeLevel' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, 'CreatedBy' => 14, 'UpdatedBy' => 15, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'pageType' => 3, 'templateName' => 4, 'isInactive' => 5, 'isFolder' => 6, 'isHidden' => 7, 'isProtected' => 8, 'treeLeft' => 9, 'treeRight' => 10, 'treeLevel' => 11, 'createdAt' => 12, 'updatedAt' => 13, 'createdBy' => 14, 'updatedBy' => 15, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::IDENTIFIER => 2, self::PAGE_TYPE => 3, self::TEMPLATE_NAME => 4, self::IS_INACTIVE => 5, self::IS_FOLDER => 6, self::IS_HIDDEN => 7, self::IS_PROTECTED => 8, self::TREE_LEFT => 9, self::TREE_RIGHT => 10, self::TREE_LEVEL => 11, self::CREATED_AT => 12, self::UPDATED_AT => 13, self::CREATED_BY => 14, self::UPDATED_BY => 15, ),
@@ -284,7 +290,7 @@ abstract class BasePagePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -303,7 +309,7 @@ abstract class BasePagePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -357,7 +363,7 @@ abstract class BasePagePeer {
 	 * @param      Page $value A Page object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Page $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,16 +436,16 @@ abstract class BasePagePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in PagePropertyPeer instance pool, 
+		// Invalidate objects in PagePropertyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
-		// Invalidate objects in PageStringPeer instance pool, 
+		// Invalidate objects in PageStringPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PageStringPeer::clearInstancePool();
-		// Invalidate objects in ContentObjectPeer instance pool, 
+		// Invalidate objects in ContentObjectPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ContentObjectPeer::clearInstancePool();
-		// Invalidate objects in RightPeer instance pool, 
+		// Invalidate objects in RightPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
 	}
@@ -464,7 +470,7 @@ abstract class BasePagePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -524,7 +530,7 @@ abstract class BasePagePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + PagePeer::NUM_COLUMNS;
+			$col = $startcol + PagePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = PagePeer::OM_CLASS;
 			$obj = new $cls();
@@ -533,6 +539,7 @@ abstract class BasePagePeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -560,9 +567,9 @@ abstract class BasePagePeer {
 		if (!$criteria->hasSelectClause()) {
 			PagePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -610,9 +617,9 @@ abstract class BasePagePeer {
 		if (!$criteria->hasSelectClause()) {
 			PagePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -653,7 +660,7 @@ abstract class BasePagePeer {
 		}
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol = (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = PagePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(PagePeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -719,7 +726,7 @@ abstract class BasePagePeer {
 		}
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol = (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = PagePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(PagePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -792,9 +799,9 @@ abstract class BasePagePeer {
 		if (!$criteria->hasSelectClause()) {
 			PagePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -837,13 +844,13 @@ abstract class BasePagePeer {
 		}
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol2 = (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = PagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(PagePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -927,7 +934,7 @@ abstract class BasePagePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(PagePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -935,9 +942,9 @@ abstract class BasePagePeer {
 		if (!$criteria->hasSelectClause()) {
 			PagePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -975,7 +982,7 @@ abstract class BasePagePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(PagePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -983,9 +990,9 @@ abstract class BasePagePeer {
 		if (!$criteria->hasSelectClause()) {
 			PagePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1027,7 +1034,7 @@ abstract class BasePagePeer {
 		}
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol2 = (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = PagePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1076,7 +1083,7 @@ abstract class BasePagePeer {
 		}
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol2 = (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = PagePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1143,7 +1150,7 @@ abstract class BasePagePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Page or Criteria object.
+	 * Performs an INSERT on the database, given a Page or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Page object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1186,7 +1193,7 @@ abstract class BasePagePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Page or Criteria object.
+	 * Performs an UPDATE on the database, given a Page or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Page object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1225,11 +1232,12 @@ abstract class BasePagePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the pages table.
+	 * Deletes all rows from the pages table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1255,7 +1263,7 @@ abstract class BasePagePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Page or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Page or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Page object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1381,7 +1389,7 @@ abstract class BasePagePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Page $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 
@@ -1486,7 +1494,7 @@ abstract class BasePagePeer {
 			$criteria = new Criteria(PagePeer::DATABASE_NAME);
 		}
 		$criteria->addAscendingOrderByColumn(PagePeer::LEFT_COL);
-		
+	
 		return PagePeer::doSelect($criteria, $con);
 	}
 	
@@ -1539,7 +1547,7 @@ abstract class BasePagePeer {
 			$criterion->addAnd($whereCriteria->getNewCriterion(PagePeer::LEFT_COL, $last, Criteria::LESS_EQUAL));
 		}
 		$whereCriteria->add($criterion);
-		
+	
 		$valuesCriteria = new Criteria(PagePeer::DATABASE_NAME);
 		$valuesCriteria->add(PagePeer::LEFT_COL, array('raw' => PagePeer::LEFT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 	
@@ -1577,7 +1585,7 @@ abstract class BasePagePeer {
 		$whereCriteria = new Criteria(PagePeer::DATABASE_NAME);
 		$whereCriteria->add(PagePeer::LEFT_COL, $first, Criteria::GREATER_EQUAL);
 		$whereCriteria->add(PagePeer::RIGHT_COL, $last, Criteria::LESS_EQUAL);
-		
+	
 		$valuesCriteria = new Criteria(PagePeer::DATABASE_NAME);
 		$valuesCriteria->add(PagePeer::LEVEL_COL, array('raw' => PagePeer::LEVEL_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 	
@@ -1628,7 +1636,7 @@ abstract class BasePagePeer {
 	 * @param      PropelPDO $con	Connection to use.
 	 */
 	public static function makeRoomForLeaf($left, $prune = null, PropelPDO $con = null)
-	{	
+	{
 		// Update database nodes
 		PagePeer::shiftRLValues(2, $left, null, $con);
 	
@@ -1660,7 +1668,7 @@ abstract class BasePagePeer {
 				$obj->hydrate($row);
 				PagePeer::addInstanceToPool($obj, $key);
 			}
-			
+	
 			// compute level
 			// Algorithm shamelessly stolen from sfPropelActAsNestedSetBehaviorPlugin
 			// Probably authored by Tristan Rivoallan
@@ -1675,7 +1683,7 @@ abstract class BasePagePeer {
 				$level = ++$i;
 				$prev[$i] = $obj->getRightValue();
 			}
-			
+	
 			// update level in node if necessary
 			if ($obj->getLevel() !== $level) {
 				$obj->setLevel($level);

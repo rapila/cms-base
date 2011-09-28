@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class LanguageObjectTableMap extends TableMap {
+class LanguageObjectTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class LanguageObjectTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('language_objects');
 		$this->setPhpName('LanguageObject');
 		$this->setClassname('LanguageObject');
@@ -52,16 +53,16 @@ class LanguageObjectTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('ContentObject', 'ContentObject', RelationMap::MANY_TO_ONE, array('object_id' => 'id', ), 'CASCADE', null);
-    $this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('ContentObject', 'ContentObject', RelationMap::MANY_TO_ONE, array('object_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()

@@ -24,12 +24,15 @@ abstract class BaseRightPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'RightTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 13;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 13;
 
 	/** the column name for the ID field */
 	const ID = 'rights.ID';
@@ -70,6 +73,9 @@ abstract class BaseRightPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'rights.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Right objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -85,7 +91,7 @@ abstract class BaseRightPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'RoleKey', 'PageId', 'IsInherited', 'MayEditPageDetails', 'MayEditPageContents', 'MayDelete', 'MayCreateChildren', 'MayViewPage', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'roleKey', 'pageId', 'isInherited', 'mayEditPageDetails', 'mayEditPageContents', 'mayDelete', 'mayCreateChildren', 'mayViewPage', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ROLE_KEY, self::PAGE_ID, self::IS_INHERITED, self::MAY_EDIT_PAGE_DETAILS, self::MAY_EDIT_PAGE_CONTENTS, self::MAY_DELETE, self::MAY_CREATE_CHILDREN, self::MAY_VIEW_PAGE, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -100,7 +106,7 @@ abstract class BaseRightPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'RoleKey' => 1, 'PageId' => 2, 'IsInherited' => 3, 'MayEditPageDetails' => 4, 'MayEditPageContents' => 5, 'MayDelete' => 6, 'MayCreateChildren' => 7, 'MayViewPage' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, 'CreatedBy' => 11, 'UpdatedBy' => 12, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'roleKey' => 1, 'pageId' => 2, 'isInherited' => 3, 'mayEditPageDetails' => 4, 'mayEditPageContents' => 5, 'mayDelete' => 6, 'mayCreateChildren' => 7, 'mayViewPage' => 8, 'createdAt' => 9, 'updatedAt' => 10, 'createdBy' => 11, 'updatedBy' => 12, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ROLE_KEY => 1, self::PAGE_ID => 2, self::IS_INHERITED => 3, self::MAY_EDIT_PAGE_DETAILS => 4, self::MAY_EDIT_PAGE_CONTENTS => 5, self::MAY_DELETE => 6, self::MAY_CREATE_CHILDREN => 7, self::MAY_VIEW_PAGE => 8, self::CREATED_AT => 9, self::UPDATED_AT => 10, self::CREATED_BY => 11, self::UPDATED_BY => 12, ),
@@ -252,7 +258,7 @@ abstract class BaseRightPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -271,7 +277,7 @@ abstract class BaseRightPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -325,7 +331,7 @@ abstract class BaseRightPeer {
 	 * @param      Right $value A Right object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Right $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -420,7 +426,7 @@ abstract class BaseRightPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -480,7 +486,7 @@ abstract class BaseRightPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + RightPeer::NUM_COLUMNS;
+			$col = $startcol + RightPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = RightPeer::OM_CLASS;
 			$obj = new $cls();
@@ -489,6 +495,7 @@ abstract class BaseRightPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Role table
@@ -516,9 +523,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -566,9 +573,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -616,9 +623,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -666,9 +673,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -709,7 +716,7 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RightPeer::NUM_HYDRATE_COLUMNS;
 		RolePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RightPeer::ROLE_KEY, RolePeer::ROLE_KEY, $join_behavior);
@@ -775,7 +782,7 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RightPeer::NUM_HYDRATE_COLUMNS;
 		PagePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RightPeer::PAGE_ID, PagePeer::ID, $join_behavior);
@@ -841,7 +848,7 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RightPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RightPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -907,7 +914,7 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RightPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RightPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -980,9 +987,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1029,19 +1036,19 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol2 = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RightPeer::NUM_HYDRATE_COLUMNS;
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + RolePeer::NUM_HYDRATE_COLUMNS;
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + PagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RightPeer::ROLE_KEY, RolePeer::ROLE_KEY, $join_behavior);
 
@@ -1165,7 +1172,7 @@ abstract class BaseRightPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RightPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1173,9 +1180,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1219,7 +1226,7 @@ abstract class BaseRightPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RightPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1227,9 +1234,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1273,7 +1280,7 @@ abstract class BaseRightPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RightPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1281,9 +1288,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1325,7 +1332,7 @@ abstract class BaseRightPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RightPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1333,9 +1340,9 @@ abstract class BaseRightPeer {
 		if (!$criteria->hasSelectClause()) {
 			RightPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1381,16 +1388,16 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol2 = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RightPeer::NUM_HYDRATE_COLUMNS;
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + PagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RightPeer::PAGE_ID, PagePeer::ID, $join_behavior);
 
@@ -1502,16 +1509,16 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol2 = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RightPeer::NUM_HYDRATE_COLUMNS;
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + RolePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RightPeer::ROLE_KEY, RolePeer::ROLE_KEY, $join_behavior);
 
@@ -1623,13 +1630,13 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol2 = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RightPeer::NUM_HYDRATE_COLUMNS;
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + RolePeer::NUM_HYDRATE_COLUMNS;
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + PagePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RightPeer::ROLE_KEY, RolePeer::ROLE_KEY, $join_behavior);
 
@@ -1720,13 +1727,13 @@ abstract class BaseRightPeer {
 		}
 
 		RightPeer::addSelectColumns($criteria);
-		$startcol2 = (RightPeer::NUM_COLUMNS - RightPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RightPeer::NUM_HYDRATE_COLUMNS;
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + RolePeer::NUM_HYDRATE_COLUMNS;
 
 		PagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (PagePeer::NUM_COLUMNS - PagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + PagePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RightPeer::ROLE_KEY, RolePeer::ROLE_KEY, $join_behavior);
 
@@ -1835,7 +1842,7 @@ abstract class BaseRightPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Right or Criteria object.
+	 * Performs an INSERT on the database, given a Right or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Right object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1878,7 +1885,7 @@ abstract class BaseRightPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Right or Criteria object.
+	 * Performs an UPDATE on the database, given a Right or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Right object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1917,11 +1924,12 @@ abstract class BaseRightPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the rights table.
+	 * Deletes all rows from the rights table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(RightPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1946,7 +1954,7 @@ abstract class BaseRightPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Right or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Right or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Right object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -2015,7 +2023,7 @@ abstract class BaseRightPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Right $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

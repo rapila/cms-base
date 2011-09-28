@@ -24,12 +24,15 @@ abstract class BaseRolePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'RoleTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 6;
 
 	/** the column name for the ROLE_KEY field */
 	const ROLE_KEY = 'roles.ROLE_KEY';
@@ -49,6 +52,9 @@ abstract class BaseRolePeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'roles.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Role objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -64,7 +70,7 @@ abstract class BaseRolePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('RoleKey', 'Description', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('roleKey', 'description', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ROLE_KEY, self::DESCRIPTION, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -79,7 +85,7 @@ abstract class BaseRolePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('RoleKey' => 0, 'Description' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('roleKey' => 0, 'description' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ROLE_KEY => 0, self::DESCRIPTION => 1, self::CREATED_AT => 2, self::UPDATED_AT => 3, self::CREATED_BY => 4, self::UPDATED_BY => 5, ),
@@ -217,7 +223,7 @@ abstract class BaseRolePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -236,7 +242,7 @@ abstract class BaseRolePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -290,7 +296,7 @@ abstract class BaseRolePeer {
 	 * @param      Role $value A Role object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Role $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -363,13 +369,13 @@ abstract class BaseRolePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in GroupRolePeer instance pool, 
+		// Invalidate objects in GroupRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
-		// Invalidate objects in UserRolePeer instance pool, 
+		// Invalidate objects in UserRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserRolePeer::clearInstancePool();
-		// Invalidate objects in RightPeer instance pool, 
+		// Invalidate objects in RightPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		RightPeer::clearInstancePool();
 	}
@@ -394,7 +400,7 @@ abstract class BaseRolePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -454,7 +460,7 @@ abstract class BaseRolePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + RolePeer::NUM_COLUMNS;
+			$col = $startcol + RolePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = RolePeer::OM_CLASS;
 			$obj = new $cls();
@@ -463,6 +469,7 @@ abstract class BaseRolePeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -490,9 +497,9 @@ abstract class BaseRolePeer {
 		if (!$criteria->hasSelectClause()) {
 			RolePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -540,9 +547,9 @@ abstract class BaseRolePeer {
 		if (!$criteria->hasSelectClause()) {
 			RolePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -583,7 +590,7 @@ abstract class BaseRolePeer {
 		}
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RolePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -649,7 +656,7 @@ abstract class BaseRolePeer {
 		}
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = RolePeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(RolePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -722,9 +729,9 @@ abstract class BaseRolePeer {
 		if (!$criteria->hasSelectClause()) {
 			RolePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -767,13 +774,13 @@ abstract class BaseRolePeer {
 		}
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RolePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(RolePeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -857,7 +864,7 @@ abstract class BaseRolePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -865,9 +872,9 @@ abstract class BaseRolePeer {
 		if (!$criteria->hasSelectClause()) {
 			RolePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -905,7 +912,7 @@ abstract class BaseRolePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(RolePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -913,9 +920,9 @@ abstract class BaseRolePeer {
 		if (!$criteria->hasSelectClause()) {
 			RolePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -957,7 +964,7 @@ abstract class BaseRolePeer {
 		}
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RolePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1006,7 +1013,7 @@ abstract class BaseRolePeer {
 		}
 
 		RolePeer::addSelectColumns($criteria);
-		$startcol2 = (RolePeer::NUM_COLUMNS - RolePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = RolePeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1073,7 +1080,7 @@ abstract class BaseRolePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Role or Criteria object.
+	 * Performs an INSERT on the database, given a Role or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Role object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1112,7 +1119,7 @@ abstract class BaseRolePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Role or Criteria object.
+	 * Performs an UPDATE on the database, given a Role or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Role object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1151,11 +1158,12 @@ abstract class BaseRolePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the roles table.
+	 * Deletes all rows from the roles table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(RolePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1181,7 +1189,7 @@ abstract class BaseRolePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Role or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Role or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Role object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1301,7 +1309,7 @@ abstract class BaseRolePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Role $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

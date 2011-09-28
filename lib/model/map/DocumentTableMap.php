@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class DocumentTableMap extends TableMap {
+class DocumentTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class DocumentTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('documents');
 		$this->setPhpName('Document');
 		$this->setClassname('Document');
@@ -65,18 +66,18 @@ class DocumentTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
-    $this->addRelation('UserRelatedByOwnerId', 'User', RelationMap::MANY_TO_ONE, array('owner_id' => 'id', ), null, null);
-    $this->addRelation('DocumentType', 'DocumentType', RelationMap::MANY_TO_ONE, array('document_type_id' => 'id', ), 'CASCADE', null);
-    $this->addRelation('DocumentCategory', 'DocumentCategory', RelationMap::MANY_TO_ONE, array('document_category_id' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
+		$this->addRelation('UserRelatedByOwnerId', 'User', RelationMap::MANY_TO_ONE, array('owner_id' => 'id', ), null, null);
+		$this->addRelation('DocumentType', 'DocumentType', RelationMap::MANY_TO_ONE, array('document_type_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('DocumentCategory', 'DocumentCategory', RelationMap::MANY_TO_ONE, array('document_category_id' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
