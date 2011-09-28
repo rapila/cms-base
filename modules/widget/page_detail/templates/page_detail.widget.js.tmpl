@@ -197,15 +197,19 @@ Widget.types.page_detail = {
 				property_container.data('propertyName', property_name);
 				var label = property_container.find('label').text(attrs.display_name);
 				var input = property_container.find('input').val(attrs.value);
-				var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
-				if(attrs.type === 'color') {
-					input.bind('change', function(defaultValue) {
-						if(this.val()) {
-							this.css({backgroundColor: this.val()});
-						} else {
-							this.css({backgroundColor: defaultValue});
-						}
-					}.bind(input, attrs.defaultValue)).triggerHandler('change');
+				if(attrs.defaultValue) {
+					var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
+					if(attrs.type === 'color') {
+						input.bind('change', function(defaultValue) {
+							if(this.val()) {
+								this.css({backgroundColor: this.val()});
+							} else {
+								this.css({backgroundColor: defaultValue});
+							}
+						}.bind(input, attrs.defaultValue)).triggerHandler('change');
+					}
+				} else {
+					input.next().remove();
 				}
 				page_properties_container.append(property_container);
 			} 
