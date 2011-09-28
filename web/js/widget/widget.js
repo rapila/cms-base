@@ -10,6 +10,8 @@ if(!Function.prototype.bind) {
 	};
 }
 
+jQuery.ajaxSetup({cache: true});
+
 Function.prototype.deferred = function(list) {
 	var d = jQuery.Deferred();
 	if(list) {
@@ -224,12 +226,7 @@ jQuery.extend(Widget, {
 							if(!script.attr('src')) {
 								head.append(this.cloneNode(true));
 							} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
-								head[0].appendChild(this.cloneNode(true));
-								// jQuery.ajax({
-								// 	url: script.attr('src'),
-								// 	dataType: 'script',
-								// 	async: false
-								// });
+								head.append(this.cloneNode(true));
 							}
 						});
 						//Add styles
