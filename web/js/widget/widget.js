@@ -1,8 +1,3 @@
-// jQuery 1.3 compliance
-if(!jQuery.noop) {
-	jQuery.noop = function() {};
-}
-
 //Bind method (heavily used)
 if(!Function.prototype.bind) {
 	Function.prototype.bind = function(context) {
