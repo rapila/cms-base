@@ -192,7 +192,9 @@ class SpecialTemplateIdentifierActions {
 	public function writeConstantValue($oTemplateIdentifier) {
 		$aResult = array();
 		foreach(explode('/', $oTemplateIdentifier->getValue()) as $sConstantName) {
-			$aResult[] = constant($sConstantName);
+			if(defined($sConstantName)) {
+				$aResult[] = constant($sConstantName);
+			}
 		}
 		return implode('/', $aResult);
 	}
