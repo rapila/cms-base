@@ -59,10 +59,11 @@ h3.status{padding-left:.3em}
 .page_detail .template-container-description{font-size:13px;display:block;margin-top:.5em}
 .page_detail div.ui-widget-content{border:0}
 .ui-icon-trash.delete_inactive{background-image:none}
-#admin_sidebar .ui-state-droppable,.image_browse_area.ui-state-droppable{border:0 solid #b8d600;color:#5b595b;cursor:pointer}
+#admin_sidebar .ui-state-droppable,.image_browse_area.ui-state-droppable{color:#5b595b;cursor:pointer}
 .document_detail .preview{padding:0 !important;margin-left:-1px;border:1px dashed #ddd;background-color:#fbfbfb}
 .pointer{cursor:pointer}
 .image_browse_area.ui-state-droppable,div.ui-state-droppable{border:1px solid #b8d600;cursor:pointer}
+.image_browse_area.ui-state-droppable{background-color:#e3ef99}
 .ui-state-droppable a,.ui-widget-content .ui-state-droppable a{color:#5b595b;cursor:pointer}
 *[data-widget-type=tree].ui-widget-content .ui-icon{background-image:url("../../images/admin/icon_triangle_open_active.png");background-position:6px 6px}
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon{background-image:url("../../images/admin/icon_triangle_closed.png");background-position:6px 5px}

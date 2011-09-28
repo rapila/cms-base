@@ -1,4 +1,5 @@
-.ui-state-droppable{background-color:#e3ef99}
+.ui-state-droppable,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable{background-color:#e3ef99}
+#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable{background-color:#9fa665}
 .ui-state-droppable td{background-color:#e3ef99}
 .ui-state-hover{border-width:0}
 label{color:#666;float:none;font-family:Arial;font-size:.95em;display:block;padding-bottom:.1em;margin-top:.8em;text-align:left;width:auto}
