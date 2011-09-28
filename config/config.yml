@@ -41,7 +41,6 @@ developer:
 admin:
   title: 'CMS Admin — {{module_name}}'
   delete_pagetree_enable: true
-  page_properties_allow: false
   
   # set this to false if your containers overlap
   use_parsed_css_in_config: true
