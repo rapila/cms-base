@@ -28,7 +28,7 @@ Widget.types.document_detail = {
 			};
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
-				width: 550,
+				width: 600,
 				dialogClass: "document_detail"
 			});
 			
@@ -107,7 +107,7 @@ Widget.types.document_detail = {
 			this.content.find(".detail_id").text(document_data.Id);
 			this.content.find(".file_size").text(document_data.FileInfo);
 			this.content.find(".original_name").text(document_data.OriginalName === null ? document_data.Name : document_data.OriginalName);
-			this.content.find(".download_document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
+			this.content.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
 			
 			if(upload_mode === 'new') {
 				if(!jQuery.trim(this.content.find("input[name='name']").val())) {

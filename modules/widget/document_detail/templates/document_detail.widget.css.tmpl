@@ -13,8 +13,13 @@
 	margin: 0 auto;
 }
 
+.ui-dialog.document_detail .preview {
+	width: 190px;
+}
+
 .ui-dialog.document_detail .ui-state-droppable .preview {
-	border: 1px solid #b8d600;
+	border: 1px solid #f2f2f2;
+	background-color: #b8d600
 	cursor: pointer;
 }
 
@@ -25,3 +30,21 @@
 	padding: 2em 1em;
 	color: #BEBEBE;
 }
+
+.ui-dialog.document_detail .status_section {
+	 width: 21em;
+}
+	
+.ui-download-document {
+	padding: .2em 1.4em .2em 0;
+	display: inline-block;
+	color: #333333;
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+.ui-download-document:hover {
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download_active.png");
+}
+

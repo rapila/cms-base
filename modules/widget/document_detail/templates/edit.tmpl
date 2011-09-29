@@ -7,11 +7,13 @@
 		  </div>
 		</div>
 		<div class="hide_if_not_saved">
-  		<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span><a href="#" class="download_document ui-icon ui-icon-circle-zoomout" title="{{writeString=wns.document.download}}"> </a><br />
+			<br />
+			<a href="#" class="ui-download-document" title="{{writeString=wns.document.download}}">{{writeString=wns.document.download}}</a><br />
+  		<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span><br />
   		<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
   		<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
   		<label>{{writeString=wns.document.original_name}}</label><span class="original_name"></span><br />
-  		<label>ID:</label><span class="detail_id">{{id}}<br />
+  		<label>ID:</label><span class="detail_id">{{id}}</span><br />
 		</div>
 	</div>
 	<div>
@@ -23,11 +25,11 @@
 		<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
 		<label for="language_id">{{writeString=wns.language}}</label>
 		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
-		<input type="checkbox" name="is_protected" style="display: inline-block;" class="for_checkbox" /><label for="is_protected" class="for_checkbox">{{writeString=wns.is_protected}}</label>	
-		<br clear="left" />
 		<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>	
 		<input type="text" name="content_created_at" class="ui-widget-content" /><br />
 		<label for="author">{{writeString=wns.document.author-license}}</label>	
-		<input type="text" name="author" class="ui-widget-content" style="width:10em;margin-right:1em;" /><input type="text" name="license" class="ui-widget-content" data-widget-type="popover" style="width:10em;"/>
+		<input type="text" name="author" class="ui-widget-content" style="width:10em;margin-right:1em;" /><input type="text" name="license" class="ui-widget-content" data-widget-type="popover" style="width:10em;"/><br />
+		<input type="checkbox" name="is_protected" style="display: inline-block;" class="for_checkbox" /><label for="is_protected" class="for_checkbox">{{writeString=wns.is_protected}}</label>	
+		<br clear="left" />
 	</div>
 </form>
