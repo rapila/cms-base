@@ -36,7 +36,6 @@ Widget.types.file_upload = {
 			var target = jQuery(event.target);
 			var inner = selector ? target.closest(selector) : element;
 			//Leave did not occur on the wanted element (inner) but on a child
-			console.log(inner.has(target).length || inner.has(event.relatedTarget).length);
 			if(inner.has(target).length || inner.has(event.relatedTarget).length) {
 				///@fixme this will also return if the user left the `inner` directly from a child, in which case the highlight should be released but isn’t
 				return;
