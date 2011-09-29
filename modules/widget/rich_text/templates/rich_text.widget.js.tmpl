@@ -263,7 +263,6 @@ Widget.types.rich_text = {
 	set_inline_css: function(css) {
 		this.settings.inline_css = css;
 		if(this.instance) {
-			console.log(this.instance.document);
 			this.instance.document.appendStyleText(css);
 		}
 	},
