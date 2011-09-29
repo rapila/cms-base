@@ -5,6 +5,7 @@ Widget.types.document_category_input = {
 	},
 	
 	reload: function() {
+		var _this = this;
 		var current = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
@@ -15,7 +16,7 @@ Widget.types.document_category_input = {
 				option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 			}.bind(this));
 			if(this.settings.show_without && has_categories) {
-				option.clone().text("{{writeString=wns.document_category_input.without_category}}").val('__without').prependTo(this._element);
+				option.clone().text(_this.settings.show_without_linktext).val('__without').prependTo(this._element);
 			}
 			if(this.settings.show_all || !has_categories) {
 				option.clone().text("{{writeString=wns.document_category_input.show_all}}").val('__all').prependTo(this._element);
@@ -36,7 +37,8 @@ Widget.types.document_category_input = {
 		show_all: true,
 		show_without: false,
 		initial_selection: null,
-		categories_with_documents_only: false
+		categories_with_documents_only: false,
+		show_without_linktext: "{{writeString=wns.document_category_input.without_category}}"
 	}
 
 };
