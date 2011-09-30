@@ -1,18 +1,28 @@
 jQuery.fn.extend({
 	tooltip: function(text) {
-		var tooltip = jQuery("#global_tooltip");
-		if(!tooltip.length) {
-			tooltip = jQuery('<div/>').attr('id', 'global_tooltip').addClass('tooltip ui-widget ui-widget-content ui-corner-all').appendTo(document.body);
-		}
+		var tooltip = null;
+		var offsetParent = null;
+		var _this = this;
+		var set_position = function(event) {
+			var offset = offsetParent.offset();
+			offset.left = event.pageX + 3 - offset.left;
+			offset.top = event.pageY + 3 - offset.top;
+			tooltip.css(offset);
+		};
 		this.hover(function(event) {
+			if(!tooltip) {
+				offsetParent = _this.offsetParent();
+				tooltip = offsetParent.children("div.global_tooltip");
+				if(!tooltip.length) {
+					tooltip = jQuery('<div/>').addClass('global_tooltip tooltip ui-widget ui-widget-content ui-corner-all').appendTo(offsetParent);
+				}
+			}
 			tooltip.text(text);
 			tooltip.show();
-			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
+			set_position(event);
 		}, function() {
 			tooltip.hide();
-		}).mousemove(function(event) {
-			tooltip.css({left: (event.pageX+3)+"px", top: (event.pageY+3)+"px"});
-		});
+		}).mousemove(set_position);
 	}
 });
 

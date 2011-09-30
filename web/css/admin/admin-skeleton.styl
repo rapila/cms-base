@@ -1,231 +1,235 @@
 @import "admin"
 
 html
-  overflow: hidden
-  font-family: Arial, Helvetica, sans-serif
+	overflow: hidden
+	font-family: Arial, Helvetica, sans-serif
 
 body
-  font-size: 0.75em
-  margin: 0 side_window_distance
+	font-size: 0.75em
+	margin: 0 side_window_distance
 
 body.login h1
-  text-align: center
-  font-size: 5em
-  color: #C2C2C2
+	text-align: center
+	font-size: 5em
+	color: #C2C2C2
 
 #admin_area, #admin_info_bar, #viewscreen_loader
-  position: absolute
-  overflow: hidden
-  left: side_window_distance
-  right: side_window_distance
+	position: absolute
+	overflow: hidden
+	left: side_window_distance
+	right: side_window_distance
 
 #admin_area
-  top: admin_menu_height
-  bottom: info_bar_height + border_width
-  background-color: #FFFFFF
+	top: admin_menu_height
+	bottom: info_bar_height + border_width
+	background-color: #FFFFFF
 
 #admin_sidebar, #admin_main
-  overflow-y: auto
-  position: absolute
-  top: 0
-  bottom: 0
-  background-color: background_color
+	overflow-y: auto
+	position: absolute
+	top: 0
+	bottom: 0
+	background-color: background_color
 
 #admin_main
-  padding: 0px 2px 0 0
-  border-left: border
-  overflow-y: scroll
+	padding: 0px 2px 0 0
+	border-left: border
+	overflow-y: scroll
 
 #viewscreen_loader
-  top: admin_menu_height
-  left: 0
-  right: 0
-  bottom: 0
-  background-color: rgba(220, 220, 220, 0.5)
-  background-repeat: no-repeat
-  background-image: url('../../images/admin/loader_big.gif')
-  background-position: center center
-  z-index: 10001
+	top: admin_menu_height
+	left: 0
+	right: 0
+	bottom: 0
+	background-color: rgba(220, 220, 220, 0.5)
+	background-repeat: no-repeat
+	background-image: url('../../images/admin/loader_big.gif')
+	background-position: center center
+	z-index: 10001
 
 #admin_sidebar
-  left: 0
-  width: initial_sidebar_width
-  border: none
-  border-right: border
-  padding: 0px 0
-  background: background_color_sidebar
-  z-index: 10
+	left: 0
+	width: initial_sidebar_width
+	border: none
+	border-right: border
+	padding: 0px 0
+	background: background_color_sidebar
+	z-index: 10
 
 #admin_sidebar .ui-tabs-nav
-  background: #F6F6F6
+	background: #F6F6F6
 
 #admin_sidebar .ui-tabs-nav li a
-  font-weight: 700
+	font-weight: 700
 
 #admin_sidebar .ui-tabs-nav .ui-state-active
-  background: #DFE1E3
+	background: #DFE1E3
 
 #admin_main
-  left: 0
+	left: 0
 
 #admin_sidebar + #admin_main
-  left: initial_sidebar_width
+	left: initial_sidebar_width
 
 #admin_main
-  right: 0
-  padding-right: side_window_distance
+	right: 0
+	padding-right: side_window_distance
 
 #admin_info_bar
-  left: 0
-  right: 0
-  height: info_bar_height
-  bottom: 0px
-  border-top: border
+	left: 0
+	right: 0
+	height: info_bar_height
+	bottom: 0px
+	border-top: border
 
 #admin_info_bar .infobar_context
-  position: relative
+	position: relative
 
 #admin_info_bar .sidebar_resizer
-  position: relative
-  background-image: url('../../images/admin/sidebar_resizer.png')
-  width: sidebar_resizer_width
-  height: info_bar_height
-  left: initial_sidebar_width
-  cursor: ew-resize
-  padding-right: 0px
-  border-right: border
-  margin-left: -(sidebar_resizer_width)
-  float: left
+	position: relative
+	background-image: url('../../images/admin/sidebar_resizer.png')
+	width: sidebar_resizer_width
+	height: info_bar_height
+	left: initial_sidebar_width
+	cursor: ew-resize
+	padding-right: 0px
+	border-right: border
+	margin-left: -(sidebar_resizer_width)
+	float: left
 
 .infobar_right
-  position: relative
-  left: initial_sidebar_width
-  max-width: 75em
-  min-width: 40em
-  margin-right: initial_sidebar_width + 30px
+	position: relative
+	left: initial_sidebar_width
+	max-width: 75em
+	min-width: 40em
+	margin-right: initial_sidebar_width + 30px
 
 .infobar_right input
-  float: left
-  width: 20em
-  font-size: .95em
+	float: left
+	width: 20em
+	font-size: .95em
 
 .infobar_right form
-  margin-left: 24px
+	margin-left: 24px
 
 #admin_info_bar .infobar_left
-  position: absolute
+	position: absolute
 
 #admin_info_bar .info-bar-element
-  float: left
-  height: info_bar_height
-  border: none
-  border-right: border
+	float: left
+	height: info_bar_height
+	border: none
+	border-right: border
 
 #admin_info_bar select.info-bar-element
-  vertical-align: middle
-  padding: 4px 0 2px
+	vertical-align: middle
+	padding: 4px 0 2px
 
 #admin_info_bar .info-bar-button
-  width: info_bar_height
-  background-color: transparent
-  background-repeat: no-repeat
-  background-position: center center
-  padding-right: 1px
-  cursor: pointer
+	width: info_bar_height
+	background-color: transparent
+	background-repeat: no-repeat
+	background-position: center center
+	padding-right: 1px
+	cursor: pointer
 
 #admin_info_bar .info-bar-element
-  line-height: info_bar_height
-  vertical-align: middle
+	line-height: info_bar_height
+	vertical-align: middle
 
 #admin_info_bar input.info-bar-element
-  border-color: #E4E4E4
-  border-right-style: dotted
-  vertical-align: middle
+	border-color: #E4E4E4
+	border-right-style: dotted
+	vertical-align: middle
 
 #admin_info_bar input.info-bar-element.default_state
-  background-color: transparent
+	background-color: transparent
 
 #admin_info_bar span.info-bar-element
-  display: block
-  line-height: info_bar_height
-  vertical-align: middle
+	display: block
+	line-height: info_bar_height
+	vertical-align: middle
 
 #admin_info_bar .info-bar-element.row_count_info
-  padding-left: 1em
-  color: #888
-  border-right: 0
+	padding-left: 1em
+	color: #888
+	border-right: 0
 
 #admin_info_bar .search_field
-  padding: 0 4px
+	padding: 0 4px
 
 #admin_info_bar .search_button
-  background-image: url('../../images/admin/search_icon.gif')
+	background-image: url('../../images/admin/search_icon.gif')
 
 #admin_info_bar .search_button.active
-  background-image: url('../../images/admin/search_icon_active.gif')
+	background-image: url('../../images/admin/search_icon_active.gif')
 
 #admin_info_bar .search_field_reset
-  background-image: url('../../images/admin/search_reset.png')
-  border: none
-  width: 16px
-  margin-left: -24px
-  z-index: 1
-  border-right: 0
+	background-image: url('../../images/admin/search_reset.png')
+	border: none
+	width: 16px
+	margin-left: -24px
+	z-index: 1
+	border-right: 0
 
-.tooltip
-  position: absolute
-  top: 0
-  left: 0
-  z-index: 10000
-  display: none
-  padding: .5em 1em
-  font-size: .9em
+.tooltip,
+.cke_skin_kama .tooltip
+	background-color: white
+	font-size: 12px
+	line-height: 1.2em
+	position: absolute
+	top: 0
+	left: 0
+	z-index: 10000
+	display: none
+	padding: .5em 1em
+	font-size: .9em
 
 input
-  padding: .3em
-  margin-bottom: .3em
+	padding: .3em
+	margin-bottom: .3em
 
 input[type=checkbox]
-  padding: 0
+	padding: 0
 
 input.default_state
-  color: #9E9E9E
+	color: #9E9E9E
 
 ui-widget
-  font-size: .5em
+	font-size: .5em
 
 textarea.ui-widget-content
-  width: 22em
+	width: 22em
 
 #admin_sidebar ol
-  padding: 0
-  margin: 0
+	padding: 0
+	margin: 0
 
 .ui-sortable, .ui-draggable, .ui-state-droppable
-  cursor: move
+	cursor: move
 
 #admin_sidebar input
-  padding: 0 0 0 0
-  margin: 0
-  border: 0
-  background-color: transparent
-  color: #777
-  font-size: 1.0em
-  width: 240px
+	padding: 0 0 0 0
+	margin: 0
+	border: 0
+	background-color: transparent
+	color: #777
+	font-size: 1.0em
+	width: 240px
 
 .ui-dialog .ui-dialog-buttonpane button
-  padding: 0 0.5em
+	padding: 0 0.5em
 
 .ui-dialog
-  background-color: #000
-  padding: 0 !important
+	background-color: #000
+	padding: 0 !important
 
 .ui-widget-content
-  background: none #F9F9F9
+	background: none #F9F9F9
 
 div.ui-widget-content
-  border: 1px solid #999
+	border: 1px solid #999
 
 .ui-tabs a
-  cursor: pointer
+	cursor: pointer
 

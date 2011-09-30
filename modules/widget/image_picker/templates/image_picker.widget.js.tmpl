@@ -74,13 +74,13 @@ Widget.types.image_picker = {
 				var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-image-picker-image');
 				image.children('img').attr({src: url, width: '50'});
 				image.data('document_id', document_id);
-				Widget.tooltip(image, this.name);
 				image.hover(function() {
 					image.addClass('ui-state-hover');
 				}, function() {
 					image.removeClass('ui-state-hover');
 				});
 				_this.image_area.append(image);
+				Widget.tooltip(image, this.name);
 				image.after(document.createTextNode(' '));
 			});
 			Widget.end_load();

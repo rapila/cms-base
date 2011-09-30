@@ -32,7 +32,7 @@ body.login h1{text-align:center;font-size:5em;color:#c2c2c2}
 #admin_info_bar .search_button{background-image:url("../../images/admin/search_icon.gif")}
 #admin_info_bar .search_button.active{background-image:url("../../images/admin/search_icon_active.gif")}
 #admin_info_bar .search_field_reset{background-image:url("../../images/admin/search_reset.png");border:none;width:16px;margin-left:-24px;z-index:1;border-right:0}
-.tooltip{position:absolute;top:0;left:0;z-index:10000;display:none;padding:.5em 1em;font-size:.9em}
+.tooltip,.cke_skin_kama .tooltip{background-color:#fff;font-size:12px;line-height:1.2em;position:absolute;top:0;left:0;z-index:10000;display:none;padding:.5em 1em;font-size:.9em}
 input{padding:.3em;margin-bottom:.3em}
 input[type=checkbox]{padding:0}
 input.default_state{color:#9e9e9e}
