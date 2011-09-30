@@ -15,6 +15,8 @@
 
 .ui-dialog.document_detail .preview {
 	width: 190px;
+	background-color: #fff;
+	margin-left: -1px
 }
 
 .ui-dialog.document_detail .ui-state-droppable .preview {
@@ -26,9 +28,8 @@
 .ui-dialog.document_detail .preview .droppable_info {
 	display: block;
 	line-height: 1.6em;
-	min-height: 7em;
-	padding: 2em 1em;
-	color: #BEBEBE;
+	min-height: 8em;
+	padding: 1em 1em;
 }
 
 .ui-dialog.document_detail .status_section {
@@ -38,7 +39,8 @@
 .ui-download-document {
 	padding: .2em 1.4em .2em 0;
 	display: inline-block;
-	color: #333333;
+	color: #888888;
+	text-decoration: underline;
 	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download.png");
 	background-repeat: no-repeat;
 	background-position: right center;

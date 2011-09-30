@@ -1,4 +1,5 @@
-.ui-state-droppable,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable{background-color:#e3ef99 !important}
+.droppable_prepare{background-image:url("../../images/admin/drag_and_drop.png");background-repeat:no-repeat;background-position:center center;border:1px solid #e1e1e1;color:#666;cursor:pointer}
+.ui-state-droppable,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable{background-color:#e3ef99 !important;background-image:url("../../images/admin/drag_and_drop_hover.png")}
 #admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable{background-color:#9fa665 !important}
 .ui-state-droppable td{background-color:#e3ef99}
 .ui-state-hover{border-width:0}
