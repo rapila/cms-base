@@ -71,9 +71,8 @@ Widget.types.file_upload = {
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
-				if(options.unacceptable) {
-					options.unacceptable(error);
-				} else {
+				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
+				if(!options.unacceptable || !options.unacceptable(error)) {
 					var _this = this;
 					jQuery('<div/>').text(error.message).dialog({buttons: {
 						"{{writeString=wns.document_type.allow}}": function() {
@@ -82,8 +81,11 @@ Widget.types.file_upload = {
 						},
 						"{{writeString=wns.cancel}}": function() {
 							jQuery(this).dialog("close");
+							options.error && options.error(error);
 						}
 					}});
+				} else {
+					options.error && options.error(error);
 				}
 			} else {
 				this.do_upload(file, options);
@@ -118,6 +120,7 @@ Widget.types.file_upload = {
 				this.fire('file-uploaded', result, options);
 				options.callback(result, options);
 			} else {
+				options.error && options.error(error);
 				notification.close();
 			}
 		}, json_options);
