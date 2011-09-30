@@ -699,6 +699,7 @@ jQuery.extend(Widget, {
 	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
 		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
+			error.reporting_done = true;
 			Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			return true;
 		},
@@ -717,10 +718,13 @@ jQuery.extend(Widget, {
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
+				error.reporting_done = true;
 				widgetOrId.validate_with(error.parameters);
 			} else if (widgetOrId.detail_widget) {
+				error.reporting_done = true;
 				widgetOrId.detail_widget.validate_with(error.parameters, widgetOrId.detail_widget.content);
 			} else {
+				error.reporting_done = true;
 				message = jQuery('<div/>').text(error.message);
 				var error_list = jQuery('<ul/>').appendTo(message);
 				jQuery.each(error.parameters, function(counter, item) {
