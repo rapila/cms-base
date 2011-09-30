@@ -47,7 +47,7 @@ Widget.types.document_detail = {
 			});
 			
 			_this.uploader.allow_drag_to(_this.content, null, function(target) {
-				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this)};
+				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: true};
 			}, true);
 
 			_this.file_upload.change(function(event) {

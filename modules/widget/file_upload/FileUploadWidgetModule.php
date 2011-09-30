@@ -56,7 +56,9 @@ class FileUploadWidgetModule extends WidgetModule {
     $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
-		$oDocument->setName($sFileName);
+		if(!$aOptions['deny_name_override'] || !$oDocument->getName()) {
+			$oDocument->setName($sFileName);
+		}
 		
 		if($oDocument->isNew()) {
 			$oDocument->setLanguageId($aOptions['language_id']);

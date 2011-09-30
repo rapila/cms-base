@@ -67,7 +67,7 @@ Widget.types.file_upload = {
 	},
 	
 	upload_file: function(file) {
-		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop};
+		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop, deny_name_override: false};
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
