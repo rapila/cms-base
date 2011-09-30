@@ -22,14 +22,14 @@ Widget.types.file_upload = {
 			if(!current_drag_is_file) {
 				return;
 			}
+			event.originalEvent.preventDefault();
 			var target = jQuery(event.target);
 			var inner = selector ? target.closest(selector, element) : element;
 			//Drag did not occur on the wanted element (inner) but on a child
 			if(!inner.length || inner.has(target).length) {
-				return;
+				return false;
 			}
 			inner.addClass('ui-state-droppable');
-			event.originalEvent.preventDefault();
 			return false;
 		}).bind('dragleave', function(event) {
 			
