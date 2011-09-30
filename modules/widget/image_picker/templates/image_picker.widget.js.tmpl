@@ -5,7 +5,7 @@ Widget.types.image_picker = {
 	
 	prepare: function() {
 		var _this = this;
-		this.image_area = jQuery('<div/>').addClass('image_browse_area').appendTo(this._element);
+		this.image_area = jQuery('<div/>').addClass('image_browse_area droppable_prepare').appendTo(this._element);
 		var ajax_loader = jQuery('<div/>').addClass();
 		
 		var file_uploader = Widget.create('file_upload');
