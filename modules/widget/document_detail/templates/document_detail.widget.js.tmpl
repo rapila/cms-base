@@ -10,6 +10,7 @@ Widget.types.document_detail = {
 		
 		Widget.create('detail', function(widget) {
 			widget.set_instance(_this);
+			//proxy the default save handler to allow uploading on save
 			var old_save_handler = _this.detail_widget.settings.save_callback;
 			_this.current_detail_id = null;
 			_this.detail_widget.settings.save_callback = function() {
@@ -58,14 +59,14 @@ Widget.types.document_detail = {
 			}
 		});
 		this.handle('saving', function(event, data) {
-			data.is_called_externally = _this.settings.hide_inputs_if_called_externally;
+			data.is_called_externally = _this.settings.hide_inputs_if_called_externally; //FIXME: this is missing an “&& is_called_externally”
 		});
 	},
 	
 	upload_error: function(error) {
 		this.file_upload.attr('disabled', false);
-		if(error) {
-			this.detail_widget.validate_with({upload: jQuery.parseHTML('<span class="error_display"/>').text(error.message)});
+		if(error && !error.reporting_done) {
+			this.detail_widget.validate_with({upload: {string: jQuery.parseHTML('<span class="error_display"/>').text(error.message)}});
 		}
 	},
 	
@@ -109,12 +110,11 @@ Widget.types.document_detail = {
 			this.content.find(".original_name").text(document_data.OriginalName === null ? document_data.Name : document_data.OriginalName);
 			this.content.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
 			
-			if(upload_mode === 'new') {
+			if(upload_mode) {
 				if(!jQuery.trim(this.content.find("input[name='name']").val())) {
 					this.content.find("input[name='name']").val(document_data.Name);
 				}
-			}
-			if(!upload_mode) {
+			} else {
 				if(document_data.DocumentCategoryId === null) {
 					document_data.DocumentCategoryId = '';
 				}

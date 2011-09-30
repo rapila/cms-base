@@ -80,7 +80,10 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$oDocument->setName($aDocumentData['name']);
+		$aDocumentData['name'] = trim($aDocumentData['name']);
+		if($aDocumentData['name'] || !$oDocument->getName()) {
+			$oDocument->setName($aDocumentData['name']);
+		}
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setAuthor($aDocumentData['author'] == '' ? null : $aDocumentData['author']);
 		$oDocument->setLicense($aDocumentData['license'] == '' ? null : $aDocumentData['license']);
