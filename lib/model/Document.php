@@ -170,7 +170,7 @@ class Document extends BaseDocument {
 		if(!isset($aInfo['image'])) {
 			return null;
 		}
-		return $aInfo['image'];
+		return LinkUtil::link(array('license_image', $this->getLicense()), 'FileManager');
 	}
 
 	public function getLicenseDisclaimer() {
