@@ -1385,7 +1385,25 @@ abstract class BaseLinkCategoryPeer {
 		return self::$IGNORE_RIGHTS;
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
-		return true;
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		if($oUser->hasRole("links")) {
+			return true;
+		}
+		if(!$oUser->hasRole("links-own")) {
+			return false;
+		}
+		if($sOperation === "insert") {
+			return true;
+		}
+		if($mObject instanceof User) {
+			return $mObject->getId() === $oUser->getId();
+		}
+		return $mObject->getCreatedBy() === $oUser->getId();
 	}
 
 } // BaseLinkCategoryPeer

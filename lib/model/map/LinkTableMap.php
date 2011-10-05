@@ -78,8 +78,8 @@ class LinkTableMap extends TableMap
 		return array(
 			'referenceable' => array(),
 			'taggable' => array(),
+			'denyable' => array('mode' => 'allow', 'role_key' => 'links', 'owner_allowed' => 'true', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
-			'denyable' => array('mode' => 'allow', 'role_key' => '', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
 	} // getBehaviors()

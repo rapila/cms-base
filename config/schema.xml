@@ -273,6 +273,10 @@
 	<column name="data" type="blob" lazyLoad="true" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="documents" />
+		<parameter name="owner_allowed" value="true" />
+	</behavior>
 </table>
 
 <table name="document_types" phpName="DocumentType">
@@ -284,6 +288,10 @@
 		<unique-column name="extension" />
 		<unique-column name="mimetype" />
 	</unique>
+	<behavior name="denyable">
+		<parameter name="role_key" value="documents" />
+		<parameter name="owner_allowed" value="true" />
+	</behavior>
 </table>
 
 <table name="document_categories" phpName="DocumentCategory">
@@ -294,6 +302,10 @@
 	<column name="is_externally_managed" type="boolean" size="1" default="0" />
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="documents" />
+		<parameter name="owner_allowed" value="true" />
+	</behavior>
 </table>
 
 <table name="tags" phpName="Tag">
@@ -335,6 +347,10 @@
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="links" />
+		<parameter name="owner_allowed" value="true" />
+	</behavior>
 </table>
 
 <table name="link_categories" phpName="LinkCategory">
@@ -342,6 +358,10 @@
 	<column name="name" type="varchar" size="80" required="true" />
 	<column name="is_externally_managed" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="links" />
+		<parameter name="owner_allowed" value="true" />
+	</behavior>
 </table>
 
 <table name="indirect_references" phpName="Reference">

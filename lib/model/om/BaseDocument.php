@@ -1198,7 +1198,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			}
 			// denyable behavior
 			if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
 			if ($ret) {
@@ -1244,6 +1244,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(DocumentPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -1251,11 +1256,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(DocumentPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -1269,15 +1269,15 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(DocumentPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
