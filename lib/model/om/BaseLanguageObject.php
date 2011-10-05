@@ -549,7 +549,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+				throw new NotPermittedException("delete.backend_user", array("role_key" => ""));
 			}
 
 			if ($ret) {
@@ -597,7 +597,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+					throw new NotPermittedException("insert.backend_user", array("role_key" => ""));
 				}
 
 				// extended_timestampable behavior
@@ -622,7 +622,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
+					throw new NotPermittedException("update.backend_user", array("role_key" => ""));
 				}
 
 				// extended_timestampable behavior

@@ -2086,7 +2086,13 @@ abstract class BaseLanguageObjectPeer {
 		return $this->bIgnoreRights;
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
-		return true;
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->getIsBackendLoginEnabled();
 	}
 
 } // BaseLanguageObjectPeer

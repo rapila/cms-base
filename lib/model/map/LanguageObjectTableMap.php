@@ -69,7 +69,7 @@ class LanguageObjectTableMap extends TableMap
 	{
 		return array(
 			'referencing' => array(),
-			'denyable' => array('mode' => 'allow', 'role_key' => '', ),
+			'denyable' => array('mode' => 'backend_user', 'role_key' => '', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

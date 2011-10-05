@@ -10,6 +10,20 @@ class DenyableBehaviour extends Behavior {
 		'role_key' => '' //Uses `mode` if no role given, role-based operation mode otherwise
 	);
 
+	/**
+	 * This method is automatically called on database behaviors when the database model is finished
+	 * Propagate the behavior to the tables of the database
+	 * Override this method to have a database behavior do something special
+	 */
+	public function modifyDatabase() {
+		foreach ($this->getDatabase()->getTables() as $oTable) {
+			if($oTable->hasBehavior($this->getName())) {
+				continue;
+			}
+			$oTable->addBehavior(clone $this);
+		}
+	}
+
 	public function preInsert($oBuilder) {
 		return $this->addPre('insert', $oBuilder);
 	}

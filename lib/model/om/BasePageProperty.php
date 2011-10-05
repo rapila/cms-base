@@ -564,7 +564,7 @@ abstract class BasePageProperty extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(PagePropertyPeer::isIgnoringRights() || PagePropertyPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+				throw new NotPermittedException("delete.admin_user", array("role_key" => ""));
 			}
 
 			if ($ret) {
@@ -612,7 +612,7 @@ abstract class BasePageProperty extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(PagePropertyPeer::isIgnoringRights() || PagePropertyPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+					throw new NotPermittedException("insert.admin_user", array("role_key" => ""));
 				}
 
 				// extended_timestampable behavior
@@ -637,7 +637,7 @@ abstract class BasePageProperty extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(PagePropertyPeer::isIgnoringRights() || PagePropertyPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
+					throw new NotPermittedException("update.admin_user", array("role_key" => ""));
 				}
 
 				// extended_timestampable behavior
