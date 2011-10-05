@@ -526,8 +526,9 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(TagInstancePeer::isIgnoringRights() || TagInstancePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagInstancePeer::mayOperateOnOwn($oUser, $this, "delete")) || TagInstancePeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => "tag_instances"));
 			}
 
 			if ($ret) {
@@ -581,8 +582,9 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(TagInstancePeer::isIgnoringRights() || TagInstancePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && TagInstancePeer::mayOperateOnOwn($oUser, $this, "insert")) || TagInstancePeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => "tag_instances"));
 				}
 
 				// attributable behavior
@@ -603,8 +605,9 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(TagInstancePeer::isIgnoringRights() || TagInstancePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagInstancePeer::mayOperateOnOwn($oUser, $this, "update")) || TagInstancePeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => "tag_instances"));
 				}
 
 				// attributable behavior

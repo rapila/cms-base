@@ -1197,7 +1197,8 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentPeer::mayOperateOnOwn($oUser, $this, "delete")) || DocumentPeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
@@ -1245,7 +1246,8 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && DocumentPeer::mayOperateOnOwn($oUser, $this, "insert")) || DocumentPeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
 				}
 
@@ -1270,7 +1272,8 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(DocumentPeer::isIgnoringRights() || DocumentPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentPeer::mayOperateOnOwn($oUser, $this, "update")) || DocumentPeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
 				}
 

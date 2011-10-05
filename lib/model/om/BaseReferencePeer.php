@@ -1355,6 +1355,9 @@ abstract class BaseReferencePeer {
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
 		return true;
 	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
 
 } // BaseReferencePeer
 

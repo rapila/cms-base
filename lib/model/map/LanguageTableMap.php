@@ -74,7 +74,7 @@ class LanguageTableMap extends TableMap
 	public function getBehaviors()
 	{
 		return array(
-			'denyable' => array('mode' => 'allow', 'role_key' => 'languages', ),
+			'denyable' => array('mode' => '', 'role_key' => 'languages', 'owner_allowed' => '', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

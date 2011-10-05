@@ -984,8 +984,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.admin_user", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(PagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PagePeer::mayOperateOnOwn($oUser, $this, "delete")) || PagePeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.admin_user", array("role_key" => "pages"));
 			}
 
 			if ($ret) {
@@ -1049,8 +1050,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.admin_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(PagePeer::isIgnoringRights() || ($oUser !== null && PagePeer::mayOperateOnOwn($oUser, $this, "insert")) || PagePeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.admin_user", array("role_key" => "pages"));
 				}
 
 				// extended_timestampable behavior
@@ -1074,8 +1076,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.admin_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(PagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PagePeer::mayOperateOnOwn($oUser, $this, "update")) || PagePeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.admin_user", array("role_key" => "pages"));
 				}
 
 				// extended_timestampable behavior

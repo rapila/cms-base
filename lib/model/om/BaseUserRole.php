@@ -502,7 +502,8 @@ abstract class BaseUserRole extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(UserRolePeer::isIgnoringRights() || UserRolePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(UserRolePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && UserRolePeer::mayOperateOnOwn($oUser, $this, "delete")) || UserRolePeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "users"));
 			}
 
@@ -550,7 +551,8 @@ abstract class BaseUserRole extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(UserRolePeer::isIgnoringRights() || UserRolePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(UserRolePeer::isIgnoringRights() || ($oUser !== null && UserRolePeer::mayOperateOnOwn($oUser, $this, "insert")) || UserRolePeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "users"));
 				}
 
@@ -575,7 +577,8 @@ abstract class BaseUserRole extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(UserRolePeer::isIgnoringRights() || UserRolePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(UserRolePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && UserRolePeer::mayOperateOnOwn($oUser, $this, "update")) || UserRolePeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "users"));
 				}
 

@@ -68,7 +68,7 @@ class LinkCategoryTableMap extends TableMap
 	{
 		return array(
 			'referenceable' => array(),
-			'denyable' => array('mode' => 'allow', 'role_key' => 'links', 'owner_allowed' => 'true', ),
+			'denyable' => array('mode' => '', 'role_key' => 'links', 'owner_allowed' => 'true', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

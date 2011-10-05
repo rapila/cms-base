@@ -558,7 +558,8 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(LinkCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkCategoryPeer::mayOperateOnOwn($oUser, $this, "delete")) || LinkCategoryPeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "links"));
 			}
 
@@ -606,7 +607,8 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LinkCategoryPeer::isIgnoringRights() || ($oUser !== null && LinkCategoryPeer::mayOperateOnOwn($oUser, $this, "insert")) || LinkCategoryPeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "links"));
 				}
 
@@ -631,7 +633,8 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LinkCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkCategoryPeer::mayOperateOnOwn($oUser, $this, "update")) || LinkCategoryPeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "links"));
 				}
 

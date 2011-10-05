@@ -607,7 +607,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(LanguagePeer::isIgnoringRights() || LanguagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguagePeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguagePeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "languages"));
 			}
 
@@ -655,7 +656,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(LanguagePeer::isIgnoringRights() || LanguagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && LanguagePeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguagePeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "languages"));
 				}
 
@@ -680,7 +682,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(LanguagePeer::isIgnoringRights() || LanguagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguagePeer::mayOperateOnOwn($oUser, $this, "update")) || LanguagePeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "languages"));
 				}
 

@@ -585,8 +585,9 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(LanguageObjectHistoryPeer::isIgnoringRights() || LanguageObjectHistoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.backend_user", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_object_history"));
 			}
 
 			if ($ret) {
@@ -633,8 +634,9 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || LanguageObjectHistoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_object_history"));
 				}
 
 				// extended_timestampable behavior
@@ -658,8 +660,9 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || LanguageObjectHistoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "update")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.backend_user", array("role_key" => "language_object_history"));
 				}
 
 				// extended_timestampable behavior

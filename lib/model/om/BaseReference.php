@@ -587,8 +587,9 @@ abstract class BaseReference extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(ReferencePeer::isIgnoringRights() || ReferencePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "delete")) || ReferencePeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => "indirect_references"));
 			}
 
 			if ($ret) {
@@ -642,8 +643,9 @@ abstract class BaseReference extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(ReferencePeer::isIgnoringRights() || ReferencePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && ReferencePeer::mayOperateOnOwn($oUser, $this, "insert")) || ReferencePeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => "indirect_references"));
 				}
 
 				// attributable behavior
@@ -664,8 +666,9 @@ abstract class BaseReference extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(ReferencePeer::isIgnoringRights() || ReferencePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "update")) || ReferencePeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => "indirect_references"));
 				}
 
 				// attributable behavior

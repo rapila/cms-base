@@ -1396,19 +1396,10 @@ abstract class BaseGroupPeer {
 		if($oUser->getIsAdmin()) {
 			return true;
 		}
-		if($oUser->hasRole("users")) {
-			return true;
-		}
-		if(!$oUser->hasRole("users-own")) {
-			return false;
-		}
-		if($sOperation === "insert") {
-			return true;
-		}
-		if($mObject instanceof User) {
-			return $mObject->getId() === $oUser->getId();
-		}
-		return $mObject->getCreatedBy() === $oUser->getId();
+		return $oUser->hasRole("users");
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return $oUser->hasRole("users-own");
 	}
 
 } // BaseGroupPeer

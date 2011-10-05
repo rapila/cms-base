@@ -548,8 +548,9 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.backend_user", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_objects"));
 			}
 
 			if ($ret) {
@@ -596,8 +597,9 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_objects"));
 				}
 
 				// extended_timestampable behavior
@@ -621,8 +623,9 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(LanguageObjectPeer::isIgnoringRights() || LanguageObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "update")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.backend_user", array("role_key" => "language_objects"));
 				}
 
 				// extended_timestampable behavior

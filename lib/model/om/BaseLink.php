@@ -863,7 +863,8 @@ abstract class BaseLink extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			if(!(LinkPeer::isIgnoringRights() || LinkPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkPeer::mayOperateOnOwn($oUser, $this, "delete")) || LinkPeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "links"));
 			}
 
@@ -911,7 +912,8 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(LinkPeer::isIgnoringRights() || LinkPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && LinkPeer::mayOperateOnOwn($oUser, $this, "insert")) || LinkPeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "links"));
 				}
 
@@ -936,7 +938,8 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(LinkPeer::isIgnoringRights() || LinkPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkPeer::mayOperateOnOwn($oUser, $this, "update")) || LinkPeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "links"));
 				}
 

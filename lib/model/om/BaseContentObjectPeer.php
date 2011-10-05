@@ -1760,6 +1760,9 @@ abstract class BaseContentObjectPeer {
 		}
 		return $oUser->getIsBackendLoginEnabled();
 	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
 
 } // BaseContentObjectPeer
 

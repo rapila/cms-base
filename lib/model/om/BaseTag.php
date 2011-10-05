@@ -483,8 +483,9 @@ abstract class BaseTag extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(TagPeer::isIgnoringRights() || TagPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(TagPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagPeer::mayOperateOnOwn($oUser, $this, "delete")) || TagPeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => "tags"));
 			}
 
 			if ($ret) {
@@ -538,8 +539,9 @@ abstract class BaseTag extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(TagPeer::isIgnoringRights() || TagPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && TagPeer::mayOperateOnOwn($oUser, $this, "insert")) || TagPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => "tags"));
 				}
 
 				// attributable behavior
@@ -560,8 +562,9 @@ abstract class BaseTag extends BaseObject  implements Persistent
 					$this->setUpdatedAt(time());
 				}
 				// denyable behavior
-				if(!(TagPeer::isIgnoringRights() || TagPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagPeer::mayOperateOnOwn($oUser, $this, "update")) || TagPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => "tags"));
 				}
 
 				// attributable behavior

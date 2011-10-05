@@ -1406,19 +1406,10 @@ abstract class BaseDocumentCategoryPeer {
 		if($oUser->getIsAdmin()) {
 			return true;
 		}
-		if($oUser->hasRole("documents")) {
-			return true;
-		}
-		if(!$oUser->hasRole("documents-own")) {
-			return false;
-		}
-		if($sOperation === "insert") {
-			return true;
-		}
-		if($mObject instanceof User) {
-			return $mObject->getId() === $oUser->getId();
-		}
-		return $mObject->getCreatedBy() === $oUser->getId();
+		return $oUser->hasRole("documents");
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return true;
 	}
 
 } // BaseDocumentCategoryPeer

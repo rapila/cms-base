@@ -591,7 +591,8 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(DocumentTypePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentTypePeer::mayOperateOnOwn($oUser, $this, "delete")) || DocumentTypePeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
@@ -639,7 +640,8 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentTypePeer::isIgnoringRights() || ($oUser !== null && DocumentTypePeer::mayOperateOnOwn($oUser, $this, "insert")) || DocumentTypePeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
 				}
 
@@ -664,7 +666,8 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentTypePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentTypePeer::mayOperateOnOwn($oUser, $this, "update")) || DocumentTypePeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
 				}
 

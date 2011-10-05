@@ -1698,6 +1698,9 @@ abstract class BasePagePropertyPeer {
 		}
 		return $oUser->getIsAdminLoginEnabled();
 	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
 
 } // BasePagePropertyPeer
 

@@ -727,8 +727,9 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.admin_user", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(PageStringPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PageStringPeer::mayOperateOnOwn($oUser, $this, "delete")) || PageStringPeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.admin_user", array("role_key" => "page_strings"));
 			}
 
 			if ($ret) {
@@ -775,8 +776,9 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.admin_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(PageStringPeer::isIgnoringRights() || ($oUser !== null && PageStringPeer::mayOperateOnOwn($oUser, $this, "insert")) || PageStringPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.admin_user", array("role_key" => "page_strings"));
 				}
 
 				// extended_timestampable behavior
@@ -800,8 +802,9 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.admin_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(PageStringPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PageStringPeer::mayOperateOnOwn($oUser, $this, "update")) || PageStringPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.admin_user", array("role_key" => "page_strings"));
 				}
 
 				// extended_timestampable behavior

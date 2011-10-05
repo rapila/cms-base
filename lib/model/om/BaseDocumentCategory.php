@@ -683,7 +683,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			if(!(DocumentCategoryPeer::isIgnoringRights() || DocumentCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+			$oUser = Session::getSession()->getUser();
+			if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "delete")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
@@ -731,7 +732,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(DocumentCategoryPeer::isIgnoringRights() || DocumentCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "insert")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
 				}
 
@@ -756,7 +758,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(DocumentCategoryPeer::isIgnoringRights() || DocumentCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+				$oUser = Session::getSession()->getUser();
+				if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "update")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
 				}
 

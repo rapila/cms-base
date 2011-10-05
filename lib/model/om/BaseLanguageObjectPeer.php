@@ -2094,6 +2094,9 @@ abstract class BaseLanguageObjectPeer {
 		}
 		return $oUser->getIsBackendLoginEnabled();
 	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
 
 } // BaseLanguageObjectPeer
 

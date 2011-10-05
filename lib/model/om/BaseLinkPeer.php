@@ -2485,19 +2485,10 @@ abstract class BaseLinkPeer {
 		if($oUser->getIsAdmin()) {
 			return true;
 		}
-		if($oUser->hasRole("links")) {
-			return true;
-		}
-		if(!$oUser->hasRole("links-own")) {
-			return false;
-		}
-		if($sOperation === "insert") {
-			return true;
-		}
-		if($mObject instanceof User) {
-			return $mObject->getId() === $oUser->getId();
-		}
-		return $mObject->getCreatedBy() === $oUser->getId();
+		return $oUser->hasRole("links");
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return true;
 	}
 
 } // BaseLinkPeer

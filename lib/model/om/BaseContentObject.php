@@ -660,8 +660,9 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
-				throw new NotPermittedException("delete.backend_user", array("role_key" => ""));
+			$oUser = Session::getSession()->getUser();
+			if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "delete")) || ContentObjectPeer::mayOperateOn($oUser, $this, "delete"))) {
+				throw new NotPermittedException("delete.backend_user", array("role_key" => "objects"));
 			}
 
 			if ($ret) {
@@ -708,8 +709,9 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "insert")) || ContentObjectPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.backend_user", array("role_key" => "objects"));
 				}
 
 				// extended_timestampable behavior
@@ -733,8 +735,9 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
-					throw new NotPermittedException("update.backend_user", array("role_key" => ""));
+				$oUser = Session::getSession()->getUser();
+				if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "update")) || ContentObjectPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.backend_user", array("role_key" => "objects"));
 				}
 
 				// extended_timestampable behavior

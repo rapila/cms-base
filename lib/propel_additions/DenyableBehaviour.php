@@ -6,9 +6,24 @@
  */
 class DenyableBehaviour extends Behavior {
 	protected $parameters = array(
-		'mode' => 'allow', //possible values: allow, valid_user, backend_user, admin_user, administrator
-		'role_key' => '' //Uses `mode` if no role given, role-based operation mode otherwise
+		'mode' => '', //Possible values: ''  (defaults to 'by_role' if 'role_key' given, 'allow' otherwise) 'allow', 'valid_user', 'backend_user', 'admin_user', 'administrator'
+		'role_key' => '', //Defaults to the table name but does not cause 'mode' or 'owner_allowed' to default to 'role_key' if not explicit
+		'owner_allowed' => '' //Possible values: '' (defaults to 'by_role' if 'role_key' given, 'false' otherwise), 'by_role', 'true', 'false', 'no_delete'
 	);
+
+	public function getParameter($sName) {
+		$sParam = parent::getParameter($sName);
+		if($sName === 'mode' && $sParam === '') {
+			$sParam = parent::getParameter('role_key') ? 'by_role' : 'allow';
+		}
+		if($sName === 'owner_allowed' && $sParam === '') {
+			$sParam = parent::getParameter('role_key') ? 'by_role' : 'false';
+		}
+		if($sName === 'role_key' && $sParam === '') {
+			$sParam = $this->getTable()->getCommonName();
+		}
+		return $sParam;
+	}
 
 	/**
 	 * This method is automatically called on database behaviors when the database model is finished
@@ -38,14 +53,16 @@ class DenyableBehaviour extends Behavior {
 
 	private function addPre($sAction, $oBuilder) {
 		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
-		$sMode = $this->getParameter('role_key') ? 'by_role' : $this->getParameter('mode');
+		$sMode = $this->getParameter('mode');
 		if($sMode === 'allow') {
 			$sMode = 'custom';
 		}
 		$sActionModeEscaped = '"'.$sAction.'.'.$sMode.'"';
 		$sModeEscaped = '"'.addslashes($sMode).'"';
 		$sRoleKeyEscaped = '"'.addslashes($this->getParameter('role_key')).'"';
-		return 'if(!('.$sPeerClassname.'::isIgnoringRights() || '.$sPeerClassname.'::mayOperateOn(Session::getSession()->getUser(), $this, "'.$sAction.'"))) {
+		$sIsOwnCheck = $sAction === 'insert' ? '' : '&& $this->getCreatedBy() === $oUser->getId() ';
+		return '$oUser = Session::getSession()->getUser();
+if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.'&& '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, "'.$sAction.'")) || '.$sPeerClassname.'::mayOperateOn($oUser, $this, "'.$sAction.'"))) {
 	throw new NotPermittedException('.$sActionModeEscaped.', array("role_key" => '.$sRoleKeyEscaped.'));
 }
 ';
@@ -62,6 +79,7 @@ class DenyableBehaviour extends Behavior {
 		$sMethods .= $this->addIgnoreMethod();
 		$sMethods .= $this->addIsIgnoringMethod();
 		$sMethods .= $this->addMayMethod();
+		$sMethods .= $this->addMayOwnMethod();
 		return $sMethods;
 	}
 
@@ -84,8 +102,8 @@ class DenyableBehaviour extends Behavior {
 	}
 
 	private function addMayMethod() {
-		if($this->getParameter('role_key')) {
-			return $this->addMayMethodForRoleKey($this->getParameter('role_key'));
+		if($this->getParameter('mode') === 'allow') {
+			return $this->addMayMethodForAllow();
 		}
 		if($this->getParameter('mode') === 'valid_user') {
 			return $this->addMayMethodForValidUser();
@@ -100,11 +118,10 @@ class DenyableBehaviour extends Behavior {
 			return $this->addMayMethodForAdministrator();
 		}
 
-		return $this->addMayMethodForAllow();
+		return $this->addMayMethodForRoleKey($this->getParameter('role_key'));
 	}
 
 	private function addMayMethodForRoleKey($sRoleKey) {
-		$sOwnRoleKey = '"'.addslashes($sRoleKey.'-own').'"';
 		$sRoleKey = '"'.addslashes($sRoleKey).'"';
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -113,19 +130,7 @@ class DenyableBehaviour extends Behavior {
 	if($oUser->getIsAdmin()) {
 		return true;
 	}
-	if($oUser->hasRole('.$sRoleKey.')) {
-		return true;
-	}
-	if(!$oUser->hasRole('.$sOwnRoleKey.')) {
-		return false;
-	}
-	if($sOperation === "insert") {
-		return true;
-	}
-	if($mObject instanceof User) {
-		return $mObject->getId() === $oUser->getId();
-	}
-	return $mObject->getCreatedBy() === $oUser->getId();
+	return $oUser->hasRole('.$sRoleKey.');
 }
 ';
 	}
@@ -174,4 +179,49 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
+	
+	private function addMayOwnMethod() {
+		if($this->getParameter('owner_allowed') === 'by_role') {
+			return $this->addMayOwnMethodForRoleKey($this->getParameter('role_key'));
+		}
+		if($this->getParameter('owner_allowed') === 'true') {
+			return $this->addMayOwnMethodForAll();
+		}
+		if($this->getParameter('owner_allowed') === 'no_delete') {
+			return $this->addMayOwnMethodForInsertAndUpdate();
+		}
+
+		return $this->addMayOwnMethodForNone();
+	}
+
+	private function addMayOwnMethodForRoleKey($sRoleKey) {
+		$sOwnRoleKey = '"'.addslashes($sRoleKey.'-own').'"';
+		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+	return $oUser->hasRole('.$sOwnRoleKey.');
+}
+';
+	}
+
+	private function addMayOwnMethodForAll() {
+		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+	return true;
+}
+';
+	}
+	
+	private function addMayOwnMethodForInsertAndUpdate() {
+		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+	return $sOperation !== "delete";
+}
+';
+	}
+	
+	private function addMayOwnMethodForNone() {
+		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+	return false;
+}
+';
+	}
+
+
 }
