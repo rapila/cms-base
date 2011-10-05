@@ -489,6 +489,11 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			$deleteQuery = GroupQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(GroupPeer::isIgnoringRights() || GroupPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -539,6 +544,11 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(GroupPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(GroupPeer::isIgnoringRights() || GroupPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -556,6 +566,11 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				if ($this->isModified() && !$this->isColumnModified(GroupPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(GroupPeer::isIgnoringRights() || GroupPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

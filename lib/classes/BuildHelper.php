@@ -51,8 +51,6 @@ class BuildHelper {
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- {{comment}} -->
 <database name="rapila" defaultIdMethod="native">
-	<behavior name="extended_timestampable" />
-	<behavior name="attributable" />
 	{{schema_content}}
 </database>
 EOT;

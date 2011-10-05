@@ -63,4 +63,12 @@ class PagePeer extends BasePagePeer {
 		}
 		return 0;
 	}
+
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		if(!parent::mayOperateOn($oUser, $mObject, $sOperation)) {
+			return false;
+		}
+		//User is valid
+		return true;
+	}
 }

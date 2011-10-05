@@ -590,6 +590,11 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 			$deleteQuery = DocumentTypeQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -640,6 +645,11 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(DocumentTypePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -657,6 +667,11 @@ abstract class BaseDocumentType extends BaseObject  implements Persistent
 				if ($this->isModified() && !$this->isColumnModified(DocumentTypePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(DocumentTypePeer::isIgnoringRights() || DocumentTypePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

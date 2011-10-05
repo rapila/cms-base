@@ -557,6 +557,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			if(ReferencePeer::hasReference($this)) {
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
+			// denyable behavior
+			if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -607,6 +612,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -624,6 +634,11 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				if ($this->isModified() && !$this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
+				// denyable behavior
+				if(!(LinkCategoryPeer::isIgnoringRights() || LinkCategoryPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				}
+
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

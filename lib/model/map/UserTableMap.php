@@ -126,6 +126,7 @@ class UserTableMap extends TableMap
 		return array(
 			'taggable' => array(),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+			'denyable' => array('mode' => 'allow', 'role_key' => '', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
 	} // getBehaviors()

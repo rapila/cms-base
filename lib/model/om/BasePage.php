@@ -983,6 +983,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 			if(ReferencePeer::hasReference($this)) {
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
+			// denyable behavior
+			if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "delete"))) {
+				throw new NotPermittedException("delete.custom", array("role_key" => ""));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -1043,6 +1048,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->processNestedSetQueries($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(PagePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -1063,6 +1073,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(PagePeer::isIgnoringRights() || PagePeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
+					throw new NotPermittedException("update.custom", array("role_key" => ""));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(PagePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());

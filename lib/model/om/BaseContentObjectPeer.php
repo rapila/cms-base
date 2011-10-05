@@ -76,6 +76,8 @@ abstract class BaseContentObjectPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $bIgnoreRights = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1740,6 +1742,17 @@ abstract class BaseContentObjectPeer {
 			$objs = ContentObjectPeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		$this->bIgnoreRights = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return $this->bIgnoreRights;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
 	}
 
 } // BaseContentObjectPeer

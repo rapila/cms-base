@@ -111,6 +111,8 @@ abstract class BasePagePeer {
 	 */
 	const LEVEL_COL = 'pages.TREE_LEVEL';
 
+	// denyable behavior
+	private static $bIgnoreRights = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1716,6 +1718,17 @@ abstract class BasePagePeer {
 	
 			return self::doDeleteBeforeTaggable($criteria, $con);
 	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		$this->bIgnoreRights = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return $this->bIgnoreRights;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+
 } // BasePagePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

@@ -88,6 +88,8 @@ abstract class BaseLinkPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $bIgnoreRights = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -2469,6 +2471,17 @@ abstract class BaseLinkPeer {
 	
 			return self::doDeleteBeforeTaggable($criteria, $con);
 	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		$this->bIgnoreRights = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return $this->bIgnoreRights;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+
 } // BaseLinkPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

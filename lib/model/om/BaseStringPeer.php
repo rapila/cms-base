@@ -67,6 +67,8 @@ abstract class BaseStringPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $bIgnoreRights = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1659,6 +1661,17 @@ abstract class BaseStringPeer {
 
 		return !empty($v) ? $v[0] : null;
 	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		$this->bIgnoreRights = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return $this->bIgnoreRights;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+
 } // BaseStringPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
