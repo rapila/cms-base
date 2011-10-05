@@ -1,4 +1,3 @@
-allowed_roles: []
 name: "Languages"
 description: "Languages prepare multilingual sites. Active languages are displayed if active, inactive languages can be prepared for publication"
 website: "http://www.mini-cms.ch/"

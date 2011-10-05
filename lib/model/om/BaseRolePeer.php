@@ -65,7 +65,7 @@ abstract class BaseRolePeer {
 
 
 	// denyable behavior
-	private static $bIgnoreRights = false;
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1389,10 +1389,10 @@ abstract class BaseRolePeer {
 
 	// denyable behavior
 	public static function ignoreRights($bIgnore = true) {
-		$this->bIgnoreRights = $bIgnore;
+		self::$IGNORE_RIGHTS = $bIgnore;
 	}
 	public static function isIgnoringRights() {
-		return $this->bIgnoreRights;
+		return self::$IGNORE_RIGHTS;
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
 		return true;

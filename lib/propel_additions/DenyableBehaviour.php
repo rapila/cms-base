@@ -66,19 +66,19 @@ class DenyableBehaviour extends Behavior {
 	}
 
 	private function addIgnoreProp() {
-		return 'private static $bIgnoreRights = false;';
+		return 'private static $IGNORE_RIGHTS = false;';
 	}
 
 	private function addIgnoreMethod() {
 		return 'public static function ignoreRights($bIgnore = true) {
-	$this->bIgnoreRights = $bIgnore;
+	self::$IGNORE_RIGHTS = $bIgnore;
 }
 ';
 	}
 	
 	private function addIsIgnoringMethod() {
 		return 'public static function isIgnoringRights() {
-	return $this->bIgnoreRights;
+	return self::$IGNORE_RIGHTS;
 }
 ';
 	}
@@ -119,7 +119,7 @@ class DenyableBehaviour extends Behavior {
 	if(!$oUser->hasRole('.$sOwnRoleKey.')) {
 		return false;
 	}
-	if($sOperation === "create") {
+	if($sOperation === "insert") {
 		return true;
 	}
 	if($mObject instanceof User) {
