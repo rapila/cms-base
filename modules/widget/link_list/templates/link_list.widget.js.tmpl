@@ -3,7 +3,6 @@ jQuery(document).ready(function() {
 		jQuery(this).prepareWidget(function(widget) {
 			Widget.callStatic('detail', 'connect_detail_with_list', 'link', widget, 'setLinkId');
 			widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
-				console.log(col.identifier, row);
 				if(col.identifier === 'delete') {
 					var file_name = widget.cell_for_identifier('name_truncated', row).text();
 					var delete_message = AdminInterface.strings.get_string('wns.link.delete_warning', { link_name: file_name});
