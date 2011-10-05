@@ -111,6 +111,9 @@
 	</unique>
 	<column name="is_active" type="boolean" size="1" />
 	<column name="sort" type="tinyint" size="2" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="languages" />
+	</behavior>
 </table>
 
 <table name="strings" phpName="String">
@@ -120,6 +123,9 @@
 	</foreign-key>
 	<column name="string_key" type="varchar" size="80" required="true" primaryKey="true" />
 	<column name="text" type="longvarchar" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="languages" />
+	</behavior>
 </table>
 
 <table name="users" phpName="User">

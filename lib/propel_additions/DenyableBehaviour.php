@@ -113,7 +113,7 @@ class DenyableBehaviour extends Behavior {
 	if($oUser->getIsAdmin()) {
 		return true;
 	}
-	if($oUser->hasRole('.$sRoleKey.') {
+	if($oUser->hasRole('.$sRoleKey.')) {
 		return true;
 	}
 	if(!$oUser->hasRole('.$sOwnRoleKey.')) {

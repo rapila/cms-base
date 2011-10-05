@@ -1344,7 +1344,25 @@ abstract class BaseLanguagePeer {
 		return $this->bIgnoreRights;
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
-		return true;
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		if($oUser->hasRole("languages")) {
+			return true;
+		}
+		if(!$oUser->hasRole("languages-own")) {
+			return false;
+		}
+		if($sOperation === "create") {
+			return true;
+		}
+		if($mObject instanceof User) {
+			return $mObject->getId() === $oUser->getId();
+		}
+		return $mObject->getCreatedBy() === $oUser->getId();
 	}
 
 } // BaseLanguagePeer
