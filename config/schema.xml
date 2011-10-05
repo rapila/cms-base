@@ -290,7 +290,7 @@
 	</unique>
 	<behavior name="denyable">
 		<parameter name="role_key" value="documents" />
-		<parameter name="owner_allowed" value="true" />
+		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>
 
