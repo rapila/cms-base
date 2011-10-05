@@ -15,7 +15,7 @@
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
-		<parameter name="mode" value="valid_user" />
+		<parameter name="mode" value="admin_user" />
 	</behavior>
 </table>
 
@@ -31,6 +31,9 @@
 		<unique-column name="name" />
 		<unique-column name="page_id" />
 	</unique>
+	<behavior name="denyable">
+		<parameter name="mode" value="admin_user" />
+	</behavior>
 </table>
 
 <table name="page_strings" phpName="PageString">
@@ -47,6 +50,9 @@
 	<column name="page_title" type="varchar" size="255" required="true" />
 	<column name="meta_keywords" type="varchar" size="255" required="false" />
 	<column name="meta_description" type="varchar" size="255" required="false" />
+	<behavior name="denyable">
+		<parameter name="mode" value="admin_user" />
+	</behavior>
 </table>
 
 <table name="objects" phpName="ContentObject">
@@ -59,6 +65,9 @@
 	<column name="object_type" type="varchar" size="50" />
 	<column name="condition_serialized" type="blob" required="false" />
 	<column name="sort" type="tinyint" size="3" />
+	<behavior name="denyable">
+		<parameter name="mode" value="backend_user" />
+	</behavior>
 </table>
 
 <table name="language_objects" phpName="LanguageObject">
@@ -73,6 +82,9 @@
 	<column name="data" type="blob" />
 	<!-- <column name="update_exists" type="boolean" size="1" default="0" /> -->
 	<behavior name="referencing" />
+	<behavior name="denyable">
+		<parameter name="mode" value="backend_user" />
+	</behavior>
 </table>
 
 <table name="language_object_history" phpName="LanguageObjectHistory">

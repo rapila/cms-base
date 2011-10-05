@@ -707,6 +707,11 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(ContentObjectPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -714,11 +719,6 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(ContentObjectPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -732,15 +732,15 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// extended_timestampable behavior
-				if ($this->isModified() && !$this->isColumnModified(ContentObjectPeer::UPDATED_AT)) {
-					$this->setUpdatedAt(time());
-				}
 				// denyable behavior
 				if(!(ContentObjectPeer::isIgnoringRights() || ContentObjectPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
 					throw new NotPermittedException("update.custom", array("role_key" => ""));
 				}
 
+				// extended_timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(ContentObjectPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

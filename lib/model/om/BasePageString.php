@@ -774,6 +774,11 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
+					throw new NotPermittedException("insert.custom", array("role_key" => ""));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(PageStringPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -781,11 +786,6 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(PageStringPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => ""));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -799,15 +799,15 @@ abstract class BasePageString extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// extended_timestampable behavior
-				if ($this->isModified() && !$this->isColumnModified(PageStringPeer::UPDATED_AT)) {
-					$this->setUpdatedAt(time());
-				}
 				// denyable behavior
 				if(!(PageStringPeer::isIgnoringRights() || PageStringPeer::mayOperateOn(Session::getSession()->getUser(), $this, "update"))) {
 					throw new NotPermittedException("update.custom", array("role_key" => ""));
 				}
 
+				// extended_timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(PageStringPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
