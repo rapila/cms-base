@@ -207,4 +207,22 @@ class UserPeer extends BaseUserPeer {
 		return self::doSelectOne($oCriteria);
 	}
 	
+	public static function mayOperateOn($oMe, $oUser, $sOperation) {
+		if(parent::mayOperateOn($oMe, $oUser, $sOperation)) {
+			return true;
+		}
+		if($oMe === null) {
+			return false;
+		}
+		if(!$oMe->getIsBackendLoginEnabled()) {
+			return false;
+		}
+		//Allow editing of self. Deletion too? TODO: discuss.
+		if($sOperation !== 'update') {
+			return false;
+		}
+		///TODO: Test for modified columns: is_admin_login_enabled, is_admin and such should not be changed
+		return $oMe->getId() === $oUser->getId();
+	}
+
 }

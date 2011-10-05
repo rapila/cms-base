@@ -150,6 +150,9 @@
 	<column name="password_recover_hint" type="varchar" size="10" />
 	<column name="backend_settings" type="blob" required="false" />
 	<behavior name="taggable" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="users_groups" phpName="UserGroup">
@@ -161,6 +164,9 @@
 	<foreign-key foreignTable="groups" onDelete="cascade">
 		<reference local="group_id" foreign="id" />
 	</foreign-key>
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="groups" phpName="Group">
@@ -169,6 +175,9 @@
 	<unique>
 		<unique-column name="name" />
 	</unique>
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="group_roles" phpName="GroupRole">
@@ -180,11 +189,17 @@
 	<foreign-key foreignTable="roles" onDelete="cascade">
 		<reference local="role_key" foreign="role_key" />
 	</foreign-key>
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="roles" phpName="Role">
 	<column name="role_key" type="varchar" size="50" required="true" primaryKey="true" />
 	<column name="description" type="varchar" size="255" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="user_roles" phpName="UserRole">
@@ -196,6 +211,9 @@
 	<foreign-key foreignTable="roles" onDelete="cascade">
 		<reference local="role_key" foreign="role_key" />
 	</foreign-key>
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>
 
 <table name="rights" phpName="Right">
@@ -219,6 +237,9 @@
 	<column name="may_delete" type="boolean" size="1" default="0" />
 	<column name="may_create_children" type="boolean" size="1" default="0" />
 	<column name="may_view_page" type="boolean" size="1" default="0" />
+	<behavior name="denyable">
+		<parameter name="role_key" value="users" />
+	</behavior>
 </table>	
 
 <table name="documents" phpName="Document">

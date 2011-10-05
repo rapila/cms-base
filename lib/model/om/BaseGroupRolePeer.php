@@ -2058,7 +2058,25 @@ abstract class BaseGroupRolePeer {
 		return self::$IGNORE_RIGHTS;
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
-		return true;
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		if($oUser->hasRole("users")) {
+			return true;
+		}
+		if(!$oUser->hasRole("users-own")) {
+			return false;
+		}
+		if($sOperation === "insert") {
+			return true;
+		}
+		if($mObject instanceof User) {
+			return $mObject->getId() === $oUser->getId();
+		}
+		return $mObject->getCreatedBy() === $oUser->getId();
 	}
 
 } // BaseGroupRolePeer
