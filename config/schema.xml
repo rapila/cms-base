@@ -98,6 +98,9 @@
 	</foreign-key>
 	<column name="data" type="blob" />
 	<column name="revision" type="integer" required="true" primaryKey="true" />
+	<behavior name="denyable">
+		<parameter name="mode" value="backend_user" />
+	</behavior>
 </table>
 
 <table name="languages" phpName="Language">
