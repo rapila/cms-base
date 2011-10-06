@@ -229,12 +229,12 @@
 	<foreign-key foreignTable="pages" onDelete="cascade">
 		<reference local="page_id" foreign="id" />
 	</foreign-key>
+	<column name="is_inherited" type="boolean" size="1" default="1" />
 	<unique>
 		<unique-column name="role_key" />
 		<unique-column name="page_id" />
 		<unique-column name="is_inherited" />
 	</unique>
-	<column name="is_inherited" type="boolean" size="1" default="1" />
 	<column name="may_edit_page_details" type="boolean" size="1" default="0" />
 	<column name="may_edit_page_contents" type="boolean" size="1" default="0" />
 	<column name="may_delete" type="boolean" size="1" default="0" />
@@ -242,7 +242,6 @@
 	<column name="may_view_page" type="boolean" size="1" default="0" />
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
-		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>	
 

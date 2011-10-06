@@ -2118,7 +2118,7 @@ abstract class BaseRightPeer {
 		return $oUser->hasRole("users");
 	}
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
-		return false;
+		return $oUser->hasRole("users-own");
 	}
 
 } // BaseRightPeer
