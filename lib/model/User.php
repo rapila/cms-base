@@ -214,10 +214,7 @@ class User extends BaseUser {
 	}
 	
 	public function mayEditUser($oUser = null) {
-		if($oUser === null) {
-			return Session::getSession()->getUser()->getIsAdmin();
-		}
-		return $oUser->isSessionUser() || Session::getSession()->getUser()->getIsAdmin();
+		return UserPeer::mayOperateOn($this, $oUser, 'update');
 	}
 	
 	public function getMissingRights($mPage, $bInheritedOnly = false) {

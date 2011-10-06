@@ -209,6 +209,7 @@ class UserPeer extends BaseUserPeer {
 	
 	public static function mayOperateOn($oMe, $oUser, $sOperation) {
 		if(parent::mayOperateOn($oMe, $oUser, $sOperation)) {
+			//Allow operation if user has "users" role
 			return true;
 		}
 		if($oMe === null) {

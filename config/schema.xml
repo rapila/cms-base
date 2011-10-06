@@ -152,6 +152,7 @@
 	<behavior name="taggable" />
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
+		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>
 
@@ -166,6 +167,7 @@
 	</foreign-key>
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
+		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>
 
@@ -213,6 +215,7 @@
 	</foreign-key>
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
+		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>
 
@@ -239,6 +242,7 @@
 	<column name="may_view_page" type="boolean" size="1" default="0" />
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
+		<parameter name="owner_allowed" value="false" />
 	</behavior>
 </table>	
 
