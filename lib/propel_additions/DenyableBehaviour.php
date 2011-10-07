@@ -93,21 +93,21 @@ class DenyableBehaviour extends Behavior {
 	}
 
 	private function addConvenienceMayInsert() {
-		return 'public function mayBeInserted($oUser = null) {
+		return 'public function mayBeInserted($oUser = false) {
 	return $this->mayOperate($oUser, "insert");
 }
 ';
 	}
 
 	private function addConvenienceMayUpdate() {
-		return 'public function mayBeUpdated($oUser = null) {
+		return 'public function mayBeUpdated($oUser = false) {
 	return $this->mayOperate($oUser, "update");
 }
 ';
 	}
 
 	private function addConvenienceMayDelete() {
-		return 'public function mayBeDeleted($oUser = null) {
+		return 'public function mayBeDeleted($oUser = false) {
 	return $this->mayOperate($oUser, "delete");
 }
 ';

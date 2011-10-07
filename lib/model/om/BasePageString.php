@@ -1627,13 +1627,13 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		}
 		return PageStringPeer::mayOperateOn($oUser, $this, $sOperation);
 	}
-	public function mayBeInserted($oUser = null) {
+	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate($oUser, "insert");
 	}
-	public function mayBeUpdated($oUser = null) {
+	public function mayBeUpdated($oUser = false) {
 		return $this->mayOperate($oUser, "update");
 	}
-	public function mayBeDeleted($oUser = null) {
+	public function mayBeDeleted($oUser = false) {
 		return $this->mayOperate($oUser, "delete");
 	}
 
