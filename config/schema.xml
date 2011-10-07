@@ -278,7 +278,7 @@
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
-		<parameter name="role_key" value="documents" />
+		<parameter name="mode" value="by_role" />
 		<parameter name="owner_allowed" value="true" />
 	</behavior>
 </table>
@@ -358,7 +358,7 @@
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
-		<parameter name="role_key" value="links" />
+		<parameter name="mode" value="by_role" />
 		<parameter name="owner_allowed" value="true" />
 	</behavior>
 </table>

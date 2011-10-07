@@ -85,7 +85,7 @@ class DocumentTableMap extends TableMap
 		return array(
 			'referenceable' => array(),
 			'taggable' => array(),
-			'denyable' => array('mode' => '', 'role_key' => 'documents', 'owner_allowed' => 'true', ),
+			'denyable' => array('mode' => 'by_role', 'role_key' => '', 'owner_allowed' => 'true', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
