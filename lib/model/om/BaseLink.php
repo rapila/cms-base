@@ -863,8 +863,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkPeer::mayOperateOnOwn($oUser, $this, "delete")) || LinkPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "links"));
 			}
 
@@ -912,8 +911,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && LinkPeer::mayOperateOnOwn($oUser, $this, "insert")) || LinkPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "links"));
 				}
 
@@ -938,8 +936,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LinkPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LinkPeer::mayOperateOnOwn($oUser, $this, "update")) || LinkPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "links"));
 				}
 
@@ -1874,6 +1871,26 @@ abstract class BaseLink extends BaseObject  implements Persistent
 	{
 		return TagPeer::tagInstancesForObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LinkPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LinkPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**

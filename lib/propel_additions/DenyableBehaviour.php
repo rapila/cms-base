@@ -5,6 +5,9 @@
  * @package    propel.generator.behavior
  */
 class DenyableBehaviour extends Behavior {
+	///Run denyable as soon as possible so as to not have other behaviors pollute the modified columns
+	protected $tableModificationOrder = 10;
+	
 	protected $parameters = array(
 		'mode' => '', //Possible values: ''  (defaults to 'by_role' if 'role_key' given, 'allow' otherwise) 'allow', 'valid_user', 'backend_user', 'admin_user', 'administrator'
 		'role_key' => '', //Defaults to the table name but does not cause 'mode' or 'owner_allowed' to default to 'role_key' if not explicit
@@ -58,12 +61,54 @@ class DenyableBehaviour extends Behavior {
 			$sMode = 'custom.'.$this->getTable()->getCommonName();
 		}
 		$sActionModeEscaped = '"'.$sAction.'.'.$sMode.'"';
-		$sModeEscaped = '"'.addslashes($sMode).'"';
+		$sActionEscaped = '"'.addslashes($sAction).'"';
 		$sRoleKeyEscaped = '"'.addslashes($this->getParameter('role_key')).'"';
-		$sIsOwnCheck = $sAction === 'insert' ? '' : '&& $this->getCreatedBy() === $oUser->getId() ';
-		return '$oUser = Session::getSession()->getUser();
-if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.'&& '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, "'.$sAction.'")) || '.$sPeerClassname.'::mayOperateOn($oUser, $this, "'.$sAction.'"))) {
+		return 'if(!('.$sPeerClassname.'::isIgnoringRights() || $this->mayOperate('.$sActionEscaped.'))) {
 	throw new NotPermittedException('.$sActionModeEscaped.', array("role_key" => '.$sRoleKeyEscaped.'));
+}
+';
+	}
+
+	public function objectMethods($oBuilder) {
+		$sMethods = '';
+		$sMethods .= $this->addMayOperate($oBuilder);
+		$sMethods .= $this->addConvenienceMayInsert();
+		$sMethods .= $this->addConvenienceMayUpdate();
+		$sMethods .= $this->addConvenienceMayDelete();
+		return $sMethods;
+	}
+
+	private function addMayOperate($oBuilder) {
+		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
+		return 'public function mayOperate($sOperation, $oUser = false) {
+	if($oUser === false) {
+		$oUser = Session::getSession()->getUser();
+	}
+	if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, $sOperation)) {
+		return true;
+	}
+	return '.$sPeerClassname.'::mayOperateOn($oUser, $this, $sOperation);
+}
+';
+	}
+
+	private function addConvenienceMayInsert() {
+		return 'public function mayBeInserted($oUser = null) {
+	return $this->mayOperate($oUser, "insert");
+}
+';
+	}
+
+	private function addConvenienceMayUpdate() {
+		return 'public function mayBeUpdated($oUser = null) {
+	return $this->mayOperate($oUser, "update");
+}
+';
+	}
+
+	private function addConvenienceMayDelete() {
+		return 'public function mayBeDeleted($oUser = null) {
+	return $this->mayOperate($oUser, "delete");
 }
 ';
 	}
@@ -74,6 +119,10 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 		return $sAttrs;
 	}
 
+	private function addIgnoreProp() {
+		return 'private static $IGNORE_RIGHTS = false;';
+	}
+
 	public function staticMethods($oBuilder) {
 		$sMethods = '';
 		$sMethods .= $this->addIgnoreMethod();
@@ -81,10 +130,6 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 		$sMethods .= $this->addMayMethod();
 		$sMethods .= $this->addMayOwnMethod();
 		return $sMethods;
-	}
-
-	private function addIgnoreProp() {
-		return 'private static $IGNORE_RIGHTS = false;';
 	}
 
 	private function addIgnoreMethod() {
@@ -134,12 +179,14 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 }
 ';
 	}
+	
 	private function addMayMethodForValidUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	return $oUser !== null;
 }
 ';
 	}
+	
 	private function addMayMethodForBackendUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -152,6 +199,7 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 }
 ';
 	}
+	
 	private function addMayMethodForAdminUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -164,6 +212,7 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 }
 ';
 	}
+	
 	private function addMayMethodForAdministrator() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -173,6 +222,7 @@ if(!('.$sPeerClassname.'::isIgnoringRights() || ($oUser !== null '.$sIsOwnCheck.
 }
 ';
 	}
+	
 	private function addMayMethodForAllow() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	return true;

@@ -497,8 +497,7 @@ abstract class BaseRole extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(RolePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && RolePeer::mayOperateOnOwn($oUser, $this, "delete")) || RolePeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(RolePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "users"));
 			}
 
@@ -546,8 +545,7 @@ abstract class BaseRole extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(RolePeer::isIgnoringRights() || ($oUser !== null && RolePeer::mayOperateOnOwn($oUser, $this, "insert")) || RolePeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(RolePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "users"));
 				}
 
@@ -572,8 +570,7 @@ abstract class BaseRole extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(RolePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && RolePeer::mayOperateOnOwn($oUser, $this, "update")) || RolePeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(RolePeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "users"));
 				}
 
@@ -1898,6 +1895,26 @@ abstract class BaseRole extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(RolePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && RolePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return RolePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

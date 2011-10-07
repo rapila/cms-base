@@ -526,8 +526,7 @@ abstract class BaseString extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(StringPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && StringPeer::mayOperateOnOwn($oUser, $this, "delete")) || StringPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(StringPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "languages"));
 			}
 
@@ -575,8 +574,7 @@ abstract class BaseString extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(StringPeer::isIgnoringRights() || ($oUser !== null && StringPeer::mayOperateOnOwn($oUser, $this, "insert")) || StringPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(StringPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "languages"));
 				}
 
@@ -601,8 +599,7 @@ abstract class BaseString extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(StringPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && StringPeer::mayOperateOnOwn($oUser, $this, "update")) || StringPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(StringPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "languages"));
 				}
 
@@ -1306,6 +1303,26 @@ abstract class BaseString extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(StringPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && StringPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return StringPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

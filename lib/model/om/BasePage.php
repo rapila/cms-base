@@ -984,8 +984,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(PagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PagePeer::mayOperateOnOwn($oUser, $this, "delete")) || PagePeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(PagePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.admin_user", array("role_key" => "pages"));
 			}
 
@@ -1050,8 +1049,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(PagePeer::isIgnoringRights() || ($oUser !== null && PagePeer::mayOperateOnOwn($oUser, $this, "insert")) || PagePeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(PagePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.admin_user", array("role_key" => "pages"));
 				}
 
@@ -1076,8 +1074,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(PagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && PagePeer::mayOperateOnOwn($oUser, $this, "update")) || PagePeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(PagePeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.admin_user", array("role_key" => "pages"));
 				}
 
@@ -3546,6 +3543,26 @@ abstract class BasePage extends BaseObject  implements Persistent
 	{
 		return TagPeer::tagInstancesForObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PagePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return PagePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**

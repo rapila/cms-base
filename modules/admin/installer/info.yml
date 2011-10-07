@@ -1,5 +1,5 @@
 name: "Installer"
 description: "Install routines"
-website: "http://www.mini-cms.ch/"
+website: "http://www.rapi.la/"
 version: 2.0
-allowed_roles: []
+allowed_roles: [installer]

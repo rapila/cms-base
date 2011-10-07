@@ -660,8 +660,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "delete")) || ContentObjectPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.backend_user", array("role_key" => "objects"));
 			}
 
@@ -709,8 +708,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "insert")) || ContentObjectPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.backend_user", array("role_key" => "objects"));
 				}
 
@@ -735,8 +733,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ContentObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ContentObjectPeer::mayOperateOnOwn($oUser, $this, "update")) || ContentObjectPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.backend_user", array("role_key" => "objects"));
 				}
 
@@ -1956,6 +1953,26 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ContentObjectPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && ContentObjectPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return ContentObjectPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

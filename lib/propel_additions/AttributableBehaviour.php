@@ -7,7 +7,6 @@
  * @package    propel.generator.behavior
  */
 class AttributableBehaviour extends Behavior {
-	
 	private $bIsUsersTable = false;
 	// default parameters value
 	protected $parameters = array(

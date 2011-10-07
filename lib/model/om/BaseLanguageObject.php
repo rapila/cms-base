@@ -548,8 +548,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_objects"));
 			}
 
@@ -597,8 +596,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_objects"));
 				}
 
@@ -623,8 +621,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguageObjectPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, "update")) || LanguageObjectPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.backend_user", array("role_key" => "language_objects"));
 				}
 
@@ -1410,6 +1407,26 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	{
 		return ReferencePeer::getReferencesFromObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LanguageObjectPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**

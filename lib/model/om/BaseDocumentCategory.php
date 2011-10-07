@@ -683,8 +683,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "delete")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
@@ -732,8 +731,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "insert")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
 				}
 
@@ -758,8 +756,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(DocumentCategoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, "update")) || DocumentCategoryPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
 				}
 
@@ -1742,6 +1739,26 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 	{
 		return ReferencePeer::getReferences($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return DocumentCategoryPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**

@@ -1,5 +1,5 @@
 allowed_roles: [users]
 name: "Groups"
 description: "User groups allowing to define specific rights on pages and available modules"
-website: "http://www.mini-cms.ch/"
+website: "http://www.rapi.la/"
 version: 2.0

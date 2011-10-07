@@ -607,8 +607,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguagePeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguagePeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "languages"));
 			}
 
@@ -656,8 +655,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && LanguagePeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguagePeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "languages"));
 				}
 
@@ -682,8 +680,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguagePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguagePeer::mayOperateOnOwn($oUser, $this, "update")) || LanguagePeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "languages"));
 				}
 
@@ -2917,6 +2914,26 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(LanguagePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguagePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LanguagePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

@@ -585,8 +585,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "delete")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_object_history"));
 			}
 
@@ -634,8 +633,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "insert")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_object_history"));
 				}
 
@@ -660,8 +658,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, "update")) || LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.backend_user", array("role_key" => "language_object_history"));
 				}
 
@@ -1450,6 +1447,26 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	public function __toString()
 	{
 		return (string) $this->exportTo(LanguageObjectHistoryPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LanguageObjectHistoryPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

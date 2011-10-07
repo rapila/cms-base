@@ -587,8 +587,7 @@ abstract class BaseReference extends BaseObject  implements Persistent
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "delete")) || ReferencePeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.custom.indirect_references", array("role_key" => "indirect_references"));
 			}
 
@@ -636,8 +635,7 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && ReferencePeer::mayOperateOnOwn($oUser, $this, "insert")) || ReferencePeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.custom.indirect_references", array("role_key" => "indirect_references"));
 				}
 
@@ -662,8 +660,7 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "update")) || ReferencePeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.custom.indirect_references", array("role_key" => "indirect_references"));
 				}
 
@@ -1324,6 +1321,26 @@ abstract class BaseReference extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ReferencePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && ReferencePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return ReferencePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

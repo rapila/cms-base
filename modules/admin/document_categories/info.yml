@@ -1,5 +1,5 @@
 # allowed_roles: [documents]
 name: "Document Categories"
 description: "Easy categorisation of documents, categories allow specification of i.e. max_width of images"
-website: "http://www.mini-cms.ch/"
+website: "http://www.rapi.la/"
 version: 2.0

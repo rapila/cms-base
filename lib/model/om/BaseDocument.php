@@ -1197,8 +1197,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
 			// denyable behavior
-			$oUser = Session::getSession()->getUser();
-			if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentPeer::mayOperateOnOwn($oUser, $this, "delete")) || DocumentPeer::mayOperateOn($oUser, $this, "delete"))) {
+			if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new NotPermittedException("delete.by_role", array("role_key" => "documents"));
 			}
 
@@ -1246,8 +1245,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && DocumentPeer::mayOperateOnOwn($oUser, $this, "insert")) || DocumentPeer::mayOperateOn($oUser, $this, "insert"))) {
+				if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
 					throw new NotPermittedException("insert.by_role", array("role_key" => "documents"));
 				}
 
@@ -1272,8 +1270,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(DocumentPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && DocumentPeer::mayOperateOnOwn($oUser, $this, "update")) || DocumentPeer::mayOperateOn($oUser, $this, "update"))) {
+				if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("update"))) {
 					throw new NotPermittedException("update.by_role", array("role_key" => "documents"));
 				}
 
@@ -2346,6 +2343,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	{
 		return TagPeer::tagInstancesForObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return DocumentPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = null) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = null) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = null) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**
