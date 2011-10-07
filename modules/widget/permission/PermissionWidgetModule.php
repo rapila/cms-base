@@ -20,7 +20,7 @@ class PermissionWidgetModule extends WidgetModule {
 		if(!is_object($mObject)) {
 			$mObject = $sPeer::retrieveByPK($mObject);
 		}
-		return $sPeer::mayOperateOn(Session::getSession()->getUser(), $mObject, $sOperation);
+		return $mObject->mayOperate($sOperation, $mObject);
 	}
 
 	public static function mayUpdateObjectOfModel($sModelName, $iObjectId) {
