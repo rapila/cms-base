@@ -528,7 +528,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 			// denyable behavior
 			$oUser = Session::getSession()->getUser();
 			if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagInstancePeer::mayOperateOnOwn($oUser, $this, "delete")) || TagInstancePeer::mayOperateOn($oUser, $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => "tag_instances"));
+				throw new NotPermittedException("delete.custom.tag_instances", array("role_key" => "tag_instances"));
 			}
 
 			if ($ret) {
@@ -574,6 +574,12 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && TagInstancePeer::mayOperateOnOwn($oUser, $this, "insert")) || TagInstancePeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom.tag_instances", array("role_key" => "tag_instances"));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(TagInstancePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -581,12 +587,6 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(TagInstancePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && TagInstancePeer::mayOperateOnOwn($oUser, $this, "insert")) || TagInstancePeer::mayOperateOn($oUser, $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => "tag_instances"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -600,16 +600,16 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagInstancePeer::mayOperateOnOwn($oUser, $this, "update")) || TagInstancePeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom.tag_instances", array("role_key" => "tag_instances"));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(TagInstancePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(TagInstancePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagInstancePeer::mayOperateOnOwn($oUser, $this, "update")) || TagInstancePeer::mayOperateOn($oUser, $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => "tag_instances"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

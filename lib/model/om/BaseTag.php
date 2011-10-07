@@ -485,7 +485,7 @@ abstract class BaseTag extends BaseObject  implements Persistent
 			// denyable behavior
 			$oUser = Session::getSession()->getUser();
 			if(!(TagPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagPeer::mayOperateOnOwn($oUser, $this, "delete")) || TagPeer::mayOperateOn($oUser, $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => "tags"));
+				throw new NotPermittedException("delete.custom.tags", array("role_key" => "tags"));
 			}
 
 			if ($ret) {
@@ -531,6 +531,12 @@ abstract class BaseTag extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && TagPeer::mayOperateOnOwn($oUser, $this, "insert")) || TagPeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom.tags", array("role_key" => "tags"));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(TagPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -538,12 +544,6 @@ abstract class BaseTag extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(TagPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && TagPeer::mayOperateOnOwn($oUser, $this, "insert")) || TagPeer::mayOperateOn($oUser, $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => "tags"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -557,16 +557,16 @@ abstract class BaseTag extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagPeer::mayOperateOnOwn($oUser, $this, "update")) || TagPeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom.tags", array("role_key" => "tags"));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(TagPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(TagPeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && TagPeer::mayOperateOnOwn($oUser, $this, "update")) || TagPeer::mayOperateOn($oUser, $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => "tags"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {

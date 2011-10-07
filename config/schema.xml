@@ -1,3 +1,7 @@
+<behavior name="denyable">
+	<parameter name="mode" value="by_role" />
+</behavior>
+
 <table name="pages" phpName="Page">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 	<column name="name" type="varchar" required="true" size="50" />
@@ -111,9 +115,6 @@
 	</unique>
 	<column name="is_active" type="boolean" size="1" />
 	<column name="sort" type="tinyint" size="2" />
-	<behavior name="denyable">
-		<parameter name="role_key" value="languages" />
-	</behavior>
 </table>
 
 <table name="strings" phpName="String">
@@ -317,6 +318,9 @@
 	<unique>
 		<unique-column name="name" />
 	</unique>
+	<behavior name="denyable">
+		<parameter name="mode" value="allow" />
+	</behavior>
 </table>
 
 <table name="tag_instances" phpName="TagInstance">
@@ -326,6 +330,9 @@
 	</foreign-key>
 	<column name="tagged_item_id" type="integer" required="true" primaryKey="true" />
 	<column name="model_name" type="varchar" size="80" required="true" primaryKey="true" />
+	<behavior name="denyable">
+		<parameter name="mode" value="allow" />
+	</behavior>
 </table>
 
 <table name="links" phpName="Link">
@@ -379,4 +386,7 @@
 		<unique-column name="to_id" />
 		<unique-column name="to_model_name" />
 	</unique>
+	<behavior name="denyable">
+		<parameter name="mode" value="allow" />
+	</behavior>
 </table>

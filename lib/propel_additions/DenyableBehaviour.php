@@ -17,7 +17,7 @@ class DenyableBehaviour extends Behavior {
 			$sParam = parent::getParameter('role_key') ? 'by_role' : 'allow';
 		}
 		if($sName === 'owner_allowed' && $sParam === '') {
-			$sParam = parent::getParameter('role_key') ? 'by_role' : 'false';
+			$sParam = $this->getParameter('mode') === 'by_role' ? 'by_role' : 'false';
 		}
 		if($sName === 'role_key' && $sParam === '') {
 			$sParam = $this->getTable()->getCommonName();
@@ -55,7 +55,7 @@ class DenyableBehaviour extends Behavior {
 		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
 		$sMode = $this->getParameter('mode');
 		if($sMode === 'allow') {
-			$sMode = 'custom';
+			$sMode = 'custom.'.$this->getTable()->getCommonName();
 		}
 		$sActionModeEscaped = '"'.$sAction.'.'.$sMode.'"';
 		$sModeEscaped = '"'.addslashes($sMode).'"';

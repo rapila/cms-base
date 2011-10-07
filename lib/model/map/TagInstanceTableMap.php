@@ -67,8 +67,8 @@ class TagInstanceTableMap extends TableMap
 	public function getBehaviors()
 	{
 		return array(
+			'denyable' => array('mode' => 'allow', 'role_key' => '', 'owner_allowed' => '', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
-			'denyable' => array('mode' => '', 'role_key' => '', 'owner_allowed' => '', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
 	} // getBehaviors()

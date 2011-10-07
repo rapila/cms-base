@@ -589,7 +589,7 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			// denyable behavior
 			$oUser = Session::getSession()->getUser();
 			if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "delete")) || ReferencePeer::mayOperateOn($oUser, $this, "delete"))) {
-				throw new NotPermittedException("delete.custom", array("role_key" => "indirect_references"));
+				throw new NotPermittedException("delete.custom.indirect_references", array("role_key" => "indirect_references"));
 			}
 
 			if ($ret) {
@@ -635,6 +635,12 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && ReferencePeer::mayOperateOnOwn($oUser, $this, "insert")) || ReferencePeer::mayOperateOn($oUser, $this, "insert"))) {
+					throw new NotPermittedException("insert.custom.indirect_references", array("role_key" => "indirect_references"));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(ReferencePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -642,12 +648,6 @@ abstract class BaseReference extends BaseObject  implements Persistent
 				if (!$this->isColumnModified(ReferencePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && ReferencePeer::mayOperateOnOwn($oUser, $this, "insert")) || ReferencePeer::mayOperateOn($oUser, $this, "insert"))) {
-					throw new NotPermittedException("insert.custom", array("role_key" => "indirect_references"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
@@ -661,16 +661,16 @@ abstract class BaseReference extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				$oUser = Session::getSession()->getUser();
+				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "update")) || ReferencePeer::mayOperateOn($oUser, $this, "update"))) {
+					throw new NotPermittedException("update.custom.indirect_references", array("role_key" => "indirect_references"));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(ReferencePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
 				}
-				// denyable behavior
-				$oUser = Session::getSession()->getUser();
-				if(!(ReferencePeer::isIgnoringRights() || ($oUser !== null && $this->getCreatedBy() === $oUser->getId() && ReferencePeer::mayOperateOnOwn($oUser, $this, "update")) || ReferencePeer::mayOperateOn($oUser, $this, "update"))) {
-					throw new NotPermittedException("update.custom", array("role_key" => "indirect_references"));
-				}
-
 				// attributable behavior
 				
 				if(Session::getSession()->isAuthenticated()) {
