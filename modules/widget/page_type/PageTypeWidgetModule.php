@@ -27,7 +27,7 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 	public function getPageTypeJs() {
 		$sResourceUrl = TemplateResourceFileModule::getAvailableResource($this->sPageType, 'page_type', ResourceIncluder::RESOURCE_TYPE_JS, array());
 		if($sResourceUrl === null) {
-			throw new LocalizedException("widget.page_type.no_widget_js_exists", array('exception_location' => __METHOD__, 'page_type' => $this->sPageType));
+			throw new LocalizedException("widget.page_type.no_js_exists", array('exception_location' => __METHOD__, 'page_type' => $this->sPageType));
 		}
 		return $sResourceUrl;
 	}

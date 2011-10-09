@@ -20,7 +20,7 @@ default_aspects = {:frontend => ['dynamic', 'widget_based'], :widget => ['persis
 
 OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|opts|
 	## GENERAL
-	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e; default: widget)') do |type|
+	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file, :page_type], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file, :p => :page_type}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e, p[age_type]; default: widget)') do |type|
 		$options[:type] = type if type
 	end
 	
@@ -365,7 +365,17 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 
 		"jQuery(function() {
 	#{res}
-});"		
+});"
+	elsif $options[:type] == :page_type then
+		"Widget.types.page_type.types['#{module_name}'] = {
+	handle_preview: function(page_id, page_type) {
+		
+	},
+
+	handle_admin: function(page_id, container, page_type) {
+
+	}
+};"
 	end
 end
 
