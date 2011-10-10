@@ -2,37 +2,48 @@ Widget.types.detail = {
 	initialize: function() {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
+
+	create_for_instance: function(instance) {
+		var prototype = Object.getPrototypeOf(instance);
+		var instance_props = jQuery.extend({
+			open: function() {
+				if(!this.detail_widget) {
+					this.auto_open = true;
+					return false;
+				}
+				this.detail_widget.open();
+			},
+
+			close: function() {
+				this.detail_widget.close();
+				this.close_callback();
+			},
+
+			close_callback: jQuery.noop,
+			save_callback: jQuery.noop
+		}, prototype);
+		jQuery.extend(prototype, instance_props);
+		var old_fill_data = instance.fill_data;
+		instance.fill_data = function() {
+			this.auto_fill = true;
+		};
+		Widget.create('detail', function(detail) {
+			instance.fill_data = old_fill_data;
+			detail.set_instance(instance);
+			jQuery.extend(detail.settings, instance.settings.detail_widget);
+			if(instance.auto_open) {
+				detail.open();
+			}
+			if(instance.auto_fill) {
+				instance.fill_data();
+			}
+		});
+	},
 	
 	set_instance: function(instance) {
 		if(this === Widget.types.detail.prototype) {
 			//Static call means do the whole initialisation
-			var prototype = Object.getPrototypeOf(instance);
-			var instance_props = jQuery.extend({
-				open: function() {
-					if(!this.detail_widget) {
-						this.auto_open = true;
-						return false;
-					}
-					this.detail_widget.open();
-				},
-
-				close: function() {
-					this.detail_widget.close();
-					this.close_callback();
-				},
-
-				close_callback: jQuery.noop,
-				save_callback: jQuery.noop
-			}, prototype);
-			jQuery.extend(prototype, instance_props);
-			Widget.create('detail', function(detail) {
-				detail.set_instance(instance);
-				jQuery.extend(detail.settings, instance.settings.detail_widget);
-				if(instance.auto_open) {
-					detail.open();
-				}
-			});
-			return;
+			return Widget.callStatic('detail', 'create_for_instance', instance);
 		}
 		var _this = this;
 		this.instance = instance;

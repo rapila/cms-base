@@ -46,7 +46,9 @@ fieldset.option_groups:first-child{margin-left:0;margin-top:.1em}
 .ui-dialog-buttonpane.ui-widget-content{margin-top:0;background:#2d3238;border-top:0}
 .ui-dialog-titlebar.ui-widget-header{background:#2d3238}
 .ui-dialog-buttonpane button.ui-state-focus,.ui-dialog-content button.ui-state-focus,.ui-dialog-buttonpane button.ui-state-highlight,.ui-dialog-content button.ui-state-highlight,.ui-dialog-buttonpane button.ui-state-hover,.ui-dialog-content button.ui-state-hover{color:#e3ef99}
-.ui-dialog-content{cursor:auto;overflow-y:auto}
+.ui-dialog-content{cursor:auto;overflow-y:auto;}
+.ui-dialog-content.ui-accordion{padding:0;}
+.ui-dialog-content.ui-accordion > .ui-accordion-content{padding:1em 2.2em}
 button.ui-button.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-moz-border-radius:3px;-webkit-border-radius:3px}
 #admin_info_bar button.ui-button.info-bar-element.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-moz-border-radius:3px;-webkit-border-radius:3px}
 button.rapila-button.dashboard{background:transparent url("../../images/admin/dashboard_icon.gif") no-repeat center}
