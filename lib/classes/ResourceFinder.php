@@ -154,15 +154,15 @@ class ResourceFinder {
 	}
 
 	public function addAnyPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(null) : $this->addPath(null);
+		return $bOptional ? $this->addOptionalPath(null) : $this->addExpression(null);
 	}
 
 	public function addDirPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(false) : $this->addPath(false);
+		return $bOptional ? $this->addOptionalPath(false) : $this->addExpression(false);
 	}
 
 	public function addFilePath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(true) : $this->addPath(true);
+		return $bOptional ? $this->addOptionalPath(true) : $this->addExpression(true);
 	}
 
 	public function find() {
