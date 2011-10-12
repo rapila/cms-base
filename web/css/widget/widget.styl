@@ -312,9 +312,19 @@ input.ui-widget-content.input_medium
 .ui-tabs-nav.ui-widget-header
 	background: transparent url('')
 
-body.pages .ui-tabs-nav.ui-widget-header
+.ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header	
 	background-color: #ebedef
 
+div.inner-tab-panel-content 
+	margin-left:-26px
+	margin-top:15px
+
+div.inner-tab-panel-content > div
+	margin-left: 26px
+	
+div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header
+	border-bottom: 1px solid #CCCDCF
+	
 .ui-state-default a.tab_content_active
 	color: black
 
