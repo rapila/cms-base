@@ -64,7 +64,7 @@ class DenyableBehaviour extends Behavior {
 		$sActionEscaped = '"'.addslashes($sAction).'"';
 		$sRoleKeyEscaped = '"'.addslashes($this->getParameter('role_key')).'"';
 		return 'if(!('.$sPeerClassname.'::isIgnoringRights() || $this->mayOperate('.$sActionEscaped.'))) {
-	throw new NotPermittedException('.$sActionModeEscaped.', array("role_key" => '.$sRoleKeyEscaped.'));
+	throw new PropelException(new NotPermittedException('.$sActionModeEscaped.', array("role_key" => '.$sRoleKeyEscaped.')));
 }
 ';
 	}

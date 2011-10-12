@@ -864,7 +864,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			}
 			// denyable behavior
 			if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.by_role", array("role_key" => "links"));
+				throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "links")));
 			}
 
 			if ($ret) {
@@ -912,7 +912,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.by_role", array("role_key" => "links"));
+					throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "links")));
 				}
 
 				// extended_timestampable behavior
@@ -937,7 +937,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(LinkPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.by_role", array("role_key" => "links"));
+					throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "links")));
 				}
 
 				// extended_timestampable behavior

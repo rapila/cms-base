@@ -586,7 +586,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_object_history"));
+				throw new PropelException(new NotPermittedException("delete.backend_user", array("role_key" => "language_object_history")));
 			}
 
 			if ($ret) {
@@ -634,7 +634,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_object_history"));
+					throw new PropelException(new NotPermittedException("insert.backend_user", array("role_key" => "language_object_history")));
 				}
 
 				// extended_timestampable behavior
@@ -659,7 +659,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(LanguageObjectHistoryPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.backend_user", array("role_key" => "language_object_history"));
+					throw new PropelException(new NotPermittedException("update.backend_user", array("role_key" => "language_object_history")));
 				}
 
 				// extended_timestampable behavior

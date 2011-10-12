@@ -527,7 +527,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(TagInstancePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.custom.tag_instances", array("role_key" => "tag_instances"));
+				throw new PropelException(new NotPermittedException("delete.custom.tag_instances", array("role_key" => "tag_instances")));
 			}
 
 			if ($ret) {
@@ -575,7 +575,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(TagInstancePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.custom.tag_instances", array("role_key" => "tag_instances"));
+					throw new PropelException(new NotPermittedException("insert.custom.tag_instances", array("role_key" => "tag_instances")));
 				}
 
 				// extended_timestampable behavior
@@ -600,7 +600,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(TagInstancePeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.custom.tag_instances", array("role_key" => "tag_instances"));
+					throw new PropelException(new NotPermittedException("update.custom.tag_instances", array("role_key" => "tag_instances")));
 				}
 
 				// extended_timestampable behavior

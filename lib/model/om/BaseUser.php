@@ -1329,7 +1329,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(UserPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.by_role", array("role_key" => "users"));
+				throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "users")));
 			}
 
 			if ($ret) {
@@ -1377,7 +1377,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(UserPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.by_role", array("role_key" => "users"));
+					throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "users")));
 				}
 
 				// extended_timestampable behavior
@@ -1402,7 +1402,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(UserPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.by_role", array("role_key" => "users"));
+					throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "users")));
 				}
 
 				// extended_timestampable behavior

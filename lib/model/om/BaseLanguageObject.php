@@ -549,7 +549,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.backend_user", array("role_key" => "language_objects"));
+				throw new PropelException(new NotPermittedException("delete.backend_user", array("role_key" => "language_objects")));
 			}
 
 			if ($ret) {
@@ -597,7 +597,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.backend_user", array("role_key" => "language_objects"));
+					throw new PropelException(new NotPermittedException("insert.backend_user", array("role_key" => "language_objects")));
 				}
 
 				// extended_timestampable behavior
@@ -622,7 +622,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.backend_user", array("role_key" => "language_objects"));
+					throw new PropelException(new NotPermittedException("update.backend_user", array("role_key" => "language_objects")));
 				}
 
 				// extended_timestampable behavior

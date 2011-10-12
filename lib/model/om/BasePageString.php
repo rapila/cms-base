@@ -728,7 +728,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// denyable behavior
 			if(!(PageStringPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-				throw new NotPermittedException("delete.admin_user", array("role_key" => "page_strings"));
+				throw new PropelException(new NotPermittedException("delete.admin_user", array("role_key" => "page_strings")));
 			}
 
 			if ($ret) {
@@ -776,7 +776,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$ret = $ret && $this->preInsert($con);
 				// denyable behavior
 				if(!(PageStringPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-					throw new NotPermittedException("insert.admin_user", array("role_key" => "page_strings"));
+					throw new PropelException(new NotPermittedException("insert.admin_user", array("role_key" => "page_strings")));
 				}
 
 				// extended_timestampable behavior
@@ -801,7 +801,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$ret = $ret && $this->preUpdate($con);
 				// denyable behavior
 				if(!(PageStringPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-					throw new NotPermittedException("update.admin_user", array("role_key" => "page_strings"));
+					throw new PropelException(new NotPermittedException("update.admin_user", array("role_key" => "page_strings")));
 				}
 
 				// extended_timestampable behavior
