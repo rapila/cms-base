@@ -81,8 +81,11 @@ jQuery(document).ready(function() {
 			has_children: function(item) {
 				return item.TreeRight-item.TreeLeft > 1;
 			},
-			may_create_children: function(item) {
-				return item !== undefined && item.UserMayCreateChildren;
+			may_create_child: function(item) {
+				return item.UserMayCreateChildren;
+			},
+			may_create_sibling: function(item) {
+				return item.UserMayCreateSiblings;
 			},
 			identifier_from_data: function(data) {
 				return data.Id;

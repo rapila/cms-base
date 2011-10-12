@@ -49,7 +49,17 @@ Widget.types.tree = {
 				move: {
 					default_position: 'first',
 					check_move: function(data) {
-						return _this.settings.may_create_children(data.np.data('jstree'));
+						var tree_data = data.r && data.r.data('jstree');
+						if(!tree_data || !data.p) {
+							return false;
+						}
+						var result = false;
+						if(data.p === 'inside' || data.p === 'first' || data.p === 'last') {
+							result = _this.settings.may_create_child(tree_data);
+						} else {
+							result = _this.settings.may_create_sibling(tree_data);
+						}
+						return result;
 					}
 				}
 			},
@@ -197,7 +207,8 @@ Widget.types.tree = {
 	settings: {
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
-		may_create_children: jQuery.noop,
+		may_create_child: jQuery.noop,
+		may_create_sibling: jQuery.noop,
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
 		is_active: jQuery.noop,

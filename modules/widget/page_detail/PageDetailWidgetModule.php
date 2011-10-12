@@ -178,9 +178,6 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$sPageTitle = $sPageName;
 		$sPageName = StringUtil::normalize($sPageName);
-		if(!Session::getSession()->getUser()->mayCreateChildren($oParentPage)) {
-			throw new NotPermittedException('may_create_children');
-		}
 		if(PagePeer::pageIsNotUnique($sPageName, $oParentPage)) {
 			$oFlash = Flash::getFlash();
 			$oFlash->addMessage('page.name_unique_required');

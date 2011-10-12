@@ -10,6 +10,9 @@ class Page extends BasePage {
 	const REFERENCE_EXISTS_CODE = 44;
 	
 	private $aFullPathArray = null;
+
+	///Stores the “old” parent (before move operations)
+	private $oOldParent = null;
 	
 	public function getChildByName($sName) {
 		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
@@ -385,4 +388,15 @@ class Page extends BasePage {
 		}
 		$this->delete();
 	}
+
+	///Override moveSubtreeTo to store the old parent
+	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
+		$this->oOldParent = $this->getParent($con);
+		return parent::moveSubtreeTo($destLeft, $levelDelta, $con);
+	}
+
+	public function getOldParent() {
+		return $this->oOldParent;
+	}
+
 }
