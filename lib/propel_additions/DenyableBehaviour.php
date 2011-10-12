@@ -58,7 +58,7 @@ class DenyableBehaviour extends Behavior {
 		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
 		$sMode = $this->getParameter('mode');
 		if($sMode === 'allow') {
-			$sMode = 'custom.'.$this->getTable()->getCommonName();
+			$sMode = 'custom';
 		}
 		$sActionModeEscaped = '"'.$sAction.'.'.$sMode.'"';
 		$sActionEscaped = '"'.addslashes($sAction).'"';
