@@ -49,15 +49,19 @@ Widget.types.tree = {
 				move: {
 					default_position: 'first',
 					check_move: function(data) {
-						var tree_data = data.r && data.r.data('jstree');
-						if(!tree_data || !data.p) {
+						var src_data = data.o.data('jstree');
+						if(!_this.settings.may_move_item(src_data)) {
+							return false;
+						}
+						var dest_data = data.r !== -1 && data.r.data('jstree');
+						if(!dest_data || !data.p) {
 							return false;
 						}
 						var result = false;
 						if(data.p === 'inside' || data.p === 'first' || data.p === 'last') {
-							result = _this.settings.may_create_child(tree_data);
+							result = _this.settings.may_create_child(dest_data);
 						} else {
-							result = _this.settings.may_create_sibling(tree_data);
+							result = _this.settings.may_create_sibling(dest_data);
 						}
 						return result;
 					}
@@ -78,7 +82,11 @@ Widget.types.tree = {
 		});
 		this._tree = jQuery.jstree._reference(this._element);
 		this._element.bind('move_node.jstree', function(event, data) {
-			_this.moveItem(_this.identifier_from_element(data.rslt.o), _this.identifier_from_element(data.rslt.r), data.rslt.p);
+			_this.moveItem(_this.identifier_from_element(data.rslt.o), _this.identifier_from_element(data.rslt.r), data.rslt.p, function(res, error) {
+				if(error) {
+					jQuery.jstree.rollback(data.rlbk);
+				}
+			}, WidgetJSONOptions.with_callback_handles_error(false));
 		}).bind('refresh.jstree', function(event, data) {
 			if(_this.current_element_identifier && _this.current_element().length == 0) {
 				var new_element = _this.element_with_identifier(_this.current_element_identifier);
@@ -209,6 +217,7 @@ Widget.types.tree = {
 		has_children: jQuery.noop,
 		may_create_child: jQuery.noop,
 		may_create_sibling: jQuery.noop,
+		may_move_item: jQuery.noop,
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
 		is_active: jQuery.noop,

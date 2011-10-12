@@ -391,8 +391,27 @@ class Page extends BasePage {
 
 	///Override moveSubtreeTo to store the old parent
 	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
-		$this->oOldParent = $this->getParent($con);
+		$oOldParent = $this->getParent($con);
+		$oNewParent = PageQuery::create()->filterByTreeLeft($destLeft, Criteria::LESS_THAN)->filterByTreeRight($destLeft, Criteria::GREATER_EQUAL)->filterByTreeLevel($this->getLevel()+$levelDelta-1)->findOne();
+		// Copied from denyable behavior
+		if(!(PagePeer::isIgnoringRights() || $this->mayMoveFromTo($oOldParent, $oNewParent))) {
+			throw new PropelException(new NotPermittedException("update.custom", array("role_key" => "pages")));
+		}
 		return parent::moveSubtreeTo($destLeft, $levelDelta, $con);
+	}
+
+	private function mayMoveFromTo($oFrom, $oTo) {
+		ErrorHandler::log("Moving from {$oFrom->getName()} to {$oTo->getName()}");
+		// When moving pages, the user must have rights to both source and destination
+		$oUser = Session::getSession()->getUser();
+		if(!$oUser->mayCreateChildren($oFrom)) {
+			return false;
+		}
+		if($oTo === null) {
+			//Only admins may create root pages
+			return false;
+		}
+		return $oUser->mayCreateChildren($oTo);
 	}
 
 	public function getOldParent() {

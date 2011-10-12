@@ -72,43 +72,18 @@ class PagesAdminModule extends AdminModule {
 	}
 	
 	public function moveItem($iIdNew, $iIdRef, $sPosition) {
-		$config = Propel::getConfiguration(PropelConfiguration::TYPE_OBJECT);
-		$config->setParameter('debugpdo.logging.details.method.enabled', true);
-		$config->setParameter('debugpdo.logging.details.time.enabled', true);
-		$config->setParameter('debugpdo.logging.details.mem.enabled', true);
-		$allMethods = array(
-			'PropelPDO::exec',              // logs a query
-			'PropelPDO::query',             // logs a query
-			'PropelPDO::beginTransaction',  // logs a transaction begin
-			'PropelPDO::commit',            // logs a transaction commit
-			'PropelPDO::rollBack',          // logs a transaction rollBack (watch out for the capital 'B')
-			'DebugPDOStatement::execute',   // logs a query from a prepared statement
-		);
-		$config->setParameter('debugpdo.logging.methods', $allMethods, false);
-		
-		$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
-		$con->useDebug(true);
-		$con->beginTransaction();
-		$oPage = PagePeer::retrieveByPK($iIdNew, $con);
-		$oRefPage = PagePeer::retrieveByPK($iIdRef, $con);
-		try {
-			if($sPosition === 'first' || $sPosition === 'inside') {
-				$oPage->moveToFirstChildOf($oRefPage, $con);
-			} else if($sPosition === 'before') {
-				$oPage->moveToPrevSiblingOf($oRefPage, $con);
-			} else if($sPosition === 'after') {
-				$oPage->moveToNextSiblingOf($oRefPage, $con);
-			} else if($sPosition === 'last') {
-				$oPage->moveToLastChildOf($oRefPage, $con);
-			} else {
-				return false;
-			}
-			$oPage->save($con);
-			$con->commit();
-		} catch(Exception $e) {
-			ErrorHandler::log($con);
-			$con->rollBack();
-			throw $e;
+		$oPage = PagePeer::retrieveByPK($iIdNew);
+		$oRefPage = PagePeer::retrieveByPK($iIdRef);
+		if($sPosition === 'first' || $sPosition === 'inside') {
+			$oPage->moveToFirstChildOf($oRefPage);
+		} else if($sPosition === 'before') {
+			$oPage->moveToPrevSiblingOf($oRefPage);
+		} else if($sPosition === 'after') {
+			$oPage->moveToNextSiblingOf($oRefPage);
+		} else if($sPosition === 'last') {
+			$oPage->moveToLastChildOf($oRefPage);
+		} else {
+			return false;
 		}
 		return true;
 	}

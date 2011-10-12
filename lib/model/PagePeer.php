@@ -72,12 +72,7 @@ class PagePeer extends BasePagePeer {
 		if($oUser->getIsAdmin()) {
 			return true;
 		}
-		if($sOperation === 'insert' || $oPage->isColumnModified(PagePeer::TREE_LEFT) || $oPage->isColumnModified(PagePeer::TREE_RIGHT) || $oPage->isColumnModified(PagePeer::TREE_LEVEL)) {
-			$oOldParent = $oPage->getOldParent();
-			//When moving pages, the user must have rights to both source and destination
-			if($oOldParent && !$oUser->mayCreateChildren($oOldParent)) {
-				return false;
-			}
+		if($sOperation === 'insert') {
 			$oParent = $oPage->getParent();
 			if($oParent === null) {
 				//Only admins may create root pages
