@@ -409,45 +409,18 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     ContentObject The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = ContentObjectPeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -458,45 +431,18 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     ContentObject The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = ContentObjectPeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -608,7 +554,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 10; // 10 = ContentObjectPeer::NUM_COLUMNS - ContentObjectPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 10; // 10 = ContentObjectPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating ContentObject object", $e);
@@ -710,11 +656,16 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = ContentObjectQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.backend_user", array("role_key" => "objects")));
+			}
+
 			if ($ret) {
-				ContentObjectQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -756,6 +707,11 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.backend_user", array("role_key" => "objects")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(ContentObjectPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -776,6 +732,11 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(ContentObjectPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.backend_user", array("role_key" => "objects")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(ContentObjectPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -1085,12 +1046,17 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['ContentObject'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['ContentObject'][$this->getPrimaryKey()] = true;
 		$keys = ContentObjectPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -1106,13 +1072,19 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aPage) {
-				$result['Page'] = $this->aPage->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Page'] = $this->aPage->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByCreatedBy) {
-				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByUpdatedBy) {
-				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collLanguageObjects) {
+				$result['LanguageObjects'] = $this->collLanguageObjects->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectHistorys) {
+				$result['LanguageObjectHistorys'] = $this->collLanguageObjectHistorys->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1287,19 +1259,20 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of ContentObject (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setPageId($this->page_id);
-		$copyObj->setContainerName($this->container_name);
-		$copyObj->setObjectType($this->object_type);
-		$copyObj->setConditionSerialized($this->condition_serialized);
-		$copyObj->setSort($this->sort);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
-		$copyObj->setCreatedBy($this->created_by);
-		$copyObj->setUpdatedBy($this->updated_by);
+		$copyObj->setPageId($this->getPageId());
+		$copyObj->setContainerName($this->getContainerName());
+		$copyObj->setObjectType($this->getObjectType());
+		$copyObj->setConditionSerialized($this->getConditionSerialized());
+		$copyObj->setSort($this->getSort());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setCreatedBy($this->getCreatedBy());
+		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1320,9 +1293,10 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1402,11 +1376,11 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 		if ($this->aPage === null && ($this->page_id !== null)) {
 			$this->aPage = PageQuery::create()->findPk($this->page_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aPage->addContentObjects($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aPage->addContentObjects($this);
 			 */
 		}
 		return $this->aPage;
@@ -1451,11 +1425,11 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
 			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByCreatedBy->addContentObjectsRelatedByCreatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByCreatedBy->addContentObjectsRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1500,14 +1474,33 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
 			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByUpdatedBy->addContentObjectsRelatedByUpdatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByUpdatedBy->addContentObjectsRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
+	}
+
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('LanguageObject' == $relationName) {
+			return $this->initLanguageObjects();
+		}
+		if ('LanguageObjectHistory' == $relationName) {
+			return $this->initLanguageObjectHistorys();
+		}
 	}
 
 	/**
@@ -1531,10 +1524,16 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLanguageObjects()
+	public function initLanguageObjects($overrideExisting = true)
 	{
+		if (null !== $this->collLanguageObjects && !$overrideExisting) {
+			return;
+		}
 		$this->collLanguageObjects = new PropelObjectCollection();
 		$this->collLanguageObjects->setModel('LanguageObject');
 	}
@@ -1605,8 +1604,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 * through the LanguageObject foreign key attribute.
 	 *
 	 * @param      LanguageObject $l LanguageObject
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     ContentObject The current object (for fluent API support)
 	 */
 	public function addLanguageObject(LanguageObject $l)
 	{
@@ -1617,6 +1615,8 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			$this->collLanguageObjects[]= $l;
 			$l->setContentObject($this);
 		}
+
+		return $this;
 	}
 
 
@@ -1715,10 +1715,16 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLanguageObjectHistorys()
+	public function initLanguageObjectHistorys($overrideExisting = true)
 	{
+		if (null !== $this->collLanguageObjectHistorys && !$overrideExisting) {
+			return;
+		}
 		$this->collLanguageObjectHistorys = new PropelObjectCollection();
 		$this->collLanguageObjectHistorys->setModel('LanguageObjectHistory');
 	}
@@ -1789,8 +1795,7 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	 * through the LanguageObjectHistory foreign key attribute.
 	 *
 	 * @param      LanguageObjectHistory $l LanguageObjectHistory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     ContentObject The current object (for fluent API support)
 	 */
 	public function addLanguageObjectHistory(LanguageObjectHistory $l)
 	{
@@ -1801,6 +1806,8 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 			$this->collLanguageObjectHistorys[]= $l;
 			$l->setContentObject($this);
 		}
+
+		return $this;
 	}
 
 
@@ -1902,34 +1909,70 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collLanguageObjects) {
-				foreach ((array) $this->collLanguageObjects as $o) {
+				foreach ($this->collLanguageObjects as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLanguageObjectHistorys) {
-				foreach ((array) $this->collLanguageObjectHistorys as $o) {
+				foreach ($this->collLanguageObjectHistorys as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collLanguageObjects instanceof PropelCollection) {
+			$this->collLanguageObjects->clearIterator();
+		}
 		$this->collLanguageObjects = null;
+		if ($this->collLanguageObjectHistorys instanceof PropelCollection) {
+			$this->collLanguageObjectHistorys->clearIterator();
+		}
 		$this->collLanguageObjectHistorys = null;
 		$this->aPage = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(ContentObjectPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && ContentObjectPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return ContentObjectPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior
@@ -1994,25 +2037,6 @@ abstract class BaseContentObject extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = ContentObjectPeer::UPDATED_BY;
 		return $this;
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseContentObject

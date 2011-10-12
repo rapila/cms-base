@@ -10,187 +10,201 @@ define("TEMPLATE_PARAMETER_SEPARATOR", ";");
 
 define("TEMPLATE_IDENTIFIER_MATCHER", "/".preg_quote(TEMPLATE_IDENTIFIER_START, "/")."([^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_KEY_VALUE_SEPARATOR.TEMPLATE_PARAMETER_SEPARATOR, "/")."]+?)(".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE.TEMPLATE_PARAMETER_SEPARATOR, "/")."])+)?)?(".preg_quote(TEMPLATE_PARAMETER_SEPARATOR, "/")."(((\\\\[".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])|[^".preg_quote(TEMPLATE_IDENTIFIER_START_SINGLE.TEMPLATE_IDENTIFIER_END_SINGLE, "/")."])*))?".preg_quote(TEMPLATE_IDENTIFIER_END, "/")."/sm");
 
-// Util::dumpAll(TEMPLATE_IDENTIFIER_MATCHER);
-
 /**
- * class Template
- * is used to manage building a tree with static template texts and dynamic identifiers that have the form of <code>{{identifier=value;param=value}}</code>. Those can have special meaning ({@link SpecialTemplateIdentifierActions}) and be replaced by the Template class or can be replaced by the user of the template using {@link replaceIdentifier()} or {@link replaceIdentifierMultiple()}.
- * All replaceIdentifier… methods take a flag parameter. The possible flags can be bitwise ORed together. The flags are described in the constants section. You can also provide a new template with some default flags. All Templates whose file name start with “e_mail_” will automatically get the NO_HTML_ESCAPE flag while those ending in .css.tmpl or .js.tmpl will automatically get NO_HTML_ESCAPE|ESCAPE.
- */
+* The Template class is used to manage building a tree with static template texts and dynamic identifiers that have the form of <code>{{identifier=value;param=value}}</code>. Those can have special meaning ({@link SpecialTemplateIdentifierActions}) and be replaced by the Template class or can be replaced by the user of the template using {@link replaceIdentifier()} or {@link replaceIdentifierMultiple()}.
+* All replaceIdentifier… methods take a flag parameter. The possible flags can be bitwise ORed together. The flags are described in the constants section. You can also provide a new template with some default flags. All Templates whose file name start with “e_mail_” will automatically get the NO_HTML_ESCAPE flag while those ending in .css.tmpl or .js.tmpl will automatically get NO_HTML_ESCAPE|ESCAPE.
+*/
+
+/// Manages a rapila Template (*.tmpl)
 class Template {
-	// template suffix
+	/// template suffix
 	public static $SUFFIX = '.tmpl';
-	
+
 	public static $ANY_VALUE = -1;
-	
+
 	private static $NEWLINE_VALUE = "\n";
-	
+
 	private static $HTML_ENTITY_FUNCTION = null;
-	
+
 	/**
-	* Prevents any HTML escaping from taking place (usually any replacement values except templates are being html-escaped).
+	 * Prevents any HTML escaping from taking place (usually any replacement values except templates are being html-escaped).
 	*/
 	const NO_HTML_ESCAPE = 1;
-	
+
 	/**
-	* Escapes (quotes) all Javascript-unsafe characters
+	 * Escapes (quotes) all Javascript-unsafe characters
 	*/
 	const ESCAPE = 2;
-	
+
 	/**
-	* Puts double-quotes around the string. Only used in conjunction with ESCAPE
+	 * Puts double-quotes around the string. Only used in conjunction with ESCAPE
 	*/
 	const JAVASCRIPT_CONVERT = 4;
-	
+
 	/**
 	 * Is equivalent to (NO_HTML_ESCAPE|ESCAPE|JAVASCRIPT_CONVERT)
-	 */
+	*/
 	const JAVASCRIPT_ESCAPE = 7;
-	
+
 	/**
-	* Re-use existing identifiers (if the replacing value is a template) or re-parse identifier-like strings (if the replacement is a string)
+	 * Re-use existing identifiers (if the replacing value is a template) or re-parse identifier-like strings (if the replacement is a string)
 	*/
 	const LEAVE_IDENTIFIERS = 8;
-	
+
 	/**
-	* Forces html-escaping of replacement values (even if the replacement is a template)
+	 * Forces html-escaping of replacement values (even if the replacement is a template)
 	*/
 	const FORCE_HTML_ESCAPE = 16;
-	
+
 	/**
-	* Suppresses the printing of a newline character between multiple replacements of the same identifier
+	 * Suppresses the printing of a newline character between multiple replacements of the same identifier
 	*/
 	const NO_NEWLINE = 32;
-	
+
 	/**
-	* Does not duplicate the context when doing multiple replacements on the same identifier. This means that the {{identifierContext}} can be used to mark an area to be deleted if no replacements occur but still keep the area only once if multiple replacements happen.
+	 * Does not duplicate the context when doing multiple replacements on the same identifier. This means that the {{identifierContext}} can be used to mark an area to be deleted if no replacements occur but still keep the area only once if multiple replacements happen.
 	*/
 	const NO_NEW_CONTEXT = 64;
-	
+
 	/**
-	* A replaceIdentifier… operation with this flag set will not look inside template identifier values or parameters for inner identifiers to be replaced. Use this e.g. to to a quicker replacement when you’re sure you don’t have any relevant inner identifiers.
+	 * A replaceIdentifier… operation with this flag set will not look inside template identifier values or parameters for inner identifiers to be replaced. Use this e.g. to to a quicker replacement when you’re sure you don’t have any relevant inner identifiers.
 	*/
 	const NO_IDENTIFIER_VALUE_REPLACEMENT = 128;
-	
+
 	/**
-	* This will not do any charset-conversions. This only affects operation where the replacement is another template.
+	 * This will not do any charset-conversions. This only affects operation where the replacement is another template.
 	*/
 	const NO_RECODE = 256;
-	
+
 	/**
-	* This will run strip_tags() on the replacement.
+	 * This will run strip_tags() on the replacement.
 	*/
 	const STRIP_TAGS = 512;
-	
+
 	/**
-	* This will run nl2br() on the replacement.
+	 * This will run nl2br() on the replacement.
 	*/
 	const CONVERT_NEWLINES_TO_BR = 1024;
-	
+
 	/**
-	* This will run urlencode() on the replacement.
+	 * This will run urlencode() on the replacement.
 	*/
 	const URL_ENCODE = 2048;
-	
-	//Holds all of the template's contents as either strings or TemplateIdentifier objects
+
+	///Holds all of the template's contents as either strings or TemplateIdentifier objects
 	private $aTemplateContents;
-	
-	//If set to false, identifiers will be inserted into the final output
+
+	///If set to false, identifiers will be inserted into the final output
 	public $bKillIdentifiersBeforeRender = true;
-	
-	//If set to true, the output will be rendered on the fly
+
+	///If set to true, the output will be rendered on the fly
 	private $bDirectOutput = false;
-	
-	//Contains all sent output if bDirectOutput is set to true (used for caching)
+
+	///Contains all sent output if bDirectOutput is set to true (used for caching)
 	private $sSentOutput = "";
-	
-	//holds the template's name. If this is a subtemplate, it will hold the root template's name
+
+	///Holds the template's name. If this is a subtemplate, it will hold the root template's name
 	private $sTemplateName = null;
-	
+
+	///Holds the path relative to the CONTEXT_DIR from which this template was created. This is used to resolve includes which may originate from the same relative path with each posible CONTEXT_DIR.
 	private $mPath = null;
-	
+
+	///Default flags are ORed against given flags in all operations. Default flags are also inherited to included templates.
 	public $iDefaultFlags = 0;
-	
-	//The template’s internal encoding
+
+	///The template’s internal encoding
 	private $sEncoding = "utf-8";
-	
-	//Instance to the SpecialTemplateIdentifierActions for better resource management
+
+	///Instance to the SpecialTemplateIdentifierActions for better resource management
 	private $oSpecialTemplateIdentifierActions;
-	
+
 	/**
-	 * __construct()
-	 * @param string template name
-	 * @param string|array template dir path
-	 * @param boolean template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
-	 * @param boolean template will output directly to stream? only one the main template should have set this to true
-	 * @param string target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding
-	 * @param string root template name, used internally when including subtemplates, default=null
-	 * @param int default flags, will be ORed to the flags you provide when calling {@link replaceIdentifier()} and {@link replaceIdentifierMultiple()}
-	 */
+	* @param string $sTemplateName template name
+	* @param string|array $mPath template dir path
+	* @param boolean $bTemplateIsTextOnly template is text only (name will be used as content, path can be used to decide origin [null=filesystem, "db"=database, "browser"=request])
+	* @param boolean $bDirectOutput template will output directly to stream? only one the main template should have set this to true
+	* @param string $sTargetEncoding target encoding. usually the browser encoding. text will be converted from the source encoding (default is utf-8, at the moment only changed when using text-only templates) into the target encoding
+	* @param string $sRootTemplateName root template name, used internally when including subtemplates, default=null
+	* @param int $iDefaultFlags default flags, will be ORed to the flags you provide when calling {@link replaceIdentifier()} and {@link replaceIdentifierMultiple()}
+	*/
 	public function __construct($sTemplateName, $mPath=null, $bTemplateIsTextOnly=false, $bDirectOutput=false, $sTargetEncoding=null, $sRootTemplateName=null, $iDefaultFlags = 0) {
 		if($sTargetEncoding === null) {
 			$sTargetEncoding = Settings::getSetting("encoding", "browser", "utf-8");
 		}
-		
+
 		if($mPath === "db") {
 			$this->sEncoding = Settings::getSetting("encoding", "db", "utf-8");
 		} else if($mPath === "browser") {
 			$this->sEncoding = Settings::getSetting("encoding", "browser", "utf-8");
 		}
-		
+
 		if($mPath === null || $mPath === "db" || $mPath === "browser") {
 			$mPath = DIRNAME_TEMPLATES;
 		}
-		
-		if($sRootTemplateName === null && !$bTemplateIsTextOnly) {
-			$sRootTemplateName = $sTemplateName;
-		}
-		$this->sTemplateName = $sRootTemplateName;
-		
+
 		$sTemplateText = "";
 		$this->aTemplateContents = array();
-		
+
 		$oCache = null;
 		$bCacheIsCurrent = false;
-		
+
 		if($bTemplateIsTextOnly) {
 			$sTemplateText = $sTemplateName;
+			$sTemplateName = $sRootTemplateName;
 		} else {
-			$aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
-			$oPath = ResourceFinder::findResourceObject($aPath);
+			if($sTemplateName instanceof FileResource) {
+				$oPath = $sTemplateName;
+				$aPath = explode('/', $oPath->getRelativePath());
+				$sTemplateName = $oPath->getFileName(self::$SUFFIX);
+			} else {
+				$aPath = ResourceFinder::parsePathArguments(null, $mPath, $sTemplateName.self::$SUFFIX);
+				$oPath = ResourceFinder::findResourceObject($aPath);
+			}
 			if($oPath === null) {
 				throw new Exception("Error in Template construct: Template file ".implode("/", $aPath+array($sTemplateName.self::$SUFFIX))." does not exist");
 			}
-			
+
 			if(Settings::getSetting('general', 'template_caching', false)) {
-				$oCache = new Cache($oPath->getRelativePath()."_".Session::language()."_".$sTargetEncoding."_".$this->sTemplateName, DIRNAME_TEMPLATES);
+				$oCache = new Cache($oPath->getFullPath()."_".Session::language()."_".$sTargetEncoding."_".$sRootTemplateName, DIRNAME_TEMPLATES);
 				$bCacheIsCurrent = $oCache->cacheFileExists() && !$oCache->isOutdated($oPath->getFullPath());
 			}
-			
+
 			if(!$bCacheIsCurrent) {
 				$sTemplateText = file_get_contents($oPath->getFullPath());
 			}
-			
+
 			$mPath = $aPath;
 			array_pop($mPath);
-			
-			if(StringUtil::startsWith($sTemplateName, 'e_mail_') || StringUtil::startsWith($sTemplateName, 'email_')) {
-				$iDefaultFlags |= self::NO_HTML_ESCAPE;
-			} else if(StringUtil::endsWith($sTemplateName, '.js') || StringUtil::endsWith($sTemplateName, '.css')) {
-				$iDefaultFlags |= (self::NO_HTML_ESCAPE|self::ESCAPE);
-			} else if(StringUtil::endsWith($sRootTemplateName, '.js') || StringUtil::endsWith($sRootTemplateName, '.css')) {
-				//I’m not a js template but my parent is
-				$iDefaultFlags &= ~(self::NO_HTML_ESCAPE|self::ESCAPE);
-			}
+
 		}
-		
+		if($sRootTemplateName === null && !$bTemplateIsTextOnly) {
+			$sRootTemplateName = $sTemplateName;
+		}
+		if($sRootTemplateName === null) {
+			$sRootTemplateName = '';
+		}
+		$this->sTemplateName = $sRootTemplateName;
+		if(StringUtil::startsWith($sTemplateName, 'e_mail_') || StringUtil::startsWith($sTemplateName, 'email_')) {
+			$iDefaultFlags |= self::NO_HTML_ESCAPE;
+		} else if(StringUtil::endsWith($sTemplateName, '.js') || StringUtil::endsWith($sTemplateName, '.css')) {
+			$iDefaultFlags |= (self::NO_HTML_ESCAPE|self::ESCAPE);
+		} else if(StringUtil::endsWith($this->sTemplateName, '.js') || StringUtil::endsWith($this->sTemplateName, '.css')) {
+			//I’m not a js template but my parent is
+			$iDefaultFlags &= ~(self::NO_HTML_ESCAPE|self::ESCAPE);
+		}
+
 		$this->mPath = $mPath;
 		$this->oSpecialTemplateIdentifierActions = new SpecialTemplateIdentifierActions($this);
-		
+
 		$this->iDefaultFlags = $iDefaultFlags;
-		
+
 		if($bCacheIsCurrent) {
 			$this->aTemplateContents = $oCache->getContentsAsVariable();
+			foreach($this->aTemplateContents as &$mContent) {
+				if($mContent instanceof TemplateIdentifier) {
+					$mContent->setTemplate($this);
+				}
+			}
 		} else {
 			if(is_array($sTemplateText)) {
 				$this->aTemplateContents = $sTemplateText;
@@ -201,18 +215,18 @@ class Template {
 				$this->replaceConditionals(true);
 			}
 			$this->replaceSpecialIdentifiersOnStart();
-			
+
 			if($oCache !== null) {
 				$oCache->setContents($this->aTemplateContents);
 			}
 		}
-		
+
 		$this->sEncoding = $sTargetEncoding;
 		$this->bDirectOutput = $bDirectOutput;
 		$this->renderDirectOutput();
 		$this->replaceConditionals(true);
 	}
-	
+
 	private static function templateContentsFromText($sTemplateText, $oTemplate=null) {
 		$aTemplateContents = array();
 		preg_match_all(TEMPLATE_IDENTIFIER_MATCHER, $sTemplateText, $aMatches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
@@ -221,13 +235,13 @@ class Template {
 			$sMatchText = $aValue[0][0];
 			$iMatchPosition = $aValue[0][1];
 			$iMatchLength = strlen($sMatchText);
-			
+
 			$sText = substr($sTemplateText, $iLastMatchEndPos, ($iMatchPosition-$iLastMatchEndPos));
 			if(is_string($sText) && strlen($sText) > 0) {
 				$aTemplateContents[] = $sText;
 			}
 			$iLastMatchEndPos = $iMatchPosition+$iMatchLength;
-			
+
 			$sMatchName = @$aValue[1][0];
 			$sMatchValue = @$aValue[3][0];
 			$sMatchParameters = @$aValue[7][0];
@@ -239,7 +253,7 @@ class Template {
 		}
 		return $aTemplateContents;
 	}
-	
+
 	public function derivativeTemplate($sTemplateName, $mPath = false, $bTemplateIsTextOnly = false) {
 		if($mPath === false) {
 			$mPath = $this->mPath;
@@ -250,11 +264,10 @@ class Template {
 	public function hasIdentifier($sName, $sValue=null) {
 		return $this->identifiersMatching($sName, $sValue, null, true) !== null;
 	}
-	
+
 	/**
-	 * listValuesByIdentifier()
-	 * @return array[string]
-	 */ 
+	* @return array[string]
+	*/ 
 	public function listValuesByIdentifier($sType) {
 		$aIdentifiers = $this->identifiersMatching($sType, self::$ANY_VALUE);
 		$aResult = array();
@@ -263,7 +276,7 @@ class Template {
 		}
 		return $aResult;		
 	}
-	
+
 	private function replaceAt($iIndex, $mReplacement = null, $iLength = 1) {
 		if(!is_int($iIndex)) {
 			$iIndex = $this->identifierPosition($iIndex);
@@ -277,7 +290,7 @@ class Template {
 			array_splice($this->aTemplateContents, $iIndex, $iLength, $mReplacement);
 		}
 	}
-	
+
 	private function allIdentifiers() {
 		$aResult = array();
 		foreach($this->aTemplateContents as $mContent) {
@@ -291,7 +304,7 @@ class Template {
 	private function insertAt($iIndex, $mReplacement) {
 		$this->replaceAt($iIndex, $mReplacement, 0);
 	}
-	
+
 	public function identifiersMatching($sName = null, $sValue = null, $aParameters = null, $bFindFirst = false, $iStartPosition = 0) {
 		$aResult = array();
 		for($iKey = $iStartPosition; $iKey < count($this->aTemplateContents) ; $iKey++) {
@@ -338,11 +351,11 @@ class Template {
 		}
 		return $aResult;
 	}
-	
+
 	private function identifierPosition($oIdentifier, $aArray = null) {
 		return array_search($oIdentifier, $this->aTemplateContents, true);
 	}
-	
+
 	private function partBetween($oStartIdentifier, $oEndIdentifier) {
 		$iStartIdentifierPosition = $this->identifierPosition($oStartIdentifier) + 1;
 		$iEndIdentifierPosition = $this->identifierPosition($oEndIdentifier);
@@ -352,7 +365,7 @@ class Template {
 		}
 		return array_slice($this->aTemplateContents, $iStartIdentifierPosition, $iLength);
 	}
-	
+
 	private function findIdentifierContext($oTemplateIdentifier) {
 		$aParams = array("name" => $oTemplateIdentifier->getName());
 		if($oTemplateIdentifier->getValue() !== TemplateIdentifier::$PARAMETER_EMPTY_VALUE) {
@@ -370,27 +383,27 @@ class Template {
 			switch ($oIdentifier->getValue())
 			{
 				case 'start':
-					if($iIdentifierPosition > $iTemplateIdentifierPosition) {
-						continue;
-					}
-					$iNewOffset = $iTemplateIdentifierPosition - $iIdentifierPosition;
-					if($aResult["start"] === null || $iLowerOffset > $iNewOffset) {
-						$iLowerOffset = $iNewOffset;
-						$aResult["start"] = $oIdentifier;
-					}
+				if($iIdentifierPosition > $iTemplateIdentifierPosition) {
+					continue;
+				}
+				$iNewOffset = $iTemplateIdentifierPosition - $iIdentifierPosition;
+				if($aResult["start"] === null || $iLowerOffset > $iNewOffset) {
+					$iLowerOffset = $iNewOffset;
+					$aResult["start"] = $oIdentifier;
+				}
 				break;
 				case 'end':
-					if($iIdentifierPosition < $iTemplateIdentifierPosition) {
-						continue;
-					}
-					$iNewOffset = $iIdentifierPosition - $iTemplateIdentifierPosition;
-					if($aResult["end"] === null || $iUpperOffset > $iNewOffset) {
-						$iUpperOffset = $iNewOffset;
-						$aResult["end"] = $oIdentifier;
-					}
+				if($iIdentifierPosition < $iTemplateIdentifierPosition) {
+					continue;
+				}
+				$iNewOffset = $iIdentifierPosition - $iTemplateIdentifierPosition;
+				if($aResult["end"] === null || $iUpperOffset > $iNewOffset) {
+					$iUpperOffset = $iNewOffset;
+					$aResult["end"] = $oIdentifier;
+				}
 				break;
 				default:
-					throw new Exception("Invalid identifierContext found, value ".$oIdentifier->getValue());
+				throw new Exception("Invalid identifierContext found, value ".$oIdentifier->getValue());
 				break;
 			}
 		}
@@ -399,7 +412,7 @@ class Template {
 		}
 		return $aResult;
 	}
-	
+
 	public function findEndIfForIf($oIf) {
 		$iIfCount = 0;
 		$iCount = count($this->aTemplateContents);
@@ -422,15 +435,15 @@ class Template {
 		}
 		throw new Exception("Template $this->sTemplateName not well-formed: no matching close tag found for ".$oIf->__toString());
 	}
-	
+
 	public function setDefaultFlags($iDefaultFlags) {
-			$this->iDefaultFlags = $iDefaultFlags;
+		$this->iDefaultFlags = $iDefaultFlags;
 	}
-	
+
 	private function getTextForReplaceIdentifier($mText, $iFlags=0) {
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aText = array();
-		
+
 		if($mText instanceof Template) {
 			$mText = clone $mText;
 			if(($iFlags&self::LEAVE_IDENTIFIERS) !== self::LEAVE_IDENTIFIERS) {
@@ -455,15 +468,15 @@ class Template {
 			if($aText[$iKey] instanceof TemplateIdentifier) {
 				continue;
 			}
-			
+
 			if(!($mText instanceof Template) && (($iFlags&self::NO_RECODE) !== self::NO_RECODE)) {
 				$aText[$iKey] = StringUtil::encode($aText[$iKey], Settings::getSetting('encoding', 'db', 'utf-8'), $this->sEncoding);
 			}
-			
+
 			if(($iFlags&self::ESCAPE)===self::ESCAPE && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::ESCAPE)!==self::ESCAPE)) {
 				$aText[$iKey] = str_replace("\n", "\\n", addslashes($aText[$iKey]));
 			}
-			
+
 			if(($iFlags&self::URL_ENCODE)===self::URL_ENCODE && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::URL_ENCODE)!==self::URL_ENCODE)) {
 				$aText[$iKey] = urlencode($aText[$iKey]);
 			}
@@ -471,7 +484,7 @@ class Template {
 			if(($iFlags&self::JAVASCRIPT_CONVERT)===self::JAVASCRIPT_CONVERT && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::JAVASCRIPT_CONVERT)!==self::JAVASCRIPT_CONVERT)) {
 				$aText[$iKey] = '"'.$aText[$iKey].'"';
 			}
-			
+
 			if(($iFlags&self::FORCE_HTML_ESCAPE)===self::FORCE_HTML_ESCAPE || (($iFlags&self::NO_HTML_ESCAPE) !== self::NO_HTML_ESCAPE && !($mText instanceof Template))) {
 				$aText[$iKey] = self::htmlEncode($aText[$iKey]);
 			}
@@ -479,7 +492,7 @@ class Template {
 			if(($iFlags&self::CONVERT_NEWLINES_TO_BR)===self::CONVERT_NEWLINES_TO_BR && (!($mText instanceof Template) || ($mText->iDefaultFlags&self::CONVERT_NEWLINES_TO_BR)!==self::CONVERT_NEWLINES_TO_BR)) {
 				$aText[$iKey] = nl2br($aText[$iKey]);
 			}
-			
+
 			if(($iFlags&self::LEAVE_IDENTIFIERS)===self::LEAVE_IDENTIFIERS && !($mText instanceof Template)) {
 				$aText = self::templateContentsFromText($aText[$iKey], $this);
 				//only allowed once
@@ -490,14 +503,13 @@ class Template {
 		if(($iFlags&self::STRIP_TAGS)===self::STRIP_TAGS) {
 			$aText = array(strip_tags(implode('', $aText)));
 		}
-		
+
 		return $aText;
 	}
-	
+
 	/**
-	 * replaceIdentifier()
-	 * @return void
-	 */
+	* @return void
+	*/
 	public function replaceIdentifier($mIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mFunction=null) {
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aText = null;
@@ -562,9 +574,8 @@ class Template {
 	}
 
 	/**
-	 * replaceIdentifierMultiple()
-	 * @return void
-	 */
+	* @return void
+	*/
 	public function replaceIdentifierMultiple($mIdentifier, $mOriginalText=null, $sValue=null, $iFlags=0, $mFunction=null) {
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aText = null;
@@ -622,25 +633,23 @@ class Template {
 		}
 		$this->renderDirectOutput();
 	}
-	
+
 	/**
-	 * replaceIdentifierMultipleCallback()
-	 * @return void
-	 */
+	* @return void
+	*/
 	public function replaceIdentifierMultipleCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags) {
 		$mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
 		$this->replaceIdentifierMultiple($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
 	}
-	
+
 	/**
-	 * replaceIdentifierCallback()
-	 * @return void
-	 */
+	* @return void
+	*/
 	public function replaceIdentifierCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags=0) {
 		$mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
 		$this->replaceIdentifier($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
 	}
-	
+
 	public function replacePstring($sPstringName, $aParameters, $sStringKey=null) {
 		if($sStringKey === null) {
 			$sStringKey = $sPstringName;
@@ -650,9 +659,8 @@ class Template {
 	}
 
 	/**
-	 * render()
-	 * @return string
-	 */		
+	* @return string
+	*/		
 	public function render($bIsForSubtemplate = false) {
 		$this->prepareForRender($bIsForSubtemplate);
 		$sResult = $this->__toString();
@@ -662,7 +670,7 @@ class Template {
 		}
 		return $sResult;
 	}
-	
+
 	private function prepareForRender($bIsForSubtemplate = false) {
 		if($this->bKillIdentifiersBeforeRender) {
 			$this->killIdentifiersInIdentifiers();
@@ -671,12 +679,12 @@ class Template {
 			$this->replaceSpecialIdentifiersOnEnd();
 		}
 		$this->replaceConditionals();
-		
+
 		if($this->bKillIdentifiersBeforeRender) {
 			$this->killIdentifiers();
 		}
 	}
-	
+
 	private function killIdentifiers() {
 		foreach($this->aTemplateContents as $iKey => $mValue) {
 			if(!$mValue instanceof TemplateIdentifier || $mValue->getName() === "identifierContext") {
@@ -698,11 +706,10 @@ class Template {
 			$this->replaceAt($mValue, $sReplacement);
 		}
 	}
-	
+
 	/**
-	 * killIdentifiersInIdentifiers()
-	 * replaces subidentifiers stored in identifiers with their default values 
-	 */
+	* Replaces subidentifiers stored in identifiers with their default values 
+	*/
 	private function killIdentifiersInIdentifiers() {
 		$aIdentifiers = $this->allIdentifiers();
 		foreach($aIdentifiers as $oIdentifier) {
@@ -724,7 +731,7 @@ class Template {
 			}
 		}
 	}
-	
+
 	private function replaceConditionals($bFinalOnly = false) {
 		$iStartPosition = 0;
 		$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
@@ -738,13 +745,13 @@ class Template {
 			$sComparison = $oIf->getValue() !== null ? $oIf->getValue() : "=";
 			$sFirst = $oIf->getParameter('1');
 			$sSecond = $oIf->hasParameter('2') && $oIf->getParameter('2') !== null ? $oIf->getParameter('2') : "";
-			
+
 			$sCompareMode = ($oIf->hasParameter('strict') && $oIf->getParameter('strict') === 'true') ? "strict" : "normal";
-			
+
 			$sComparisonString = '==';
 			$mUnexpectedResult = false;
 			$aFuncArgs = array($sFirst, $sSecond);
-			
+
 			switch($sComparison) {
 				case 'ne':
 				case 'notEqual':
@@ -752,76 +759,76 @@ class Template {
 				case '!=':
 				case '!==':
 				case '<>':
-					$sComparisonString = "!=";
+				$sComparisonString = "!=";
 				break;
-				
+
 				case 'gt':
 				case 'greaterThan':
 				case 'greater_than':
 				case '>':
-					$sComparisonString = ">";
-					$sCompareMode = "normal";
+				$sComparisonString = ">";
+				$sCompareMode = "normal";
 				break;
-				
+
 				case 'lt':
 				case 'lessThan':
 				case 'less_than':
 				case '<':
-					$sComparisonString = "<";
-					$sCompareMode = "normal";
+				$sComparisonString = "<";
+				$sCompareMode = "normal";
 				break;
-				
+
 				case 'gte':
 				case 'greaterThanEqual':
 				case 'greater_than_equal':
 				case '>=':
-					$sComparisonString = ">=";
-					$sCompareMode = "normal";
+				$sComparisonString = ">=";
+				$sCompareMode = "normal";
 				break;
-				
+
 				case 'lte':
 				case 'lessThanEqual':
 				case 'less_than_equal':
 				case '<=':
-					$sComparisonString = "<=";
-					$sCompareMode = "normal";
+				$sComparisonString = "<=";
+				$sCompareMode = "normal";
 				break;
-				
+
 				case '~':
-					$sComparisonString = "preg_match";
-					$sCompareMode = "function";
-					$mUnexpectedResult = 0;
+				$sComparisonString = "preg_match";
+				$sCompareMode = "function";
+				$mUnexpectedResult = 0;
 				break;
-				
+
 				case '|=':
-					$sComparisonString = "in_array";
-					$aFuncArgs = array($sFirst, explode('|', $sSecond));
-					$sCompareMode = "function";
+				$sComparisonString = "in_array";
+				$aFuncArgs = array($sFirst, explode('|', $sSecond));
+				$sCompareMode = "function";
 				break;
-				
+
 				case '~=':
-					$sComparisonString = "in_array";
-					$aFuncArgs = array($sFirst, preg_split('/\\s+/', $sSecond, -1, PREG_SPLIT_NO_EMPTY));
-					$sCompareMode = "function";
+				$sComparisonString = "in_array";
+				$aFuncArgs = array($sFirst, preg_split('/\\s+/', $sSecond, -1, PREG_SPLIT_NO_EMPTY));
+				$sCompareMode = "function";
 				break;
-				
+
 				case 'contains':
-					$sComparisonString = "stripos";
-					if($sCompareMode === "strict") {
-						$sComparisonString = "strpos";
-					}
-					$sCompareMode = "function";
+				$sComparisonString = "stripos";
+				if($sCompareMode === "strict") {
+					$sComparisonString = "strpos";
+				}
+				$sCompareMode = "function";
 				break;
-				
+
 				case 'file_exists':
-					$sComparisonString = "file_exists";
-					$sFirst = MAIN_DIR.$sFirst;
-					$mUnexpectedResult = !BooleanParser::booleanForString($sSecond);
-					$aFuncArgs = array($sFirst);
-					$sCompareMode = "function";
+				$sComparisonString = "file_exists";
+				$sFirst = MAIN_DIR.$sFirst;
+				$mUnexpectedResult = !BooleanParser::booleanForString($sSecond);
+				$aFuncArgs = array($sFirst);
+				$sCompareMode = "function";
 				break;
 			}
-			
+
 			if($sCompareMode === "function") {
 				$bResult = (call_user_func_array($sComparisonString, $aFuncArgs) !== $mUnexpectedResult);
 			} else {
@@ -830,34 +837,34 @@ class Template {
 				}
 				$bResult = (eval('return $sFirst '.$sComparisonString.' $sSecond;') !== $mUnexpectedResult);
 			}
-			
+
 			if(!$bResult) {
 				$this->replaceAt($oIf, null, ($this->identifierPosition($oEndIf) - $this->identifierPosition($oIf)));
 			} else {
 				$this->replaceAt($oIf);
 				$this->replaceAt($oEndIf);
 			}
-			
+
 			$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
 		}
 	}
-	
+
 	/**
-	 * Calls $this->replaceSpecialIdentifiers(false);
-	 * @return void
-	 */	 
+	* Calls $this->replaceSpecialIdentifiers(false);
+	* @return void
+	*/	 
 	private function replaceSpecialIdentifiersOnStart() {
 		$this->replaceSpecialIdentifiers(false);
 	}
-	
+
 	/**
-	 * Calls $this->replaceSpecialIdentifiers(true);
-	 * @return void
-	 */	 
+	* Calls $this->replaceSpecialIdentifiers(true);
+	* @return void
+	*/	 
 	private function replaceSpecialIdentifiersOnEnd() {
 		$this->replaceSpecialIdentifiers(true);
 	}
-	
+
 	/**
 	* Replaces all special identifiers that are supposed to be replaced on either start or end of a page's lifecycle depending on the value of the parameter bIsLast.
 	* Special identifiers that are replaced on start usually have their values cached with the template caching mechanisms where as the other template identifiers are left alone. The default is for special template identifiers to be rendered on start. Exceptions are writeParameterizedString and writeFlashValue and are stored in the array returned by {@link SpecialTemplateIdentifierActions::getAlwaysLastNames()}. You can force an identifier to be rendered on end by appending the parameter <code>;position=last</code>. Note, however, that you cannot use <code>;position=first</code> to override the behaviour of the special template identifiers that are always rendered on end.
@@ -882,7 +889,7 @@ class Template {
 			}
 		}
 	}
-	
+
 	/**
 	* Searches for all not-yet replaced includeTemplate special identifiers (usually only the ones that have position=last on them since all the other ones are already included on template render). This is useful when using a template identifier in the include name.
 	*/
@@ -899,7 +906,7 @@ class Template {
 			}
 		}
 	}
-	
+
 	private function renderDirectOutput() {
 		if(!$this->bDirectOutput) {
 			return;
@@ -911,11 +918,10 @@ class Template {
 		}
 	}
 
-	public function getSentOutput()
-	{
-			return $this->sSentOutput;
+	public function getSentOutput() {
+		return $this->sSentOutput;
 	}
-	
+
 	public function __toString() {
 		$sResult = "";
 		foreach($this->aTemplateContents as $mTemplateContent) {
@@ -927,7 +933,7 @@ class Template {
 		}
 		return $sResult;
 	}
-	
+
 	public function __clone() {
 		foreach($this->aTemplateContents as $iKey => $mTemplateContent) {
 			if($mTemplateContent instanceof TemplateIdentifier) {
@@ -935,31 +941,31 @@ class Template {
 			}
 		}
 	}
-	
+
 	public function closeIdentifier($sName, $sValue = null) {
 		$this->replaceIdentifier($sName, "", $sValue);
 	}
-	
+
 	//Attribute accessor methods
 	public function getTemplateName() {
 		return $this->sTemplateName;
 	}
-	
+
 	public function getTemplatePath() {
 		return $this->mPath;
 	}
-	
+
 	public function getCharset() {
 		return $this->sEncoding;
 	}
-	
+
 	public static function htmlEncode($sString) {
 		if(self::$HTML_ENTITY_FUNCTION === null) {
 			self::$HTML_ENTITY_FUNCTION = Settings::getSetting('encoding', 'entities', 'full') === 'xml_only' ? "htmlspecialchars" : "htmlentities";
 		}
 		return call_user_func(self::$HTML_ENTITY_FUNCTION, $sString, ENT_QUOTES, Settings::getSetting("encoding", "browser", "utf-8"));
 	}
-	
+
 	public static function listTemplates($mDirName = DIRNAME_TEMPLATES, $bListSubdirs = false, $bFlag=null) {
 		$aResult = array();
 		if(!is_array($mDirName)) {
@@ -969,16 +975,15 @@ class Template {
 		foreach($aDirectories as $sDirectory) {
 			if($iTemplatesDir = opendir($sDirectory)) {
 				while (false !== ($sFileName = readdir($iTemplatesDir))) {
-					if(strpos($sFileName, ".tmpl") === (strlen($sFileName)-strlen(".tmpl")) && is_file("$sDirectory/$sFileName"))
-					{
+					if(strpos($sFileName, ".tmpl") === (strlen($sFileName)-strlen(".tmpl")) && is_file("$sDirectory/$sFileName")) {
 						$aResult[]=substr($sFileName, 0, (strlen($sFileName)-strlen(".tmpl")));
 					} else if(is_dir($sDirectory."/".$sFileName) && strpos($sFileName, ".") !== 0 && $bListSubdirs) {
-							$aDirName = $mDirName;
-							$aDirName[] = $sFileName;
-							$aSubItems = self::listTemplates($aDirName, true);
-							foreach($aSubItems as $sSubItem) {
-								$aResult[] = "$sFileName/$sSubItem";
-							}
+						$aDirName = $mDirName;
+						$aDirName[] = $sFileName;
+						$aSubItems = self::listTemplates($aDirName, true);
+						foreach($aSubItems as $sSubItem) {
+							$aResult[] = "$sFileName/$sSubItem";
+						}
 					}
 				}
 				closedir($iTemplatesDir);

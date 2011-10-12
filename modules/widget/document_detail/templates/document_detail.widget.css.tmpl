@@ -1,0 +1,59 @@
+.ui-dialog.document_detail form.ui-dialog-content.ui-state-droppable {
+	background-color: #ffffff !important;
+	background-image: none !important;
+}
+
+.ui-dialog.document_detail form.ui-dialog-content.ui-state-droppable .droppable_info {
+	background-color: #e3ef99 !important;
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/drag_and_drop_hover.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.ui-dialog.document_detail .preview.file_exists img {
+	display: block;
+	margin: 0 auto;
+}
+
+.ui-dialog.document_detail .preview {
+	width: 190px;
+	background-color: #fff;
+	margin-left: -1px
+}
+
+.ui-dialog.document_detail .preview.droppable_prepare {
+	padding: 10px;
+}
+
+.ui-dialog.document_detail .ui-state-droppable .preview {
+	border: 1px solid #f2f2f2;
+	background-color: #b8d600
+	cursor: pointer;
+}
+
+.ui-dialog.document_detail .preview.droppable_info {
+	display: block;
+	line-height: 1.6em;
+	min-height: 8em;
+	padding: 1em 1em;
+	vertical-align: middle;
+}
+
+.ui-dialog.document_detail .status_section {
+	 width: 21em;
+}
+	
+.ui-download-document {
+	padding: .2em 1.4em .2em 0;
+	display: inline-block;
+	color: #888888;
+	text-decoration: underline;
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+.ui-download-document:hover {
+	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download_active.png");
+}
+

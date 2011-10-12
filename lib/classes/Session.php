@@ -49,7 +49,7 @@ class Session {
 	}
 
 	public function login($sUsername, $sPassword) {
-		$oUser = UserPeer::getUserByUserName($sUsername);
+		$oUser = UserPeer::getUserByUsername($sUsername);
 		if($oUser === null) {
 			return 0;
 		}
@@ -79,7 +79,7 @@ class Session {
 		}
 		
 		// analyze the PHP_AUTH_DIGEST variable
-		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUserName($aDigestContent['username'])) === null) {
+		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUsername($aDigestContent['username'])) === null) {
 			return 0;
 		}
 		
@@ -116,7 +116,7 @@ class Session {
 				$iReturnValue |= self::USER_IS_DEFAULT_USER;
 			}
 		}
-		FilterModule::getFilters()->handleUserLoggedIn($oUser, array('user_status' => $iReturnValue));
+		FilterModule::getFilters()->handleUserLoggedIn($oUser, array(&$iReturnValue));
 		return $iReturnValue;
 	}
 
@@ -140,11 +140,18 @@ class Session {
 		$this->iUserId = null;
 	}
 
-	public function getLanguage() {
-		return $this->getAttribute(self::SESSION_LANGUAGE_KEY);
+	public function getLanguage($bObject = false) {
+		$sResult = $this->getAttribute(self::SESSION_LANGUAGE_KEY);
+		if($bObject) {
+			$sResult = LanguagePeer::retrieveByPK($sResult);
+		}
+		return $sResult;
 	}
 
 	public function setLanguage($sLanguage) {
+		if($sLanguage instanceof Language) {
+			$sLanguage = $sLanguage->getId();
+		}
 		return $this->setAttribute(self::SESSION_LANGUAGE_KEY, strtolower($sLanguage));
 	}
 
@@ -176,7 +183,7 @@ class Session {
 		if($this->hasAttribute($sAttribute)) {
 			return $this->aAttributes[$sAttribute];
 		}
-		return Settings::getSetting("session_default", $sAttribute, null);
+		return self::sessionDefaultFor($sAttribute);
 	}
 	
 	public function getArrayAttributeValueForKey($sAttribute, $sKey) {
@@ -201,8 +208,12 @@ class Session {
 		return isset($this->aAttributes[$sAttribute]);
 	}
 
-	public static function language() {
-		return self::getSession()->getLanguage();
+	public static function sessionDefaultFor($sAttribute) {
+		return Settings::getSetting("session_default", $sAttribute, null);
+	}
+
+	public static function language($bObject = false) {
+		return self::getSession()->getLanguage($bObject);
 	}
 
 	public static function getSession() {

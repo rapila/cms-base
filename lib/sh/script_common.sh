@@ -10,3 +10,9 @@ if [ "s$PHP_PATH" == "s" ]; then
 	fi
 	PHP_PATH="`which php`"
 fi
+
+if [ "s$PHING_PATH" == "s" ]; then
+	PHING_PATH="./base/lib/vendor/phing/bin/phing"
+	export PHING_HOME="./base/lib/vendor/phing"
+fi
+

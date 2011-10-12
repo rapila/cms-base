@@ -192,7 +192,9 @@ class SpecialTemplateIdentifierActions {
 	public function writeConstantValue($oTemplateIdentifier) {
 		$aResult = array();
 		foreach(explode('/', $oTemplateIdentifier->getValue()) as $sConstantName) {
-			$aResult[] = constant($sConstantName);
+			if(defined($sConstantName)) {
+				$aResult[] = constant($sConstantName);
+			}
 		}
 		return implode('/', $aResult);
 	}
@@ -215,12 +217,27 @@ class SpecialTemplateIdentifierActions {
 	
 	public function writeResourceIncludes($oTemplateIdentifier) {
 		$oResourceIncluder = null;
-		if($oTemplateIdentifier->hasParameter('name')) {
+		if($oTemplateIdentifier->getValue() !== null) {
+			$oResourceIncluder = ResourceIncluder::namedIncluder($oTemplateIdentifier->getValue());
+		} else if($oTemplateIdentifier->hasParameter('name')) {
+			// Fall back to 'name' param for backwards compatiblity
 			$oResourceIncluder = ResourceIncluder::namedIncluder($oTemplateIdentifier->getParameter('name'));
 		} else {
-			$oResourceIncluder = ResourceIncluder::defaultIncluder($oTemplateIdentifier->getParameter('name'));
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
 		return $oResourceIncluder->getIncludes();
+	}
+
+	public function replaceIn($oIdentifier) {
+		$sText = $oIdentifier->getValue();
+		$sReplacement = $oIdentifier->getParameter('with');
+		if($oIdentifier->hasParameter('matching')) {
+			$sPattern = '/'.$oIdentifier->getParameter('matching').'/';
+			return preg_replace($sPattern, $sReplacement, $sText);
+		} else {
+			$sSearch = $oIdentifier->getParameter('string');
+			return str_replace($sSearch, $sReplacement, $sText);
+		}
 	}
 	
 	public static function getSpecialIdentifierNames() {
@@ -228,6 +245,6 @@ class SpecialTemplateIdentifierActions {
 	}
 	
 	public static function getAlwaysLastNames() {
-		return array('writeParameterizedString', 'writeFlashValue', 'doCalculation', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute');
+		return array('writeParameterizedString', 'writeFlashValue', 'doCalculation', 'writeRequestValue', 'truncate', 'quoteString', 'addResourceInclude', 'writeResourceIncludes', 'writeSessionAttribute', 'replaceIn');
 	}
 }

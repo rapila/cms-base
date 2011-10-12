@@ -34,8 +34,8 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->checkForValue('first_name', 'first_name_required');
 		$oFlash->checkForValue('last_name', 'last_name_required');
 		$oFlash->checkForEmail('email', 'valid_email');
-		if($oUser->isNew() || $aUserData['username'] !== $oUser->getUserName()) {
-			if(UserPeer::getUserByUserName($aUserData['username']) !== null) {
+		if($oUser->isNew() || $aUserData['username'] !== $oUser->getUsername()) {
+			if(UserPeer::getUserByUsername($aUserData['username']) !== null) {
 				$oFlash->addMessage('user_name_exists');
 			}
 		}
@@ -71,18 +71,11 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 		
-		if(!Session::getSession()->getUser()->mayEditUser($oUser)) {
-			throw new NotPermittedException('may_edit_user');
-		}		 
-		
-		$oUser->setUserName($aUserData['username']);
+		$oUser->setUsername($aUserData['username']);
 		$oUser->setFirstName($aUserData['first_name']);
 		$oUser->setLastName($aUserData['last_name']);
 		$oUser->setEmail($aUserData['email']);
 		$oUser->setLanguageId($aUserData['language_id']); 
-		if(!$oUser->isSessionUser()) { 
-			$oUser->setIsBackendLoginEnabled($aUserData['is_admin'] || $aUserData['is_backend_login_enabled']);
-		}
 		
 		//Password
 		if($aUserData['password'] !== '') {
@@ -93,8 +86,10 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		//This also means the user’s an admin because non-admins can only edit themselves
 		if(!$oUser->isSessionUser()) {
 			//Admin & inactive flags
-			$oUser->setIsInactive($aUserData['is_inactive']);
+			$oUser->setIsBackendLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled'] || $aUserData['is_backend_login_enabled']);
+			$oUser->setIsAdminLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled']);
 			$oUser->setIsAdmin($aUserData['is_admin']);
+			$oUser->setIsInactive($aUserData['is_inactive']);
 			
 			//Groups
 			foreach($oUser->getUserGroupsRelatedByUserId() as $oUserGroup) {

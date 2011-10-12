@@ -2,16 +2,18 @@
 	<label for="file_upload" class="validate-upload validate-document.requires_file validate-upload_error_php_max_size validate-upload_error">{{writeString=wns.document.file_upload}}</label>
 	<input type="file" name="file_upload" class="ui-widget-content" /><br />
 	<div class="status_section">
-		<div class="preview">
-		  <div class="droppable_info">{{writeString=wns.draganddrop}}<br />{{writeString=wns.draganddrop.hint}}
+		<div class="preview droppable_info droppable_prepare">
+		  <div>{{writeString=wns.draganddrop.hint}}
 		  </div>
 		</div>
 		<div class="hide_if_not_saved">
+			<br />
+			<a href="#" class="ui-download-document" title="{{writeString=wns.document.download}}">{{writeString=wns.document.download}}</a><br />
   		<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span><br />
   		<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
   		<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
-  		<label>{{writeString=wns.document.original_name}}</label><a href="#" class="original_name"></a><br />
-  		<label>ID:</label><span class="detail_id">{{id}}<br />
+  		<label>{{writeString=wns.document.original_name}}</label><span class="original_name"></span><br />
+  		<label>ID:</label><span class="detail_id">{{id}}</span><br />
 		</div>
 	</div>
 	<div>
@@ -23,7 +25,11 @@
 		<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
 		<label for="language_id">{{writeString=wns.language}}</label>
 		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
-		<label for="is_protected">{{writeString=wns.is_protected}}</label>	
-		<input type="checkbox" name="is_protected" /><br />
+		<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>	
+		<input type="text" name="content_created_at" class="ui-widget-content" /><br />
+		<label for="author">{{writeString=wns.document.author-license}}</label>	
+		<input type="text" name="author" class="ui-widget-content" style="width:10em;margin-right:1em;" /><input type="text" name="license" class="ui-widget-content" data-widget-type="popover" style="width:10em;"/><br />
+		<input type="checkbox" name="is_protected" style="display: inline-block;" class="for_checkbox" /><label for="is_protected" class="for_checkbox">{{writeString=wns.is_protected}}</label>	
+		<br clear="left" />
 	</div>
 </form>

@@ -72,6 +72,6 @@ class AdminMenuWidgetModule extends WidgetModule {
 	}
 	
 	public function getPageLink() {
-		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager', array(), true);
+		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage());
 	}
 }

@@ -9,7 +9,7 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	public function __construct($sSessionKey, $oFrontendModule, $mInternalWidget = null) {
 		parent::__construct($sSessionKey);
 		$this->oFrontendModule = $oFrontendModule;
-		if($mInternalWidget instanceof WidgetModule || is_string($mInternalWidget)) {
+		if($mInternalWidget instanceof WidgetModule || $mInternalWidget instanceof Template || is_string($mInternalWidget)) {
 			$this->oInternalWidget = $mInternalWidget;
 		} else if($mInternalWidget === null) {
 			$this->oInternalWidget = $oFrontendModule->widgetData();
@@ -31,6 +31,8 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	public function doWidget() {
 		if(is_string($this->oInternalWidget)) {
 			return TagWriter::quickTag('div', array(), $this->oInternalWidget);
+		} else if($this->oInternalWidget instanceof Template) {
+			return TagWriter::quickTag('form', array(), $this->oInternalWidget);
 		}
 		return $this->oInternalWidget->doWidget();
 	}

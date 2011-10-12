@@ -49,6 +49,24 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	protected $description;
 
 	/**
+	 * The value for the content_created_at field.
+	 * @var        string
+	 */
+	protected $content_created_at;
+
+	/**
+	 * The value for the license field.
+	 * @var        string
+	 */
+	protected $license;
+
+	/**
+	 * The value for the author field.
+	 * @var        string
+	 */
+	protected $author;
+
+	/**
 	 * The value for the language_id field.
 	 * @var        string
 	 */
@@ -241,6 +259,64 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	public function getDescription()
 	{
 		return $this->description;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [content_created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getContentCreatedAt($format = '%x')
+	{
+		if ($this->content_created_at === null) {
+			return null;
+		}
+
+
+		if ($this->content_created_at === '0000-00-00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->content_created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->content_created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [license] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getLicense()
+	{
+		return $this->license;
+	}
+
+	/**
+	 * Get the [author] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getAuthor()
+	{
+		return $this->author;
 	}
 
 	/**
@@ -546,6 +622,68 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	} // setDescription()
 
 	/**
+	 * Sets the value of [content_created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setContentCreatedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->content_created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->content_created_at !== null && $tmpDt = new DateTime($this->content_created_at)) ? $tmpDt->format('Y-m-d') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->content_created_at = $newDateAsString;
+				$this->modifiedColumns[] = DocumentPeer::CONTENT_CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setContentCreatedAt()
+
+	/**
+	 * Set the value of [license] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setLicense($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->license !== $v) {
+			$this->license = $v;
+			$this->modifiedColumns[] = DocumentPeer::LICENSE;
+		}
+
+		return $this;
+	} // setLicense()
+
+	/**
+	 * Set the value of [author] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Document The current object (for fluent API support)
+	 */
+	public function setAuthor($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->author !== $v) {
+			$this->author = $v;
+			$this->modifiedColumns[] = DocumentPeer::AUTHOR;
+		}
+
+		return $this;
+	} // setAuthor()
+
+	/**
 	 * Set the value of [language_id] column.
 	 * 
 	 * @param      string $v new value
@@ -642,18 +780,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	} // setDocumentCategoryId()
 
 	/**
-	 * Set the value of [is_private] column.
+	 * Sets the value of the [is_private] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     Document The current object (for fluent API support)
 	 */
 	public function setIsPrivate($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_private !== $v || $this->isNew()) {
+		if ($this->is_private !== $v) {
 			$this->is_private = $v;
 			$this->modifiedColumns[] = DocumentPeer::IS_PRIVATE;
 		}
@@ -662,18 +808,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	} // setIsPrivate()
 
 	/**
-	 * Set the value of [is_inactive] column.
+	 * Sets the value of the [is_inactive] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     Document The current object (for fluent API support)
 	 */
 	public function setIsInactive($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_inactive !== $v || $this->isNew()) {
+		if ($this->is_inactive !== $v) {
 			$this->is_inactive = $v;
 			$this->modifiedColumns[] = DocumentPeer::IS_INACTIVE;
 		}
@@ -682,18 +836,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	} // setIsInactive()
 
 	/**
-	 * Set the value of [is_protected] column.
+	 * Sets the value of the [is_protected] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     Document The current object (for fluent API support)
 	 */
 	public function setIsProtected($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
-		if ($this->is_protected !== $v || $this->isNew()) {
+		if ($this->is_protected !== $v) {
 			$this->is_protected = $v;
 			$this->modifiedColumns[] = DocumentPeer::IS_PROTECTED;
 		}
@@ -753,45 +915,18 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     Document The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = DocumentPeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -802,45 +937,18 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     Document The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = DocumentPeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -944,18 +1052,21 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->original_name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->description = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->language_id = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->owner_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->document_type_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->document_category_id = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->is_private = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-			$this->is_protected = ($row[$startcol + 10] !== null) ? (boolean) $row[$startcol + 10] : null;
-			$this->sort = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->content_created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->license = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->author = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->language_id = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->owner_id = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->document_type_id = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->document_category_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->is_private = ($row[$startcol + 11] !== null) ? (boolean) $row[$startcol + 11] : null;
+			$this->is_inactive = ($row[$startcol + 12] !== null) ? (boolean) $row[$startcol + 12] : null;
+			$this->is_protected = ($row[$startcol + 13] !== null) ? (boolean) $row[$startcol + 13] : null;
+			$this->sort = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->created_by = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+			$this->updated_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -964,7 +1075,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = DocumentPeer::NUM_COLUMNS - DocumentPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 19; // 19 = DocumentPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Document object", $e);
@@ -1078,18 +1189,21 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = DocumentQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// referenceable behavior
 			if(ReferencePeer::hasReference($this)) {
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
 			}
+			// denyable behavior
+			if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "documents")));
+			}
+
 			if ($ret) {
-				DocumentQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
-				// taggable behavior
-				TagPeer::deleteTagsForObject($this);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -1130,6 +1244,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "documents")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(DocumentPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -1150,6 +1269,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(DocumentPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "documents")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(DocumentPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -1433,42 +1557,51 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				return $this->getDescription();
 				break;
 			case 4:
-				return $this->getLanguageId();
+				return $this->getContentCreatedAt();
 				break;
 			case 5:
-				return $this->getOwnerId();
+				return $this->getLicense();
 				break;
 			case 6:
-				return $this->getDocumentTypeId();
+				return $this->getAuthor();
 				break;
 			case 7:
-				return $this->getDocumentCategoryId();
+				return $this->getLanguageId();
 				break;
 			case 8:
-				return $this->getIsPrivate();
+				return $this->getOwnerId();
 				break;
 			case 9:
-				return $this->getIsInactive();
+				return $this->getDocumentTypeId();
 				break;
 			case 10:
-				return $this->getIsProtected();
+				return $this->getDocumentCategoryId();
 				break;
 			case 11:
-				return $this->getSort();
+				return $this->getIsPrivate();
 				break;
 			case 12:
-				return $this->getData();
+				return $this->getIsInactive();
 				break;
 			case 13:
-				return $this->getCreatedAt();
+				return $this->getIsProtected();
 				break;
 			case 14:
-				return $this->getUpdatedAt();
+				return $this->getSort();
 				break;
 			case 15:
-				return $this->getCreatedBy();
+				return $this->getData();
 				break;
 			case 16:
+				return $this->getCreatedAt();
+				break;
+			case 17:
+				return $this->getUpdatedAt();
+				break;
+			case 18:
+				return $this->getCreatedBy();
+				break;
+			case 19:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1487,50 +1620,58 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['Document'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['Document'][$this->getPrimaryKey()] = true;
 		$keys = DocumentPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getName(),
 			$keys[2] => $this->getOriginalName(),
 			$keys[3] => $this->getDescription(),
-			$keys[4] => $this->getLanguageId(),
-			$keys[5] => $this->getOwnerId(),
-			$keys[6] => $this->getDocumentTypeId(),
-			$keys[7] => $this->getDocumentCategoryId(),
-			$keys[8] => $this->getIsPrivate(),
-			$keys[9] => $this->getIsInactive(),
-			$keys[10] => $this->getIsProtected(),
-			$keys[11] => $this->getSort(),
-			$keys[12] => ($includeLazyLoadColumns) ? $this->getData() : null,
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
-			$keys[15] => $this->getCreatedBy(),
-			$keys[16] => $this->getUpdatedBy(),
+			$keys[4] => $this->getContentCreatedAt(),
+			$keys[5] => $this->getLicense(),
+			$keys[6] => $this->getAuthor(),
+			$keys[7] => $this->getLanguageId(),
+			$keys[8] => $this->getOwnerId(),
+			$keys[9] => $this->getDocumentTypeId(),
+			$keys[10] => $this->getDocumentCategoryId(),
+			$keys[11] => $this->getIsPrivate(),
+			$keys[12] => $this->getIsInactive(),
+			$keys[13] => $this->getIsProtected(),
+			$keys[14] => $this->getSort(),
+			$keys[15] => ($includeLazyLoadColumns) ? $this->getData() : null,
+			$keys[16] => $this->getCreatedAt(),
+			$keys[17] => $this->getUpdatedAt(),
+			$keys[18] => $this->getCreatedBy(),
+			$keys[19] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aLanguage) {
-				$result['Language'] = $this->aLanguage->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Language'] = $this->aLanguage->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByOwnerId) {
-				$result['UserRelatedByOwnerId'] = $this->aUserRelatedByOwnerId->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByOwnerId'] = $this->aUserRelatedByOwnerId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aDocumentType) {
-				$result['DocumentType'] = $this->aDocumentType->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['DocumentType'] = $this->aDocumentType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aDocumentCategory) {
-				$result['DocumentCategory'] = $this->aDocumentCategory->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['DocumentCategory'] = $this->aDocumentCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByCreatedBy) {
-				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByUpdatedBy) {
-				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -1576,42 +1717,51 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 				$this->setDescription($value);
 				break;
 			case 4:
-				$this->setLanguageId($value);
+				$this->setContentCreatedAt($value);
 				break;
 			case 5:
-				$this->setOwnerId($value);
+				$this->setLicense($value);
 				break;
 			case 6:
-				$this->setDocumentTypeId($value);
+				$this->setAuthor($value);
 				break;
 			case 7:
-				$this->setDocumentCategoryId($value);
+				$this->setLanguageId($value);
 				break;
 			case 8:
-				$this->setIsPrivate($value);
+				$this->setOwnerId($value);
 				break;
 			case 9:
-				$this->setIsInactive($value);
+				$this->setDocumentTypeId($value);
 				break;
 			case 10:
-				$this->setIsProtected($value);
+				$this->setDocumentCategoryId($value);
 				break;
 			case 11:
-				$this->setSort($value);
+				$this->setIsPrivate($value);
 				break;
 			case 12:
-				$this->setData($value);
+				$this->setIsInactive($value);
 				break;
 			case 13:
-				$this->setCreatedAt($value);
+				$this->setIsProtected($value);
 				break;
 			case 14:
-				$this->setUpdatedAt($value);
+				$this->setSort($value);
 				break;
 			case 15:
-				$this->setCreatedBy($value);
+				$this->setData($value);
 				break;
 			case 16:
+				$this->setCreatedAt($value);
+				break;
+			case 17:
+				$this->setUpdatedAt($value);
+				break;
+			case 18:
+				$this->setCreatedBy($value);
+				break;
+			case 19:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1642,19 +1792,22 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setOriginalName($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setLanguageId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setOwnerId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setDocumentTypeId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setDocumentCategoryId($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIsPrivate($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setIsProtected($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setSort($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setData($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
+		if (array_key_exists($keys[4], $arr)) $this->setContentCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setLicense($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setAuthor($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setLanguageId($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setOwnerId($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setDocumentTypeId($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setDocumentCategoryId($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setIsPrivate($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setIsInactive($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setIsProtected($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setSort($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setData($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setCreatedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setUpdatedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setCreatedBy($arr[$keys[18]]);
+		if (array_key_exists($keys[19], $arr)) $this->setUpdatedBy($arr[$keys[19]]);
 	}
 
 	/**
@@ -1670,6 +1823,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->isColumnModified(DocumentPeer::NAME)) $criteria->add(DocumentPeer::NAME, $this->name);
 		if ($this->isColumnModified(DocumentPeer::ORIGINAL_NAME)) $criteria->add(DocumentPeer::ORIGINAL_NAME, $this->original_name);
 		if ($this->isColumnModified(DocumentPeer::DESCRIPTION)) $criteria->add(DocumentPeer::DESCRIPTION, $this->description);
+		if ($this->isColumnModified(DocumentPeer::CONTENT_CREATED_AT)) $criteria->add(DocumentPeer::CONTENT_CREATED_AT, $this->content_created_at);
+		if ($this->isColumnModified(DocumentPeer::LICENSE)) $criteria->add(DocumentPeer::LICENSE, $this->license);
+		if ($this->isColumnModified(DocumentPeer::AUTHOR)) $criteria->add(DocumentPeer::AUTHOR, $this->author);
 		if ($this->isColumnModified(DocumentPeer::LANGUAGE_ID)) $criteria->add(DocumentPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(DocumentPeer::OWNER_ID)) $criteria->add(DocumentPeer::OWNER_ID, $this->owner_id);
 		if ($this->isColumnModified(DocumentPeer::DOCUMENT_TYPE_ID)) $criteria->add(DocumentPeer::DOCUMENT_TYPE_ID, $this->document_type_id);
@@ -1740,29 +1896,34 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of Document (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setName($this->name);
-		$copyObj->setOriginalName($this->original_name);
-		$copyObj->setDescription($this->description);
-		$copyObj->setLanguageId($this->language_id);
-		$copyObj->setOwnerId($this->owner_id);
-		$copyObj->setDocumentTypeId($this->document_type_id);
-		$copyObj->setDocumentCategoryId($this->document_category_id);
-		$copyObj->setIsPrivate($this->is_private);
-		$copyObj->setIsInactive($this->is_inactive);
-		$copyObj->setIsProtected($this->is_protected);
-		$copyObj->setSort($this->sort);
-		$copyObj->setData($this->data);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
-		$copyObj->setCreatedBy($this->created_by);
-		$copyObj->setUpdatedBy($this->updated_by);
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setName($this->getName());
+		$copyObj->setOriginalName($this->getOriginalName());
+		$copyObj->setDescription($this->getDescription());
+		$copyObj->setContentCreatedAt($this->getContentCreatedAt());
+		$copyObj->setLicense($this->getLicense());
+		$copyObj->setAuthor($this->getAuthor());
+		$copyObj->setLanguageId($this->getLanguageId());
+		$copyObj->setOwnerId($this->getOwnerId());
+		$copyObj->setDocumentTypeId($this->getDocumentTypeId());
+		$copyObj->setDocumentCategoryId($this->getDocumentCategoryId());
+		$copyObj->setIsPrivate($this->getIsPrivate());
+		$copyObj->setIsInactive($this->getIsInactive());
+		$copyObj->setIsProtected($this->getIsProtected());
+		$copyObj->setSort($this->getSort());
+		$copyObj->setData($this->getData());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setCreatedBy($this->getCreatedBy());
+		$copyObj->setUpdatedBy($this->getUpdatedBy());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1842,11 +2003,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null))) {
 			$this->aLanguage = LanguageQuery::create()->findPk($this->language_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aLanguage->addDocuments($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aLanguage->addDocuments($this);
 			 */
 		}
 		return $this->aLanguage;
@@ -1891,11 +2052,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByOwnerId === null && ($this->owner_id !== null)) {
 			$this->aUserRelatedByOwnerId = UserQuery::create()->findPk($this->owner_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByOwnerId->addDocumentsRelatedByOwnerId($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByOwnerId->addDocumentsRelatedByOwnerId($this);
 			 */
 		}
 		return $this->aUserRelatedByOwnerId;
@@ -1940,11 +2101,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aDocumentType === null && ($this->document_type_id !== null)) {
 			$this->aDocumentType = DocumentTypeQuery::create()->findPk($this->document_type_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aDocumentType->addDocuments($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aDocumentType->addDocuments($this);
 			 */
 		}
 		return $this->aDocumentType;
@@ -1989,11 +2150,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aDocumentCategory === null && ($this->document_category_id !== null)) {
 			$this->aDocumentCategory = DocumentCategoryQuery::create()->findPk($this->document_category_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aDocumentCategory->addDocuments($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aDocumentCategory->addDocuments($this);
 			 */
 		}
 		return $this->aDocumentCategory;
@@ -2038,11 +2199,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
 			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByCreatedBy->addDocumentsRelatedByCreatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByCreatedBy->addDocumentsRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -2087,11 +2248,11 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
 			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByUpdatedBy->addDocumentsRelatedByUpdatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByUpdatedBy->addDocumentsRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
@@ -2106,6 +2267,9 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->name = null;
 		$this->original_name = null;
 		$this->description = null;
+		$this->content_created_at = null;
+		$this->license = null;
+		$this->author = null;
 		$this->language_id = null;
 		$this->owner_id = null;
 		$this->document_type_id = null;
@@ -2115,6 +2279,7 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->is_protected = null;
 		$this->sort = null;
 		$this->data = null;
+		$this->data_isLoaded = false;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
@@ -2129,13 +2294,13 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -2148,6 +2313,16 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		$this->aDocumentCategory = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(DocumentPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	// referenceable behavior
@@ -2168,6 +2343,26 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	{
 		return TagPeer::tagInstancesForObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return DocumentPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**
@@ -2230,25 +2425,6 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = DocumentPeer::UPDATED_BY;
 		return $this;
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseDocument

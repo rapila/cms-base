@@ -8,12 +8,11 @@ class TagsAdminModule extends AdminModule {
 	private $oSidebarWidget;
 	
 	public function __construct() {
-		$this->oListWidget 		= new TagListWidgetModule();
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'model_name', $this->oListWidget->oDelegateProxy->getModelName());
-
+		$this->oListWidget = new TagListWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate($this);
+    $this->oSidebarWidget->setSetting('initial_selection', array('model_name' => $this->oListWidget->oDelegateProxy->getModelName()));
 	}
 	
 	public function mainContent() {

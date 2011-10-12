@@ -24,12 +24,15 @@ abstract class BaseLanguageObjectPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'LanguageObjectTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 7;
 
 	/** the column name for the OBJECT_ID field */
 	const OBJECT_ID = 'language_objects.OBJECT_ID';
@@ -52,6 +55,9 @@ abstract class BaseLanguageObjectPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'language_objects.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of LanguageObject objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -61,13 +67,15 @@ abstract class BaseLanguageObjectPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('ObjectId', 'LanguageId', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId', 'languageId', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID, self::LANGUAGE_ID, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -82,7 +90,7 @@ abstract class BaseLanguageObjectPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('ObjectId' => 0, 'LanguageId' => 1, 'Data' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId' => 0, 'languageId' => 1, 'data' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID => 0, self::LANGUAGE_ID => 1, self::DATA => 2, self::CREATED_AT => 3, self::UPDATED_AT => 4, self::CREATED_BY => 5, self::UPDATED_BY => 6, ),
@@ -222,7 +230,7 @@ abstract class BaseLanguageObjectPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -241,7 +249,7 @@ abstract class BaseLanguageObjectPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -295,7 +303,7 @@ abstract class BaseLanguageObjectPeer {
 	 * @param      LanguageObject $value A LanguageObject object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(LanguageObject $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -390,7 +398,7 @@ abstract class BaseLanguageObjectPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -450,7 +458,7 @@ abstract class BaseLanguageObjectPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + LanguageObjectPeer::NUM_COLUMNS;
+			$col = $startcol + LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = LanguageObjectPeer::OM_CLASS;
 			$obj = new $cls();
@@ -459,6 +467,7 @@ abstract class BaseLanguageObjectPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related ContentObject table
@@ -486,9 +495,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -536,9 +545,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -586,9 +595,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -636,9 +645,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -679,7 +688,7 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 		ContentObjectPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(LanguageObjectPeer::OBJECT_ID, ContentObjectPeer::ID, $join_behavior);
@@ -745,7 +754,7 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 		LanguagePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(LanguageObjectPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
@@ -811,7 +820,7 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(LanguageObjectPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -877,7 +886,7 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(LanguageObjectPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -950,9 +959,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -999,19 +1008,19 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol2 = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		ContentObjectPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ContentObjectPeer::NUM_COLUMNS - ContentObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ContentObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(LanguageObjectPeer::OBJECT_ID, ContentObjectPeer::ID, $join_behavior);
 
@@ -1135,7 +1144,7 @@ abstract class BaseLanguageObjectPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(LanguageObjectPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1143,9 +1152,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1189,7 +1198,7 @@ abstract class BaseLanguageObjectPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(LanguageObjectPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1197,9 +1206,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1243,7 +1252,7 @@ abstract class BaseLanguageObjectPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(LanguageObjectPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1251,9 +1260,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1295,7 +1304,7 @@ abstract class BaseLanguageObjectPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(LanguageObjectPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1303,9 +1312,9 @@ abstract class BaseLanguageObjectPeer {
 		if (!$criteria->hasSelectClause()) {
 			LanguageObjectPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1351,16 +1360,16 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol2 = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(LanguageObjectPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -1472,16 +1481,16 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol2 = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		ContentObjectPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ContentObjectPeer::NUM_COLUMNS - ContentObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ContentObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(LanguageObjectPeer::OBJECT_ID, ContentObjectPeer::ID, $join_behavior);
 
@@ -1593,13 +1602,13 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol2 = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		ContentObjectPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ContentObjectPeer::NUM_COLUMNS - ContentObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ContentObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(LanguageObjectPeer::OBJECT_ID, ContentObjectPeer::ID, $join_behavior);
 
@@ -1690,13 +1699,13 @@ abstract class BaseLanguageObjectPeer {
 		}
 
 		LanguageObjectPeer::addSelectColumns($criteria);
-		$startcol2 = (LanguageObjectPeer::NUM_COLUMNS - LanguageObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		ContentObjectPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ContentObjectPeer::NUM_COLUMNS - ContentObjectPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ContentObjectPeer::NUM_HYDRATE_COLUMNS;
 
 		LanguagePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + LanguagePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(LanguageObjectPeer::OBJECT_ID, ContentObjectPeer::ID, $join_behavior);
 
@@ -1805,7 +1814,7 @@ abstract class BaseLanguageObjectPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a LanguageObject or Criteria object.
+	 * Performs an INSERT on the database, given a LanguageObject or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or LanguageObject object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1844,7 +1853,7 @@ abstract class BaseLanguageObjectPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a LanguageObject or Criteria object.
+	 * Performs an UPDATE on the database, given a LanguageObject or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or LanguageObject object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1891,11 +1900,12 @@ abstract class BaseLanguageObjectPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the language_objects table.
+	 * Deletes all rows from the language_objects table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(LanguageObjectPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1920,7 +1930,7 @@ abstract class BaseLanguageObjectPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a LanguageObject or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a LanguageObject or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or LanguageObject object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1930,7 +1940,7 @@ abstract class BaseLanguageObjectPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, PropelPDO $con = null)
+	 private static function doDeleteBeforeReferencing($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
 			$con = Propel::getConnection(LanguageObjectPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1997,7 +2007,7 @@ abstract class BaseLanguageObjectPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(LanguageObject $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 
@@ -2045,6 +2055,49 @@ abstract class BaseLanguageObjectPeer {
 
 		return !empty($v) ? $v[0] : null;
 	}
+	// referencing behavior
+	public static function doDelete($values, PropelPDO $con = null) {
+			if ($con === null) {
+				$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			}
+	
+			if($values instanceof Criteria) {
+				// rename for clarity
+				$criteria = clone $values;
+			} elseif ($values instanceof LanguageObject) { // it's a model object
+				// create criteria based on pk values
+				$criteria = $values->buildPkeyCriteria();
+			} else { // it's a primary key, or an array of pks
+				$criteria = new Criteria(self::DATABASE_NAME);
+				$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
+			}
+			
+			foreach(LanguageObjectPeer::doSelect(clone $criteria, $con) as $object) {
+				ReferencePeer::removeReferences($object);
+			}
+	
+			return self::doDeleteBeforeReferencing($criteria, $con);
+	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->getIsBackendLoginEnabled();
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
+
 } // BaseLanguageObjectPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

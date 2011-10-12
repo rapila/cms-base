@@ -104,7 +104,7 @@ PageTree
 - D&D Visualisation needs some attention
 
 Alert dialogs
-- delete > .cmos_alert längere Texte sollten links eingerückt sein.
+- delete > .rapila_alert längere Texte sollten links eingerückt sein.
 
 Nächstens Dringend: 
 - Mit Rafi alle Richtext CKEditor Sachen verbessern (Textmodule, Preview Editing, Newsletter)

@@ -63,7 +63,7 @@ class PagesAdminModule extends AdminModule {
 		$oUser = Session::getSession()->getUser();
 		$aResult = $oPage->toArray();
 		$aResult['UserMayCreateChildren'] = $oUser->mayCreateChildren($oPage);
-		// $aResult['page_string'] = $oPage->getActivePageString(AdminManager::getContentLanguage())->toArray();
+		$aResult['UserMayCreateSiblings'] = $oPage->getParent() !== null && $oUser->mayCreateChildren($oPage->getParent());
 		return $aResult;
 	}
 	
@@ -74,7 +74,7 @@ class PagesAdminModule extends AdminModule {
 	public function moveItem($iIdNew, $iIdRef, $sPosition) {
 		$oPage = PagePeer::retrieveByPK($iIdNew);
 		$oRefPage = PagePeer::retrieveByPK($iIdRef);
-		if($sPosition === 'first') {
+		if($sPosition === 'first' || $sPosition === 'inside') {
 			$oPage->moveToFirstChildOf($oRefPage);
 		} else if($sPosition === 'before') {
 			$oPage->moveToPrevSiblingOf($oRefPage);

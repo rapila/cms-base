@@ -73,6 +73,10 @@ class PageNavigationItem extends NavigationItem {
 		return $this->oMe->getActivePageString($sLanguageId)->getMetaDescription();
 	}
 	
+	public function getIdentifier() {
+		return $this->oMe->getIdentifier();
+	}
+	
 	public function getName() {
 		return $this->oMe->getName();
 	}

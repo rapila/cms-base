@@ -5,12 +5,14 @@
 class DocumentCategoryInputWidgetModule extends WidgetModule {
 	
 	public function allCategories($bGetCategoriesWithDocumentsOnly=false) {
-		if(!$bGetCategoriesWithDocumentsOnly) {
-			$oDocuments = DocumentCategoryPeer::getDocumentCategoriesSorted();
-		} else {
-			$oDocuments = DocumentCategoryPeer::getDocumentCategoriesForImagePicker();
+		$oQuery = DocumentCategoryQuery::create()->distinct()->filterByIsExternallyManaged(false);
+		if($bGetCategoriesWithDocumentsOnly) {
+			$oQuery->joinDocument(null, Criteria::INNER_JOIN);
+			if(is_string($bGetCategoriesWithDocumentsOnly)) {
+				$oQuery->useDocumentQuery()->filterByDocumentKind($bGetCategoriesWithDocumentsOnly)->endUse();
+			}
 		}
-		return WidgetJsonFileModule::jsonBaseObjects($oDocuments, array('id', 'name'));
+		return WidgetJsonFileModule::jsonBaseObjects($oQuery->orderByName()->find(), array('id', 'name'));
 	}
 	
 	public function getElementType() {

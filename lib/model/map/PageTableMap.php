@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class PageTableMap extends TableMap {
+class PageTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class PageTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('pages');
 		$this->setPhpName('Page');
 		$this->setClassname('Page');
@@ -61,18 +62,18 @@ class PageTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('PageProperty', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null);
-    $this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null);
-    $this->addRelation('ContentObject', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null);
-    $this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('PageProperty', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PagePropertys');
+		$this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PageStrings');
+		$this->addRelation('ContentObject', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'ContentObjects');
+		$this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'Rights');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
@@ -81,6 +82,7 @@ class PageTableMap extends TableMap {
 			'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
 			'referenceable' => array(),
 			'taggable' => array(),
+			'denyable' => array('mode' => 'allow', 'role_key' => '', 'owner_allowed' => '', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

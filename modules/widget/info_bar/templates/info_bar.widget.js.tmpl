@@ -1,9 +1,156 @@
 Widget.types.info_bar = {
 	initialize: function() {
+		var _this = this;
 		this.sidebar = AdminInterface.sidebar;
 		this.content_area = AdminInterface.content;
-		this.is_pages_module = AdminInterface.current_admin_module === "pages";
 		this.button_prototype = jQuery('<a/>').addClass('info-bar-button').text(' ');
+
+		var methods = {};
+		
+		var add_item = function(opts) {
+			opts = jQuery.extend({
+				identifier: Widget.uuid(),
+				element: null,
+				parent: 'left',
+				is_before: false,
+				accesskey: null,
+				action: null,
+				disabled: false,
+				class_name: '',
+				disable: function() {
+					this.element.fadeTo('slow', 0.3);
+					this.disabled = true;
+					return this;
+				},
+				enable: function() {
+					this.element.fadeTo('slow', 1);
+					this.disabled = false;
+					return this;
+				}
+			}, opts);
+			if(opts.parent.constructor === String) {
+				opts.parent = _this['infobar_'+opts.parent];
+			} else if(opts.parent.constructor === Boolean) {
+				opts.parent = opts.parent ? _this.infobar_right : _this.infobar_left;
+			} else if(opts.parent.element) {
+				opts.parent = opts.parent.element;
+			}
+			var func = opts.is_before ? opts.element.prependTo : opts.element.appendTo;
+			if(opts.accesskey) {
+				opts.element.attr('accesskey', opts.accesskey);
+			}
+			opts.element.addClass('info-bar-element').addClass(opts.class_name);
+			func.call(opts.element, opts.parent);
+			if(opts.action) {
+				opts.element.click(function(event) {
+					if(!opts.disabled) {
+						opts.action.call(this, event, opts);
+					}
+				});
+			}
+			
+			// Allow chaining of add_* method calls
+			return jQuery.extend(opts, methods);
+		};
+
+		jQuery.extend(methods, {
+			add_element: function(element, is_right_container, is_before, accesskey) {
+				return add_item({
+					element: element,
+					parent: is_right_container,
+					is_before: is_before,
+					accesskey: accesskey
+				});
+			},
+	
+			add_button: function(class_name, action, accesskey, is_right_container, is_before, title_text) {
+				if(title_text === undefined && class_name === 'add-new-item') {
+					title_text = "{{writeString=wns.create_new_entry}}";
+				}
+				var element = _this.button_prototype.clone();
+				element.attr('title', title_text);
+				return add_item({
+					element: element,
+					class_name: class_name,
+					accesskey: accesskey,
+					action: action,
+					parent: is_right_container,
+					is_before: is_before
+				});
+			},
+	
+			add_menu: function(class_name) {
+				return this;
+			},
+	
+			add_menu_item: function(parent, label, action, accesskey, class_name) {
+				return this;
+			},
+	
+			add_search_input: function(default_value, click_handler) {
+				if(!default_value) {
+					default_value = "{{writeString=wns.search.enter_search}}";
+				}
+				var search_input = jQuery('<input/>').attr({name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
+				var result = add_item({
+					element: search_input,
+					parent: 'right',
+					accesskey: 'f',
+					class_name: 'default_state search_field'
+				});
+
+				var clear_button = this.add_button('search_field_reset', null, null, true).element.hide();
+				var search_button = this.add_button('search_button', function() {
+					if(search_input.is('.default_state')) {
+						Widget.notifyUser(Widget.logSeverity.INFO, "{{writeString=wns.not_applicable.add_search_word}}");
+						return;
+					}
+					click_handler(search_input.val());
+				}, null, true).element;
+				clear_button.click(function(event) {
+					search_input.val('').focus();
+					search_button.removeClass('active');
+					click_handler(null);
+					jQuery(this).hide();
+				});
+
+				search_input.focus(function() {
+					if(search_input.is('.default_state')) {
+						search_input.removeClass('default_state').val('');
+					}
+				}).blur(function() {
+					if(search_input.val() === '') { 
+						search_input.addClass('default_state').val(default_value);
+					}
+				}).bind('keyup', function(event) {
+					if(event.which === 27) { 
+						return clear_button.click();
+					}
+					if(event.which === 13) {
+						return search_button.click();
+					}
+					if(search_input.val() === '') {
+						clear_button.hide();
+						search_button.removeClass('active');
+					} else {
+						clear_button.show();
+						search_button.addClass('active');
+					}
+				});
+
+				return result;
+			},
+
+			add_row_count_info_for_list: function(list) {
+				var row_count_info = jQuery('<span/>').addClass('row_count_info');
+				list.handle('reloaded', function() {
+					row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+				}, false, true);
+				return add_item({element: row_count_info, parent: 'right'});
+			}
+		});
+
+		jQuery.extend(this, methods);
 	},
 	
 	prepare: function() {
@@ -38,95 +185,6 @@ Widget.types.info_bar = {
 		this.infobar_right.css('left', px);
 		this.admin_menu_right.css('left', px);
 		this.admin_menu_left.css('width', px);
-	},
-	
-	add_element: function(element, is_right_container, is_before, accesskey) {
-		var appendee = is_right_container ? this.infobar_right : this.infobar_left;
-		var func = is_before ? element.prependTo : element.appendTo;
-		if(accesskey) {
-			element.attr('accesskey', accesskey);
-		}
-		if(this.is_pages_module && is_right_container) {
-			element.addClass('info-bar-element-page');
-		} else {
-			element.addClass('info-bar-element');
-		}
-		func.call(element, appendee);
-		return this;
-	},
-	
-	add_button: function(identifier, action, accesskey, is_right_container, is_before, title_text) {
-		title_text = title_text === undefined ? "{{writeString=wns.create_new_entry}}" : title_text;
-		var element = this.button_prototype.clone().addClass(identifier).click(action);
-		element.attr('title', title_text);
-		this.add_element(element, is_right_container, is_before, accesskey);
-		return this;
-	},
-	
-	add_menu: function(identifier) {
-		return this;
-	},
-	
-	add_menu_item: function(menuIdentifier, identifier, label, action, accesskey) {
-		return this;
-	},
-	
-	set_active_status: function(identifier, active) {
-		return this;
-	},
-	
-	add_search_input: function(default_value, click_handler) {
-		if(!default_value) {
-			default_value = "{{writeString=wns.search.enter_search}}";
-		}
-		var search_input = jQuery('<input/>').addClass('default_state search_field').attr({name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
-		this.add_element(search_input, true, false, 'f');
-		var clear_button = this.button_prototype.clone().addClass('search_field_reset').hide();
-		this.add_element(clear_button, true).add_button('search_button', function() {
-			if(search_input.is('.default_state')) {
-				Widget.notifyUser(Widget.logSeverity.INFO, "{{writeString=wns.not_applicable.add_search_word}}");
-				return;
-			}
-			click_handler(search_input.val());
-		}, '', true);
-		var search_button = clear_button.next('.search_button');
-		clear_button.click(function() {
-			search_input.val('').focus();
-			search_button.removeClass('active');
-			click_handler(null);
-			jQuery(this).hide();
-		});
-		return search_input.focus(function() {
-			if(search_input.is('.default_state')) {
-				search_input.removeClass('default_state').val('');
-			}
-		}).blur(function() {
-			if(search_input.val() === '') { 
-				search_input.addClass('default_state').val(default_value);
-			}
-		}).bind('keyup', function(event) {
-			if(event.which === 27) { 
-				return clear_button.click();
-			}
-			if(event.which === 13) {
-				return search_button.click();
-			}
-			if(search_input.val() === '') {
-				clear_button.hide();
-				search_button.removeClass('active');
-			} else {
-				clear_button.show();
-				search_button.addClass('active');
-			}
-		});
-	},
-	
-	add_row_count_info_for_list: function(list) {
-		var row_count_info = jQuery('<span/>').addClass('row_count_info');
-		this.add_element(row_count_info, true);
-		list.handle('reloaded', function() {
-			row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
-		}, false, true);
 	},
 	
 	settings: {

@@ -14,19 +14,39 @@ class PermissionWidgetModule extends WidgetModule {
 		$oUser = Session::getSession()->getUser();
 		return $oUser->hasRole($sRoleKey);
 	}
+
+	public static function mayDoOperationOnObjectOfModel($sOperation, $sModelName, $mObject) {
+		$sPeer = "{$sModelName}Peer";
+		if(!is_object($mObject)) {
+			$mObject = $sPeer::retrieveByPK($mObject);
+		}
+		return $mObject->mayOperate($sOperation, $mObject);
+	}
+
+	public static function mayUpdateObjectOfModel($sModelName, $iObjectId) {
+		return $this->mayDoOperationOnObjectOfModel('update', $sModelName, $iObjectId);
+	}
+
+	public static function mayDeleteObjectOfModel($sModelName, $iObjectId) {
+		return $this->mayDoOperationOnObjectOfModel('delete', $sModelName, $iObjectId);
+	}
+
+	public static function mayInsertObjectOfModel($sModelName) {
+		$oObject = new $sModelName();
+		return $this->mayDoOperationOnObjectOfModel('insert', $sModelName, $oObject);
+	}
 	
 	public static function mayEditPageDetails($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayEditPageDetails($iPageId);
 	}
 
+	public static function mayEditPageDetailsAndDelete($iPageId) {
+		$oUser = Session::getSession()->getUser();
+		return array($oUser->mayEditPageDetails($iPageId), $oUser->mayDelete($iPageId));
+	}
+
 	public static function mayEditPageContents($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayEditPageContents($iPageId);
 	}
@@ -40,25 +60,16 @@ class PermissionWidgetModule extends WidgetModule {
 	}
 
 	public static function mayCreateChildren($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayCreateChildren($iPageId);
 	}
 
 	public static function mayDelete($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayDelete($iPageId);
 	}
 
 	public static function mayViewPage($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayViewPage($iPageId);
 	}

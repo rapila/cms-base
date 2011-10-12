@@ -1,22 +1,30 @@
 Widget.types.document_category_input = {
 	prepare: function() {
 		this.reload();
-		Widget.handle('cmos-document_categories_changed', this.reload.bind(this));
+		Widget.handle('rapila-document_categories_changed', this.reload.bind(this));
 	},
 	
 	reload: function() {
+		var _this = this;
 		var current = this._element.val();
 		this._element.empty();
 		var option = jQuery('<option/>');
 		this.allCategories(this.settings.categories_with_documents_only, function(categories) {
+			var has_categories = false;
 			jQuery.each(categories, function(i, category) {
+				has_categories = true;
 				option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
 			}.bind(this));
-			option.text(this.settings.custom_option).val('').prependTo(this._element);
+			if(this.settings.show_without && has_categories) {
+				option.clone().text(_this.settings.show_without_linktext).val('__without').prependTo(this._element);
+			}
+			if(this.settings.show_all || !has_categories) {
+				option.clone().text("{{writeString=wns.document_category_input.show_all}}").val('__all').prependTo(this._element);
+			}
 			if(current) {
 				this._element.val(current);
 			} else {
-				this._element.val(this.settings.initial_selection || '');
+				this._element.val(this.settings.initial_selection || '__all');
 			}
 		});
 	},
@@ -26,9 +34,11 @@ Widget.types.document_category_input = {
 	},
 	
 	settings: {
-		custom_option: "----",
+		show_all: true,
+		show_without: false,
 		initial_selection: null,
-		categories_with_documents_only: false
+		categories_with_documents_only: false,
+		show_without_linktext: "{{writeString=wns.document_category_input.without_category}}"
 	}
 
 };

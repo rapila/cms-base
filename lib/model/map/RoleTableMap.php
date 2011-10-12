@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class RoleTableMap extends TableMap {
+class RoleTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class RoleTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('roles');
 		$this->setPhpName('Role');
 		$this->setClassname('Role');
@@ -51,22 +52,23 @@ class RoleTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('GroupRole', 'GroupRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
-    $this->addRelation('UserRole', 'UserRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
-    $this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('GroupRole', 'GroupRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null, 'GroupRoles');
+		$this->addRelation('UserRole', 'UserRole', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null, 'UserRoles');
+		$this->addRelation('Right', 'Right', RelationMap::ONE_TO_MANY, array('role_key' => 'role_key', ), 'CASCADE', null, 'Rights');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
 	{
 		return array(
+			'denyable' => array('mode' => '', 'role_key' => 'users', 'owner_allowed' => '', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

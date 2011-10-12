@@ -24,12 +24,15 @@ abstract class BaseDocumentCategoryPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'DocumentCategoryTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 10;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 10;
 
 	/** the column name for the ID field */
 	const ID = 'document_categories.ID';
@@ -61,6 +64,9 @@ abstract class BaseDocumentCategoryPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'document_categories.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of DocumentCategory objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -70,13 +76,15 @@ abstract class BaseDocumentCategoryPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Sort', 'MaxWidth', 'IsExternallyManaged', 'IsInactive', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'sort', 'maxWidth', 'isExternallyManaged', 'isInactive', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::SORT, self::MAX_WIDTH, self::IS_EXTERNALLY_MANAGED, self::IS_INACTIVE, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -91,7 +99,7 @@ abstract class BaseDocumentCategoryPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Sort' => 2, 'MaxWidth' => 3, 'IsExternallyManaged' => 4, 'IsInactive' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, 'CreatedBy' => 8, 'UpdatedBy' => 9, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'sort' => 2, 'maxWidth' => 3, 'isExternallyManaged' => 4, 'isInactive' => 5, 'createdAt' => 6, 'updatedAt' => 7, 'createdBy' => 8, 'updatedBy' => 9, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::SORT => 2, self::MAX_WIDTH => 3, self::IS_EXTERNALLY_MANAGED => 4, self::IS_INACTIVE => 5, self::CREATED_AT => 6, self::UPDATED_AT => 7, self::CREATED_BY => 8, self::UPDATED_BY => 9, ),
@@ -237,7 +245,7 @@ abstract class BaseDocumentCategoryPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -256,7 +264,7 @@ abstract class BaseDocumentCategoryPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -310,7 +318,7 @@ abstract class BaseDocumentCategoryPeer {
 	 * @param      DocumentCategory $value A DocumentCategory object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(DocumentCategory $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -383,7 +391,7 @@ abstract class BaseDocumentCategoryPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in DocumentPeer instance pool, 
+		// Invalidate objects in DocumentPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		DocumentPeer::clearInstancePool();
 	}
@@ -408,7 +416,7 @@ abstract class BaseDocumentCategoryPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -468,7 +476,7 @@ abstract class BaseDocumentCategoryPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + DocumentCategoryPeer::NUM_COLUMNS;
+			$col = $startcol + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = DocumentCategoryPeer::OM_CLASS;
 			$obj = new $cls();
@@ -477,6 +485,7 @@ abstract class BaseDocumentCategoryPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -504,9 +513,9 @@ abstract class BaseDocumentCategoryPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentCategoryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -554,9 +563,9 @@ abstract class BaseDocumentCategoryPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentCategoryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -597,7 +606,7 @@ abstract class BaseDocumentCategoryPeer {
 		}
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol = (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentCategoryPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -663,7 +672,7 @@ abstract class BaseDocumentCategoryPeer {
 		}
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol = (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(DocumentCategoryPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -736,9 +745,9 @@ abstract class BaseDocumentCategoryPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentCategoryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -781,13 +790,13 @@ abstract class BaseDocumentCategoryPeer {
 		}
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(DocumentCategoryPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -871,7 +880,7 @@ abstract class BaseDocumentCategoryPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentCategoryPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -879,9 +888,9 @@ abstract class BaseDocumentCategoryPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentCategoryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -919,7 +928,7 @@ abstract class BaseDocumentCategoryPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(DocumentCategoryPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -927,9 +936,9 @@ abstract class BaseDocumentCategoryPeer {
 		if (!$criteria->hasSelectClause()) {
 			DocumentCategoryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -971,7 +980,7 @@ abstract class BaseDocumentCategoryPeer {
 		}
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1020,7 +1029,7 @@ abstract class BaseDocumentCategoryPeer {
 		}
 
 		DocumentCategoryPeer::addSelectColumns($criteria);
-		$startcol2 = (DocumentCategoryPeer::NUM_COLUMNS - DocumentCategoryPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1087,7 +1096,7 @@ abstract class BaseDocumentCategoryPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a DocumentCategory or Criteria object.
+	 * Performs an INSERT on the database, given a DocumentCategory or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or DocumentCategory object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1130,7 +1139,7 @@ abstract class BaseDocumentCategoryPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a DocumentCategory or Criteria object.
+	 * Performs an UPDATE on the database, given a DocumentCategory or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or DocumentCategory object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1169,11 +1178,12 @@ abstract class BaseDocumentCategoryPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the document_categories table.
+	 * Deletes all rows from the document_categories table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(DocumentCategoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1199,7 +1209,7 @@ abstract class BaseDocumentCategoryPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a DocumentCategory or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a DocumentCategory or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or DocumentCategory object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1306,7 +1316,7 @@ abstract class BaseDocumentCategoryPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(DocumentCategory $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 
@@ -1380,6 +1390,26 @@ abstract class BaseDocumentCategoryPeer {
 			$objs = DocumentCategoryPeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->hasRole("documents");
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return true;
 	}
 
 } // BaseDocumentCategoryPeer

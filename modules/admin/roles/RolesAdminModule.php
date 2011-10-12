@@ -8,13 +8,13 @@ class RolesAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget = new RoleListWidgetModule();
-		$this->oSidebarWidget 		= new ListWidgetModule();
+		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
 		if(isset($_REQUEST['group_id'])) {
 			$this->oListWidget->oDelegateProxy->setGroupId($_REQUEST['group_id']);
 		}
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'group_id', $this->oListWidget->oDelegateProxy->getGroupId());
+    $this->oSidebarWidget->setSetting('initial_selection', array('group_id' => $this->oListWidget->oDelegateProxy->getGroupId()));
 	}
 	
 	public function mainContent() {

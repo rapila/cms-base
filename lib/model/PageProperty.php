@@ -16,5 +16,16 @@ class PageProperty extends BasePageProperty {
 		return parent::save($con);
 	}
 	
+	public static function mayOperateOn($oUser, $oPageProperty, $sOperation) {
+		if(!parent::mayOperateOn($oUser, $oPageProperty, $sOperation)) {
+			//Denyable mode is set to 'admin_user' => false means: User is invalid
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->mayEditPageDetails($oPageProperty->getPage());
+	}
+	
 }
 

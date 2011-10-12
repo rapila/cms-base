@@ -1,4 +1,4 @@
 aspects:
   - dashboard
 enabled: true
-allowed_roles: []
+allowed_roles: [backup]

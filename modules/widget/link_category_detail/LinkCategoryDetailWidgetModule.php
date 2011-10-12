@@ -6,11 +6,11 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 
 	private $iCategoryId = null;
 	
-	public function setCategoryId($iCategoryId) {
+	public function setLinkCategoryId($iCategoryId) {
 		$this->iCategoryId = $iCategoryId;
 	}
 	
-	public function getCategoryData() {
+	public function getLinkCategoryData() {
 		$oLinkCategory = LinkCategoryPeer::retrieveByPK($this->iCategoryId);
 		$aResult = $oLinkCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLinkCategory);

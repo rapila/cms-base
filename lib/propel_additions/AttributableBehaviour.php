@@ -7,7 +7,6 @@
  * @package    propel.generator.behavior
  */
 class AttributableBehaviour extends Behavior {
-	
 	private $bIsUsersTable = false;
 	// default parameters value
 	protected $parameters = array(
@@ -49,7 +48,7 @@ class AttributableBehaviour extends Behavior {
 	private function addRelation($oLocalColumn, $oUsersTable, $oUsersId) {
 		$oFk = new ForeignKey();
 		$oFk->setTable($this->getTable());
-		$oFk->setForeignTableName($oUsersTable->getName());
+		$oFk->setForeignTableCommonName($oUsersTable->getName());
 		if(!$oFk->isMatchedByInverseFK()) {
 			$oFk->setOnDelete(ForeignKey::SETNULL);
 			$oFk->setOnUpdate(null);
@@ -61,8 +60,8 @@ class AttributableBehaviour extends Behavior {
 	/**
 	 * Get the setter of one of the columns of the behavior
 	 * 
-	 * @param     string $column One of the behavior colums, 'create_column' or 'update_column'
-	 * @return    string The related setter, 'setCreatedBy' or 'setUpdatedBy'
+	 * @param string $column One of the behavior colums, 'create_column' or 'update_column'
+	 * @return string The related setter, 'setCreatedBy' or 'setUpdatedBy'
 	 */
 	protected function getColumnSetter($column)
 	{
@@ -120,7 +119,7 @@ public function keepUpdateUserUnchanged()
 	/**
 	 * Get the associated User object
 	 *
-	 * @param      PropelPDO Optional Connection object.
+	 * @param     PropelPDO \$con Optional Connection object.
 	 * @return     User The associated User object.
 	 * @throws     PropelException
 	 */
@@ -131,7 +130,7 @@ public function keepUpdateUserUnchanged()
 	/**
 	 * Get the associated User object
 	 *
-	 * @param      PropelPDO Optional Connection object.
+	 * @param      PropelPDO \$con Optional Connection object.
 	 * @return     User The associated User object.
 	 * @throws     PropelException
 	 */

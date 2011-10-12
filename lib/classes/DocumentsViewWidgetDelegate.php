@@ -181,7 +181,7 @@ class DocumentsViewWidgetDelegate {
 		return $this->oDelegateProxy->getDocumentKind();
 	}
 	
-	public function setDocumentCategoryId($iDocumentCategoryId) {
+	public function setDocumentCategoryId($iDocumentCategoryId = null) {
 		return $this->oDelegateProxy->setDocumentCategoryId($iDocumentCategoryId);
 	}
 

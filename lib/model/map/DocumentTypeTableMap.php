@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class DocumentTypeTableMap extends TableMap {
+class DocumentTypeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class DocumentTypeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('document_types');
 		$this->setPhpName('DocumentType');
 		$this->setClassname('DocumentType');
@@ -53,20 +54,21 @@ class DocumentTypeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('Document', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'document_type_id', ), 'CASCADE', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Document', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'document_type_id', ), 'CASCADE', null, 'Documents');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
 	{
 		return array(
+			'denyable' => array('mode' => '', 'role_key' => 'documents', 'owner_allowed' => 'no_delete', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

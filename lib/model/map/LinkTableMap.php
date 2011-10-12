@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class LinkTableMap extends TableMap {
+class LinkTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class LinkTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('links');
 		$this->setPhpName('Link');
 		$this->setClassname('Link');
@@ -59,17 +60,17 @@ class LinkTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
-    $this->addRelation('UserRelatedByOwnerId', 'User', RelationMap::MANY_TO_ONE, array('owner_id' => 'id', ), null, null);
-    $this->addRelation('LinkCategory', 'LinkCategory', RelationMap::MANY_TO_ONE, array('link_category_id' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Language', 'Language', RelationMap::MANY_TO_ONE, array('language_id' => 'id', ), null, null);
+		$this->addRelation('UserRelatedByOwnerId', 'User', RelationMap::MANY_TO_ONE, array('owner_id' => 'id', ), null, null);
+		$this->addRelation('LinkCategory', 'LinkCategory', RelationMap::MANY_TO_ONE, array('link_category_id' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
@@ -77,6 +78,7 @@ class LinkTableMap extends TableMap {
 		return array(
 			'referenceable' => array(),
 			'taggable' => array(),
+			'denyable' => array('mode' => 'by_role', 'role_key' => '', 'owner_allowed' => 'true', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

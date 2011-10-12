@@ -8,15 +8,15 @@ class FileUploadWidgetModule extends WidgetModule {
 		return true;
 	}
 	
-	public function uploadFile($sFileKey, $aOptions, $bCreateType = false) {
-		$aFileInfo = $_FILES[$sFileKey];
-		
+	public function uploadFile($sFileKey = 'file', $aOptions = null, $bCreateType = false) {
 		$oFlash = Flash::getFlash();
 		$oFlash->checkForFileUpload($sFileKey);
 		$oFlash->finishReporting();
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
+		
+		$aFileInfo = $_FILES[$sFileKey];
 		
 		if($aOptions['document_id']) {
 			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
@@ -56,7 +56,9 @@ class FileUploadWidgetModule extends WidgetModule {
     $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
-		$oDocument->setName($sFileName);
+		if(!$aOptions['deny_name_override'] || !$oDocument->getName()) {
+			$oDocument->setName($sFileName);
+		}
 		
 		if($oDocument->isNew()) {
 			$oDocument->setLanguageId($aOptions['language_id']);

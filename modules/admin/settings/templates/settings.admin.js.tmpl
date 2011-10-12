@@ -3,7 +3,7 @@
 		admin_menu: function(content) {
 			content.html('{{includeTemplate=interface.admin_menu}}');
 			var menu = {};
-			jQuery.extend(true, menu, jQuery("#cmos_admin_menu").data('widget'));
+			jQuery.extend(true, menu, jQuery("#rapila_admin_menu").data('widget'));
 			var clone = content.find('#menu_customizer');
 			menu._element = clone;
 			menu.settings.attach_events = false;
@@ -12,17 +12,13 @@
 	};
 
 	jQuery(document).ready(function() {
-		Widget.createWithElement('list', function(widget) {
-			widget.settings.row_click_active_mode = 'activate';
-		}, function(widget) {
-			widget._element.appendTo(AdminInterface.sidebar);
+		Widget.createWithElement('list', function(sidebar) {
+			sidebar.settings.row_click_active_mode = 'activate';
+		}, function(sidebar) {
+			sidebar._element.appendTo(AdminInterface.sidebar);
 		
-			widget.handle('list.row-click', function(event, i, row) {
-				var key = row.data('key');
-				if(key === AdminInterface.content.data('setting_key')) {
-					return;
-				}
-				AdminInterface.content.empty().data('setting_key', key);
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				AdminInterface.content.empty().data('setting_key', selection[0] && selection[0].key);
 				interfaces[key](AdminInterface.content);
 			});
 		}, '{{writeRequestValue=chooser}}');

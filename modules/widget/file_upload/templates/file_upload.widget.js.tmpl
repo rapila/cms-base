@@ -18,40 +18,30 @@ Widget.types.file_upload = {
 			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
 			}
-			if(!selector) {
-				element.addClass('ui-state-droppable');
-			}
 		}).bind('dragover', function(event) {
-			
-			if(!selector) {
-				event.originalEvent.preventDefault();
-				if(element.has(event.target).length > 0) {
-					element.addClass('ui-state-droppable');
-				}
-				return false;
-			}
 			if(!current_drag_is_file) {
 				return;
 			}
-			var target = jQuery(event.target);
-			if(!target.is(selector)) {
-				return;
-			}
-			//console.log('dragover', element.find(selector));
-			element.find(selector).removeClass('ui-state-droppable');
-			target.addClass('ui-state-droppable');
 			event.originalEvent.preventDefault();
+			var target = jQuery(event.target);
+			var inner = selector ? target.closest(selector, element) : element;
+			//Drag did not occur on the wanted element (inner) but on a child
+			if(!inner.length || inner.has(target).length) {
+				return false;
+			}
+			inner.addClass('ui-state-droppable');
 			return false;
 		}).bind('dragleave', function(event) {
 			
-			//if (event.target != element[0]) 
-			//console.log('dragleave', event.target);
-		
-			if(selector) {
-				element.find(selector).removeClass('ui-state-droppable');
-			} else {
-				element.removeClass('ui-state-droppable');
+			var target = jQuery(event.target);
+			var inner = selector ? target.closest(selector) : element;
+			//Leave did not occur on the wanted element (inner) but on a child
+			if(inner.has(target).length || inner.has(event.relatedTarget).length) {
+				///@fixme this will also return if the user left the `inner` directly from a child, in which case the highlight should be released but isn’t
+				return;
 			}
+		
+			inner.removeClass('ui-state-droppable');
 		}).bind('drop', function(event) {
 			if(single_file_only && event.dataTransfer.files.length > 1) {
 				return false;
@@ -77,13 +67,12 @@ Widget.types.file_upload = {
 	},
 	
 	upload_file: function(file) {
-		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop};
+		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop, deny_name_override: false};
 		jQuery.extend(options, arguments[1] || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
-				if(options.unacceptable) {
-					options.unacceptable(error);
-				} else {
+				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
+				if(!options.unacceptable || !options.unacceptable(error)) {
 					var _this = this;
 					jQuery('<div/>').text(error.message).dialog({buttons: {
 						"{{writeString=wns.document_type.allow}}": function() {
@@ -92,8 +81,11 @@ Widget.types.file_upload = {
 						},
 						"{{writeString=wns.cancel}}": function() {
 							jQuery(this).dialog("close");
+							options.error && options.error(error);
 						}
 					}});
+				} else {
+					options.error && options.error(error);
 				}
 			} else {
 				this.do_upload(file, options);
@@ -114,21 +106,22 @@ Widget.types.file_upload = {
 			content_type: 'multipart/form-data',
 			additional_params: {
 				file: file
-			}
+			},
+			call_callback: true,
+			callback_handles_error: false
 		});
 		file_uploader.uploadFile('file', options, create_type, function(result, error) {
 			if(!error) {
 				jQuery('.ui-state-droppable').removeClass('ui-state-droppable');
 				progress.progressbar('value', 100);
 				notification.enable_close_button();
-				notification.reset_timeout(3000);
-				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.upload_success}}', {identifier: 'cmos.file_uploaded.into.'+options.document_category_id, closable: true});
+				notification.reset_timeout(2000);
+				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.upload_success}}', {identifier: 'rapila.file_uploaded.into.'+options.document_category_id, closable: true});
 				this.fire('file-uploaded', result, options);
 				options.callback(result, options);
 			} else {
-				notification.enable_close_button();
-				notification.set_severity('error');
-				options.error ? options.error(error, notification, options) : notification.set_message(error.message);
+				options.error && options.error(error);
+				notification.close();
 			}
 		}, json_options);
 	}

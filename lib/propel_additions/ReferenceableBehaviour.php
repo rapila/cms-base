@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Gives a model class the ability to prevent deleting if references exist
+ * Gives a model class the ability to prevent deletion if references exist
  *
  * @package    propel.generator.behavior
  */

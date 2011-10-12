@@ -113,8 +113,9 @@ class FrontendManager extends Manager {
 	}
 	
 	protected function initLanguage() {
-		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem())) {
-				Session::getSession()->setLanguage(self::usePath());
+		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
+			$oLanguage = LanguagePeer::retrieveByPath(self::usePath());
+			Session::getSession()->setLanguage($oLanguage);
 		} else {
 			if(!LanguagePeer::languageIsActive(Session::language())) {
 				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
@@ -132,18 +133,40 @@ class FrontendManager extends Manager {
 	public function render() {
 		FilterModule::getFilters()->handleRequestStarted();
 		$bIsDynamic = false;
-		$aAllowedParams = array();
+		$aAllowedParams = array('container' => array(), 'navigation' => array());
 		
-		$bIsAjaxRequest = isset($_REQUEST['container_only']) && Manager::isXMLHttpRequest();
+		$bIsAjaxRequest = Manager::isPost() && Manager::isXMLHttpRequest();
+		$aAjaxSections = array();
+		///@todo remove legacy support when the need fades
+		$bIsLegacyAjaxRequest = $bIsAjaxRequest && isset($_REQUEST['container_only']);
+		if($bIsAjaxRequest) {
+			if($bIsLegacyAjaxRequest) {
+				$_REQUEST['ajax_containers'] = array($_REQUEST['container_only']);
+			}
+			if(isset($_REQUEST['ajax_containers'])) {
+				sort($_REQUEST['ajax_containers']);
+				$aAjaxSections['container'] = $_REQUEST['ajax_containers'];
+			}
+			if(isset($_REQUEST['ajax_navigations'])) {
+				sort($_REQUEST['ajax_navigations']);
+				$aAjaxSections['navigation'] = $_REQUEST['ajax_navigations'];
+			}
+			if(isset($_REQUEST['ajax_title'])) {
+				$aAjaxSections = array_merge($aAjaxSections, array('page_title' => true, 'link_text' => true, 'title' => true));
+			}
+			asort($aAjaxSections);
+		}
+		
 		
 		$sPageType = self::$CURRENT_PAGE->getPageType();
 		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
-		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, isset($_REQUEST['container_only']) ? array($_REQUEST['container_only']) : null);
+		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, ($bIsAjaxRequest ? $aAjaxSections['container'] : null));
 		
 		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
 		
 		$this->bIsNotFound = $this->bIsNotFound || $bParamsNotAllowed;
+		FilterModule::getFilters()->handlePageNotFoundDetectionComplete($this->bIsNotFound, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM, array(&$this->bIsNotFound));
 		
 		if($this->bIsNotFound) {
 			FilterModule::getFilters()->handlePageNotFound();
@@ -167,11 +190,13 @@ class FrontendManager extends Manager {
 		if(!$bIsAjaxRequest) {
 			$oOutput = $this->getXHTMLOutput();
 			$oOutput->render();
+		} else if(!$bIsLegacyAjaxRequest) {
+			header("Content-Type: application/json;charset=utf-8");
 		}
 		
-		$sPageIdentifier = self::$CURRENT_PAGE->getId().'_'.Session::language();
+		$sPageIdentifier = implode('/', self::$CURRENT_NAVIGATION_ITEM->getLink()).'_'.Session::language();
 		if($bIsAjaxRequest) {
-			$sPageIdentifier .= '_'.$_REQUEST['container_only'];
+			$sPageIdentifier .= '_'.serialize($aAjaxSections);
 		}
 		
 		$oCache = null;
@@ -192,14 +217,16 @@ class FrontendManager extends Manager {
 		}
 		
 		// Init the template
-		if($bIsAjaxRequest) {
+		if($bIsLegacyAjaxRequest) {
 			$this->oTemplate = new Template(TemplateIdentifier::constructIdentifier('container', $_REQUEST['container_only']), null, true, true);
+		} else if($bIsAjaxRequest) {
+			$this->oTemplate = new AjaxTemplate($aAjaxSections, true);
 		} else {
 			$this->oTemplate = self::$CURRENT_PAGE->getTemplate(true);
 		}
 
 		FilterModule::getFilters()->handleBeforePageFill(self::$CURRENT_PAGE, $this->oTemplate);
-		if(!$bIsAjaxRequest) {
+		if(!$bIsLegacyAjaxRequest) {
 			$this->fillAttributes();
 			$this->fillNavigation();
 		}
@@ -279,8 +306,8 @@ class FrontendManager extends Manager {
 
 	/**
 	 * replacePageLinkIdentifier()
-	 * @param object TemplateIdentifier
-	 * @return object Template
+	 * @param TemplateIdentifier $oTemplateIdentifier The TemplateIdentifier whose name is “page_link”
+	 * @return Template the Template containing a link
 	 * used in fillAttributes to replace page_link identifiers
 	 * - get a page by name
 	 * - get a page by id

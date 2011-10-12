@@ -1,4 +1,11 @@
 <form>
-	<select name="type"></select>
-	<select name="column"></select>
+	<div class="group_fields">
+		<label for="type">{{writeString=wns.dashboard.widget_type}}</label>
+		<select name="type" class="ui-widget-content autowidth"></select>
+	</div>
+	<div class="group_fields">
+		<label for="column">{{writeString=wns.dashboard.widget_column}}</label>
+		<select name="column" class="ui-widget-content autowidth"></select>
+	</div>
+	<br style="clear:left;" />
 </form>

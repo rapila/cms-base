@@ -32,10 +32,10 @@ class Navigation {
 	private $sLanguageId;
 	
 	/**
-	 * __constructor()
-	 * @param string navigation name
+	 * @param string|array $mConfig navigation name/navigation config
 	 * each navigation part needs configuration in section called 'navigation' in the site/config/config.yml
-	 * @return void / exception on missing configuration
+	 * @return void
+	 * @throws Exception on missing configuration
 	 */
 	public function __construct($mConfig, $sLinkPrefix=null, $sTemplatesDir = null) {
 		if($sTemplatesDir === null) {
@@ -77,10 +77,9 @@ class Navigation {
 	} // parse()
 	
 	/**
-	 * parseTree()
-	 * @param array of Page objects
-	 * @param int level of navigation
-	 * @return string parsed navigation
+	 * @param array $aNavigationItems array of Page objects
+	 * @param int $iLevel level of navigation
+	 * @return Template parsed navigation
 	 */
 	private function parseTree($aNavigationItems, $iLevel) {
 		if($this->iMaxLevel !== null && $iLevel > $this->iMaxLevel) {
@@ -207,9 +206,9 @@ class Navigation {
 	}
 	
 	/**
-	 * getConfigForPage()
-	 * @param string config var name
-	 * @param int level of navigation
+	 * @param int $iLevel level of current NavigationItem (expensive to calculate from the NavigationItem alone)
+	 * @param BooleanParser $oBooleanParser the BooleanParser instance holding information about the current NavigationItem’s properties]
+	 * @param NavigationItem $oNavigationItem the current navigation item
 	 * @return string parsed navigation
 	 */	 
 	private function getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem) {
@@ -224,6 +223,9 @@ class Navigation {
 			if(isset($aConfig['page_name']) && $aConfig['page_name'] !== $oNavigationItem->getName()) {
 				continue;
 			}
+			if(isset($aConfig['page_identifier']) && $aConfig['page_identifier'] !== $oNavigationItem->getIdentifier()) {
+				continue;
+			}
 			if(!isset($aConfig['on']) || $oBooleanParser->parse($aConfig['on'])) {
 				return $aConfig;
 			}
@@ -232,11 +234,10 @@ class Navigation {
 	}
 	
 	/**
-	 * getLanguageChooser()
 	 * description: 
 	 * - @see config.yml section language_chooser
 	 * - use parameter replaced in method
-	 * @return template object
+	 * @return Template The rendered language chooser
 	 */		
 	public static function getLanguageChooser() {
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('languages'), null, true);
@@ -269,7 +270,7 @@ class Navigation {
 			}
 			// if language is included, replace it by oLanguage->getId() and set include_language param to false
 			if($bCurrentPathIncludesLanguage) {
-				$aRequestPath[0] = $oLanguage->getId();	 
+				$aRequestPath[0] = $oLanguage->getPathPrefix();	 
 				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
 			} else {
 				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));

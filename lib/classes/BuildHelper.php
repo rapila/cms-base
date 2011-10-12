@@ -13,6 +13,24 @@ class BuildHelper {
 	private static function init() {
 		self::$MAP_SUFFIX = defined("Propel::VERSION") && version_compare(Propel::VERSION, "1.3", ">=") ? "TableMap" : "MapBuilder";
 	}
+
+	public static function preMigrate() {
+		self::preBuild();
+		self::generateBuildXml();
+	}
+
+	public static function postMigrate() {
+		self::init();
+		self::deleteUnusedFiles();
+		Cache::clearAllCaches();
+	}
+
+	public static function consolidateMigrations() {
+		foreach(ResourceFinder::create()->addPath('data', 'migrations')->addExpression('/\.php$/')->all()->returnObjects()->find() as $oMigration) {
+			print "Copying migration {$oMigration->getFileName()} from {$oMigration->getInstancePrefix()}\n";
+			copy($oMigration->getFullPath(), MAIN_DIR.'/'.DIRNAME_GENERATED.'/migrations/'.$oMigration->getFileName());
+		}
+	}
 	
 	public static function preBuild($bIsDevVersion = false) {
 		self::init();
@@ -33,8 +51,6 @@ class BuildHelper {
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- {{comment}} -->
 <database name="rapila" defaultIdMethod="native">
-	<behavior name="extended_timestampable" />
-	<behavior name="attributable" />
 	{{schema_content}}
 </database>
 EOT;
@@ -47,6 +63,39 @@ EOT;
 			$oSchemaTemplate->replaceIdentifierMultiple('schema_content', file_get_contents($sSchemaPath), null, Template::NO_HTML_ESCAPE);
 		}
 		file_put_contents($sSchemaOutputPath, $oSchemaTemplate->render());
+	}
+
+	public static function generateBuildXml() {
+		$aConfiguration = array('propel' => Propel::getConfiguration());
+		$oDoc = new DOMDocument();
+		$oRoot = $oDoc->createElement('config');
+    $oDoc->appendChild($oRoot);
+		self::writeConfiguration($oDoc, $aConfiguration, $oRoot);
+		$sConfigOutputPath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml';
+		file_put_contents($sConfigOutputPath, $oDoc->saveXML());
+	}
+
+	private static function writeConfiguration($oDoc, &$aConfig, $oElement) {
+		foreach($aConfig as $sKey => &$mValue) {
+			if(is_array($mValue)) {
+				$oInner = null;
+				if($oElement->tagName === 'datasources') {
+					$oInner = $oDoc->createElement('datasource');
+					$oInner->setAttribute('id', $sKey);
+				} else {
+					$oInner = $oDoc->createElement($sKey);
+				}
+				$oElement->appendChild($oInner);
+				self::writeConfiguration($oDoc, $mValue, $oInner);
+			} else {
+				if(is_bool($mValue)) {
+					$mValue = BooleanParser::stringForBoolean($mValue);
+				}
+				$oAttr = $oDoc->createElement($sKey);
+				$oAttr->appendChild($oDoc->createTextNode((string) $mValue));
+				$oElement->appendChild($oAttr);
+			}
+		}
 	}
 	
 	public static function copyPropelAdditions() {
@@ -166,6 +215,9 @@ EOT;
 	* Delete temp files only used while running generate-model
 	*/
 	private static function deleteUnusedFiles($bIsDevVersion = false) {
+		if(file_exists(MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml')) {
+			unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml');
+		}
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.xml');
 		unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/build.properties');
 		$aAdditions = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, 'propel_additions', '/^[\\w_]+\.php$/'), ResourceFinder::SEARCH_MAIN_ONLY);
@@ -176,7 +228,9 @@ EOT;
 			rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map', BASE_DIR.'/'.DIRNAME_DATA.'/sql/sqldb.map');
 			rename(MAIN_DIR.'/'.DIRNAME_GENERATED.'/schema.sql', BASE_DIR.'/'.DIRNAME_DATA.'/sql/schema.sql');
 		} else {
-			unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map');
+			if(file_exists(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map')) {
+				unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/sqldb.map');
+			}
 		}
 	}
 }

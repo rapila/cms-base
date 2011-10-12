@@ -12,11 +12,12 @@ class PreviewManager extends FrontendManager {
 		}
 		
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
-		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.6');
+		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.6.4');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 		
@@ -37,12 +38,6 @@ class PreviewManager extends FrontendManager {
 		} else {
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				AdminManager::setContentLanguage($this->sOldSessionLanguage);
-			}
-			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
-				Session::getSession()->resetAttribute(AdminManager::CONTENT_LANGUAGE_SESSION_KEY);
-			}
-			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
-				AdminManager::setContentLanguage(Settings::getSetting('session_default', Session::SESSION_LANGUAGE_KEY, 'en'));
 			}
 			if(!LanguagePeer::languageExists(AdminManager::getContentLanguage())) {
 				LinkUtil::redirectToManager('', "AdminManager");

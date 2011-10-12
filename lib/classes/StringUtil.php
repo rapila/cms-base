@@ -78,15 +78,15 @@ class StringUtil {
 	// implement preg_replace with		 
 	// $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/') 
 	// $aReplace = array('ae', 'ae', 'oe', 'oe', 'ue', 'ue');
-	public static function normalize($sInput, $sReplaceSpaceBy = '-') {
+	public static function normalize($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
 		if($sInput === null || $sInput === '') {
 			return null;
 		}
 		$sInput = str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), mb_strtolower($sInput));
 		$sInput = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT', $sInput);
 		$sInput = mb_ereg_replace('-|–|—', '-', $sInput);
-		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceBy, $sInput);
-		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_])/u", "", $sInput));
+		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
+		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
 		if($sNewName !== "") {
 			return $sNewName;
 		} else {

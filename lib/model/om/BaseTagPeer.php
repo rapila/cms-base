@@ -24,12 +24,15 @@ abstract class BaseTagPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'TagTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 6;
 
 	/** the column name for the ID field */
 	const ID = 'tags.ID';
@@ -49,6 +52,9 @@ abstract class BaseTagPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'tags.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Tag objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -58,13 +64,15 @@ abstract class BaseTagPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -79,7 +87,7 @@ abstract class BaseTagPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::CREATED_AT => 2, self::UPDATED_AT => 3, self::CREATED_BY => 4, self::UPDATED_BY => 5, ),
@@ -217,7 +225,7 @@ abstract class BaseTagPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -236,7 +244,7 @@ abstract class BaseTagPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -290,7 +298,7 @@ abstract class BaseTagPeer {
 	 * @param      Tag $value A Tag object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Tag $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -363,7 +371,7 @@ abstract class BaseTagPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in TagInstancePeer instance pool, 
+		// Invalidate objects in TagInstancePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		TagInstancePeer::clearInstancePool();
 	}
@@ -388,7 +396,7 @@ abstract class BaseTagPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -448,7 +456,7 @@ abstract class BaseTagPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + TagPeer::NUM_COLUMNS;
+			$col = $startcol + TagPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = TagPeer::OM_CLASS;
 			$obj = new $cls();
@@ -457,6 +465,7 @@ abstract class BaseTagPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -484,9 +493,9 @@ abstract class BaseTagPeer {
 		if (!$criteria->hasSelectClause()) {
 			TagPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -534,9 +543,9 @@ abstract class BaseTagPeer {
 		if (!$criteria->hasSelectClause()) {
 			TagPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -577,7 +586,7 @@ abstract class BaseTagPeer {
 		}
 
 		TagPeer::addSelectColumns($criteria);
-		$startcol = (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = TagPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(TagPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -643,7 +652,7 @@ abstract class BaseTagPeer {
 		}
 
 		TagPeer::addSelectColumns($criteria);
-		$startcol = (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = TagPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(TagPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -716,9 +725,9 @@ abstract class BaseTagPeer {
 		if (!$criteria->hasSelectClause()) {
 			TagPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -761,13 +770,13 @@ abstract class BaseTagPeer {
 		}
 
 		TagPeer::addSelectColumns($criteria);
-		$startcol2 = (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = TagPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(TagPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -851,7 +860,7 @@ abstract class BaseTagPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(TagPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -859,9 +868,9 @@ abstract class BaseTagPeer {
 		if (!$criteria->hasSelectClause()) {
 			TagPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -899,7 +908,7 @@ abstract class BaseTagPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(TagPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -907,9 +916,9 @@ abstract class BaseTagPeer {
 		if (!$criteria->hasSelectClause()) {
 			TagPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -951,7 +960,7 @@ abstract class BaseTagPeer {
 		}
 
 		TagPeer::addSelectColumns($criteria);
-		$startcol2 = (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = TagPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1000,7 +1009,7 @@ abstract class BaseTagPeer {
 		}
 
 		TagPeer::addSelectColumns($criteria);
-		$startcol2 = (TagPeer::NUM_COLUMNS - TagPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = TagPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1067,7 +1076,7 @@ abstract class BaseTagPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Tag or Criteria object.
+	 * Performs an INSERT on the database, given a Tag or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Tag object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1110,7 +1119,7 @@ abstract class BaseTagPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Tag or Criteria object.
+	 * Performs an UPDATE on the database, given a Tag or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Tag object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1149,11 +1158,12 @@ abstract class BaseTagPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the tags table.
+	 * Deletes all rows from the tags table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(TagPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1179,7 +1189,7 @@ abstract class BaseTagPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Tag or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Tag or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Tag object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1287,7 +1297,7 @@ abstract class BaseTagPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Tag $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 
@@ -1361,6 +1371,20 @@ abstract class BaseTagPeer {
 			$objs = TagPeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
 	}
 
 } // BaseTagPeer

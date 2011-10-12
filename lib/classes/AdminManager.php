@@ -21,8 +21,8 @@ class AdminManager extends Manager {
 		if(Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			$oUser = Session::getSession()->getUser();
 			Session::getSession()->setLanguage(Session::getSession()->getUser()->getLanguageId());
-			if(isset($_REQUEST['preview'])) {
-				LinkUtil::redirect(LinkUtil::link($_REQUEST['preview'], 'PreviewManager'));
+			if(isset($_REQUEST['preview']) || !$oUser->getIsAdminLoginEnabled()) {
+				LinkUtil::redirect(LinkUtil::link(@$_REQUEST['preview'], 'PreviewManager'));
 			}
 		}
 	}
@@ -32,7 +32,18 @@ class AdminManager extends Manager {
 	}
 	
 	public static function setContentLanguage($sLanguageId) {
-    Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
+		if(!LanguagePeer::languageExists($sLanguageId)) {
+			if(LanguagePeer::languageExists(Session::language())) {
+				$sLanguageId = Session::language();
+			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY))) {
+				$sLanguageId = Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY);
+			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
+				$sLanguageId = Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY);
+			} else {
+				return;
+			}
+		}
+		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
   }
   
   public static function getContentLanguage() {
@@ -56,6 +67,7 @@ class AdminManager extends Manager {
 				Flash::getFlash()->addMessage('admin_login_denied');
 				Session::getSession()->logout();
 			}
+			self::setContentLanguage(Session::language());
 			$oTemplate = new Template('login', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$oLoginWindowWidget = new LoginWindowWidgetModule();
 			LoginWindowWidgetModule::includeResources();
@@ -81,13 +93,14 @@ class AdminManager extends Manager {
 	private function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName);
-		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.6");
+		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.6.4");
 		$this->oResourceIncluder->addCustomJs($oConstants);
 		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$this->oResourceIncluder->addResource('admin/admin-skeleton.css');
 		$this->oResourceIncluder->addResource('admin/theme/jquery-ui-1.7.2.custom.css');
 		$this->oResourceIncluder->addResource('widget/widget.css');
 		$this->oResourceIncluder->addResource('admin/admin-ui.css');
+		$this->oResourceIncluder->addResource('admin/print.css', null, null, array('media' => 'print'), ResourceIncluder::PRIORITY_NORMAL, null, true);
 		$this->oResourceIncluder->addResource('widget/widget.js');
 		$this->oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		$this->oResourceIncluder->addResource('admin/admin.js');
@@ -99,7 +112,7 @@ class AdminManager extends Manager {
 	}
 	
 	/**
-	* @param optional string of template 'list item' identifier
+	* @param string $sPostfix string of template 'list item' identifier
 	* retrieve all templates from site template dir that follow a naming convention
 	* list template name: examplename.tmpl
 	* list_item template name: examplename_item.tmpl

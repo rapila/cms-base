@@ -101,6 +101,8 @@ class Util {
 		@ob_clean();
 		if(!function_exists('xdebug_break')) {
 			header("Content-Type: text/plain;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
+		} else {
+			header("Content-Type: text/html;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
 		}
 		call_user_func_array('var_dump', $aArgs);
 		exit();
@@ -125,11 +127,9 @@ class Util {
 		$oCriteria->$sMethod($sSortColumn);
 	}
 	
-		/**
-	 * hasBitsSet()
-	 *
-	 * @param int bitmap of bits to be checked (needle)
-	 * @param int bitmap to check against (haystack)
+	/**
+	 * @param int $iBits bitmap of bits to be checked (needle)
+	 * @param int $iBitmap bitmap to check against (haystack)
 	 * @return bolean, true if _ALL_ bits of needle are set in haystack, false otherwise
 	 */
 	public static function hasBitsSet($iBits, $iBitmap) {
@@ -146,35 +146,25 @@ class Util {
 		return $aBitsDissected;
 	}
 	
-	public static function formatCreatedInfo($oObject) {
-		return self::formatCreatedAtForAdmin($oObject).' / '.self::getCreatedByIfSet($oObject);
-	}
-	
-	public static function formatUpdatedInfo($oObject) {
-		return self::formatUpdatedAtForAdmin($oObject).' / '.self::getUpdatedByIfSet($oObject);
-	}
-
-	public static function formatCreatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
-		if($oObject->getCreatedAt() != null) {
-	  	return $oObject->getCreatedAtFormatted().', '.$oObject->getCreatedAt($sTimeFormat);
+	public static function formatCreatedInfo($oObject, $sFormat = 'x %H:%M') {
+		$aResult = array();
+		if($oObject->getCreatedAt() !== null) {
+			$aResult[] = $oObject->getCreatedAtFormatted(null, $sFormat);
 		}
-	}
-	
-	public static function formatUpdatedAtForAdmin($oObject, $sTimeFormat = 'h:m') {
-		if($oObject->getUpdatedAt() != null) {
-	  return $oObject->getUpdatedAtFormatted().', '.$oObject->getUpdatedAt($sTimeFormat);
+		if($oObject->getUserRelatedByCreatedBy() !== null) {
+			$aResult[] = $oObject->getUserRelatedByCreatedBy()->getInitials();
 		}
-	}
-
-	public static function getCreatedByIfSet($oObject) {
-	  if($oObject->getUserRelatedByCreatedBy()) {
-	    return $oObject->getUserRelatedByCreatedBy()->getInitials();
-	  }
+		return implode(' / ', $aResult);
 	}
 	
-	public static function getUpdatedByIfSet($oObject) {
-	  if($oObject->getUserRelatedByUpdatedBy()) {
-	    return $oObject->getUserRelatedByUpdatedBy()->getInitials();
-	  }
+	public static function formatUpdatedInfo($oObject, $sFormat = 'x %H:%M') {
+		$aResult = array();
+		if($oObject->getUpdatedAt() !== null) {
+			$aResult[] = $oObject->getUpdatedAtFormatted(null, $sFormat);
+		}
+		if($oObject->getUserRelatedByUpdatedBy() !== null) {
+			$aResult[] = $oObject->getUserRelatedByUpdatedBy()->getInitials();
+		}
+		return implode(' / ', $aResult);
 	}
 }

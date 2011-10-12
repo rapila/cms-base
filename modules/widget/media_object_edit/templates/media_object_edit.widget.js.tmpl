@@ -1,17 +1,25 @@
 Widget.types.media_object_edit = {
 	prepare: function() {
 		var _this = this;
+		var deferred = jQuery.Deferred();
+		_this.currentData(deferred);
+
 		Widget.createWithElement('document_input', function(widget) {
 			widget.settings.default_value_label = '{{writeString=wns.media_object.use_url}}';
 		}, function(widget) {
 			_this.document_input = widget._element;
 			
-			//Update values on load (depends on a populated document_input)
-			_this.currentData(function(data) {
-				jQuery.each(data, function(key, value) {
-					_this.add_entry(value);
+			widget.handle('reloaded', function() {
+				//Update values on load (depends on a populated document_input)
+				deferred.then(function(data) {
+					if(!data || !data.length) {
+						_this.add_entry();
+					}
+					jQuery.each(data, function(key, value) {
+						_this.add_entry(value);
+					});
 				});
-			});
+			}, true, true);
 		});
 		this.preview = this._element.find('.preview');
 		this.config = this._element.find('.config');
@@ -60,6 +68,9 @@ Widget.types.media_object_edit = {
 		}).delegate('.delete_media', 'click', function() {
 			var media_entry = jQuery(this).closest('.media_entry');
 			media_entry.remove();
+			if(_this.config.find('.media_entry').length === 0) {
+				_this._element.find("span.default_message").show();
+			}
 			_this.update_preview();
 		});
 	},

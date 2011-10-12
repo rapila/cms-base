@@ -107,12 +107,13 @@ class TagWriter {
 	}
 	
 /**
- * optionsFromArray
- *
- * @param array assoc (optionvalue => optiondisplayname)
+ * Helper method to generate the HTML for a <select> element using the values from an array.
+ * @param array $aKeyValues Assoc array (optionvalue => optiondisplayname)
  *				or hash (optionvalue => array('value'=> displayname, 'level'=>integer for indenting of nested items)
- * @param mixed string/array selected item
- * @param string optional indent char for nested items, requires value as array including param 'level'
+ * @param string|array $mSelected The selected item
+ * @param string $sIndentType optional indent char for nested items, requires value as array including param 'level'
+ * @param array|null $aCustomOptions custom options to prepend to the array (for convenience)
+ * @param boolean $bStrict Whether to do strict comparisons when trying to find the selected item
  * @return string of html options
  *
  */

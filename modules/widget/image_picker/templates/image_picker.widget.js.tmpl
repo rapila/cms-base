@@ -5,7 +5,7 @@ Widget.types.image_picker = {
 	
 	prepare: function() {
 		var _this = this;
-		this.image_area = jQuery('<div/>').addClass('image_browse_area').appendTo(this._element);
+		this.image_area = jQuery('<div/>').addClass('image_browse_area droppable_prepare').appendTo(this._element);
 		var ajax_loader = jQuery('<div/>').addClass();
 		
 		var file_uploader = Widget.create('file_upload');
@@ -18,8 +18,8 @@ Widget.types.image_picker = {
 		});
 		
 		Widget.createWithElement('document_category_input', function(document_category_input) {
-			document_category_input.settings.custom_option = "{{writeString=wns.document_cateogy_input.custom_option}}";
-			document_category_input.settings.categories_with_documents_only = true;
+			document_category_input.settings.categories_with_documents_only = 'image';
+			document_category_input.settings.show_without = true;
 			document_category_input.handle('element_set', function() {
 				_this.document_category_input = document_category_input;
 				document_category_input._element.prependTo(_this._element);
@@ -27,10 +27,10 @@ Widget.types.image_picker = {
 		}, function(document_category_input) {
 			document_category_input._element.change(function() {
 				var category = document_category_input.val();
-				if(category) {
-					_this.setAllowedCategories([category]);
+				if(category !== '__all') {
+					_this.setDisplayedCategories([category]);
 				} else {
-					_this.setAllowedCategories(null);
+					_this.setDisplayedCategories(null);
 				}
 				_this.reload();
 			});
@@ -74,13 +74,14 @@ Widget.types.image_picker = {
 				var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-image-picker-image');
 				image.children('img').attr({src: url, width: '50'});
 				image.data('document_id', document_id);
-				Widget.tooltip(image, this.name);
 				image.hover(function() {
 					image.addClass('ui-state-hover');
 				}, function() {
 					image.removeClass('ui-state-hover');
 				});
 				_this.image_area.append(image);
+				Widget.tooltip(image, this.name);
+				image.after(document.createTextNode(' '));
 			});
 			Widget.end_load();
 		});

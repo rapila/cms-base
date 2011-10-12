@@ -1,0 +1,38 @@
+Widget.types['popover'] = {
+	initialize: function() {
+		
+	},
+
+	prepare: function() {
+		var _this = this;
+		var content = jQuery('<ul/>');
+		this.popoverContents(function(contents) {
+			jQuery.each(contents, function(key, val) {
+				jQuery('<li/>').appendTo(content).bind('click', function() {
+					_this.fire('popover-chosen', jQuery(this));
+					_this._element.triggerHandler('hidePopover');
+				}).html(val);
+			});
+			this._element.popover({
+				content: content,
+				header: jQuery('<h2/>').val(this.settings.title)
+			});
+			if(!this._element.is(':button')) {
+				this._element.unbind('click');
+			}
+		});
+		if(!this._element.is(':button')) {
+			this._element.bind('focus', function(event) {
+				_this._element.triggerHandler('showPopover');
+			}).bind('blur', function(event) {
+				setTimeout(function() {
+					_this._element.triggerHandler('hidePopover');
+				}, 100);
+			});
+		}
+	},
+	
+	settings: {
+		title: 'Popover'
+	}
+};

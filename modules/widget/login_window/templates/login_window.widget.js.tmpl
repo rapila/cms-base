@@ -1,6 +1,6 @@
 Widget.types.login_window = {
 	initialize: function() {
-		this.login_markup = jQuery('<div class="cmos_alert"><form/></div>');
+		this.login_markup = jQuery('<div class="rapila_alert"><form/></div>');
 		var _this = this;
 		this.login_markup.children('form').append(jQuery.parseHTML("{{includeTemplate=login_window.incl}}")).bind('submit', function(event) {
 			event.preventDefault();
@@ -12,7 +12,7 @@ Widget.types.login_window = {
 					_this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
 				} else {
 					_this.login_markup.dialog('close');
-					Widget.fire('cmos-logged_in');
+					Widget.fire('rapila-logged_in');
 				}
 			});
 		}).find('.password_forgotten').click(function(event) {
@@ -24,8 +24,8 @@ Widget.types.login_window = {
 			password.val(password.data('default_value')).addClass('input_default_state');
 			_this.login_markup.find('.ui-notify').hide();
 			
-			var forgotten_alert = jQuery('<div class="cmos_alert"><form/></div>');
-			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).once('submit', function(event) {
+			var forgotten_alert = jQuery('<div class="rapila_alert"><form/></div>');
+			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).one('submit', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
 				var input_field = forgotten_alert.find('input[name="user_name_or_email"]').keyup(function() {
@@ -42,7 +42,7 @@ Widget.types.login_window = {
 						var sent_text = "{{writeString=wns.request.sent_info}}";
 						forgotten_alert.find('div.password_forgotten_info').text(sent_text);
 						setTimeout(function() {
-							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy')});
+							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy');});
 						}, 2000);
 					}
 				});
@@ -72,7 +72,7 @@ Widget.types.login_window = {
 			dialogClass: 'login_window',
 			buttons: [{
 				text: "{{writeString=wns.login}}",
-				className: 'primary ui-state-highlight',
+				'class': 'primary ui-state-highlight',
 				click: function() {
 					_this.login_markup.children('form').submit();
 				}
@@ -122,7 +122,7 @@ jQuery(document).ready(function() {
 		if(!login_window.getIsLoggedIn()) {
 			login_window.show();
 		} else {
-			Widget.fire('cmos-logged_in');
+			Widget.fire('rapila-logged_in');
 		}
 	});
 });

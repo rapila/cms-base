@@ -39,7 +39,7 @@ abstract class FrontendModule extends Module {
 	
 	protected function getData() {
 		if($this->oLanguageObject !== null && $this->oLanguageObject->getData() !== null) {
-			return stream_get_contents($this->oLanguageObject->getData());
+			return stream_get_contents($this->oLanguageObject->getData(), -1, 0);
 		}
 		return $this->oData;
 	}
@@ -79,14 +79,14 @@ abstract class FrontendModule extends Module {
 	}
 	
 	public function getLanguageObject() {
-	    return $this->oLanguageObject;
+		return $this->oLanguageObject;
 	}
 	
 	/**
-	 * @param object language object with the data
+	 * @param LanguageObject $oLanguageObject The language object with the data whose content info you want
 	 * description: should return some helpful information in page_detail filled_module, displaying filtered unserialized language object data
 	 * mainly for custom modules with options
-	 * @return string/Template object/null
+	 * @return string|Template|null Something that describes the content, preferably text-only
  */
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {

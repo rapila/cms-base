@@ -1,18 +1,5 @@
-#chooser, #admin_navigation {
-  display: none;
-}
-
-#detail {
-  position: absolute;
-  top: 0;
-  left: 0pt;
-  width: 100%;
-}
-
-#detail .noprint {
-  display:none;
-}
-
-#detail a {
-  display: none;
-}
+html{overflow:auto !important}
+body{font-family:Eurostile,Helvetica,Verdana,Arial;font-size:10pt}
+*{position:static !important}
+body > *,body > * > *{display:none !important}
+body > #admin_area,body > #admin_area > #admin_main{display:block !important}

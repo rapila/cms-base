@@ -31,6 +31,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	protected $id;
 
 	/**
+	 * The value for the path_prefix field.
+	 * @var        string
+	 */
+	protected $path_prefix;
+
+	/**
 	 * The value for the is_active field.
 	 * @var        boolean
 	 */
@@ -133,6 +139,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	/**
+	 * Get the [path_prefix] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getPathPrefix()
+	{
+		return $this->path_prefix;
 	}
 
 	/**
@@ -272,15 +288,43 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	} // setId()
 
 	/**
-	 * Set the value of [is_active] column.
+	 * Set the value of [path_prefix] column.
 	 * 
-	 * @param      boolean $v new value
+	 * @param      string $v new value
+	 * @return     Language The current object (for fluent API support)
+	 */
+	public function setPathPrefix($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->path_prefix !== $v) {
+			$this->path_prefix = $v;
+			$this->modifiedColumns[] = LanguagePeer::PATH_PREFIX;
+		}
+
+		return $this;
+	} // setPathPrefix()
+
+	/**
+	 * Sets the value of the [is_active] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
 	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setIsActive($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
 		if ($this->is_active !== $v) {
@@ -314,45 +358,18 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = LanguagePeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -363,45 +380,18 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     Language The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = LanguagePeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -490,12 +480,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		try {
 
 			$this->id = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-			$this->is_active = ($row[$startcol + 1] !== null) ? (boolean) $row[$startcol + 1] : null;
-			$this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->created_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->updated_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->created_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->updated_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->path_prefix = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->is_active = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
+			$this->sort = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->updated_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->created_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->updated_by = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -504,7 +495,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 8; // 8 = LanguagePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Language object", $e);
@@ -612,11 +603,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = LanguageQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "languages")));
+			}
+
 			if ($ret) {
-				LanguageQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -658,6 +654,11 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "languages")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(LanguagePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -678,6 +679,11 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(LanguagePeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "languages")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(LanguagePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -999,21 +1005,24 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getIsActive();
+				return $this->getPathPrefix();
 				break;
 			case 2:
-				return $this->getSort();
+				return $this->getIsActive();
 				break;
 			case 3:
-				return $this->getCreatedAt();
+				return $this->getSort();
 				break;
 			case 4:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 5:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 6:
+				return $this->getCreatedBy();
+				break;
+			case 7:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1032,28 +1041,55 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['Language'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['Language'][$this->getPrimaryKey()] = true;
 		$keys = LanguagePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getIsActive(),
-			$keys[2] => $this->getSort(),
-			$keys[3] => $this->getCreatedAt(),
-			$keys[4] => $this->getUpdatedAt(),
-			$keys[5] => $this->getCreatedBy(),
-			$keys[6] => $this->getUpdatedBy(),
+			$keys[1] => $this->getPathPrefix(),
+			$keys[2] => $this->getIsActive(),
+			$keys[3] => $this->getSort(),
+			$keys[4] => $this->getCreatedAt(),
+			$keys[5] => $this->getUpdatedAt(),
+			$keys[6] => $this->getCreatedBy(),
+			$keys[7] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUserRelatedByCreatedBy) {
-				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByUpdatedBy) {
-				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collPageStrings) {
+				$result['PageStrings'] = $this->collPageStrings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjects) {
+				$result['LanguageObjects'] = $this->collLanguageObjects->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLanguageObjectHistorys) {
+				$result['LanguageObjectHistorys'] = $this->collLanguageObjectHistorys->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collStrings) {
+				$result['Strings'] = $this->collStrings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collUsersRelatedByLanguageId) {
+				$result['UsersRelatedByLanguageId'] = $this->collUsersRelatedByLanguageId->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collDocuments) {
+				$result['Documents'] = $this->collDocuments->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collLinks) {
+				$result['Links'] = $this->collLinks->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1090,21 +1126,24 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setIsActive($value);
+				$this->setPathPrefix($value);
 				break;
 			case 2:
-				$this->setSort($value);
+				$this->setIsActive($value);
 				break;
 			case 3:
-				$this->setCreatedAt($value);
+				$this->setSort($value);
 				break;
 			case 4:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 5:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 6:
+				$this->setCreatedBy($value);
+				break;
+			case 7:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1132,12 +1171,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$keys = LanguagePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setIsActive($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[1], $arr)) $this->setPathPrefix($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setIsActive($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setSort($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setCreatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setUpdatedBy($arr[$keys[7]]);
 	}
 
 	/**
@@ -1150,6 +1190,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$criteria = new Criteria(LanguagePeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(LanguagePeer::ID)) $criteria->add(LanguagePeer::ID, $this->id);
+		if ($this->isColumnModified(LanguagePeer::PATH_PREFIX)) $criteria->add(LanguagePeer::PATH_PREFIX, $this->path_prefix);
 		if ($this->isColumnModified(LanguagePeer::IS_ACTIVE)) $criteria->add(LanguagePeer::IS_ACTIVE, $this->is_active);
 		if ($this->isColumnModified(LanguagePeer::SORT)) $criteria->add(LanguagePeer::SORT, $this->sort);
 		if ($this->isColumnModified(LanguagePeer::CREATED_AT)) $criteria->add(LanguagePeer::CREATED_AT, $this->created_at);
@@ -1213,17 +1254,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of Language (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setId($this->id);
-		$copyObj->setIsActive($this->is_active);
-		$copyObj->setSort($this->sort);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
-		$copyObj->setCreatedBy($this->created_by);
-		$copyObj->setUpdatedBy($this->updated_by);
+		$copyObj->setId($this->getId());
+		$copyObj->setPathPrefix($this->getPathPrefix());
+		$copyObj->setIsActive($this->getIsActive());
+		$copyObj->setSort($this->getSort());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setCreatedBy($this->getCreatedBy());
+		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1274,8 +1317,9 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1355,11 +1399,11 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
 			$this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByCreatedBy->addLanguagesRelatedByCreatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByCreatedBy->addLanguagesRelatedByCreatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByCreatedBy;
@@ -1404,14 +1448,48 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
 			$this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUserRelatedByUpdatedBy->addLanguagesRelatedByUpdatedBy($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUserRelatedByUpdatedBy->addLanguagesRelatedByUpdatedBy($this);
 			 */
 		}
 		return $this->aUserRelatedByUpdatedBy;
+	}
+
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('PageString' == $relationName) {
+			return $this->initPageStrings();
+		}
+		if ('LanguageObject' == $relationName) {
+			return $this->initLanguageObjects();
+		}
+		if ('LanguageObjectHistory' == $relationName) {
+			return $this->initLanguageObjectHistorys();
+		}
+		if ('String' == $relationName) {
+			return $this->initStrings();
+		}
+		if ('UserRelatedByLanguageId' == $relationName) {
+			return $this->initUsersRelatedByLanguageId();
+		}
+		if ('Document' == $relationName) {
+			return $this->initDocuments();
+		}
+		if ('Link' == $relationName) {
+			return $this->initLinks();
+		}
 	}
 
 	/**
@@ -1435,10 +1513,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initPageStrings()
+	public function initPageStrings($overrideExisting = true)
 	{
+		if (null !== $this->collPageStrings && !$overrideExisting) {
+			return;
+		}
 		$this->collPageStrings = new PropelObjectCollection();
 		$this->collPageStrings->setModel('PageString');
 	}
@@ -1509,8 +1593,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the PageString foreign key attribute.
 	 *
 	 * @param      PageString $l PageString
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addPageString(PageString $l)
 	{
@@ -1521,6 +1604,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collPageStrings[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -1619,10 +1704,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLanguageObjects()
+	public function initLanguageObjects($overrideExisting = true)
 	{
+		if (null !== $this->collLanguageObjects && !$overrideExisting) {
+			return;
+		}
 		$this->collLanguageObjects = new PropelObjectCollection();
 		$this->collLanguageObjects->setModel('LanguageObject');
 	}
@@ -1693,8 +1784,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the LanguageObject foreign key attribute.
 	 *
 	 * @param      LanguageObject $l LanguageObject
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addLanguageObject(LanguageObject $l)
 	{
@@ -1705,6 +1795,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collLanguageObjects[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -1803,10 +1895,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLanguageObjectHistorys()
+	public function initLanguageObjectHistorys($overrideExisting = true)
 	{
+		if (null !== $this->collLanguageObjectHistorys && !$overrideExisting) {
+			return;
+		}
 		$this->collLanguageObjectHistorys = new PropelObjectCollection();
 		$this->collLanguageObjectHistorys->setModel('LanguageObjectHistory');
 	}
@@ -1877,8 +1975,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the LanguageObjectHistory foreign key attribute.
 	 *
 	 * @param      LanguageObjectHistory $l LanguageObjectHistory
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addLanguageObjectHistory(LanguageObjectHistory $l)
 	{
@@ -1889,6 +1986,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collLanguageObjectHistorys[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -1987,10 +2086,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initStrings()
+	public function initStrings($overrideExisting = true)
 	{
+		if (null !== $this->collStrings && !$overrideExisting) {
+			return;
+		}
 		$this->collStrings = new PropelObjectCollection();
 		$this->collStrings->setModel('String');
 	}
@@ -2061,8 +2166,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the String foreign key attribute.
 	 *
 	 * @param      String $l String
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addString(String $l)
 	{
@@ -2073,6 +2177,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collStrings[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -2146,10 +2252,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initUsersRelatedByLanguageId()
+	public function initUsersRelatedByLanguageId($overrideExisting = true)
 	{
+		if (null !== $this->collUsersRelatedByLanguageId && !$overrideExisting) {
+			return;
+		}
 		$this->collUsersRelatedByLanguageId = new PropelObjectCollection();
 		$this->collUsersRelatedByLanguageId->setModel('User');
 	}
@@ -2220,8 +2332,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the User foreign key attribute.
 	 *
 	 * @param      User $l User
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addUserRelatedByLanguageId(User $l)
 	{
@@ -2232,6 +2343,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collUsersRelatedByLanguageId[]= $l;
 			$l->setLanguageRelatedByLanguageId($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -2255,10 +2368,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initDocuments()
+	public function initDocuments($overrideExisting = true)
 	{
+		if (null !== $this->collDocuments && !$overrideExisting) {
+			return;
+		}
 		$this->collDocuments = new PropelObjectCollection();
 		$this->collDocuments->setModel('Document');
 	}
@@ -2329,8 +2448,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the Document foreign key attribute.
 	 *
 	 * @param      Document $l Document
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addDocument(Document $l)
 	{
@@ -2341,6 +2459,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collDocuments[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -2489,10 +2609,16 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initLinks()
+	public function initLinks($overrideExisting = true)
 	{
+		if (null !== $this->collLinks && !$overrideExisting) {
+			return;
+		}
 		$this->collLinks = new PropelObjectCollection();
 		$this->collLinks->setModel('Link');
 	}
@@ -2563,8 +2689,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * through the Link foreign key attribute.
 	 *
 	 * @param      Link $l Link
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Language The current object (for fluent API support)
 	 */
 	public function addLink(Link $l)
 	{
@@ -2575,6 +2700,8 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->collLinks[]= $l;
 			$l->setLanguage($this);
 		}
+
+		return $this;
 	}
 
 
@@ -2683,6 +2810,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id = null;
+		$this->path_prefix = null;
 		$this->is_active = null;
 		$this->sort = null;
 		$this->created_at = null;
@@ -2698,63 +2826,114 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collPageStrings) {
-				foreach ((array) $this->collPageStrings as $o) {
+				foreach ($this->collPageStrings as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLanguageObjects) {
-				foreach ((array) $this->collLanguageObjects as $o) {
+				foreach ($this->collLanguageObjects as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLanguageObjectHistorys) {
-				foreach ((array) $this->collLanguageObjectHistorys as $o) {
+				foreach ($this->collLanguageObjectHistorys as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collStrings) {
-				foreach ((array) $this->collStrings as $o) {
+				foreach ($this->collStrings as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collUsersRelatedByLanguageId) {
-				foreach ((array) $this->collUsersRelatedByLanguageId as $o) {
+				foreach ($this->collUsersRelatedByLanguageId as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collDocuments) {
-				foreach ((array) $this->collDocuments as $o) {
+				foreach ($this->collDocuments as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collLinks) {
-				foreach ((array) $this->collLinks as $o) {
+				foreach ($this->collLinks as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collPageStrings instanceof PropelCollection) {
+			$this->collPageStrings->clearIterator();
+		}
 		$this->collPageStrings = null;
+		if ($this->collLanguageObjects instanceof PropelCollection) {
+			$this->collLanguageObjects->clearIterator();
+		}
 		$this->collLanguageObjects = null;
+		if ($this->collLanguageObjectHistorys instanceof PropelCollection) {
+			$this->collLanguageObjectHistorys->clearIterator();
+		}
 		$this->collLanguageObjectHistorys = null;
+		if ($this->collStrings instanceof PropelCollection) {
+			$this->collStrings->clearIterator();
+		}
 		$this->collStrings = null;
+		if ($this->collUsersRelatedByLanguageId instanceof PropelCollection) {
+			$this->collUsersRelatedByLanguageId->clearIterator();
+		}
 		$this->collUsersRelatedByLanguageId = null;
+		if ($this->collDocuments instanceof PropelCollection) {
+			$this->collDocuments->clearIterator();
+		}
 		$this->collDocuments = null;
+		if ($this->collLinks instanceof PropelCollection) {
+			$this->collLinks->clearIterator();
+		}
 		$this->collLinks = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(LanguagePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguagePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LanguagePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior
@@ -2819,25 +2998,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = LanguagePeer::UPDATED_BY;
 		return $this;
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseLanguage

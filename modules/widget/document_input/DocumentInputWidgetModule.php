@@ -5,9 +5,11 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		// find files in media dirs - large files that cannot be uploaded with http
 		$aCustomFiles = array();
-		$aMediaDirs = ResourceFinder::findAllResources(array('web', 'media'));
-		foreach($aMediaDirs as $sAbsolutePath) {
-			self::readDirectory($sAbsolutePath, $aCustomFiles);
+		$aMediaDirs = ResourceFinder::findResourceObjectsByExpressions(array('web', '/^(media|flash)$/', array()));
+		foreach($aMediaDirs as $oFileResource) {
+			if($oFileResource->isFile()) {
+				$aCustomFiles[$oFileResource->getRelativePath()] = $oFileResource->getInstancePrefix().$oFileResource->getRelativePath();
+			}
 		}
 		if(count($aCustomFiles) > 0) {
 			$sCustomFiles = StringPeer::getString('wns.documents.custom_files');
@@ -26,25 +28,6 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			$aResult[$sWithoutCategory][$oDocument->getId()] = $oDocument->getName();
 		}
 		return $aResult;
-	}
-	
-	private static function readDirectory($sDir, &$aResult) {
-		$rDir = opendir($sDir);
-		if($rDir) {
-			while(($sFile = readdir($rDir)) !== false) {
-				$sFilePath = $sDir.DIRECTORY_SEPARATOR.$sFile;
-				if(StringUtil::startsWith($sFile, '.')) {
-					continue;
-				}
-				if(is_dir($sFilePath)) {
-					self::readDirectory($sFilePath, $aResult);
-				} else {
-					$oPath = new FileResource($sFilePath);
-					$aResult[$oPath->getRelativePath()] = $oPath->getInstancePrefix().$oPath->getRelativePath();
-				}
-			}
-			closedir($rDir);
-		}
 	}
 
 	private static function getDocumentWithoutCategoryId() {

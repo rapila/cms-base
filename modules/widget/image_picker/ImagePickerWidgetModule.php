@@ -4,24 +4,35 @@
  */
 class ImagePickerWidgetModule extends PersistentWidgetModule {
 	
-	private $aAllowedCategories = null;
+	private $aDisplayedCategories = null;
 	
 	public function listImages() {
-		$oCriteria = new Criteria();
-		if($this->aAllowedCategories !== null) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->aAllowedCategories, Criteria::IN);
+		$oCriteria = DocumentQuery::create();
+		if($this->aDisplayedCategories !== null) {
+			$oCategoriesCriterion = null;
+			foreach($this->aDisplayedCategories as $sValue) {
+				$mComparison = $sValue === CriteriaListWidgetDelegate::SELECT_WITHOUT ? Criteria::ISNULL : Criteria::EQUAL;
+				$sValue = $mComparison === Criteria::ISNULL ? null : $sValue;
+				if($oCategoriesCriterion === null) {
+					$oCategoriesCriterion = $oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue, $mComparison);
+				} else {
+					$oCategoriesCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue, $mComparison));
+				}
+			}			
+			$oCriteria->add($oCategoriesCriterion);
 		}
-		$oCriteria->add(DocumentPeer::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image')), Criteria::IN);
-		$aDocuments = DocumentPeer::doSelect($oCriteria);
-		return WidgetJsonFileModule::jsonBaseObjects($aDocuments, array('name', 'description', 'id', 'language_id'));
+		$oCriteria->filterByDocumentKind('image');
+		// always exclude externally managed images
+		$oCriteria->excludeExternallyManaged();
+		return WidgetJsonFileModule::jsonBaseObjects($oCriteria->find(), array('name', 'description', 'id', 'language_id'));
 	}
 		
 	public function setAllowsMultiselect($bAllowsMultiselect) {
 		$this->setSetting('allows_multiselect', $bAllowsMultiselect);
 	}
 	
-	public function setAllowedCategories($aAllowedCategories) {
-		$this->aAllowedCategories = $aAllowedCategories;
+	public function setDisplayedCategories($aDisplayedCategories) {
+		$this->aDisplayedCategories = $aDisplayedCategories;
 	}
 	
 	public function getElementType() {

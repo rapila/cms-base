@@ -22,19 +22,14 @@ class ArrayUtil {
 	}
 	
 	public static function arrayIsAssociative(&$aArray) {
-		if (!is_array($aArray) || empty($aArray) ) {
-			return false;
-		}
-		foreach (array_keys($aArray) as $mKey => $mValue) {
-			if ($mKey !== $mValue) { 
-				return true;
-			}
-		}
-		return false;
+		for(reset($aArray); is_int(key($aArray)); next($aArray));
+		return key($aArray) !== null;
 	}
 
 	public static function setEmptyArrayValuesToNull(&$aArray) {
-		return self::runFunctionOnArrayValues($aArray, create_function('$mValue', 'return $mValue === "" ? null : $mValue;'));
+		return self::runFunctionOnArrayValues($aArray, function($mValue) {
+			return $mValue === "" ? null : $mValue;
+		});
 	}
 	
 	public static function inArray($mScalar, $aArray, $bStrict = true, $sKeyMethod = null) {

@@ -3,7 +3,6 @@ admin_menu:
     - preview
     - edit
     -
-      - module.pages
       - module.documents
       - module.links
       - ~
@@ -19,7 +18,7 @@ admin_menu:
 
 rich_text:
   buttons: [['bold', 'italic', '~'], []]
-  
+
 dashboard:
   layout: head3cols
   widgets:

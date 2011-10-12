@@ -63,4 +63,33 @@ class PagePeer extends BasePagePeer {
 		}
 		return 0;
 	}
+
+	public static function mayOperateOn($oUser, $oPage, $sOperation) {
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		if(!$oUser->getIsAdminLoginEnabled()) {
+			return false;
+		}
+		if($sOperation === 'insert') {
+			$oParent = $oPage->getParent();
+			if($oParent === null) {
+				//Only admins may create root pages
+				return false;
+			}
+			return $oUser->mayCreateChildren($oParent);
+		}
+		if($sOperation === 'update') {
+			return $oUser->mayEditPageDetails($oPage);
+		}
+		if($sOperation === 'delete') {
+			//FIXME: if page has children, check if right is inherited.
+			return $oUser->mayDelete($oPage);
+		}
+		//Flow never reaches this
+		return false;
+	}
 }

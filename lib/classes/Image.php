@@ -265,7 +265,7 @@ class Image {
 	}
 	
 	public static function imageFromStream($rImageResource) {
-		return new Image(imagecreatefromstring(stream_get_contents($sImageData)));
+		return Image::imageFromData(stream_get_contents($rImageResource));
 	}
 	
 	public static function emptyImage($iWidth, $iHeight) {

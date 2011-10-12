@@ -22,7 +22,7 @@ define('DIRNAME_BASE',					'base');
 define('DIRNAME_PLUGINS',				'plugins');
 define('DIRNAME_GENERATED',			'generated');
 
-// mai dir constants
+// main dir constants
 define('MAIN_DIR' ,							dirname(dirname(dirname(__FILE__))));
 define('SITE_DIR',							MAIN_DIR.'/'.DIRNAME_SITE);
 define('BASE_DIR',							MAIN_DIR.'/'.DIRNAME_BASE);
@@ -34,10 +34,9 @@ Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
 // include path for all classes
-$aVendorDirs = ResourceFinder::findAllResources(DIRNAME_VENDOR, ResourceFinder::SEARCH_SITE_FIRST);
-$aLibDirs = ResourceFinder::findAllResources(DIRNAME_LIB, ResourceFinder::SEARCH_SITE_FIRST);
+$aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRNAME_VENDOR)->all()->searchSiteFirst()->find();
 
-set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.implode(PATH_SEPARATOR, $aVendorDirs).PATH_SEPARATOR.get_include_path());
+set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
 // frontend dir constants
 define('MAIN_DIR_FE',				 php_sapi_name() === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
@@ -68,20 +67,16 @@ if(get_magic_quotes_gpc()) {
 }
 
 require_once("propel/runtime/lib/Propel.php");
-$aDbSettings = Settings::getInstance('db_config')->getSettingsArray();
-$sAdapter = $aDbSettings['database']['adapter'];
-unset($aDbSettings['database']);
-$aDbSettings['adapter'] = $sAdapter;
-if($sAdapter === 'sqlite' && !StringUtil::startsWith($aDbSettings['connection']['database'], '/')) {
-	$aDbSettings['connection']['database'] = MAIN_DIR.'/'.$aDbSettings['connection']['database'];
+$aConnectionSettings = Settings::getSetting('connection', null, array(), 'db_config');
+if(!isset($aConnectionSettings['settings'])) {
+	$aConnectionSettings['settings'] = array();
 }
-Propel::setConfiguration(array('propel' => array('datasources' => array('rapila' => $aDbSettings, 'default' => 'rapila'))));
-Propel::initialize();
+$aConnectionSettings['settings']['charset'] = array('value' => Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")));
+$aDbSettings = array('connection' => &$aConnectionSettings, 'adapter' => Settings::getSetting('database', 'adapter', 'mysql', 'db_config'));
+$aDataSources = array_merge(array('rapila' => &$aDbSettings), Settings::getSetting('additional_datasources', null, array(), 'db_config'));
+$aDataSources['default'] = 'rapila';
+$aPropelSettings = array('datasources' => &$aDataSources);
+$aPropelSettings['log'] = Settings::getSetting('log', null, array(), 'db_config');
 
-//Set MySQL connection charset
-if(StringUtil::startsWith($sAdapter, 'mysql')) {
-	$con = Propel::getConnection();
-	$con->exec('SET character_set_client="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
-	$con->exec('SET character_set_connection="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
-	$con->exec('SET character_set_results="'.Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")).'"');
-}
+Propel::setConfiguration($aPropelSettings);
+Propel::initialize();

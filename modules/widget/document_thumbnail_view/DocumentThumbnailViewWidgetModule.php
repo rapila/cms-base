@@ -54,7 +54,7 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 		return $this->oDocumentsViewWidgetDelegate->getDocumentKind();
 	}
 	
-	public function setDocumentCategoryId($iDocumentCategoryId) {
+	public function setDocumentCategoryId($iDocumentCategoryId = null) {
 		return $this->oDocumentsViewWidgetDelegate->setDocumentCategoryId($iDocumentCategoryId);
 	}
 

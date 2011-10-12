@@ -1,8 +1,3 @@
-// jQuery 1.3 compliance
-if(!jQuery.noop) {
-	jQuery.noop = function() {};
-}
-
 //Bind method (heavily used)
 if(!Function.prototype.bind) {
 	Function.prototype.bind = function(context) {
@@ -14,6 +9,17 @@ if(!Function.prototype.bind) {
 		};
 	};
 }
+
+jQuery.ajaxSetup({cache: true});
+
+Function.prototype.deferred = function(list) {
+	var d = jQuery.Deferred();
+	if(list) {
+		list.push(d.promise());
+	}
+	d.done(this);
+	return d;
+};
 
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
@@ -98,7 +104,7 @@ jQuery.extend(Widget.prototype, {
 		}
 		var result = null;
 		var error = null;
-		if(options.async) {
+		if(options.async === null) {
 			//Make getters and setter synchronous, Char after set or get must be uppercase
 			options.async = !((name.indexOf('get') === 0 || name.indexOf('set') === 0) && (/[A-Z]/).test(name[3]));
 		}
@@ -212,6 +218,7 @@ jQuery.extend(Widget, {
 				if(!Widget.types[widgetType]) {
 					if(widgetInformation.resources !== '') {
 						var resources = jQuery.parseHTML(widgetInformation.resources);
+						Widget.fire('loadInfo-resources', resources);
 						var head = jQuery('head');
 						//Add scripts
 						resources.filter('script').each(function() {
@@ -220,11 +227,6 @@ jQuery.extend(Widget, {
 								head.append(this.cloneNode(true));
 							} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
 								head.append(this.cloneNode(true));
-								// jQuery.ajax({
-								// 	url: script.attr('src'),
-								// 	dataType: 'script',
-								// 	async: false
-								// });
 							}
 						});
 						//Add styles
@@ -395,11 +397,120 @@ jQuery.extend(Widget, {
 	},
 	
 	notifyUser: function(severity, message) {
-		alert("Message of severity "+severity+": "+message);
+		var options = {
+			closeDelay: 5000,
+			identifier: null,
+			isHTML: false,
+			closable: false,
+			searchInfo: false
+		};
+		if(severity === Widget.logSeverity.ALERT) {
+			delete options.closeDelay;
+			options.closable = true;
+		}
+		jQuery.extend(options, arguments[2] || {});
+		
+		var notification_area = jQuery('#widget-notifications');
+		
+		//Handle messages with identical identifier
+		if(options.identifier) {
+			var prev_message = Widget.notificationWithIdentifier(options.identifier);
+			if(prev_message) {
+				prev_message.data('functions').increase_badge_count();
+				prev_message.data('functions').set_message(message);
+				return;
+			}
+		}
+		var highlight = severity == 'info' ? 'highlight' : 'error';
+		var display;
+		if(options.searchInfo) {
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
+		} else {
+			display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
+		}
+		display.hide().appendTo(notification_area).data('identifier', options.identifier);
+		
+		var badge = display.find('.ui-badge').hide();
+		var close_button = display.find('.close-handle').hide();
+		var message_container = display.find('.message');
+		
+		var functions = {
+			element: display,
+			options: options,
+			close: function() {
+				if(options.searchInfo) {
+					display.hide('blind', function() {display.remove();});
+				} else {
+					display.hide('blind', function() {display.remove();});
+				}
+			},
+			set_severity: function(new_severity) {
+				var new_highlight = new_severity == 'info' ? 'highlight' : 'error';
+				display.find('.ui-state-'+highlight).removeClass('ui-state-'+highlight).addClass('ui-state-'+new_highlight);
+				display.find('.ui-icon-'+severity).removeClass('ui-icon-'+severity).addClass('ui-icon-'+new_severity);
+				severity = new_severity;
+				highlight = new_highlight;
+			},
+			increase_badge_count: function() {
+				var count = parseInt(badge.text(), 10);
+				if(isNaN(count)) {
+					count = 0;
+				}
+				count++;
+				badge.show().text(count);
+				this.reset_timeout();
+			},
+			reset_timeout: function(closeDelay) {
+				if(closeDelay !== undefined) {
+					this.options.closeDelay = closeDelay;
+				}
+				this.clear_timeout();
+				if(this.options.closeDelay) {
+					this.options.timeout = window.setTimeout(this.close, this.options.closeDelay);
+				}
+			},
+			clear_timeout: function() {
+				if(this.options.timeout) {
+					window.clearTimeout(this.options.timeout);
+				}
+			},
+			set_message: function(message) {
+				if(message.constructor === String) {
+					if(this.options.isHTML) {
+						message_container.html(message);
+					} else {
+						message_container.text(message);
+					}
+				} else {
+					message_container.empty().append(message);
+				}
+			},
+			enable_close_button: function() {
+				close_button.show().click(function() {
+					this.close();
+				}.bind(this));
+			}
+		};
+		functions.set_message(message);
+		display.data('functions', functions).show('blind');
+		functions.reset_timeout();
+		if(options.closable) {
+			functions.enable_close_button();
+		}
+		return functions;
 	},
 	
-	notificationWithIdentifier: function() {
-		return null;
+	notificationWithIdentifier: function(identifier) {
+		var notification_area = jQuery('#widget-notifications');
+		var result = null;
+		notification_area.find('div.ui-notify').each(function() {
+			var notification = jQuery(this);
+			if(notification.data('identifier') === identifier) {
+				result = notification;
+				return false;
+			}
+		});
+		return result;
 	},
 	
 	tooltip: function(element, text) {
@@ -488,7 +599,7 @@ jQuery.extend(Widget, {
 			type: 'POST',
 			processData: false,
 			dataType: 'json',
-			async: options.async,
+			async: (options.async === null || options.async),
 			contentType: options.content_type,
 			cache: true,
 			xhr: function() {
@@ -510,19 +621,22 @@ jQuery.extend(Widget, {
 			success: function(result) {
 				callback = (callback || Widget.defaultJSONHandler);
 				var error = null;
-				var call_callback = true;
 				if(result && result.exception) {
 					error = result.exception;
 					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
-					call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					if(options.call_callback === null) {
+						options.call_callback = call_callback;
+					}
 				}
-				if(call_callback) {
+				if(options.call_callback === null || options.call_callback) {
 					if(callback.resolveWith) {
 						if(error) {
 							callback.rejectWith(this, [error]);
+						} else {
+							callback.resolveWith(this, [result]);
 						}
-						callback.resolveWith(this, [result]);
 					} else {
 						callback.call(this, result, error);
 					}
@@ -536,7 +650,11 @@ jQuery.extend(Widget, {
 				}
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 				action.shift();
-				if(options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes)) {
+				var call_callback = options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes);
+				if(options.call_callback === null) {
+					options.call_callback = call_callback;
+				}
+				if(options.call_callback) {
 					if(callback.resolveWith) {
 						callback.rejectWith(this, [error_object]);
 					} else {
@@ -581,6 +699,7 @@ jQuery.extend(Widget, {
 	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
 		fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
+			error.reporting_done = true;
 			Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			return true;
 		},
@@ -588,7 +707,7 @@ jQuery.extend(Widget, {
 		needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			Widget.create('login_window', function(login_widget) {
 				login_widget.show();
-				Widget.handle('cmos-logged_in', function(event) {
+				Widget.handle('rapila-logged_in', function(event) {
 					// Re-try the action
 					Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
 				}, true);
@@ -599,13 +718,25 @@ jQuery.extend(Widget, {
 		
 		ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 			if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
+				error.reporting_done = true;
 				widgetOrId.validate_with(error.parameters);
-				return false;
 			} else if (widgetOrId.detail_widget) {
+				error.reporting_done = true;
 				widgetOrId.detail_widget.validate_with(error.parameters, widgetOrId.detail_widget.content);
-				return false;
+			} else {
+				error.reporting_done = true;
+				message = jQuery('<div/>').text(error.message);
+				var error_list = jQuery('<ul/>').appendTo(message);
+				jQuery.each(error.parameters, function(counter, item) {
+					if(item.string) error_list.append(jQuery('<li/>').html(item.string));
+				});
+				Widget.notifyUser(Widget.logSeverity.ALERT, message, {
+					closeDelay: false,
+					isHTML: true,
+					closable: true
+				});
 			}
-			return true;
+			return false;
 		}
 	}
 });
@@ -634,12 +765,13 @@ var WidgetJSONOptions = function(options) {
 
 jQuery.extend(WidgetJSONOptions.prototype, {
 	options: {
-		async: true,
-		upload_progess_callback: null,
-		download_progress_callback: null,
-		content_type: 'application/json',
+		async: null, //defaults to false for getters and setters, true otherwise
+		upload_progess_callback: null, //"progress" event handlers on request
+		download_progress_callback: null, //"progress" event handlers on response
+		content_type: 'application/json', //determines interpretation of the data
 		action: null,
-		callback_handles_error: null
+		callback_handles_error: null, //defaults to true if the callback has two params
+		call_callback: null //defaults to true if callback_handles_error || the default error handler returns true
 	}
 });
 
@@ -741,7 +873,13 @@ jQuery.fn.extend({
 			queue = new jQuery.Deferred();
 			this.data(data_name, queue);
 		}
-		queue.done(callback);
+		if(callback.resolveWith) {
+			queue.done(function() {
+				callback.resolveWith(this, jQuery.makeArray(arguments));
+			});
+		} else {
+			queue.done(callback);
+		}
 		return this;
 	},
 	
@@ -757,7 +895,7 @@ jQuery.fn.extend({
 			if(use_text_as_value) {
 				value = text;
 			}
-			if(default_value === null || default_value === undefined) {
+			if((default_value === null && !_this.prop('multiple')) || default_value === undefined) {
 				default_value = value;
 			}
 			var option = jQuery('<option/>').text(text).attr('value', value);
@@ -766,22 +904,4 @@ jQuery.fn.extend({
 		this.val(default_value);
 		return this;
 	}
-});
-
-//Initialize all widgets present as html elements on document.ready
-jQuery(document).ready(function() {
-	jQuery(document.body).widgetElements().each(function() {
-		jQuery(this).prepareWidget();
-	});
-	
-	var head = jQuery('head'), win = jQuery(window);
-	var style = jQuery('<style/>');
-	head.append(style);
-	var resize_handler = function() {
-		var height = win.height()*0.8;
-		style.text('.ui-dialog {max-height: '+(height)+'px;} .ui-dialog-content {max-height: '+(height-107)+'px;}');
-	};
-	
-	win.resize(resize_handler);
-	resize_handler();
 });

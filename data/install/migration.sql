@@ -356,3 +356,15 @@ UPDATE `language_objects` SET `data` = 'a:1:{s:12:"display_mode";s:5:"login";}' 
 ALTER TABLE `pages` DROP INDEX pages_U_1;
 ALTER TABLE `pages` ADD `identifier` VARCHAR(30) NULL DEFAULT NULL;
 ALTER TABLE `pages` ADD UNIQUE KEY `pages_U_1` (`identifier`);
+
+#20110931.1041
+ALTER TABLE `documents` ADD (`content_created_at` DATE, `license` VARCHAR(30), `author` VARCHAR(150));
+
+#20110931.1940
+ALTER TABLE `languages` ADD `path_prefix` VARCHAR(20) NOT NULL;
+UPDATE `languages` SET `path_prefix` = `id` WHERE `path_prefix` = '';
+ALTER TABLE `languages` ADD UNIQUE KEY `languages_U_1` (`path_prefix`);
+
+#20110931.2130
+ALTER TABLE `users` ADD `is_admin_login_enabled` TINYINT(1) default 1;
+UPDATE `users` SET `is_admin_login_enabled` = `is_backend_login_enabled` WHERE 1;

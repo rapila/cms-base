@@ -22,7 +22,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$this->bIsPreview = $bIsPreview;
 		if($this->bIsPreview) {
 			ResourceIncluder::defaultIncluder()->addResource('preview/preview-default.css');
-			ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 			ResourceIncluder::defaultIncluder()->addResource('preview/jquery.ba-resize.min.js');
 		}
 		if($this->sLanguageId === null) {
@@ -139,32 +138,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 				continue;
 			}
 			$sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
-			if(call_user_func(array($sModuleName, "isDynamic"))) {
+			if($sModuleName::isDynamic()) {
 				$bIsDynamic = true;
-				$aAllowedParams = array_merge($aAllowedParams, call_user_func(array($sModuleName, "acceptedRequestParams")));
+				$aAllowedParams = array_merge($aAllowedParams, $sModuleName::acceptedRequestParams());
 			}
 		}
 	}
 
-	public function getAjax($aPath) {
-		$sContainerName = $_REQUEST['container'];
-		$iItemNumber = $_REQUEST['item_number']+0;
-		foreach($this->oPage->getObjectsForContainer($sContainerName) as $iCount => $oContentObject) {
-			if($iItemNumber === $iCount+1) {
-				$iCount++;
-			} else if($iItemNumber === $iCount) {
-				$iCount--;
-			}
-			$oContentObject->setSort($iCount);
-			$oContentObject->save();
-		}
-		$oDocument = new DOMDocument();
-		$oRoot = $oDocument->createElement("success");
-		$oDocument->appendChild($oRoot);
-		return $oDocument;
-	}
-	
-	
 	//Admin stuff
 	private $aContentObjects = array();
 	private $aModuleInstances = array();
@@ -225,17 +205,19 @@ class DefaultPageTypeModule extends PageTypeModule {
 			
 			$iCount = 0;	
 			foreach($aObjects as $iCount => $oObject) {
+				$aObject = array('id' => $oObject->getId());
 				$iCount++;
 				$oLanguageObject = $oObject->getLanguageObject($this->sLanguageId);
 				if($oLanguageObject === null) {
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = false;
+					$aObject['content_info'] = false;
 				} else {
 					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
 					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
-					$aResult[$sContainerName]['contents'][$oObject->getId()]['content_info'] = $mContentInfo;		
+					$aObject['content_info'] = $mContentInfo;
 				}		
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type'] = $oObject->getObjectType();	
-				$aResult[$sContainerName]['contents'][$oObject->getId()]['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());		
+				$aObject['object_type'] = $oObject->getObjectType();
+				$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
+				$aResult[$sContainerName]['contents'][] = $aObject;
 			}
 		}
 		return $aResult;
@@ -345,47 +327,55 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 
 	public function adminGetContainers() {
-		$oIncluder = ResourceIncluder::namedIncluder(get_class($this));
-		
 		$oTemplate = $this->oPage->getTemplate();
 		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
 			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$oIdentifier->getValue(), null, $oIdentifier->getValue())), true)), null);
 			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue(), 'data-container-string' => StringPeer::getString('container_name.'.$oIdentifier->getValue(), null, $oIdentifier->getValue()))));
 		}
 		
-		foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
-			$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
-		}
-		
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
 		$oStyle = null;
 		
 		if($bUseParsedCss) {
+			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
+			$sCacheKey = 'parsed-css-'.$sTemplateName;
+			$oCssCache = new Cache($sCacheKey, DIRNAME_PRELOAD);
+
 			$sCssContents = "";
-			foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
-				if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition'])) {
-					if(isset($aResource['media'])) {
-						$sCssContents.= "@media {$aResource['media']} {";
-					}
-					if(isset($aResource['file_resource'])) {
-						$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
-					} else {
-						// Absolute link, requires fopen wrappers
-						$sCssContents .= file_get_contents($aResource['location']);
-					}
-					if(isset($aResource['media'])) {
-						$sCssContents.= "}";
+			if(!$oCssCache->cacheFileExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
+				$oIncluder = new ResourceIncluder();
+				foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
+					$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
+				}
+				foreach($oIncluder->getAllIncludedResources() as $sIdentifier => $aResource) {
+					if($aResource['resource_type'] === ResourceIncluder::RESOURCE_TYPE_CSS && !isset($aResource['ie_condition']) && !isset($aResource['frontend_specific'])) {
+						if(isset($aResource['media'])) {
+							$sCssContents.= "@media {$aResource['media']} {";
+						}
+						if(isset($aResource['file_resource'])) {
+							$sCssContents .= file_get_contents($aResource['file_resource']->getFullPath());
+						} else {
+							// Absolute link, requires fopen wrappers
+							$sCssContents .= file_get_contents($aResource['location']);
+						}
+						if(isset($aResource['media'])) {
+							$sCssContents.= "}";
+						}
 					}
 				}
-			}
 		
-			$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
-			$oCss = $oParser->parse();
-			$this->cleanupCSS($oCss);
+				$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
+				$oCss = $oParser->parse();
+				$this->cleanupCSS($oCss);
+				$sCssContents = Template::htmlEncode($oCss->__toString());
+				$oCssCache->setContents($sCssContents);
+			} else {
+				$sCssContents = $oCssCache->getContentsAsString();
+			}
 			
 			$oStyle = new HtmlTag('style');
 			$oStyle->addParameters(array('scoped' => 'scoped'));
-			$oStyle->appendChild(Template::htmlEncode($oCss->__toString()));
+			$oStyle->appendChild($sCssContents);
 		}
 		
 		$sTemplate = $oTemplate->render();
@@ -434,24 +424,25 @@ class DefaultPageTypeModule extends PageTypeModule {
 		//Change selectors
 		$sContainerClass = '.filled_modules';
 		$aMatches;
-		foreach($oCss->getAllSelectors() as $oSelector) {
-			$aSelector = $oSelector->getSelector();
-			foreach($aSelector as $iKey => $sSelector) {
+		foreach($oCss->getAllDeclarationBlocks() as $oBlock) {
+			$aSelectors = $oBlock->getSelectors();
+			foreach($aSelectors as $iKey => $oSelector) {
+				$sSelector = $oSelector->getSelector();
 				if(preg_match('/\\bhtml\\b.+\\bbody\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
-					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+					$sSelector = substr($sSelector, 0, $aMatches[0][1]).substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
 				}
 				if(preg_match('/\\b(html|body)\\b/i', $sSelector, $aMatches, PREG_OFFSET_CAPTURE) === 1) {
-					$aSelector[$iKey] = substr($sSelector, 0, $aMatches[0][1]).$sContainerClass.substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
+					$sSelector = substr($sSelector, 0, $aMatches[0][1]).$sContainerClass.substr($sSelector, $aMatches[0][1]+strlen($aMatches[0][0]));
 				} else {
-					$aSelector[$iKey] = "$sContainerClass $sSelector";
+					$sSelector = "$sContainerClass $sSelector";
 				}
+				$oSelector->setSelector($sSelector);
 			}
-			$oSelector->setSelector($aSelector);
 		}
 		
 		//Change values
-		foreach($oCss->getAllValues() as $mValue) {
-			if($mValue instanceof CSSSize && !$mValue->isRelative()) {
+		foreach($oCss->getAllValues(null, true) as $mValue) {
+			if($mValue instanceof CSSSize && $mValue->isSize() && !$mValue->isRelative()) {
 				$mValue->setSize($mValue->getSize()/3);
 			}
 		}
@@ -462,6 +453,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oRuleSet->removeRule('background-');
 			$oRuleSet->removeRule('list-');
 			$oRuleSet->removeRule('cursor');
+			$oRuleSet->removeRule('z-index');
 		}
 	}
 }

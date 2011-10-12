@@ -1,8 +1,8 @@
 Widget.types.image_picker_input = {
 	prepare: function() {
-		this.picker_chooser = this._element.after('<div class="ui-icon ui-icon-image cmos-clickable"></div>').next();
+		this.picker_chooser = this._element.after('<div class="ui-icon ui-icon-image rapila-clickable"></div>').next();
 		this.picker_image = this.picker_chooser.after('<img/>').next().hide();
-		this.picker_remover = this.picker_image.after('<div class="ui-icon ui-icon-circle-close cmos-clickable"></div>').next().hide();
+		this.picker_remover = this.picker_image.after('<div class="ui-icon ui-icon-circle-close rapila-clickable"></div>').next().hide();
 		Widget.create('image_picker', function(picker) {
 			this.picker = picker;
 			this.picker.set_callback(this.callback.bind(this));

@@ -21,17 +21,17 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		} else if(count($aCategories === 1)) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
 		}
+		if(isset($aOptions['document_kind']) && $aOptions['document_kind']) {
+			$oCriteria->filterByDocumentKind($aOptions['document_kind']);
+		}
 		
-		$oLangCriterion = $oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, Session::language());
-		$oLangCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::LANGUAGE_ID, null));
-		$oCriteria->add($oLangCriterion);
+		$oCriteria->filterByDisplayLanguage();
 
 		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
 		}
 		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
 		$aDocuments = $oCriteria->find();
-		
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
 			$oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));

@@ -20,34 +20,46 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		if($this->oFile === null) {
 			throw new Exception("File ".implode('/', $this->aPath)." not found");
 		}
-		
-		$oCache = new Cache('preview_css'.$this->oFile->getInternalPath(), DIRNAME_TEMPLATES);
+		self::processCSSContent(file_get_contents($this->oFile->getFullPath()), $this->oFile);
+	}
+	
+	public static function processCSSContent($sContent, $oFile) {
+		$oCache = new Cache('preview_css'.$oFile->getInternalPath(), DIRNAME_TEMPLATES);
 		$oCache->sendCacheControlHeaders();
 		header("Content-Type: text/css;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
-		if($oCache->cacheFileExists() && !$oCache->isOutdated($this->oFile->getFullPath())) {
+		if($oCache->cacheFileExists() && !$oCache->isOutdated($oFile->getFullPath())) {
 			$oCache->passContents(); exit;
 		}
 		
-		$oParser = new CSSParser(file_get_contents($this->oFile->getFullPath()), Settings::getSetting('encoding', 'browser', 'utf-8'));
+		$oParser = new CSSParser($sContent, Settings::getSetting('encoding', 'browser', 'utf-8'));
 		$oCssContents = $oParser->parse();
 		
 		//Make all rules important
-		foreach($oCssContents->getAllRuleSets() as $oCssRuleSet) {
-			foreach($oCssRuleSet->getRules() as $oRule) {
-				$oRule->setIsImportant(true);
-			}
-		}
+		// foreach($oCssContents->getAllRuleSets() as $oCssRuleSet) {
+		//	foreach($oCssRuleSet->getRules() as $oRule) {
+		//		$oRule->setIsImportant(true);
+		//	}
+		// }
 		
 		//Triple all rules and prepend specific strings
-		$aPrependages = array('#cmos_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents');
-		foreach($oCssContents->getAllSelectors() as $oSelector) {
+		$aPrependages = array('#rapila_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications', 'body > .cke_skin_kama');
+		foreach($oCssContents->getAllDeclarationBlocks() as $oBlock) {
 			$aNewSelector = array();
-			foreach($oSelector->getSelector() as $iKey => $sSelector) {
-				foreach($aPrependages as $sPrependage) {
-					$aNewSelector[] = "$sPrependage $sSelector";
+			foreach($oBlock->getSelectors() as $iKey => $oSelector) {
+				$sSelector = $oSelector->getSelector();
+				if(StringUtil::startsWith($sSelector, "body ") || StringUtil::startsWith($sSelector, "html ")) {
+					$aNewSelector[] = $sSelector;
+				} else {
+					foreach($aPrependages as $sPrependage) {
+						if(StringUtil::startsWith($sSelector, "$sPrependage ") || StringUtil::startsWith($sSelector, "$sPrependage.") || $sSelector === $sPrependage) {
+							$aNewSelector[] = $sSelector;
+						} else {
+							$aNewSelector[] = "$sPrependage $sSelector";
+						}
+					}
 				}
 			}
-			$oSelector->setSelector($aNewSelector);
+			$oBlock->setSelector($aNewSelector);
 		}
 		
 		//Absolutize all URLs
@@ -56,7 +68,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 				$sURL = $oValue->getURL()->getString();
 				
 				if(!StringUtil::startsWith($sURL, '/') && !preg_match('/^\\w+:/', $sURL)) {
-					$sURL = $this->oFile->getFrontendDirectoryPath().DIRECTORY_SEPARATOR.$sURL;
+					$sURL = $oFile->getFrontendDirectoryPath().DIRECTORY_SEPARATOR.$sURL;
 				}
 				
 				$oValue->setURL(new CSSString($sURL));
@@ -68,5 +80,6 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		$oCache->setContents($sContents);
 		$oCache->sendCacheControlHeaders();
 		print($sContents);
+
 	}
 }

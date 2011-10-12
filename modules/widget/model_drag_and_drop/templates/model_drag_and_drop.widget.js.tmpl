@@ -8,7 +8,8 @@ Widget.types.model_drag_and_drop = {
 		element.attr({'data-model-name': model_name, 'data-item-id': item_id});
 		if(!droppable_only) {
 			element.draggable({
-				revert: true
+				revert: 'invalid',
+				helper: 'clone'
 			});
 		}
 		element.droppable({

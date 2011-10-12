@@ -46,6 +46,9 @@ class RichtextUtil {
 	}
 	
 	public static function parseStorageForOutput($sStorage, $bIsAdmin) {
+		if(is_resource($sStorage)) {
+			$sStorage = stream_get_contents($sStorage);
+		}
 		$oTemplate = new Template($sStorage, "db", true);
 		self::replaceIdentifierWithCallback($oTemplate, 'internal_link', 'internalLinkCallback', $bIsAdmin);
 		self::replaceIdentifierWithCallback($oTemplate, 'external_link', 'externalLinkCallback', $bIsAdmin);

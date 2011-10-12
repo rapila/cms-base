@@ -29,5 +29,9 @@ class LanguageObjectHistoryPeer extends BaseLanguageObjectHistoryPeer {
 		$oCriteria->addDescendingOrderByColumn(self::REVISION);
 		return $oCriteria;
 	}
+	
+	public static function mayOperateOn($oUser, $oLanguageObjectHistory, $sOperation) {
+		return ContentObjectPeer::mayOperateOn($oUser, $oLanguageObjectHistory->getContentObject(), $sOperation);
+	}
 }
 

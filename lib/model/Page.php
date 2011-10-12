@@ -10,6 +10,9 @@ class Page extends BasePage {
 	const REFERENCE_EXISTS_CODE = 44;
 	
 	private $aFullPathArray = null;
+
+	///Stores the “old” parent (before move operations)
+	private $oOldParent = null;
 	
 	public function getChildByName($sName) {
 		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
@@ -317,6 +320,7 @@ class Page extends BasePage {
 	}
 	
 	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier("id", $this->getId());
 		$oTemplate->replaceIdentifier("name", $this->getName());
 		$oTemplate->replaceIdentifier("link_text", $this->getLinkText());
 		$oTemplate->replaceIdentifier("title", $this->getPageTitle());
@@ -384,4 +388,33 @@ class Page extends BasePage {
 		}
 		$this->delete();
 	}
+
+	///Override moveSubtreeTo to store the old parent
+	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
+		$oOldParent = $this->getParent($con);
+		$oNewParent = PageQuery::create()->filterByTreeLeft($destLeft, Criteria::LESS_THAN)->filterByTreeRight($destLeft, Criteria::GREATER_EQUAL)->filterByTreeLevel($this->getLevel()+$levelDelta-1)->findOne();
+		// Copied from denyable behavior
+		if(!(PagePeer::isIgnoringRights() || $this->mayMoveFromTo($oOldParent, $oNewParent))) {
+			throw new PropelException(new NotPermittedException("move.custom.pages", array("role_key" => "pages")));
+		}
+		return parent::moveSubtreeTo($destLeft, $levelDelta, $con);
+	}
+
+	private function mayMoveFromTo($oFrom, $oTo) {
+		// When moving pages, the user must have rights to both source and destination
+		$oUser = Session::getSession()->getUser();
+		if(!$oUser->mayCreateChildren($oFrom)) {
+			return false;
+		}
+		if($oTo === null) {
+			//Only admins may create root pages
+			return false;
+		}
+		return $oUser->mayCreateChildren($oTo);
+	}
+
+	public function getOldParent() {
+		return $this->oOldParent;
+	}
+
 }

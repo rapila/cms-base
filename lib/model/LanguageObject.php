@@ -15,9 +15,11 @@ class LanguageObject extends BaseLanguageObject {
 		return $this->getObjectId().'_'.$this->getLanguageId();
 	}
 	
-	public function save(PropelPDO $oConnection = null) {
+	public function postSave(PropelPDO $oConnection = null) {
+		PagePeer::ignoreRights(true);
+		//Mark page as updated to flush full page caches
 		$this->getContentObject()->getPage()->save();
-		return parent::save($oConnection);
+		PagePeer::ignoreRights(false);
 	}
 	
 	public function revertToHistory($sHistoryId) {

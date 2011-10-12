@@ -3,8 +3,12 @@
 		<select name="document_categories[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
 	</div>
 	<div class="group_fields">
-		<label for="template">{{writeString=wns.document_list.template_option}}</label>
-		<select name="template" class="ui-widget-content autowidth"></select>
+		<label for="document_kind">{{writeString=wns.document_list.kind_option}}</label>
+		<select name="document_kind" class="ui-widget-content"></select>
+	</div>
+	<div class="group_fields">
+		<label for="list_template">{{writeString=wns.document_list.template_option}}</label>
+		<select name="list_template" class="ui-widget-content autowidth"></select>
 	</div>
 	<div class="group_fields">
 		<label for="sort_by">{{writeString=wns.document_list.sort_option}}</label>

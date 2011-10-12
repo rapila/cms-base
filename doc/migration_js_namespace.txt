@@ -1,0 +1,14 @@
+list-row_dblclick		list-row_dblclick
+list-row_click			list-row_click
+list-row_hover			list-row_hover
+list.cell-click			list-cell_click
+list.cell-hover			list-cell_hover
+
+faster:
+list-row_			list-row_
+list.cell-		list-cell_
+
+list-row_click >>> list-selection_changed
+
+find all list-selection_changed handles where there is still (event, col, element)
+setOpion value directly with selection[0] && selection[0].anykey

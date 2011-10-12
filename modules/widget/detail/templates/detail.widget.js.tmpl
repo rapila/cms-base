@@ -2,13 +2,55 @@ Widget.types.detail = {
 	initialize: function() {
 		this.loader = jQuery('<div/>').addClass('ui-loading');
 	},
+
+	create_for_instance: function(instance) {
+		var prototype = Object.getPrototypeOf(instance);
+		var instance_props = jQuery.extend({
+			open: function() {
+				if(!this.detail_widget) {
+					this.auto_open = true;
+					return false;
+				}
+				this.detail_widget.open();
+			},
+
+			close: function() {
+				this.detail_widget.close();
+				this.close_callback();
+			},
+
+			close_callback: jQuery.noop,
+			save_callback: jQuery.noop
+		}, prototype);
+		jQuery.extend(prototype, instance_props);
+		var old_fill_data = instance.fill_data;
+		instance.fill_data = function() {
+			this.auto_fill = true;
+		};
+		Widget.create('detail', function(detail) {
+			instance.fill_data = old_fill_data;
+			detail.set_instance(instance);
+			jQuery.extend(detail.settings, instance.settings.detail_widget);
+			if(instance.auto_open) {
+				detail.open();
+			}
+			if(instance.auto_fill) {
+				instance.fill_data();
+			}
+		});
+	},
 	
 	set_instance: function(instance) {
+		if(this === Widget.types.detail.prototype) {
+			//Static call means do the whole initialisation
+			return Widget.callStatic('detail', 'create_for_instance', instance);
+		}
 		var _this = this;
 		this.instance = instance;
 		instance.detail_widget = this;
+		this.content = instance.content || instance._element;
 		this.settings.save_callback = function() {
-			var data = instance.content.serializeArrayKV();
+			var data = _this.content.serializeArrayKV();
 			instance.fire('saving', data);
 			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
@@ -21,7 +63,6 @@ Widget.types.detail = {
 				Widget.fire(detail_name+'-saved');
 			});
 		};
-		this.content = instance.content;
 		if(this.has_dialog) {
 			this.content.dialog('option', 'dialogClass', this.content.dialog('option', 'dialogClass')+" detail-widget-"+instance._type);
 		} else {
@@ -66,7 +107,7 @@ Widget.types.detail = {
 		];
 		this.settings.has_cancel_button && buttons.push({
 			text: "{{writeString=wns.cancel}}",
-			className: 'secondary',
+			'class': 'secondary',
 			click: this.settings.cancel_callback
 		});
 		// option something like.....
@@ -208,7 +249,7 @@ Widget.types.detail = {
 				related_input = jQuery(all_inputs[0]);
 			}
 			related_input.focus();
-			if(related_input.is(':checkbox, :radio') && related_input.attr('disabled') == false) {
+			if(related_input.is(':checkbox, :radio') && related_input.prop('disabled') === false) {
 				related_input.prop('checked', !related_input.prop('checked'));
 				related_input.change();
 			} else {
@@ -224,9 +265,8 @@ Widget.types.detail = {
 			colName: false,
 			eventName: 'dblclick'
 		}, (options || {}));
-		options.eventName = 'list.'+(options.colName ? 'cell' : 'row')+'-'+options.eventName
+		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
-		list.settings.row_click_active_class = 'ui-state-highlight';
 		Widget.create(detail_name+"_detail", function(detail) {
 			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
 				if(options.colName && col.identifier !== options.colName) {

@@ -6,20 +6,22 @@ class LinkListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	private $iLinkCategoryId;
+	private $oLanguageFilter;
 	public $oDelegateProxy;
+	
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
+		if(!LanguagePeer::isMonolingual()) {
+			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
+		}
 	}
 	
 	public function doWidget() {
-		$aTagAttributes = array('class' => 'link_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		return $this->oListWidget->doWidget('link_list');
 	}
 	
 	public function toggleIsInactive($aRowData) {
@@ -31,7 +33,11 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'sort', 'url', 'description', 'category_name', 'language_name', 'updated_at_formatted', 'delete');
+		$aResult = array('id', 'name_truncated', 'sort', 'url', 'description_truncated', 'category_name');
+		if($this->oLanguageFilter !== null) {
+			$aResult[] = 'language_id';
+		}
+		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -41,21 +47,23 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
-			case 'name':
+			case 'name_truncated':
 				$aResult['heading'] = StringPeer::getString('wns.name');
 				break;
 			case 'url':
 				$aResult['heading'] = StringPeer::getString('wns.url');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
-			case 'description':
+			case 'description_truncated':
 				$aResult['heading'] = StringPeer::getString('wns.description');
 				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('wns.link_category_list');
 				break;
-			case 'language_name':
-				$aResult['heading'] = StringPeer::getString('wns.language');
+			case 'language_id':
+				$aResult['heading'] = '';
+				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('wns.updated_at');
@@ -84,8 +92,11 @@ class LinkListWidgetModule extends WidgetModule {
 		if($sColumnIdentifier === 'updated_at_formatted') {
 			return LinkPeer::UPDATED_AT;
 		}
-		if($sColumnIdentifier === 'language_name') {
-			return LinkPeer::LANGUAGE_ID;
+		if($sColumnIdentifier === 'description_truncated') {
+			return LinkPeer::DESCRIPTION;
+		}
+		if($sColumnIdentifier === 'name_truncated') {
+			return LinkPeer::NAME;
 		}
 		return null;
 	}

@@ -24,12 +24,15 @@ abstract class BaseGroupPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'GroupTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
+
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 6;
 
 	/** the column name for the ID field */
 	const ID = 'groups.ID';
@@ -49,6 +52,9 @@ abstract class BaseGroupPeer {
 	/** the column name for the UPDATED_BY field */
 	const UPDATED_BY = 'groups.UPDATED_BY';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+
 	/**
 	 * An identiy map to hold any loaded instances of Group objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -58,13 +64,15 @@ abstract class BaseGroupPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
@@ -79,7 +87,7 @@ abstract class BaseGroupPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::CREATED_AT => 2, self::UPDATED_AT => 3, self::CREATED_BY => 4, self::UPDATED_BY => 5, ),
@@ -217,7 +225,7 @@ abstract class BaseGroupPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -236,7 +244,7 @@ abstract class BaseGroupPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -290,7 +298,7 @@ abstract class BaseGroupPeer {
 	 * @param      Group $value A Group object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Group $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -363,10 +371,10 @@ abstract class BaseGroupPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in UserGroupPeer instance pool, 
+		// Invalidate objects in UserGroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		UserGroupPeer::clearInstancePool();
-		// Invalidate objects in GroupRolePeer instance pool, 
+		// Invalidate objects in GroupRolePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		GroupRolePeer::clearInstancePool();
 	}
@@ -391,7 +399,7 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -451,7 +459,7 @@ abstract class BaseGroupPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + GroupPeer::NUM_COLUMNS;
+			$col = $startcol + GroupPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = GroupPeer::OM_CLASS;
 			$obj = new $cls();
@@ -460,6 +468,7 @@ abstract class BaseGroupPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
@@ -487,9 +496,9 @@ abstract class BaseGroupPeer {
 		if (!$criteria->hasSelectClause()) {
 			GroupPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -537,9 +546,9 @@ abstract class BaseGroupPeer {
 		if (!$criteria->hasSelectClause()) {
 			GroupPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -580,7 +589,7 @@ abstract class BaseGroupPeer {
 		}
 
 		GroupPeer::addSelectColumns($criteria);
-		$startcol = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = GroupPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
@@ -646,7 +655,7 @@ abstract class BaseGroupPeer {
 		}
 
 		GroupPeer::addSelectColumns($criteria);
-		$startcol = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = GroupPeer::NUM_HYDRATE_COLUMNS;
 		UserPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(GroupPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -719,9 +728,9 @@ abstract class BaseGroupPeer {
 		if (!$criteria->hasSelectClause()) {
 			GroupPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -764,13 +773,13 @@ abstract class BaseGroupPeer {
 		}
 
 		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = GroupPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		UserPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(GroupPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -854,7 +863,7 @@ abstract class BaseGroupPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -862,9 +871,9 @@ abstract class BaseGroupPeer {
 		if (!$criteria->hasSelectClause()) {
 			GroupPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -902,7 +911,7 @@ abstract class BaseGroupPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(GroupPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -910,9 +919,9 @@ abstract class BaseGroupPeer {
 		if (!$criteria->hasSelectClause()) {
 			GroupPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -954,7 +963,7 @@ abstract class BaseGroupPeer {
 		}
 
 		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = GroupPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1003,7 +1012,7 @@ abstract class BaseGroupPeer {
 		}
 
 		GroupPeer::addSelectColumns($criteria);
-		$startcol2 = (GroupPeer::NUM_COLUMNS - GroupPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = GroupPeer::NUM_HYDRATE_COLUMNS;
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1070,7 +1079,7 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Group or Criteria object.
+	 * Performs an INSERT on the database, given a Group or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Group object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1113,7 +1122,7 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Group or Criteria object.
+	 * Performs an UPDATE on the database, given a Group or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Group object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1152,11 +1161,12 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the groups table.
+	 * Deletes all rows from the groups table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(GroupPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1182,7 +1192,7 @@ abstract class BaseGroupPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Group or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Group or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Group object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
@@ -1296,7 +1306,7 @@ abstract class BaseGroupPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Group $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 
@@ -1370,6 +1380,26 @@ abstract class BaseGroupPeer {
 			$objs = GroupPeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->hasRole("users");
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return $oUser->hasRole("users-own");
 	}
 
 } // BaseGroupPeer

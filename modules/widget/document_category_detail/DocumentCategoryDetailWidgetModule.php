@@ -6,7 +6,7 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 
 	private $iCategoryId = null;
 	
-	public function setCategoryId($iCategoryId) {
+	public function setDocumentCategoryId($iCategoryId) {
 		$this->iCategoryId = $iCategoryId;
 	}
 	

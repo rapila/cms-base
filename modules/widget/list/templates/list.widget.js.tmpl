@@ -27,21 +27,13 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row);
-			return widget.fire.apply(widget, ['list.row-dblclick', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
-			widget.activate_row(row);
-			return widget.fire.apply(widget, ['list.row-click', event].concat(row_metadata(row)));
-		});
-		
-		this._element.delegate('.ui-list-cell', 'click', function(event) {
-			if(!widget._element.is('table')) {
-				return;
-			}
-			return widget.fire.apply(widget, ['list.cell-click', event].concat(cell_metadata(jQuery(this))));
+			widget.activate_row(row, event);
+			return widget.fire.apply(widget, ['list-row_click', event].concat(row_metadata(row)));
 		});
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
@@ -49,39 +41,80 @@ Widget.types.list = {
 			if(widget.settings.row_hover) {
 				row.toggleClass('ui-state-hover');
 			}
-			return widget.fire.apply(widget, ['list.row-hover', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_hover', event].concat(row_metadata(row)));
 		});
 		
-		this._element.delegate('.ui-list-cell', 'hover', function(event) {
-			return widget.fire.apply(widget, ['list.cell-hover', event].concat(cell_metadata(jQuery(this))));
-		});
+		if(widget._element.is('table')) {
+			this._element.delegate('.ui-list-cell', 'click', function(event) {
+				return widget.fire.apply(widget, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
+			});
+			this._element.delegate('.ui-list-cell', 'hover', function(event) {
+				return widget.fire.apply(widget, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
+			});
+		}
+
 		this.reload(true);
 	},
 	
-	activate_row: function(row) {
-		if(row === null || row === undefined) {
-			if(this.settings.row_click_active_exclusive) {
-				this.all_rows().removeClass(this.settings.row_click_active_class);
-			}
-			return;
-		}
-		if(row.constructor === Number) {
+	activate_row: function(row, event, previous_selection) {
+		if(row && row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
-		if(this.settings.row_click_active_mode) {
+		var previous_selection = this.active_row_datas().sort();
+		if(!row) {
+			this.all_rows().removeClass(this.settings.row_click_active_class);
+		} else if(this.settings.row_click_active_mode) {
+			var do_toggle = this.settings.row_click_active_mode === 'toggle';
+			var exclusive = !!this.settings.row_click_active_exclusive;
+			if(this.settings.row_click_active_exclusive === 'modifiers' && event && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+				//Ignore toggle mode on modifier keys
+				exclusive = false;
+				do_toggle = false;
+				if(event.ctrlKey || event.metaKey) {
+					do_toggle = true;
+				}
+				if(event.shiftKey) {
+					var topmost_active_row = this.row_number(this.active_row().eq(0));
+					var current_row = this.row_number(row);
+					for(var i = Math.min(topmost_active_row, current_row); i <= Math.max(topmost_active_row, current_row); i++) {
+						this.row_from_number(i).addClass(this.settings.row_click_active_class);
+					}
+				}
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			if(exclusive) {
+				this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
+			}
 			if(!row.hasClass(this.settings.row_click_active_class)) {
 				row.addClass(this.settings.row_click_active_class);
-				if(this.settings.row_click_active_exclusive) {
-					this.all_rows().not(row).removeClass(this.settings.row_click_active_class);
-				}
-			} else if(this.settings.row_click_active_mode === 'toggle') {
+			} else if(do_toggle) {
 				row.removeClass(this.settings.row_click_active_class);
+			}
+		}
+		this.fire_selection_changed(previous_selection, event);
+	},
+
+	fire_selection_changed: function(previous_selection, event) {
+		var new_selection = this.active_row_datas().sort();
+		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
+			if(event) {
+				this.fire('list-selection_changed', event, new_selection, previous_selection);
+			} else {
+				this.fire('list-selection_changed', new_selection, previous_selection);
 			}
 		}
 	},
 	
 	active_row: function() {
 		return this.all_rows().filter('.'+this.settings.row_click_active_class);
+	},
+
+	active_row_datas: function() {
+		var _this = this;
+		return this.active_row().map(function() {
+			return _this.collect_row_data(jQuery(this));
+		}).get();
 	},
 	
 	insert_row: function(rowData, isHeading, position) {
@@ -107,7 +140,7 @@ Widget.types.list = {
 			this._element.append(row);
 		}
 		
-		if(this.settings.row_model_drag_and_drop_identifier) {
+		if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
 			this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowData[this.settings.row_model_drag_and_drop_identifier], true);
 		}
 		
@@ -256,22 +289,36 @@ Widget.types.list = {
 		var rowData = this.collect_row_data(row);
 		this.deleteRow(rowData, function(result, error) {
 			if(!error) {
+				var active_rows = null;
+				if(row.hasClass(this.settings.row_click_active_class)) {
+					active_rows = this.active_row_datas().sort();
+				}
 				row.remove();
+				active_rows && this.fire_selection_changed(active_rows);
 				this.fire('row-deleted', result);
 			} else {
-				Widget.notifyUser('error', error.message);
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			}
 		});
 	},
 	
 	collect_row_data: function(row) {
 		var rowData = {};
+		var has_data = false;
 		jQuery.each(this.schema, function(i) {
 			if(this.schema[i].display_type === 'data') {
+				has_data = true;
 				rowData[this.schema[i].identifier] = row.data(this.schema[i].identifier);
 			}
 		}.bind(this));
+		if(!has_data) {
+			return this.row_number(row);
+		}
 		return rowData;
+	},
+
+	row_number: function(row) {
+		return this.all_rows().index(row);
 	},
 
 	toggle_boolean: function(row, boolean_name, reload_all) {
@@ -297,8 +344,12 @@ Widget.types.list = {
 		jQuery.extend(rowData, (additonalData || {}));
 		this.rowFromData(rowData, function(row_contents) {
 			var newRow = null;
+			var was_active = row.hasClass(this.settings.row_click_active_class);
 			if(row_contents !== null) {
 				newRow = this.insert_row(row_contents, false, row);
+				if(was_active) {
+					newRow.addClass(this.settings.row_click_active_class);
+				}
 			}
 			row.remove();
 			this.fire('row-updated', additonalData, newRow, rowData);
@@ -330,6 +381,8 @@ Widget.types.list = {
 	reload: function(load_heading) {
 		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
+		// store active rows by row data
+		var active_rows = !load_heading && this.settings.persist_active_rows && this.active_row_datas();
 		if(load_heading) {
 			this._element.empty();
 		} else {
@@ -361,7 +414,23 @@ Widget.types.list = {
 			}
 			this.toggle_loader(false);
 			this.update_reorderable();
+			if(active_rows) {
+				jQuery.each(active_rows, function(id, row) {
+					row = this.row_from_row_data(row);
+					row && row.addClass(this.settings.row_click_active_class);
+				}.bind(this));
+				this.fire_selection_changed(active_rows.sort());
+			}
 			if(load_heading) {
+				if(!active_rows && this.settings.initial_selection) {
+					if(this.settings.initial_selection.constructor !== Array) {
+						this.settings.initial_selection = [this.settings.initial_selection];
+					}
+					jQuery.each(this.settings.initial_selection, function(i, obj) {
+						row = this.row_from_row_data(obj);
+						row && row.addClass(this.settings.row_click_active_class);
+					}.bind(this));
+				}
 				this.fire('loaded', list.length);
 			}
 			this.fire('reloaded', list.length);
@@ -419,6 +488,9 @@ Widget.types.list = {
 	},
 	
 	row_from_row_data: function(rowData) {
+		if(rowData.constructor === Number) {
+			return this.row_from_number(rowData);
+		}
 		var result = null;
 		var widget = this;
 		this.all_rows().each(function() {
@@ -426,7 +498,7 @@ Widget.types.list = {
 			var row = jQuery(this);
 			jQuery.each(widget.schema, function(i) {
 				if(widget.schema[i].display_type === 'data') {
-					if(row.data(widget.schema[i].identifier) !== rowData[widget.schema[i].identifier]) {
+					if(row.data(widget.schema[i].identifier) != rowData[widget.schema[i].identifier]) {
 						is_found = false;
 						return false;
 					}
@@ -479,15 +551,6 @@ Widget.types.list = {
 		} else {
 			Widget.end_load();
 		}
-	},
-	
-	settings: {
-		row_hover: true,
-		//false, "toggle", "activate"
-		row_click_active_mode: false,
-		row_click_active_exclusive: true,
-		row_click_active_class: 'ui-state-active',
-		row_model_drag_and_drop_identifier: false
 	},
 	
 	schema: null,
@@ -557,5 +620,17 @@ Widget.types.list = {
 			}
 			column.append(data);
 		}
+	},
+
+	settings: {
+		row_hover: true,
+		persist_active_rows: true,
+		// false (do not allow row activation on click), "toggle", "activate"
+		row_click_active_mode: false,
+		// false (many rows can be active at a time), true (activating a row deactivates all others), 'modifiers' (allow multiple selections using modifier keys [cmd to toggle, shift for continuous selections])
+		row_click_active_exclusive: true,
+		row_click_active_class: 'ui-state-active',
+		row_model_drag_and_drop_identifier: false,
+		initial_selection: []
 	}
 };

@@ -1,0 +1,2 @@
+error_handling:
+  mail_errors: true

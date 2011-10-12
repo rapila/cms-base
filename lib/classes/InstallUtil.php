@@ -13,8 +13,8 @@ class InstallUtil {
 	 * loadYamlFile()
 	 * description: 
 	 * - reads yaml file into an array assoc (for further details @see Spyc class)
-	 * @param string fullfilename.yml
-	 * @param string optional path to directory (like '/dirname'), defaults to null
+	 * @param string $sFileName fullfilename.yml
+	 * @param string $sFileDir optional path to directory (like '/dirname'), defaults to null
 	 * @return array assoc
 	 */
 	public static function loadYamlFile($sFileName, $sFileDir = null) {
@@ -35,8 +35,8 @@ class InstallUtil {
 	 * - and processing the data by passing it to a propel modelName::insertRow() method passing a array assoc of fieldnames and values
 	 * - works only already installed db, handled by propel 
 	 * - see details in the data/install/'table_name.insert.yml' files and install_notes.txt
-	 * @param string table_name or optionally fullfilename.yml
-	 * @param string optional path to directory (like '/dirname'), defaults to MAIN_DIR/DIRNAME_DATA/install
+	 * @param string $sFileName table_name or optionally fullfilename.yml
+	 * @param string $sFileDir optional path to directory (like '/dirname'), defaults to MAIN_DIR/DIRNAME_DATA/install
 	 * @return void
 	 */
 	public static function loadToDbFromYamlFile($sFileName, $sFileDir = null) {

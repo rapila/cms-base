@@ -3,8 +3,26 @@
  * @package modules.widget
  */
 class DocumentDetailWidgetModule extends PersistentWidgetModule {
-
 	private $iDocumentId = null;
+	private static $LICENSES = array();
+
+	public function __construct($sSessionKey = null) {
+		parent::__construct($sSessionKey);
+		$oPopover = WidgetModule::getWidget('popover', null, $this);
+		$this->setSetting('popover', $oPopover->getSessionKey());
+	}
+
+	public function popoverContents($oPopover) {
+		$aResult = array();
+		foreach(DocumentPeer::$LICENSES as $sLicenseKey => $aLicenseInfo) {
+			if($sLicenseKey === 'NULL') {
+				$aResult[] = new TagWriter('div', array(), '©');
+				continue;
+			}
+			$aResult[] = new TagWriter('img', array('src' => $aLicenseInfo['image'], 'data-license' => $sLicenseKey));
+		}
+		return $aResult;
+	}
 	
 	public function setDocumentId($iDocumentId) {
 		$this->iDocumentId = $iDocumentId;
@@ -17,6 +35,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocument);
+		$aResult['ContentCreatedAt'] = $oDocument->getContentCreatedAt('d.m.Y');
     // self::addReferences($oDocument, $aResult);
 		return $aResult;
 	}
@@ -61,8 +80,14 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$oDocument->setName($aDocumentData['name']);
+		$aDocumentData['name'] = trim($aDocumentData['name']);
+		if($aDocumentData['name'] || !$oDocument->getName()) {
+			$oDocument->setName($aDocumentData['name']);
+		}
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
+		$oDocument->setAuthor($aDocumentData['author'] == '' ? null : $aDocumentData['author']);
+		$oDocument->setLicense($aDocumentData['license'] == '' ? null : $aDocumentData['license']);
+		$oDocument->setContentCreatedAt($aDocumentData['content_created_at'] == '' ? null : $aDocumentData['content_created_at']);
 		$iOriginalDocCatId = $oDocument->getDocumentCategoryId();
 		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
 		$oDocument->setLanguageId($sLanguageId);

@@ -33,8 +33,8 @@ class LinkPeer extends BaseLinkPeer {
 
 	/** 
 	 * getLinksByTagName()
-	 * @param mixed string|array tagname
-	 * @param boolean optional sortorder
+	 * @param string|array $mTagName The name(s) of the tag(s) for which links are to be found $mTagName
+	 * @param boolean $bOrderByLinkName optional sortorder
 	 * @return array of objects
 	 */
 	public static function getLinksByTagName($mTagName, $bOrderByLinkName=true) {
@@ -110,6 +110,15 @@ class LinkPeer extends BaseLinkPeer {
 			return $oLink->getSort();
 		}
 		return 0;
+	}
+	
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		$bResult = parent::mayOperateOnOwn($oUser, $mObject, $sOperation);
+		///When changing the sort or the category, I have to have the rights to said category as well
+		if($bResult && ($mObject->isColumnModified(LinkPeer::SORT) || $mObject->isColumnModified(LinkPeer::LINK_CATEGORY_ID))) {
+			return $mObject->getLinkCategory() === null || $mObject->getLinkCategory()->mayOperate($sOperation, $oUser);
+		}
+		return $bResult;
 	}
 
 }

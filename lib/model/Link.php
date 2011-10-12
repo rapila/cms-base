@@ -17,7 +17,16 @@ class Link extends BaseLink {
 		return $this->getLanguageId() === null || $this->getLanguageId() === $sLanguageId;
 	}
 	
+	public function getNameTruncated($iLength = 40) {
+		return StringUtil::truncate($this->getName(), $iLength);
+	}
+	
+	public function getDescriptionTruncated($iLength = 40) {
+		return StringUtil::truncate($this->getDescription(), $iLength);
+	}
+	
 	public function renderListItem($oTemplate) {
+		$oTemplate->replaceIdentifier("id", $this->getId());
 		$oTemplate->replaceIdentifier("name", $this->getName());
 		$oTemplate->replaceIdentifier("link_text", $this->getName());
 		$oTemplate->replaceIdentifier("title", $this->getName());

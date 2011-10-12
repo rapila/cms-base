@@ -15,8 +15,16 @@ class DocumentQuery extends BaseDocumentQuery {
 	}
 		
 	public function filterByDocumentKind($sDocumentKind = 'image') {
-		$this->joinDocumentType();
-		$this->add(DocumentTypePeer::MIMETYPE, "$sDocumentKind/%", Criteria::LIKE);
+		return $this->filterByDocumentTypeId(DocumentTypePeer::getDocumentTypeIDsByKind($sDocumentKind), Criteria::IN);
+	}
+	
+	public function filterByDisplayLanguage($sLanguageId = null) {
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
+		$oLangCriterion = $this->getNewCriterion(DocumentPeer::LANGUAGE_ID, $sLanguageId);
+		$oLangCriterion->addOr($this->getNewCriterion(DocumentPeer::LANGUAGE_ID, null));
+		$this->add($oLangCriterion);
 		return $this;
 	}
 }

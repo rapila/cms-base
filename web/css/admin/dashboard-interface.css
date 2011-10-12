@@ -43,7 +43,7 @@ a {color:white;}
 #dashboard-columns .dashboard-widget-placeholder { border: 2px dashed #999; }
 
 #dashboard-columns .dashboard-widget,
-#dashboard-columns .dashboard-widget-placeholder {margin: 20px 5px 0 5px;}
+#dashboard-columns .dashboard-widget-placeholder {margin: 10px 10px 0 5px;}
 
 #dashboard-columns .dashboard-column:first-child .dashboard-widget,
 #dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder { margin-left: 10px; }
@@ -84,6 +84,10 @@ a {color:white;}
 #dashboard-columns .dashboard-widget .dashboard-widget-content h6 {
 	padding: 0.4em 0;
 }
+#dashboard-columns .dashboard-widget .dashboard-widget-content p,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li {
+	line-height: 1.5em;
+}
 #dashboard-columns .dashboard-widget .dashboard-widget-content img {
 	float: right;
 	margin: 10px;
@@ -93,11 +97,14 @@ a {color:white;}
 	color: #EEE;
 	font-size: 12px;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content ul {
+#dashboard-columns *[data-widget-type=static_text] ul {
 	padding: 5px 0 5px 20px;
 	list-style: disc;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content ul li {padding: 3px 0;}
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li,
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li:nth-child(2n) {
+	background-color: transparent;
+}
 #dashboard-columns .dashboard-widget .dashboard-widget-content ul.images {
 	padding: 7px 0 0 0;
 	list-style: none;
@@ -112,11 +119,23 @@ a {color:white;}
 	float: left;
 	margin: 0 0 7px 7px;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content table tr {
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr,
+#dashboard-columns .dashboard-widget .dashboard-widget-content table th,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li {
   background-color: #444444;
+  color: inherit;
 }
-#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n) {
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n),
+#dashboard-columns .dashboard-widget .dashboard-widget-content li:nth-child(2n) {
   background-color: #555555;
+}
+
+
+#dashboard-columns ul.ui-list li.ui-list-headrow, 
+#dashboard-columns table.ui-list tr.ui-list-headrow th {
+  border-bottom: none;
+  background-color: inherit;
+  font-size: .85em;
 }
 /* End Columns section */
 

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.model.map
  */
-class LinkCategoryTableMap extends TableMap {
+class LinkCategoryTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class LinkCategoryTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('link_categories');
 		$this->setPhpName('LinkCategory');
 		$this->setClassname('LinkCategory');
@@ -52,21 +53,22 @@ class LinkCategoryTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-    $this->addRelation('Link', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'link_category_id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Link', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'link_category_id', ), 'SET NULL', null, 'Links');
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
 	{
 		return array(
 			'referenceable' => array(),
+			'denyable' => array('mode' => '', 'role_key' => 'links', 'owner_allowed' => 'true', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);

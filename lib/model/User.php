@@ -13,8 +13,22 @@ class User extends BaseUser {
 	private static $CACHED_ADMIN_SETTINGS = null;
 	private static $ADMIN_SETTINGS_SET = array();
 
+	const IS_BACKEND_LOGIN_ENABLED = 'user-backend';
+	const IS_ADMIN_LOGIN_ENABLED = 'user-admin_area';
+	const IS_FRONTEND_USER = 'user-frontend';
+	const IS_ADMIN_USER = 'user-admin';
+	
 	public function getFullName() {
-		return $this->getFirstName(). ' '.$this->getLastName();
+		if($this->getFirstName() && $this->getLastName()) {
+			return $this->getFirstName(). ' '.$this->getLastName();
+		}
+		if($this->getFirstName()) {
+			return $this->getFirstName();
+		}
+		if($this->getLastName()) {
+			return $this->getLastName();
+		}
+		return $this->getUsername();
 	}
 	
 	public function getInitials() {
@@ -22,7 +36,16 @@ class User extends BaseUser {
 	}
 
 	public function getUserKind() {
-		return $this->getIsBackendLoginEnabled();
+		if($this->getIsAdmin()) {
+			return self::IS_ADMIN_USER;
+		}
+		if(!$this->getIsBackendLoginEnabled()) {
+			return self::IS_FRONTEND_USER;
+		}
+		if($this->getIsAdminLoginEnabled()) {
+			return self::IS_ADMIN_LOGIN_ENABLED;
+		}
+		return self::IS_BACKEND_LOGIN_ENABLED;
 	}
 	
 	public function isFirstAdministrator() {
@@ -195,10 +218,7 @@ class User extends BaseUser {
 	}
 	
 	public function mayEditUser($oUser = null) {
-		if($oUser === null) {
-			return Session::getSession()->getUser()->getIsAdmin();
-		}
-		return $oUser->isSessionUser() || Session::getSession()->getUser()->getIsAdmin();
+		return UserPeer::mayOperateOn($this, $oUser, 'update');
 	}
 	
 	public function getMissingRights($mPage, $bInheritedOnly = false) {

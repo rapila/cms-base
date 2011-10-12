@@ -1,4 +1,5 @@
 <?php
+///Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
 class Cache {
 	
 	private $bCacheIsNeverOff;
@@ -6,12 +7,12 @@ class Cache {
 	private $bCacheControlHeaderSent;
 	
 	public function __construct($sKey, $mPath=null) {
-		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG;
+		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
-		$sPath = ResourceFinder::findResource($mPath, ResourceFinder::SEARCH_MAIN_ONLY);
-		if($sPath === null) {
-			if(!mkdir($sPath = MAIN_DIR.'/'.implode('/', $mPath), 0775, true)) {
+		$sPath = MAIN_DIR.'/'.implode('/', $mPath);
+		if(!is_dir($sPath)) {
+			if(!@mkdir($sPath, 0775, true)) {
 				throw new Exception("Error in Cache->__construct(): Cache folder $sPath does not exist and we do not have rights to create it");
 			}
 		}
@@ -35,9 +36,7 @@ class Cache {
 	/**
 	 * Returns the full path to the cache file. Note that this file may not yet exist
 	 */
-	//
-	public function getFilePath()
-	{
+	public function getFilePath() {
 			return $this->sFilePath;
 	}
 	
@@ -57,13 +56,27 @@ class Cache {
 	
 	/**
 	 * Looks if the cached contents are older than the modified dates of any of the given files
-	 * @param string array $mOriginalFilePath
+	 * Pass a ResourceFinder instance rather than an array to prevent the (potentially expensive) call to ResourceFinder->find() in production.
+	 * @param string|array|ResourceFinder $mOriginalFilePath
 	 */
 	public function isOutdated($mOriginalFilePath) {
+		if(ErrorHandler::getEnvironment() === 'production') {
+			//Files are never out of date in production (clear the cache manually when deploying)… no need to check
+			return false;
+		}
+		if($mOriginalFilePath instanceof ResourceFinder) {
+			$mOriginalFilePath = $mOriginalFilePath->find();
+		}
+		if($mOriginalFilePath === null) {
+			return false;
+		}
 		if(!is_array($mOriginalFilePath)) {
 			$mOriginalFilePath = array($mOriginalFilePath);
 		}
 		foreach($mOriginalFilePath as $sOriginalFilePath) {
+			if($sOriginalFilePath instanceof FileResource) {
+				$sOriginalFilePath = $sOriginalFilePath->getFullPath();
+			}
 			$iFileModDate = 0;
 			if(file_exists($sOriginalFilePath)) {
 				$iFileModDate = filemtime($sOriginalFilePath);
@@ -130,11 +143,11 @@ class Cache {
 	/**
 	* Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
 	*/
-	public function setContents($mContents) {
+	public function setContents($mContents, $bForceSerialize = false) {
 		if($this->cacheIsOffForWriting()) {
 			return;
 		}
-		if(is_string($mContents)) {
+		if(!$bForceSerialize && is_string($mContents)) {
 			return file_put_contents($this->sFilePath, $mContents);
 		}
 		return file_put_contents($this->sFilePath, serialize($mContents));
@@ -198,8 +211,8 @@ class Cache {
 	* Returns true if, for whatever reason, no data should be read from the cache.
 	* This returns true if either
 	* The cache is off for writing
-	* The request parameter nocache with a value that evaluates to true is set
-	* The cache-control headers are set to no-cache (i.e. the user forced a super reload in the browser)
+	* The request parameter nocache is set
+	* The cache-control headers are set to no-cache (i.e. the user forced a-super reload in the browser)
 	*/
 	public function cacheIsOff() {
 		if($this->cacheIsOffForWriting()) {
@@ -208,7 +221,7 @@ class Cache {
 		if(isset($_REQUEST['nocache'])) {
 			return true;
 		}
-		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && stristr($_SERVER['HTTP_CACHE_CONTROL'], "no-cache") !== FALSE && !Manager::isPost()) {
+		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && stristr($_SERVER['HTTP_CACHE_CONTROL'], "no-cache") !== FALSE && $_SERVER['REQUEST_METHOD'] !== 'POST') {
 			return true;
 		}
 		return false;
@@ -218,26 +231,9 @@ class Cache {
 	* Removes all cache files but not their parent directories.
 	*/
 	public static function clearAllCaches() {
-		$aCachesDirs = ResourceFinder::findAllResources(array(DIRNAME_GENERATED, DIRNAME_CACHES), ResourceFinder::SEARCH_MAIN_ONLY);
-		foreach($aCachesDirs as $sCachesDir) {
-			if($rCachesDir = opendir($sCachesDir)) {
-				while(false !== ($sFileName = readdir($rCachesDir))) {
-					$sFilePath = $sCachesDir."/".$sFileName;
-					if(is_dir($sFilePath) && strpos($sFileName, ".") !== 0) {
-						if($rSubDir = opendir($sFilePath)) {
-							while(false !== ($sSubFileName = readdir($rSubDir))) {
-								if(!is_dir("$sFilePath/$sSubFileName")) {
-									unlink("$sFilePath/$sSubFileName");
-								}
-							}
-							closedir($rSubDir);
-						}
-					} elseif(strpos($sFileName, ".") !== 0) {
-						unlink($sFilePath);
-					}
-				}
-				closedir($rCachesDir);
-			}
+		$oFinder = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_CACHES)->addDirPath(true)->addPath('/^.*\\.cache$/')->searchMainOnly()->noCache();
+		foreach($oFinder->find() as $sCachesFile) {
+			unlink($sCachesFile);
 		}
 	} //clearAllCaches()
 }

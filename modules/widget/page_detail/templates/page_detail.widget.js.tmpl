@@ -1,9 +1,7 @@
 Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
-		this.accordion = jQuery(this._element.find('div.accordion')).
-		accordion({active: 0, autoHeight: false, clearStyle: true}).
-		bind('accordionchangestart', function(event, ui) {
+		this.accordion = jQuery(this._element.find('div.accordion')).accordion({active: 0, autoHeight: false, clearStyle: true}).bind('accordionchangestart', function(event, ui) {
 			if(ui.newContent.is('.contents_container')) {
 				_this.load_content(ui.newContent);
 			} else if(ui.newContent.is('.configuration_container')) {
@@ -29,7 +27,7 @@ Widget.types.page_detail = {
 				}
 			});
 			return false;
-		}).hide();
+		});
 		
 		this.description_has_been_loaded = false;
 		this.configuration_has_been_loaded = false;
@@ -53,13 +51,19 @@ Widget.types.page_detail = {
 	},
 	
 	disable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', true);
+		this.inputs_enabled = false;
+		this._element.find(':input, :button').prop('disabled', true).filter(':button').button('disable');
 	},
 	
-	enable_input: function() {
-		this._element.find('input, textarea, button').attr('disabled', false);
+	enable_input: function(enable_delete) {
+		if(enable_delete !== undefined) {
+			this.enable_delete = enable_delete;
+		}
+		this.inputs_enabled = true;
+		this._element.find(':input, :button').not(this.delete_button).prop('disabled', false).filter(':button').button('enable');
+		this.delete_button.prop('disabled', !this.enable_delete).button(this.enable_delete ? 'enable' : 'disable');
 	},
-	
+
 	accordion_active: function() {
 		var accordion_headers = this._element.find('div.accordion h3');
 		var result = null;
@@ -116,6 +120,7 @@ Widget.types.page_detail = {
 				tab_content.find("input[name='meta_keywords[]']").val(language_data.MetaKeywords);
 				tab_content.find("input[name='is_active[]']").prop('checked', !language_data.IsInactive);
 				tab_content.find("input[name='page_title[]']").val(language_data.PageTitle);
+				tab_content.find(':input, :button').prop('disabled', !_this.inputs_enabled);
 			}, false, true);
 		});
 	},
@@ -171,11 +176,7 @@ Widget.types.page_detail = {
 			_this.configuration_has_been_loaded = false;
 		});
 		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
-		if(!page_data.DeleteNotPermitted) {
-			this.delete_button.attr({disabled: true, title: page_data.DeleteNotPermitted}).show();
-		} else {
-			this.delete_button.attr({disabled: true, title: page_data.DeleteNotPermitted}).hide();
-		}
+		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 		// references
 		var count_references = page_data.CountReferences;
 		var count_text = count_references > 0 ? " ("+count_references+")" : '';
@@ -199,15 +200,19 @@ Widget.types.page_detail = {
 				property_container.data('propertyName', property_name);
 				var label = property_container.find('label').text(attrs.display_name);
 				var input = property_container.find('input').val(attrs.value);
-				var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
-				if(attrs.type === 'color') {
-					input.bind('change', function(defaultValue) {
-						if(this.val()) {
-							this.css({backgroundColor: this.val()});
-						} else {
-							this.css({backgroundColor: defaultValue});
-						}
-					}.bind(input, attrs.defaultValue)).triggerHandler('change');
+				if(attrs.defaultValue) {
+					var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
+					if(attrs.type === 'color') {
+						input.bind('change', function(defaultValue) {
+							if(this.val()) {
+								this.css({backgroundColor: this.val()});
+							} else {
+								this.css({backgroundColor: defaultValue});
+							}
+						}.bind(input, attrs.defaultValue)).triggerHandler('change');
+					}
+				} else {
+					input.next().remove();
 				}
 				page_properties_container.append(property_container);
 			} 

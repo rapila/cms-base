@@ -17,7 +17,7 @@ class DocumentsAdminModule extends AdminModule {
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_category_id', $this->oListWidget->getDocumentCategoryId());
+    $this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
 	}
 	
 	public function mainContent() {
