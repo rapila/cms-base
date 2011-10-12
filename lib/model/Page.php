@@ -401,7 +401,6 @@ class Page extends BasePage {
 	}
 
 	private function mayMoveFromTo($oFrom, $oTo) {
-		ErrorHandler::log("Moving from {$oFrom->getName()} to {$oTo->getName()}");
 		// When moving pages, the user must have rights to both source and destination
 		$oUser = Session::getSession()->getUser();
 		if(!$oUser->mayCreateChildren($oFrom)) {
