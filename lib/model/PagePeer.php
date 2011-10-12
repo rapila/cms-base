@@ -65,12 +65,14 @@ class PagePeer extends BasePagePeer {
 	}
 
 	public static function mayOperateOn($oUser, $oPage, $sOperation) {
-		if(!parent::mayOperateOn($oUser, $oPage, $sOperation)) {
-			//Denyable mode is set to 'admin_user' => false means: User is invalid
+		if($oUser === null) {
 			return false;
 		}
 		if($oUser->getIsAdmin()) {
 			return true;
+		}
+		if(!$oUser->getIsAdminLoginEnabled()) {
+			return false;
 		}
 		if($sOperation === 'insert') {
 			$oParent = $oPage->getParent();
@@ -84,6 +86,7 @@ class PagePeer extends BasePagePeer {
 			return $oUser->mayEditPageDetails($oPage);
 		}
 		if($sOperation === 'delete') {
+			//FIXME: if page has children, check if right is inherited.
 			return $oUser->mayDelete($oPage);
 		}
 		//Flow never reaches this

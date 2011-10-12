@@ -38,7 +38,10 @@ class ContentObject extends BaseContentObject {
 		return FrontendModule::getDisplayNameByName($this->getObjectType(), $sLanguageId);
 	}
 	
-	// public function delete(PropelPDO $con = null) {
-	// 	parent::delete($con);
-	// }
+	public function postSave(PropelPDO $oConnection = null) {
+		PagePeer::ignoreRights(true);
+		//Mark page as updated to flush full page caches
+		$this->getPage()->save();
+		PagePeer::ignoreRights(false);
+	}
 }

@@ -19,9 +19,9 @@ jQuery(document).ready(function() {
 			page_detail.disable_input();
 		});
 		page_detail.handle('loaded', function() {
-			Widget.callStatic('permission', 'mayEditPageDetails', page_detail.current_page_id, function(may) {
-				if(may) {
-					page_detail.enable_input();
+			Widget.callStatic('permission', 'mayEditPageDetailsAndDelete', page_detail.current_page_id, function(may) {
+				if(may[0]) {
+					page_detail.enable_input(may[1]);
 				}
 			});
 			Widget.end_load();
@@ -45,19 +45,10 @@ jQuery(document).ready(function() {
 					//This is the save callback
 					var page_id = page_tree.current_element_identifier;
 					page_detail.createPage(page_id, name, function(result, error) {
-						if(error) {
-							if(error.exception_type == 'ValidationException') {
-								for(exception in error.parameters) {
-									if(jQuery.isPlainObject(error.parameters[exception])) {
-										Widget.notifyUser(Widget.logSeverity.ALERT, jQuery.parseHTML(error.parameters[exception].string));
-										return;
-									}
-								}
-							}
-						} else {
+						if(!error) {
 							cleanup_callback(page_id);
 						}
-					});
+					}, WidgetJSONOptions.with_callback_handles_error(false));
 				}, function(page_id) {
 					page_tree.reload_element(page_tree.element_with_identifier(page_id));
 				});
@@ -81,8 +72,15 @@ jQuery(document).ready(function() {
 			has_children: function(item) {
 				return item.TreeRight-item.TreeLeft > 1;
 			},
-			may_create_children: function(item) {
-				return item !== undefined && item.UserMayCreateChildren;
+			may_create_child: function(item) {
+				return item.UserMayCreateChildren;
+			},
+			may_create_sibling: function(item) {
+				return item.UserMayCreateSiblings;
+			},
+			may_move_item: function(item) {
+				//if the user may create siblings, she’s got the may_create_children right on the parent => she’s also allowed to move around child pages
+				return item.UserMayCreateSiblings;
 			},
 			identifier_from_data: function(data) {
 				return data.Id;
