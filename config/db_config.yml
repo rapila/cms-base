@@ -1,6 +1,4 @@
 connection:
-  phptype:    'mysql'
-  hostspec:   'localhost'
   user:       'myusername'
   password:   'mypassword'
   dsn:        'mysql:dbname=database;host=localhost'
