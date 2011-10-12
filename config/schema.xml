@@ -19,7 +19,7 @@
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
-		<parameter name="mode" value="admin_user" />
+		<parameter name="mode" value="allow" />
 	</behavior>
 </table>
 

@@ -395,7 +395,7 @@ class Page extends BasePage {
 		$oNewParent = PageQuery::create()->filterByTreeLeft($destLeft, Criteria::LESS_THAN)->filterByTreeRight($destLeft, Criteria::GREATER_EQUAL)->filterByTreeLevel($this->getLevel()+$levelDelta-1)->findOne();
 		// Copied from denyable behavior
 		if(!(PagePeer::isIgnoringRights() || $this->mayMoveFromTo($oOldParent, $oNewParent))) {
-			throw new PropelException(new NotPermittedException("update.custom", array("role_key" => "pages")));
+			throw new PropelException(new NotPermittedException("move.custom.pages", array("role_key" => "pages")));
 		}
 		return parent::moveSubtreeTo($destLeft, $levelDelta, $con);
 	}
