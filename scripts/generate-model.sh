@@ -7,7 +7,7 @@ owner=`whoami`
 path_to_buildfile="base/lib/vendor/propel/generator/build.xml"
 
 if [ "$1" = "help" ]; then
-	echo "USAGE: generate-model.sh [dev] [<path-to-buildfile (default $path_to_buildfile)>] [<php-user (default `whoami`)>]"
+	echo "USAGE: generate-model.sh [-b] [<path-to-buildfile (default $path_to_buildfile)>] [<php-user (default `whoami`)>]"
 	exit 0
 fi
 
@@ -17,7 +17,7 @@ if [ ! -f "base/build.properties" ]; then
 fi
 
 is_dev=false
-if [ "$1" = "dev" ]; then
+if [ "$1" = "-b" ]; then
 	is_dev=true #internal use only
 	shift
 	echo "Moving model for base-dev environment"
