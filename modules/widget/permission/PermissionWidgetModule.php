@@ -37,41 +37,31 @@ class PermissionWidgetModule extends WidgetModule {
 	}
 	
 	public static function mayEditPageDetails($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayEditPageDetails($iPageId);
 	}
 
+	public static function mayEditPageDetailsAndDelete($iPageId) {
+		$oUser = Session::getSession()->getUser();
+		return array($oUser->mayEditPageDetails($iPageId), $oUser->mayDelete($iPageId));
+	}
+
 	public static function mayEditPageContents($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayEditPageContents($iPageId);
 	}
 
 	public static function mayCreateChildren($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayCreateChildren($iPageId);
 	}
 
 	public static function mayDelete($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayDelete($iPageId);
 	}
 
 	public static function mayViewPage($iPageId) {
-		if(!Session::getSession()->isAuthenticated()) {
-			return false;
-		}
 		$oUser = Session::getSession()->getUser();
 		return $oUser->mayViewPage($iPageId);
 	}
