@@ -73,6 +73,8 @@ abstract class BaseReferencePeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1341,6 +1343,20 @@ abstract class BaseReferencePeer {
 			$objs = ReferencePeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
 	}
 
 } // BaseReferencePeer

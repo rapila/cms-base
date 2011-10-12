@@ -217,5 +217,14 @@ class DocumentPeer extends BaseDocumentPeer {
 		}
 		return 0;
 	}
+	
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		$bResult = parent::mayOperateOnOwn($oUser, $mObject, $sOperation);
+		///When changing the sort or the category, I have to have the rights to said category as well
+		if($bResult && ($mObject->isColumnModified(DocumentPeer::SORT) || $mObject->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID))) {
+			return $mObject->getDocumentCategory() === null || $mObject->getDocumentCategory()->mayOperate($sOperation, $oUser);
+		}
+		return $bResult;
+	}
 
 }

@@ -547,6 +547,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			$deleteQuery = LanguageObjectQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.backend_user", array("role_key" => "language_objects")));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -590,6 +595,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.backend_user", array("role_key" => "language_objects")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(LanguageObjectPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -610,6 +620,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(LanguageObjectPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.backend_user", array("role_key" => "language_objects")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(LanguageObjectPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -1392,6 +1407,26 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	{
 		return ReferencePeer::getReferencesFromObject($this);
 	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return LanguageObjectPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// extended_timestampable behavior
 	
 	/**

@@ -70,6 +70,8 @@ abstract class BaseLanguageObjectHistoryPeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -2069,6 +2071,26 @@ abstract class BaseLanguageObjectHistoryPeer {
 
 		return !empty($v) ? $v[0] : null;
 	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		if($oUser === null) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->getIsBackendLoginEnabled();
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
+
 } // BaseLanguageObjectHistoryPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

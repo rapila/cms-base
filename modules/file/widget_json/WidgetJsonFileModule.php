@@ -25,7 +25,16 @@ class WidgetJsonFileModule extends FileModule {
 			$oSession->setLanguage($aRequest['session_language']);
 		}
 		try {
-			print json_encode($this->getJSON($aRequest));
+			try {
+				print json_encode($this->getJSON($aRequest));
+			} catch(PropelException $e) {
+				//If the caught exception has an inner exception, handle the inner exception
+				if($e->getCause()) {
+					throw $e->getCause();
+				} else {
+					throw $e;
+				}
+			}
 		} catch (LocalizedException $ex) {
 			print json_encode(array('exception' => array('message' => $ex->getLocalizedMessage(), 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'parameters' => $ex->getMessageParameters(), 'exception_type' => $ex->getExceptionType())));
 		} catch (Exception $ex) {

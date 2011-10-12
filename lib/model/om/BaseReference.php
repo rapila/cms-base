@@ -586,6 +586,11 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			$deleteQuery = ReferenceQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.custom.indirect_references", array("role_key" => "indirect_references")));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -629,6 +634,11 @@ abstract class BaseReference extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.custom.indirect_references", array("role_key" => "indirect_references")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(ReferencePeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -649,6 +659,11 @@ abstract class BaseReference extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(ReferencePeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.custom.indirect_references", array("role_key" => "indirect_references")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(ReferencePeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -1306,6 +1321,26 @@ abstract class BaseReference extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ReferencePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && ReferencePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return ReferencePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

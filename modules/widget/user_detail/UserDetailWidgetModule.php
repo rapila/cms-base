@@ -71,10 +71,6 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 		
-		if(!Session::getSession()->getUser()->mayEditUser($oUser)) {
-			throw new NotPermittedException('may_edit_user');
-		}		 
-		
 		$oUser->setUsername($aUserData['username']);
 		$oUser->setFirstName($aUserData['first_name']);
 		$oUser->setLastName($aUserData['last_name']);

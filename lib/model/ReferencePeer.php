@@ -109,6 +109,11 @@ class ReferencePeer extends BaseReferencePeer {
 		$oCriteria->add(self::TO_ID, $mToObject[0]);
 		$oCriteria->add(self::TO_MODEL_NAME, $mToObject[1]);
 	}
-
+	
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		$sSourcePeer = "{$mObject->getFromModelName()}Peer";
+		//Take semantics from FROM object
+		return $sSourcePeer::mayOperateOn($oUser, $this->getFrom, $sOperation);
+	}
 }
 

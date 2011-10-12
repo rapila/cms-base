@@ -1,4 +1,4 @@
-allowed_roles: ['may_administer_document_types']
+# allowed_roles: [documents]
 description: "Reference table for allowed document types with mimetype and extension"
-website: "http://www.mini-cms.ch/"
+website: "http://www.rapi.la/"
 version: 2.0

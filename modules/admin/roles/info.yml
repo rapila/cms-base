@@ -1,0 +1,4 @@
+allowed_roles: [users, users-own]
+name: "Roles"
+website: "http://rapi.la/"
+version: 1.0

@@ -14,6 +14,27 @@ class PermissionWidgetModule extends WidgetModule {
 		$oUser = Session::getSession()->getUser();
 		return $oUser->hasRole($sRoleKey);
 	}
+
+	public static function mayDoOperationOnObjectOfModel($sOperation, $sModelName, $mObject) {
+		$sPeer = "{$sModelName}Peer";
+		if(!is_object($mObject)) {
+			$mObject = $sPeer::retrieveByPK($mObject);
+		}
+		return $mObject->mayOperate($sOperation, $mObject);
+	}
+
+	public static function mayUpdateObjectOfModel($sModelName, $iObjectId) {
+		return $this->mayDoOperationOnObjectOfModel('update', $sModelName, $iObjectId);
+	}
+
+	public static function mayDeleteObjectOfModel($sModelName, $iObjectId) {
+		return $this->mayDoOperationOnObjectOfModel('delete', $sModelName, $iObjectId);
+	}
+
+	public static function mayInsertObjectOfModel($sModelName) {
+		$oObject = new $sModelName();
+		return $this->mayDoOperationOnObjectOfModel('insert', $sModelName, $oObject);
+	}
 	
 	public static function mayEditPageDetails($iPageId) {
 		if(!Session::getSession()->isAuthenticated()) {

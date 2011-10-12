@@ -297,7 +297,7 @@ Widget.types.list = {
 				active_rows && this.fire_selection_changed(active_rows);
 				this.fire('row-deleted', result);
 			} else {
-				Widget.notifyUser('error', error.message);
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 			}
 		});
 	},

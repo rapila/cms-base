@@ -482,6 +482,11 @@ abstract class BaseTag extends BaseObject  implements Persistent
 			$deleteQuery = TagQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
+			// denyable behavior
+			if(!(TagPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+				throw new PropelException(new NotPermittedException("delete.custom.tags", array("role_key" => "tags")));
+			}
+
 			if ($ret) {
 				$deleteQuery->delete($con);
 				$this->postDelete($con);
@@ -525,6 +530,11 @@ abstract class BaseTag extends BaseObject  implements Persistent
 			$ret = $this->preSave($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// denyable behavior
+				if(!(TagPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+					throw new PropelException(new NotPermittedException("insert.custom.tags", array("role_key" => "tags")));
+				}
+
 				// extended_timestampable behavior
 				if (!$this->isColumnModified(TagPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
@@ -545,6 +555,11 @@ abstract class BaseTag extends BaseObject  implements Persistent
 
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// denyable behavior
+				if(!(TagPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+					throw new PropelException(new NotPermittedException("update.custom.tags", array("role_key" => "tags")));
+				}
+
 				// extended_timestampable behavior
 				if ($this->isModified() && !$this->isColumnModified(TagPeer::UPDATED_AT)) {
 					$this->setUpdatedAt(time());
@@ -1393,6 +1408,26 @@ abstract class BaseTag extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(TagPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && TagPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return TagPeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

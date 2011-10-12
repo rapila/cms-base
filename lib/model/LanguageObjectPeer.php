@@ -30,5 +30,9 @@ class LanguageObjectPeer extends BaseLanguageObjectPeer {
 		$oCriteria->add(ContentObjectPeer::OBJECT_TYPE, $sObjectType);
 		return self::doSelect($oCriteria);
 	}
+
+	public static function mayOperateOn($oUser, $oLanguageObject, $sOperation) {
+		return ContentObjectPeer::mayOperateOn($oUser, $oLanguageObject->getContentObject(), $sOperation);
+	}
 }
 
