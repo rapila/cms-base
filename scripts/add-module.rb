@@ -233,7 +233,7 @@ write_file(:php, "#{class_name}.php") do
 		elsif $aspects.include? 'detail' then
 			php_methods.push php_method('getElementType', 'return "form";')
 			php_methods.push php_method('loadData')
-			php_methods.push php_method('saveData', '', ['oData'])
+			php_methods.push php_method('saveData', '', ['aData'])
 		end
 		
 		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);

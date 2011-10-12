@@ -70,7 +70,10 @@ input.ui-widget-content.input_medium{width:15em}
 .ui-tabs-nav .ui-state-active a{color:#000}
 .ui-tabs .ui-tabs-nav li a{padding:.5em 1.5em .2em}
 .ui-tabs-nav.ui-widget-header{background:transparent url("")}
-body.pages .ui-tabs-nav.ui-widget-header{background-color:#ebedef}
+.ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header{background-color:#ebedef}
+div.inner-tab-panel-content{margin-left:-26px;margin-top:15px}
+div.inner-tab-panel-content > div{margin-left:26px}
+div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px solid #cccdcf}
 .ui-state-default a.tab_content_active{color:#000}
 .ui-tabs .ui-tabs-nav li.ui-state-active{background-color:#fff}
 .ui-tabs-nav li.ui-state-active{background-color:#fff}

@@ -70,8 +70,8 @@ EOT;
 		$oDoc = new DOMDocument();
 		$oRoot = $oDoc->createElement('config');
     $oDoc->appendChild($oRoot);
-		$sConfigOutputPath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml';
 		self::writeConfiguration($oDoc, $aConfiguration, $oRoot);
+		$sConfigOutputPath = MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml';
 		file_put_contents($sConfigOutputPath, $oDoc->saveXML());
 	}
 
