@@ -19,7 +19,7 @@
 #admin_sidebar .ui-tree,#admin_sidebar .ui-list,#admin_sidebar .ui-list-row.ui-state-active,#admin_sidebar .ui-list-row.ui-state-hover{font-weight:700}
 #admin_sidebar .ui-tree li.ui-state-active li{color:#000}
 #admin_sidebar .ui-state-droppable{background-image:none}
-#admin_sidebar span.sidebar_input_save{display:none;height:16px;width:16px}
+#admin_sidebar span.sidebar_input_save{margin-top:2px;display:none;height:16px;width:16px}
 #admin_sidebar span.sidebar_input_save.active{display:inline-block}
 form.page_detail{background-color:#fff;margin:0;padding:0;vertical-align:top}
 form.page_detail .status_section,.pages #admin_main,.ui-widget-content h3{background-color:#ebedef}
