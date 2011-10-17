@@ -40,7 +40,7 @@ ui-widget{font-size:.5em}
 textarea.ui-widget-content{width:22em}
 #admin_sidebar ol{padding:0;margin:0}
 .ui-sortable,.ui-draggable,.ui-state-droppable{cursor:move}
-#admin_sidebar input{padding:0 0 0 0;margin:0;border:0;background-color:transparent;color:#777;font-size:1em;width:240px}
+#admin_sidebar input{padding:3px 3px 3px 4px;margin:0;border:0;background-color:transparent;color:#777;font-size:1.2em;width:230px;border-bottom:1px solid #ddd}
 .ui-dialog .ui-dialog-buttonpane button{padding:0 .5em}
 .ui-dialog{background-color:#000;padding:0 !important}
 .ui-widget-content{background:none #f9f9f9}

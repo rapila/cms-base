@@ -36,7 +36,7 @@ Widget.types.sidebar_input = {
 		var new_input_container = jQuery('<div/>').attr('id', 'new_sidebar_input').addClass('ui-list-row');
 		var sidebar_input = jQuery('<input/>').attr({'name' : 'sidebar_input', 'type' : 'text', 'value' : default_value});
 		var sidebar_input_save = jQuery('<span/>').addClass('sidebar_input_save button ui-icon ui-icon-disk');
-		this.sidebar.append(new_input_container.append(sidebar_input).append(sidebar_input_save));
+		this.sidebar.append(new_input_container.append(sidebar_input_save).append(sidebar_input));
 		sidebar_input.focus().select();
 		sidebar_input.blur(function() {
 			if(sidebar_input.val() === '' || sidebar_input.val() === default_value) { 
