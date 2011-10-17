@@ -45,12 +45,25 @@ Widget.types.detail = {
 			//Static call means do the whole initialisation
 			return Widget.callStatic('detail', 'create_for_instance', instance);
 		}
-		var _this = this;
+
+		instance.detail_widget = this; //Weak ref would be really great here…
 		this.instance = instance;
-		instance.detail_widget = this;
 		this.content = instance.content || instance._element;
+		this.clickable_labels_for(this.content);
+
+		var _this = this;
+		var protector = new UnsavedChanges(this.content);
+		
+		if(this.content.is('form')) {
+			this.content.submit(function() {
+				_this.settings.save_callback();
+				return false;
+			});
+		}
+
 		this.settings.save_callback = function() {
 			var data = _this.content.serializeArrayKV();
+			protector.release();
 			instance.fire('saving', data);
 			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
@@ -69,9 +82,22 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
+		this.settings.close_callback = function(event) {
+			if(!event.originalEvent) {
+				//dialog('close') was called programmatically
+				protector.release();
+				return true;
+			}
+			protector.warn(function(ok) {
+				ok && instance.close();
+			});
+			return false;
+		};
+		
 		
 		var old_fill_data = instance.fill_data;
 		instance.fill_data = function() {
+			protector.release();
 			_this.clear_validation();
 			old_fill_data.apply(instance, jQuery.makeArray(arguments));
 		};
@@ -112,19 +138,13 @@ Widget.types.detail = {
 		});
 		// option something like.....
 		
-		if(this.content.is('form')) {
-			this.content.submit(function() {
-				detail_widget.settings.save_callback();
-				return false;
-			});
-		}
-		
 		this.content.dialog({
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
 			modal: this.settings.modal,
 			resizable: this.settings.resizable,
 			closeOnEscape: this.settings.closeOnEscape,
+			beforeClose: this.settings.close_callback,
 			dialogClass: this.settings.dialogClass,
 			width: this.settings.width,
 			height: this.settings.height,
@@ -138,7 +158,6 @@ Widget.types.detail = {
 				}
 			}
 		});
-		this.clickable_labels_for(this.content);
 		this.select();
 		this.has_dialog = true;
 	},
@@ -304,6 +323,7 @@ Widget.types.detail = {
 		has_cancel_button: true,
 		auto_close_on_save: true,
 		cancel_callback: jQuery.noop,
+		close_callback: jQuery.noop,
 		save_callback: jQuery.noop,
 		select: "input:eq(0)",
 		width: 480,

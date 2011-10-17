@@ -770,7 +770,7 @@ jQuery.extend(WidgetJSONOptions.prototype, {
 		download_progress_callback: null, //"progress" event handlers on response
 		content_type: 'application/json', //determines interpretation of the data
 		action: null,
-		callback_handles_error: null, //defaults to true if the callback has two params
+		callback_handles_error: null, //defaults to true if the callback has two args
 		call_callback: null //defaults to true if callback_handles_error || the default error handler returns true
 	}
 });
@@ -905,3 +905,46 @@ jQuery.fn.extend({
 		return this;
 	}
 });
+
+function UnsavedChanges(element) {
+	if(!(this instanceof UnsavedChanges)) {
+		return new UnsavedChanges();
+	}
+
+	var unsaved = false;
+	this.set = function() {
+		!unsaved && (unsaved = true) && ++UnsavedChanges.global;
+		return this;
+	};
+	this.release = function() {
+		unsaved && !(unsaved = false) && --UnsavedChanges.global ;
+		return this;
+	};
+	this.check = function() {
+		return unsaved;
+	};
+	this.warn = function(callback) {
+		if(!unsaved) {
+			callback(true);
+		} else {
+			///@todo Localize
+			Widget.confirm('Really?', 'This discards unsaved changes.', function(ok) {
+				ok && this.release();
+				callback(ok)
+			}.bind(this));
+		}
+		return this;
+	};
+	this.protect = function(element) {
+		element.delegate(':input', 'change.UnsavedChanges', this.set.bind(this));
+		return this;
+	};
+	this.unprotect = function(element) {
+		element.undelegate('.UnsavedChanges');
+		return this;
+	};
+	
+	element && this.protect(element);
+}
+
+UnsavedChanges.global = 0;

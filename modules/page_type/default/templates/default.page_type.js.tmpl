@@ -8,6 +8,7 @@ Widget.types.page_type.types['default'] = {
 			var preview_bar = jQuery.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
 			preview_bar.data('filled_container', filled_container);
 			filled_container.data('preview_bar', preview_bar);
+			filled_container.data('protector', new UnsavedChanges());
 			
 			// Preview bar show/hide stuff
 			filled_container.position_bar = function() {
@@ -48,6 +49,7 @@ Widget.types.page_type.types['default'] = {
 		});
 		// Button event handlers
 		var cleanup = function(preview_bar, container) {
+			container.data('protector').unprotect(container.children()).release();
 			page_type.callPageTypeMethod('adminPreview', container.attr('data-object-id'), function(result, error) {
 				var elements = jQuery.parseHTML(result.preview_contents);
 				container.empty().append(elements);
@@ -74,6 +76,7 @@ Widget.types.page_type.types['default'] = {
 					}
 					widget.handle('element_set', function(event, element) {
 						container.empty().append(element);
+						container.data('protector').protect(element);
 					});
 				}, function(widget) {
 					if(widget.additional_buttons) {
@@ -93,8 +96,12 @@ Widget.types.page_type.types['default'] = {
 		}).delegate('.cancel', 'click', function() {
 			var preview_bar = jQuery(this).closest('.preview_bar');
 			var container = preview_bar.data('filled_container');
-			preview_bar.removeClass('editing').addClass('loading');
-			cleanup(preview_bar, container);
+			container.data('protector').warn(function(ok) {
+				if(ok) {
+					preview_bar.removeClass('editing').addClass('loading');
+					cleanup(preview_bar, container);
+				}
+			});
 		}).delegate('.save', 'click', function() {
 			var preview_bar = jQuery(this).closest('.preview_bar');
 			var container = preview_bar.data('filled_container');
@@ -127,6 +134,7 @@ Widget.types.page_type.types['default'] = {
 				
 				widget.handle('element_set', function(event, element) {
 					Widget.callStatic('detail', 'clickable_labels_for', element);
+					var protector = new UnsavedChanges(element);
 					var buttons = [{
 						text: '{{writeString=wns.save}}',
 						'class': 'primary ui-state-highlight',
@@ -146,10 +154,21 @@ Widget.types.page_type.types['default'] = {
 					}
 					element.dialog({
 						close: function() {
+							protector.unprotect(element).release();
 							if(widget.destroy) {
 								widget.destroy();
 							}
 							element.dialog('destroy').remove();
+						},
+						beforeClose: function(event) {
+							if(!event.originalEvent) {
+								//dialog('close') was called programmatically
+								return true;
+							}
+							protector.warn(function(ok) {
+								ok && element.dialog('close');
+							});
+							return false;
 						},
 						title: item_to_edit.text(),
 						position: ['center', 50],

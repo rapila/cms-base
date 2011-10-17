@@ -1,6 +1,7 @@
 Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
+		this.protector = new UnsavedChanges(this._element);
 		this.accordion = jQuery(this._element.find('div.accordion')).accordion({active: 0, autoHeight: false, clearStyle: true}).bind('accordionchangestart', function(event, ui) {
 			if(ui.newContent.is('.contents_container')) {
 				_this.load_content(ui.newContent);
@@ -16,11 +17,13 @@ Widget.types.page_detail = {
 			return false;
 		});
 		buttons.find('[name=cancel]').click(function() {
+			_this.protector.release();
 			_this.load_page(_this.current_page_id);
 			_this.enable_input();
 			return false;
 		});
 		this.delete_button = buttons.find('[name=delete]').click(function() {
+			_this.protector.release();
 			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=wns.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
 				if(confirmed) {
 					_this.delete_page();
@@ -78,23 +81,29 @@ Widget.types.page_detail = {
 	},
 	
 	load_page: function(page_id) {
-		this.fire('loading', page_id);
-		this.description_has_been_loaded = false;
-		this.configuration_has_been_loaded = false;
-		this.setPageId(page_id);
-		this.fill_data();
-		var active_accordion_title = this.accordion_active();
-		var contents_container = this._element.find('div.accordion .contents_container');
-		var configuration_container = this._element.find('div.accordion .configuration_container');
-		contents_container.empty();
-		if(active_accordion_title.next().is('.contents_container')) {
-			this.load_content(contents_container);
-		}
-		configuration_container.empty();
-		if(active_accordion_title.next().is('.configuration_container')) {
-			this.load_configuration(configuration_container);
-		}
-		this.fire('loaded', page_id);
+		this.protector.warn(function(ok) {
+			if(!ok) {
+				//TODO: Reset tree
+				return
+			}
+			this.fire('loading', page_id);
+			this.description_has_been_loaded = false;
+			this.configuration_has_been_loaded = false;
+			this.setPageId(page_id);
+			this.fill_data();
+			var active_accordion_title = this.accordion_active();
+			var contents_container = this._element.find('div.accordion .contents_container');
+			var configuration_container = this._element.find('div.accordion .configuration_container');
+			contents_container.empty();
+			if(active_accordion_title.next().is('.contents_container')) {
+				this.load_content(contents_container);
+			}
+			configuration_container.empty();
+			if(active_accordion_title.next().is('.configuration_container')) {
+				this.load_configuration(configuration_container);
+			}
+			this.fire('loaded', page_id);
+		}.bind(this));
 	},
 
 	load_content: function(container) {
@@ -241,6 +250,7 @@ Widget.types.page_detail = {
 			});
 		}
 		
+		this.protector.release();
 		var data = this._element.serializeArrayKV();
 		delete data.page_property;
 		data.page_properties = {};
