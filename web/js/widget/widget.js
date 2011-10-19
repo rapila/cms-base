@@ -912,7 +912,11 @@ function UnsavedChanges(element) {
 	}
 
 	var unsaved = false;
-	this.set = function() {
+	this.set = function(event) {
+		if(event && !event.originalEvent) {
+			//Prevent triggerHandler('change') from affecting unsaved state
+			return;
+		}
 		!unsaved && (unsaved = true) && ++UnsavedChanges.global;
 		return this;
 	};
