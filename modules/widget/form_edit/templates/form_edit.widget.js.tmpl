@@ -94,8 +94,7 @@ Widget.types.form_edit = {
 	},
 	
 	save: function(callback) {
-		var form_settings = this._element.serializeArrayKV();
-		this.saveData(form_settings, callback);
+		return this._element.serializeArrayKV();
 	},
 	
 	settings: {

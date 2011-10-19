@@ -7,7 +7,7 @@ Widget.types.login_edit = {
 		mode_dropdown.populate(this.getDisplayOptions(), this.getDisplayMode());
 	},
 	
-	save: function(callback) {
-		this.saveData(this._element.serializeArrayKV(), callback);
+	save: function() {
+		return this._element.serializeArrayKV();
 	}
 };

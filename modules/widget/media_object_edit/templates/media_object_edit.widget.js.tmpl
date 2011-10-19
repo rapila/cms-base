@@ -138,7 +138,7 @@ Widget.types.media_object_edit = {
 		});
 	},
 	
-	save: function(callback) {
-		this.saveData(this._element.serializeArrayKV(), callback);
+	save: function() {
+		return this._element.serializeArrayKV();
 	}
 };

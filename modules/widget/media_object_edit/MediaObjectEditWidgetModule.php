@@ -26,8 +26,4 @@ class MediaObjectEditWidgetModule extends PersistentWidgetModule {
 	public function currentData() {
 		return $this->oFrontendModule->widgetData();
 	}
-	
-	public function saveData($mData) {
-		return $this->oFrontendModule->widgetSave($mData);
-	}
 }

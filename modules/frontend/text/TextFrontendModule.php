@@ -25,10 +25,11 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 	}
 	
 	public function widgetData() {
-		if($this->oLanguageObject->getData() === null) {
-			return null;
+		$sData = $this->getData();
+		if($sData) {
+			return RichtextUtil::parseStorageForBackendOutput($sData)->render();
 		}
-		return RichtextUtil::parseStorageForBackendOutput(stream_get_contents($this->oLanguageObject->getData()))->render();
+		return '';
 	}
 	
 	public function getJsForFrontend() {
@@ -41,11 +42,13 @@ class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendMo
 		return null;
 	}
 	
-	public function widgetSave($sContents) {
+	public function getSaveData($sContents) {
 		$oRichtextUtil = new RichtextUtil();
-		$oRichtextUtil->setTrackReferences($this->oLanguageObject);
-		$this->oLanguageObject->setData($oRichtextUtil->parseInputFromMce($sContents));
-		return $this->oLanguageObject->save();
+		if($this->oLanguageObject instanceof LanguageObject) {
+			//Not a LanguageObjectHistory instance
+			$oRichtextUtil->setTrackReferences($this->oLanguageObject);
+		}
+		return $oRichtextUtil->parseInputFromMce($sContents);
 	}
 
 	public static function getContentInfo($oLanguageObject) {

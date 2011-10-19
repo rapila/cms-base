@@ -8,7 +8,7 @@
  * is there a reason to protect a login page?
  */
 
-class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class LoginFrontendModule extends DynamicFrontendModule {
 	
 	private $oPage;
 	private $oUser;
@@ -90,19 +90,10 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 		return $this->oUser;
 	}
 
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
-	}
-	
 	public function getWidget() {
-		$aOptions = @unserialize($this->getData()); 
+		$aOptions = $this->widgetData();
 		$oWidget = new LoginEditWidgetModule(null, $this);
-		$oWidget->setDisplayMode($aOptions[self::MODE_SELECT_KEY]);
+		$oWidget->setDisplayMode(@$aOptions[self::MODE_SELECT_KEY]);
 		return $oWidget;
 	}
 }

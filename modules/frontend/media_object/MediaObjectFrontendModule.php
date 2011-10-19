@@ -71,13 +71,8 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 		return $oTemplate;
 	}
 	
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData($this->dataFromPost($mData));
-		return $this->oLanguageObject->save();
+	public function getSaveData($mData) {
+		return $this->dataFromPost($mData);
 	}
 	
 	public function getWidget() {
