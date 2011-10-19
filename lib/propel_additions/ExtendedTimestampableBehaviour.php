@@ -10,7 +10,7 @@ class ExtendedTimestampableBehaviour extends TimestampableBehavior {
  */
 public function getCreatedAtTimestamp()
 {
-	return \$this->getCreatedAt('U');
+	return (int)\$this->getCreatedAt('U');
 }
 
 /**
@@ -29,7 +29,7 @@ public function getCreatedAtFormatted(\$sLanguageId = null, \$sFormatString = 'x
  */
 public function getUpdatedAtTimestamp()
 {
-	return \$this->getUpdatedAt('U');
+	return (int)\$this->getUpdatedAt('U');
 }
 
 /**
