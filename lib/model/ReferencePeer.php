@@ -113,7 +113,7 @@ class ReferencePeer extends BaseReferencePeer {
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
 		$sSourcePeer = "{$mObject->getFromModelName()}Peer";
 		//Take semantics from FROM object
-		return $sSourcePeer::mayOperateOn($oUser, $this->getFrom, $sOperation);
+		return $sSourcePeer::mayOperateOn($oUser, $mObject->getFrom(), $sOperation);
 	}
 }
 
