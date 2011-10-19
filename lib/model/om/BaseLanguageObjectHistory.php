@@ -1487,7 +1487,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	 */
 	public function getCreatedAtTimestamp()
 	{
-		return $this->getCreatedAt('U');
+		return (int)$this->getCreatedAt('U');
 	}
 	
 	/**
@@ -1506,7 +1506,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject  implements Persiste
 	 */
 	public function getUpdatedAtTimestamp()
 	{
-		return $this->getUpdatedAt('U');
+		return (int)$this->getUpdatedAt('U');
 	}
 	
 	/**

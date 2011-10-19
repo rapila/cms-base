@@ -1392,7 +1392,7 @@ abstract class BasePageProperty extends BaseObject  implements Persistent
 	 */
 	public function getCreatedAtTimestamp()
 	{
-		return $this->getCreatedAt('U');
+		return (int)$this->getCreatedAt('U');
 	}
 	
 	/**
@@ -1411,7 +1411,7 @@ abstract class BasePageProperty extends BaseObject  implements Persistent
 	 */
 	public function getUpdatedAtTimestamp()
 	{
-		return $this->getUpdatedAt('U');
+		return (int)$this->getUpdatedAt('U');
 	}
 	
 	/**
