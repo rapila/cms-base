@@ -69,29 +69,34 @@ Widget.types.page_type.types['default'] = {
 			}
 			container.addClass('editing');
 			preview_bar.addClass('loading');
-			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(result, error) {
-				Widget.createWithElement(result[0], function(widget) {
-					if(widget.setObjectId) {
-						widget.setObjectId(container.attr('data-object-id'));
-					}
-					widget.handle('element_set', function(event, element) {
-						container.empty().append(element);
-						container.data('protector').protect(element);
+			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(control_session_key) {
+				Widget.create('language_object_control', function(language_object_control) {
+					language_object_control.editor(function(result) {
+						Widget.createWithElement(result[0], function(widget) {
+							if(widget.setObjectId) {
+								widget.setObjectId(container.attr('data-object-id'));
+							}
+							widget.handle('element_set', function(event, element) {
+								container.empty().append(element);
+								container.data('protector').protect(element);
+							});
+						}, function(widget) {
+							if(widget.additional_buttons) {
+								var additional_button_pane = preview_bar.find('.additional-buttons');
+								var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
+								jQuery.each(widget.additional_buttons, function(i, button) {
+									var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
+									additional_button_pane.append(button_element);
+								});
+							}
+							preview_bar.removeClass('loading').addClass('editing');
+							container.data('edit_widget', widget);
+							container.data('language_object_control', language_object_control);
+							// Reposition the bar
+							container.position_bar();
+						}, result[1]);
 					});
-				}, function(widget) {
-					if(widget.additional_buttons) {
-						var additional_button_pane = preview_bar.find('.additional-buttons');
-						var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
-						jQuery.each(widget.additional_buttons, function(i, button) {
-							var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
-							additional_button_pane.append(button_element);
-						});
-					}
-					preview_bar.removeClass('loading').addClass('editing');
-					container.data('edit_widget', widget);
-					// Reposition the bar
-					container.position_bar();
-				}, result[1]);
+				}, control_session_key);
 			});
 		}).delegate('.cancel', 'click', function() {
 			var preview_bar = jQuery(this).closest('.preview_bar');
@@ -108,7 +113,11 @@ Widget.types.page_type.types['default'] = {
 			preview_bar.removeClass('editing').addClass('loading');
 			var widget = container.data('edit_widget');
 			container.data('edit_widget', null);
-			if(!widget || widget.save(cleanup.bind(this, preview_bar, container)) === false) {
+			var language_object_control = container.data('language_object_control');
+			container.data('language_object_control', null);
+			if(widget) {
+				language_object_control.save(widget.save(), cleanup.bind(this, preview_bar, container));
+			} else {
 				preview_bar.removeClass('loading').addClass('editing');
 			}
 		});
@@ -118,7 +127,7 @@ Widget.types.page_type.types['default'] = {
 	remove_object: function(item_to_remove, force) {
 		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), !!force, function(deleted) {
 			if(deleted && !force) {
-				Widget.types.page_type.types['default'].update_content_properties(item_to_remove, false);
+				Widget.types.page_type.types['default'].update_content_properties(item_to_remove, {is_filled_in_current_language: false});
 			} else if(deleted) {
 				item_to_remove.remove();
 			}
@@ -126,64 +135,73 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	edit_object: function(item_to_edit) {
-		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(result, error) {
-			Widget.createWithElement(result[0], function(widget) {
-				if(widget.setObjectId) {
-					widget.setObjectId(item_to_edit.attr('data-object-id'));
-				}
+		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(control_session_key) {
+			Widget.create('language_object_control', function(language_object_control) {
+				language_object_control.editor(function(result) {
+					Widget.createWithElement(result[0], function(widget) {
+						if(widget.setObjectId) {
+							widget.setObjectId(item_to_edit.attr('data-object-id'));
+						}
 				
-				widget.handle('element_set', function(event, element) {
-					Widget.callStatic('detail', 'clickable_labels_for', element);
-					var protector = new UnsavedChanges(element);
-					var buttons = [{
-						text: '{{writeString=wns.save}}',
-						'class': 'primary ui-state-highlight',
-						click: function() {
-							widget.save(function(result, error) {
-								//Don’t handle the error, it’s an unprivileged user whose data could not be saved
-								Widget.types.page_type.types['default'].update_content_properties(item_to_edit, true);
-								element.dialog('close');
+						widget.handle('element_set', function(event, element) {
+							Widget.callStatic('detail', 'clickable_labels_for', element);
+							var save = function(is_draft) {
+								language_object_control.save(widget.save(), is_draft, function(result, error) {
+									//Don’t handle the error, it’s an unprivileged user whose data could not be saved
+									Widget.types.page_type.types['default'].update_content_properties(item_to_edit, {is_filled_in_current_language: result.language_object_exists, is_draft: is_draft});
+									element.dialog('close');
+								});
+							};
+							var protector = new UnsavedChanges(element);
+							var buttons = [{
+								text: '{{writeString=wns.save}}',
+								'class': 'primary ui-state-highlight',
+								click: save.bind(this, false),
+								accesskey: 's'
+							},
+							{
+								text: '{{writeString=wns.save_as_draft}}',
+								click: save.bind(this, true)
+							}];
+							if(widget.additional_buttons) {
+								jQuery.each(widget.additional_buttons, function(i, button) {
+									buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button', icons: {primary: 'ui-icon-'+button.icon}});
+								});
+							}
+							element.dialog({
+								close: function() {
+									protector.unprotect(element).release();
+									if(widget.destroy) {
+										widget.destroy();
+									}
+									element.dialog('destroy').remove();
+								},
+								beforeClose: function(event) {
+									if(!event.originalEvent) {
+										//dialog('close') was called programmatically
+										return true;
+									}
+									protector.warn(function(ok) {
+										ok && element.dialog('close');
+									});
+									return false;
+								},
+								title: item_to_edit.text(),
+								position: ['center', 50],
+								// modal: true,
+								width: widget.settings.preferred_width || 550,
+								// open: function(event, ui){},
+								resize: function(event, ui) {
+									if(widget.resize_to) {
+										widget.resize_to(null, ui.size.height-200);
+									}
+								},
+								buttons: buttons
 							});
-						},
-						accesskey: 's'
-					}];
-					if(widget.additional_buttons) {
-						jQuery.each(widget.additional_buttons, function(i, button) {
-							buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button', icons: {primary: 'ui-icon-'+button.icon}});
 						});
-					}
-					element.dialog({
-						close: function() {
-							protector.unprotect(element).release();
-							if(widget.destroy) {
-								widget.destroy();
-							}
-							element.dialog('destroy').remove();
-						},
-						beforeClose: function(event) {
-							if(!event.originalEvent) {
-								//dialog('close') was called programmatically
-								return true;
-							}
-							protector.warn(function(ok) {
-								ok && element.dialog('close');
-							});
-							return false;
-						},
-						title: item_to_edit.text(),
-						position: ['center', 50],
-						// modal: true,
-						width: widget.settings.preferred_width || 550,
-						// open: function(event, ui){},
-						resize: function(event, ui) {
-							if(widget.resize_to) {
-								widget.resize_to(null, ui.size.height-200);
-							}
-						},
-						buttons: buttons
-					});
+					}, jQuery.noop, result[1]);
 				});
-			}, jQuery.noop, result[1]);
+			}, control_session_key);
 		});
 	},
 	
@@ -193,14 +211,18 @@ Widget.types.page_type.types['default'] = {
 		}, jQuery.noop);
 	},
 	
-	update_content_properties: function(element, is_filled_in_current_language) {
+	update_content_properties: function(element, properties) {
 		var remove_button = element.find('.ui-icon.ui-icon-trash');
-		if(!is_filled_in_current_language) {
-			remove_button.addClass('delete_inactive').hide();
-			element.addClass('language_object_emty');
-		} else {
-			remove_button.removeClass('delete_inactive').show();
-			element.removeClass('language_object_emty');
+		var cls, hd;
+		if(properties.is_filled_in_current_language !== undefined) {
+			cls = properties.is_filled_in_current_language ? 'removeClass' : 'addClass';
+			hd = properties.is_filled_in_current_language ? 'show' : 'hide';
+			remove_button[cls]('delete_inactive')[hd]();
+			element[cls]('language_object_empty');
+		}
+		if(properties.is_draft !== undefined) {
+			cls = properties.is_draft ? 'addClass' : 'removeClass';
+			element[cls]('is_draft');
 		}
 	},
 	
@@ -252,7 +274,7 @@ Widget.types.page_type.types['default'] = {
 						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li, false)));
 						li.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, li)));
 						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));
-						pt_default.update_content_properties(li, content.content_info !== false);
+						pt_default.update_content_properties(li, {is_filled_in_current_language: content.content_info !== false, is_draft: content.is_draft});
 					});
 				});
 			
@@ -286,7 +308,7 @@ Widget.types.page_type.types['default'] = {
 							item.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, item, false)));
 							item.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, item)));
 							item.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, item)));
-							pt_default.update_content_properties(item, false);
+							pt_default.update_content_properties(item, {is_filled_in_current_language: false});
 						});
 					}
 				});

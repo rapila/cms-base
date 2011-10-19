@@ -91,6 +91,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 	 */
 	private function fillContainerWithModule($oContentObject, $oTemplate, $iModuleId) {
 		$oPageContents = $oContentObject->getLanguageObject($this->sLanguageId);
+		if($this->bIsPreview && $oPageContents === null) {
+			//Need to get unsaved drafts in preview
+			$oPageContents = new LanguageObject();
+			$oPageContents->setLanguageId($this->sLanguageId);
+			$oPageContents->setContentObject($oContentObject);
+			$oPageContents = $oPageContents->getDraft();
+		}
 		if($oPageContents === null) {
 			return false;
 		}
@@ -100,7 +107,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 				return false;
 			}
 		}
-		$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $iModuleId);
+		if($this->bIsPreview) {
+			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $iModuleId);
+		} else {
+			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $iModuleId);
+		}
 		$sFrontentContents = $this->getModuleContents($oModule);
 		if($sFrontentContents === null) {
 			return false;
@@ -147,7 +158,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 	//Admin stuff
 	private $aContentObjects = array();
-	private $aModuleInstances = array();
 	
 	private function contentObjectById($iObjectId) {
 		if(!isset($this->aContentObjects[$iObjectId])) {
@@ -156,12 +166,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $this->aContentObjects[$iObjectId];
 	}
 	
-	private function moduleInstanceByLanguageObject($oLanguageObject) {
-		$sKey = $oLanguageObject->getId();
-		if(!isset($this->aModuleInstances[$sKey])) {
-			$this->aModuleInstances[$sKey] = FrontendModule::getModuleInstance($oLanguageObject->getContentObject()->getObjectType(), $oLanguageObject);
-		}
-		return $this->aModuleInstances[$sKey];
+	private function backendModuleInstanceByLanguageObject($oLanguageObject) {
+		return FrontendModule::getModuleInstance($oLanguageObject->getContentObject()->getObjectType(), $oLanguageObject->getDraft());
 	}
 	
 	public function adminListPossibleFrontendModules() {
@@ -210,11 +216,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 				$oLanguageObject = $oObject->getLanguageObject($this->sLanguageId);
 				if($oLanguageObject === null) {
 					$aObject['content_info'] = false;
+					$aObject['is_draft'] = LanguageObjectHistoryQuery::create()->filterByLanguageId($this->sLanguageId)->filterByObjectId($oObject->getId())->count() > 0;
 				} else {
 					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
 					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
 					$aObject['content_info'] = $mContentInfo;
-				}		
+					$aObject['is_draft'] = $oLanguageObject->getHasDraft();
+				}
 				$aObject['object_type'] = $oObject->getObjectType();
 				$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
 				$aResult[$sContainerName]['contents'][] = $aObject;
@@ -249,17 +257,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oCurrentLanguageObject->setContentObject($oCurrentContentObject);
 			$oCurrentLanguageObject->setData(null);
 		}
-		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
-		$oWidget = null;
-		if($oModuleInstance instanceof WidgetBasedFrontendModule) {
-			$oWidget = $oModuleInstance->getWidget();
-		} else {
-			$oWidget = WidgetModule::getWidget('legacy_frontend_module', null, $oModuleInstance);
-		}
-		if($oWidget instanceof WidgetModule) {
-			return array($oWidget->getModuleName(), $oWidget->getSessionKey());
-		}
-		return array($oWidget, null);
+		
+		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
+		$oWidget = WidgetModule::getWidget('language_object_control', null, $oCurrentLanguageObject, $oModuleInstance);
+		return $oWidget->getSessionKey();
 	}
 	
 	public function adminPreview($iObjectId) {
@@ -273,7 +274,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		FrontendManager::$CURRENT_PAGE = $oCurrentContentObject->getPage();
 		//Some frontend modules generate links into the current manager – those need to be correct
 		PreviewManager::setTemporaryManager();
-		$oModuleInstance = $this->moduleInstanceByLanguageObject($oCurrentLanguageObject);
+		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
 		$aResult = array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
 		PreviewManager::revertTemporaryManager();
 		return $aResult;

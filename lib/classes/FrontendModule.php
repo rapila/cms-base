@@ -8,7 +8,7 @@ abstract class FrontendModule extends Module {
 	protected $iId;
 	
 	public function __construct($oLanguageObject = null, $aPath = null, $iId = 1) {
-		if($oLanguageObject instanceof LanguageObject) {
+		if($oLanguageObject instanceof LanguageObject || $oLanguageObject instanceof LanguageObjectHistory) {
 			$this->oLanguageObject = $oLanguageObject;
 		} else {
 			$this->oData = $oLanguageObject;
@@ -19,25 +19,71 @@ abstract class FrontendModule extends Module {
 
 	public abstract function renderFrontend();
 
-	public function getSaveData() {}
+	/**
+	* Override this method to transform the data sent from your config widget into a string/blob that can be stored in the database.
+	*/
+	public function getSaveData($aData) {
+		return serialize($aData);
+	}
 
+	/**
+	* Do the reverse transformation of getSaveData: from string/blob into a configuration value that can be used by the config widget.
+	*/
+	public function widgetData() {
+		$sData = $this->getData();
+		if($sData) {
+			return unserialize($sData);
+		}
+		return array();
+	}
+
+	/**
+	* @deprecated Use the ResourceIncluder to include CSS resource files
+	*/
 	public function getCssForFrontend() {
 		return null;
 	}
 
+	/**
+	* @deprecated Use the ResourceIncluder to include JS resource files
+	*/
 	public function getJsForFrontend() {
 		return null;
 	}
 
+	/**
+	* Return a form (as string or Template) to be serialized on saving in either admin or preview contexts. Use getWidget instead if you wish to provide more interactive configuration options.
+	*/
+	public function renderBackend() {
+		return null;
+	}
+	
+	/**
+	* Returns the widget used to configure this particular frontend module. Default implementation outputs the contents of renderBackend as form and serializes that on save.
+	*/
+	public function getWidget() {
+		$oWidget = WidgetModule::getWidget("generic_frontend_module", null, $this, $this->renderBackend());
+		return $oWidget;
+	}
+	
+	/**
+	* Returns the words for which this module should be listed in the site’s search index
+	*/
 	public function getWords() {
 		return StringUtil::getWords($this->renderFrontend(), true);
 	}
 	
+	/**
+	* Convenience constructTemplate that can be used without any arguments, yielding 'main' as the template’s name.
+	*/
 	protected function constructTemplate($sTemplateName = "main", $bUseGlobalTemplatesDir = false) {
 		return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bUseGlobalTemplatesDir);
 	}
 	
-	protected function getData() {
+	/**
+	* Gets the raw form of the data currently associated with this frontendmodule instance. Use widgetData for the transformed data.
+	*/
+	protected final function getData() {
 		if($this->oLanguageObject !== null && $this->oLanguageObject->getData() !== null) {
 			return stream_get_contents($this->oLanguageObject->getData(), -1, 0);
 		}
@@ -109,11 +155,18 @@ abstract class FrontendModule extends Module {
 	public function __wakeup() {
 		if($this->oLanguageObject !== null) {
 			$sId = explode('_', $this->oLanguageObject);
-			$this->oLanguageObject = LanguageObjectPeer::retrieveByPK($this->oLanguageObject);
+			$sClass = 'LanguageObject';
+			if(count($sId) === 3) {
+				$sClass .= 'History';
+			}
+			$this->oLanguageObject = call_user_func_array(array("{$sClass}Peer", 'retrieveByPK'), $sId);
 			if($this->oLanguageObject === null) {
-				$this->oLanguageObject = new LanguageObject();
+				$this->oLanguageObject = new $sClass();
 				$this->oLanguageObject->setObjectId($sId[0]);
 				$this->oLanguageObject->setLanguageId($sId[1]);
+				if(isset($sId[2])) {
+					$this->oLanguageObject->setRevision($sId[2]);
+				}
 			}
 		}
 	}
