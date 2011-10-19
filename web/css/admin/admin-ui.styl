@@ -241,8 +241,21 @@ h3.status
 		text-align: left
 		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom
 
-	.filled_modules ol.template-container li.language_object_emty
+	.filled_modules ol.template-container li.language_object_empty
 		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
+		
+	.filled_modules ol.template-container li.is_draft:before
+		content: 'DRAFT'
+		transform: rotate(-40deg)
+		color: white
+		background-color: #992d2d
+		background: linear-gradient(top, #c78c8c, #992d2d, #c78c8c);
+		float: left
+		font-size: 0.7em
+		padding: 1px 2px 1px 3px
+		position: relative
+		left: -14px
+		top: -5px
 
 	.filled_modules ol.template-container li
 		margin: 3px
