@@ -43,6 +43,13 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	protected $data;
 
 	/**
+	 * The value for the has_draft field.
+	 * Note: this column has a database default value of: false
+	 * @var        boolean
+	 */
+	protected $has_draft;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -101,6 +108,27 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->has_draft = false;
+	}
+
+	/**
+	 * Initializes internal state of BaseLanguageObject object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
+
+	/**
 	 * Get the [object_id] column value.
 	 * 
 	 * @return     int
@@ -128,6 +156,16 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	public function getData()
 	{
 		return $this->data;
+	}
+
+	/**
+	 * Get the [has_draft] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getHasDraft()
+	{
+		return $this->has_draft;
 	}
 
 	/**
@@ -298,6 +336,34 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	} // setData()
 
 	/**
+	 * Sets the value of the [has_draft] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
+	 * @return     LanguageObject The current object (for fluent API support)
+	 */
+	public function setHasDraft($v)
+	{
+		if ($v !== null) {
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
+		}
+
+		if ($this->has_draft !== $v) {
+			$this->has_draft = $v;
+			$this->modifiedColumns[] = LanguageObjectPeer::HAS_DRAFT;
+		}
+
+		return $this;
+	} // setHasDraft()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
@@ -399,6 +465,10 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->has_draft !== false) {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -430,10 +500,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			} else {
 				$this->data = null;
 			}
-			$this->created_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->updated_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->created_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->updated_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->has_draft = ($row[$startcol + 3] !== null) ? (boolean) $row[$startcol + 3] : null;
+			$this->created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->updated_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->created_by = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->updated_by = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -442,7 +513,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 8; // 8 = LanguageObjectPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating LanguageObject object", $e);
@@ -871,15 +942,18 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				return $this->getData();
 				break;
 			case 3:
-				return $this->getCreatedAt();
+				return $this->getHasDraft();
 				break;
 			case 4:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 5:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 6:
+				return $this->getCreatedBy();
+				break;
+			case 7:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -914,10 +988,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 			$keys[0] => $this->getObjectId(),
 			$keys[1] => $this->getLanguageId(),
 			$keys[2] => $this->getData(),
-			$keys[3] => $this->getCreatedAt(),
-			$keys[4] => $this->getUpdatedAt(),
-			$keys[5] => $this->getCreatedBy(),
-			$keys[6] => $this->getUpdatedBy(),
+			$keys[3] => $this->getHasDraft(),
+			$keys[4] => $this->getCreatedAt(),
+			$keys[5] => $this->getUpdatedAt(),
+			$keys[6] => $this->getCreatedBy(),
+			$keys[7] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aContentObject) {
@@ -973,15 +1048,18 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$this->setData($value);
 				break;
 			case 3:
-				$this->setCreatedAt($value);
+				$this->setHasDraft($value);
 				break;
 			case 4:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 5:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 6:
+				$this->setCreatedBy($value);
+				break;
+			case 7:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1011,10 +1089,11 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		if (array_key_exists($keys[0], $arr)) $this->setObjectId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setLanguageId($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setData($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[3], $arr)) $this->setHasDraft($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setCreatedBy($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setUpdatedBy($arr[$keys[7]]);
 	}
 
 	/**
@@ -1029,6 +1108,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		if ($this->isColumnModified(LanguageObjectPeer::OBJECT_ID)) $criteria->add(LanguageObjectPeer::OBJECT_ID, $this->object_id);
 		if ($this->isColumnModified(LanguageObjectPeer::LANGUAGE_ID)) $criteria->add(LanguageObjectPeer::LANGUAGE_ID, $this->language_id);
 		if ($this->isColumnModified(LanguageObjectPeer::DATA)) $criteria->add(LanguageObjectPeer::DATA, $this->data);
+		if ($this->isColumnModified(LanguageObjectPeer::HAS_DRAFT)) $criteria->add(LanguageObjectPeer::HAS_DRAFT, $this->has_draft);
 		if ($this->isColumnModified(LanguageObjectPeer::CREATED_AT)) $criteria->add(LanguageObjectPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(LanguageObjectPeer::UPDATED_AT)) $criteria->add(LanguageObjectPeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(LanguageObjectPeer::CREATED_BY)) $criteria->add(LanguageObjectPeer::CREATED_BY, $this->created_by);
@@ -1105,6 +1185,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		$copyObj->setObjectId($this->getObjectId());
 		$copyObj->setLanguageId($this->getLanguageId());
 		$copyObj->setData($this->getData());
+		$copyObj->setHasDraft($this->getHasDraft());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setCreatedBy($this->getCreatedBy());
@@ -1356,6 +1437,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		$this->object_id = null;
 		$this->language_id = null;
 		$this->data = null;
+		$this->has_draft = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->created_by = null;
@@ -1363,6 +1445,7 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
 		$this->setDeleted(false);

@@ -41,6 +41,7 @@ class LanguageObjectTableMap extends TableMap
 		$this->addForeignPrimaryKey('OBJECT_ID', 'ObjectId', 'INTEGER' , 'objects', 'ID', true, null, null);
 		$this->addForeignPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR' , 'languages', 'ID', true, 3, null);
 		$this->addColumn('DATA', 'Data', 'BLOB', false, null, null);
+		$this->addColumn('HAS_DRAFT', 'HasDraft', 'BOOLEAN', false, 1, false);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);

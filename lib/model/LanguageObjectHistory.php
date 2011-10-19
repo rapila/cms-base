@@ -19,6 +19,5 @@ class LanguageObjectHistory extends BaseLanguageObjectHistory {
 		}
 		return 1;
 	}
-	
 }
 

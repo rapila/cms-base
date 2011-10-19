@@ -26,13 +26,13 @@ abstract class BaseLanguageObjectPeer {
 	const TM_CLASS = 'LanguageObjectTableMap';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 7;
+	const NUM_COLUMNS = 8;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 7;
+	const NUM_HYDRATE_COLUMNS = 8;
 
 	/** the column name for the OBJECT_ID field */
 	const OBJECT_ID = 'language_objects.OBJECT_ID';
@@ -42,6 +42,9 @@ abstract class BaseLanguageObjectPeer {
 
 	/** the column name for the DATA field */
 	const DATA = 'language_objects.DATA';
+
+	/** the column name for the HAS_DRAFT field */
+	const HAS_DRAFT = 'language_objects.HAS_DRAFT';
 
 	/** the column name for the CREATED_AT field */
 	const CREATED_AT = 'language_objects.CREATED_AT';
@@ -76,12 +79,12 @@ abstract class BaseLanguageObjectPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('ObjectId', 'LanguageId', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId', 'languageId', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID, self::LANGUAGE_ID, self::DATA, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('OBJECT_ID', 'LANGUAGE_ID', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('object_id', 'language_id', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('ObjectId', 'LanguageId', 'Data', 'HasDraft', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId', 'languageId', 'data', 'hasDraft', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID, self::LANGUAGE_ID, self::DATA, self::HAS_DRAFT, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('OBJECT_ID', 'LANGUAGE_ID', 'DATA', 'HAS_DRAFT', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('object_id', 'language_id', 'data', 'has_draft', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -91,12 +94,12 @@ abstract class BaseLanguageObjectPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('ObjectId' => 0, 'LanguageId' => 1, 'Data' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId' => 0, 'languageId' => 1, 'data' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID => 0, self::LANGUAGE_ID => 1, self::DATA => 2, self::CREATED_AT => 3, self::UPDATED_AT => 4, self::CREATED_BY => 5, self::UPDATED_BY => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('OBJECT_ID' => 0, 'LANGUAGE_ID' => 1, 'DATA' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'CREATED_BY' => 5, 'UPDATED_BY' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('object_id' => 0, 'language_id' => 1, 'data' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('ObjectId' => 0, 'LanguageId' => 1, 'Data' => 2, 'HasDraft' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, 'CreatedBy' => 6, 'UpdatedBy' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('objectId' => 0, 'languageId' => 1, 'data' => 2, 'hasDraft' => 3, 'createdAt' => 4, 'updatedAt' => 5, 'createdBy' => 6, 'updatedBy' => 7, ),
+		BasePeer::TYPE_COLNAME => array (self::OBJECT_ID => 0, self::LANGUAGE_ID => 1, self::DATA => 2, self::HAS_DRAFT => 3, self::CREATED_AT => 4, self::UPDATED_AT => 5, self::CREATED_BY => 6, self::UPDATED_BY => 7, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('OBJECT_ID' => 0, 'LANGUAGE_ID' => 1, 'DATA' => 2, 'HAS_DRAFT' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, 'CREATED_BY' => 6, 'UPDATED_BY' => 7, ),
+		BasePeer::TYPE_FIELDNAME => array ('object_id' => 0, 'language_id' => 1, 'data' => 2, 'has_draft' => 3, 'created_at' => 4, 'updated_at' => 5, 'created_by' => 6, 'updated_by' => 7, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -171,6 +174,7 @@ abstract class BaseLanguageObjectPeer {
 			$criteria->addSelectColumn(LanguageObjectPeer::OBJECT_ID);
 			$criteria->addSelectColumn(LanguageObjectPeer::LANGUAGE_ID);
 			$criteria->addSelectColumn(LanguageObjectPeer::DATA);
+			$criteria->addSelectColumn(LanguageObjectPeer::HAS_DRAFT);
 			$criteria->addSelectColumn(LanguageObjectPeer::CREATED_AT);
 			$criteria->addSelectColumn(LanguageObjectPeer::UPDATED_AT);
 			$criteria->addSelectColumn(LanguageObjectPeer::CREATED_BY);
@@ -179,6 +183,7 @@ abstract class BaseLanguageObjectPeer {
 			$criteria->addSelectColumn($alias . '.OBJECT_ID');
 			$criteria->addSelectColumn($alias . '.LANGUAGE_ID');
 			$criteria->addSelectColumn($alias . '.DATA');
+			$criteria->addSelectColumn($alias . '.HAS_DRAFT');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 			$criteria->addSelectColumn($alias . '.CREATED_BY');

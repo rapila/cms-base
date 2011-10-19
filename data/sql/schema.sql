@@ -163,6 +163,7 @@ CREATE TABLE `language_objects`
 	`object_id` INTEGER NOT NULL,
 	`language_id` VARCHAR(3) NOT NULL,
 	`data` LONGBLOB,
+	`has_draft` TINYINT(1) DEFAULT 0,
 	`created_at` DATETIME,
 	`updated_at` DATETIME,
 	`created_by` INTEGER,

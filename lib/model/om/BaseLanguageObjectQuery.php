@@ -9,6 +9,7 @@
  * @method     LanguageObjectQuery orderByObjectId($order = Criteria::ASC) Order by the object_id column
  * @method     LanguageObjectQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     LanguageObjectQuery orderByData($order = Criteria::ASC) Order by the data column
+ * @method     LanguageObjectQuery orderByHasDraft($order = Criteria::ASC) Order by the has_draft column
  * @method     LanguageObjectQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     LanguageObjectQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     LanguageObjectQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -17,6 +18,7 @@
  * @method     LanguageObjectQuery groupByObjectId() Group by the object_id column
  * @method     LanguageObjectQuery groupByLanguageId() Group by the language_id column
  * @method     LanguageObjectQuery groupByData() Group by the data column
+ * @method     LanguageObjectQuery groupByHasDraft() Group by the has_draft column
  * @method     LanguageObjectQuery groupByCreatedAt() Group by the created_at column
  * @method     LanguageObjectQuery groupByUpdatedAt() Group by the updated_at column
  * @method     LanguageObjectQuery groupByCreatedBy() Group by the created_by column
@@ -48,6 +50,7 @@
  * @method     LanguageObject findOneByObjectId(int $object_id) Return the first LanguageObject filtered by the object_id column
  * @method     LanguageObject findOneByLanguageId(string $language_id) Return the first LanguageObject filtered by the language_id column
  * @method     LanguageObject findOneByData(resource $data) Return the first LanguageObject filtered by the data column
+ * @method     LanguageObject findOneByHasDraft(boolean $has_draft) Return the first LanguageObject filtered by the has_draft column
  * @method     LanguageObject findOneByCreatedAt(string $created_at) Return the first LanguageObject filtered by the created_at column
  * @method     LanguageObject findOneByUpdatedAt(string $updated_at) Return the first LanguageObject filtered by the updated_at column
  * @method     LanguageObject findOneByCreatedBy(int $created_by) Return the first LanguageObject filtered by the created_by column
@@ -56,6 +59,7 @@
  * @method     array findByObjectId(int $object_id) Return LanguageObject objects filtered by the object_id column
  * @method     array findByLanguageId(string $language_id) Return LanguageObject objects filtered by the language_id column
  * @method     array findByData(resource $data) Return LanguageObject objects filtered by the data column
+ * @method     array findByHasDraft(boolean $has_draft) Return LanguageObject objects filtered by the has_draft column
  * @method     array findByCreatedAt(string $created_at) Return LanguageObject objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return LanguageObject objects filtered by the updated_at column
  * @method     array findByCreatedBy(int $created_by) Return LanguageObject objects filtered by the created_by column
@@ -248,6 +252,32 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
     public function filterByData($data = null, $comparison = null)
     {
         return $this->addUsingAlias(LanguageObjectPeer::DATA, $data, $comparison);
+    }
+
+    /**
+     * Filter the query on the has_draft column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHasDraft(true); // WHERE has_draft = true
+     * $query->filterByHasDraft('yes'); // WHERE has_draft = true
+     * </code>
+     *
+     * @param     boolean|string $hasDraft The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return    LanguageObjectQuery The current query, for fluid interface
+     */
+    public function filterByHasDraft($hasDraft = null, $comparison = null)
+    {
+        if (is_string($hasDraft)) {
+            $has_draft = in_array(strtolower($hasDraft), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+        return $this->addUsingAlias(LanguageObjectPeer::HAS_DRAFT, $hasDraft, $comparison);
     }
 
     /**
