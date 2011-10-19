@@ -1,0 +1,48 @@
+#concerns refactoring of edit_widgets to migrate to new language_object and history handling with drafts
+
+change both EditWidgetModule and FrontendModule
+
+FrontendModule PHP migration
+	# if simple like this example, then delete widgetSave() without implementing getSaveData();
+	public function widgetSave($mData) {
+		$this->oLanguageObject->setData(serialize($mData));
+	}
+	
+	
+	# if more complex
+	replace widgetSave() by
+	
+	public function getSaveData($mData) {
+		# do something like this, ie in LinkListFrontendModule
+		if($this->oLanguageObject instanceof LanguageObject) {
+			if(isset($mData['link_categories'])) {
+				ReferencePeer::removeReferences($this->oLanguageObject);
+				foreach($mData['link_categories'] as $iCategoryId) {
+					ReferencePeer::addReference($this->oLanguageObject, array($iCategoryId, 'LinkCategory'));
+				}
+			}
+		}
+		# and this
+		return parent::getSaveData($mData);
+	}
+
+
+EditWidgetModule PHP migration
+
+remove this method if exists
+	public function saveData($mData) {
+		return $this->oFrontendModule->widgetSave($mData);
+	}
+
+EditWidgetModule JS migration
+refactor
+	save: function(callback) {
+		var example_data = this._element.serializeArrayKV();
+		this.saveData(example_data, callback);
+	},
+
+into
+	save: function() {
+		var example_data = this._element.serializeArrayKV();
+		return example_data;
+	},
