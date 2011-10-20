@@ -1,5 +1,5 @@
 <?php
-class LoginEditWidgetModule extends EditWidgetModule {
+class LoginFrontendConfigWidgetModule extends EditWidgetModule {
 
 	public function __construct($sSessionKey, $oFrontendModule) {
 		parent::__construct($sSessionKey, $oFrontendModule);
