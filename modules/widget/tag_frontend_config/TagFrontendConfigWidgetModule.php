@@ -1,5 +1,5 @@
 <?php
-class TagEditWidgetModule extends EditWidgetModule {
+class TagFrontendConfigWidgetModule extends EditWidgetModule {
 	public function allTagedItems() {
 	}
 	

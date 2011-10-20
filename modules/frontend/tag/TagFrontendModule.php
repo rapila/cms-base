@@ -49,7 +49,7 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 	}
 	
 	public function getWidget() {
-		$oWidget = new TagEditWidgetModule(null, $this);
+		$oWidget = new TagFrontendConfigWidgetModule(null, $this);
 		return $oWidget;
 	}
 }
