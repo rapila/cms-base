@@ -1,5 +1,5 @@
 <?php
-class LinkEditWidgetModule extends PersistentWidgetModule {
+class LinkListFrontendConfigWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $sDisplayMode;
 	

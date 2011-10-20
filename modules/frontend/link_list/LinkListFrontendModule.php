@@ -72,7 +72,7 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 	
 	public function getWidget() {
 		$aOptions = @unserialize($this->getData());	
-		$oWidget = new LinkEditWidgetModule(null, $this);
+		$oWidget = new LinkListFrontendConfigWidgetModule(null, $this);
 		$oWidget->setDisplayMode($aOptions);
 		return $oWidget;
 	}
