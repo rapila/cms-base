@@ -2,6 +2,8 @@ Widget.types.backup = {
 	prepare: function() {
 		var _this = this;
 		this._element.append(jQuery.parseHTML("{{includeTemplate=backup}}"));
+		var backup_file_row = jQuery.parseHTML("{{includeTemplate=file_row}}", false, 'tbody');
+		var backup_file_list = this._element.find('table.backup_files');
 		
 		//Load
 		var restorer = this._element.find('.load_from_file button').button({disabled: true});
@@ -12,6 +14,12 @@ Widget.types.backup = {
 		
 		this.possibleRestoreFiles(function(files) {
 			restore_file.populate(files).change();
+			jQuery.each(files, function(file_name, file_path) {
+				var file_row = backup_file_row.clone();
+				file_row.find('td.name').text(file_path);
+				file_row.find('input[name="file_paths[]"]').val(file_path);
+				file_row.appendTo(backup_file_list);
+			});
 		});
 		
 		restorer.click(function() {
