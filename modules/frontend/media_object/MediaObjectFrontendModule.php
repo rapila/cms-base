@@ -76,7 +76,7 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 	}
 	
 	public function getWidget() {
-		$oWidget = new MediaObjectEditWidgetModule(null, $this);
+		$oWidget = new MediaObjectFrontendConfigWidgetModule(null, $this);
 		return $oWidget;
 	}
 	
