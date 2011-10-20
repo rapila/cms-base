@@ -1,6 +1,6 @@
 <?php
 
-class FormEditWidgetModule extends EditWidgetModule {
+class FormFrontendConfigWidgetModule extends EditWidgetModule {
 	public function getTypeOptions() {
 		return array('email' => StringPeer::getString('wns.form_type.email'), 'external' => StringPeer::getString('wns.form_type.external'), 'manager' => StringPeer::getString('wns.form_type.manager'));
 	}

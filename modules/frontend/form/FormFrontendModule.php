@@ -133,7 +133,7 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 	}
 	
 	public function getWidget() {
-		$oWidget = new FormEditWidgetModule(null, $this);
+		$oWidget = new FormFrontendConfigWidgetModule(null, $this);
 		return $oWidget;
 	}
 }
