@@ -52,10 +52,8 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 		return @unserialize($this->getData());	
 	}
 	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData(serialize($mData));
-		$bResult = $this->oLanguageObject->save();
-		if($bResult) {
+	public function getSaveData($mData) {
+		if($this->oLanguageObject instanceof LanguageObject) {
 			ReferencePeer::removeReferences($this->oLanguageObject);
 			if(isset($mData['document_categories'])) {
 				foreach($mData['document_categories'] as $iCategoryId) {
@@ -63,9 +61,9 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 				}
 			}
 		}
-		return $bResult;
+		return parent::getSaveData($mData);
 	}
-	
+
 	public function getWidget() {
 		$aOptions = @unserialize($this->getData()); 
 		$oWidget = new DocumentEditWidgetModule(null, $this);
