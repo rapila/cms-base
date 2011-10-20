@@ -1,6 +1,6 @@
 <?php
 
-class MediaObjectEditWidgetModule extends PersistentWidgetModule {
+class MediaObjectFrontendConfigWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $sDisplayMode;
 	
