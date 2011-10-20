@@ -1,5 +1,5 @@
 <?php
-class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class TagFrontendModule extends DynamicFrontendModule {
 	
 	public function __construct($oLanguageObject, $aRequestPath = null) {
 		parent::__construct($oLanguageObject, $aRequestPath);
@@ -39,17 +39,4 @@ class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFron
 		return $oTemplate;
 	}
 
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
-	}
-	
-	public function getWidget() {
-		$oWidget = new TagFrontendConfigWidgetModule(null, $this);
-		return $oWidget;
-	}
 }

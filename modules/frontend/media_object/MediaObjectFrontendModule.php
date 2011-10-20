@@ -4,7 +4,7 @@
  */
 include_once('propel/runtime/lib/query/Criteria.php');
 
-class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
+class MediaObjectFrontendModule extends FrontendModule {
 	
 	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
@@ -73,11 +73,6 @@ class MediaObjectFrontendModule extends FrontendModule implements WidgetBasedFro
 	
 	public function getSaveData($mData) {
 		return $this->dataFromPost($mData);
-	}
-	
-	public function getWidget() {
-		$oWidget = new MediaObjectFrontendConfigWidgetModule(null, $this);
-		return $oWidget;
 	}
 	
 	public function dataFromPost(&$aPostData) {

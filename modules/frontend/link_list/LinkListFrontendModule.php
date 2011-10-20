@@ -3,7 +3,7 @@
  * @package modules.frontend
  */
 
-class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class LinkListFrontendModule extends DynamicFrontendModule {
 	
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
@@ -52,10 +52,6 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 		return $oListTemplate;
 	}
 
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
 	public function widgetSave($mData) {
 		$this->oLanguageObject->setData(serialize($mData));
 		$bResult = $this->oLanguageObject->save();
@@ -68,13 +64,6 @@ class LinkListFrontendModule extends DynamicFrontendModule implements WidgetBase
 			}
 		}
 		return $bResult;
-	}
-	
-	public function getWidget() {
-		$aOptions = @unserialize($this->getData());	
-		$oWidget = new LinkListFrontendConfigWidgetModule(null, $this);
-		$oWidget->setDisplayMode($aOptions);
-		return $oWidget;
 	}
 	
 	public static function getTemplateOptions() {
