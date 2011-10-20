@@ -1,5 +1,5 @@
 <?php
-class EditWidgetModule extends PersistentWidgetModule {
+class FrontendConfigWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $sDisplayMode;
 
@@ -15,10 +15,6 @@ class EditWidgetModule extends PersistentWidgetModule {
 
 	public function setDisplayMode($aDisplaymode) {
 		return $this->sDisplayMode = $aDisplaymode;
-	}
-	
-	public function saveData($mData) {
-		return $this->oFrontendModule->widgetSave($mData);
 	}
 	
 	public function getElementType() {

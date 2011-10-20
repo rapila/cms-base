@@ -1,6 +1,7 @@
 #concerns refactoring of edit_widgets to migrate to new language_object and history handling with drafts
 
 change both EditWidgetModule and FrontendModule
+if extends EditWidgetModule > change to FrontendConfigWidgetModule
 
 FrontendModule PHP migration
 	# if simple like this example, then delete widgetSave() without implementing getSaveData();
