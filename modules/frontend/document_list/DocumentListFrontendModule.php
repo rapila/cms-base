@@ -3,7 +3,7 @@
  * @package modules.frontend
  */
 
-class DocumentListFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class DocumentListFrontendModule extends DynamicFrontendModule {
 	
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
