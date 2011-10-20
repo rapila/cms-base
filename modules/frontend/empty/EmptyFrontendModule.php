@@ -3,7 +3,7 @@
  * @package modules.frontend
  */
  
-class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
+class EmptyFrontendModule extends FrontendModule {
 
 	public function __construct($oLanguageObject, $aRequestPath = null) {
 		parent::__construct($oLanguageObject, $aRequestPath);

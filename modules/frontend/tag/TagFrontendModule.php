@@ -1,5 +1,5 @@
 <?php
-class TagFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class TagFrontendModule extends DynamicFrontendModule {
 	
 	public function __construct($oLanguageObject, $aRequestPath = null) {
 		parent::__construct($oLanguageObject, $aRequestPath);

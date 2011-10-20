@@ -5,7 +5,7 @@
 
 require_once('recaptcha/recaptchalib.php');
 
-class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class FormFrontendModule extends DynamicFrontendModule {
 	
 	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);

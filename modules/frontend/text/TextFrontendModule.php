@@ -2,7 +2,7 @@
 /**
 	* @package modules.frontend
 	*/
-class TextFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
+class TextFrontendModule extends FrontendModule {
 	
 	private static $TEXT_ENCODING = "utf-8";
 	
