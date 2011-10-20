@@ -66,7 +66,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule implements Widget
 
 	public function getWidget() {
 		$aOptions = @unserialize($this->getData()); 
-		$oWidget = new DocumentEditWidgetModule(null, $this);
+		$oWidget = new DocumentListFrontendConfigWidgetModule(null, $this);
 		$oWidget->setDisplayMode($aOptions);
 		return $oWidget;
 	}

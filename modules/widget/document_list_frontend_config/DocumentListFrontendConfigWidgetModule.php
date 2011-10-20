@@ -1,5 +1,5 @@
 <?php
-class DocumentEditWidgetModule extends PersistentWidgetModule {
+class DocumentListFrontendConfigWidgetModule extends PersistentWidgetModule {
 	private $oFrontendModule;
 	private $sDisplayMode;
 	
