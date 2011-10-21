@@ -127,7 +127,7 @@ Widget.types.page_type.types['default'] = {
 	remove_object: function(item_to_remove, force) {
 		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), !!force, function(deleted) {
 			if(deleted && !force) {
-				Widget.types.page_type.types['default'].update_content_properties(item_to_remove, {is_filled_in_current_language: false});
+				Widget.types.page_type.types['default'].update_content_properties(item_to_remove, {is_filled_in_current_language: false, is_draft: true});
 			} else if(deleted) {
 				item_to_remove.remove();
 			}
@@ -186,7 +186,7 @@ Widget.types.page_type.types['default'] = {
 									});
 									return false;
 								},
-								title: item_to_edit.text(),
+								title: item_to_edit.find('.module_name').text(),
 								position: ['center', 50],
 								// modal: true,
 								width: widget.settings.preferred_width || 550,
@@ -212,18 +212,21 @@ Widget.types.page_type.types['default'] = {
 	},
 	
 	update_content_properties: function(element, properties) {
-		var remove_button = element.find('.ui-icon.ui-icon-trash');
-		var cls, hd;
+		var cls;
 		if(properties.is_filled_in_current_language !== undefined) {
 			cls = properties.is_filled_in_current_language ? 'removeClass' : 'addClass';
-			hd = properties.is_filled_in_current_language ? 'show' : 'hide';
-			remove_button[cls]('delete_inactive')[hd]();
 			element[cls]('language_object_empty');
 		}
 		if(properties.is_draft !== undefined) {
 			cls = properties.is_draft ? 'addClass' : 'removeClass';
 			element[cls]('is_draft');
 		}
+	},
+
+	drop_draft: function(item_to_edit, pt_default) {
+		this.callPageTypeMethod('adminDropDraft', item_to_edit.attr('data-object-id'), function() {
+			pt_default.update_content_properties(item_to_edit, {is_draft: false});
+		});
 	},
 	
 	handle_admin: function(page_id, container, page_type) {
@@ -256,9 +259,7 @@ Widget.types.page_type.types['default'] = {
 				filled_modules.removeClass('css_parsed');
 			}
 			var filled_modules_containers = filled_modules.find('ol');			
-			var remove_button = jQuery('<span/>').addClass('ui-icon ui-icon-trash').attr('title', "{{writeString=wns.delete_content_object}}").css({'float': "right", cursor: "pointer"});
-			var edit_condition_button = jQuery('<span/>').addClass('ui-icon ui-icon-wrench').attr('title', "{{writeString=wns.edit_display_conditions}}").css({'float': "right", cursor: "pointer"});
-			var edit_button = jQuery('<span/>').addClass('ui-icon ui-icon-pencil').attr('title', "{{writeString=wns.edit_language_content}}").css({'float':"right", cursor: "pointer"});
+			var filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
 			
 			// fill existing objects and handle drag and drop and sort
 			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
@@ -267,13 +268,15 @@ Widget.types.page_type.types['default'] = {
 				jQuery.each(containers, function(container_name, params) {
 					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 					jQuery.each(params.contents, function(i, content) {
-						var li = jQuery('<li/>').text(content.object_type_display_name).attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': content.id}).appendTo(target);
+						var li = filled_module_li.clone().attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': content.id}).appendTo(target);
+						li.find('.module_name').text(content.object_type_display_name);
 						if(content.content_info) {
 							li.attr('title', content.content_info);
 						}
-						li.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, li, false)));
-						li.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, li)));
-						li.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, li)));
+						li.find('.remove_button').click(pt_default.remove_object.bind(page_type, li, false));
+						li.find('.edit_condition_button').click(pt_default.edit_condition.bind(page_type, li));
+						li.find('.edit_button').click(pt_default.edit_object.bind(page_type, li));
+						li.find('.draft_status').click(pt_default.drop_draft.bind(page_type, li, pt_default));
 						pt_default.update_content_properties(li, {is_filled_in_current_language: content.content_info !== false, is_draft: content.is_draft});
 					});
 				});

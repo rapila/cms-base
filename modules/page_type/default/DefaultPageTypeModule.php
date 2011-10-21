@@ -307,10 +307,24 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oObject->save();
 		}
 	}
+
+	public function adminDropDraft($iObjectId) {
+		$oCurrentContentObject = $this->contentObjectById($iObjectId);
+		if($this->sLanguageId === null) {
+			$this->sLanguageId = AdminManager::getContentLanguage();
+		}
+		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
+		if($oCurrentLanguageObject === null) {
+			///In this case, we have to remove all stored history objects in order to remove the draft status
+			return LanguageObjectHistoryQuery::create()->filterByContentObject($oCurrentContentObject)->delete();
+		}
+		$oCurrentLanguageObject->setHasDraft(false);
+		return $oCurrentLanguageObject->save();
+	}
 	
 	public function adminRemoveObject($iObjectId, $bForce = false) {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
-		if(!Session::getSession()->getUser()->mayEditPageContents($oCurrentContentObject->getPage())) {
+		if(!Session::getSession()->getUser()->mayEditPageStructure($oCurrentContentObject->getPage())) {
 			return false;
 		} 
 		if($bForce) {
@@ -323,6 +337,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if($oCurrentLanguageObject === null) {
 			return true;
 		}
+		$oCurrentLanguageObject->newHistory(false)->save();
 		$oCurrentLanguageObject->delete();
 		return true;
 	}
