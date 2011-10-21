@@ -15,7 +15,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 
 	const MODE_SELECT_KEY = 'display_mode';
 
-	public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
+	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
 		$this->oPage = FrontendManager::$CURRENT_PAGE;
 	}
