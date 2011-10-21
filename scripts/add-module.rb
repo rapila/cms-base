@@ -320,7 +320,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		if $aspects.include? 'detail' then
 			sett['detail_widget'] = {}
 			init += "this._element = jQuery.parseHTML(this._instanceInformation.content);
-		Widget.callStatic('detail', 'set_instance', this);
+		Widget.callStatic('detail', 'create_for_instance', this);
 		"
 			add += "
 	fill_data: function() {
