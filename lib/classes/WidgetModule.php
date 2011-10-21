@@ -96,6 +96,7 @@ abstract class WidgetModule extends Module {
 	 * Pass additional arguments to the module’s constructor after the session key. If your module is not persistent, do not pass a session key.
 	 * @param string $sWidgetType The widget_type (in underscore notation)
 	 * @param string|null $sSessionKey The session key (most often null, but still required for persistent modules if you wish to pass additional parameters)
+	 * @return WidgetModule the instanciated widget
 	*/
 	public static function getWidget($sWidgetType, $sSessionKey = null) {
 		if($sSessionKey !== null) {

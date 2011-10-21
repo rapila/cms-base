@@ -100,5 +100,4 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return $aResult;
 	}
-
 }
