@@ -197,10 +197,6 @@ end
 
 write_file(:php, "#{class_name}.php") do
 	implements = ''
-	if $options[:type] == :frontend and $aspects.include? 'widget_based' then
-		implements = ' implements WidgetBasedFrontendModule'
-	end
-
 	extends = super_class_name
 	if $options[:type] == :frontend then
 		if $aspects.include? 'dynamic' then
@@ -240,19 +236,15 @@ write_file(:php, "#{class_name}.php") do
 		#{constructor_content}", ['sSessionKey = null']) if $aspects.include? 'persistent'
 		php_methods.push php_method('__construct', constructor_content) unless $aspects.include? 'persistent'
 	elsif $options[:type] == :frontend then
-		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['LanguageObject $oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
+		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
 		if $aspects.include? 'widget_based' then
-			php_methods.push php_method('widgetData', '$mData = $this->getData();
-		if($mData !== null) {
-			$mData = unserialize($mData);
-		}
-		return $mData;')
-			php_methods.push php_method('widgetSave', '$this->getLanguageObject()->setData(serialize($oWidgetData));
-		return $this->getLanguageObject()->save();', ['oWidgetData'])
-			php_methods.push php_method('getWidget', '$oWidget = WidgetModule::getWidget("generic_frontend_module");
-		return $oWidget;')
+			php_methods.push php_method('getWidget', 'return parent::getWidget();');
+		else
+			php_methods.push php_method('renderBackend', 'return $this->constructTemplate("some-template");')
 		end
+		php_methods.push php_method('getSaveData', 'return parent::getSaveData($aData);', ['aData'])
+		php_methods.push php_method('widgetData', 'return parent::widgetData();')
 	elsif $options[:type] == :admin then
 		widgets = {}
 		widgets[:sidebar_widget] = '$this->oSidebarWidget' unless $aspects.include? 'single_screen'
