@@ -223,14 +223,6 @@ h3.status
 		padding: 0
 		float:left
 
-	.filled_modules ol.template-container
-		display: block
-		min-height: 70px !important
-		min-width: 150px !important
-		border: 1px solid #eeeeee !important
-		background-color: #FFF
-		border-color: #DFDFDF
-
 	.available_modules li,
 	.filled_modules ol.template-container li
 		list-style: none inside
@@ -240,14 +232,47 @@ h3.status
 		margin: 2px
 		text-align: left
 		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom
+		
+	.filled_modules ol.template-container
+		display: block
+		min-height: 70px !important
+		min-width: 150px !important
+		border: 1px solid #eeeeee !important
+		background-color: #FFF
+		border-color: #DFDFDF
 
-	.filled_modules ol.template-container li.language_object_emty
-		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
-
-	.filled_modules ol.template-container li
-		margin: 3px
-		padding: 5px 6px
-		min-height: 15.6px
+		li
+			margin: 3px
+			padding: 5px 6px
+			min-height: 15.6px
+			
+			&.language_object_empty
+				background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
+				.remove_button
+					display: none
+				
+			.draft_status
+				display: none
+			&.is_draft .draft_status
+				display: inline
+				text-transform: uppercase
+				cursor: url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
+				cursor: url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
+				margin-right: -13px
+				transform: rotate(-40deg)
+				color: #AF1A15
+				background-color: rgba(255, 255, 255, 0.6)
+				border-radius: 2px
+				border: 1px solid #AF1A15
+				float: left
+				font-size: 0.6em
+				font-weight: bold
+				padding: 1px 2px 1px 3px
+				position: relative
+				left: -15px
+				top: -1px
+				&:hover
+					opacity: 0.5
 
 	.ui-widget-content .template-container .ui-icon
 		height: 20px

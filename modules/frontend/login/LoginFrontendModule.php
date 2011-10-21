@@ -8,14 +8,14 @@
  * is there a reason to protect a login page?
  */
 
-class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class LoginFrontendModule extends DynamicFrontendModule {
 	
 	private $oPage;
 	private $oUser;
 
 	const MODE_SELECT_KEY = 'display_mode';
 
-	public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
+	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
 		$this->oPage = FrontendManager::$CURRENT_PAGE;
 	}
@@ -88,21 +88,5 @@ class LoginFrontendModule extends DynamicFrontendModule implements WidgetBasedFr
 	
 	public function getUser() {
 		return $this->oUser;
-	}
-
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
-	}
-	
-	public function getWidget() {
-		$aOptions = @unserialize($this->getData()); 
-		$oWidget = new LoginEditWidgetModule(null, $this);
-		$oWidget->setDisplayMode($aOptions[self::MODE_SELECT_KEY]);
-		return $oWidget;
 	}
 }

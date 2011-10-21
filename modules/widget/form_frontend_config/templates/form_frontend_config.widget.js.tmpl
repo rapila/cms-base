@@ -1,0 +1,103 @@
+Widget.types.form_frontend_config = {
+	prepare: function() {
+		var content = jQuery.parseHTML("{{includeTemplate=edit_table}}");
+		var _this = this;
+		this._element.append(content);
+		
+		var types_dropdown = this._element.find("select[name='form_type']").populate(this.getTypeOptions());
+		this._element.find("select[name='request_method']").populate(this.getMethodOptions());
+		this._element.find("select[name='manager']").populate(this.getManagerOptions());
+		
+		this.form_field_prototype = jQuery("{{includeTemplate=edit_form_field_row}}");
+		this.form_field_prototype.find(".switcher_field").populate(this.getFieldTypeOptions());
+		
+		types_dropdown.bind('change', function() {
+			_this._element.find('.conditional_field-for-form_type').hide().filter('.'+jQuery(this).val()).show();
+		}).change();
+		
+		var template_name_preview = this._element.find('.e_mail_template_name');
+		this._element.find("input[name='template_addition']").keyup(function() {
+			var value = jQuery.trim(jQuery(this).val());
+			if(!value) {
+				template_name_preview.text('e_mail_form_output.tmpl');
+			} else {
+				template_name_preview.text('e_mail_form_output_'+value+'.tmpl');
+			}
+		}).keyup();
+		
+		this.form_field_area = this._element.find('.form_fields');
+		this.form_field_thead =	this._element.find('thead').hide();
+		this.update_form_fields();
+		
+		this.form_field_area.sortable({
+			handle: '.ui-sortable-handle',
+			axis: 'y',
+			containment: this.form_field_area.closest('table')
+		});
+		
+		this._element.find('.add_entry').bind('click', function() {
+			_this.add_item();
+			_this.update_form_fields();
+		});
+		
+		this._element.delegate('.remove_entry', 'click', function() {
+			jQuery(this).closest('tr').remove();
+			_this.update_form_fields();
+		});
+		
+		this.update();
+	},
+	
+	update_form_fields: function() {
+		if(this.form_field_area.find('.form_input_row').length > 0) {
+			this.form_field_thead.show();
+		} else {
+			this.form_field_thead.hide();
+		}
+	},
+	
+	add_item: function(data) {
+		var field = this.form_field_prototype.clone();
+		this.form_field_area.append(field);
+		if(data) {
+			jQuery.each(data, function(name, value) {
+				var input = field.find(":input[name='"+name.escapeSelector()+"[]']");
+				if(input.attr('type') !== 'checkbox') {
+					input.val(value);
+				} else {
+					input.prop('checked', value);
+				}
+			});
+		}
+	},
+	
+	update: function() {
+		var current_mode = this.getConfigData();
+		if(!current_mode) {
+			return;
+		}
+		jQuery.each(current_mode, function(name, value) {
+			if(name === 'objects') {
+				jQuery.each(value, function(i, field) {
+					this.add_item(field);
+				}.bind(this));
+			} else {
+				var input = this._element.find(":input[name='"+name.escapeSelector()+"']");
+				if(input.attr('type') !== 'checkbox') {
+					input.val(value);
+					input.change();
+				} else {
+					input.prop('checked', value);
+				}
+			}
+		}.bind(this));
+	},
+	
+	save: function(callback) {
+		return this._element.serializeArrayKV();
+	},
+	
+	settings: {
+		preferred_width: 600
+	}	
+};

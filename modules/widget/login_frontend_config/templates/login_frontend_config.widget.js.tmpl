@@ -1,0 +1,13 @@
+Widget.types.login_frontend_config = {
+	prepare: function() {
+		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this._element.append(this.content);
+		var mode_dropdown = this._element.find("select[name='display_mode']");
+		mode_dropdown.populate({'': "{{writeString=wns.choose}}"});
+		mode_dropdown.populate(this.getDisplayOptions(), this.getLoginDisplayMode());
+	},
+	
+	save: function() {
+		return this._element.serializeArrayKV();
+	}
+};

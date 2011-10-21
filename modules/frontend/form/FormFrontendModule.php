@@ -5,9 +5,9 @@
 
 require_once('recaptcha/recaptchalib.php');
 
-class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFrontendModule {
+class FormFrontendModule extends DynamicFrontendModule {
 	
-	public function __construct(LanguageObject $oLanguageObject = null, $aRequestPath = null, $iId = 1) {
+	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
 	}
 
@@ -41,7 +41,10 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 	}
 	
 	public static function getContentInfo($oLanguageObject) {
-		$oFormStorage = unserialize(stream_get_contents($oLanguageObject->getData()));
+		$oFormStorage = @unserialize(stream_get_contents($oLanguageObject->getData()));
+		if(!$oFormStorage) {
+			return null;
+		}
 		
 		$sType = $oFormStorage->getFormType();
 		$sAction = '';
@@ -87,7 +90,7 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 		return $aResult;
 	}
 	
-	public function widgetSave($mData) {
+	public function getSaveData($mData) {
 		$oFormStorage = $this->getFormStorage();
 		
 		$oFormStorage->clearObjects();
@@ -126,13 +129,7 @@ class FormFrontendModule extends DynamicFrontendModule implements WidgetBasedFro
 			}
 		}
 		
-		$this->oLanguageObject->setData(serialize($oFormStorage));
-		return $this->oLanguageObject->save();
-	}
-	
-	public function getWidget() {
-		$oWidget = new FormEditWidgetModule(null, $this);
-		return $oWidget;
+		return serialize($oFormStorage);
 	}
 }
 
@@ -143,12 +140,12 @@ class FormStorage {
 	private $sFormSessionKeyPart;
 	private $sRequestMethod;
 	
-	public function __construct(LanguageObject $oLanguageObject) {
+	public function __construct($oLanguageObject) {
 		$this->sFormSessionKeyPart = $oLanguageObject->getLanguageId()."_".$oLanguageObject->getObjectId();
 		$this->sRequestMethod = "post";
 		$this->aFormObjects = array();
 		$this->aFormOptions = array();
-		$this->sFormType = "general";
+		$this->sFormType = "external";
 	}
 	
 	public function renderForm($oTemplate, $iFormId) {

@@ -3,29 +3,25 @@
  * @package modules.frontend
  */
  
-class EmptyFrontendModule extends FrontendModule implements WidgetBasedFrontendModule {
+class EmptyFrontendModule extends FrontendModule {
 
 	public function __construct($oLanguageObject, $aRequestPath = null) {
 		parent::__construct($oLanguageObject, $aRequestPath);
 	}
 
 	public function renderFrontend() {
-		return "";
+		return '';	
 	}
 
-	public function getSaveData() {
-		return "";
-	}
-	
 	public function widgetData() {
 		return '';	
 	}
 	
-	public function widgetSave($mData) {
-		return $this->oLanguageObject->setData('')->save();
+	public function getSaveData($mData) {
+		return '';
 	}
 	
-	public function getWidget() {
-		return new GenericFrontendModuleWidgetModule(null, $this, StringPeer::getString('wns.empty.confirm'));
+	public function renderBackend() {
+		return StringPeer::getString('wns.empty.confirm');
 	}
 }

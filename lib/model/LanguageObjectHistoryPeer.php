@@ -31,7 +31,13 @@ class LanguageObjectHistoryPeer extends BaseLanguageObjectHistoryPeer {
 	}
 	
 	public static function mayOperateOn($oUser, $oLanguageObjectHistory, $sOperation) {
-		return ContentObjectPeer::mayOperateOn($oUser, $oLanguageObjectHistory->getContentObject(), $sOperation);
+		if($oUser === null || !$oUser->getIsBackendLoginEnabled()) {
+			return false;
+		}
+		if($oUser->getIsAdmin()) {
+			return true;
+		}
+		return $oUser->mayEditPageContents($oLanguageObjectHistory->getContentObject()->getPage());
 	}
 }
 

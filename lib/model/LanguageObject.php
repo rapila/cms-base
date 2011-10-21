@@ -31,6 +31,39 @@ class LanguageObject extends BaseLanguageObject {
 			$this->setData($oLanguageObjectHistory->getData());
 		}
 	}
+
+	public function newHistory($bDraft = false) {
+		$oHistory = new LanguageObjectHistory();
+		$oHistory->setObjectId($this->getObjectId());
+		$oHistory->setLanguageId($this->getLanguageId());
+		$oHistory->setData($this->getData());
+		$this->setHasDraft($bDraft);
+		return $oHistory;
+	}
+
+	private $bStoredHasDraft = null;
+
+	public function getHasDraft() {
+		if($this->bStoredHasDraft === null) {
+			if($this->isNew()) {
+				parent::setHasDraft(LanguageObjectHistoryQuery::create()->filterByLanguageObject($this)->count() > 0);
+			}
+			$this->bStoredHasDraft = parent::getHasDraft();
+		}
+		return $this->bStoredHasDraft;
+	}
+
+	public function setHasDraft($bHasDraft) {
+		$this->bStoredHasDraft = $bHasDraft;
+		parent::setHasDraft($bHasDraft);
+	}
+
+	public function getDraft() {
+		if($this->getHasDraft()) {
+			return LanguageObjectHistoryQuery::create()->filterByLanguageObject($this)->sort()->findOne();
+		}
+		return $this;
+	}
 	
 	public function setData($mData, $bIgnorePermissions = false) {
 		if(!$bIgnorePermissions) {

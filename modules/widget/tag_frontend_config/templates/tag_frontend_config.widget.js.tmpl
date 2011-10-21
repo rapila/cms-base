@@ -1,0 +1,61 @@
+Widget.types.tag_frontend_config = {
+	prepare: function() {
+		var content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		var _this = this;
+		this._element.append(content);
+		this.types_dropdown = this._element.find("select[name='types[]']");
+		this.templates_dropdown = this._element.find("select[name='template']");
+		this.tag_area = this._element.find("div.tag_area");
+		
+		var modes = this.getConfigurationModes();
+		
+		jQuery.each(modes.tags, function(i, tag) {
+			jQuery('<span/>').text(tag.name).css('font-size', ""+(1+(tag.count/10))+"em").addClass('tag').appendTo(_this.tag_area).data('tag_id', tag.id);
+		});
+		
+		jQuery.each(modes.templates, function(i, name) {
+			jQuery('<option/>').text(name).attr('value', name).appendTo(_this.templates_dropdown);
+		});
+		
+		jQuery.each(modes.types, function(key, name) {
+			jQuery('<option/>').text(name).attr('value', key).appendTo(_this.types_dropdown);
+		});
+		
+		this.tag_area.delegate('.tag', 'click', function() {
+			var tag = jQuery(this);
+			if(tag.is('.active')) {
+				tag.removeClass('active');
+			} else {
+				tag.addClass('active');
+			}
+		});
+		
+		this.update();
+	},
+	
+	update: function() {
+		var current_mode = this.getConfigData();
+		if(!current_mode) {
+			return;
+		}
+		this.types_dropdown.val(current_mode.types);
+		this.templates_dropdown.val(current_mode.template);
+		jQuery.each(this.tag_area.find('.tag'), function() {
+			var tag = jQuery(this);
+			if(current_mode.tags.indexOf(tag.data('tag_id')) > -1) {
+				tag.addClass('active');
+			} else {
+				tag.removeClass('active');
+			}
+		});
+	},
+	
+	save: function() {
+		var form_settings = this._element.serializeArrayKV();
+		form_settings.tags = [];
+		this.tag_area.find('.tag.active').each(function() {
+			form_settings.tags.push(jQuery(this).data('tag_id'));
+		});
+		return form_settings;
+	}
+};

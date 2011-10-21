@@ -1,0 +1,14 @@
+[data-widget-type=tag_frontend_config] div.tag_area .tag {
+	margin-right: 1em;
+	cursor: pointer;
+}
+
+[data-widget-type=tag_frontend_config] div.tag_area .tag::before {
+	content: '✗';
+	color: red;
+}
+
+[data-widget-type=tag_frontend_config] div.tag_area .tag.active::before {
+	content: '✓';
+	color: green;
+}

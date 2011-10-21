@@ -29,15 +29,9 @@ class GenericFrontendModuleWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function doWidget() {
-		if(is_string($this->oInternalWidget)) {
-			return TagWriter::quickTag('div', array(), $this->oInternalWidget);
-		} else if($this->oInternalWidget instanceof Template) {
+		if(!($this->oInternalWidget instanceof WidgetModule)) {
 			return TagWriter::quickTag('form', array(), $this->oInternalWidget);
 		}
 		return $this->oInternalWidget->doWidget();
-	}
-	
-	public function saveData($mData) {
-		return $this->oFrontendModule->widgetSave($mData);
 	}
 }

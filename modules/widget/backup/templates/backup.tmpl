@@ -12,3 +12,16 @@
 	<select name="restore_file"></select><br />
 	<button>{{writeString=wns.backup.load_from_local_file}}</button>
 </div>
+<div class="delete_file_list fieldset">
+	<table>
+		<thead>
+			<tr class="ui-list-row">
+				<tr>Dateipfad</tr>
+				<tr>Löschen</tr>
+			</tr>		
+		</thead>
+		<tbody class="backup_files">
+		</tbody>
+	</table>
+	<button class="delete_files">{{writeString=wns.backup_files.delete}}</button>
+</div>

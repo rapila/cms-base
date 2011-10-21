@@ -12,14 +12,13 @@ include_once 'model/ContentObject.php';
  */ 
 class ContentObjectPeer extends BaseContentObjectPeer {
 	public static function mayOperateOn($oUser, $oContentObject, $sOperation) {
-		if(!parent::mayOperateOn($oUser, $oContentObject, $sOperation)) {
-			//Denyable mode is set to 'backend_user' => false means: User is invalid
+		if($oUser === null || !$oUser->getIsBackendLoginEnabled()) {
 			return false;
 		}
 		if($oUser->getIsAdmin()) {
 			return true;
 		}
-		return $oUser->mayEditPageContents($oContentObject->getPage());
+		return $oUser->mayEditPageStructure($oContentObject->getPage());
 	}
 }
 
