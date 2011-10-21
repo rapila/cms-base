@@ -54,8 +54,8 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$options[:detail_aspect] = detail
 	end
 	
-	opts.on('-e', '--[no-]edit', 'Add the edit aspect. Applicable to widget modules (default for modules ending in _edit)') do |edit|
-		$options[:edit_aspect] = edit
+	opts.on('--[no-]frontend-config', 'Add the frontend_config aspect. Applicable to widget modules (default for modules ending in _frontend_config)') do |frontend_config|
+		$options[:frontend_config_aspect] = frontend_config
 	end
 	
 	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
@@ -125,7 +125,7 @@ raise OptionParser::MissingArgument if module_name.nil?
 
 $aspects << 'list' if $options[:list_aspect] or ($options[:list_aspect].nil? and module_name.end_with? '_list')
 $aspects << 'detail' if $options[:detail_aspect] or ($options[:detail_aspect].nil? and module_name.end_with? '_detail')
-$aspects << 'edit' if $options[:edit_aspect] or ($options[:edit_aspect].nil? and module_name.end_with? '_edit')
+$aspects << 'frontend_config' if $options[:frontend_config_aspect] or ($options[:frontend_config_aspect].nil? and module_name.end_with? '_frontend_config')
 
 $aspects.merge default_aspects[$options[:type]] unless default_aspects[$options[:type]].nil?
 $aspects.delete 'widget_based' unless $options[:widget_based_aspect] or $options[:widget_based_aspect].nil?
@@ -203,8 +203,8 @@ write_file(:php, "#{class_name}.php") do
 			extends = "Dynamic#{super_class_name}"
 		end
 	elsif $options[:type] == :widget then
-		if $aspects.include? 'edit' then
-			extends = "Edit#{super_class_name}"
+		if $aspects.include? 'frontend_config' then
+			extends = "FrontendConfig#{super_class_name}"
 		elsif $aspects.include? 'persistent' then
 			extends = "Persistent#{super_class_name}"
 		end
@@ -213,7 +213,14 @@ write_file(:php, "#{class_name}.php") do
 	php_methods = []
 	
 	if $options[:type] == :widget then
-		constructor_content = "";
+		constructor_content = "parent::__construct($sSessionKey);";
+		constructor_args = ['sSessionKey = null']
+
+		unless $aspects.include? 'persistent' then
+			constructor_content = ""
+			constructor_args = []
+		end
+		
 		if $aspects.include? 'list' then
 			model_name = module_name.gsub('_list', '').capitalize
 			php_methods.push php_field('oListWidget')
@@ -226,15 +233,19 @@ write_file(:php, "#{class_name}.php") do
 			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
 			php_methods.push php_method('getCriteria', '$oCriteria = new Criteria();
 		return $oCriteria;')
-		elsif $aspects.include? 'detail' then
+		end
+		if $aspects.include? 'detail' then
 			php_methods.push php_method('getElementType', 'return "form";')
 			php_methods.push php_method('loadData')
 			php_methods.push php_method('saveData', '', ['aData'])
 		end
+		if $aspects.include? 'frontend_config' then
+			constructor_content = "parent::__construct($sSessionKey, $oFrontendModule);"
+			constructor_args = ['sSessionKey', 'oFrontendModule']
+			php_methods.push php_method('updatePreview', 'return TagWriter::quickTag()->render();', ['$oPreviewData'])
+		end
 		
-		php_methods.push php_method('__construct', "parent::__construct($sSessionKey);
-		#{constructor_content}", ['sSessionKey = null']) if $aspects.include? 'persistent'
-		php_methods.push php_method('__construct', constructor_content) unless $aspects.include? 'persistent'
+		php_methods.push php_method('__construct', constructor_content, constructor_args)
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
@@ -319,6 +330,31 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		this.loadData(function(data) {
 			
 		});
+	},
+	"
+		end
+		if $aspects.include? 'frontend_config' then
+			prep += "
+		this._element.live(':input', 'change', this.update_preview.bind(this));
+		this.configData(function(data) {
+			//TODO: configure the display to match data
+			this.update_preview(null, data);
+		});
+		"
+			add += "
+	update_preview: function(event, data) {
+		data = data || this.save();
+		this.updatePreview(this.save(), function(preview) {
+			//TODO: append/replace the resulting HTML to this._element
+		});
+	},
+	
+	resize_to: function(width, height) {
+		
+	},
+
+	save: function() {
+		return this._element.serializeArrayKV();
 	},
 	"
 		end
