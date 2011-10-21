@@ -1,28 +1,5 @@
 <?php
-class LinkListFrontendConfigWidgetModule extends PersistentWidgetModule {
-	private $oFrontendModule;
-	private $sDisplayMode;
-	
-	public function __construct($sSessionKey, $oFrontendModule) {
-		parent::__construct($sSessionKey);
-		$this->oFrontendModule = $oFrontendModule;
-		$this->sDisplayMode = $this->oFrontendModule->widgetData();
-	}
-	
-	public function setDisplayMode($sDisplayMode) {
-		$this->sDisplayMode = $sDisplayMode;
-	}
-
-	public function getDisplayMode($sKey=null) {
-		if($sKey === null) {
-			return $this->sDisplayMode;
-		}
-		if(isset($this->sDisplayMode[$sKey])) {
-			return $this->sDisplayMode[$sKey];
-		}
-		return null;
-	}
-	
+class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 	public function allLinks($aOptions = array()) {
 		$oCriteria = LinkQuery::create();
 
@@ -50,9 +27,5 @@ class LinkListFrontendConfigWidgetModule extends PersistentWidgetModule {
 	
 	public function saveData($mData) {
 		return $this->oFrontendModule->widgetSave($mData);
-	}
-	
-	public function getElementType() {
-		return 'form';
 	}
 }

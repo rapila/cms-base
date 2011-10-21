@@ -1,10 +1,5 @@
 <?php
 class LoginFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
-
-	public function __construct($sSessionKey, $oFrontendModule) {
-		parent::__construct($sSessionKey, $oFrontendModule);
-	}
-
 	public function getDisplayOptions() {
 		$aResult = array();
 		foreach(ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_MODULES, FrontendModule::getType(), FrontendModule::getNameByClassName('LoginFrontendModule'), DIRNAME_TEMPLATES, '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
@@ -19,7 +14,7 @@ class LoginFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 	}
 
 	public function getLoginDisplayMode() {
-		$sResult = $this->getDisplayMode();
+		$sResult = $this->configData();
 		$sResult = $sResult[LoginFrontendModule::MODE_SELECT_KEY];
 		return $sResult;
 	}

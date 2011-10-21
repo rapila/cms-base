@@ -1,33 +1,10 @@
 <?php
-class DocumentListFrontendConfigWidgetModule extends PersistentWidgetModule {
-	private $oFrontendModule;
-	private $sDisplayMode;
-	
-	public function __construct($sSessionKey, $oFrontendModule) {
-		parent::__construct($sSessionKey);
-		$this->oFrontendModule = $oFrontendModule;
-		$this->sDisplayMode = $this->oFrontendModule->widgetData();
-	}
-	
-	public function setDisplayMode($sDisplayMode) {
-		$this->sDisplayMode = $sDisplayMode;
-	}
-
-	public function getDisplayMode($sKey=null) {
-		if($sKey === null) {
-			return $this->sDisplayMode;
-		}
-		if(isset($this->sDisplayMode[$sKey])) {
-			return $this->sDisplayMode[$sKey];
-		}
-		return null;
-	}
-	
+class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 	public function allDocuments($aOptions = array()) {
 		$oCriteria = DocumentQuery::create();
 		$aCategories = array();
 		if(count($aOptions) === 0) {
-			$aOptions = $this->getDisplayMode();
+			$aOptions = $this->configData();
 		}
 		if(isset($aOptions['document_categories'])) {
 			if(is_array($aOptions['document_categories']) ) {
@@ -64,9 +41,5 @@ class DocumentListFrontendConfigWidgetModule extends PersistentWidgetModule {
 		  $aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
 		}
 		return $aResult;
-	}
-	
-	public function getElementType() {
-		return 'form';
 	}
 }

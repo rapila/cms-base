@@ -1,20 +1,23 @@
 <?php
 class FrontendConfigWidgetModule extends PersistentWidgetModule {
-	private $oFrontendModule;
-	private $sDisplayMode;
+	protected $oFrontendModule;
 
 	public function __construct($sSessionKey, $oFrontendModule) {
 		parent::__construct($sSessionKey);
 		$this->oFrontendModule = $oFrontendModule;
-		$this->sDisplayMode = $this->oFrontendModule->widgetData();
 	}
 
-	public function getDisplayMode() {
-		return $this->sDisplayMode;
+	public function configData() {
+		return $this->oFrontendModule->widgetData();
 	}
 
-	public function setDisplayMode($aDisplaymode) {
-		return $this->sDisplayMode = $aDisplaymode;
+	///Synchronous alias for configData
+	public function getConfigData() {
+		return $this->configData();
+	}
+
+	public function updatePreview() {
+		return null;
 	}
 	
 	public function getElementType() {
