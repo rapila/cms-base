@@ -308,9 +308,10 @@ Widget.types.page_type.types['default'] = {
 						item.attr('data-container', target.attr('data-container-name'));
 						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
 							item.attr('data-object-id', object_id);
-							item.prepend(remove_button.clone().click(pt_default.remove_object.bind(page_type, item, false)));
-							item.prepend(edit_condition_button.clone().click(pt_default.edit_condition.bind(page_type, item)));
-							item.prepend(edit_button.clone().click(pt_default.edit_object.bind(page_type, item)));
+							item.find('.remove_button').click(pt_default.remove_object.bind(page_type, item, false));
+							item.find('.edit_condition_button').click(pt_default.edit_condition.bind(page_type, item));
+							item.find('.edit_button').click(pt_default.edit_object.bind(page_type, item));
+							item.find('.draft_status').click(pt_default.drop_draft.bind(page_type, item, pt_default));
 							pt_default.update_content_properties(item, {is_filled_in_current_language: false});
 						});
 					}
@@ -323,7 +324,7 @@ Widget.types.page_type.types['default'] = {
 					connectToSortable: filled_modules_containers
 				};
 				jQuery.each(modules, function(object_type, module_name) {
-					var element = jQuery('<li/>').text(module_name).attr('data-object-type', object_type).draggable(dragOptions).sortable();
+					var element = filled_module_li.clone().find('.module_name').text(module_name).end().attr('data-object-type', object_type).addClass('available_frontend_module').draggable(dragOptions).sortable();
 					element.appendTo(available_modules);
 					// not yet but soon		jQuery('<span/>').addClass('handle').appendTo(element);
 				});
