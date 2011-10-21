@@ -107,7 +107,7 @@ Widget.types.page_type.types['default'] = {
 					cleanup(preview_bar, container);
 				}
 			});
-		}).delegate('.save', 'click', function() {
+		}).delegate('.save', 'click', function(event) {
 			var preview_bar = jQuery(this).closest('.preview_bar');
 			var container = preview_bar.data('filled_container');
 			preview_bar.removeClass('editing').addClass('loading');
@@ -116,7 +116,7 @@ Widget.types.page_type.types['default'] = {
 			var language_object_control = container.data('language_object_control');
 			container.data('language_object_control', null);
 			if(widget) {
-				language_object_control.save(widget.save(), cleanup.bind(this, preview_bar, container));
+				language_object_control.save(widget.save(), event.shiftKey, cleanup.bind(this, preview_bar, container));
 			} else {
 				preview_bar.removeClass('loading').addClass('editing');
 			}
