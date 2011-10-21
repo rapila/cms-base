@@ -34,7 +34,7 @@ abstract class FrontendModule extends Module {
 		if($sData) {
 			return unserialize($sData);
 		}
-		return array();
+		return null;
 	}
 
 	/**
