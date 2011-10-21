@@ -16,7 +16,7 @@ class NotFoundFrontendModule extends FrontendModule {
     return StringPeer::getString('frontend_module.save_to_activate');
   }
 
-  public function getSaveData() {
+  public function getSaveData($aData) {
     return "";
   }
 }
