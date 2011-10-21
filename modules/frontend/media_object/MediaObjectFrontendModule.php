@@ -75,11 +75,6 @@ class MediaObjectFrontendModule extends FrontendModule {
 		return $this->dataFromPost($mData);
 	}
 	
-	public function getWidget() {
-		$oWidget = new MediaObjectFrontendConfigWidgetModule(null, $this);
-		return $oWidget;
-	}
-	
 	public function dataFromPost(&$aPostData) {
 		$aResults = array();
 		if(isset($aPostData['document_id'])) {

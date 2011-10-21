@@ -17,4 +17,10 @@ class LoginFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 		
 		return $aResult;
 	}
+
+	public function getLoginDisplayMode() {
+		$sResult = $this->getDisplayMode();
+		$sResult = $sResult[LoginFrontendModule::MODE_SELECT_KEY];
+		return $sResult;
+	}
 }

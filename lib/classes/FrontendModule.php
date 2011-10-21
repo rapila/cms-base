@@ -59,11 +59,14 @@ abstract class FrontendModule extends Module {
 	}
 	
 	/**
-	* Returns the widget used to configure this particular frontend module. Default implementation outputs the contents of renderBackend as form and serializes that on save.
+	* Returns the widget used to configure this particular frontend module. Default implementation outputs the contents of renderBackend as form and serializes that on save. If renderBackend returns a falsish value, the default widget is the one that’s named the same as this frontend module plus a suffix of “_frontend_config” and whose constructor, in addition to the session key, takes but one argument: the frontend module instance $this.
 	*/
 	public function getWidget() {
-		$oWidget = WidgetModule::getWidget("generic_frontend_module", null, $this, $this->renderBackend());
-		return $oWidget;
+		$oBackend = $this->renderBackend();
+		if($oBackend) {
+			return WidgetModule::getWidget("generic_frontend_module", null, $this, $this->renderBackend());
+		}
+		return WidgetModule::getWidget($this->getModuleName().'_frontend_config', null, $this);
 	}
 	
 	/**

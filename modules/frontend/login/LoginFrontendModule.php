@@ -89,11 +89,4 @@ class LoginFrontendModule extends DynamicFrontendModule {
 	public function getUser() {
 		return $this->oUser;
 	}
-
-	public function getWidget() {
-		$aOptions = $this->widgetData();
-		$oWidget = new LoginFrontendConfigWidgetModule(null, $this);
-		$oWidget->setDisplayMode(@$aOptions[self::MODE_SELECT_KEY]);
-		return $oWidget;
-	}
 }

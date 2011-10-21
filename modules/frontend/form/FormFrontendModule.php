@@ -131,11 +131,6 @@ class FormFrontendModule extends DynamicFrontendModule {
 		
 		return serialize($oFormStorage);
 	}
-	
-	public function getWidget() {
-		$oWidget = new FormFrontendConfigWidgetModule(null, $this);
-		return $oWidget;
-	}
 }
 
 class FormStorage {

@@ -39,17 +39,4 @@ class TagFrontendModule extends DynamicFrontendModule {
 		return $oTemplate;
 	}
 
-	public function widgetData() {
-		return @unserialize($this->getData());	
-	}
-	
-	public function widgetSave($mData) {
-		$this->oLanguageObject->setData(serialize($mData));
-		return $this->oLanguageObject->save();
-	}
-	
-	public function getWidget() {
-		$oWidget = new TagFrontendConfigWidgetModule(null, $this);
-		return $oWidget;
-	}
 }
