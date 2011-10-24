@@ -9,6 +9,9 @@
 
 	jQuery.extend(PageType.prototype, {
 		find_structure: function(filter) {
+			if(filter.attr) {
+				filter = filter.attr('data-object-id');
+			}
 			if(!jQuery.isPlainObject(filter)) {
 				filter = {id: parseInt(filter, 10)};
 			}
@@ -20,7 +23,7 @@
 				var ret = true;
 				jQuery.each(container_params.contents, function(i, content_params) {
 					if(content_params.id === filter.id || filter.obj === content_params) {
-						result = [container_params, i, content_params];
+						result = {container: container_params, index: i, content: content_params};
 						ret = false;
 						return false;
 					}
@@ -60,10 +63,10 @@
 			};
 
 			this.filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
-			this.filled_module_li.find('.remove_button').click(bind(this.remove_object));
-			this.filled_module_li.find('.edit_condition_button').click(bind(this.edit_condition));
-			this.filled_module_li.find('.edit_button').click(bind(this.edit_object));
-			this.filled_module_li.find('.draft_status').click(bind(this.drop_draft));
+			this.container.delegate('.filled_modules li .remove_button', 'click', bind(this.remove_object));
+			this.container.delegate('.filled_modules li .edit_condition_button', 'click', bind(this.edit_condition));
+			this.container.delegate('.filled_modules li .edit_button', 'click', bind(this.edit_object));
+			this.container.delegate('.filled_modules li .draft_status', 'click', bind(this.drop_draft));
 
 			jQuery.when.apply(jQuery, waiters).then(function() {
 				_this.has_updated_structure = true;
@@ -103,13 +106,9 @@
 				var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 				jQuery.each(container_params.contents, function(i, content_params) {
 					var content = content_params.language_objects[language_id];
-					var li = _this.filled_module_li.clone(true).appendTo(target);
+					var li = _this.filled_module_li.clone().appendTo(target);
 					li.attr({'data-object-type': content_params.object_type, 'data-container': container_name, 'data-object-id': content_params.id, 'data-language-id': language_id});
-					li.find('.module_name').text(content_params.object_type_display_name);
-					if(content.content_info) {
-						li.attr('title', content.content_info);
-					}
-					_this.update_content_properties(li, {is_filled_in_current_language: !!content.content_info, is_draft: content.is_draft, has_condition: content_params.has_condition});
+					_this.update_content_properties(li, {content: content_params});
 				});
 			});
 			
@@ -127,20 +126,30 @@
 						
 					// just move within container
 					if(target.attr('data-container-name') === item.attr('data-container')) {
-						_this.methods.adminMoveObject(item.attr('data-object-id'), position);
+						_this.methods.adminMoveObject(item.attr('data-object-id'), position, function() {
+							md = _this.find_structure(item);
+							md.container.contents.splice(md.index, 1);
+							md.container.contents.splice(position, 0, md.content);
+						});
 						return;
 					}
 					// move to container and resort
 					if(item.attr('data-container')) {
 						item.attr('data-container', target.attr('data-container-name'));
-						_this.methods.adminMoveObject(item.attr('data-object-id'), position, target.attr('data-container-name'));
+						_this.methods.adminMoveObject(item.attr('data-object-id'), position, target.attr('data-container-name'), function() {
+							md = _this.find_structure(item);
+							md.container.contents.splice(md.index, 1);
+							_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, md.content);
+						});
 						return;
 					}
 					// add new object, prepare for delete
 					item.attr('data-container', target.attr('data-container-name'));
-					_this.methods.adminAddObjectToContainer(target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
-						item.attr('data-object-id', object_id);
-						_this.update_content_properties(item, {is_filled_in_current_language: false});
+					_this.methods.adminAddObjectToContainer(target.attr('data-container-name'), item.attr('data-object-type'), position, function(content_params) {
+						item.attr('data-object-id', content_params.id);
+
+						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
+						_this.update_content_properties(item, {content: content_params});
 					});
 				}
 			});
@@ -300,19 +309,22 @@
 		remove_object: function(event, item_to_remove, force) {
 			var _this = this;
 			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), !!force, function(deleted) {
+				var md = _this.find_structure(item_to_remove);
 				if(deleted && !force) {
-					_this.update_content_properties(item_to_remove, {is_filled_in_current_language: false, is_draft: true});
+					var language_id = item_to_remove.attr('data-language-id');
+					md.content.language_objects[language_id].is_draft = true;
+					md.content.language_objects[language_id].exists_in_language = false;
+					_this.update_content_properties(item_to_remove, md);
 				} else if(deleted) {
-					var md = _this.find_structure(item_to_remove.attr('data-object-id'));
 					//Remove the item in the structure
-					md[0].contents.splice(md[1], 1);
+					md.container.contents.splice(md.index, 1);
 					item_to_remove.remove();
 				}
 			});
 		},
 
 		control_widget: function(item_to_edit, callback) {
-			var md = this.find_structure(item_to_edit.attr('data-object-id'))[2];
+			var md = this.find_structure(item_to_edit).content;
 			this.methods.adminEdit(item_to_edit.attr('data-object-id'), item_to_edit.attr('data-language-id'), function(control_session_key) {
 				Widget.create('language_object_control', function(language_object_control) {
 					callback(language_object_control, md);
@@ -334,7 +346,12 @@
 							var save = function(is_draft) {
 								language_object_control.save(widget.save(), is_draft, function(result, error) {
 									//Don’t handle the error, it’s an unprivileged user whose data could not be saved
-									_this.update_content_properties(item_to_edit, {is_filled_in_current_language: result.language_object_exists, is_draft: is_draft});
+									//TODO: update object preview
+									var md = _this.find_structure(item_to_edit);
+									var language_id = item_to_edit.attr('data-language-id');
+									md.content.language_objects[language_id].is_draft = is_draft;
+									md.content.language_objects[language_id].exists_in_language = result.language_object_exists;
+									_this.update_content_properties(item_to_edit, md);
 									element.dialog('close');
 								});
 							};
@@ -395,30 +412,37 @@
 			Widget.create('content_display_condition', function(widget) {
 				widget.setContentObjectId(item_to_edit.attr('data-object-id'));
 				widget.save_callback = function(result) {
-					_this.update_content_properties(item_to_edit, {has_condition: result});
+					var md = _this.find_structure(item_to_edit);
+					md.content.has_condition = result;
+					_this.update_content_properties(item_to_edit, md);
 				};
 			}, jQuery.noop);
 		},
 	
-		update_content_properties: function(element, properties) {
-			var cls;
-			if(properties.is_filled_in_current_language !== undefined) {
-				cls = properties.is_filled_in_current_language ? 'removeClass' : 'addClass';
-				element[cls]('language_object_empty');
+		update_content_properties: function(element, md) {
+			if(!md) {
+				md = this.find_structure(element);
 			}
-			if(properties.is_draft !== undefined) {
-				cls = properties.is_draft ? 'addClass' : 'removeClass';
-				element[cls]('is_draft');
-			}
-			if(properties.has_condition !== undefined) {
-				cls = properties.has_condition ? 'addClass' : 'removeClass';
-				element[cls]('has_condition');
-			}
+			var language_id = element.attr('data-language-id');
+			
+			var props = md.content;
+			var lang_props = props.language_objects[language_id];
+			
+			element[lang_props.exists_in_language ? 'removeClass' : 'addClass']('language_object_empty');
+			element[lang_props.is_draft ? 'addClass' : 'removeClass']('is_draft');
+			element[props.has_condition ? 'addClass' : 'removeClass']('has_condition');
+			
+			element.find('.module_name').text(props.object_type_display_name);
+			element.attr('title', lang_props.content_info);
 		},
 
 		drop_draft: function(event, item_to_edit) {
+			var _this = this;
 			this.methods.adminDropDraft(item_to_edit.attr('data-object-id'), function() {
-				this.update_content_properties(item_to_edit, {is_draft: false});
+				var md = _this.find_structure(item_to_edit);
+				var language_id = item_to_edit.attr('data-language-id');
+				md.content.language_objects[language_id].is_draft = false;
+				this.update_content_properties(item_to_edit, md);
 			}.bind(this));
 		}
 	

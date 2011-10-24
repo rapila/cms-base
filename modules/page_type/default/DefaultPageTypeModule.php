@@ -208,33 +208,39 @@ class DefaultPageTypeModule extends PageTypeModule {
 				$aResult[$sContainerName]['inherited_from'] = $oInheritedFrom->getId();
 			}
 			$aResult[$sContainerName]['contents'] = array();
-			
-			$iCount = 0;	
-			foreach($aObjects as $iCount => $oObject) {
-				$aObject = array('id' => $oObject->getId());
-				$iCount++;
-				$aObject['language_objects'] = array();
-				foreach(LanguagePeer::getLanguages() as $oLanguage) {
-					$aLanguageInfo = array();
-					$oLanguageObject = $oObject->getLanguageObject($oLanguage->getId());
-					if($oLanguageObject === null) {
-						$aLanguageInfo['content_info'] = false;
-						$aLanguageInfo['is_draft'] = LanguageObjectHistoryQuery::create()->filterByLanguageId($oLanguage->getId())->filterByObjectId($oObject->getId())->count() > 0;
-					} else {
-						$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-						$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
-						$aLanguageInfo['content_info'] = $mContentInfo;
-						$aLanguageInfo['is_draft'] = $oLanguageObject->getHasDraft();
-					}
-					$aObject['language_objects'][$oLanguage->getId()] = $aLanguageInfo;
-				}
-				$aObject['object_type'] = $oObject->getObjectType();
-				$aObject['has_condition'] = $oObject->getConditionSerialized() !== null;
-				$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
-				$aResult[$sContainerName]['contents'][] = $aObject;
+			foreach($aObjects as $oObject) {
+				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
 			}
 		}
 		return $aResult;
+	}
+
+	private function paramsForObject($oObject) {
+		$aObject = array('id' => $oObject->getId());
+		$aObject['language_objects'] = array();
+		foreach(LanguagePeer::getLanguages() as $oLanguage) {
+			$aLanguageInfo = array();
+			$oLanguageObject = $oObject->getLanguageObject($oLanguage->getId());
+			$aLanguageInfo['exists_in_language'] = $oLanguageObject !== null;
+			if($oLanguageObject === null) {
+				$oLanguageObject = LanguageObjectHistoryQuery::create()->filterByLanguageId($oLanguage->getId())->filterByObjectId($oObject->getId())->sort()->findOne();
+				$aLanguageInfo['is_draft'] = $oLanguageObject !== null;
+			} else {
+				$aLanguageInfo['is_draft'] = $oLanguageObject->getHasDraft();
+			}
+			if($oLanguageObject !== null) {
+				$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
+				$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
+				$aLanguageInfo['content_info'] = $mContentInfo;
+			} else {
+				$aLanguageInfo['content_info'] = null;
+			}
+			$aObject['language_objects'][$oLanguage->getId()] = $aLanguageInfo;
+		}
+		$aObject['object_type'] = $oObject->getObjectType();
+		$aObject['has_condition'] = $oObject->getConditionSerialized() !== null;
+		$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
+		return $aObject;
 	}
 	
 	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort=0) {
@@ -248,7 +254,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oContentObject->setSort($iSort);
 		$oContentObject->setPageId($this->oPage->getId());
 		$oContentObject->save();
-		return $oContentObject->getId();
+		return $this->paramsForObject($oContentObject);
 	}
 	
 	public function adminEdit($iObjectId, $sLanguageId = null) {
