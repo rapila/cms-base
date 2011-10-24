@@ -31,6 +31,7 @@ class ContentDisplayConditionWidgetModule extends PersistentWidgetModule {
 	
 	public function saveData($aCondition) {
 		$oContentObject = ContentObjectPeer::retrieveByPK($this->iContentObjectId);
+		$bHasCondition = false;
 		if(trim($aCondition['condition_left']) === '') {
 			$oContentObject->setConditionSerialized(null);
 		} else {
@@ -44,7 +45,9 @@ class ContentDisplayConditionWidgetModule extends PersistentWidgetModule {
 			$aTemplateContents[] = new TemplateIdentifier('endIf', null, array(), $oConditionTemplate);
 			$oConditionTemplate = new Template($aTemplateContents, null, true);
 			$oContentObject->setConditionSerialized(serialize($oConditionTemplate));
+			$bHasCondition = true;
 		}
-		return $oContentObject->save();
+		$oContentObject->save();
+		return $bHasCondition;
 	}
 }

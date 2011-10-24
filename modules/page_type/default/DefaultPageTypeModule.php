@@ -213,17 +213,23 @@ class DefaultPageTypeModule extends PageTypeModule {
 			foreach($aObjects as $iCount => $oObject) {
 				$aObject = array('id' => $oObject->getId());
 				$iCount++;
-				$oLanguageObject = $oObject->getLanguageObject($this->sLanguageId);
-				if($oLanguageObject === null) {
-					$aObject['content_info'] = false;
-					$aObject['is_draft'] = LanguageObjectHistoryQuery::create()->filterByLanguageId($this->sLanguageId)->filterByObjectId($oObject->getId())->count() > 0;
-				} else {
-					$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-					$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
-					$aObject['content_info'] = $mContentInfo;
-					$aObject['is_draft'] = $oLanguageObject->getHasDraft();
+				$aObject['language_objects'] = array();
+				foreach(LanguagePeer::getLanguages() as $oLanguage) {
+					$aLanguageInfo = array();
+					$oLanguageObject = $oObject->getLanguageObject($oLanguage->getId());
+					if($oLanguageObject === null) {
+						$aLanguageInfo['content_info'] = false;
+						$aLanguageInfo['is_draft'] = LanguageObjectHistoryQuery::create()->filterByLanguageId($oLanguage->getId())->filterByObjectId($oObject->getId())->count() > 0;
+					} else {
+						$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
+						$mContentInfo = call_user_func(array($sFrontendModuleClass, 'getContentInfo'), $oLanguageObject);
+						$aLanguageInfo['content_info'] = $mContentInfo;
+						$aLanguageInfo['is_draft'] = $oLanguageObject->getHasDraft();
+					}
+					$aObject['language_objects'][$oLanguage->getId()] = $aLanguageInfo;
 				}
 				$aObject['object_type'] = $oObject->getObjectType();
+				$aObject['has_condition'] = $oObject->getConditionSerialized() !== null;
 				$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
 				$aResult[$sContainerName]['contents'][] = $aObject;
 			}
@@ -245,7 +251,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $oContentObject->getId();
 	}
 	
-	public function adminEdit($iObjectId) {
+	public function adminEdit($iObjectId, $sLanguageId = null) {
+		if($sLanguageId !== null) {
+			$this->sLanguageId = $sLanguageId;
+		}
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
 		}

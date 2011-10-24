@@ -84,7 +84,7 @@ Widget.types.page_detail = {
 		this.protector.warn(function(ok) {
 			if(!ok) {
 				//TODO: Reset tree
-				return
+				return;
 			}
 			this.fire('loading', page_id);
 			this.description_has_been_loaded = false;
@@ -140,32 +140,18 @@ Widget.types.page_detail = {
 			return;
 		}
 		this.configuration_has_been_loaded = true;
-		this.instanciated_page_types = [];
-		
-		var active_languages = this.getActiveLanguages();
-		Widget.createWithElement('language_tabs', function(widget) {
-			widget.settings.active_languages = active_languages;
-			widget.handle('element_set', function(event, element) {
-				container.empty();
-				container.append(element);
-			});
-		}, function(language_tabs) {
-			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
-				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_config_language}}'));
-				
-				var page_type_configuration = tab_content.find('.panel_content');
-				Widget.create('page_type', function(page_type) {
-					//	Intermediate callback
-					_this.instanciated_page_types.push(page_type);
+		this.current_page_type = null;
+
+		Widget.create('page_type', function(page_type) {
+			//	Intermediate callback
+			_this.current_page_type = page_type;
 					
-					page_type.settings.page_type = _this._element.find("select[name='page_type']").val();
-					page_type.settings.container = page_type_configuration;
-					page_type.settings.page_id = _this.current_page_id;
-					page_type.settings.language_id = language_id;
-				}, function(page_type) {
-					page_type.handle_admin();
-				});
-			}, false, true);
+			page_type.settings.page_type = _this._element.find("select[name='page_type']").val();
+			page_type.settings.container = container;
+			page_type.settings.page_id = _this.current_page_id;
+			page_type.settings.active_languages = _this.getActiveLanguages();
+		}, function(page_type) {
+			page_type.handle_admin();
 		});
 	},
 
@@ -244,10 +230,8 @@ Widget.types.page_detail = {
 	
 	save: function() {
 		//Send all page_type widget instances the will_save message
-		if(this.instanciated_page_types) {
-			jQuery.each(this.instanciated_page_types, function(i, type) {
-				type.will_save();
-			});
+		if(this.current_page_type) {
+			this.current_page_type.will_save();
 		}
 		
 		this.protector.release();
@@ -269,10 +253,8 @@ Widget.types.page_detail = {
 			this.fire('saved');
 			
 			//Send all page_type widget instances the did_save message
-			if(this.instanciated_page_types) {
-				jQuery.each(this.instanciated_page_types, function(i, type) {
-					type.did_save();
-				});
+			if(this.current_page_type) {
+				this.current_page_type.did_save();
 			}
 		});
 	},

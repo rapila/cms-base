@@ -31,6 +31,10 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 		}
 		return $sResourceUrl;
 	}
+
+	public function listPageTypeMethods() {
+		return get_class_methods($this->oPageType);
+	}
 	
 	public function callPageTypeMethod($sMethodName) {
 		$aArguments = func_get_args();

@@ -79,7 +79,6 @@ div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px soli
 .ui-tabs-nav li.ui-state-active{background-color:#fff}
 .ui-tabs .ui-tabs-nav li{margin:2px 2px 0 2px;background-color:#ebedef}
 .ui-tabs-nav li.ui-state-default{background:transparent;border:1px solid #cccdcf}
-.ui-tabs-panel .panel_content{border-top:1px #cccdcf solid;padding:0 0 20px 26px;margin-left:0}
 .ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf}
 .ui-tabs .ui-tabs-panel{padding:0}
 .add-new-item,.remove-item,.edit-item,.item-action{background-image:url("../../images/admin/add_new_item.png");background-repeat:no-repeat;display:inline-block;height:16px;width:16px}
