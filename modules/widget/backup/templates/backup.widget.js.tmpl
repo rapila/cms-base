@@ -2,30 +2,24 @@ Widget.types.backup = {
 	prepare: function() {
 		var _this = this;
 		this._element.append(jQuery.parseHTML("{{includeTemplate=backup}}"));
-		var backup_file_row = jQuery.parseHTML("{{includeTemplate=file_row}}", false, 'tbody');
-		var backup_file_list = this._element.find('table.backup_files');
+
+		//Backup files and
+		this.backup_file = this._element.find('select[name="backup_file"]');
 		
-		//Load
-		var restorer = this._element.find('.load_from_file button').button({disabled: true});
-		var restore_file = this._element.find('select[name="restore_file"]');
-		restore_file.change(function() {
-			restorer.button('option', 'disabled', !jQuery.trim(restore_file.val()));
+		var restorer = this._element.find('button.load_from_file').button({disabled: true});
+		var deleter = this._element.find('button.delete_file').button({disabled: true});
+		this.backup_file.change(function() {
+			restorer.button('option', 'disabled', !jQuery.trim(jQuery(this).val()));
+			deleter.button('option', 'disabled', !jQuery.trim(jQuery(this).val()));
 		});
 		
-		this.possibleRestoreFiles(function(files) {
-			restore_file.populate(files).change();
-			jQuery.each(files, function(file_name, file_path) {
-				var file_row = backup_file_row.clone();
-				file_row.find('td.name').text(file_path);
-				file_row.find('input[name="file_paths[]"]').val(file_path);
-				file_row.appendTo(backup_file_list);
-			});
-		});
+		this.reload_backup_files();
 		
+		//Restore from backup
 		restorer.click(function() {
 			restorer.button('option', 'disabled', true);
 			Widget.load();
-			_this.loadFromBackup(restore_file.val(), function(count) {
+			_this.loadFromBackup(_this.backup_file.val(), function(count) {
 				Widget.end_load();
 				if(arguments[1]) {
 					return;
@@ -34,6 +28,26 @@ Widget.types.backup = {
 					window.location.href = window.location.href;
 				}, null, '{{writeString=wns.reload}}');
 			});
+		});
+		
+		//Delete file
+		deleter.click(function() {
+			deleter.button('option', 'disabled', true);
+			var file_name = _this.backup_file.val();
+			var delete_message = AdminInterface.strings.get_string('wns.backup.delete_warning', { detail_name: file_name});
+			Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
+				if(confirmed) {
+					_this.deleteBackupFile(file_name, function(result) {
+						if(result) {
+							_this.reload_backup_files();
+						} else {
+							Widget.notifyUser(Widget.logSeverity.ALERT, '{{writeString=wns.backup.error_with_unlink}}');
+						}
+					});
+				} else {
+					deleter.button('option', 'disabled', !jQuery.trim(jQuery(_this.backup_file).val()));
+				}
+			}.bind(this));
 		});
 		
 		//Save
@@ -68,6 +82,16 @@ Widget.types.backup = {
 					Widget.confirm('{{writeString=module.admin.backup}}', '{{writeString=wns.backup.exporter.export_success}} '+message, jQuery.noop, null);
 				}
 			});
+		});
+	},
+	
+	reload_backup_files: function() {
+		this.possibleRestoreFiles(function(files) {
+			var _this = this;
+			this.backup_file.empty();
+			setTimeout(function(){ 
+				_this.backup_file.populate(files).change(); 
+			}, 100);			
 		});
 	},
 	

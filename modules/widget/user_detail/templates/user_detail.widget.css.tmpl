@@ -1,7 +1,26 @@
 .no_entries_info {
-	padding: .6em 0 .3em 1.5em;
+	padding: .6em 0 .3em .4em;
 }
 
 .detail-widget-user_detail .status_section {
 	width: 21em;
 }
+
+.ui-widget-content .ui-icon.suggest_password {
+	display: inline-block;
+	height: 21px;
+	vertical-align: top;
+	width: 21px;
+	margin: 0 5px;
+	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/suggest_password.png") no-repeat;
+	cursor: pointer;
+}
+
+.ui-widget-content .ui-icon.suggest_password:hover {
+	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/suggest_password_hover.png") no-repeat;
+}
+
+input[name="password_suggest"].ui-widget-content.select {
+	background-color: #f2f2f2;
+}
+
