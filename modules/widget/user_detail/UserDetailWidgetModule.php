@@ -121,4 +121,8 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		
 		return $oUser->save();
 	}
+	
+	public function suggestPassword() {
+		return PasswordHash::generatePassword();
+	}
 }
