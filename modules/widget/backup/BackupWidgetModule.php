@@ -90,6 +90,14 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		return $aInfo;
 	}
 	
+	public function deleteBackupFile($sBackupFile) {
+		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql', $sBackupFile));
+		if($sFilePath) {
+			return unlink($sFilePath);
+		}
+		return true;
+	}
+	
 	private function getDbConfig() {
 		$aResult = array();
 		$aDbConfig = Propel::getConfiguration();
