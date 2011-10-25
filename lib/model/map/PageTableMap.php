@@ -79,10 +79,10 @@ class PageTableMap extends TableMap
 	public function getBehaviors()
 	{
 		return array(
-			'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
 			'referenceable' => array(),
 			'taggable' => array(),
 			'denyable' => array('mode' => 'allow', 'role_key' => '', 'owner_allowed' => '', ),
+			'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
 			'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 			'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
 		);
