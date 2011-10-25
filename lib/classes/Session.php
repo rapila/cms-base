@@ -56,14 +56,18 @@ class Session {
 		if(!PasswordHash::comparePassword($sPassword, $oUser->getPassword())) {
 			if(PasswordHash::comparePasswordFallback($sPassword, $oUser->getPassword())) {
 				$oUser->setPassword($sPassword);
+				UserPeer::ignoreRights(true);
 				$oUser->save();
+				UserPeer::ignoreRights(false);
 				return $this->login($sUsername, $sPassword);
 			}
 			return 0;
 		}
 		if($oUser->getDigestHA1() === null && Settings::getSetting('security', 'generate_digest_secrets', false) === true) {
 			$oUser->setPassword($sPassword);
+			UserPeer::ignoreRights(true);
 			$oUser->save();
+			UserPeer::ignoreRights(false);
 		}
 		return $this->loginUser($oUser);
 	}
