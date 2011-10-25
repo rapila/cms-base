@@ -90,7 +90,16 @@ class PagePeer extends BasePagePeer {
 				return $oUser->mayDelete($oPage);
 			}
 			foreach($oUser->allRoles() as $oRole) {
-				// roles can return true, yet to be implemented
+				foreach($oRole->getRights() as $oRight) {
+					if($oRight->getPageId() === $oPage->getId()) {
+						return $oRight->getMayDelete();
+					}
+					while($oParent = $oPage->getParent()) {
+						if($oParent->getId() === $oRight->getPageId()) {
+							return $oRight->getMayDelete();
+						}
+					}
+				}
 			}
 			return false;
 		}
