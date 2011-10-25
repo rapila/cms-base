@@ -12,27 +12,8 @@ class Role extends BaseRole {
 			if($bInheritedOnly && !$oRight->getIsInherited()) {
 				continue;
 			}
-			if($this->rightFits($oRight, $mPage, $sRightName)) {
+			if($oRight->rightFits($mPage, $sRightName)) {
 				return true;
-			}
-		}
-		return false;
-	}
-
-	private function rightFits($oRight, $mPage, $sMethodName) {
-		$oPage = $mPage;
-		if($mPage instanceof Page) {
-			$mPage = $mPage->getId();
-		}
-		if($oRight->getPage() !== null && $mPage === $oRight->getPage()->getId()) {
-			return call_user_func(array($oRight, $sMethodName));
-		}
-		if($oRight->getIsInherited() && $mPage !== null) {
-			if(!is_object($oPage)) {
-				$oPage = PagePeer::retrieveByPK($mPage);
-			}
-			if($oPage !== null && $oPage->getParent() !== null) {
-				return $this->rightFits($oRight, $oPage->getParent(), $sMethodName);
 			}
 		}
 		return false;

@@ -970,15 +970,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$deleteQuery = PageQuery::create()
 				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
-			// nested_set behavior
-			if ($this->isRoot()) {
-				throw new PropelException('Deletion of a root node is disabled for nested sets. Use PagePeer::deleteTree() instead to delete an entire tree');
-			}
-			
-			if ($this->isInTree()) {
-				$this->deleteDescendants($con);
-			}
-
 			// referenceable behavior
 			if(ReferencePeer::hasReference($this)) {
 				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
@@ -986,6 +977,15 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// denyable behavior
 			if(!(PagePeer::isIgnoringRights() || $this->mayOperate("delete"))) {
 				throw new PropelException(new NotPermittedException("delete.custom", array("role_key" => "pages")));
+			}
+
+			// nested_set behavior
+			if ($this->isRoot()) {
+				throw new PropelException('Deletion of a root node is disabled for nested sets. Use PagePeer::deleteTree() instead to delete an entire tree');
+			}
+			
+			if ($this->isInTree()) {
+				$this->deleteDescendants($con);
 			}
 
 			if ($ret) {
@@ -2701,6 +2701,44 @@ abstract class BasePage extends BaseObject  implements Persistent
 		return (string) $this->exportTo(PagePeer::DEFAULT_STRING_FORMAT);
 	}
 
+	// referenceable behavior
+	
+	/**
+	 * @return A list of References (not Objects) which reference this Page
+	 */
+	public function getReferees()
+	{
+		return ReferencePeer::getReferences($this);
+	}
+	// taggable behavior
+	
+	/**
+	 * @return A list of TagInstances (not Tags) which reference this Page
+	 */
+	public function getTags()
+	{
+		return TagPeer::tagInstancesForObject($this);
+	}
+	// denyable behavior
+	public function mayOperate($sOperation, $oUser = false) {
+		if($oUser === false) {
+			$oUser = Session::getSession()->getUser();
+		}
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PagePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		return PagePeer::mayOperateOn($oUser, $this, $sOperation);
+	}
+	public function mayBeInserted($oUser = false) {
+		return $this->mayOperate($oUser, "insert");
+	}
+	public function mayBeUpdated($oUser = false) {
+		return $this->mayOperate($oUser, "update");
+	}
+	public function mayBeDeleted($oUser = false) {
+		return $this->mayOperate($oUser, "delete");
+	}
+
 	// nested_set behavior
 	
 	/**
@@ -3523,44 +3561,6 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getIterator()
 	{
 		return new NestedSetRecursiveIterator($this);
-	}
-
-	// referenceable behavior
-	
-	/**
-	 * @return A list of References (not Objects) which reference this Page
-	 */
-	public function getReferees()
-	{
-		return ReferencePeer::getReferences($this);
-	}
-	// taggable behavior
-	
-	/**
-	 * @return A list of TagInstances (not Tags) which reference this Page
-	 */
-	public function getTags()
-	{
-		return TagPeer::tagInstancesForObject($this);
-	}
-	// denyable behavior
-	public function mayOperate($sOperation, $oUser = false) {
-		if($oUser === false) {
-			$oUser = Session::getSession()->getUser();
-		}
-		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PagePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
-			return true;
-		}
-		return PagePeer::mayOperateOn($oUser, $this, $sOperation);
-	}
-	public function mayBeInserted($oUser = false) {
-		return $this->mayOperate($oUser, "insert");
-	}
-	public function mayBeUpdated($oUser = false) {
-		return $this->mayOperate($oUser, "update");
-	}
-	public function mayBeDeleted($oUser = false) {
-		return $this->mayOperate($oUser, "delete");
 	}
 
 	// extended_timestampable behavior

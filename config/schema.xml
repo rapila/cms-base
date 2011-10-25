@@ -15,12 +15,12 @@
 	<unique>
 		<unique-column name="identifier" />
 	</unique>
-	<behavior name="nested_set" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
 		<parameter name="mode" value="allow" />
 	</behavior>
+	<behavior name="nested_set" />
 </table>
 
 <table name="page_properties" phpName="PageProperty">

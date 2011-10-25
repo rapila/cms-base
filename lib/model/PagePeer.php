@@ -86,8 +86,17 @@ class PagePeer extends BasePagePeer {
 			return $oUser->mayEditPageDetails($oPage);
 		}
 		if($sOperation === 'delete') {
-			//FIXME: if page has children, check if right is inherited.
-			return $oUser->mayDelete($oPage);
+			if($oPage->hasChildren() === false) {
+				return $oUser->mayDelete($oPage);
+			}
+			foreach($oUser->allRoles() as $oRole) {
+				foreach($oRole->getRights() as $oRight) {
+					if($oRight->getIsInherited() && $oRight->rightFits($oPage, 'getMayDelete')) {
+						return true;
+					} 
+				}
+			}
+			return false;
 		}
 		//Flow never reaches this
 		return false;

@@ -67,6 +67,11 @@ Widget.types.page_detail = {
 		this.delete_button.prop('disabled', !this.enable_delete).button(this.enable_delete ? 'enable' : 'disable');
 	},
 
+	enable_delete: function() {
+		this.enable_delete = true;
+		this.delete_button.prop('disabled', false).button('enable');
+	},
+
 	accordion_active: function() {
 		var accordion_headers = this._element.find('div.accordion h3');
 		var result = null;
