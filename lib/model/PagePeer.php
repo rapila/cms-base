@@ -96,7 +96,7 @@ class PagePeer extends BasePagePeer {
 					}
 					while($oParent = $oPage->getParent()) {
 						if($oParent->getId() === $oRight->getPageId()) {
-							return $oRight->getMayDelete();
+							return $oRight->getMayDelete() && $oRight->getIsInherited();
 						}
 					}
 				}
