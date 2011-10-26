@@ -94,6 +94,8 @@ abstract class BasePagePeer {
 	public static $instances = array();
 
 
+	// denyable behavior
+	private static $IGNORE_RIGHTS = false;
 	// nested_set behavior
 	
 	/**
@@ -111,8 +113,6 @@ abstract class BasePagePeer {
 	 */
 	const LEVEL_COL = 'pages.TREE_LEVEL';
 
-	// denyable behavior
-	private static $IGNORE_RIGHTS = false;
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -1467,6 +1467,43 @@ abstract class BasePagePeer {
 		return $objs;
 	}
 
+	// taggable behavior
+	public static function doDelete($values, PropelPDO $con = null) {
+			if ($con === null) {
+				$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			}
+	
+			if($values instanceof Criteria) {
+				// rename for clarity
+				$criteria = clone $values;
+			} elseif ($values instanceof Page) { // it's a model object
+				// create criteria based on pk values
+				$criteria = $values->buildPkeyCriteria();
+			} else { // it's a primary key, or an array of pks
+				$criteria = new Criteria(self::DATABASE_NAME);
+				$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
+			}
+			
+			foreach(PagePeer::doSelect(clone $criteria, $con) as $object) {
+				TagPeer::deleteTagsForObject($object);
+			}
+	
+			return self::doDeleteBeforeTaggable($criteria, $con);
+	}
+	// denyable behavior
+	public static function ignoreRights($bIgnore = true) {
+		self::$IGNORE_RIGHTS = $bIgnore;
+	}
+	public static function isIgnoringRights() {
+		return self::$IGNORE_RIGHTS;
+	}
+	public static function mayOperateOn($oUser, $mObject, $sOperation) {
+		return true;
+	}
+	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
+		return false;
+	}
+
 	// nested_set behavior
 	
 	/**
@@ -1693,43 +1730,6 @@ abstract class BasePagePeer {
 			}
 		}
 		$stmt->closeCursor();
-	}
-
-	// taggable behavior
-	public static function doDelete($values, PropelPDO $con = null) {
-			if ($con === null) {
-				$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
-			}
-	
-			if($values instanceof Criteria) {
-				// rename for clarity
-				$criteria = clone $values;
-			} elseif ($values instanceof Page) { // it's a model object
-				// create criteria based on pk values
-				$criteria = $values->buildPkeyCriteria();
-			} else { // it's a primary key, or an array of pks
-				$criteria = new Criteria(self::DATABASE_NAME);
-				$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
-			}
-			
-			foreach(PagePeer::doSelect(clone $criteria, $con) as $object) {
-				TagPeer::deleteTagsForObject($object);
-			}
-	
-			return self::doDeleteBeforeTaggable($criteria, $con);
-	}
-	// denyable behavior
-	public static function ignoreRights($bIgnore = true) {
-		self::$IGNORE_RIGHTS = $bIgnore;
-	}
-	public static function isIgnoringRights() {
-		return self::$IGNORE_RIGHTS;
-	}
-	public static function mayOperateOn($oUser, $mObject, $sOperation) {
-		return true;
-	}
-	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
-		return false;
 	}
 
 } // BasePagePeer
