@@ -70,7 +70,7 @@ Widget.types.backup = {
 				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.backup.mysqldump_missing}}');
 				dumptool.addClass('dumpfocus');
 			}
-			this._element.find('.dirname').text(info.backup_dir);
+			this._element.find('label[for="file_name"]').attr('title', "{{writeString=wns.backup.path_to_export_file}}: "+info.backup_dir);
 			file_name.change();
 		});
 		
