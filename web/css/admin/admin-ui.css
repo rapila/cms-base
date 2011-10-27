@@ -15,6 +15,8 @@
 .ui-state-default,#admin_sidebar .ui-state-default{background:transparent}
 .rapila_alert.ui-dialog-content{background-color:#2d3238;color:#fff;padding-bottom:0}
 .rapila_alert.ui-dialog-content p{font-size:1.1em}
+.rapila_alert .ui-icon-alert{display:block;float:left}
+.rapila_alert.ui-dialog-content span.text{display:block;margin-left:1.5em}
 .rapila_alert.ui-dialog-content .ui-icon{background-image:url("theme/images/ui-icons_b8d600_256x240.png")}
 #admin_sidebar .ui-tree,#admin_sidebar .ui-list,#admin_sidebar .ui-list-row.ui-state-active,#admin_sidebar .ui-list-row.ui-state-hover{font-weight:700}
 #admin_sidebar .ui-tree li.ui-state-active li{color:#000}
