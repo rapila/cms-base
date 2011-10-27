@@ -81,7 +81,7 @@ div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px soli
 .ui-tabs-nav li.ui-state-default{background:transparent;border:1px solid #cccdcf}
 .ui-tabs-panel .panel_content{border-top:1px #cccdcf solid;padding:0 0 20px 26px;margin-left:0}
 .ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf}
-.ui-tabs #list.ui-tabs-panel,.ui-tabs #thumbnail.ui-tabs-panel{margin-top:1px;border-top:0}
+.ui-tabs #list.ui-tabs-panel,.ui-tabs #thumbnail.ui-tabs-panel{border-top:0}
 .ui-tabs .ui-tabs-panel{padding:0}
 .add-new-item,.remove-item,.edit-item,.item-action{background-image:url("../../images/admin/add_new_item.png");background-repeat:no-repeat;display:inline-block;height:16px;width:16px}
 .remove-item{background-image:url("../../images/admin/remove_item.png")}
