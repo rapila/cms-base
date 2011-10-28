@@ -137,6 +137,10 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 	}
 	
+	public function categoryHasLinks($iLinkCategoryId) {
+		return LinkQuery::create()->filterByLinkCategoryId($iLinkCategoryId)->count() > 0;
+	}
+	
 	public function getCriteria() {
 		$oQuery = LinkQuery::create();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {

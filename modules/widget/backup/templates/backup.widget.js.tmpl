@@ -39,7 +39,7 @@ Widget.types.backup = {
 				if(confirmed) {
 					_this.deleteBackupFile(file_name, function(result) {
 						if(result) {
-							_this.reload_backup_files();
+							_this.reload_backup_files(true);
 						} else {
 							Widget.notifyUser(Widget.logSeverity.ALERT, '{{writeString=wns.backup.error_with_unlink}}');
 						}
@@ -70,7 +70,7 @@ Widget.types.backup = {
 				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.backup.mysqldump_missing}}');
 				dumptool.addClass('dumpfocus');
 			}
-			this._element.find('.dirname').text(info.backup_dir);
+			this._element.find('label[for="file_name"]').attr('title', "{{writeString=wns.backup.path_to_export_file}}: "+info.backup_dir);
 			file_name.change();
 		});
 		
@@ -85,13 +85,20 @@ Widget.types.backup = {
 		});
 	},
 	
-	reload_backup_files: function() {
+	reload_backup_files: function(reload) {
 		this.possibleRestoreFiles(function(files) {
 			var _this = this;
 			this.backup_file.empty();
 			setTimeout(function(){ 
-				_this.backup_file.populate(files).change(); 
-			}, 100);			
+				_this.backup_file.populate(files).change();
+				var backup_size = _this.getBackupDirSize();
+				var backup_size_display = _this._element.find('span.backup_dir_size').text(backup_size.formatted);
+				if(backup_size.integer > _this.settings.backup_warning_limit) {
+					backup_size_display.addClass('attention');
+				} else {
+					backup_size_display.removeClass('attention');
+				}
+			}, reload ? 100 : 0);			
 		});
 	},
 	
@@ -103,6 +110,10 @@ Widget.types.backup = {
 	
 	save_callback: function(data) {
 		//Do nothing
+	},
+
+	settings: {
+		backup_warning_limit: 1000000000
 	},
 	
 	close: function() {

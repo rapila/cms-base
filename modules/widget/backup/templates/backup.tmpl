@@ -1,15 +1,20 @@
 <div class="dump_to_file fieldset">
 	<h4>{{writeString=wns.backup.store_to}}</h4>
-	<label for="file_name">{{writeString=wns.backup.path_to_export_file}}<span class="dirname"></span></label>
-	<input type="text" class="ui-widget-content autowidth dump_name" name="file_name"/>
-	<label for="dumptool">{{writeString=wns.backup.path_to_mysqldump}}</label>
-	<input type="text" name="dumptool" class="ui-widget-content autowidth dump_tool"/><br />
+	<div class="group_fields">
+		<label for="file_name" class="help">{{writeString=wns.backup.file_name}}</label>
+		<input type="text" class="ui-widget-content autowidth dump_name" name="file_name"/>
+	</div>
+	<div class="group_fields">
+		<label for="dumptool" title="{{writeString=wns.backup.mysql_dumper_info}}" class="help">{{writeString=wns.backup.path_to_mysqldump}}</label>
+		<input type="text" name="dumptool" class="ui-widget-content autowidth dump_tool"/><br />
+	</div><br />
 	<button title="{{writeString=wns.backup.load_from_local_file}}">{{writeString=wns.backup.button.backup_to_local_file}}</button>
 </div>
 <div class="load_from_file fieldset">
 	<h4>{{writeString=wns.backup.load_from}}</h4>
+	<div>{{writeString=wns.backup.storage_size}}<span class="backup_dir_size"></span><br /></div>
 	<label for="backup_file">{{writeString=wns.backup.file}}</label>
 	<select name="backup_file"></select><br />
+	<button class="load_from_file" title="{{writeString=wns.backup.load_from_local_file}}">{{writeString=wns.backup.button.load_from_local_file}}</button><br />
 	<button class="delete_file" title="{{writeString=wns.backup.delete_selected_file}}">{{writeString=wns.backup.button.delete_local_file}}</button>
-	<button class="load_from_file" title="{{writeString=wns.backup.load_from_local_file}}">{{writeString=wns.backup.button.load_from_local_file}}</button>
 </div>

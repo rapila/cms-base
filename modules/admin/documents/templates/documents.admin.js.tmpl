@@ -48,7 +48,17 @@ jQuery(document).ready(function() {
 		
 		/// @todo remove and edit buttons, only show if has permission
 		var remove_item = info_bar.add_button('remove-item', function() {
-			sidebar.delete_row(sidebar.active_row());
+			var rowData = sidebar.collect_row_data(sidebar.active_row());
+			if(rowData.document_category_id) {
+				content_list.categoryHasDocuments(rowData.document_category_id, function(result) {
+					var delete_message = "{{writeString=wns.document_category.delete_information}}";
+					Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
+						if(confirmed) {
+							sidebar.delete_row(sidebar.active_row());
+						}
+					}.bind(this));
+				});
+			}
 		}).disable();
 		
 		var edit_item = info_bar.add_button('edit-item', function() {

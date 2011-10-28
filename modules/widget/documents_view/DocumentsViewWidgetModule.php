@@ -38,6 +38,10 @@ class DocumentsViewWidgetModule extends PersistentWidgetModule {
 	public function setSearch($sSearch) {
 		return $this->oDocumentsViewWidgetDelegate->setSearch($sSearch);
 	}
+	
+	public function categoryHasDocuments($iDocumentCategoryId) {
+		return DocumentQuery::create()->filterByDocumentCategoryId($iDocumentCategoryId)->count() > 0;
+	}
 
 	public function getSearch() {
 		return $this->oDocumentsViewWidgetDelegate->getSearch();
