@@ -3,14 +3,26 @@
  * @package modules.widget
  */
 class BackupWidgetModule extends PersistentWidgetModule {
+	private $iFileSizeOfSiteDir;
 	
 	public function possibleRestoreFiles() {
 		$aAllSqlFiles = ResourceFinder::create(array(DIRNAME_DATA, "sql", "/.*\.sql$/"))->byExpressions()->noCache()->returnObjects()->find();
 		$aResult = array();
+		$this->iFileSizeOfSiteDir = 0;
 		foreach($aAllSqlFiles as $oFile) {
+			if(StringUtil::startsWith($oFile->getInternalPath(), 'site')) {
+				$this->iFileSizeOfSiteDir += filesize(MAIN_DIR.'/'.$oFile->getInternalPath());
+			}
 			$aResult[$oFile->getFileName()] = $oFile->getInternalPath();
 		}
 		arsort($aResult);
+		return $aResult;
+	}
+	
+	public function getBackupDirSize() {
+		$aResult = array();
+		$aResult['integer'] = $this->iFileSizeOfSiteDir;
+		$aResult['formatted']= DocumentPeer::getDocumentSize($this->iFileSizeOfSiteDir);
 		return $aResult;
 	}
 	
