@@ -18,7 +18,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		$aCategories = isset($aOptions['document_categories']) ? (is_array($aOptions['document_categories']) ? $aOptions['document_categories'] : array($aOptions['document_categories'])) : array();
 		if(count($aCategories) > 1) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories, Criteria::IN);
-		} else if(count($aCategories === 1)) {
+		} else if(count($aCategories) === 1) {
 			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
 		}
 		if(isset($aOptions['document_kind']) && $aOptions['document_kind']) {
