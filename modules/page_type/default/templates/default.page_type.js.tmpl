@@ -56,17 +56,7 @@
 				_this.possible_frontend_modules = possible_frontend_modules;
 			}.deferred(waiters));
 
-			var bind = function(method) {
-				return function(event) {
-					method.call(_this, event, jQuery(this).closest('li'));
-				};
-			};
-
 			this.filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
-			this.container.delegate('.filled_modules li .remove_button', 'click', bind(this.remove_object));
-			this.container.delegate('.filled_modules li .edit_condition_button', 'click', bind(this.edit_condition));
-			this.container.delegate('.filled_modules li .edit_button', 'click', bind(this.edit_object));
-			this.container.delegate('.filled_modules li .draft_status', 'click', bind(this.drop_draft));
 
 			jQuery.when.apply(jQuery, waiters).then(function() {
 				_this.has_updated_structure = true;
@@ -80,6 +70,17 @@
 			container.empty();
 			container.append(jQuery.parseHTML('{{includeTemplate=admin}}'));
 			var filled_modules = container.find('.filled_modules');
+
+			var bind = function(method) {
+				return function(event) {
+					method.call(_this, event, jQuery(this).closest('li'));
+				};
+			};
+			filled_modules.delegate('li .remove_button', 'click', bind(this.remove_object));
+			filled_modules.delegate('li .edit_condition_button', 'click', bind(this.edit_condition));
+			filled_modules.delegate('li .edit_button', 'click', bind(this.edit_object));
+			filled_modules.delegate('li .draft_status', 'click', bind(this.drop_draft));
+			
 			var available_modules = container.find('.available_modules');
 			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
 				accept: 'li[data-container]',
