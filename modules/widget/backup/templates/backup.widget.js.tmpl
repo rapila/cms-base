@@ -93,7 +93,7 @@ Widget.types.backup = {
 				_this.backup_file.populate(files).change();
 				var backup_size = _this.getBackupDirSize();
 				var backup_size_display = _this._element.find('span.backup_dir_size').text(backup_size.formatted);
-				if(backup_size.integer > _this.settings.backup_warning_limit) {
+				if(backup_size.integer > _this.settings.backup_byte_limit_warning) {
 					backup_size_display.addClass('attention');
 				} else {
 					backup_size_display.removeClass('attention');
@@ -113,7 +113,7 @@ Widget.types.backup = {
 	},
 
 	settings: {
-		backup_warning_limit: 1000000000
+		backup_byte_limit_warning: 1000000000
 	},
 	
 	close: function() {

@@ -5,6 +5,11 @@
 class BackupWidgetModule extends PersistentWidgetModule {
 	private $iFileSizeOfSiteDir;
 	
+	public function __construct($sWidgetId) {
+		parent::__construct($sWidgetId);
+		$this->setSetting('backup_storage_limit_warning', Settings::getSetting('admin', 'backup_storage_limit_warning', 1000000000));
+	}
+	
 	public function possibleRestoreFiles() {
 		$aAllSqlFiles = ResourceFinder::create(array(DIRNAME_DATA, "sql", "/.*\.sql$/"))->byExpressions()->noCache()->returnObjects()->find();
 		$aResult = array();
