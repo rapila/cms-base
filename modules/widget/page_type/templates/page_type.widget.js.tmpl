@@ -5,6 +5,11 @@ Widget.types.page_type = {
 		} else {
 			this.settings.page_type = this.getPageType();
 		}
+		this.listPageTypeMethods(function(methods) {
+			jQuery.each(methods, function(i, method_name) {
+				this.methods[method_name] = this.callPageTypeMethod.bind(this, method_name);
+			}.bind(this));
+		});
 		var js_location = this.getPageTypeJs();
 		jQuery.ajax({
 			url: js_location,
@@ -12,36 +17,48 @@ Widget.types.page_type = {
 			async: false
 		});
 	},
+
+	page_type_js: function() {
+		if(jQuery.isFunction(Widget.types.page_type.types[this.settings.page_type])) {
+			if(!this.page_type_instance) {
+				this.page_type_instance = new Widget.types.page_type.types[this.settings.page_type](this, this.settings.page_id, this.settings.container);
+			}
+			return this.page_type_instance;
+		}
+		return Widget.types.page_type.types[this.settings.page_type];
+	},
 	
 	handle_preview: function() {
-		Widget.types.page_type.types[this.settings.page_type].handle_preview(this.settings.page_id, this);
+		this.page_type_js().handle_preview(this.settings.page_id, this);
 	},
 	
 	handle_admin: function() {
-		if(this.settings.container.data('admin_handled')) {
-			return;
-		}
-		this.settings.container.data('admin_handled', true);
-		Widget.types.page_type.types[this.settings.page_type].handle_admin(this.settings.page_id, this.settings.container, this);
+		this.page_type_js().handle_admin(this.settings.page_id, this.settings.container, this);
 	},
 	
 	will_save: function() {
-		if(Widget.types.page_type.types[this.settings.page_type].will_save) {
-			Widget.types.page_type.types[this.settings.page_type].will_save(this.settings.page_id, this.settings.container, this);
+		var page_type = this.page_type_js();
+		if(page_type.will_save) {
+			page_type.will_save(this.settings.page_id, this.settings.container, this);
 		}
 	},
 	
 	did_save: function() {
-		if(Widget.types.page_type.types[this.settings.page_type].did_save) {
-			Widget.types.page_type.types[this.settings.page_type].did_save(this.settings.page_id, this.settings.container, this);
+		var page_type = this.page_type_js();
+		if(page_type.did_save) {
+			page_type.did_save(this.settings.page_id, this.settings.container, this);
 		}
+	},
+
+	methods: {
+		
 	},
 	
 	settings: {
 		page_type: null,
 		container: null,
 		page_id: null,
-		language_id: null
+		active_languages: null
 	},
 	
 	types: {}

@@ -1,142 +1,340 @@
-Widget.types.page_type.types['default'] = {
-	handle_preview: function(page_id, page_type) {
-		//Initialized callback
-		jQuery('div.filled-container').each(function() {
-			// Get the container
-			var filled_container = jQuery(this);
-			// Append the preview bar
-			var preview_bar = jQuery.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
-			preview_bar.data('filled_container', filled_container);
-			filled_container.data('preview_bar', preview_bar);
-			filled_container.data('protector', new UnsavedChanges());
+(function() {
+	function PageType(controller, page_id, container) {
+		this.controller = controller;
+		this.methods = controller.methods;
+		this.page_id = page_id;
+		this.container = container;
+		this.has_updated_structure = false;
+	}
+
+	jQuery.extend(PageType.prototype, {
+		find_structure: function(filter) {
+			if(filter.attr) {
+				filter = filter.attr('data-object-id');
+			}
+			if(!jQuery.isPlainObject(filter)) {
+				filter = {id: parseInt(filter, 10)};
+			}
+			var result = null;
+			jQuery.each(this.filled_frontend_modules, function(container_name, container_params) {
+				if(filter.container && filter.container !== container_name) {
+					return true;
+				}
+				var ret = true;
+				jQuery.each(container_params.contents, function(i, content_params) {
+					if(content_params.id === filter.id || filter.obj === content_params) {
+						result = {container: container_params, index: i, content: content_params};
+						ret = false;
+						return false;
+					}
+				});
+				return ret;
+			});
+			return result;
+		},
+
+		update_structure: function(callback) {
+			if(this.has_updated_structure) {
+				return callback();
+			}
+			if(this.is_updating_structure) {
+				return jQuery.when.apply(jQuery, this.is_updating_structure).then(callback);
+			}
 			
-			// Preview bar show/hide stuff
-			filled_container.position_bar = function() {
-				var offset = filled_container.offset();
-				offset.top += filled_container.height();
-				offset.left = Math.max(offset.left, 0);
-				preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left)+'px'});
+			var waiters = this.is_updating_structure = [];
+			var _this = this;
+			
+			this.methods.adminGetContainers(function(containers) {
+				_this.containers = containers;
+			}.deferred(waiters));
+			
+			this.methods.adminListFilledFrontendModules(function(filled_frontend_modules) {
+				_this.filled_frontend_modules = filled_frontend_modules;
+			}.deferred(waiters));
+
+			this.methods.adminListPossibleFrontendModules(function(possible_frontend_modules) {
+				_this.possible_frontend_modules = possible_frontend_modules;
+			}.deferred(waiters));
+
+			var bind = function(method) {
+				return function(event) {
+					method.call(_this, event, jQuery(this).closest('li'));
+				};
 			};
+
+			this.filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
+			this.container.delegate('.filled_modules li .remove_button', 'click', bind(this.remove_object));
+			this.container.delegate('.filled_modules li .edit_condition_button', 'click', bind(this.edit_condition));
+			this.container.delegate('.filled_modules li .edit_button', 'click', bind(this.edit_object));
+			this.container.delegate('.filled_modules li .draft_status', 'click', bind(this.drop_draft));
+
+			jQuery.when.apply(jQuery, waiters).then(function() {
+				_this.has_updated_structure = true;
+				_this.is_updating_structure = false;
+				callback();
+			});
+		},
+
+		update_admin_container: function(container, language_id) {
+			var _this = this;
+			container.empty();
+			container.append(jQuery.parseHTML('{{includeTemplate=admin}}'));
+			var filled_modules = container.find('.filled_modules');
+			var available_modules = container.find('.available_modules');
+			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
+				accept: 'li[data-container]',
+				tolerance: 'pointer',
+				activeClass: 'ui-state-draggable',
+				hoverClass: 'ui-state-droppable',
+				drop: function(event, ui) {
+					_this.remove_object(event, ui.draggable, true);
+				}
+			});
 			
-			var leave_timeout = null;
-			var leave = function(event) {
-				leave_timeout = window.setTimeout(function() {
-					if(filled_container.is('.editing')) {
+			var container_html = this.containers.html;
+			if(container_html) {
+				jQuery.parseHTML(container_html).appendTo(filled_modules);
+			}
+			if(this.containers.css_parsed) {
+				filled_modules.addClass('css_parsed');
+			} else {
+				filled_modules.removeClass('css_parsed');
+			}
+			
+			var filled_modules_containers = filled_modules.find('ol');
+			jQuery.each(this.filled_frontend_modules, function(container_name, container_params) {
+				var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
+				jQuery.each(container_params.contents, function(i, content_params) {
+					var content = content_params.language_objects[language_id];
+					var li = _this.filled_module_li.clone().appendTo(target);
+					li.attr({'data-object-type': content_params.object_type, 'data-container': container_name, 'data-object-id': content_params.id, 'data-language-id': language_id});
+					_this.update_content_properties(li, {content: content_params});
+				});
+			});
+			
+			filled_modules_containers.sortable({
+				connectWith: filled_modules.find('ol'),
+				helper: 'clone',
+				update: function(event, ui) {
+					if(ui.sender) {
 						return;
 					}
-					preview_bar.hide('fast');
-					leave_timeout = null;
-				}, 1000);
-			};
-			
-			filled_container.resize(function() {
-				filled_container.position_bar();
-			});
-			
-			filled_container.bind('mouseenter', function() {
-				if(leave_timeout) {
-					window.clearTimeout(leave_timeout); leave_timeout = null;
-				}
-				preview_bar.show('fast');
-				filled_container.position_bar();
-			}).bind('mouseleave', leave);
-			
-			preview_bar.bind('mouseenter', function(event) {
-				if(leave_timeout) {
-					window.clearTimeout(leave_timeout); leave_timeout = null;
-				}
-			}).bind('mouseleave', leave);
-		});
-		// Button event handlers
-		var cleanup = function(preview_bar, container) {
-			container.data('protector').unprotect(container.children()).release();
-			page_type.callPageTypeMethod('adminPreview', container.attr('data-object-id'), function(result, error) {
-				var elements = jQuery.parseHTML(result.preview_contents);
-				container.empty().append(elements);
-				container.removeClass('editing');
-				preview_bar.removeClass('loading');
-				container.position_bar();
-				preview_bar.find('.additional-buttons').empty();
-			});
-		};
-		
-		jQuery('.preview_bar').delegate('.edit', 'click', function() {
-			var preview_bar = jQuery(this).closest('.preview_bar');
-			preview_bar.show('fast');
-			var container = preview_bar.data('filled_container');
-			if(container.is('.editing')) {
-				return;
-			}
-			container.addClass('editing');
-			preview_bar.addClass('loading');
-			page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(control_session_key) {
-				Widget.create('language_object_control', function(language_object_control) {
-					language_object_control.editor(function(result) {
-						Widget.createWithElement(result[0], function(widget) {
-							if(widget.setObjectId) {
-								widget.setObjectId(container.attr('data-object-id'));
-							}
-							widget.handle('element_set', function(event, element) {
-								container.empty().append(element);
-								container.data('protector').protect(element);
-							});
-						}, function(widget) {
-							if(widget.additional_buttons) {
-								var additional_button_pane = preview_bar.find('.additional-buttons');
-								var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
-								jQuery.each(widget.additional_buttons, function(i, button) {
-									var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
-									additional_button_pane.append(button_element);
-								});
-							}
-							preview_bar.removeClass('loading').addClass('editing');
-							container.data('edit_widget', widget);
-							container.data('language_object_control', language_object_control);
-							// Reposition the bar
-							container.position_bar();
-						}, result[1]);
+					var item = ui.item;
+					// get final target (not original one)
+					var target = jQuery(item).parent();
+					var position = target.children().index(item);
+						
+					// just move within container
+					if(target.attr('data-container-name') === item.attr('data-container')) {
+						_this.methods.adminMoveObject(item.attr('data-object-id'), position, function() {
+							md = _this.find_structure(item);
+							md.container.contents.splice(md.index, 1);
+							md.container.contents.splice(position, 0, md.content);
+						});
+						return;
+					}
+					// move to container and resort
+					if(item.attr('data-container')) {
+						item.attr('data-container', target.attr('data-container-name'));
+						_this.methods.adminMoveObject(item.attr('data-object-id'), position, target.attr('data-container-name'), function() {
+							md = _this.find_structure(item);
+							md.container.contents.splice(md.index, 1);
+							_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, md.content);
+						});
+						return;
+					}
+					// add new object, prepare for delete
+					item.attr('data-container', target.attr('data-container-name'));
+					_this.methods.adminAddObjectToContainer(target.attr('data-container-name'), item.attr('data-object-type'), position, function(content_params) {
+						item.attr('data-object-id', content_params.id);
+
+						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
+						_this.update_content_properties(item, {content: content_params});
 					});
+				}
+			});
+
+			var dragOptions = {
+				cursor: "move",
+				helper: 'clone',
+				connectToSortable: filled_modules_containers
+			};
+			jQuery.each(this.possible_frontend_modules, function(object_type, module_name) {
+				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id}).draggable(dragOptions).sortable();
+				element.appendTo(available_modules);
+			});
+		},
+		
+		handle_admin: function() {
+			var _this = this;
+			Widget.createWithElement('language_tabs', function(widget) {
+				widget.settings.active_languages = _this.controller.settings.active_languages;
+				widget.handle('element_set', function(event, element) {
+					_this.container.empty();
+					_this.container.append(element);
+				});
+			}, function(language_tabs) {
+				language_tabs.handle('tab.selected', function(event, language_id, tab_content) {
+					_this.update_structure(_this.update_admin_container.bind(_this, tab_content, language_id));
+				}, false, true);
+			});
+			
+		},
+		
+		handle_preview: function(page_id, page_type) {
+			//Initialized callback
+			jQuery('div.filled-container').each(function() {
+				// Get the container
+				var filled_container = jQuery(this);
+				// Append the preview bar
+				var preview_bar = jQuery.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
+				preview_bar.data('filled_container', filled_container);
+				filled_container.data('preview_bar', preview_bar);
+				filled_container.data('protector', new UnsavedChanges());
+			
+				// Preview bar show/hide stuff
+				filled_container.position_bar = function() {
+					var offset = filled_container.offset();
+					offset.top += filled_container.height();
+					offset.left = Math.max(offset.left, 0);
+					preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left)+'px'});
+				};
+			
+				var leave_timeout = null;
+				var leave = function(event) {
+					leave_timeout = window.setTimeout(function() {
+						if(filled_container.is('.editing')) {
+							return;
+						}
+						preview_bar.hide('fast');
+						leave_timeout = null;
+					}, 1000);
+				};
+			
+				filled_container.resize(function() {
+					filled_container.position_bar();
+				});
+			
+				filled_container.bind('mouseenter', function() {
+					if(leave_timeout) {
+						window.clearTimeout(leave_timeout); leave_timeout = null;
+					}
+					preview_bar.show('fast');
+					filled_container.position_bar();
+				}).bind('mouseleave', leave);
+			
+				preview_bar.bind('mouseenter', function(event) {
+					if(leave_timeout) {
+						window.clearTimeout(leave_timeout); leave_timeout = null;
+					}
+				}).bind('mouseleave', leave);
+			});
+			// Button event handlers
+			var cleanup = function(preview_bar, container) {
+				container.data('protector').unprotect(container.children()).release();
+				page_type.callPageTypeMethod('adminPreview', container.attr('data-object-id'), function(result, error) {
+					var elements = jQuery.parseHTML(result.preview_contents);
+					container.empty().append(elements);
+					container.removeClass('editing');
+					preview_bar.removeClass('loading');
+					container.position_bar();
+					preview_bar.find('.additional-buttons').empty();
+				});
+			};
+		
+			jQuery('.preview_bar').delegate('.edit', 'click', function() {
+				var preview_bar = jQuery(this).closest('.preview_bar');
+				preview_bar.show('fast');
+				var container = preview_bar.data('filled_container');
+				if(container.is('.editing')) {
+					return;
+				}
+				container.addClass('editing');
+				preview_bar.addClass('loading');
+				page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(control_session_key) {
+					Widget.create('language_object_control', function(language_object_control) {
+						language_object_control.editor(function(result) {
+							Widget.createWithElement(result[0], function(widget) {
+								if(widget.setObjectId) {
+									widget.setObjectId(container.attr('data-object-id'));
+								}
+								widget.handle('element_set', function(event, element) {
+									container.empty().append(element);
+									container.data('protector').protect(element);
+								});
+							}, function(widget) {
+								if(widget.additional_buttons) {
+									var additional_button_pane = preview_bar.find('.additional-buttons');
+									var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
+									jQuery.each(widget.additional_buttons, function(i, button) {
+										var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
+										additional_button_pane.append(button_element);
+									});
+								}
+								preview_bar.removeClass('loading').addClass('editing');
+								container.data('edit_widget', widget);
+								container.data('language_object_control', language_object_control);
+								// Reposition the bar
+								container.position_bar();
+							}, result[1]);
+						});
+					}, control_session_key);
+				});
+			}).delegate('.cancel', 'click', function() {
+				var preview_bar = jQuery(this).closest('.preview_bar');
+				var container = preview_bar.data('filled_container');
+				container.data('protector').warn(function(ok) {
+					if(ok) {
+						preview_bar.removeClass('editing').addClass('loading');
+						cleanup(preview_bar, container);
+					}
+				});
+			}).delegate('.save', 'click', function(event) {
+				var preview_bar = jQuery(this).closest('.preview_bar');
+				var container = preview_bar.data('filled_container');
+				preview_bar.removeClass('editing').addClass('loading');
+				var widget = container.data('edit_widget');
+				container.data('edit_widget', null);
+				var language_object_control = container.data('language_object_control');
+				container.data('language_object_control', null);
+				if(widget) {
+					language_object_control.save(widget.save(), event.shiftKey, cleanup.bind(this, preview_bar, container));
+				} else {
+					preview_bar.removeClass('loading').addClass('editing');
+				}
+			});
+		},
+	
+		//Admin helper methods
+		remove_object: function(event, item_to_remove, force) {
+			var _this = this;
+			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), !!force, function(deleted) {
+				var md = _this.find_structure(item_to_remove);
+				if(deleted && !force) {
+					var language_id = item_to_remove.attr('data-language-id');
+					md.content.language_objects[language_id].is_draft = true;
+					md.content.language_objects[language_id].exists_in_language = false;
+					_this.update_content_properties(item_to_remove, md);
+				} else if(deleted) {
+					//Remove the item in the structure
+					md.container.contents.splice(md.index, 1);
+					item_to_remove.remove();
+				}
+			});
+		},
+
+		control_widget: function(item_to_edit, callback) {
+			var md = this.find_structure(item_to_edit).content;
+			this.methods.adminEdit(item_to_edit.attr('data-object-id'), item_to_edit.attr('data-language-id'), function(control_session_key) {
+				Widget.create('language_object_control', function(language_object_control) {
+					callback(language_object_control, md);
 				}, control_session_key);
 			});
-		}).delegate('.cancel', 'click', function() {
-			var preview_bar = jQuery(this).closest('.preview_bar');
-			var container = preview_bar.data('filled_container');
-			container.data('protector').warn(function(ok) {
-				if(ok) {
-					preview_bar.removeClass('editing').addClass('loading');
-					cleanup(preview_bar, container);
-				}
-			});
-		}).delegate('.save', 'click', function(event) {
-			var preview_bar = jQuery(this).closest('.preview_bar');
-			var container = preview_bar.data('filled_container');
-			preview_bar.removeClass('editing').addClass('loading');
-			var widget = container.data('edit_widget');
-			container.data('edit_widget', null);
-			var language_object_control = container.data('language_object_control');
-			container.data('language_object_control', null);
-			if(widget) {
-				language_object_control.save(widget.save(), event.shiftKey, cleanup.bind(this, preview_bar, container));
-			} else {
-				preview_bar.removeClass('loading').addClass('editing');
-			}
-		});
-	},
+		},
 	
-	//Admin helper methods
-	remove_object: function(item_to_remove, force) {
-		this.callPageTypeMethod('adminRemoveObject', item_to_remove.attr('data-object-id'), !!force, function(deleted) {
-			if(deleted && !force) {
-				Widget.types.page_type.types['default'].update_content_properties(item_to_remove, {is_filled_in_current_language: false, is_draft: true});
-			} else if(deleted) {
-				item_to_remove.remove();
-			}
-		});
-	},
-	
-	edit_object: function(item_to_edit) {
-		this.callPageTypeMethod('adminEdit', item_to_edit.attr('data-object-id'), function(control_session_key) {
-			Widget.create('language_object_control', function(language_object_control) {
+		edit_object: function(event, item_to_edit) {
+			var _this = this;
+			this.control_widget(item_to_edit, function(language_object_control) {
 				language_object_control.editor(function(result) {
 					Widget.createWithElement(result[0], function(widget) {
 						if(widget.setObjectId) {
@@ -148,7 +346,12 @@ Widget.types.page_type.types['default'] = {
 							var save = function(is_draft) {
 								language_object_control.save(widget.save(), is_draft, function(result, error) {
 									//Don’t handle the error, it’s an unprivileged user whose data could not be saved
-									Widget.types.page_type.types['default'].update_content_properties(item_to_edit, {is_filled_in_current_language: result.language_object_exists, is_draft: is_draft});
+									//TODO: update object preview
+									var md = _this.find_structure(item_to_edit);
+									var language_id = item_to_edit.attr('data-language-id');
+									md.content.language_objects[language_id].is_draft = is_draft;
+									md.content.language_objects[language_id].exists_in_language = result.language_object_exists;
+									_this.update_content_properties(item_to_edit, md);
 									element.dialog('close');
 								});
 							};
@@ -201,134 +404,49 @@ Widget.types.page_type.types['default'] = {
 						});
 					}, jQuery.noop, result[1]);
 				});
-			}, control_session_key);
-		});
-	},
-	
-	edit_condition: function(item_to_edit) {
-		Widget.create('content_display_condition', function(widget) {
-			widget.setContentObjectId(item_to_edit.attr('data-object-id'));
-		}, jQuery.noop);
-	},
-	
-	update_content_properties: function(element, properties) {
-		var cls;
-		if(properties.is_filled_in_current_language !== undefined) {
-			cls = properties.is_filled_in_current_language ? 'removeClass' : 'addClass';
-			element[cls]('language_object_empty');
-		}
-		if(properties.is_draft !== undefined) {
-			cls = properties.is_draft ? 'addClass' : 'removeClass';
-			element[cls]('is_draft');
-		}
-	},
-
-	drop_draft: function(item_to_edit, pt_default) {
-		this.callPageTypeMethod('adminDropDraft', item_to_edit.attr('data-object-id'), function() {
-			pt_default.update_content_properties(item_to_edit, {is_draft: false});
-		});
-	},
-	
-	handle_admin: function(page_id, container, page_type) {
-		var pt_default = this;
-		var filled_modules = jQuery('<div/>').addClass('filled_modules').appendTo(container);
-		var available_modules = jQuery('<ol/>').addClass('available_modules draggable').appendTo(container);
-		var delete_drop_zone = jQuery('<div/>').addClass('delete_drop_zone droppable').html("<span>&nbsp;</span>").attr('title', "{{writeString=wns.page.drop_object_all_languages}}").appendTo(container);
-		delete_drop_zone.droppable({
-			accept: 'li[data-container]',
-			activeClass: 'ui-state-draggable',
-			hoverClass: 'ui-state-droppable',
-			drop: function(event, ui) {
-				pt_default.remove_object.call(page_type, ui.draggable, true);
-			}
-		});
-		available_modules.empty();
-		filled_modules.empty();
-		container.append('<br clear="both" />');
-		
-		
-		// get containers before filling the objects
-		page_type.callPageTypeMethod('adminGetContainers', function(container_result) {
-			var container_html = container_result.html;
-			if(container_html) {
-				jQuery.parseHTML(container_html).appendTo(filled_modules);
-			}
-			if(container_result.css_parsed) {
-				filled_modules.addClass('css_parsed');
-			} else {
-				filled_modules.removeClass('css_parsed');
-			}
-			var filled_modules_containers = filled_modules.find('ol');			
-			var filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
-			
-			// fill existing objects and handle drag and drop and sort
-			page_type.callPageTypeMethod('adminListFilledFrontendModules', function(containers) {
-				
-				// add objects to target container
-				jQuery.each(containers, function(container_name, params) {
-					var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
-					jQuery.each(params.contents, function(i, content) {
-						var li = filled_module_li.clone().attr({'data-object-type': content.object_type, 'data-container': container_name, 'data-object-id': content.id}).appendTo(target);
-						li.find('.module_name').text(content.object_type_display_name);
-						if(content.content_info) {
-							li.attr('title', content.content_info);
-						}
-						li.find('.remove_button').click(pt_default.remove_object.bind(page_type, li, false));
-						li.find('.edit_condition_button').click(pt_default.edit_condition.bind(page_type, li));
-						li.find('.edit_button').click(pt_default.edit_object.bind(page_type, li));
-						li.find('.draft_status').click(pt_default.drop_draft.bind(page_type, li, pt_default));
-						pt_default.update_content_properties(li, {is_filled_in_current_language: content.content_info !== false, is_draft: content.is_draft});
-					});
-				});
-			
-				filled_modules_containers.sortable({
-					connectWith: filled_modules.find('ol'),
-					helper: 'clone',
-					update: function(event, ui) {
-						if(ui.sender) {
-							return;
-						}
-						var item = ui.item;
-						// get final target (not original one)
-						var target = jQuery(item).parent();
-						var position = target.children().index(item);
-						
-						// just move within container
-						if(target.attr('data-container-name') === item.attr('data-container')) {
-							page_type.callPageTypeMethod('adminMoveObject', item.attr('data-object-id'), position);
-							return;
-						}
-						// move to container and resort
-						if(item.attr('data-container')) {
-							item.attr('data-container', target.attr('data-container-name'));
-							page_type.callPageTypeMethod('adminMoveObject', item.attr('data-object-id'), position, target.attr('data-container-name'));
-							return;
-						}
-						// add new object, prepare for delete
-						item.attr('data-container', target.attr('data-container-name'));
-						page_type.callPageTypeMethod('adminAddObjectToContainer', target.attr('data-container-name'), item.attr('data-object-type'), position, function(object_id) {
-							item.attr('data-object-id', object_id);
-							item.find('.remove_button').click(pt_default.remove_object.bind(page_type, item, false));
-							item.find('.edit_condition_button').click(pt_default.edit_condition.bind(page_type, item));
-							item.find('.edit_button').click(pt_default.edit_object.bind(page_type, item));
-							item.find('.draft_status').click(pt_default.drop_draft.bind(page_type, item, pt_default));
-							pt_default.update_content_properties(item, {is_filled_in_current_language: false});
-						});
-					}
-				});
 			});
-			page_type.callPageTypeMethod('adminListPossibleFrontendModules', function(modules) {
-				var dragOptions = {
-					cursor: "move",
-					helper: 'clone',
-					connectToSortable: filled_modules_containers
+		},
+	
+		edit_condition: function(event, item_to_edit) {
+			var _this = this;
+			Widget.create('content_display_condition', function(widget) {
+				widget.setContentObjectId(item_to_edit.attr('data-object-id'));
+				widget.save_callback = function(result) {
+					var md = _this.find_structure(item_to_edit);
+					md.content.has_condition = result;
+					_this.update_content_properties(item_to_edit, md);
 				};
-				jQuery.each(modules, function(object_type, module_name) {
-					var element = filled_module_li.clone().find('.module_name').text(module_name).end().attr('data-object-type', object_type).addClass('available_frontend_module').draggable(dragOptions).sortable();
-					element.appendTo(available_modules);
-					// not yet but soon		jQuery('<span/>').addClass('handle').appendTo(element);
-				});
-			});
-		});
-	}
-};
+			}, jQuery.noop);
+		},
+	
+		update_content_properties: function(element, md) {
+			if(!md) {
+				md = this.find_structure(element);
+			}
+			var language_id = element.attr('data-language-id');
+			
+			var props = md.content;
+			var lang_props = props.language_objects[language_id];
+			
+			element[lang_props.exists_in_language ? 'removeClass' : 'addClass']('language_object_empty');
+			element[lang_props.is_draft ? 'addClass' : 'removeClass']('is_draft');
+			element[props.has_condition ? 'addClass' : 'removeClass']('has_condition');
+			
+			element.find('.module_name').text(props.object_type_display_name);
+			element.attr('title', lang_props.content_info);
+		},
+
+		drop_draft: function(event, item_to_edit) {
+			var _this = this;
+			this.methods.adminDropDraft(item_to_edit.attr('data-object-id'), function() {
+				var md = _this.find_structure(item_to_edit);
+				var language_id = item_to_edit.attr('data-language-id');
+				md.content.language_objects[language_id].is_draft = false;
+				this.update_content_properties(item_to_edit, md);
+			}.bind(this));
+		}
+	
+	});
+
+	Widget.types.page_type.types['default'] = PageType;
+})();

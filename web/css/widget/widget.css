@@ -79,7 +79,6 @@ div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px soli
 .ui-tabs-nav li.ui-state-active{background-color:#fff}
 .ui-tabs .ui-tabs-nav li{margin:2px 2px 0 2px;background-color:#ebedef}
 .ui-tabs-nav li.ui-state-default{background:transparent;border:1px solid #cccdcf}
-.ui-tabs-panel .panel_content{border-top:1px #cccdcf solid;padding:0 0 20px 26px;margin-left:0}
 .ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf}
 .ui-tabs #list.ui-tabs-panel,.ui-tabs #thumbnail.ui-tabs-panel{border-top:0}
 .ui-tabs .ui-tabs-panel{padding:0}
