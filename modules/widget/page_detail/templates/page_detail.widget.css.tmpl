@@ -107,9 +107,21 @@ div.delete_drop_zone.ui-state-droppable {
 	border-color: transparent !important;
 }
 
-.page_detail > .accordion > .ui-accordion-content > .ui-tabs > .ui-tabs-panel {
+.page_detail > .accordion > .ui-accordion-content,
+.page_detail > .accordion > .ui-accordion-content > .ui-tabs > .ui-tabs-panel,
+.page_detail > .accordion > .ui-accordion-content > form > .ui-tabs > .ui-tabs-panel {
 	border-top: 1px #cccdcf solid;
 	padding: 0 0 20px 26px;
+}
+
+.page_detail > .accordion > .ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header,
+.page_detail > .accordion > .ui-accordion-content > form > .ui-tabs > .ui-tabs-nav.ui-widget-header {
+	padding-left: 26px;
+}
+
+.page_detail > .accordion > .ui-accordion-content > .ui-tabs,
+.page_detail > .accordion > .ui-accordion-content > form > .ui-tabs {
+	margin-left: -26px;
 }
 
 #admin_sidebar input {
