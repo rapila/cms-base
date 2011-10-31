@@ -1666,7 +1666,7 @@ abstract class BaseStringPeer {
 		self::$IGNORE_RIGHTS = $bIgnore;
 	}
 	public static function isIgnoringRights() {
-		return self::$IGNORE_RIGHTS;
+		return self::$IGNORE_RIGHTS || PHP_SAPI === "cli";
 	}
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
 		if($oUser === null) {
