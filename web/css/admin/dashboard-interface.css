@@ -64,6 +64,11 @@ a {color:white;}
 	color: black;
 }
 
+#dashboard-columns .dashboard-widget .dashboard-widget-content h3,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h4 {
+  color: #FFFFFF;
+}
+
 #dashboard-columns .dashboard-widget .dashboard-widget-content {
 	background-color: #333;
 	padding: 1em;
