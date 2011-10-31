@@ -2354,13 +2354,13 @@ abstract class BaseDocument extends BaseObject  implements Persistent
 		return DocumentPeer::mayOperateOn($oUser, $this, $sOperation);
 	}
 	public function mayBeInserted($oUser = false) {
-		return $this->mayOperate($oUser, "insert");
+		return $this->mayOperate("insert", $oUser);
 	}
 	public function mayBeUpdated($oUser = false) {
-		return $this->mayOperate($oUser, "update");
+		return $this->mayOperate("update", $oUser);
 	}
 	public function mayBeDeleted($oUser = false) {
-		return $this->mayOperate($oUser, "delete");
+		return $this->mayOperate("delete", $oUser);
 	}
 
 	// extended_timestampable behavior
