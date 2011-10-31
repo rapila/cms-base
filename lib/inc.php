@@ -71,8 +71,17 @@ $aConnectionSettings = Settings::getSetting('connection', null, array(), 'db_con
 if(!isset($aConnectionSettings['settings'])) {
 	$aConnectionSettings['settings'] = array();
 }
-$aConnectionSettings['settings']['charset'] = array('value' => Util::convertEncodingNameToSql(Settings::getSetting("encoding", "db", "utf-8")));
-$aDbSettings = array('connection' => &$aConnectionSettings, 'adapter' => Settings::getSetting('database', 'adapter', 'mysql', 'db_config'));
+
+$sAdapter = Settings::getSetting('database', 'adapter', 'mysql', 'db_config');
+
+$oCharset = null;
+if(version_compare(PHP_VERSION, '5.3.6', '<') && StringUtil::startsWith($sAdapter, 'mysql')) {
+	$oCharset = new LegacySQLCharset();
+} else {
+	$aConnectionSettings['settings']['charset'] = array('value' => LegacySQLCharset::convertEncodingNameToSQL(Settings::getSetting("encoding", "db", "utf-8")));
+}
+
+$aDbSettings = array('connection' => &$aConnectionSettings, 'adapter' => $sAdapter);
 $aDataSources = array_merge(array('rapila' => &$aDbSettings), Settings::getSetting('additional_datasources', null, array(), 'db_config'));
 $aDataSources['default'] = 'rapila';
 $aPropelSettings = array('datasources' => &$aDataSources);
@@ -80,3 +89,7 @@ $aPropelSettings['log'] = Settings::getSetting('log', null, array(), 'db_config'
 
 Propel::setConfiguration($aPropelSettings);
 Propel::initialize();
+
+if($oCharset) {
+	$oCharset->setConnectionCharsetToDefault($sAdapter, Propel::getConnection());
+}

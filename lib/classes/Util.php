@@ -3,19 +3,8 @@
  * @package utils
  */
 class Util {
-	private static $SQL_ENCODINGS = array("utf-8" => "utf8",
-																				"iso-8859-1" => "latin1",
-																				"iso-8859-2" => "latin2");
-
 	private static $COMMON_DESCRIPTION_METHODS = array("getDescription", "getText", "getTitle", "__toString");
 	private static $COMMON_NAME_METHODS = array("getName", "getFullName", "getTitle", "getExtension", "getStringKey", "getId");
-
-	public static function convertEncodingNameToSql($sEncoding) {
-		if(isset(self::$SQL_ENCODINGS[$sEncoding])) {
-			return self::$SQL_ENCODINGS[$sEncoding];
-		}
-		return $sEncoding;
-	}
 
 	public static function equals($mFirst, $mSecond, $sKeyMethod = null) {
 		if($mFirst === $mSecond) {

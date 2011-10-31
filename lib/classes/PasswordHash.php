@@ -2,7 +2,7 @@
 class PasswordHash {
 	private static function getPasswordSalt() {
 			$sSalt = str_pad(dechex(mt_rand()), 8, '0', STR_PAD_LEFT).str_pad(dechex(mt_rand()), 8, '0', STR_PAD_LEFT);
-			return substr($sSalt , -16);
+			return substr($sSalt, -16);
 	}
 	
 	public static function hashPassword($sPassword) {
