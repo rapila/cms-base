@@ -39,7 +39,7 @@ $aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRN
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
 // frontend dir constants
-define('MAIN_DIR_FE',				 php_sapi_name() === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
+define('MAIN_DIR_FE',				 PHP_SAPI === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
 
 define('BASE_DIR_FE',				 MAIN_DIR_FE.DIRNAME_BASE);
 define('SITE_DIR_FE',				 MAIN_DIR_FE.DIRNAME_SITE);
