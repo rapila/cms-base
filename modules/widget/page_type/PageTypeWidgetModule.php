@@ -32,7 +32,7 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 		return $sResourceUrl;
 	}
 
-	public function listPageTypeMethods() {
+	public function getPageTypeMethods() {
 		return get_class_methods($this->oPageType);
 	}
 	
