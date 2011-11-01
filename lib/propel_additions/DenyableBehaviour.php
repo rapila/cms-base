@@ -141,7 +141,7 @@ class DenyableBehaviour extends Behavior {
 	
 	private function addIsIgnoringMethod() {
 		return 'public static function isIgnoringRights() {
-	return self::$IGNORE_RIGHTS;
+	return self::$IGNORE_RIGHTS || PHP_SAPI === "cli";
 }
 ';
 	}
