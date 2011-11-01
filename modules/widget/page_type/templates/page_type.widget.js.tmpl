@@ -5,7 +5,7 @@ Widget.types.page_type = {
 		} else {
 			this.settings.page_type = this.getPageType();
 		}
-		this.listPageTypeMethods(function(methods) {
+		this.getPageTypeMethods(function(methods) {
 			jQuery.each(methods, function(i, method_name) {
 				this.methods[method_name] = this.callPageTypeMethod.bind(this, method_name);
 			}.bind(this));

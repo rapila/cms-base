@@ -73,7 +73,7 @@ text_module:
       - ["Styles", "Format"]
     -
       - ["Subscript", "Superscript", "-", "Maximize"]
-      - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "Scayt", "ShowBlocks"]
+      - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "PasteFromWord", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
  
