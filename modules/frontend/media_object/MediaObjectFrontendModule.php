@@ -90,7 +90,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 				if(!$sId && !$aPostData['mimetype'][$iKey]) {
 					$aPostData['mimetype'][$iKey] = $this->mimetypeFor(null, $sSrc);
 					if(!$aPostData['mimetype'][$iKey]) {
-						$aPostData['mimetype'][$iKey] = 'application/octet-stream';
+						$aPostData['mimetype'][$iKey] = null;
 					}
 				}
 				$aResults[] = array("document_id" => $sId, 'url' => $sSrc, "width" => $aPostData["width"][$iKey], "height" => $aPostData["height"][$iKey], "mimetype" => $aPostData["mimetype"][$iKey]);
