@@ -5,7 +5,6 @@
 class LinkListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
-	private $iLinkCategoryId;
 	private $oLanguageFilter;
 	public $oDelegateProxy;
 	
