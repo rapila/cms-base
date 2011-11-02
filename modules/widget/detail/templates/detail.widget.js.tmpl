@@ -286,7 +286,7 @@ Widget.types.detail = {
 		}, (options || {}));
 		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
-		Widget.create(detail_name+"_detail", function(detail) {
+		var init = function(detail) {
 			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
 				if(options.colName && col.identifier !== options.colName) {
 					return;
@@ -308,10 +308,20 @@ Widget.types.detail = {
 				event.stopPropagation();
 			});
 			detail.save_callback = function(returnValue) {
-				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
-				list.update_row(detail.current_row, additionalData);
+				if(detail.current_row) {
+					var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
+					list.update_row(detail.current_row, additionalData);
+					delete detail.current_row;
+				} else {
+					list.reload();
+				}
 			};
-		});
+		}
+		if(list.connected_detail) {
+			init(list.connected_detail);
+		} else {
+			Widget.create(detail_name+"_detail", init);
+		}
 	},
 	
 	settings: {
