@@ -308,8 +308,13 @@ Widget.types.detail = {
 				event.stopPropagation();
 			});
 			detail.save_callback = function(returnValue) {
-				var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
-				list.update_row(detail.current_row, additionalData);
+				if(detail.current_row) {
+					var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
+					list.update_row(detail.current_row, additionalData);
+					delete detail.current_row;
+				} else {
+					list.reload();
+				}
 			};
 		}
 		if(list.connected_detail) {
