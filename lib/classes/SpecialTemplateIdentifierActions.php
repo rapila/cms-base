@@ -152,6 +152,8 @@ class SpecialTemplateIdentifierActions {
 		$iTimestamp = null;
 		if($oTemplateIdentifier->hasParameter('timestamp')) {
 			$iTimestamp = (int)$oTemplateIdentifier->getParameter('timestamp');
+		} else if($oTemplateIdentifier->hasParameter('format')) {
+			$iTimestamp = DateTime::createFromFormat($oTemplateIdentifier->getParameter('format'), $oTemplateIdentifier->getParameter('date'));
 		}
 		$sLocaleId = null;
 		if($oTemplateIdentifier->hasParameter('locale')) {
