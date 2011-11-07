@@ -165,6 +165,9 @@ class ResourceFinder {
 		return $bOptional ? $this->addOptionalPath(true) : $this->addExpression(true);
 	}
 
+	/**
+	 * @return bool|string|FileResource|array the matched path(s)
+	 */
 	public function find() {
 		if($this->mResult === false) {
 			if(!$this->bNoCache && ErrorHandler::getEnvironment() !== 'development') {

@@ -12,6 +12,9 @@ class PagePeer extends BasePagePeer {
 
 	private static $ROOT_PAGE = null;
 
+	/**
+	 * @return Page The root page
+	 */
 	public static function getRootPage() {
 		if(self::$ROOT_PAGE === null) {
 			self::$ROOT_PAGE = self::retrieveRoot();

@@ -226,7 +226,11 @@ class Flash {
 			$this->aArrayToCheck = $_POST;
 		}
 	}
-	
+
+	/**
+	 * @static
+	 * @return Flash The global Flash instance
+	 */
 	public static function getFlash() {
 		$oSession = Session::getSession();
 		if(self::$INSTANCE === null) {

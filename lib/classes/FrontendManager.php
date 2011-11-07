@@ -159,7 +159,7 @@ class FrontendManager extends Manager {
 		
 		
 		$sPageType = self::$CURRENT_PAGE->getPageType();
-		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
+		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM);
 		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, ($bIsAjaxRequest ? $aAjaxSections['container'] : null));
 		
 		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();

@@ -5,9 +5,11 @@ abstract class PageTypeModule extends Module {
 	protected static $MODULE_TYPE = 'page_type';
 	
 	protected $oPage;
-	
-	public function __construct(Page $oPage) {
+	protected $oNavigationItem;
+
+	public function __construct(Page $oPage = null, NavigationItem $oNavigationItem = null) {
 		$this->oPage = $oPage;
+		$this->oNavigationItem = $oNavigationItem;
 	}
 	
 	public abstract function display(Template $oTemplate, $bIsPreview = false);

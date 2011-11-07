@@ -12,8 +12,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 	protected $sLanguageId;
 	private $bIsPreview;
 	
-	public function __construct(Page $oPage, $sLanguageId = null) {
-		parent::__construct($oPage);
+	public function __construct(Page $oPage = null, NavigationItem $oNavigationItem = null, $sLanguageId) {
+		parent::__construct($oPage, $oNavigationItem);
 		$this->sLanguageId = $sLanguageId;
 	}
 	

@@ -328,7 +328,11 @@ class Page extends BasePage {
 		$oTemplate->replaceIdentifier("url", LinkUtil::link($this->getFullPathArray(), 'FrontendManager'));
 	}
 	
-	public function getFullPathArray() {
+	/**
+	* Returns the path leading to this page.
+	* @param array $aSubpages An array to append to the output
+	*/
+	public function getFullPathArray(array $aSubpages = array()) {
 		if(!$this->aFullPathArray) {
 			$this->aFullPathArray = array();
 			$oActive = $this;
@@ -337,7 +341,7 @@ class Page extends BasePage {
 				$oActive = $oActive->getParent();
 			}
 		}
-		return $this->aFullPathArray;
+		return array_merge($this->aFullPathArray, $aSubpages);
 	}
 	
 	/**
@@ -349,10 +353,10 @@ class Page extends BasePage {
 	}
 	
 	/**
-	* Alias of getFullPathArray()
+	* Exploded alias of getFullPathArray(). All params given to this method will be passed as the first parameter of getFullPathArray.
 	*/
 	public function getLinkArray() {
-		return $this->getFullPathArray();
+		return $this->getFullPathArray(func_get_args());
 	}
 	
 	/**
