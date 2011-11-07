@@ -6,7 +6,14 @@ class VirtualNavigationItem extends NavigationItem {
 	private $sLinkText;
 	private $mData;
 	private $sType;
-	
+
+	/**
+	 * @param string $sType Virtual identifier
+	 * @param string $sName Page path name
+	 * @param string $sTitle Page title
+	 * @param string $sLinkText Page link text. Defaults to title.
+	 * @param mixed $mData Additional data to be stored for later retrieval
+	 */
 	public function __construct($sType, $sName, $sTitle, $sLinkText = null, $mData = null) {
 		$this->sType = $sType;
 		$this->sName = (string) $sName;
@@ -26,6 +33,31 @@ class VirtualNavigationItem extends NavigationItem {
 	
 	public function isCurrent() {
 		return FrontendManager::$CURRENT_NAVIGATION_ITEM === $this;
+	}
+
+	public function isActive() {
+		if(!FrontendManager::$CURRENT_NAVIGATION_ITEM) {
+			return null;
+		}
+		if(FrontendManager::$CURRENT_NAVIGATION_ITEM->getLevel() < $this->getLevel()) {
+			return false;
+		}
+		for($oParent = FrontendManager::$CURRENT_NAVIGATION_ITEM;$oParent !== null;$oParent = $oParent->getParent()) {
+			if($oParent === $this) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function isSiblingOfCurrent() {
+		if(!FrontendManager::$CURRENT_NAVIGATION_ITEM) {
+			return null;
+		}
+		if(FrontendManager::$CURRENT_NAVIGATION_ITEM->getLevel() !== $this->getLevel()) {
+			return false;
+		}
+		return FrontendManager::$CURRENT_NAVIGATION_ITEM->getParent() === $this->getParent();
 	}
 	
 	public function getData() {
