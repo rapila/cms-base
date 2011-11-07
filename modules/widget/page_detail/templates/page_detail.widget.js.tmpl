@@ -144,6 +144,8 @@ Widget.types.page_detail = {
 		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
 			return;
 		}
+		// empty container, so when page type is changed, ie from default to journal then filled modules are not displayed anymore
+		container.empty();
 		this.configuration_has_been_loaded = true;
 		this.current_page_type = null;
 
