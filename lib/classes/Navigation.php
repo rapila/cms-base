@@ -1,6 +1,6 @@
 <?php
 /**
- * classname:		Navigation
+ * @package navigation
  */
 class Navigation {
 	private static $TEMPLATES = array();

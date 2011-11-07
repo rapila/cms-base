@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package navigation
+ */
 class VirtualNavigationItem extends NavigationItem {
 	private $sName;
 	private $sTitle;

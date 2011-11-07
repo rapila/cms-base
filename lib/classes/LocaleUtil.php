@@ -52,8 +52,10 @@ class LocaleUtil {
 			$sLanguageId = Session::language();
 		}
 		self::setLocaleToLanguageId($sLanguageId, LC_TIME);
-
-		if(is_string($iTimestamp)) {
+		
+		if($iTimestamp instanceof DateTime) {
+			$iTimestamp	= $iTimestamp->format('U');
+		} else if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
 		return strftime("%$sFormat", $iTimestamp);
