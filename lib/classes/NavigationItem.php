@@ -81,20 +81,8 @@ abstract class NavigationItem {
 	}
 	
 	public abstract function isCurrent();
-	public function isActive() {
-		return $this->getCurrent() !== null;
-	}
-	
-	public function isSiblingOfCurrent() {
-		if($this->isActive()) {
-			return false;
-		}
-		$oCurrent = $this->getCurrent();
-		if($oCurrent === null) {
-			return false;
-		}
-		return $this->oParent->isActive() && $oCurrent->getLevel() === $this->getLevel();
-	}
+	public abstract function isActive();
+	public abstract function isSiblingOfCurrent();
 	
 	public function isSiblingOfActive() {
 		if($this->isRoot()) {
@@ -172,18 +160,6 @@ abstract class NavigationItem {
 		$aChildren = $this->getChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 		if(isset($aChildren[$sName])) {
 			return $aChildren[$sName];
-		}
-		return null;
-	}
-	
-	public function getCurrent() {
-		if($this->isCurrent()) {
-			return $this;
-		}
-		foreach($this->getChildren(null, true, true) as $oChild) {
-			if($oChild->isActive()) {
-				return $oChild->getCurrent();
-			}
 		}
 		return null;
 	}
