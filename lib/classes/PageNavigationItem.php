@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package navigation
+ */
 class PageNavigationItem extends NavigationItem {
 	private $oMe;
 	private $bIsCurrent;

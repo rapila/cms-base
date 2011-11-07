@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package navigation
+ */
 abstract class NavigationItem {
 	protected $oParent;
 	protected $aCustomChildren;
