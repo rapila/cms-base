@@ -26,14 +26,23 @@ class ResourceIncluder {
 	private $aIncludedResources;
 	private $aReverseDependencies;
 	private $aCurrentDependencyStack;
-	
+
+	/**
+	 * @static
+	 * @param $sName name of the static includer
+	 * @return ResourceIncluder the named static includer or a new instance if name did not yet reference an includer.
+	 */
 	public static function namedIncluder($sName) {
 		if(!isset(self::$INSTANCES[$sName])) {
 			self::$INSTANCES[$sName] = new ResourceIncluder();
 		}
 		return self::$INSTANCES[$sName];
 	}
-	
+
+	/**
+	 * @static Get the default includer. Same as calling ResourceIncluder::namedIncluder(ResourceIncluder::DEFAULT_INSTANCE_NAME).
+	 * @return ResourceIncluder the default includer
+	 */
 	public static function defaultIncluder() {
 		return self::namedIncluder(self::DEFAULT_INSTANCE_NAME);
 	}
