@@ -28,7 +28,7 @@ Widget.types.admin_menu = {
 					return;
 				}
 				if(to_add.callback) {
-					if(to_add.text) {
+					if(to_add.text !== undefined) {
 						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
 					} else {
 						if(admin_menu.settings.attach_events) {
