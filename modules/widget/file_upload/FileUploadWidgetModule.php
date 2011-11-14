@@ -30,8 +30,8 @@ class FileUploadWidgetModule extends WidgetModule {
 		$aName = explode('.', $sFileName);
 		if(count($aName) > 1) {
 			array_pop($aName);
-			$sFileName = implode('.', $aName);
 		}
+		$sFileName = implode('.', $aName);
 		$iDocumentTypeId = null;
 		try {
 			$iDocumentTypeId = $this->accepts($aOptions['name'], $aOptions['type']);
@@ -49,11 +49,101 @@ class FileUploadWidgetModule extends WidgetModule {
 				$oDocumentType = new DocumentType();
 				$oDocumentType->setExtension($sExtension);
 				$oDocumentType->setMimetype(implode('/', $aMimeType));
+				$oDocumentType->save();
+				$iDocumentTypeId = $oDocumentType->getId();
+			} else {
+				throw $e;
 			}
-			$oDocumentType->save();
-			$iDocumentTypeId = $oDocumentType->getId();
 		}
     $oDocument->setData(fopen($aFileInfo['tmp_name'] , "r"));
+		$this->updateDocument($oDocument, $aOptions, $sFileName, $iDocumentTypeId);
+		
+		$oDocument->save();
+		return $oDocument->getId();
+	}
+
+	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder == null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addResource('widget/html5-formdata/formdata.js');
+		self::includeWidgetResources(false, $oResourceIncluder);
+	}
+	
+	public function accepts($sFileName, $sMimeType = null) {
+		$aName = explode('.', $sFileName);
+		$sExtension = null;
+		if(count($aName) > 1) {
+			$sExtension = array_pop($aName);
+		}
+		$sFileName = implode('.', $aName);
+		$oDocumentType = null;
+		if($sMimeType !== null) {
+			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+		}
+		if($oDocumentType === null && $sExtension !== null) {
+			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
+		}
+		if($oDocumentType === null) {
+			throw new LocalizedException("wns.file_upload.document_type_not_found", array('document_type' => $sExtension));
+		}
+		return $oDocumentType->getId();
+	}
+
+	public function acceptsURL($sUrl, $bCreateType = false) {
+		$sFileName = substr($sUrl, strrpos($sUrl, '/')+1);
+		$aName = explode('.', $sFileName);
+		$sExtension = null;
+		if(count($aName) > 1) {
+			$sExtension = array_pop($aName);
+		}
+		$sFileName = implode('.', $aName);
+		$aHeaders = @get_headers($sUrl, true);
+		$sMimeType = null;
+		$oDocumentType = null;
+		if($aHeaders && isset($aHeaders['Content-Type'])) {
+			$sMimeType = $aHeaders['Content-Type'];
+			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+		}
+		if($oDocumentType === null && $sExtension !== null) {
+			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
+		}
+		if($oDocumentType === null && $bCreateType && $sMimeType && $sExtension) {
+			$oDocumentType = new DocumentType();
+			$oDocumentType->setExtension($sExtension);
+			$oDocumentType->setMimetype($sMimeType);
+			$oDocumentType->save();
+		}
+		if($oDocumentType === null) {
+			throw new LocalizedException("wns.file_upload.document_type_not_found", array('document_type' => $sExtension));
+		}
+		return $oDocumentType->getId();
+	}
+
+	public function uploadURL($sUrl, $aOptions, $bCreateType) {
+		$aOptions['name'] = substr($sUrl, strrpos($sUrl, '/')+1);
+		$sFileName = explode('.', $aOptions['name']);
+		if(count($sFileName) > 1) {
+			$sExtension = array_pop($sFileName);
+		}
+		$sFileName = implode('.', $sFileName);
+		
+		$iDocumentTypeId = $this->acceptsURL($sUrl, $bCreateType);
+		$oDocument = null;
+		if($aOptions['document_id']) {
+			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
+		} else {
+			$oDocument = new Document();
+		}
+		//this needs fopen wrappers enabled
+		$oDocument->setData(file_get_contents($sUrl));
+		$this->updateDocument($oDocument, $aOptions, $sFileName, $iDocumentTypeId);
+		
+		$oDocument->save();
+		return $oDocument->getId();
+	}
+	
+	private function updateDocument($oDocument, &$aOptions, $sFileName, $iDocumentTypeId) {
 		$oDocument->setDocumentTypeId($iDocumentTypeId);
 		$oDocument->setOriginalName($aOptions['name']);
 		if(!$aOptions['deny_name_override'] || !$oDocument->getName()) {
@@ -82,36 +172,6 @@ class FileUploadWidgetModule extends WidgetModule {
 				ob_end_clean();
 			}
 		}
-		
-		$oDocument->save();
-		return $oDocument->getId();
 	}
 	
-	public static function includeResources($oResourceIncluder = null) {
-		if($oResourceIncluder == null) {
-			$oResourceIncluder = ResourceIncluder::defaultIncluder();
-		}
-		$oResourceIncluder->addResource('widget/html5-formdata/formdata.js');
-		self::includeWidgetResources(false, $oResourceIncluder);
-	}
-	
-	public function accepts($sFileName, $sMimeType = null) {
-		$aName = explode('.', $sFileName);
-		$sExtension = null;
-		if(count($aName) > 1) {
-			$sExtension = array_pop($aName);
-			$sFileName = implode('.', $aName);
-		}
-		$oDocumentType = null;
-		if($sMimeType !== null) {
-			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
-		}
-		if($oDocumentType === null && $sExtension !== null) {
-			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
-		}
-		if($oDocumentType === null) {
-			throw new LocalizedException("wns.file_upload.document_type_not_found", array('document_type' => $sExtension));
-		}
-		return $oDocumentType->getId();
-	}
 }

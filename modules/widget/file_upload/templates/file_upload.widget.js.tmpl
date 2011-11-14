@@ -11,7 +11,7 @@
 
 Widget.types.file_upload = {
 	allow_drag_to: function(element, selector, callback, single_file_only) {
-		var file_upload = this;
+		var _this = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
 			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
@@ -50,18 +50,26 @@ Widget.types.file_upload = {
 			if(single_file_only && event.dataTransfer.files.length > 1) {
 				return false;
 			}
+			var target = jQuery(event.target), callback_result = null;
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
-				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
+				var url = event.dataTransfer.getData('text/uri-list');
+				if(url) {
+					callback_result = callback(target, url);
+					if(callback_result) {
+						_this.upload_url(url, callback_result);
+					}
+				} else {
+					Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
+				}
 				return false;
 			}
-			var target = jQuery(event.target);
 			
 			var i = 0;
 			for(i=0;i<event.dataTransfer.files.length;i++) {
 				var file = event.dataTransfer.files.item(i);
-				var callback_result = callback(target, file);
+				callback_result = callback(target, file);
 				if(callback_result) {
-					file_upload.upload_file(file, callback_result);
+					_this.upload_file(file, callback_result);
 				}
 			}
 			
@@ -70,9 +78,8 @@ Widget.types.file_upload = {
 		});
 	},
 	
-	upload_file: function(file) {
-		var options = {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: file.name, type: file.type, callback: jQuery.noop, deny_name_override: false};
-		jQuery.extend(options, arguments[1] || {});
+	upload_file: function(file, options) {
+		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
 		this.accepts(file.name, file.type, function(result, error) {
 			if(error) {
 				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
@@ -98,7 +105,7 @@ Widget.types.file_upload = {
 	},
 	
 	do_upload: function(file, options, create_type) {
-		var file_uploader = this;
+		var _this = this;
 		var size = file.size;
 		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024, 10))+' KiB');
 		var progress = jQuery('<div/>').progressbar({value: 0}).appendTo(notification);
@@ -114,7 +121,7 @@ Widget.types.file_upload = {
 			call_callback: true,
 			callback_handles_error: false
 		});
-		file_uploader.uploadFile('file', options, create_type, function(result, error) {
+		_this.uploadFile('file', options, create_type, function(result, error) {
 			if(!error) {
 				jQuery('.ui-state-droppable-hover').removeClass('ui-state-droppable-hover');
 				progress.progressbar('value', 100);
@@ -128,5 +135,48 @@ Widget.types.file_upload = {
 				notification.close();
 			}
 		}, json_options);
+	},
+
+	upload_url: function(url, options) {
+		var name = url.substr(0, url.lastIndexOf('/'));
+		options = jQuery.extend({}, this.settings.default_options, {name: name}, options || {});
+		this.acceptsURL(url, function(result, error) {
+			if(error) {
+				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
+				if(!options.unacceptable || !options.unacceptable(error)) {
+					var _this = this;
+					jQuery('<div/>').text(error.message).dialog({buttons: {
+						"{{writeString=wns.document_type.allow}}": function() {
+							jQuery(this).dialog("close");
+							_this.do_upload(url, options, true);
+						},
+						"{{writeString=wns.cancel}}": function() {
+							jQuery(this).dialog("close");
+							options.error && options.error(error);
+						}
+					}});
+				} else {
+					options.error && options.error(error);
+				}
+			} else {
+				this.do_upload_url(url, options);
+			}
+		});
+	},
+
+	do_upload_url: function(url, options, create_type) {
+		this.uploadURL(url, options, create_type, function(result, error) {
+			if(!error) {
+				Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.upload_success}}', {identifier: 'rapila.file_uploaded.into.'+options.document_category_id, closable: true});
+				this.fire('file-uploaded', result, options);
+				options.callback(result, options);
+			} else {
+				options.error && options.error(error);
+			}
+		}, WidgetJSONOptions.with_callback_handles_error(false));
+	},
+
+	settings: {
+		default_options: {document_category_id: null, is_protected: false, language_id: null, document_id: null, name: null, type: null, callback: jQuery.noop, deny_name_override: false}
 	}
 };
