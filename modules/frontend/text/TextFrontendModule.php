@@ -48,7 +48,7 @@ class TextFrontendModule extends FrontendModule {
 			//Not a LanguageObjectHistory instance
 			$oRichtextUtil->setTrackReferences($this->oLanguageObject);
 		}
-		return $oRichtextUtil->parseInputFromMce($sContents);
+		return $oRichtextUtil->parseInputFromEditor($sContents);
 	}
 
 	public static function getContentInfo($oLanguageObject) {

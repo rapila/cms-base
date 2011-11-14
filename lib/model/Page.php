@@ -81,16 +81,6 @@ class Page extends BasePage {
 		return implode(', ', array_keys($aResult));
 	}
 
-	public function getNameMceIndented($sIndent = '_') {
-		$sResult = '';
-		if($this->getLevel() > 1) {
-			for($i=1; $i<=($this->getLevel()-1); $i++) {
-				$sResult .= $sIndent;
-			}
-		}
-		return $sResult.$this->getName();
-	}
-
 	public function getPageStringByLanguage($sLanguageId) {
 		return PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
 	}

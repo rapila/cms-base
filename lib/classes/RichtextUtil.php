@@ -26,13 +26,13 @@ class RichtextUtil {
 		$this->aSettings = $aSettings;
 	}
 	
-	public static function parseInputFromMceForStorage($sInput) {
+	public static function parseInputFromEditorForStorage($sInput) {
 		$oRichtextUtil = new RichtextUtil();
 		$_POST[$oRichtextUtil->sAreaName] = $sInput;
-		return $oRichtextUtil->parseInputFromMce();
+		return $oRichtextUtil->parseInputFromEditor();
 	}
 	
-	public function parseInputFromMce($sInput = null) {
+	public function parseInputFromEditor($sInput = null) {
 		if($sInput === null) {
 			$sInput = $_POST[$this->sAreaName];
 		}
@@ -262,16 +262,5 @@ class RichtextUtil {
 		$oTagTemplate = $oTagWriter->parse(true);
 		$oTagTemplate->bKillIdentifiersBeforeRender = false;
 		return $oTagTemplate->render();
-	}
-	
-	private function getMceConfigArray($sConfigName) {
-		if(isset($this->aSettings[$sConfigName])) {
-			if(!is_array($this->aSettings[$sConfigName])) {
-				$this->aSettings[$sConfigName] = array($this->aSettings[$sConfigName]);
-			}
-			return count($this->aSettings[$sConfigName]) === 0 ? null : $this->aSettings[$sConfigName];
-		}
-		return null;
-	}
-	
+	}	
 }// end class RichtextUtil

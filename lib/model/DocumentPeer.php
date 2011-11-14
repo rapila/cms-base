@@ -186,14 +186,6 @@ class DocumentPeer extends BaseDocumentPeer {
 	public static function countDocumentsExceedsLimit($iLimit = 40) {
 		return self::countDocumentsInternallyManaged() > $iLimit;
 	}
-	
-	public static function getDocumentsForMceLinkArray($bExcludeExternallyManagedCategories=true) {
-		$oCriteria = self::getDocumentsCriteria();
-		$oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind('image', false)), Criteria::IN);
-		$oCriteria->addAscendingOrderByColumn(DocumentCategoryPeer::NAME);
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return self::doSelect($oCriteria);
-	}
 
 	public static function getMostRecent($bIsProtected = false) {
 		$oCriteria = new Criteria();
