@@ -17,31 +17,35 @@ Widget.types.file_upload = {
 			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
 			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
+				return;
 			}
+			var tar = jQuery(event.target), rel = jQuery(event.relatedTarget);
+			var el = selector ? tar.closest(selector, element) : element;
+			if(!el.length) {
+				return;
+			}
+			if(el.has(event.target).length && (el.has(event.relatedTarget).length || el.is(event.relatedTarget))) {
+				return;
+			}
+			el.addClass('ui-state-droppable-hover');
 		}).bind('dragover', function(event) {
 			if(!current_drag_is_file) {
 				return;
 			}
 			event.originalEvent.preventDefault();
-			var target = jQuery(event.target);
-			var inner = selector ? target.closest(selector, element) : element;
-			//Drag did not occur on the wanted element (inner) but on a child
-			if(!inner.length || inner.has(target).length) {
-				return false;
-			}
-			inner.addClass('ui-state-droppable');
-			return false;
 		}).bind('dragleave', function(event) {
-			
-			var target = jQuery(event.target);
-			var inner = selector ? target.closest(selector) : element;
-			//Leave did not occur on the wanted element (inner) but on a child
-			if(inner.has(target).length || inner.has(event.relatedTarget).length) {
-				///@fixme this will also return if the user left the `inner` directly from a child, in which case the highlight should be released but isn’t
+			var tar = jQuery(event.target), rel = jQuery(event.relatedTarget);
+			var el = selector ? tar.closest(selector, element) : element;
+			if(!el.length) {
 				return;
 			}
-		
-			inner.removeClass('ui-state-droppable');
+			if(el.has(event.target).length && (el.has(event.relatedTarget).length || el.is(event.relatedTarget))) {
+				return;
+			}
+			if(el.is(event.target) && el.has(event.relatedTarget).length) {
+				return;
+			}
+			el.removeClass('ui-state-droppable-hover');
 		}).bind('drop', function(event) {
 			if(single_file_only && event.dataTransfer.files.length > 1) {
 				return false;
@@ -112,7 +116,7 @@ Widget.types.file_upload = {
 		});
 		file_uploader.uploadFile('file', options, create_type, function(result, error) {
 			if(!error) {
-				jQuery('.ui-state-droppable').removeClass('ui-state-droppable');
+				jQuery('.ui-state-droppable-hover').removeClass('ui-state-droppable-hover');
 				progress.progressbar('value', 100);
 				notification.enable_close_button();
 				notification.reset_timeout(2000);
