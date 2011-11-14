@@ -26,53 +26,6 @@ String.prototype.escapeSelector = function() {
 	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
 };
 
-//Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
-jQuery.fn.extend({
-	serializeArrayKV: function() {
-		var result = {};
-		this.map(function() {
-			return this.elements ? jQuery.makeArray(this.elements) : this;
-		}).each(function() {
-			if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
-				return;
-			}
-			
-			var val = null;
-			if(this.nodeName.toLowerCase() === 'input') {
-				if(this.type.toLowerCase() === 'checkbox') {
-					val = this.checked ? (this.hasAttribute('value') ? this.value : true) : false;
-				} else if(this.type.toLowerCase() === 'radio') {
-					val = this.checked ? this.value : null;
-				} else {
-					val = jQuery(this).val();
-				}
-			} else {
-				val = jQuery(this).val();
-			}
-			
-			if(val === null) {
-				return;
-			}
-			
-			if(this.name.match(/\[\]$/)) {
-				var name = this.name.substring(0, this.name.length-2);
-				if(!jQuery.isArray(result[name])) {
-					result[name] = [];
-				}
-				if(jQuery.isArray(val)) {
-					result[name] = result[name].concat(val);
-				} else {
-					result[name][result[name].length] = val;
-				}
-			} else {
-				result[this.name] = val;
-			}
-		});
-		
-		return result;
-	}
-});
-
 //Widget class
 var Widget = function() {
 };
@@ -813,6 +766,60 @@ jQuery.extend(jQuery, {
 jQuery.support.linkOpenModifierKey = /Mac OS X/.test(navigator.userAgent) ? 'metaKey' : 'ctrlKey';
 
 jQuery.fn.extend({
+	//Option to serializeArrayKV so it can be used for JSON POST requests which are then being treated by PHP as $_REQUEST or $_POST would
+	serializeArrayKV: function() {
+		var result = {};
+		this.map(function() {
+			return this.elements ? jQuery.makeArray(this.elements) : this;
+		}).each(function() {
+			if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
+				return;
+			}
+			
+			var val = null;
+			if(this.nodeName.toLowerCase() === 'input') {
+				if(this.type.toLowerCase() === 'checkbox') {
+					val = this.checked ? (this.hasAttribute('value') ? this.value : true) : false;
+				} else if(this.type.toLowerCase() === 'radio') {
+					val = this.checked ? this.value : null;
+				} else {
+					val = jQuery(this).val();
+				}
+			} else {
+				val = jQuery(this).val();
+			}
+			
+			if(val === null) {
+				return;
+			}
+			
+			if(this.name.match(/\[\]$/)) {
+				var name = this.name.substring(0, this.name.length-2);
+				if(!jQuery.isArray(result[name])) {
+					result[name] = [];
+				}
+				if(jQuery.isArray(val)) {
+					result[name] = result[name].concat(val);
+				} else {
+					result[name][result[name].length] = val;
+				}
+			} else {
+				result[this.name] = val;
+			}
+		});
+		
+		return result;
+	},
+
+	unserialize: function(data) {
+		///TODO: handle arrays (keys ending in “[]”), checkboxes and radios (.attr)
+		var _this = this;
+		jQuery.each(data, function(key, item) {
+			_this.find('[name='+key.escapeSelector()+']').val(item);
+		});
+		return this;
+	},
+	
 	widgetElements: function(type) {
 		if(type) {
 			return this.find('*[data-widget-type='+type+']');

@@ -13,9 +13,7 @@ Widget.types.generic_frontend_module = {
 			});
 			jQuery.when.apply(jQuery, inner_widgets_prepared).then(function() {
 				_this.currentData(function(current_data) {
-					current_data && jQuery.each(current_data, function(key, data) {
-						_this._element.find('[name='+key.escapeSelector()+']').val(data);
-					});
+					current_data && _this._element.unserialize(current_data);
 				});
 			});
 		}
