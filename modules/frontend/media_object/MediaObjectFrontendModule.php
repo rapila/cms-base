@@ -72,6 +72,14 @@ class MediaObjectFrontendModule extends FrontendModule {
 	}
 	
 	public function getSaveData($mData) {
+		ReferencePeer::removeReferences($this->oLanguageObject);
+		if(isset($mData['document_id'])) {
+			foreach($mData['document_id'] as $iDocumentId) {
+				if($iDocumentId) {
+					ReferencePeer::addReference($this->oLanguageObject, array($iDocumentId, 'Document'));
+				}
+			}
+		}
 		return $this->dataFromPost($mData);
 	}
 	
