@@ -10,6 +10,8 @@ class Image {
 	private $iOriginalWidth;
 	private $iOriginalHeight;
 	
+	public static $GD_INFO;
+	
 	const RESIZE_TO_LARGER_VALUE = 1;
 	const RESIZE_TO_SMALLER_VALUE = 2;
 	const RESIZE_TO_WIDTH = 3;
@@ -237,7 +239,7 @@ class Image {
 	
 	public function resizeImage() {
 		$rNewImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
-		if($this->sFileType === 'png') {
+		if($this->sFileType === 'png' && version_compare(self::$GD_INFO['GD Version'], '2.0.1', '>=')) {
 			$rTransparent = imagecolorallocatealpha($rNewImage, 0, 0, 0, 127);
 			imagefill($rNewImage, 0, 0, $rTransparent);
 			imagecolordeallocate($rNewImage, $rTransparent);
@@ -292,3 +294,5 @@ class Image {
 		return function_exists('imageftbbox');
 	}
 }
+
+Image::$GD_INFO = gd_info();
