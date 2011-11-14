@@ -358,16 +358,31 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	},
 	"
 		end
+		if $aspects.include? 'dashboard' then
+			add += "
+	changed_dashboard_config: function() {
+		//Apply changes to this._element
+	},
+
+	dashboard_config_form: function() {
+		//Default behaviour: method may be removed if unchanged
+		return jQuery('<form/>');
+	},
+	"
+			sett['dashboard'] = {}
+		end
 		if sett.respond_to? :to_json then
 			sett = sett.to_json
 		else
 			sett = ''
 		end
 		res = "initialize: function() {
+		//called before this._element is available
 		#{init}
 	},
 
 	prepare: function() {
+		//called when this._element is available
 		#{prep}
 	},
 	#{add}
