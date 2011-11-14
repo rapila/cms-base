@@ -123,14 +123,14 @@ class Page extends BasePage {
 		$this->getPageProperties();
 		$oTempProperty = $this->getPagePropertyByName($sPropertyName);
 		if($oTempProperty !== null) {
-			if($sPropertyValue === null) {
+			if($sPropertyValue === null || $sPropertyValue === '') {
 				$oTempProperty->delete();
 				return;
 			}
 			$oTempProperty->setValue($sPropertyValue);
 			$oTempProperty->save();
 			return;
-		} else if($sPropertyValue === null) {
+		} else if($sPropertyValue === null || $sPropertyValue === '') {
 			return;
 		}
 		$oTempProperty = new PageProperty();
