@@ -1,8 +1,9 @@
 .droppable_prepare{background-image:url("../../images/admin/drag_and_drop.png");background-repeat:no-repeat;background-position:center center;border:1px solid #e1e1e1;color:#666;cursor:pointer}
-.ui-state-droppable,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable{background-color:#e3ef99 !important;background-image:url("../../images/admin/drag_and_drop_hover.png");background-repeat:no-repeat;background-position:center center}
-#admin_sidebar .ui-list .ui-list-row.ui-state-droppable,#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable{background-image:url("../../images/admin/drag_and_drop_sidebar_hover.png");background-position:right center}
-#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable{background-image:url("../../images/admin/drag_and_drop_sidebar_active_hover.png");background-color:#9fa665 !important}
-.ui-state-droppable td{background-color:#e3ef99}
+.ui-state-droppable-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable-hover,.ui-dialog.document_detail .ui-state-droppable-hover .preview.droppable_prepare{background-color:#e3ef99 !important;background-image:url("../../images/admin/drag_and_drop_hover.png");background-repeat:no-repeat;background-position:center center}
+.ui-dialog.document_detail .ui-state-droppable-hover{background-color:#fff !important}
+#admin_sidebar .ui-list .ui-list-row.ui-state-droppable-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable-hover{background-image:url("../../images/admin/drag_and_drop_sidebar_hover.png");background-position:right center}
+#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable-hover{background-image:url("../../images/admin/drag_and_drop_sidebar_active_hover.png");background-color:#9fa665 !important}
+.ui-state-droppable td,.ui-state-droppable-hover td{background-color:#e3ef99}
 .ui-state-hover{border-width:0}
 label{color:#666;float:none;font-family:Arial;font-size:.95em;display:block;padding-bottom:.1em;margin-top:.8em;text-align:left;width:auto}
 .status_section label{display:inline-block;padding-right:.5em}
