@@ -938,8 +938,7 @@ function UnsavedChanges(element) {
 		if(!unsaved) {
 			callback(true);
 		} else {
-			///@todo Localize
-			Widget.confirm('Really?', 'This discards unsaved changes.', function(ok) {
+			Widget.confirm(AdminInterface.translations.discardAlertTitle, AdminInterface.translations.discardAlertMessage, function(ok) {
 				ok && this.release();
 				callback(ok)
 			}.bind(this));
