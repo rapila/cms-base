@@ -19,14 +19,13 @@ Widget.types.file_upload = {
 				current_drag_is_file = false;
 				return;
 			}
-			var tar = jQuery(event.target), rel = jQuery(event.relatedTarget);
+			var tar = jQuery(event.target);
 			var el = selector ? tar.closest(selector, element) : element;
 			if(!el.length) {
 				return;
 			}
-			if(el.has(event.target).length && (el.has(event.relatedTarget).length || el.is(event.relatedTarget))) {
-				return;
-			}
+			var target_is_descendant = !el.is(event.target) && el.has(event.target);
+			el.data('drag-hover-target_is_descendant', target_is_descendant);
 			el.addClass('ui-state-droppable-hover');
 		}).bind('dragover', function(event) {
 			if(!current_drag_is_file) {
@@ -34,18 +33,16 @@ Widget.types.file_upload = {
 			}
 			event.originalEvent.preventDefault();
 		}).bind('dragleave', function(event) {
-			var tar = jQuery(event.target), rel = jQuery(event.relatedTarget);
+			var tar = jQuery(event.target);
 			var el = selector ? tar.closest(selector, element) : element;
 			if(!el.length) {
 				return;
 			}
-			if(el.has(event.target).length && (el.has(event.relatedTarget).length || el.is(event.relatedTarget))) {
-				return;
+			var target_is_descendant = el.data('drag-hover-target_is_descendant');
+			el.data('drag-hover-target_is_descendant', false);
+			if(el.is(event.target) && !target_is_descendant) {
+				el.removeClass('ui-state-droppable-hover');
 			}
-			if(el.is(event.target) && el.has(event.relatedTarget).length) {
-				return;
-			}
-			el.removeClass('ui-state-droppable-hover');
 		}).bind('drop', function(event) {
 			if(single_file_only && event.dataTransfer.files.length > 1) {
 				return false;
