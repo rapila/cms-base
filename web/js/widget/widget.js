@@ -665,7 +665,6 @@ jQuery.extend(Widget, {
 					Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
 				}, true);
 			});
-			
 			return false;
 		},
 		
@@ -689,6 +688,21 @@ jQuery.extend(Widget, {
 					closable: true
 				});
 			}
+			return false;
+		},
+		
+		StillReferencedException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
+			message = jQuery('<div/>').text(error.message);
+			var error_list = jQuery('<ul/>').appendTo(message);
+			jQuery.each(error.parameters.references, function(counter, item) {
+				error_list.append(jQuery('<li/>').text(item.name));
+			});
+			Widget.notifyUser(Widget.logSeverity.ALERT, message, {
+				closeDelay: false,
+				isHTML: true,
+				closable: true
+			});
+			error.reporting_done = true;
 			return false;
 		}
 	}
@@ -940,7 +954,7 @@ function UnsavedChanges(element) {
 		} else {
 			Widget.confirm(AdminInterface.translations.discardAlertTitle, AdminInterface.translations.discardAlertMessage, function(ok) {
 				ok && this.release();
-				callback(ok)
+				callback(ok);
 			}.bind(this));
 		}
 		return this;
