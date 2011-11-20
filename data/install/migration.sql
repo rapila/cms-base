@@ -153,9 +153,11 @@ ALTER TABLE `language_object_history` ADD `updated_by` INTEGER;
 
 ALTER TABLE `links` CHANGE `created_by` `created_by` INT UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `links` CHANGE `updated_by` `updated_by` INT UNSIGNED NULL DEFAULT NULL;
+
 # if document_category_id exists
 ALTER TABLE `links` CHANGE `document_category_id` `link_category_id`  INT UNSIGNED NULL DEFAULT NULL;
 UPDATE `links` SET `link_category_id` = NULL WHERE `links`.`link_category_id` =0;
+
 # add link_categories if not exist
 DROP TABLE IF EXISTS `link_categories`;
 CREATE TABLE `link_categories`
@@ -226,6 +228,7 @@ ALTER TABLE `page_strings` ADD `is_inactive` TINYINT(1) default 0;
 ALTER TABLE `pages` ADD `tree_left` INTEGER;
 ALTER TABLE `pages` ADD `tree_right` INTEGER;
 ALTER TABLE `pages` ADD `tree_level` INTEGER;
+
 -- after mini_cms_migrate_adjacency_list_to_nested_set.sh
 ALTER TABLE `pages` DROP `parent_id`, DROP `sort`;
 
@@ -323,6 +326,7 @@ CREATE TABLE `user_roles`
 #add new foreign key for roles to rights
 ALTER TABLE `rights` DROP INDEX rights_U_1;
 ALTER TABLE `rights` ADD `role_key` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `group_id`;
+
 -- after mini_cms_migrate_groups_to_roles.sh
 ALTER TABLE `rights` DROP COLUMN `group_id`;
 ALTER TABLE `rights` ADD UNIQUE KEY `rights_U_1` (`role_key`, `page_id`, `is_inherited`);
