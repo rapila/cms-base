@@ -3,7 +3,7 @@
  * @package utils
  */
 class Util {
-	private static $COMMON_DESCRIPTION_METHODS = array("getDescription", "getText", "getTitle", "__toString");
+	private static $COMMON_DESCRIPTION_METHODS = array("getDescription", "getText", "getTitle");
 	private static $COMMON_NAME_METHODS = array("getName", "getFullName", "getTitle", "getExtension", "getStringKey", "getId");
 
 	public static function equals($mFirst, $mSecond, $sKeyMethod = null) {
