@@ -13,6 +13,24 @@ abstract class PageTypeModule extends Module {
 	}
 	
 	public abstract function display(Template $oTemplate, $bIsPreview = false);
+
+	public function getWords() {
+		$oUsedTemplate = new Template($this->oPage->getTemplateNameUsed());
+		$sTemplateContents = '';
+		foreach($oUsedTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oTemplateIdentifier) {
+			if($oTemplateIdentifier->hasParameter('declaration_only')) {
+				// Container exists only to appear in admin area, not be rendered in frontend (at least not directly)
+				continue;
+			}
+			$sTemplateContents .= $oTemplateIdentifier->__toString();
+		}
+		foreach($oUsedTemplate->identifiersMatching('autofill', Template::$ANY_VALUE) as $oTemplateIdentifier) {
+			$sTemplateContents .= $oTemplateIdentifier->__toString();
+		}
+		$sTemplate = new Template($sTemplateContents, null, true);
+		$this->display($sTemplate, $bIsPreview);
+		return StringUtil::getWords($sTemplate, true);
+	}
 	
 	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
 	

@@ -165,4 +165,11 @@ abstract class NavigationItem {
 		}
 		return null;
 	}
+
+	/**
+	* @return Whether to include this navigation item in the search index
+	*/
+	public function isIndexed() {
+		return true;
+	}
 }
