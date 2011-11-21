@@ -28,7 +28,7 @@ abstract class PageTypeModule extends Module {
 			$sTemplateContents .= $oTemplateIdentifier->__toString();
 		}
 		$sTemplate = new Template($sTemplateContents, null, true);
-		$this->display($sTemplate, $bIsPreview);
+		$this->display($sTemplate, false);
 		return StringUtil::getWords($sTemplate, true);
 	}
 	

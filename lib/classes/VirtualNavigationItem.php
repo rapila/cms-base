@@ -8,6 +8,7 @@ class VirtualNavigationItem extends NavigationItem {
 	private $sLinkText;
 	private $mData;
 	private $sType;
+	public $bIsIndexed = true;
 
 	/**
 	 * @param string $sType Virtual identifier
@@ -110,4 +111,7 @@ class VirtualNavigationItem extends NavigationItem {
 		return true;
 	}
 	
+	public function isIndexed() {
+		return $this->bIsIndexed;
+	}
 }
