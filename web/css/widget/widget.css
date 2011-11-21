@@ -96,6 +96,7 @@ ol.ui-editable-items-list li::before,ol.ui-editable-items-list li::-moz-before,o
 .ui-accordion .ui-accordion-content{background-color:#fff;border:none}
 .ui-accordion .ui-accordion-content.contents_container{padding:0}
 .ui-accordion .ui-accordion-content.configuration_container{padding:0}
+.ui-accordion .ui-accordion-content.configuration_container.page-type-journal{background-color:#ebedef}
 .ui-accordion .ui-accordion-header a{border-bottom:none;font-size:1.2em;font-weight:700;color:#666;padding:.3em .3em .3em 1.6em}
 .ui-accordion .ui-accordion-content{padding-top:0}
 .ui-accordion .ui-accordion-header{background:none repeat scroll 0 0 #ebedef;border-width:0 0 1px 0;border-color:#c1c2c4;border-style:solid;-moz-border-radius:0;-webkit-border-radius:0;font-weight:1.5em;margin:1px 0 0 0}

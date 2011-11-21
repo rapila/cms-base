@@ -680,7 +680,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			$ret = $this->preDelete($con);
 			// referenceable behavior
 			if(ReferencePeer::hasReference($this)) {
-				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.");
+				throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", new StillReferencedException($this));
 			}
 			// denyable behavior
 			if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("delete"))) {

@@ -15,6 +15,10 @@ class LanguageObject extends BaseLanguageObject {
 		return $this->getObjectId().'_'.$this->getLanguageId();
 	}
 	
+	public function getDescription($sLanguageId = null) {
+		return StringPeer::getString('wns.model.description.language_object', $sLanguageId, $this->getId(), array('id' => $this->getId(), 'page' => Util::nameForObject($this->getContentObject()->getPage()), 'language' => LanguagePeer::getLanguageName($this->getLanguageId()), 'type' => Module::getDisplayNameByTypeAndName('frontend', $this->getContentObject()->getObjectType())));
+	}
+	
 	public function postSave(PropelPDO $oConnection = null) {
 		PagePeer::ignoreRights(true);
 		//Mark page as updated to flush full page caches

@@ -2,7 +2,11 @@ MIGRATION Issues for upgrade from Mini-CMS Version 1 > rapila 2
 
 1. Update and clear caches
 2. Clear session (just in case)
+
+
 3. run migration.sql changes required for update between local version and trunk (version 2)
+	 NOTE: FIRST RUN mysql "ALTER TABLE `pages` ADD `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL"
+
 4. r2442 > change to rapila, make release-1-devel MIGRATION changes >= r2442
 
 5. switch base to rapila with: mini_cms_switch_svn_base.sh
@@ -31,6 +35,15 @@ How to migrate:
 - if {{link_prefix}} was used: remove {{link_prefix}}.
 - if full_link is used: rename to link.
 - If link was used: probably safe.
+
+12: check missing fields in site
+		ALTER TABLE `site_table` ADD `created_at` DATETIME;
+		ALTER TABLE `site_table` ADD `updated_at` DATETIME;
+		ALTER TABLE `site_table` ADD `created_by` INTEGER;
+		ALTER TABLE `site_table` ADD `updated_by` INTEGER;
+
+13: replace  all occurencies
+	Manager::getCurrentPage() by 	FrontendManager::$CURRENT_PAGE
 
 Installer issues in full demo from github:
 - directory 'generated' must be present in main dir.

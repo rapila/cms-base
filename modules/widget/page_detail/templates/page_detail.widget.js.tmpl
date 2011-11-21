@@ -146,6 +146,11 @@ Widget.types.page_detail = {
 		}
 		// empty container, so when page type is changed, ie from default to journal then filled modules are not displayed anymore
 		container.empty();
+		
+		var new_type = _this._element.find("select[name='page_type']").val();
+		
+		container[0].className = container[0].className.replace(/\bpage-type-[^\s$]+/g, '')+' page-type-'+new_type;
+		
 		this.configuration_has_been_loaded = true;
 		this.current_page_type = null;
 
@@ -153,7 +158,7 @@ Widget.types.page_detail = {
 			//	Intermediate callback
 			_this.current_page_type = page_type;
 					
-			page_type.settings.page_type = _this._element.find("select[name='page_type']").val();
+			page_type.settings.page_type = new_type;
 			page_type.settings.container = container;
 			page_type.settings.page_id = _this.current_page_id;
 			page_type.settings.active_languages = _this.getActiveLanguages();

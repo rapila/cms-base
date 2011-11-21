@@ -59,13 +59,13 @@ class Util {
 	}
 
 	// used in Template only, could be used from somewhere else?
-	public static function descriptionForObject($oObject) {
+	public static function descriptionForObject($oObject, $sLanguageId = null) {
 		if(is_string($oObject)) {
 			return $oObject;
 		}
 		foreach(array_merge(self::$COMMON_DESCRIPTION_METHODS, self::$COMMON_NAME_METHODS) as $sMethodName) {
 			if(method_exists($oObject, $sMethodName)) {
-				return $oObject->$sMethodName();
+				return $oObject->$sMethodName($sLanguageId);
 			}
 		}
 		return "";

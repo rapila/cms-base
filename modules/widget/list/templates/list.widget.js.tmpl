@@ -287,18 +287,14 @@ Widget.types.list = {
 			row = this.row_from_number(row);
 		}
 		var rowData = this.collect_row_data(row);
-		this.deleteRow(rowData, function(result, error) {
-			if(!error) {
-				var active_rows = null;
-				if(row.hasClass(this.settings.row_click_active_class)) {
-					active_rows = this.active_row_datas().sort();
-				}
-				row.remove();
-				active_rows && this.fire_selection_changed(active_rows);
-				this.fire('row-deleted', result);
-			} else {
-				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
+		this.deleteRow(rowData, function(result) {
+			var active_rows = null;
+			if(row.hasClass(this.settings.row_click_active_class)) {
+				active_rows = this.active_row_datas().sort();
 			}
+			row.remove();
+			active_rows && this.fire_selection_changed(active_rows);
+			this.fire('row-deleted', result);
 		});
 	},
 	
