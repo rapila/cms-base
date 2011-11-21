@@ -26,4 +26,8 @@ class PageQuery extends BasePageQuery {
 		}
 		return $this;
 	}
+
+	public function active($bIsActive = true) {
+		return $this->filterByIsInactive(!$bIsActive);
+	}
 } // PageQuery

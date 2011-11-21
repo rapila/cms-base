@@ -223,10 +223,7 @@ class Page extends BasePage {
 			}
 		}
 		if($this->isRoot()) {
-			$oCriteria = new Criteria();
-			$oCriteria->add(PagePeer::IS_INACTIVE, false);
-			$oCriteria->add(PagePeer::PAGE_TYPE, $sPageType);
-			return PagePeer::doSelectOne($oCriteria);
+			return PageQuery::create()->active()->filterByPageType($sPageType)->findOne();
 		}
 		return $this->getParent()->getPageOfType($sPageType);
 	}

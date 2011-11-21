@@ -281,11 +281,6 @@ class FrontendManager extends Manager {
 	 */
 	private function fillAttributes() { 
 		FilterModule::getFilters()->handleFillPageAttributes(self::$CURRENT_PAGE, $this->oTemplate);
-		$oSearchPage = PagePeer::getPageByName(Settings::getSetting('special_pages', 'search_result', 'search'));
-		if($oSearchPage !== null) {
-			$this->oTemplate->replaceIdentifier("search_action", LinkUtil::link($oSearchPage->getLink()));
-		}
-		
 		$this->oTemplate->replaceIdentifier("meta_keywords", self::$CURRENT_PAGE->getConsolidatedKeywords());
 		$this->oTemplate->replaceIdentifier("meta_description", self::$CURRENT_PAGE->getDescription());
 		$this->oTemplate->replaceIdentifier("description", self::$CURRENT_NAVIGATION_ITEM->getDescription());

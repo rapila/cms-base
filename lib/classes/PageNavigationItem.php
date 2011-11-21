@@ -113,12 +113,16 @@ class PageNavigationItem extends NavigationItem {
 	public function isVirtual() {
 		return false;
 	}
-	
+
 	public static function navigationItemForPage(Page $oPage, $oParent = null) {
 		$sIdentifier = "{$oPage->getId()}";
 		if(!isset(self::$NAVIGATION_ITEMS[$sIdentifier])) {
 			self::$NAVIGATION_ITEMS[$sIdentifier] = new PageNavigationItem($oPage, $oParent);
 		}
 		return self::$NAVIGATION_ITEMS[$sIdentifier];
+	}
+
+	public static function clearCache() {
+		self::$NAVIGATION_ITEMS = array();
 	}
 }
