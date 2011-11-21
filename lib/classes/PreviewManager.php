@@ -83,9 +83,12 @@ class PreviewManager extends FrontendManager {
 		return false;
 	}
 	
-	public static function setTemporaryManager() {
+	public static function setTemporaryManager($sManager = null) {
+		if($sManager === null) {
+			$sManager = get_class();
+		}
 		self::$PREVIOUS_MANAGER = Manager::getCurrentManager();
-		self::$CURRENT_MANAGER = get_class();
+		self::$CURRENT_MANAGER = $sManager;
 	}
 	
 	public static function revertTemporaryManager() {
