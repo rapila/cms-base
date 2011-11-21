@@ -80,5 +80,8 @@ class LanguageObject extends BaseLanguageObject {
 		return parent::setData($mData);
 	}
 	
+	public function getAdminWidget() {
+		return WidgetModule::getWidget('language_object_control', null, $this, FrontendModule::getModuleInstance($this->getContentObject()->getObjectType(), $this));
+	}
 }
 
