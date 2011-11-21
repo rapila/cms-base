@@ -91,6 +91,9 @@ class FileUploadWidgetModule extends WidgetModule {
 			if($sExtension === null) {
 				throw new LocalizedException("wns.file_upload.unknown_document_type", null, 'error');
 			}
+			if($sMimeType == null) {
+				throw new LocalizedException("wns.file_upload.unknown_mimetype", null, 'error');
+			}
 			throw new LocalizedException("wns.file_upload.document_type_not_found", array('extension' => $sExtension, 'mimetype' => $sMimeType));
 		}
 		return $oDocumentType->getId();
