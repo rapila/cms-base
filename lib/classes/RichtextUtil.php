@@ -36,10 +36,6 @@ class RichtextUtil {
 		if($sInput === null) {
 			$sInput = $_POST[$this->sAreaName];
 		}
-		if($this->mTrackReferences !== null) {
-			// delete all references before saving the tracked ones
-			ReferencePeer::removeReferences($this->mTrackReferences);
-		}
 		$oTagParser = new TagParser("<text>".$sInput."</text>");
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
 		return $oTagParser->getTag()->__toString();
@@ -208,6 +204,10 @@ class RichtextUtil {
 	
 	public function setTrackReferences($mTrackReferences) {
 		$this->mTrackReferences = $mTrackReferences;
+		if($this->mTrackReferences !== null) {
+			// delete all references before saving the tracked ones
+			ReferencePeer::removeReferences($this->mTrackReferences);
+		}
 	}
 
 	public function getTrackReferences() {
