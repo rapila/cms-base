@@ -18,6 +18,7 @@ class StillReferencedException extends LocalizedException {
 			$aMessageParameters['references'][] = $aFrom;
 		}
 		$aMessageParameters['to'] = Util::nameForObject($oReferencedObject);
+
 		parent::__construct('wns.still_referenced.message', $aMessageParameters, null, 0, $sDefaultLanguageId);
 	}
 }

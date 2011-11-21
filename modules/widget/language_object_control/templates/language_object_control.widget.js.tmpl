@@ -1,0 +1,27 @@
+Widget.types['language_object_control'] = {
+	initialize: function() {
+		//called before this._element is available
+		
+	},
+
+	prepare: function() {
+		var _this = this;
+		//called when this._element is available
+		if(this._element) {
+			this.editor(function(result) {
+				Widget.createWithElement(result[0], function(widget) {
+					widget.handle('element_set', function(event, element) {
+						Widget.callStatic('detail', 'clickable_labels_for', element);
+						_this._element.append(element);
+					});
+					var save = _this.save;
+					_this.save = function(callback) {
+						save.call(_this, widget.save(), callback || jQuery.noop);
+					};
+				}, jQuery.noop, result[1]);
+			});
+		}
+	},
+	
+	settings: {}
+};
