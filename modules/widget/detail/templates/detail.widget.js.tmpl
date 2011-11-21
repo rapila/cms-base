@@ -287,6 +287,13 @@ Widget.types.detail = {
 		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
 		var init = function(detail) {
+			var open_with_id = function(id, row) {
+				detail[idMethod](id);
+				detail.current_row = row;
+				detail.fill_data();
+				detail.open();
+			};
+			
 			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
 				if(options.colName && col.identifier !== options.colName) {
 					return;
@@ -300,10 +307,7 @@ Widget.types.detail = {
 					return;
 				}
 				
-				detail[idMethod](row.data(idData));
-				detail.current_row = row;
-				detail.fill_data();
-				detail.open();
+				open_with_id(row.data(idData), row);
 				event.preventDefault();
 				event.stopPropagation();
 			});
@@ -316,6 +320,12 @@ Widget.types.detail = {
 					list.reload();
 				}
 			};
+			if(list.settings.initial_detail_id) {
+				var rowData = {};
+				rowData[idData] = list.settings.initial_detail_id;
+				var row = list.row_from_row_data(rowData);
+				open_with_id(list.settings.initial_detail_id, row);
+			}
 		}
 		if(list.connected_detail) {
 			init(list.connected_detail);
