@@ -68,7 +68,7 @@ class MIMELeaf extends MIMEPart {
 		}
 	}
 	
-	public static function encodeBase64($sContent, $iMaxLineLength) {
+	public static function encodeBase64($sContent, $iMaxLineLength = 76) {
 		return rtrim(chunk_split(base64_encode($sContent), $iMaxLineLength, EMail::SEPARATOR));
 	}
 	
