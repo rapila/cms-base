@@ -150,7 +150,7 @@ class EMail {
 		
 		$this->oContent->setHeader('From', $this->getAddressToken($this->sSenderName, $this->sSenderAddress));
 		
-		$sSubject = '=?'.Settings::getSetting("encoding", "db", "utf-8").'?Q?'.str_replace(' ', '_', MIMELeaf::encodeQuotedPrintable($this->sSubject, -1)).'?=';
+		$sSubject = '=?'.Settings::getSetting("encoding", "db", "utf-8").'?B?'.base64_encode($this->sSubject).'?=';
 		
 		$bResult = mail($sRecipients, $sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
 

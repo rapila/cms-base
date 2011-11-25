@@ -45,6 +45,21 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $mResult;
 	}
 	
+	public function getWords() {
+		$aWords = array();
+
+		$aObjects = $this->oPage->getContentObjects();
+		foreach($aObjects as $oObject) {
+			$oLanguageObject = $oObject->getLanguageObject();
+			if($oLanguageObject === null) {
+				continue;
+			}
+			$oModule = FrontendModule::getModuleInstance($oObject->getObjectType(), $oLanguageObject);
+			$aWords = array_merge($aWords, $oModule->getWords());
+		}
+		return $aWords;
+	}
+	
 	public function fillContainer($oTemplateIdentifier, $iFlags) {
 		if($oTemplateIdentifier->hasParameter('declaration_only')) {
 			// Container exists only to appear in admin area, not be rendered in frontend (at least not directly)
