@@ -17,7 +17,7 @@ foreach(explode('/', 'w/h/s/d') as $sOpt) {
 }
 
 if($aOptions['h']) {
-	die('Usage: '.basename(__FILE__).' [-w] [-s] [-u] [d] [-n /path/to/nib]'."\n");
+	die('Usage: '.basename(__FILE__).' [-w] [-s] [-u] [-d] [-n /path/to/nib]'."\n");
 }
 
 $iResourceFinderFlags = ResourceFinder::SEARCH_BASE_FIRST;
