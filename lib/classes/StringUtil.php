@@ -94,7 +94,7 @@ class StringUtil {
 		}
 	}
 
-	public static function getWords($sString, $bFromHtml=false) {
+	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
 		if($sString instanceof Template) {
 			$sString = $sString->render();
 		}
@@ -105,10 +105,10 @@ class StringUtil {
 			$sString = html_entity_decode(strip_tags($sString), ENT_QUOTES, Settings::getSetting('encoding', 'browser', 'utf-8'));
 		}
 
-		$aWords = mb_split("[^\w\-–—]+", $sString);
+		$aWords = mb_split("[\s\-–—]+", $sString);
 		$aResult = array();
 		foreach($aWords as $sWord) {
-			$sWord = self::normalize($sWord);
+			$sWord = self::normalize($sWord, '-', $sReplaceNonWordsWith);
 			if($sWord !== null) {
 				$aResult[] = $sWord;
 			}
