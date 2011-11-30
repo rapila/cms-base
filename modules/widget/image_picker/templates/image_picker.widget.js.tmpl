@@ -5,7 +5,7 @@ Widget.types.image_picker = {
 	
 	prepare: function() {
 		var _this = this;
-		this.image_area = jQuery('<div/>').addClass('image_browse_area droppable_prepare').appendTo(this._element);
+		this.image_area = jQuery('<div/>').addClass('image_browse_area ui-state-droppable').appendTo(this._element);
 		var ajax_loader = jQuery('<div/>').addClass();
 		
 		var file_uploader = Widget.create('file_upload');
@@ -81,7 +81,7 @@ Widget.types.image_picker = {
 				});
 				_this.image_area.append(image);
 				Widget.tooltip(image, this.name);
-				image.after(document.createTextNode(' '));
+				image.after(jQuery.parseHTML('&shy;'));
 			});
 			Widget.end_load();
 		});

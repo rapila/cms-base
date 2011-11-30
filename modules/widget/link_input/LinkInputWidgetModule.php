@@ -4,7 +4,7 @@
  */
 class LinkInputWidgetModule extends WidgetModule {
 	
-	public function getExternalLinks() {
+	public function externalLinks() {
 		$aCategories = LinkCategoryPeer::getAllSorted(true);
 		$aResult = array();
 		foreach($aCategories as $oCategory) {
