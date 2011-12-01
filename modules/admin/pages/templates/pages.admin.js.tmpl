@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
 	AdminInterface.info_bar.prepareWidget(function(info_bar) {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(sidebar_input) {
-				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry}}", function(name, cleanup_callback) {
+				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry_placeholder}}", function(name, cleanup_callback) {
 					//This is the save callback
 					var page_id = page_tree.current_element_identifier;
 					page_detail.createPage(page_id, name, function(result, error) {
@@ -55,7 +55,7 @@ jQuery(document).ready(function() {
 					page_tree.reload_element(page_tree.element_with_identifier(page_id));
 				});
 			});
-		}, 'n', false);
+		}, 'n', false, true, "{{writeString=wns.page.create}}");
 		// info_bar.add_element(info_bar_buttons, true, false);
 	});
 	

@@ -11,6 +11,10 @@
 
 Widget.types.file_upload = {
 	allow_drag_to: function(element, selector, callback, single_file_only) {
+		if(!selector) {
+			element.addClass('ui-state-droppable');
+		}
+		
 		var _this = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {

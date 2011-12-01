@@ -20,15 +20,25 @@ Widget.types.document_input = {
 				this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
 				this._element.val('');
 			}
-			if(selected) {
-				this._element.val(selected);
-				this._element.change();
+			if(this.settings.disabled) {
+				this._element.attr('disabled', true);
+			}
+			if(selected !== undefined) {
+				this.value(selected);
+			} else if(this.settings.initial_value) {
+				this.value(this.settings.initial_value);
 			}
 			this.fire('reloaded');
 		});
 	},
 	
-	value: function() {
+	value: function(set) {
+		if(set !== undefined) {
+			this.settings.initial_value = set;
+			this._element.val(set);
+			this._element.change();
+			return this._element;
+		}
 		return this._element.val();
 	},
 	
@@ -50,6 +60,7 @@ Widget.types.document_input = {
 	
 	settings: {
 		default_value_label: null,
+		initial_value: null,
 		allow_file_upload: false
 	}
 };

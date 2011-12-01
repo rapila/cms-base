@@ -19,6 +19,7 @@ body > .cke_skin_kama .image_browse_area {
 	border: 1px solid transparent;
 	min-height: 150px;
 	max-height: 400px;
+	width: 440px;
 	overflow-y: auto;
 }
 
@@ -26,6 +27,11 @@ body > .cke_skin_kama .ui-widget-content.ui-image-picker-image {
 	height: 72px;
 	line-height: 72px;
 	width: 72px;
+	display: inline-block;
+}
+
+body > .cke_skin_kama .ui-widget-content.ui-image-picker-image:after {
+	content: " ";
 }
 
 body > .cke_skin_kama .ui-image-picker-image img {
@@ -98,6 +104,12 @@ body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_cancel span.cke_dialog_
 
 body > .cke_skin_kama .cke_dialog a.cke_dialog_ui_button_ok span.cke_dialog_ui_button {
 	color: #E3EF99;
+}
+
+body > .cke_skin_kama .ui-state-droppable {
+	background-image: url('{{writeDirectInclude=admin/drag_and_drop_sidebar_hover.png;template=location_only}}');
+	background-repeat: no-repeat;
+	background-position: center right;
 }
 
 .cke_dialog_background_cover {

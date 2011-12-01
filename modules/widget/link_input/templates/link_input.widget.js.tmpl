@@ -3,24 +3,31 @@ Widget.types.link_input = {
 		var _this = this;
 		var optgroup = jQuery('<optgroup/>');
 		var option = jQuery('<option/>');
-		var link_categories = this.getExternalLinks();
-		jQuery.each(link_categories, function(optgroup_label, links) {
-			var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
-			jQuery.each(links, function(id, name) {
-				option.clone().val(id).text(name).appendTo(cloned_optgroup);
+		this.externalLinks(function(link_categories) {
+			jQuery.each(link_categories, function(optgroup_label, links) {
+				var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
+				jQuery.each(links, function(id, name) {
+					option.clone().val(id).text(name).appendTo(cloned_optgroup);
+				});
 			});
+			if(this.settings.default_value_label) {
+				this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
+				this._element.val('');
+			}
+			if(this.settings.initial_value) {
+				this.value(this.settings.initial_value);
+			}
+			if(this.settings.disabled) {
+				this._element.attr('disabled', true);
+			}
 		});
-		if(this.settings.default_value_label) {
-			this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
-			this._element.val('');
-		}
-		if(this.settings.disabled) {
-			this._element.attr('disabled', true);
-		}
 	},
 	
-	value: function() {
-		return this._element.val();
+	value: function(set) {
+		if(set !== undefined) {
+			this.settings.initial_value = set;
+		}
+		return this._element.val(set);
 	},
 	
 	proxy_url: function() {
@@ -29,6 +36,7 @@ Widget.types.link_input = {
 	},
 	
 	settings: {
-		default_value_label: null
+		default_value_label: null,
+		initial_value: null
 	}
 };
