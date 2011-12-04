@@ -49,7 +49,8 @@ Widget.types.document_thumbnail_view = {
 		var _this = this;
 		var document_id = theDocument.id;
 		var doc = jQuery('<div/>').addClass('ui-widget ui-widget-content ui-image-picker-image ui-placeholder');
-		doc.css({width: this.settings.thumbnail_size+'px', height: this.settings.thumbnail_size+13+'px'});
+		doc.css({width: ''+this.settings.thumbnail_size+'px', height: this.settings.thumbnail_size+13+'px'});
+
 		// handle delete
 		jQuery('<span/>').addClass('ui-icon ui-icon-trash').click(function() {
 			var delete_message = AdminInterface.strings.get_string('wns.document.delete_warning', { document_name: theDocument.name});
