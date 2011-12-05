@@ -141,13 +141,6 @@ class DocumentPeer extends BaseDocumentPeer {
 		return $oCriteria;
 	}
 	
-	public static function getDocumentsByKind($sDocumentKind=null) {
-		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, null, true, true);
-		$oCriteria->addAscendingOrderByColumn(self::DOCUMENT_CATEGORY_ID);
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return self::doSelect($oCriteria);
-	}
-	
 	public static function getDocumentsCriteria($bExcludeExternallyManaged = true) {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
@@ -177,22 +170,6 @@ class DocumentPeer extends BaseDocumentPeer {
 	// changed this for use in get_link_array, ordered by category for easier access in tinymce
 	public static function getDocumentsByKindOfImage($bExcludeExternallyManaged = true) {
 		return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
-	}
-
-	public static function countDocumentsInternallyManaged() {
-		return self::doCount(self::getDocumentsCriteria());
-	}
-
-	public static function countDocumentsExceedsLimit($iLimit = 40) {
-		return self::countDocumentsInternallyManaged() > $iLimit;
-	}
-
-	public static function getMostRecent($bIsProtected = false) {
-		$oCriteria = new Criteria();
-		$oCriteria->addDescendingOrderByColumn(self::CREATED_AT);
-		$oCriteria->add(self::IS_INACTIVE, false);
-		$oCriteria->add(self::IS_PROTECTED, $bIsProtected);
-		return self::doSelectOne($oCriteria);
 	}
 
 	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
