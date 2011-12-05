@@ -11,19 +11,7 @@
  * @package model
  */ 
 class LinkPeer extends BaseLinkPeer {
-	
-	private static $aLinkProtocols = array('http'	 => 'http://', 
-																				 'https' => 'https://', 
-																				 'ftp'	 => 'ftp://', 
-																				 'ftps'	 => 'ftps://', 
-																				 'mailto'=> 'mailto');
-	
-	public static function getLinksSorted($sOrderField='NAME', $sSortOrder='ASC') {
-		$oCriteria = new Criteria();
-		Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sSortOrder);
-		return self::doSelect($oCriteria);
-	}
-
+		
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
@@ -50,19 +38,6 @@ class LinkPeer extends BaseLinkPeer {
 			$oCriteria->addAscendingOrderByColumn(self::URL);
 		}
 		return self::doSelect($oCriteria);
-	}
-	
-	public static function getLinksByName($sName = null, $sOrderField='NAME', $sSortOrder='ASC') {
-		return self::doSelect(self::getLinksByNameCriteria($sName, $sOrderField, $sSortOrder));
-	}
-	
-	public static function getLinksByNameCriteria($sName = null, $sOrderField='NAME', $sSortOrder='ASC', $oCriteria=null) {
-		$oCriteria = $oCriteria === null ? new Criteria() : $oCriteria; 
-		if($sName !== null) {
-			self::addSearchToCriteria($sName, $oCriteria);
-		}
-		Util::addSortColumn($oCriteria, constant("LinkPeer::".strtoupper($sOrderField)), $sSortOrder);
-		return $oCriteria;
 	}
 		
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
