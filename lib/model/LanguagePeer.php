@@ -45,11 +45,6 @@ class LanguagePeer extends BaseLanguagePeer {
 		return $oQuery->count() > 0;
 	}
 
-	public static function hasLanguageOptions() {
-		$oCriteria = new Criteria();
-		return self::doCount($oCriteria) > 1;
-	}
-
 	public static function getLanguages($bActiveOnly = false, $bSortBySort = false, $mExcludeCurrent = false) {
 		$oCriteria = new Criteria();
 		if($bActiveOnly) {

@@ -130,28 +130,6 @@ EOT;
 		return $aResult;
 	}
 	
-	public static function getStringsByLanguageId($sLanguageId, $sSearch = null, $sNameSpace = null) {
-		$oCriteria = self::getStringsByLanguageIdAndNameSpaceCriteria($sLanguageId, $sNameSpace);
-		if($sSearch !== null) {
-			self::addSearchToCriteria($oCriteria, $sSearch);
-		}
-		$oCriteria->addAscendingOrderByColumn(self::STRING_KEY);
-		return self::doSelect($oCriteria);
-	}
-
-	public static function getStringsByLanguageIdAndNameSpaceCriteria($sLanguageId, $sNameSpace=null, $oCriteria = null) {
-		$oCriteria = $oCriteria === null ? new Criteria() : $oCriteria;
-		$oCriteria->add(self::LANGUAGE_ID, $sLanguageId);
-		if($sNameSpace !== null) {
-			if($sNameSpace === '0') {
-				$oCriteria->add(self::STRING_KEY, "%.%", Criteria::NOT_LIKE);
-			} else {
-				$oCriteria->add(self::STRING_KEY, "$sNameSpace.%", Criteria::LIKE);
-			}
-		}
-		return $oCriteria;		
-	}
-	
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::TEXT, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::STRING_KEY, "%$sSearch%", Criteria::LIKE));
@@ -196,9 +174,7 @@ EOT;
 	}
 	
 	public static function countNameSpaceByName($sNameSpace) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(StringPeer::STRING_KEY, "$sNameSpace.%", Criteria::LIKE);
-		return self::doCount($oCriteria);
+		return StringQuery::create()->filterByStringKey("$sNameSpace.%", Criteria::LIKE)->count();
 	}
 
 	public static function getNameSpaceFromStringKey($sStringKey) {
