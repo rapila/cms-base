@@ -48,7 +48,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		}
 		if($oLink->getLinkCategoryId() != null) {
 			if($oLink->isNew() || $oLink->isColumnModified(LinkPeer::LINK_CATEGORY_ID)) {
-				$oLink->setSort(LinkPeer::getHightestSortByCategory($oLink->getLinkCategoryId()) + 1);
+				$oLink->setSort(LinkQuery::create()->filterByLinkCategoryId($oLink->getLinkCategoryId())->count() + 1);
 			} 
 		}
 		$oLink->setIsInactive(isset($aLinkData['is_inactive']));

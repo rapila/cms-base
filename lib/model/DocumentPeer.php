@@ -199,17 +199,6 @@ class DocumentPeer extends BaseDocumentPeer {
 		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
 	}
 	
-	public static function getHightestSortByCategory($iDocumentCategoryId) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategoryId);
-		$oCriteria->addDescendingOrderByColumn(self::SORT);
-		$oDocument = self::doSelectOne($oCriteria);
-		if($oDocument && $oDocument->getSort() != null) {
-			return $oDocument->getSort();
-		}
-		return 0;
-	}
-	
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
 		$bResult = parent::mayOperateOnOwn($oUser, $mObject, $sOperation);
 		///When changing the sort or the category, I have to have the rights to said category as well

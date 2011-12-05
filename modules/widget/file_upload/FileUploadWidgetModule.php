@@ -164,7 +164,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocument->setIsProtected($aOptions['is_protected']);
 			if($aOptions['document_category_id']) {
 				$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
-				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
+				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
 			}
 		}
 
