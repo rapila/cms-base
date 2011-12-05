@@ -17,12 +17,6 @@ class GroupPeer extends BaseGroupPeer {
 		return self::doSelectOne($oCriteria);
 	}
 	
-	public static function getAllSorted() {
-		$oCriteria = new Criteria();
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return self::doSelect($oCriteria);
-	}
-	
 	public static function getGroupsBySearch($sSearch = null) {
 		$oCriteria = new Criteria();
 		if($sSearch) {
