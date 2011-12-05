@@ -24,14 +24,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 	public static function getDocumentKindName($sKey) {
 		return StringPeer::getString('wns.document_kind.'.$sKey);
 	}
-	
-	public static function getMimeTypes() {
-		$oCriteria = new Criteria();
-		$oCriteria->setDistinct();
-		$oCriteria->addAscendingOrderByColumn(self::MIMETYPE);
-		return self::doSelect($oCriteria);
-	}
-	
+		
 	public static function getDocumentTypeByMimetype($sMimetype=null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MIMETYPE, $sMimetype);
@@ -141,10 +134,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 		return null;
 	}
 	
-	public static function hasDocTypesPreset($iMinEntries = 0) {
-		return self::doCount(new Criteria()) > $iMinEntries;
-	}
-	
 	public static function insertRow($aArrayOfValues) {
 		$oDocumentType = new DocumentType();
 		foreach ($aArrayOfValues as $sFieldName => $mValue) {
@@ -153,16 +142,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 			$oDocumentType->$sMethodName($mValue);
 		}
 		$oDocumentType->save();
-	}
-	
-	public static function getDocumentTypesByCategory($bIsOfficeDocType = null) {
-		$oCriteria = new Criteria();
-		if (is_bool($bIsOfficeDocType)) {
-			$oCriteria->add(self::IS_OFFICE_DOC, $bIsOfficeDocType);
-		}
-		$oCriteria->addAscendingOrderByColumn(self::IS_OFFICE_DOC);
-		$oCriteria->addAscendingOrderByColumn(self::EXTENSION);
-		return self::doSelect($oCriteria);
 	}
 	
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
