@@ -32,6 +32,10 @@ class ReferencingBehaviour extends Behavior
 		return self::doDeleteBeforeReferencing(\$criteria, \$con);
 }";
 	}
+	
+	public function postInsert() {
+		return 'ReferencePeer::saveUnsavedReferences($this);';
+	}
 
 	public function peerFilter(&$sScript) {
 		$sScript = str_replace(array(

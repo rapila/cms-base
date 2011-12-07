@@ -34,18 +34,25 @@ class ReferencePeer extends BaseReferencePeer {
 		$oReference->setFromModelName($mFromObject[1]);
 		$oReference->setToId($mToObject[0]);
 		$oReference->setToModelName($mToObject[1]);
-		
-		$oReference->save();
+		try {
+			$oReference->save();
+		} catch (PropelException $ex) {
+			if($ex->getCause() instanceof NotPermittedException) {
+				//Silently discard NotPermittedException because the FromObject won’t be saved either
+			} else {
+				throw $ex;
+			}
+		}
 	}
 	
 	public static function referenceExists($mFromObject, $mToObject) {
 		$oCriteria = self::prepareCriteria($mFromObject, $mToObject);
-		return self::doCount($oCriteria) !== 0;
+		return $oCriteria->count() !== 0;
 	}
 	
 	public static function countReferences($mToObject) {
 		$oCriteria = self::prepareCriteria(null, $mToObject);
-		return self::doCount($oCriteria);
+		return $oCriteria->count();
 	}
 	
 	public static function hasReference($mToObject) {
@@ -54,28 +61,44 @@ class ReferencePeer extends BaseReferencePeer {
 	
 	public static function getReferences($mToObject) {
 		$oCriteria = self::prepareCriteria(null, $mToObject);
-		return self::doSelect($oCriteria);
+		return $oCriteria->find();
 	}
 	
 	public static function getReferencesFromObject($mFromObject) {
 		$oCriteria = self::prepareCriteria($mFromObject);
-		return self::doSelect($oCriteria);
+		return $oCriteria->find();
 	}
 	
-	public static function removeReferences($mFromObject) {
-		$oCriteria = self::prepareCriteria($mFromObject);
-		return self::doDelete($oCriteria);
+	public static function removeReferences($mFromObject, $mToObject = null) {
+		$oCriteria = self::prepareCriteria($mFromObject, $mToObject);
+		foreach($oCriteria->find() as $oReference) {
+			try {
+				$oReference->delete();
+			} catch (PropelException $ex) {
+				if($ex->getCause() instanceof NotPermittedException) {
+					//Silently discard NotPermittedException because the FromObject won’t be deleted either
+				} else {
+					throw $ex;
+				}
+			}
+		}
 	}
 	
 	public static function removeReference($mFromObject, $mToObject) {
-		$oCriteria = self::prepareCriteria($mFromObject, $mToObject);
-		return self::doDelete($oCriteria);
+		self::removeReferences($mFromObject, $mToObject);
 	}
 	
-	public static function saveUnsavedReferences() {
+	public static function saveUnsavedReferences($oFromObjectFilter = null) {
 		$aUnsavedReferences = self::$aUnsavedReferences;
 		self::$aUnsavedReferences = array();
 		foreach($aUnsavedReferences as $aUnsavedReference) {
+			if($oFromObjectFilter !== null) {
+				$bIsEqual = method_exists($oFromObjectFilter, 'equals') ? $oFromObjectFilter->equals($aUnsavedReference[0]) : $oFromObjectFilter === $aUnsavedReference[0];
+				if(!$bIsEqual) {
+					continue;
+				}
+			}
+			$aUnsavedReference[0]->setNew(false);
 			self::addReference($aUnsavedReference[0], $aUnsavedReference[1]);
 		}
 		return count(self::$aUnsavedReferences);
@@ -88,7 +111,7 @@ class ReferencePeer extends BaseReferencePeer {
 	}
 	
 	private static function prepareCriteria($mFromObject = null, $mToObject = null) {
-		$oCriteria = new Criteria();
+		$oCriteria = ReferenceQuery::create();
 		if($mFromObject !== null) {
 			self::prepareCriteriaFrom($oCriteria, $mFromObject);
 		}
@@ -100,14 +123,14 @@ class ReferencePeer extends BaseReferencePeer {
 	
 	private static function prepareCriteriaFrom($oCriteria, $mFromObject) {
 		self::prepareObjectArgument($mFromObject);
-		$oCriteria->add(self::FROM_ID, $mFromObject[0]);
-		$oCriteria->add(self::FROM_MODEL_NAME, $mFromObject[1]);
+		$oCriteria->filterByFromId($mFromObject[0]);
+		$oCriteria->filterByFromModelName($mFromObject[1]);
 	}
 	
 	private static function prepareCriteriaTo($oCriteria, $mToObject) {
 		self::prepareObjectArgument($mToObject);
-		$oCriteria->add(self::TO_ID, $mToObject[0]);
-		$oCriteria->add(self::TO_MODEL_NAME, $mToObject[1]);
+		$oCriteria->filterByToId($mToObject[0]);
+		$oCriteria->filterByToModelName($mToObject[1]);
 	}
 	
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
