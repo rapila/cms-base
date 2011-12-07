@@ -1344,7 +1344,12 @@ abstract class BaseUserRole extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && UserRolePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return UserRolePeer::mayOperateOn($oUser, $this, $sOperation);
+		if(UserRolePeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);

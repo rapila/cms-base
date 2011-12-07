@@ -1500,7 +1500,12 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguageObjectPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return LanguageObjectPeer::mayOperateOn($oUser, $this, $sOperation);
+		if(LanguageObjectPeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);

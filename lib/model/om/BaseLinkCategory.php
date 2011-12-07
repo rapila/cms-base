@@ -1564,7 +1564,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LinkCategoryPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return LinkCategoryPeer::mayOperateOn($oUser, $this, $sOperation);
+		if(LinkCategoryPeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);

@@ -1316,7 +1316,12 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && TagInstancePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return TagInstancePeer::mayOperateOn($oUser, $this, $sOperation);
+		if(TagInstancePeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);
