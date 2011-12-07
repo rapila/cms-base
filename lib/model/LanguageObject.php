@@ -69,17 +69,6 @@ class LanguageObject extends BaseLanguageObject {
 		return $this;
 	}
 	
-	public function setData($mData, $bIgnorePermissions = false) {
-		if(!$bIgnorePermissions) {
-			$oUser = Session::getSession()->getUser();
-			if(!$oUser || !$oUser->mayEditPageContents($this->getContentObject()->getPage())) {
-				throw new Exception('Changing data not permitted');
-			}
-		}
-		
-		return parent::setData($mData);
-	}
-	
 	public function getAdminWidget() {
 		return WidgetModule::getWidget('language_object_control', null, $this, FrontendModule::getModuleInstance($this->getContentObject()->getObjectType(), $this));
 	}

@@ -230,6 +230,9 @@
 					}
 				}).bind('mouseleave', leave);
 			});
+			Widget.callStatic('permission', 'mayEditPageContents', page_id, function(may) {
+				jQuery('.preview_bar').css({opacity: may ? 1 : 0.5})[may ? 'addClass' : 'removeClass']('may_edit');
+			});
 			// Button event handlers
 			var cleanup = function(preview_bar, container) {
 				container.data('protector').unprotect(container.children()).release();
@@ -245,6 +248,9 @@
 		
 			jQuery('.preview_bar').delegate('.edit', 'click', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
+				if(!preview_bar.is('.may_edit')) {
+					return;
+				}
 				preview_bar.show('fast');
 				var container = preview_bar.data('filled_container');
 				if(container.is('.editing')) {
