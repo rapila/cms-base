@@ -712,6 +712,8 @@ abstract class BaseLanguageObject extends BaseObject  implements Persistent
 				$affectedRows = $this->doSave($con);
 				if ($isInsert) {
 					$this->postInsert($con);
+					// referencing behavior
+					ReferencePeer::saveUnsavedReferences($this);
 				} else {
 					$this->postUpdate($con);
 				}
