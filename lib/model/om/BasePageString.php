@@ -1625,7 +1625,12 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PageStringPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return PageStringPeer::mayOperateOn($oUser, $this, $sOperation);
+		if(PageStringPeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);

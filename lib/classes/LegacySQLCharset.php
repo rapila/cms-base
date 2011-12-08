@@ -20,7 +20,7 @@ class LegacySQLCharset {
 		if(StringUtil::startsWith($sAdapter, 'mysql')) {
 			$sAdapter = 'mysql';
 		}
-		$sFile = ResourceFinder::create(array('data', 'sql', 'charset', "$sAdapter.sql"))->find();
+		$sFile = ResourceFinder::create(array('data', 'sql', 'charset', "$sAdapter.dump"))->find();
 		if($sFile === null) {
 			return;
 		}

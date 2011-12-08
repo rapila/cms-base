@@ -92,6 +92,10 @@ div.ui-widget-content {
 .preview_bar .ui-icon {
 	padding: 1px;
 	border: 1px solid white;
+	cursor: not-allowed;
+}
+
+.preview_bar.may_edit .ui-icon {
 	cursor: pointer;
 }
 

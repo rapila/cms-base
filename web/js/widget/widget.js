@@ -695,7 +695,35 @@ jQuery.extend(Widget, {
 			message = jQuery('<div/>').text(error.message);
 			var error_list = jQuery('<ul/>').appendTo(message);
 			jQuery.each(error.parameters.references, function(counter, item) {
-				error_list.append(jQuery('<li/>').text(item.name));
+				var li = jQuery('<li/>').text(item.name+' ');
+				var link = jQuery('<a/>').addClass("ui-icon ui-icon-pencil pointer").attr('title', AdminInterface.translations.editEntry);
+				if(item.admin_link) {
+					link.attr('href', item.admin_link);
+					li.append(link);
+				} else if(item.admin_widget) {
+					link.bind('click', function() {
+						Widget.createWithElement(item.admin_widget[0], function(widget) {
+							widget.handle('element_set', function() {
+								var buttons = [];
+								if(widget.save) {
+									buttons.push({
+										text: AdminInterface.translations.saveEntry,
+										'class': 'primary ui-state-highlight',
+										click: function() {
+											widget.save(function() {
+												widget._element.dialog('close');
+											});
+										},
+										accesskey: 's'
+									});
+								}
+								widget._element.dialog({buttons: buttons, width: 550, title: item.name});
+							});
+						}, jQuery.noop, item.admin_widget[1]);
+					});
+					li.append(link);
+				}
+				error_list.append(li);
 			});
 			Widget.notifyUser(Widget.logSeverity.ALERT, message, {
 				closeDelay: false,

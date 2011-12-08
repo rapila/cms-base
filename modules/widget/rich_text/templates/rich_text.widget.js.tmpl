@@ -57,6 +57,22 @@ Widget.types.rich_text = {
 				linkType.items.unshift(['{{writeString=wns.richtext.external_link}}', 'external']);
 				linkType.items.unshift(['{{writeString=wns.richtext.internal_link}}', 'internal']);
 				linkType.setup = function(data) {
+					if(data.type === 'url' && data.url && data.url.protocol === undefined) {
+						var id = data.url.url.split(/\//).pop(), index;
+						if((index = id.indexOf('?')) > -1) {
+							id = id.substring(0, index);
+						}
+						if(data.url.url.indexOf('/internal_link_proxy/') > -1) {
+							data.type = 'internal';
+							data.internal_link_id = id;
+						} else if(data.url.url.indexOf('/external_link_proxy/') > -1) {
+							data.type = 'external';
+							data.external_link_id = id;
+						} else if(data.url.url.indexOf('/display_document/') > -1) {
+							data.type = 'document';
+							data.document_id = id;
+						}
+					}
 					//@todo: change type to match link if display_document, external_link_proxy or internal_link_proxy is part of the path
 					this.setValue(data.type);
 				};
@@ -102,20 +118,33 @@ Widget.types.rich_text = {
 						}
 					};
 				});
+				var chooser_setup = function(idName) {
+					return function(data) {
+						var widget_element = jQuery(this.getElement().$).children('[data-widget-type]');
+						if(!!widget_element.length) {
+							widget_element.val(data[idName]);
+						} else {
+							jQuery(this.getElement().$).data('id', data[idName]);
+						}
+					};
+				};
 				infoTab.add({
 					html: '<div></div>',
 					id : 'internal_link_chooser',
-					type : 'html'
+					type : 'html',
+					setup: chooser_setup('internal_link_id')
 				});
 				infoTab.add({
 					html: '<div></div>',
 					id : 'external_link_chooser',
-					type : 'html'
+					type : 'html',
+					setup: chooser_setup('external_link_id')
 				});
 				infoTab.add({
 					html: '<div></div>',
 					id : 'document_link_chooser',
-					type : 'html'
+					type : 'html',
+					setup: chooser_setup('document_id')
 				});
 				dialogDefinition.onLoad = CKEDITOR.tools.override(dialogDefinition.onLoad, function(orig) {
 					return function() {
@@ -239,6 +268,10 @@ Widget.types.rich_text = {
 			_this[name+'_widget'] = widget;
 			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}';
 			widget.handle('element_set', function() {
+				if(chooser_element.data('id')) {
+					widget.value(chooser_element.data('id'));
+				}
+				widget._element.addClass('cke_skin_kama cke_dialog_ui_input_select');
 				widget._element.appendTo(chooser_element);
 				widget._element.change(function() {
 					dialog.setValueOf('info', 'url', widget[url_function]());

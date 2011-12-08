@@ -4,7 +4,7 @@
  */
 class PageInputWidgetModule extends WidgetModule {
 	
-	public function getPages() {
+	public function pages() {
 		return PagePeer::getRootPage()->getTree(true);
 	}
 	

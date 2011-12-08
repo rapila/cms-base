@@ -5,6 +5,6 @@
 class GroupInputWidgetModule extends WidgetModule {
 	
 	public function allGroups() {
-		return WidgetJsonFileModule::jsonBaseObjects(GroupPeer::getAllSorted(), array('id', 'name'));
+		return WidgetJsonFileModule::jsonBaseObjects(GroupQuery::create()->orderByName()->find(), array('id', 'name'));
 	}
 }

@@ -11,6 +11,10 @@
 
 Widget.types.file_upload = {
 	allow_drag_to: function(element, selector, callback, single_file_only) {
+		if(!selector) {
+			element.addClass('ui-state-droppable');
+		}
+		
 		var _this = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
@@ -78,7 +82,7 @@ Widget.types.file_upload = {
 	upload_file: function(file, options) {
 		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
 		this.accepts(file.name, file.type, function(result, error) {
-			if(error) {
+			if(error && error.exception_type === 'LocalizedException') {
 				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
 				if(!options.unacceptable || !options.unacceptable(error)) {
 					var _this = this;
@@ -95,6 +99,9 @@ Widget.types.file_upload = {
 				} else {
 					options.error && options.error(error);
 				}
+			} else if(error) {
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
+				options.error && options.error(error);
 			} else {
 				this.do_upload(file, options);
 			}

@@ -221,4 +221,8 @@ class Document extends BaseDocument {
 	  }
 	  return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
+	
+	public function hasReferees() {
+		return count($this->getReferees()) > 0;
+	}
 }

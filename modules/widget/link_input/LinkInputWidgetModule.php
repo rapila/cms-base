@@ -4,29 +4,20 @@
  */
 class LinkInputWidgetModule extends WidgetModule {
 	
-	public function getExternalLinks() {
-		$aCategories = LinkCategoryPeer::getAllSorted(true);
+	public function externalLinks() {		
 		$aResult = array();
-		foreach($aCategories as $oCategory) {
-			$aLinks = LinkPeer::getLinksByLinkCategory($oCategory->getId());
-			foreach($aLinks as $oLink) {
-				$aResult[$oCategory->getName()][$oLink->getId()] = $oLink->getName();
+		foreach(LinkCategoryQuery::create()->filterByHasLinks()->orderByName()->find() as $oLinkCategory) {
+			foreach(LinkQuery::create()->filterByLinkCategoryId($oLinkCategory->getId())->orderByName()->find() as $oLink) {
+				$aResult[$oLinkCategory->getName()][$oLink->getId()] = $oLink->getName();
 			}
 		}
 		$sWithoutCategory = StringPeer::getString('wns.links.select_without_title');
-		foreach(self::getLinksWithoutCategoryId() as $oLink) {
+		foreach(LinkQuery::create()->filterByLinkCategoryId(null, Criteria::ISNULL)->orderByName()->find() as $oLink) {
 			$aResult[$sWithoutCategory][$oLink->getId()] = $oLink->getName();
-		}
+		}		
 		return $aResult;
 	}
 
-	private static function getLinksWithoutCategoryId() {
-		$oCriteria = new Criteria();
-		$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, null, Criteria::ISNULL);
-		$oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
-		return LinkPeer::doSelect($oCriteria);
-	}
-	
 	public function getElementType() {
 		return 'select';
 	}

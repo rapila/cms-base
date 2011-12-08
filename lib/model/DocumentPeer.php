@@ -141,13 +141,6 @@ class DocumentPeer extends BaseDocumentPeer {
 		return $oCriteria;
 	}
 	
-	public static function getDocumentsByKind($sDocumentKind=null) {
-		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, null, true, true);
-		$oCriteria->addAscendingOrderByColumn(self::DOCUMENT_CATEGORY_ID);
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return self::doSelect($oCriteria);
-	}
-	
 	public static function getDocumentsCriteria($bExcludeExternallyManaged = true) {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
@@ -179,35 +172,8 @@ class DocumentPeer extends BaseDocumentPeer {
 		return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
 	}
 
-	public static function countDocumentsInternallyManaged() {
-		return self::doCount(self::getDocumentsCriteria());
-	}
-
-	public static function countDocumentsExceedsLimit($iLimit = 40) {
-		return self::countDocumentsInternallyManaged() > $iLimit;
-	}
-
-	public static function getMostRecent($bIsProtected = false) {
-		$oCriteria = new Criteria();
-		$oCriteria->addDescendingOrderByColumn(self::CREATED_AT);
-		$oCriteria->add(self::IS_INACTIVE, false);
-		$oCriteria->add(self::IS_PROTECTED, $bIsProtected);
-		return self::doSelectOne($oCriteria);
-	}
-
 	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
 		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
-	}
-	
-	public static function getHightestSortByCategory($iDocumentCategoryId) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategoryId);
-		$oCriteria->addDescendingOrderByColumn(self::SORT);
-		$oDocument = self::doSelectOne($oCriteria);
-		if($oDocument && $oDocument->getSort() != null) {
-			return $oDocument->getSort();
-		}
-		return 0;
 	}
 	
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {

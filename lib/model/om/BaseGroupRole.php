@@ -1344,7 +1344,12 @@ abstract class BaseGroupRole extends BaseObject  implements Persistent
 		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && GroupRolePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
 			return true;
 		}
-		return GroupRolePeer::mayOperateOn($oUser, $this, $sOperation);
+		if(GroupRolePeer::mayOperateOn($oUser, $this, $sOperation)) {
+			return true;
+		}
+		$bIsAllowed = false;
+		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
 		return $this->mayOperate("insert", $oUser);

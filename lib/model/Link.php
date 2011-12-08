@@ -13,6 +13,13 @@ class Link extends BaseLink {
 		return null;
 	}
 	
+	public function getIsExternallyManaged() {
+		if($this->getLinkCategory()) {
+			return $this->getLinkCategory()->getIsExternallyManaged();
+		}
+		return false;
+	}
+	
 	public function shouldBeIncludedInList($sLanguageId, $oPage) {
 		return $this->getLanguageId() === null || $this->getLanguageId() === $sLanguageId;
 	}

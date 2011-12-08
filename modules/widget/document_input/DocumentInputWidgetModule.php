@@ -16,8 +16,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			$aResult[$sCustomFiles] = array_flip($aCustomFiles);
 		}
 		// find files in database ordered by category
-		$aCategories = DocumentCategoryPeer::getDocumentCategoriesSorted();
-		foreach($aCategories as $oCategory) {
+		foreach(DocumentCategoryQuery::create()->filterByIsExternallyManaged(false)->orderByName()->find() as $oCategory) {
 			$aDocuments = DocumentPeer::getDocumentsByCategory($oCategory->getId());
 			foreach($aDocuments as $oDocument) {
 				$aResult[$oCategory->getName()][$oDocument->getId()] = $oDocument->getName();

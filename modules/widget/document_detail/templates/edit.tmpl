@@ -2,7 +2,7 @@
 	<label for="file_upload" class="validate-upload validate-document.requires_file validate-upload_error_php_max_size validate-upload_error">{{writeString=wns.document.file_upload}}</label>
 	<input type="file" name="file_upload" class="ui-widget-content" /><br />
 	<div class="status_section">
-		<div class="preview droppable_info droppable_prepare">
+		<div class="preview droppable_info ui-state-droppable">
 		  <div>{{writeString=wns.draganddrop.hint}}
 		  </div>
 		</div>
@@ -25,11 +25,22 @@
 		<select name="document_category_id" class="ui-widget-content" data-widget-type="document_category_input"></select><br />
 		<label for="language_id">{{writeString=wns.language}}</label>
 		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
-		<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>	
-		<input type="text" name="content_created_at" class="ui-widget-content" /><br />
-		<label for="author">{{writeString=wns.document.author-license}}</label>	
-		<input type="text" name="author" class="ui-widget-content" style="width:10em;margin-right:1em;" /><input type="text" name="license" class="ui-widget-content" data-widget-type="popover" style="width:10em;"/><br />
-		<input type="checkbox" name="is_protected" style="display: inline-block;" class="for_checkbox" /><label for="is_protected" class="for_checkbox">{{writeString=wns.is_protected}}</label>	
+		<div class="group_fields">
+			<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>	
+			<input type="text" name="content_created_at" class="ui-widget-content autowidth" size="10" /><br />
+		</div>
+		<div class="group_fields" style="margin-left:2em;">
+			<label for="is_protected">{{writeString=wns.is_protected}}</label>
+			<input type="checkbox" name="is_protected" />	
+		</div>
 		<br clear="left" />
+		<div class="group_fields">
+			<label for="author">{{writeString=wns.document.author-license}}</label>	
+			<input type="text" name="author" class="ui-widget-content help" style="width:10em;margin-right:1em;" title="{{writeString=wns.document.author-license_type.info}}" />
+		</div>
+		<div class="group_fields">
+			<label for="license">{{writeString=wns.document.author-license_type}}</label>	
+			<input type="text" name="license" class="ui-widget-content" data-widget-type="popover" style="width:10em;"/><br />
+		</div>
 	</div>
 </form>

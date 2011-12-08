@@ -58,9 +58,7 @@ class PagePeer extends BasePagePeer {
 	}
 
 	public static function getLastUpdatedTimestamp() {
-		$oCriteria = new Criteria();
-		$oCriteria->addDescendingOrderByColumn(self::UPDATED_AT);
-		$oPage = self::doSelectOne($oCriteria);
+		$oPage = PageQuery::create()->orderByUdatedAt(Criteria::DESC)->findOne();
 		if($oPage) {
 			return $oPage->getUpdatedAtTimestamp();
 		}

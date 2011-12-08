@@ -4,7 +4,7 @@
 .ui-notify .ui-state-highlight{background-image:none}
 .ui-notify.search_info{min-width:50em;padding:.5em;vertical-align:top}
 .ui-notify ul{margin:0;padding:0}
-.ui-notify .ui-state-error ul{margin-left:2em}
+.ui-notify .ui-state-error ul{margin-left:.5em;list-style:none}
 .ui-notify li{margin:0;margin-left:1.3em;padding:.2em 0}
 .ui-loading{background:transparent url("../../images/admin/loader.gif") no-repeat scroll top left;min-width:24px;min-height:24px}
 .ui-loading-add{background:transparent url("../../images/admin/loader_add_button.gif") no-repeat scroll top left;min-width:24px;min-height:24px}
@@ -81,7 +81,7 @@ h3.status{padding-left:.3em}
 .users fieldset.option_groups{padding:0 0 .6em 0}
 .ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container	 div.ui-widget-content{padding:0;border-color:#cccdcf}
 label span.error_display:before,legend span.error_display:before{content:" "}
-label span.error_display,legend span.error_display{color:#f00}
+label span.error_display,legend span.error_display,span.error_display{color:#f00}
 .delete_drop_zone{float:left;height:100px;margin:23px 2px 2px 2px;padding:2px;width:100px}
 .add_entry,.remove_entry{height:24px;width:24px;margin-top:.2em;display:inline-block;cursor:pointer}
 td span.remove_entry{margin:0}

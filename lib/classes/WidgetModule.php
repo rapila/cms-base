@@ -71,6 +71,9 @@ abstract class WidgetModule extends Module {
 		$oSuperClass = new ReflectionClass(get_class());
 		$oClass = new ReflectionClass($sClassName);
 		foreach($oClass->getMethods(ReflectionMethod::IS_PUBLIC) as $oMethod) {
+			if(StringUtil::startsWith($oMethod->getName(), '__')) {
+				continue;
+			}
 			if($oSuperClass->hasMethod($oMethod->getName())) {
 				continue;
 			}

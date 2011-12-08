@@ -27,9 +27,6 @@ error_pages:
   # server_error is ignored for the time being
   server_error: "internal_server_error"
 
-special_pages:
-  search_result: "search_result"
-
 domain_holder:
   domain: 'example.com'
   name:   'Example Site'

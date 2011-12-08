@@ -5,6 +5,7 @@
  * @package		 propel.generator.model
  */
 class DocumentCategoryQuery extends BaseDocumentCategoryQuery {
+	
 	public function filterByDocumentKind($sDocumentKind = 'image') {
 		$this->setDistinct();
 		$this->joinDocument();
@@ -13,4 +14,5 @@ class DocumentCategoryQuery extends BaseDocumentCategoryQuery {
 		return $this;
 	}
 
-} // DocumentCategoryQuery
+}
+

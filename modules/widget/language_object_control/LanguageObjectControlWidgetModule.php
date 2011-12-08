@@ -12,6 +12,9 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 	public function editor() {
 		$oWidget = $this->oModuleInstance->getWidget();
 		if($oWidget instanceof WidgetModule) {
+			if(method_exists($oWidget, 'setObjectId')) {
+				$oWidget->setObjectId($this->oCurrentLanguageObject->getObjectId());
+			}
 			return array($oWidget->getModuleName(), $oWidget->getSessionKey());
 		}
 		return array($oWidget, null);

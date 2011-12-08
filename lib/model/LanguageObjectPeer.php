@@ -23,13 +23,6 @@ class LanguageObjectPeer extends BaseLanguageObjectPeer {
 		}
 		return parent::retrieveByPK((int)$object_id, $language_id, $con);
 	}
-	
-	public static function findLanguageObjectsWithObjectType($sObjectType) {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(self::OBJECT_ID, ContentObjectPeer::ID, Criteria::INNER_JOIN);
-		$oCriteria->add(ContentObjectPeer::OBJECT_TYPE, $sObjectType);
-		return self::doSelect($oCriteria);
-	}
 
 	public static function mayOperateOn($oUser, $oLanguageObject, $sOperation) {
 		if($oUser === null || !$oUser->getIsBackendLoginEnabled()) {

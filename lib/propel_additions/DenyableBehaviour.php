@@ -87,7 +87,12 @@ class DenyableBehaviour extends Behavior {
 	if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, $sOperation)) {
 		return true;
 	}
-	return '.$sPeerClassname.'::mayOperateOn($oUser, $this, $sOperation);
+	if('.$sPeerClassname.'::mayOperateOn($oUser, $this, $sOperation)) {
+		return true;
+	}
+	$bIsAllowed = false;
+	FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+	return $bIsAllowed;
 }
 ';
 	}

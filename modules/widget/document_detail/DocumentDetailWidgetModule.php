@@ -98,7 +98,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
   		$oDocument->setIsProtected($aDocumentData['is_protected']);
   		if($oDocument->getDocumentCategoryId() != null) {
   			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
-  				$oDocument->setSort(DocumentPeer::getHightestSortByCategory($oDocument->getDocumentCategoryId()) + 1);
+  				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
   			}
   		}
 		  $oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);

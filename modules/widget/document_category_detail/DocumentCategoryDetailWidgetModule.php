@@ -34,8 +34,8 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$oCategory->setName($aDocumentCategoryData['name']);
 		$oCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);
 		$oCategory->setIsExternallyManaged($aDocumentCategoryData['is_externally_managed']);
+		$oCategory->setIsInactive(isset($aDocumentCategoryData['is_inactive']) && $aDocumentCategoryData['is_inactive']);
 		
-		$oCategory->setIsInactive(isset($aDocumentCategoryData['is_inactive']));
     $this->validate($aDocumentCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();

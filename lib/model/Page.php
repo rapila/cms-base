@@ -49,7 +49,7 @@ class Page extends BasePage {
 		return StringPeer::getString('meta.description', $sLanguageId, '');
 	}
 	
-	public function getConsolidatedKeywords($sLanguageId = null) {
+	public function getConsolidatedKeywords($sLanguageId = null, $bReturnArray = false) {
 		if($sLanguageId == null) {
 			$sLanguageId = Session::language();
 		}
@@ -76,6 +76,10 @@ class Page extends BasePage {
 					$aResult[$sKeyword] = true;
 				}
 			}
+		}
+
+		if($bReturnArray) {
+			return array_keys($aResult);
 		}
 		
 		return implode(', ', array_keys($aResult));
@@ -223,10 +227,7 @@ class Page extends BasePage {
 			}
 		}
 		if($this->isRoot()) {
-			$oCriteria = new Criteria();
-			$oCriteria->add(PagePeer::IS_INACTIVE, false);
-			$oCriteria->add(PagePeer::PAGE_TYPE, $sPageType);
-			return PagePeer::doSelectOne($oCriteria);
+			return PageQuery::create()->active()->filterByPageType($sPageType)->findOne();
 		}
 		return $this->getParent()->getPageOfType($sPageType);
 	}
