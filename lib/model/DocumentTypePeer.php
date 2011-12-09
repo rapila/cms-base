@@ -130,7 +130,6 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 				return $oDocType;
 			}
 		}
-		
 		return null;
 	}
 	

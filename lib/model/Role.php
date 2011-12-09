@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * @package		 propel.generator.model
  */
