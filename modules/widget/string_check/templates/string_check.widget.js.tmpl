@@ -6,27 +6,44 @@ Widget.types.string_check = {
 		//Check options
 		this.check_result = this._element.find('ol.check_result');
 		this.check_option = this._element.find('select[name="check_option"]');
+		this.check_errors_fount_title = this._element.find('.check_errors_fount_title');
 		this.checkOptions(function(options) {
-			this.check_option.populate(options, null, true);
+			this.check_option.populate(options);
 		});
-
+		this.language_option = this._element.find("select[name='language_id']").prepareWidget(function(widget) {
+			widget.settings.use_admin_languages = true;
+		}, jQuery.noop);
 		this.checker = this._element.find('button.do_check').button({disabled: false});
 		this.checker.click(function() {
-			var option = _this.check_option.val();
-			if(option === '') {
-				return;
-			}
-			_this.load_check_result(option);			
+			_this.load_check_result();			
 		});
 	},
 	
-	load_check_result: function(check_option) {
+	load_check_result: function() {
 		var check_result = this.check_result;
 		check_result.empty();
-		this.check(check_option, function(check_logs) {
+		this.check_errors_fount_title.text('');
+		
+		var option = this.check_option.val();
+		if(option === '') {
+			return;
+		}
+		var language_id = this.language_option.val();
+		if(language_id === '') {
+			language_id = null;
+		}
+
+		console.log(option, language_id);
+		this.check(option, language_id, function(check_logs) {
+			$iCount = 0;
 			jQuery.each(check_logs, function(i, log) {
+				if(log.level > 0 && log.level < 5) {
+					$iCount++;
+				}
 				check_result.append(jQuery('<li/>').addClass('log_level_'+log.level).text(log.message));
 			});
+			this.check_errors_fount_title.text($iCount+" {{writeString=wns.check.errors_found}}");
+			console.log($iCount);
 		});
 	},
 
@@ -35,3 +52,5 @@ Widget.types.string_check = {
 	}
 	
 };
+
+
