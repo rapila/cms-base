@@ -1,0 +1,37 @@
+Widget.types.string_check = {
+	prepare: function() {
+		var _this = this;
+		this._element.append(jQuery.parseHTML("{{includeTemplate=check}}"));
+
+		//Check options
+		this.check_result = this._element.find('ol.check_result');
+		this.check_option = this._element.find('select[name="check_option"]');
+		this.checkOptions(function(options) {
+			this.check_option.populate(options, null, true);
+		});
+
+		this.checker = this._element.find('button.do_check').button({disabled: false});
+		this.checker.click(function() {
+			var option = _this.check_option.val();
+			if(option === '') {
+				return;
+			}
+			_this.load_check_result(option);			
+		});
+	},
+	
+	load_check_result: function(check_option) {
+		var check_result = this.check_result;
+		check_result.empty();
+		this.check(check_option, function(check_logs) {
+			jQuery.each(check_logs, function(i, log) {
+				check_result.append(jQuery('<li/>').addClass('log_level_'+log.level).text(log.message));
+			});
+		});
+	},
+
+	close: function() {
+		this.detail_widget.close();
+	}
+	
+};
