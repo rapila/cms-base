@@ -47,7 +47,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 			}
 			$aSortedLanguageFiles[$sPathPrefix][] = $sLanguageId;
 		}
-		$aAllStringsAvailable = array();
+		
 		foreach($aSortedLanguageFiles as $sPathPrefix => $aLanguageIds) {
 			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => $sPathPrefix)));
 			$aAllStrings = array();
@@ -68,7 +68,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 						continue;
 					}
 					if(!isset($aLanguageFileContents[$sStringKey])) {
-						$sText = StringPeer::getString('wns.check.check_message', null, null, array('string_key' => $sStringKey, 'file_name' => $sPathPrefix.$sLanguageId.'.ini'));
+						$sText = StringPeer::getString('wns.check.check_message', null, null, array('string_key' => $sStringKey, 'ini_file_name' => $sPathPrefix.$sLanguageId.'.ini'));
 						$this->log($sText, $sLanguageId, self::LOG_LEVEL_WARNING);
 						$bFileHasErrors = true;
 					}
