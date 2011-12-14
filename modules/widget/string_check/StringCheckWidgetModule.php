@@ -53,6 +53,9 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 
 		foreach($aAllStrings as $sStringKey) {
 			foreach($aAllLanguages as $sLanguageId => $sLanguageName) {
+				if($sCheckLanguageId && $sCheckLanguageId === $sLanguageId) {
+					continue;
+				}
 				$oString = StringPeer::getString($sStringKey, $sLanguageId, self::$EMPTY_STRING_KEY);
 				if($oString === self::$EMPTY_STRING_KEY) {
 					$sText = StringPeer::getString('wns.check.check_string_message', null, null, array('string_key' => $sStringKey, 'language_id' => $sLanguageId));
