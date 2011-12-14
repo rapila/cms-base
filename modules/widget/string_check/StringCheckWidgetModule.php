@@ -64,51 +64,57 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 	}
 
 	private function checkStaticStrings($sCheckLanguageId = null) {
-		$aLanguageFiles = array_merge(ResourceFinder::findResourceByExpressions(array(DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_SITE_FIRST), ResourceFinder::findResourceByExpressions(array(DIRNAME_MODULES, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN, DIRNAME_LANG, "/^.+\.ini$/"), ResourceFinder::SEARCH_SITE_FIRST));
-		
-		$aSortedLanguageFiles = array();
-		// for each lang dir the available language files are collected
-		foreach($aLanguageFiles as $sRelativePath => $sAbsolutePath) {
-			$aPathParts = array();
-			preg_match("/(([^\/]+\/)+)(.+)\.ini/", $sRelativePath, $aPathParts);
-			$sPathPrefix = $aPathParts[1];
-			$sLanguageId = $aPathParts[3];
-			if(!isset($aSortedLanguageFiles[$sPathPrefix])) {
-				$aSortedLanguageFiles[$sPathPrefix] = array();
-			}
-			$aSortedLanguageFiles[$sPathPrefix][] = $sLanguageId;
+
+		$aPaths = array();
+		$aPaths[] = array('base');
+		foreach(ResourceFinder::create(array(DIRNAME_PLUGINS, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN))->searchMainOnly()->byExpressions()->find() as $sPlugin => $sDir) {
+			$aPaths[] = explode('/', $sPlugin);
 		}
-		
-		foreach($aSortedLanguageFiles as $sPathPrefix => $aLanguageIds) {
-			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => $sPathPrefix)));
-			$aAllStrings = array();
-			$aAllLanguageFileContents = array();
-			foreach($aLanguageIds as $sLanguageId) {
-				$aLanguageFilePaths = ResourceFinder::findAllResources("$sPathPrefix$sLanguageId.ini", ResourceFinder::SEARCH_SITE_FIRST);
-				$aAllLanguageFileContents[$sLanguageId] = parse_ini_file($aLanguageFilePaths[0]);
-				if(isset($aLanguageFilePaths[1])) {
-					$aAllLanguageFileContents[$sLanguageId] = array_merge($aAllLanguageFileContents[$sLanguageId], parse_ini_file($aLanguageFilePaths[1]));
-				}
-				$aAllStrings = array_merge($aAllStrings, $aAllLanguageFileContents[$sLanguageId]);
+		$aPaths[] = array('site');
+
+		foreach($aPaths as $aPath) {
+			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => implode('/', $aPath))));
+			$aLanguagesInContextDir = array();
+			$aLanguageFiles = ResourceFinder::create($aPath)->addRecursion()->addPath(DIRNAME_LANG)->addExpression("/^.+\.ini$/")->noCache()->returnObjects()->searchMainOnly()->find();
+			foreach($aLanguageFiles as $oLanguageFile) {
+				$sLanguageId = $oLanguageFile->getFileName('.ini');
+				$aLanguagesInContextDir[$sLanguageId] = true;
 			}
-			$aAllStrings = array_keys($aAllStrings);
-			$bFileHasErrors = false;
-			foreach($aAllStrings as $sStringKey) {
-				foreach($aAllLanguageFileContents as $sLanguageId => $aLanguageFileContents) {
-					if($sCheckLanguageId !== null && $sLanguageId !== $sCheckLanguageId) {
+			$aLanguagesInContextDir = array_keys($aLanguagesInContextDir);
+			$aLanguageDirs = ResourceFinder::create($aPath)->addRecursion()->addPath(DIRNAME_LANG)->noCache()->returnObjects()->searchMainOnly()->find();
+			foreach($aLanguageDirs as $oDir) {
+			$this->log(StringPeer::getString('wns.check.check_static_strings_dir', null, null, array('dir' => $oDir->getRelativePath())));
+				$aDir = explode('/', $oDir->getRelativePath());
+				$aStrings = array();
+				foreach($aLanguagesInContextDir as $sLanguageId) {
+					$sFile = ResourceFinder::create($aDir)->addPath("$sLanguageId.ini")->searchMainOnly()->find();
+					ErrorHandler::log($sFile, $aDir, "$sLanguageId.ini");
+					if(!$sFile) {
 						continue;
 					}
-					if(!isset($aLanguageFileContents[$sStringKey])) {
-						$sText = StringPeer::getString('wns.check.check_message', null, null, array('string_key' => $sStringKey, 'ini_file_name' => $sPathPrefix.$sLanguageId.'.ini'));
-						$this->log($sText, $sLanguageId, self::LOG_LEVEL_WARNING);
-						$bFileHasErrors = true;
+					$aContents = parse_ini_file($sFile);
+					foreach($aContents as $sStringKey => $sString) {
+						if(!isset($aStrings[$sStringKey])) {
+							$aStrings[$sStringKey] = array();
+						}
+						$aStrings[$sStringKey][$sLanguageId] = $sString;
 					}
 				}
-			}
-			if($bFileHasErrors === false) {
-				$this->log('ok!', null, 5);
+				foreach($aStrings as $sStringKey => &$aStringLanguages) {
+					foreach($aLanguagesInContextDir as $sLanguageId) {
+						if($sCheckLanguageId !== null && $sLanguageId !== $sCheckLanguageId) {
+							continue;
+						}
+						if(!isset($aStringLanguages[$sLanguageId])) {
+							$sText = StringPeer::getString('wns.check.check_message', null, null, array('string_key' => $sStringKey, 'ini_file_name' => $oDir->getRelativePath().'/'.$sLanguageId.'.ini'));
+							$this->log($sText, $sLanguageId, self::LOG_LEVEL_WARNING);
+						}
+					}
+					
+				}
 			}
 		}
+
 		return $this->aLogMessages;
 	}
 	
