@@ -78,20 +78,20 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 
 	private function checkStaticStrings($sCheckLanguageId = null, $sDirectory = null) {
 		$aPaths = array();
-		if($sDirectory !== null && $sDirectory === 'base') {
+		if($sDirectory === null || $sDirectory === 'base') {
   		$aPaths[] = array('base');
 		}
-		if($sDirectory !== null && $sDirectory === 'plugins') {
+		if($sDirectory === null || $sDirectory === 'plugins') {
   		foreach(ResourceFinder::create(array(DIRNAME_PLUGINS, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN))->searchMainOnly()->byExpressions()->find() as $sPlugin => $sDir) {
   			$aPaths[] = explode('/', $sPlugin);
   		}
 		}
-		if($sDirectory !== null && $sDirectory === 'site') {
+		if($sDirectory === null || $sDirectory === 'site') {
   		$aPaths[] = array('site');
 		}
-		ErrorHandler::log('Directory', $sDirectory, 'pPaths', $aPaths);
+
 		foreach($aPaths as $aPath) {
-			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => implode('/', $aPath))));
+			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => implode('/', $aPath))), null, 'title_main_dir');
 			$aLanguagesInContextDir = array();
 			$aLanguageFiles = ResourceFinder::create($aPath)->addRecursion()->addPath(DIRNAME_LANG)->addExpression("/^.+\.ini$/")->noCache()->returnObjects()->searchMainOnly()->find();
 			foreach($aLanguageFiles as $oLanguageFile) {
@@ -101,7 +101,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 			$aLanguagesInContextDir = array_keys($aLanguagesInContextDir);
 			$aLanguageDirs = ResourceFinder::create($aPath)->addRecursion()->addPath(DIRNAME_LANG)->noCache()->returnObjects()->searchMainOnly()->find();
 			foreach($aLanguageDirs as $oDir) {
-			$this->log(StringPeer::getString('wns.check.check_static_strings_dir', null, null, array('dir' => $oDir->getRelativePath())));
+			$this->log(StringPeer::getString('wns.check.check_static_strings_dir', null, null, array('dir' => $oDir->getRelativePath())), null, 'title_dir');
 				$aDir = explode('/', $oDir->getRelativePath());
 				$aStrings = array();
 				foreach($aLanguagesInContextDir as $sLanguageId) {
@@ -127,11 +127,9 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 							$this->log($sText, $sLanguageId, self::LOG_LEVEL_WARNING);
 						}
 					}
-					
 				}
 			}
 		}
-
 		return $this->aLogMessages;
 	}
 	

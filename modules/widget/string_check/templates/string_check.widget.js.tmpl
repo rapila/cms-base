@@ -52,10 +52,14 @@ Widget.types.string_check = {
 		this.check(check_option, language_id, directory, function(check_logs) {
 			$iCount = 0;
 			jQuery.each(check_logs, function(i, log) {
-				if(log.level > 0 && log.level < 5) {
+				var li_element = jQuery('<li/>').text(log.message);
+				if(isNaN(log.level)) {
+					li_element.addClass(log.level);
+				} else if(log.level > 0 && log.level < 5) {
+					li_element.addClass('log_level_'+log.level);
 					$iCount++;
 				}
-				check_result.append(jQuery('<li/>').addClass('log_level_'+log.level).text(log.message));
+				check_result.append(li_element);
 			});
 			this.check_errors_found_title.text($iCount+" {{writeString=wns.check.errors_found}}");
 		});
