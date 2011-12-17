@@ -51,12 +51,22 @@ Widget.types.string_check = {
 		}
 		this.check(check_option, language_id, directory, function(check_logs) {
 			$iCount = 0;
+			$iCountInDir = null;
 			jQuery.each(check_logs, function(i, log) {
 				var li_element = jQuery('<li/>').text(log.message);
 				if(isNaN(log.level)) {
+					if(log.level === 'title_dir') {
+						if($iCountInDir === 0) {
+							check_result.append(jQuery('<li/>').text('✔').addClass('ok_no_errors'));
+						}
+						$iCountInDir = 0;
+					} else {
+						$iCountInDir = null;
+					}
 					li_element.addClass(log.level);
-				} else if(log.level > 0 && log.level < 5) {
+				} else if(log.level > 0 && log.level <= 4) {
 					li_element.addClass('log_level_'+log.level);
+					$iCountInDir++;
 					$iCount++;
 				}
 				check_result.append(li_element);

@@ -123,8 +123,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 							continue;
 						}
 						if(!isset($aStringLanguages[$sLanguageId])) {
-							$sText = StringPeer::getString('wns.check.check_message', null, null, array('string_key' => $sStringKey, 'ini_file_name' => $oDir->getRelativePath().'/'.$sLanguageId.'.ini'));
-							$this->log($sText, $sLanguageId, self::LOG_LEVEL_WARNING);
+							$this->log($sStringKey, $sLanguageId, self::LOG_LEVEL_WARNING);
 						}
 					}
 				}
