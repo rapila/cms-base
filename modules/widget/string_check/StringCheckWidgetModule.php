@@ -18,23 +18,33 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 		parent::__construct($sWidgetId);
 	}
 	
-	public function checkOptions() {
+	public function allOptions() {
 		$aResult = array();
+		
+		// Check options
+		$aResult['check_options'] = array();
 		foreach(self::$CHECK_OPTIONS as $sCheckOption) {
 			// no string check required if there is no second language
 			if($sCheckOption === 'strings' && LanguageQuery::create()->count() === 1) {
 				continue;
 			}
-			$aResult[$sCheckOption] = StringPeer::getString('check_option.'.$sCheckOption, null, StringUtil::makeReadableName($sCheckOption));
+			$aResult['check_options'][$sCheckOption] = StringPeer::getString('check_option.'.$sCheckOption, null, StringUtil::makeReadableName($sCheckOption));
+		}
+
+    // Directory options, only applicable for static strings
+		$aResult['directory_options'] = array();
+		$aResult['directory_options'][''] = StringPeer::getString('wns.check.all_directories');
+		foreach(array(DIRNAME_SITE, DIRNAME_PLUGINS, DIRNAME_BASE) as $sDirectory) {
+  		$aResult['directory_options'][$sDirectory] = StringUtil::makeReadableName($sDirectory);
 		}
 		return $aResult;
 	}
 	
-	public function check($sCheckName, $sLanguageId = null) {
+	public function check($sCheckName, $sLanguageId = null, $sDirectory = null) {
 		$this->aLogMessages = array();
 		switch($sCheckName) {
 			case "static_strings":
-				return $this->checkStaticStrings($sLanguageId);
+				return $this->checkStaticStrings($sLanguageId, $sDirectory);
 			break;
 			case "strings":
 				return $this->checkStrings($sLanguageId);
@@ -66,15 +76,21 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 		return $this->aLogMessages;
 	}
 
-	private function checkStaticStrings($sCheckLanguageId = null) {
+	private function checkStaticStrings($sCheckLanguageId = null, $sDirectory = null) {
 
 		$aPaths = array();
-		$aPaths[] = array('base');
-		foreach(ResourceFinder::create(array(DIRNAME_PLUGINS, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN))->searchMainOnly()->byExpressions()->find() as $sPlugin => $sDir) {
-			$aPaths[] = explode('/', $sPlugin);
+		if($sDirectory !== null || $sDirectory === 'base') {
+  		$aPaths[] = array('base');
 		}
-		$aPaths[] = array('site');
-
+		if($sDirectory !== null || $sDirectory === 'plugins') {
+  		foreach(ResourceFinder::create(array(DIRNAME_PLUGINS, ResourceFinder::ANY_NAME_OR_TYPE_PATTERN))->searchMainOnly()->byExpressions()->find() as $sPlugin => $sDir) {
+  			$aPaths[] = explode('/', $sPlugin);
+  		}
+		}
+		if($sDirectory !== null || $sDirectory === 'site') {
+  		$aPaths[] = array('site');
+		}
+		
 		foreach($aPaths as $aPath) {
 			$this->log(StringPeer::getString('wns.check.check_static_strings_title', null, null, array('path_prefix' => implode('/', $aPath))));
 			$aLanguagesInContextDir = array();
@@ -91,8 +107,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 				$aStrings = array();
 				foreach($aLanguagesInContextDir as $sLanguageId) {
 					$sFile = ResourceFinder::create($aDir)->addPath("$sLanguageId.ini")->searchMainOnly()->find();
-					ErrorHandler::log($sFile, $aDir, "$sLanguageId.ini");
-					if(!$sFile) {
+					  if(!$sFile) {
 						continue;
 					}
 					$aContents = parse_ini_file($sFile);
