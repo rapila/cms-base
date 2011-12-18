@@ -460,7 +460,11 @@ class Template {
 		} else if(is_numeric($mText)) {
 			$aText[] = sprintf('%d', $mText);
 		} else if(is_object($mText)) {
-			$aText[] = Util::descriptionForObject($mText);
+			$sObjectDescription = Util::descriptionForObject($mText);
+			if(!$sObjectDescription) {
+				$sObjectDescription = (string)$mText;
+			}
+			$aText[] = $sObjectDescription;
 		} else if (is_bool($mText)) {
 			$aText[] = $mText ? "true" : "false";
 		}

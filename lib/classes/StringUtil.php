@@ -84,7 +84,7 @@ class StringUtil {
 		}
 		$sInput = str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), mb_strtolower($sInput));
 		$sInput = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT', $sInput);
-		$sInput = mb_ereg_replace('-|–|—', '-', $sInput);
+		$sInput = mb_ereg_replace('-|–|—|_|\.', '-', $sInput);
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
 		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
 		if($sNewName !== "") {
@@ -105,7 +105,7 @@ class StringUtil {
 			$sString = html_entity_decode(strip_tags($sString), ENT_QUOTES, Settings::getSetting('encoding', 'browser', 'utf-8'));
 		}
 
-		$aWords = mb_split("[\s\-–—]+", $sString);
+		$aWords = mb_split("[\s\-–—.@]+", $sString);
 		$aResult = array();
 		foreach($aWords as $sWord) {
 			$sWord = self::normalize($sWord, '-', $sReplaceNonWordsWith);

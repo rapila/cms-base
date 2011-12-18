@@ -10,7 +10,7 @@ class UtilGetWordsTests extends PHPUnit_Framework_TestCase {
 		$this->assertSame(array('phil', 'allen'), StringUtil::getWords("phil allen"));
 	}
 	public function testEmailAddress() {
-		$this->assertSame(array('phil', 'allen', 'gems-europe', 'com'), StringUtil::getWords("phil.allen@gems-europe.com"));
+		$this->assertSame(array('phil', 'allen', 'gems', 'europe', 'com'), StringUtil::getWords("phil.allen@gems-europe.com"));
 	}
 	public function testSpecialCharacters() {
 		$this->assertSame(array('raphael'), StringUtil::getWords("Raphaël"));
