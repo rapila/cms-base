@@ -33,7 +33,7 @@ Widget.types.document_input = {
 	},
 	
 	value: function(set) {
-		if(set !== undefined) {
+		if(arguments.length) {
 			this.settings.initial_value = set;
 			this._element.val(set);
 			this._element.change();
