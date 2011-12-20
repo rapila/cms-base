@@ -62,9 +62,17 @@ class LanguageObject extends BaseLanguageObject {
 		parent::setHasDraft($bHasDraft);
 	}
 
-	public function getDraft() {
+	/**
+	* Gets the draft version of this language object (if any).
+	* @param $bDraftOnly If true, the function will return null instead of $this if no draft exists.
+	* @return LanguageObject|LanguageObjectHistory The draft version of this object.
+	*/
+	public function getDraft($bDraftOnly = false) {
 		if($this->getHasDraft()) {
 			return LanguageObjectHistoryQuery::create()->filterByLanguageObject($this)->sort()->findOne();
+		}
+		if($bDraftOnly) {
+			return null;
 		}
 		return $this;
 	}
