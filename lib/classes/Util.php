@@ -58,7 +58,6 @@ class Util {
 		return "";
 	}
 
-	// used in Template only, could be used from somewhere else?
 	public static function descriptionForObject($oObject, $sLanguageId = null) {
 		if(is_string($oObject)) {
 			return $oObject;
@@ -68,7 +67,7 @@ class Util {
 				return $oObject->$sMethodName($sLanguageId);
 			}
 		}
-		return "";
+		return null;
 	}
 	
 	public static function uuid() {

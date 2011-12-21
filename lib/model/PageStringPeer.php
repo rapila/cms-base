@@ -17,6 +17,7 @@ class PageStringPeer extends BasePageStringPeer {
 		$sPageString->setPageId($iPageId);
 		$sPageString->setLanguageId($sLanguageId);
 		$sPageString->setPageTitle($sPagestring);
+		$sPageString->setIsInactive(false);
 		$sPageString->save();
 		return $sPageString;
 	}

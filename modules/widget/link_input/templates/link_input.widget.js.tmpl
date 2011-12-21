@@ -24,10 +24,11 @@ Widget.types.link_input = {
 	},
 	
 	value: function(set) {
-		if(set !== undefined) {
+		if(arguments.length) {
 			this.settings.initial_value = set;
+			return this._element.val(set);
 		}
-		return this._element.val(set);
+		return this._element.val();
 	},
 	
 	proxy_url: function() {

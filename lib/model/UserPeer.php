@@ -172,6 +172,7 @@ class UserPeer extends BaseUserPeer {
     if(LanguagePeer::hasNoLanguage()) {
       $oLanguage = new Language();
       $oLanguage->setId(Session::language());
+			$oLanguage->setPathPrefix(Session::language());
       $oLanguage->setIsActive(true);
 			LanguagePeer::ignoreRights(true);
       $oLanguage->save();

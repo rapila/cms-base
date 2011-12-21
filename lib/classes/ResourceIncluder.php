@@ -182,7 +182,7 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null) {
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null, $sIeCondition = null) {
 		if($bUseLocalProxy === null) {
 			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', false, 'resource_includer');
 		}
@@ -235,7 +235,7 @@ class ResourceIncluder {
 		}
 		
 		if($bUseLocalProxy) {
-			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, is_array($aLibraryDependencies));
+			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
 		
@@ -245,7 +245,7 @@ class ResourceIncluder {
 			$sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
 		}
 
-		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, null, false, is_array($aLibraryDependencies));
+		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 	}
 	
 	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
@@ -338,8 +338,9 @@ class ResourceIncluder {
 	public function addResourceFromTemplateIdentifier($oIdentifier) {
 		$mLocation = $oIdentifier->getValue();
 		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
+		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
 		if($oIdentifier->hasParameter('library')) {
-			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), $oIdentifier->hasParameter('uncompressed') ? false : null, !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority);
+			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), $oIdentifier->hasParameter('uncompressed') ? false : null, !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority, null, $sIeCondition);
 			return null;
 		}
 		if($oIdentifier->hasParameter('inline')) {
@@ -361,7 +362,6 @@ class ResourceIncluder {
 		if($sResourceType === null && $oIdentifier->hasParameter('resource_type')) {
 			$sResourceType = $oIdentifier->getParameter('resource_type');
 		}
-		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
 		$bIncludeAll = $oIdentifier->hasParameter('include_all');
 		
 		$this->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);

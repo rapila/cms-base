@@ -1,4 +1,4 @@
-.check_errors_fount_title {
+.check_errors_found_title {
 	margin-top: 1em;
 }
 
@@ -13,10 +13,35 @@
 	color: #e3ef99;
 }
 
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.log_level_1::before,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.log_level_2::before,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.log_level_3::before,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.log_level_4::before {
+	content: '- ';
+	color: #999999;
+}
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.ok_no_errors {
+	color: #8DF841;
+}
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.title_dir,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.title_main_dir {
+	font-style: oblique;
+}
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.title_main_dir {
+	margin-top: .4em;
+}
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content li.title_main_dir {
+	color: #ffffff;
+}
+
 #dashboard-columns .dashboard-widget .dashboard-widget-content li.log_level_5 {
 	color: #A2E68A;
 }
 
-.check_errors_fount_title {
-	color: red;
+.check_errors_found_title {
+	color: #E35327;
 }
