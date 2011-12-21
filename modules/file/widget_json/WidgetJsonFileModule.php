@@ -18,11 +18,16 @@ class WidgetJsonFileModule extends FileModule {
 				$aRequest[$sKey] = json_decode($sValue, true);
 			}
 		}
+		$oSession = Session::getSession();
+		if(!isset($aRequest['session_language']) && $oSession->isAuthenticated()) {
+			$aRequest['session_language'] = $oSession->getUser()->getLanguageId();
+		}
 		$sPrevSessionLanguage = null;
+		$sSetSessionLanguage = null;
 		if(isset($aRequest['session_language'])) {
 			$sPrevSessionLanguage = Session::language();
-			$oSession = Session::getSession();
-			$oSession->setLanguage($aRequest['session_language']);
+			$sSetSessionLanguage = $aRequest['session_language'];
+			$oSession->setLanguage($sSetSessionLanguage);
 		}
 		try {
 			try {
@@ -41,9 +46,8 @@ class WidgetJsonFileModule extends FileModule {
 			ErrorHandler::handleException($ex, true);
 			print json_encode(array('exception' => array('message' => "Exception when trying to execute the last action {$ex->getMessage()}", 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'exception_type' => get_class($ex))));
 		}
-		if($sPrevSessionLanguage !== null) {
-			$sPrevSessionLanguage = Session::language();
-			$oSession = Session::getSession();
+		//If we changed the session language and no widget willfully changed it as well, reset it to the previous state
+		if($sPrevSessionLanguage !== null && Session::language() === $sSetSessionLanguage) {
 			$oSession->setLanguage($sPrevSessionLanguage);
 		}
 	}
