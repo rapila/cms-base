@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
 	
 	Widget.handle('widget-json-call', function(event, action, attributes, options) {
 		if(attributes.constructor !== String) {
-			attributes.session_language = "{{writeSessionAttribute=language}}";
+			attributes.session_language = "{{language_id}}";
 		}
 	});
 });
