@@ -27,10 +27,10 @@ class WidgetJsonFileModule extends FileModule {
 		try {
 			try {
 				print json_encode($this->getJSON($aRequest));
-			} catch(PropelException $e) {
-				//If the caught exception has an inner exception, handle the inner exception
-				if($e->getCause()) {
-					throw $e->getCause();
+			} catch(Exception $e) {
+				//Handle the gift, not the wrapping…
+				if($e->getPrevious()) {
+					throw $e->getPrevious();
 				} else {
 					throw $e;
 				}
