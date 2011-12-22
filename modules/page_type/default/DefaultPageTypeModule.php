@@ -111,7 +111,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oPageContents = new LanguageObject();
 			$oPageContents->setLanguageId($this->sLanguageId);
 			$oPageContents->setContentObject($oContentObject);
-			$oPageContents = $oPageContents->getDraft();
+			$oPageContents = $oPageContents->getDraft(true);
 		}
 		if($oPageContents === null) {
 			return false;

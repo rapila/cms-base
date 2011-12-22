@@ -1,0 +1,84 @@
+Widget.types.string_check = {
+	prepare: function() {
+		var _this = this;
+		this._element.append(jQuery.parseHTML("{{includeTemplate=check}}"));
+
+		//Check options
+		this.check_result = this._element.find('ol.check_result');
+		this.check_option = this._element.find('select[name="check_option"]');
+		this.check_option.change(function() {
+			_this.load_check_result();
+		});
+		
+		// directory option, just for static strings
+		this.directory_option = this._element.find('select[name="directory_option"]');
+		this.directory_options_fields = this._element.find('.directory_options');
+		this.check_errors_found_title = this._element.find('.check_errors_found_title');
+		this.allOptions(function(options) {
+			this.check_option.populate(options.check_options);
+			this.directory_option.populate(options.directory_options);
+		});
+		this.language_option = this._element.find("select[name='language_id']").prepareWidget(function(widget) {
+			widget.settings.use_admin_languages = true;
+		}, jQuery.noop);
+		this.checker = this._element.find('button.do_check').button({disabled: false});
+		this.checker.click(function() {
+			_this.load_check_result();			
+		});
+	},
+	
+	load_check_result: function() {
+		if(this.check_option.val() === 'static_strings') {
+			this.directory_options_fields.show();
+		} else {
+			this.directory_options_fields.hide();
+		}
+		var check_result = this.check_result;
+		check_result.empty();
+		this.check_errors_found_title.text('');
+		
+		var check_option = this.check_option.val();
+		if(check_option === '') {
+			return;
+		}
+		var language_id = this.language_option.val();
+		if(language_id === '') {
+			language_id = null;
+		}
+		var directory = this.directory_option.val();
+		if(directory === '') {
+			directory = null;
+		}
+		this.check(check_option, language_id, directory, function(check_logs) {
+			$iCount = 0;
+			$iCountInDir = null;
+			jQuery.each(check_logs, function(i, log) {
+				var li_element = jQuery('<li/>').text(log.message);
+				if(isNaN(log.level)) {
+					if(log.level === 'title_dir') {
+						if($iCountInDir === 0) {
+							check_result.append(jQuery('<li/>').text('✔').addClass('ok_no_errors'));
+						}
+						$iCountInDir = 0;
+					} else {
+						$iCountInDir = null;
+					}
+					li_element.addClass(log.level);
+				} else if(log.level > 0 && log.level <= 4) {
+					li_element.addClass('log_level_'+log.level);
+					$iCountInDir++;
+					$iCount++;
+				}
+				check_result.append(li_element);
+			});
+			this.check_errors_found_title.text($iCount+" {{writeString=wns.check.errors_found}}");
+		});
+	},
+
+	close: function() {
+		this.detail_widget.close();
+	}
+	
+};
+
+

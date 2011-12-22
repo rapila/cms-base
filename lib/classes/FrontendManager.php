@@ -121,7 +121,7 @@ class FrontendManager extends Manager {
 				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
 			}
 			if(!LanguagePeer::languageIsActive(Session::language())) {
-				LinkUtil::redirectToManager('', "AdminManager");
+				LinkUtil::redirectToManager(array('pages'), "AdminManager");
 			}
 			LinkUtil::redirectToLanguage();
 		}

@@ -117,6 +117,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 				$oUserRole->setRoleKey($sRoleKey);
 				$oUser->addUserRoleRelatedByUserId($oUserRole);
 			}
+		} else {
+			//Set the new session language for the currently logged-in user
+			Session::getSession()->setLanguage($oUser->getLanguageId());
 		}
 		
 		return $oUser->save();

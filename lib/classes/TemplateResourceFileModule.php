@@ -31,7 +31,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 		} else {
 			header("Content-Type: text/html;charset=utf-8");
 		}
-		$oCache = new Cache('template_resource-'.$sFileName, DIRNAME_TEMPLATES);
+		$oCache = new Cache('template_resource-'.$sFileName.'-'.Session::language(), DIRNAME_TEMPLATES);
 		$oTemplate = null;
 		if($oCache->cacheFileExists() && !$oCache->isOutdated($oResourceFinder)) {
 			$oCache->sendCacheControlHeaders();

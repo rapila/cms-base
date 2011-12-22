@@ -62,6 +62,7 @@ class PreviewManager extends FrontendManager {
 		$oPageTypeWidget = WidgetModule::getWidget('page_type');
 		$oPageTypeWidget->setPageTypeModule($this->oPageType);
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
+		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
 		$oConstants->replaceIdentifier('page_type_widget_session', $oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
 		ResourceIncluder::defaultIncluder()->addCustomJs($oConstants);

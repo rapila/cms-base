@@ -26,7 +26,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		foreach($this->aModuleSettings as $sKey => $mSetting) {
 			$this->setSetting($sKey, $mSetting);
 		}
-    $this->setSetting('language', Session::language());
+		$this->setSetting('language', Session::language());
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
@@ -115,6 +115,10 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 	private function cleanupInsertableParts() {
 		if(isset($this->aModuleSettings['insertable_parts'])) {
 			foreach($this->aModuleSettings['insertable_parts'] as &$aPartSpec) {
+				if(isset($aPartSpec['tooltip_string_key'])) {
+					$aPartSpec['tooltip'] = StringPeer::getString($aPartSpec['tooltip_string_key']);
+					unset($aPartSpec['tooltip_string_key']);
+				}
 				if(!isset($aPartSpec['template'])) {
 					continue;
 				}
