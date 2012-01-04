@@ -1,5 +1,6 @@
 <?php
 class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
+	
 	public function allLinks($aOptions = array()) {
 		$oCriteria = LinkQuery::create();
 
