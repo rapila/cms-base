@@ -103,6 +103,11 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		exec('which mysqldump', $sOutput, $iCode);
 		if($iCode === 0) {
 		  $aInfo['mysql_dump_tool'] = $sOutput;
+		} else {
+			$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
+			if($sMySqlDumpTool !== null) {
+				$aInfo['mysql_dump_tool'] = $sMySqlDumpTool;
+			}
 		}
 		return $aInfo;
 	}
