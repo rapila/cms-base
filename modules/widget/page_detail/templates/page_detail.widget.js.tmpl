@@ -60,15 +60,15 @@ Widget.types.page_detail = {
 	
 	enable_input: function(enable_delete) {
 		if(enable_delete !== undefined) {
-			this.enable_delete = enable_delete;
+			this.enable_delete_button = enable_delete;
 		}
 		this.inputs_enabled = true;
 		this._element.find(':input, :button').not(this.delete_button).prop('disabled', false).filter(':button').button('enable');
-		this.delete_button.prop('disabled', !this.enable_delete).button(this.enable_delete ? 'enable' : 'disable');
+		this.delete_button.prop('disabled', !this.enable_delete_button).button(this.enable_delete_button ? 'enable' : 'disable');
 	},
 
 	enable_delete: function() {
-		this.enable_delete = true;
+		this.enable_delete_button = true;
 		this.delete_button.prop('disabled', false).button('enable');
 	},
 
