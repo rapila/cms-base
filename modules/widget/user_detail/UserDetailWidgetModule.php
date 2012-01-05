@@ -19,12 +19,22 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			if($aResult['IsSessionUser'] === false) {
 				$aResult['ActiveUserGroupIds'] = $oUser->getActiveUserGroupIds(true);
 				$aResult['ActiveUserRoleKeys'] = $oUser->getActiveUserRoleKeys();
-			} 
+			}
 			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
 			$aResult['IsSessionUser'] = $oUser->isSessionUser();
 			return $aResult;
 		}
+	}
+	
+	public function resetSettings() {
+		$oUser = UserPeer::retrieveByPK($this->iUserId);
+		if($oUser) {
+			$oUser->resetBackendSettings();
+			$oUser->save();
+			return $this->iUserId;
+		}
+		return false;
 	}
 
 	private function validate($aUserData, $oUser) {
@@ -39,16 +49,16 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 				$oFlash->addMessage('user_name_exists');
 			}
 		}
-		if(($aUserData['password']) !== '') { 
-      if($oUser->isSessionUser() && $oUser->getPassword() != null) {
-        if($aUserData['old_password'] == '') {
-				  $oFlash->addMessage('old_password_required');
-        } else {
-          if(!PasswordHash::comparePassword($aUserData['old_password'], $oUser->getPassword())) {
-				    $oFlash->addMessage('old_password_invalid');
-          }
-        }
-  		}
+		if(($aUserData['password']) !== '') {
+			if($oUser->isSessionUser() && $oUser->getPassword() != null) {
+				if($aUserData['old_password'] == '') {
+					$oFlash->addMessage('old_password_required');
+				} else {
+					if(!PasswordHash::comparePassword($aUserData['old_password'], $oUser->getPassword())) {
+						$oFlash->addMessage('old_password_invalid');
+					}
+				}
+		}
 			if($aUserData['password'] !== $aUserData['password_confirm']) {
 				$oFlash->addMessage('password_confirm');
 			}
@@ -97,9 +107,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 			$aRequestedGroups = isset($aUserData['group_ids']) ? $aUserData['group_ids'] : array();
 			foreach($aRequestedGroups as $iGroupId) {
-			  if($iGroupId === false) {
-			    continue;
-			  }
+				if($iGroupId === false) {
+					continue;
+				}
 				$oUserGroup = new UserGroup();
 				$oUserGroup->setGroupId($iGroupId);
 				$oUser->addUserGroupRelatedByUserId($oUserGroup);
@@ -110,9 +120,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			}
 			$aRequestedRoles = isset($aUserData['role_keys']) ? !is_array($aUserData['role_keys']) ? array($aUserData['role_keys']) : $aUserData['role_keys'] : array();
 			foreach($aRequestedRoles as $sRoleKey) {
-			  if($sRoleKey === false) {
-			    continue;
-			  }
+				if($sRoleKey === false) {
+					continue;
+				}
 				$oUserRole = new UserRole();
 				$oUserRole->setRoleKey($sRoleKey);
 				$oUser->addUserRoleRelatedByUserId($oUserRole);
