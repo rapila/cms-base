@@ -143,6 +143,7 @@ Widget.types.detail = {
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
 			modal: this.settings.modal,
+			disabled: this.settings.disabled,
 			resizable: this.settings.resizable,
 			closeOnEscape: this.settings.closeOnEscape,
 			beforeClose: this.settings.close_callback,
@@ -335,8 +336,25 @@ Widget.types.detail = {
 		}
 	},
 	
+	enable: function() {
+		if(this.has_dialog) {
+			this.content.dialog('enable');
+		} else {
+			this.settings.disabled = false;
+		}
+	},
+
+	disable: function() {
+		if(this.has_dialog) {
+			this.content.dialog('disable');
+		} else {
+			this.settings.disabled = true;
+		}
+	},
+	
 	settings: {
 		title: ' ',
+		disabled: false,
 		autoOpen: true,
 		modal: false,
 		resizable: true,
