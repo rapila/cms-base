@@ -157,6 +157,10 @@ class User extends BaseUser {
 		parent::setBackendSettings(serialize($aToSave));
 	}
 	
+	public function resetBackendSettings() {
+		return parent::setBackendSettings(null);
+	}
+	
 	public function getBackendSettings() {
 		// Never call getBackendSettings directly!
 		return null;

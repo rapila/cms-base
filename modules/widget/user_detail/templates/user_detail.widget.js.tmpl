@@ -9,7 +9,17 @@ Widget.types.user_detail = {
 			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
 				title: "{{writeString=wns.new_entry}}",
-				width: 600
+				width: 600,
+				additionalButtons: [
+					{
+						text: "{{writeString=wns.user.reset_settings}}",
+						click: function() {
+							_this.resetSettings(function(result) {
+								result && Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.reset_settings.reset}}');
+							});
+						}
+					}
+				]
 			});
 			this.rights_section = this.content.find('div.rights_section');
 			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);

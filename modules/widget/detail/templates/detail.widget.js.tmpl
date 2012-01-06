@@ -136,6 +136,7 @@ Widget.types.detail = {
 			'class': 'secondary',
 			click: this.settings.cancel_callback
 		});
+		buttons = buttons.concat(this.settings.additionalButtons);
 		// option something like.....
 		
 		this.content.dialog({
@@ -348,6 +349,7 @@ Widget.types.detail = {
 		select: "input:eq(0)",
 		width: 480,
 		dialogClass: 'detail-widget',
-		height: 'auto'
+		height: 'auto',
+		additionalButtons: []
 	}
 };
