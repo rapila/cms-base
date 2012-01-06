@@ -29,7 +29,12 @@ Widget.types.document_category_input = {
 		});
 	},
 	
-	val: function() {
+	val: function(set) {
+		if(set) {
+			this._element.val(set);
+			this.settings.initial_selection = set;
+			return;
+		}
 		return this._element.val();
 	},
 	
