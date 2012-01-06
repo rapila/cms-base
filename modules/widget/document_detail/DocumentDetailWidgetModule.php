@@ -42,10 +42,10 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	
 	private static function addReferences($oDocument, &$aResult) {
 		if($oDocument->isInternallyManaged()) {
-		  $aResult['References'] = array();
+			$aResult['References'] = array();
 		  foreach(ReferencePeer::getReferences($oDocument) as $oReference) {
         $aResult['References'][] = $oReference->toArray();
-		  }
+			}
 		}
 	}
 	
@@ -69,7 +69,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oFlash->finishReporting();
 	}
-			
+
 	public function saveData($aDocumentData) {
 		if($this->iDocumentId === null) {
 			$oDocument = new Document();
@@ -92,17 +92,14 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
 		$oDocument->setLanguageId($sLanguageId);
 		
-		// only handle if not called externally
-		if($aDocumentData['is_called_externally'] === false) {
-  		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
-  		$oDocument->setIsProtected($aDocumentData['is_protected']);
-  		if($oDocument->getDocumentCategoryId() != null) {
-  			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
-  				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
-  			}
-  		}
-		  $oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
+		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
+		$oDocument->setIsProtected($aDocumentData['is_protected']);
+		if($oDocument->getDocumentCategoryId() != null) {
+			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
+				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
+			}
 		}
-    return $oDocument->save();
+		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
+		return $oDocument->save();
 	}
 }

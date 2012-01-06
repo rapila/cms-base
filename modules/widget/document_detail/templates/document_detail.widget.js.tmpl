@@ -33,10 +33,23 @@ Widget.types.document_detail = {
 				dialogClass: "document_detail"
 			});
 			
+			_this.settings.hidden_inputs = _this.settings.hidden_inputs.concat(_this.settings.is_called_externally ? _this.settings.externally_hidden_inputs : []);
+			
+			jQuery.each(_this.settings.hidden_inputs, function(i, input_name) {
+				var input = _this.content.find(":input[name='" + input_name + "']");
+				if(input.is('select, textarea, button')) {
+					var new_input = jQuery('<input type="hidden"/>').attr('name', input_name);
+					input.replaceWith(new_input);
+					input = new_input;
+				}
+				input.hide();
+				_this.content.find("label[for='" + input_name + "']").remove();
+			});
+			
 			_this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
 				category_widget.settings.initial_selection = _this.settings.initial_category_id;
 				category_widget.settings.show_all = false;
-				category_widget.settings.show_without	= true;	
+				category_widget.settings.show_without	= true;
 			}, jQuery.noop);
 			_this.content.find("select[name='language_id']").prepareWidget();
 			_this.content.find('input[name=content_created_at]').datepicker({dateFormat: 'dd.mm.yy'});
@@ -57,9 +70,6 @@ Widget.types.document_detail = {
 			if(_this.auto_open) {
 				_this.open();
 			}
-		});
-		this.handle('saving', function(event, data) {
-			data.is_called_externally = _this.settings.hide_inputs_if_called_externally; //FIXME: this is missing an “&& is_called_externally”
 		});
 	},
 	
@@ -124,22 +134,15 @@ Widget.types.document_detail = {
 				if(document_data.Id !== null) {
 					this.content.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
 				}
-				this.content.find("input[name='name']").val(document_data.Name);
-				this.content.find("textarea[name='description']").val(document_data.Description);
-				if(this.settings.hide_inputs_if_called_externally) {
-					this.content.find("select[name='document_category_id']").hide();
-					this.content.find("label[for='document_category_id']").hide();
-					this.content.find("input[name='is_protected']").hide();
-					this.content.find("label[for='is_protected']").hide();
-				} else {
-					this.content.find("select[name='document_category_id']").val(document_data.DocumentCategoryId);
-				}
-				this.content.find("select[name='language_id']").val(document_data.LanguageId || '');
-				this.content.find("input[name='is_protected']").prop('checked', document_data.IsProtected);
-				this.content.find("input[name='is_inactive']").prop('checked', document_data.IsInactive);
-				this.content.find("input[name='author']").val(document_data.Author);
-				this.content.find("input[name='license']").val(document_data.License);
-				this.content.find("input[name='content_created_at']").val(document_data.ContentCreatedAt);
+				this.content.find(":input[name='name']").val(document_data.Name);
+				this.content.find(":input[name='description']").val(document_data.Description);
+				this.content.find(":input[name='document_category_id']").val(document_data.DocumentCategoryId);
+				this.content.find(":input[name='language_id']").val(document_data.LanguageId || '');
+				this.content.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
+				this.content.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
+				this.content.find(":input[name='author']").val(document_data.Author);
+				this.content.find(":input[name='license']").val(document_data.License);
+				this.content.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
 				this.current_detail_id = document_data.Id;
 				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 			}
@@ -154,7 +157,9 @@ Widget.types.document_detail = {
 	
 	settings: {
 		initial_category_id: null,
-		hide_inputs_if_called_externally: false
+		is_called_externally: false,
+		externally_hidden_inputs: ['document_category_id', 'is_protected'],
+		hidden_inputs: []
 	},
 	
 	save_callback: jQuery.noop,
