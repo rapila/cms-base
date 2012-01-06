@@ -500,6 +500,9 @@ jQuery.extend(Widget, {
 		}
 		if(widgetOrId) {
 			attributes['session_key'] = widgetOrId.widgetId !== undefined ? widgetOrId.widgetId : widgetOrId;
+			if(attributes['session_key']) {
+				Widget.seenWidgets[attributes['session_key']] = true;
+			}
 		}
 		Widget.fire('widget-json-call', action, attributes, options);
 		action.unshift('widget_json', widgetType);
@@ -543,7 +546,7 @@ jQuery.extend(Widget, {
 				});
 			}
 		}
-		if(options.callback_handles_error === null) {
+		if(options.callback_handles_error === null && callback) {
 			options.callback_handles_error = !!callback.resolveWith || callback.length>=2;
 		}
 		var ajaxOpts = {
@@ -648,6 +651,8 @@ jQuery.extend(Widget, {
 	types: {},
 	singletons: {},
 	widgetInformation: {},
+	
+	seenWidgets: {},
 	
 	//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 	exception_type_handlers: {
@@ -912,7 +917,7 @@ jQuery.fn.extend({
 		return !!this.data('prepareWidget_called');
 	},
 	
-	/** 
+	/**
 	* Use this to make sure a specific element’s widget is initialized/prepared when the callback is called but DO NOT WANT to cause the widget to initialize, for example if you know that the widget will be initialized eventually.
 	*/
 	ensureWidget: function(callback, is_intermediate) {

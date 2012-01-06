@@ -53,6 +53,12 @@ class WidgetJsonFileModule extends FileModule {
 	}
 	
 	private function getJSON(&$aRequest) {
+		if($this->sAction === 'destroy') {
+			foreach($aRequest['session_key'] as $sSessionKey) {
+				Session::getSession()->setArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $sSessionKey, null);
+			}
+			return;
+		}
 		$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);
 		if($this->sAction == 'widgetInformation') {
 			$aInformation = array();

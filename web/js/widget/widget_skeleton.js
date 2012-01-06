@@ -45,4 +45,12 @@
 			return '';
 		}
 	});
+	
+	win.bind('unload', function(event) {
+		var ids = [];
+		jQuery.each(Widget.seenWidgets, function(id) {
+			ids.push(id);
+		});
+		Widget.widgetJSON('-', ids, 'destroy');
+	});
 })();

@@ -167,13 +167,26 @@ class Session {
 		$this->aAttributes[$sAttribute] = $mValue;
 	}
 	
-	public function setArrayAttributeValueForKey($sAttribute, $sKey, $mValue) {
+	public function setArrayAttributeValueForKey($sAttribute, $sKey, $mValue = null) {
 		if(!$this->hasAttribute($sAttribute)) {
 			$this->aAttributes[$sAttribute] = array();
 		} else if(!is_array($this->aAttributes[$sAttribute])) {
 			throw new Exception("Error in Session->setArrayAttributeValueForKey: Attribute $sAttribute is not an array");
 		}
-		$this->aAttributes[$sAttribute][$sKey] = $mValue;
+		if($mValue === null) {
+			unset($this->aAttributes[$sAttribute][$sKey]);
+		} else {
+			$this->aAttributes[$sAttribute][$sKey] = $mValue;
+		}
+	}
+
+	public function getArrayAttributeValueForKey($sAttribute, $sKey) {
+		if(!$this->hasAttribute($sAttribute)) {
+			return null;
+		} else if(!is_array($this->aAttributes[$sAttribute])) {
+			throw new Exception("Error in Session->getArrayAttributeValueForKey: Attribute $sAttribute is not an array");
+		}
+		return @$this->aAttributes[$sAttribute][$sKey];
 	}
 
 	public function getAttribute($sAttribute) {
@@ -190,15 +203,6 @@ class Session {
 		return self::sessionDefaultFor($sAttribute);
 	}
 	
-	public function getArrayAttributeValueForKey($sAttribute, $sKey) {
-		if(!$this->hasAttribute($sAttribute)) {
-			return null;
-		} else if(!is_array($this->aAttributes[$sAttribute])) {
-			throw new Exception("Error in Session->getArrayAttributeValueForKey: Attribute $sAttribute is not an array");
-		}
-		return @$this->aAttributes[$sAttribute][$sKey];
-	}
-
 	public function resetAttribute($sAttribute) {
 		$mResult = null;
 		if($this->hasAttribute($sAttribute)) {
