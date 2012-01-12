@@ -130,6 +130,7 @@ class LoginManager extends Manager {
 	}
 	
 	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase = null) {
+		UserPeer::ignoreRights(true);
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
 		
@@ -197,6 +198,7 @@ class LoginManager extends Manager {
 		}
 		
 		//No errors – set new password, login and redirect
+		UserPeer::ignoreRights(true);
 		$oUser->setPassword($_POST['new_password']);
 		$oUser->setPasswordRecoverHint(null);
 		$oUser->save();
