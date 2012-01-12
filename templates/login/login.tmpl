@@ -5,13 +5,24 @@
 			body {
 				background-color: white;
 				font-family: Verdana;
+				font-size: 12px;
+			}
+			form {
+				margin-top: 3em;
+				display: block;
+				width: 40em;
+				margin: auto;
+			}
+			form label {
+				display: inline-block;
+				width: 10em;
 			}
 		/*]]>*/-->
 		</style>
 	</head>
 	<body onload="document.getElementById('user_name').select()">
-		<h2>{{domain_name}} | {{login_title}}</h2>
 		<form action="{{action}}" method="post">
+			<h2>{{domain_name}} | {{login_title}}</h2>
 			{{includeTemplate=login_action_\{\{login_action\}\};position=last}}
 		</form>
 	</body>
