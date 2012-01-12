@@ -18,6 +18,7 @@ class DocumentTypePeer extends BaseDocumentTypePeer {
 			$aKind = explode('/', $oDocumentType->getMimeType());
 			$aResult[$aKind[0]] = self::getDocumentKindName($aKind[0]);
 		}
+		asort($aResult);
 		return $aResult;
 	}
 	
