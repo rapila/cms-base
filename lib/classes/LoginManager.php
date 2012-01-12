@@ -24,7 +24,8 @@ class LoginManager extends Manager {
 		//	• Send the email with the recovery link (and generate the hint)
 		//	• Add confirmation message to flash
 		if(isset($_POST['password_reset_user_name'])) {
-			$this->sAction = self::sendResetMail();
+		  $oUser = UserQuery::create()->filterByIsInactive(false)->filterByUsername($_POST['password_reset_user_name'])->findOne();
+			$this->sAction = self::sendResetMail($oUser);
 		}
 		//3rd step: user has clicked on the reset link in the e-mail
 		//	• Validate the hint
