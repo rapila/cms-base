@@ -21,7 +21,7 @@ Widget.types.user_detail = {
 					}
 				]
 			});
-			this.rights_section = this.content.find('div.rights_section');
+			this.rights_section = this.content.find('div.rights_section').hide();
 			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
 			this.admin_login_enabled = this.content.find("input[name='is_admin_login_enabled']").prop('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");
@@ -87,6 +87,7 @@ Widget.types.user_detail = {
 			if(!user_data.IsSessionUser) {
 				password_section.hide();
 			} else {
+				this.rights_section.hide();
 				password_section.show();
 				this.detail_widget.content.find(".show_if_set").show();
 			}
