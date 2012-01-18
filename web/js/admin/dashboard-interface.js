@@ -72,9 +72,9 @@ var Dashboard = (function($) {
 					return false;
 				}).appendTo($(settings.handleSelector,this));
 				$('<div class="dashboard-edit-box" style="display:none;"/>')
-					.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('h3',this).text() + '"/></li>')
+					.append('<ul><li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
 					.append((function(){
-						var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
+						var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
 						$(thisWidgetSettings.colors).each(function () {
 							colorList += '<li style="background-color: ' + this + ';"/>';
 						});
