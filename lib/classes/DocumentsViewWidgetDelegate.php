@@ -26,7 +26,7 @@ class DocumentsViewWidgetDelegate {
 	}
 
 	public function toggleIsInactive($aRowData) {
-		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
+		$oDocument = DocumentQuery::create()->findPK($aRowData['id']);
 		if($oDocument) {
 			$oDocument->setIsInactive(!$oDocument->getIsInactive());
 			$oDocument->save();
@@ -34,7 +34,7 @@ class DocumentsViewWidgetDelegate {
 	}
 
 	public function toggleIsProtected($aRowData) {
-		$oDocument = DocumentPeer::retrieveByPK($aRowData['id']);
+		$oDocument = DocumentQuery::create()->findPK($aRowData['id']);
 		if($oDocument) {
 			$oDocument->setIsProtected(!$oDocument->getIsProtected());
 			$oDocument->save();
@@ -190,7 +190,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getDocumentCategoryName() {
-		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->getDocumentCategoryId());
+		$oDocumentCategory = DocumentCategoryQuery::create()->findPK($this->getDocumentCategoryId());
 		if($oDocumentCategory) {
 			return $oDocumentCategory->getName();
 		}
