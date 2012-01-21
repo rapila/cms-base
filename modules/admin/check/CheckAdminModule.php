@@ -27,7 +27,6 @@ class CheckAdminModule extends AdminModule {
 	public function __construct() {
 		$this->oCheckOptionWidget = new ListWidgetModule();
 		$this->oCheckOptionWidget->setDelegate($this);
-		ErrorHandler::log($this->sAction);
 	}
 	
 	public function sidebarContent() {
@@ -39,7 +38,6 @@ class CheckAdminModule extends AdminModule {
 	}
 
 	public function setAction($sAction) {
-		ErrorHandler::log('setAction', $this->sAction);
 	  $this->sAction = $sAction;
 	}
 	

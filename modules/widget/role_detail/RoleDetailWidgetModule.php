@@ -43,7 +43,6 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function saveData($aRoleData) {
-		// ErrorHandler::log($aRoleData);
 		$oRole = null;
 		if($this->sRoleId === null) {
 			$oRole = new Role();
