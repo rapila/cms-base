@@ -96,6 +96,8 @@ class BackupWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function backupInfo() {
+		$sOutput = null;
+		$iCode = null;
 		$aInfo = array();
 		$aInfo['backup_dir'] = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/";
 		$aDbConfig = $this->getDbConfig();
