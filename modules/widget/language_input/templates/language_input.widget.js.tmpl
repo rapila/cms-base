@@ -35,6 +35,10 @@ Widget.types.language_input = {
 		this._element.val(current_value);
 	},
 	
+	val: function() {
+		return this._element.val();
+	},
+	
 	settings: {
 		international_option: "{{writeString=wns.language.international}}",
 		hide_on_monolingual: true,

@@ -103,7 +103,9 @@ Widget.types.user_detail = {
 			this.content.find("input[name='last_name']").val(user_data.LastName);
 			this.content.find("input[name='username']").val(user_data.Username);
 			this.content.find("input[name='email']").val(user_data.Email);
-			this.content.find("select[name='language_id']").val(user_data.LanguageId || '');
+			this.content.find("select[name='language_id']").ensureWidget(function(language_input) {
+				language_input.val(user_data.LanguageId || '');
+			});
 			this.backend_login_enabled.prop('checked', user_data.IsBackendLoginEnabled);
 			this.admin_login_enabled.prop('checked', user_data.IsAdminLoginEnabled);
 			this.content.find("input[name='password']").val('');
