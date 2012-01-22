@@ -5,7 +5,7 @@
 class LanguageTabsWidgetModule extends WidgetModule {
 
 	public function getLanguages() {
-	  return LanguagePeer::getLanguagesAssoc();
+	  return LanguagePeer::getLanguagesAssoc(false, false);
 	}
 	
 	public function updateContentLanguage($sLanguageId) {
