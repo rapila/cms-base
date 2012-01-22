@@ -283,4 +283,8 @@ class User extends BaseUser {
 		}
 		return parent::setPassword($sPassword);
 	}
+	
+	public function getLanguageName() {
+		return StringPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
+	}
 }

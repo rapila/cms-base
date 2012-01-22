@@ -24,7 +24,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'full_name', 'username', 'email', 'user_kind', 'language_id', 'updated_at_formatted', 'delete');
+		return array('id', 'full_name', 'username', 'email', 'user_kind', 'language_name', 'updated_at_formatted', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -46,7 +46,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;			
-			case 'language_id':
+			case 'language_name':
 				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
 			case 'updated_at_formatted':
@@ -71,6 +71,9 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		if($sColumnIdentifier === 'group_id') {
 			return UserGroupPeer::GROUP_ID;
+		}
+		if($sColumnIdentifier === 'language_name') {
+			return UserPeer::LANGUAGE_ID;
 		}
 		return null;
 	}
