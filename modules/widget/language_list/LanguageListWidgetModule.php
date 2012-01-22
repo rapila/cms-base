@@ -5,11 +5,12 @@
 class LanguageListWidgetModule extends WidgetModule {
 	
 	private $oListWidget;
+	private $oDelegateProxy;
 	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
-		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Language", 'language_id', 'asc');
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Language", 'language_id', 'asc');
+		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
 	
 	public function doWidget() {
@@ -26,9 +27,34 @@ class LanguageListWidgetModule extends WidgetModule {
 			$oLanguage->save();
 		}
 	}
+
+	public function allowSort($sSortColumn) {
+		return true;
+	}
+	
+	public function doSort($sColumnIdentifier, $oLanguageToSort, $oRelatedLanguage, $sPosition = 'before') {
+		$iNewPosition = $oRelatedLanguage->getSort() + ($sPosition === 'before' ? 0 : 1);
+		if($oLanguageToSort->getSort() < $oRelatedLanguage->getSort()) {
+			$iNewPosition--;
+		}
+		$oLanguageToSort->setSort($iNewPosition);
+		$oLanguageToSort->save();
+		$oQuery = $this->oDelegateProxy->getCriteria();
+		$oQuery->filterById($oLanguageToSort->getId(), Criteria::NOT_EQUAL);
+		$oQuery->orderBySort();
+		$i = 1;
+		foreach($oQuery->find() as $oLanguage) {
+			if($i == $iNewPosition) {
+				$i++;
+			}
+			$oLanguage->setSort($i);
+			$oLanguage->save();
+			$i++;
+		}
+	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_active', 'delete');
+		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_active', 'sort', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -52,6 +78,10 @@ class LanguageListWidgetModule extends WidgetModule {
 			case 'is_default':
 				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
 				break;
+			case 'sort':
+				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
+				break;
 			case 'is_active':
 				$aResult['heading'] = StringPeer::getString('wns.is_active');
 				$aResult['is_sortable'] = true;
@@ -63,5 +93,9 @@ class LanguageListWidgetModule extends WidgetModule {
 				break;
 		}
 		return $aResult;
+	}
+	
+	public function getCriteria() {
+		return LanguageQuery::create();
 	}
 }
