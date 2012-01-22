@@ -67,12 +67,15 @@ class LanguagePeer extends BaseLanguagePeer {
 		return self::doSelect($oCriteria);
 	}
 		
-	public static function getLanguagesAssoc($bActiveOnly=false) {
+	public static function getLanguagesAssoc($bActiveOnly=false, $oSortBySort=false) {
 		$aResult = array();
-		$aLanguages = self::getLanguages($bActiveOnly);
+		$aLanguages = self::getLanguages($bActiveOnly, $oSortBySort);
 		foreach($aLanguages as $oLanguage) {
 			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();
-		}		 
+		}	
+		if(!$oSortBySort) {
+			asort($aResult);
+		}	 
 		return $aResult;
 	}
 	
