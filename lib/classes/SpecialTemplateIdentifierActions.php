@@ -15,11 +15,12 @@ class SpecialTemplateIdentifierActions {
 	}
 	
 	public function writeString($oTemplateIdentifier) {
+		$sLanguageId = null;
 		$sDefaultValue = null;
 		if($oTemplateIdentifier->hasParameter('defaultValue')) {
 			$sDefaultValue = $oTemplateIdentifier->getParameter('defaultValue');
 		}
-		return StringPeer::getString($oTemplateIdentifier->getValue(), null, $sDefaultValue, null, true, $this->oTemplate->iDefaultFlags);
+		return StringPeer::getString($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('languageId'), $sDefaultValue, null, true, $this->oTemplate->iDefaultFlags);
 	}
 	
 	public function writeParameterizedString($oTemplateIdentifier) {
