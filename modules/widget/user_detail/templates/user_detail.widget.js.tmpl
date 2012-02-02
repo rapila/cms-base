@@ -25,6 +25,7 @@ Widget.types.user_detail = {
 			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
 			this.admin_login_enabled = this.content.find("input[name='is_admin_login_enabled']").prop('checked', true);
 			var is_admin = this.content.find("input[name='is_admin']");
+			// should only be shown if permissions are there, or at least without checkboxes
 			is_admin.bind('change', function() {
 				_this.toggle_rights_section(jQuery(this).prop('checked') === false);
 			});
@@ -86,6 +87,7 @@ Widget.types.user_detail = {
 			var password_section = this.content.find(".hide_if_saved");
 			if(!user_data.IsSessionUser) {
 				password_section.hide();
+				this.toggle_rights_section(!user_data.IsAdmin);
 			} else {
 				this.rights_section.hide();
 				password_section.show();
@@ -94,7 +96,6 @@ Widget.types.user_detail = {
 			if(!user_data.IsSessionUser) {
 				this.content.find('.status_section input').prop('disabled', false);
 			}
-			this.toggle_rights_section(!user_data.IsAdmin);
 			if(user_data.IsSessionUser) {
 				this.content.find('.status_section input').prop('disabled', true);
 			}
