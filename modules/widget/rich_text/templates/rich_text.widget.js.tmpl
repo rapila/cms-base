@@ -202,9 +202,8 @@ Widget.types.rich_text = {
 	
 	replace: function() {
 		var _this = this;
-		var instance = CKEDITOR.replace(this.textarea[0], this.settings);
+		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
-			_this.instance = instance;
 			instance.dataProcessor.htmlFilter.addRules({
 				elements: {
 					img: function( element ) {
@@ -284,7 +283,7 @@ Widget.types.rich_text = {
 	
 	set_inline_css: function(css) {
 		this.settings.inline_css = css;
-		if(this.instance) {
+		if(this.instance && this.instance.document) {
 			this.instance.document.appendStyleText(css);
 		}
 	},
