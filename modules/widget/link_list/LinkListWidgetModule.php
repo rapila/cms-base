@@ -136,7 +136,7 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 	}
 	
-	public function categoryHasLinks($iLinkCategoryId) {
+	public function getCategoryHasLinks($iLinkCategoryId) {
 		return LinkQuery::create()->filterByLinkCategoryId($iLinkCategoryId)->count() > 0;
 	}
 	
