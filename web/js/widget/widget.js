@@ -602,7 +602,7 @@ jQuery.extend(Widget, {
 				var error_object = {message: error, exception_type: statusCode};
 				if(statusCode === 'parsererror') {
 					var text = jQuery.trim(request.responseText);
-					error_object.message = text;
+					error_object.message = jQuery.parseHTML(text);
 				}
 				var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 				action.shift();
