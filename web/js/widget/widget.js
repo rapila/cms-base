@@ -82,7 +82,7 @@ String.prototype.escapeSelector = function() {
 				jQuery.each(event.split(/\s+/), function(i, eventName) {
 					var handler = originalHandler;
 					this.init(eventName);
-					var hk = fireIfPast ? hook.past : hook.dflt;
+					var hk = (fireIfPast ? hook.past : hook.dflt)[eventName];
 					if(isOnce) {
 						handler = function() {
 							var result = originalHandler.apply(this, jQuery.makeArray(arguments));
@@ -90,7 +90,7 @@ String.prototype.escapeSelector = function() {
 							return result;
 						};
 					}
-					hk[eventName].add(handler);
+					hk.add(handler);
 				}.bind(this));
 				return el;
 			}
