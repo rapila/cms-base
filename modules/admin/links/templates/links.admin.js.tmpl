@@ -41,17 +41,20 @@ jQuery(document).ready(function() {
 		
 		/// @todo remove and edit buttons, only show if has permission
 		var remove_item = info_bar.add_button('remove-item', function() {
-			// var rowData = sidebar.collect_row_data(sidebar.active_row());
-			// if(rowData.link_category_id) {
-			// 	content_list.categoryHasLinks(rowData.link_category_id, function(result) {
-			// 		var delete_message = "{{writeString=wns.link_category.delete_information}}";
-			// 		Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
-			// 			if(confirmed) {
-			// 				sidebar.delete_row(sidebar.active_row());
-			// 			}
-			// 		}.bind(this));
-			// 	});
-			// }
+			var rowData = sidebar.collect_row_data(sidebar.active_row());
+			if(rowData.link_category_id) {
+				content_list.getOption('categoryHasLinks', rowData.link_category_id, function(result) {
+					if(!result) {
+						return sidebar.delete_row(sidebar.active_row());
+					}
+					var delete_message = "{{writeString=wns.link_category.delete_information}}";
+					Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
+						if(confirmed) {
+							sidebar.delete_row(sidebar.active_row());
+						}
+					}.bind(this));
+				});
+			}
 		}).disable();
 		
 		var edit_item = info_bar.add_button('edit-item', function() {
