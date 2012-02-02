@@ -1020,4 +1020,5 @@ String.prototype.escapeSelector = function() {
 	
 	window.UnsavedChanges = UnsavedChanges;
 	window.Widget = Widget;
+	window.WidgetJSONOptions = WidgetJSONOptions;
 })();
