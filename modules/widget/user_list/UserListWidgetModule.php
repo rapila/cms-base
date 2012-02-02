@@ -32,7 +32,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		switch($sColumnIdentifier) {
 			case 'full_name':
 				$aResult['heading'] = StringPeer::getString('wns.name');
-				break;			
+				break;
 			case 'username':
 				$aResult['heading'] = StringPeer::getString('wns.user_name');
 				break;
@@ -40,12 +40,12 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.email');
 				break;
 			case 'user_kind':
-			  $aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
 				$aResult['heading'] = '';
 				$aResult['has_data'] = true;
 				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
-				break;			
+				break;
 			case 'language_name':
 				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
@@ -80,7 +80,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	
 	public function getUserKindName() {
 		$aUserKinds = UserKindInputWidgetModule::allUserKinds();
-		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) { 
+		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) {
 			return $aUserKinds[$this->oDelegateProxy->getUserKind()];
 		}
 		return $this->oDelegateProxy->getUserKind();
