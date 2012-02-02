@@ -20,8 +20,8 @@
 	<label for="language_id">{{writeString=wns.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
 	<div class="hide_if_saved" style="padding-top:.3em;">
-		<label for="old_password" class="validate-old_password_invalid validate-old_password_required show_if_set">{{writeString=wns.old_password}}</label>
-		<input type="password" name="old_password" autocomplete="off" class="ui-widget-content show_if_set" /><br />
+		<label for="old_password" class="validate-old_password_invalid validate-old_password_required old_password_elements">{{writeString=wns.old_password}}</label>
+		<input type="password" name="old_password" autocomplete="off" class="ui-widget-content old_password_elements" /><br />
 		<label for="password" class="validate-password_length validate-password_new">{{writeString=wns.password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><span title="{{writeString=wns.user.suggest_password}}" class="suggest_password ui-icon"> </span><input type="text" name="password_suggest" class="ui-widget-content autowidth" style="display:none;" /><br />
 		<label for="password_confirm" class="validate-password_confirm">{{writeString=wns.password_confirm}}</label>
