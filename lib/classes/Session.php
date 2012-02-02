@@ -148,6 +148,10 @@ class Session {
 		$sResult = $this->getAttribute(self::SESSION_LANGUAGE_KEY);
 		if($bObject) {
 			$sResult = LanguagePeer::retrieveByPK($sResult);
+			if(!$sResult) {
+				//If an object was explicitly requested, most likely, it’s supposed to be a content language
+				$sResult = LanguagePeer::retrieveByPK(AdminManager::getContentLanguage());
+			}
 		}
 		return $sResult;
 	}
