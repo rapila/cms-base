@@ -182,12 +182,17 @@ class ListWidgetModule extends PersistentWidgetModule {
 	
 	public function setOption($sName, $mValue = null) {
 		$sName = 'set'.StringUtil::camelize($sName, true);
-		return $this->oDelegate->$sName($mValue);
+		$aArgs = func_get_args();
+		if(count($aArgs) === 1) {
+			$aArgs[] = null;
+		}
+		return call_user_func_array(array($this->oDelegate, $sName), array_splice($aArgs, 1));
 	}
 
 	public function getOption($sName) {
 		$sName = 'get'.StringUtil::camelize($sName, true);
-		return $this->oDelegate->$sName();
+		$aArgs = func_get_args();
+		return call_user_func_array(array($this->oDelegate, $sName), array_splice($aArgs, 1));
 	}
 
 	public function setSearch($sSearch=null) {
