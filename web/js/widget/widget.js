@@ -78,17 +78,14 @@ String.prototype.escapeSelector = function() {
 
 				return !event.isDefaultPrevented() && !event.isPropagationStopped();
 			},
-			handle: function(event, handler, isOnce, fireIfPast) {
+			handle: function(event, originalHandler, isOnce, fireIfPast) {
 				jQuery.each(event.split(/\s+/), function(i, eventName) {
+					var handler = originalHandler;
 					this.init(eventName);
-					var hk = hook.dflt;
-					if(fireIfPast) {
-						hk = hook.past;
-					}
+					var hk = fireIfPast ? hook.past : hook.dflt;
 					if(isOnce) {
-						var oldHandler = handler;
 						handler = function() {
-							var result = oldHandler.apply(this, jQuery.makeArray(arguments));
+							var result = originalHandler.apply(this, jQuery.makeArray(arguments));
 							hk.remove(arguments.callee);
 							return result;
 						};
