@@ -1,8 +1,10 @@
 # Rapila
 
+Rapila is a PHP-based CMS like many others you’ll find out there.
+
 ## Goals
 
-Rapila is a PHP-based CMS like many others you’ll find out there. It was designed with the following goals in mind:
+Rapila was designed with the following goals in mind:
 
 * Content should be clearly separated from logic and templates. Thus, all content, even images (except those belonging to the templates, obviously) and documents are stored in the database. (MODx, I’m looking at you)
 * Support of additional models in the database should be hassle-free and streamlined (unlike Silverstripe).
