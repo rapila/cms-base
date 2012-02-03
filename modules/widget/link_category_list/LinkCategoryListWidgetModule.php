@@ -71,7 +71,7 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = LinkCategoryQuery::create();
+		$oCriteria = LinkCategoryQuery::create()->distinct();
 		if($this->bExcludeExternallyManaged) {
 			$oCriteria->filterByIsExternallyManaged(false);
 		}
