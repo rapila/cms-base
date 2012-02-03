@@ -1,6 +1,8 @@
 Widget.types.document_category_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content.find('div.hide_if_not_saved').hide();
+
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
@@ -16,6 +18,7 @@ Widget.types.document_category_detail = {
 			this.content.find("span[class='detail_id']").text(category_data.Id);
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
 			this.detail_widget.content.find('input[name="name"]').select();
+			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.enable();		
 		});
 	},
