@@ -2,9 +2,8 @@ Widget.types.document_category_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.callStatic('detail', 'create_for_instance', this);
-		this.content.find('input[name="name"]').select();
 	},
-	
+
 	fill_data: function() {
 		this.detail_widget.disable();		
 		this.categoryData(function(category_data) {
@@ -20,11 +19,6 @@ Widget.types.document_category_detail = {
 			this.detail_widget.enable();		
 		});
 	},
-
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
 	
 	settings: {
 		detail_widget: {
@@ -32,5 +26,4 @@ Widget.types.document_category_detail = {
 			width: 530
 		}
 	}
-
 };
