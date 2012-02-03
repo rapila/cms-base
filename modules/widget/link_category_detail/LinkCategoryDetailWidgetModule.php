@@ -11,7 +11,7 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getLinkCategoryData() {
-		$oLinkCategory = LinkCategoryPeer::retrieveByPK($this->iCategoryId);
+		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
 		$aResult = $oLinkCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLinkCategory);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oLinkCategory);
@@ -29,7 +29,7 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iCategoryId === null) {
 			$oCategory = new LinkCategory();
 		} else {
-			$oCategory = LinkCategoryPeer::retrieveByPK($this->iCategoryId);
+			$oCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
 		}
 		$oCategory->setName($aLinkCategoryData['name']);
 		$oCategory->setIsExternallyManaged($aLinkCategoryData['is_externally_managed']);

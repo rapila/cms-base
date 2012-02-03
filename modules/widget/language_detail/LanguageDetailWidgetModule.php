@@ -10,7 +10,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getLanguageData() {
-		$oLanguage = LanguagePeer::retrieveByPK($this->sLanguageId);
+		$oLanguage = LanguageQuery::create()->findPk($this->sLanguageId);
 		$aResult = $oLanguage->toArray();
 		$aResult['LanguageName'] = $oLanguage->getLanguageName();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLanguage);
@@ -41,7 +41,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		if($aLanguageData['language_id'] !== $this->sLanguageId) {
 			$this->sLanguageId = $aLanguageData['language_id'];
 		}
-		$oLanguage = LanguagePeer::retrieveByPK($this->sLanguageId);
+		$oLanguage = LanguageQuery::create()->findPk($this->sLanguageId);
 		if($oLanguage === null) {
 			$oLanguage = new Language();
 			$oLanguage->setId($aLanguageData['language_id']);
