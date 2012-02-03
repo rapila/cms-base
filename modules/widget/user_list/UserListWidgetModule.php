@@ -46,7 +46,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 				$aResult['heading_filter'] = array('user_kind_input', $this->oUserKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;
-			case 'language_id':
+			case 'language_name':
 				$aResult['heading'] = StringPeer::getString('wns.language');
 				break;
 			case 'updated_at_formatted':

@@ -3,45 +3,31 @@ Widget.types.user_detail = {
 		var _this = this;
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
+		this.content.find(".old_password_elements").hide();
 		
 		//Create detail widget
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.new_entry}}",
-				width: 600,
-				additionalButtons: [
-					{
-						text: "{{writeString=wns.user.reset_settings}}",
-						click: function() {
-							_this.resetSettings(function(result) {
-								result && Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.reset_settings.reset}}');
-							});
-						}
-					}
-				]
-			});
-			this.rights_section = this.content.find('div.rights_section').hide();
-			this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
-			this.admin_login_enabled = this.content.find("input[name='is_admin_login_enabled']").prop('checked', true);
-			var is_admin = this.content.find("input[name='is_admin']");
-			// should only be shown if permissions are there, or at least without checkboxes
-			is_admin.bind('change', function() {
-				_this.toggle_rights_section(jQuery(this).prop('checked') === false);
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-			this.content.find("select[name='language_id']").prepareWidget(function(widget) {
-				widget.settings.international_option = false;
-				widget.settings.use_admin_languages = true;
-			}, jQuery.noop);
-			this.content.find("div.user_groups_section").prepareWidget(function(widget) {
-				this.user_groups = widget;
-			}.bind(this));
-			this.content.find("div.roles_section").prepareWidget(function(widget) {
-				this.user_roles = widget;
-			}.bind(this));
+		Widget.callStatic('detail', 'create_for_instance', this);
+		
+		this.rights_section = this.content.find('div.rights_section').hide();
+		this.backend_login_enabled = this.content.find("input[name='is_backend_login_enabled']").prop('checked', true);
+		this.admin_login_enabled = this.content.find("input[name='is_admin_login_enabled']").prop('checked', true);
+		var is_admin = this.content.find("input[name='is_admin']");
+		// should only be shown if permissions are there, or at least without checkboxes
+		is_admin.bind('change', function() {
+			_this.toggle_rights_section(jQuery(this).prop('checked') === false);
+		});
+		if(this.auto_open) {
+			this.open();
+		}
+		this.content.find("select[name='language_id']").prepareWidget(function(widget) {
+			widget.settings.international_option = false;
+			widget.settings.use_admin_languages = true;
+		}, jQuery.noop);
+		this.content.find("div.user_groups_section").prepareWidget(function(widget) {
+			this.user_groups = widget;
+		}.bind(this));
+		this.content.find("div.roles_section").prepareWidget(function(widget) {
+			this.user_roles = widget;
 		}.bind(this));
 		
 		//Suggest passwort
@@ -53,16 +39,6 @@ Widget.types.user_detail = {
 			}
 			input_suggest.val(password).show().select();
 		});
-	},
-	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-		this.detail_widget.content.find(".show_if_set").hide();
-		this.detail_widget.content.find('input[name=first_name]').focus();
 	},
 	
 	toggle_rights_section: function(show_roles_groups) {
@@ -91,7 +67,7 @@ Widget.types.user_detail = {
 			} else {
 				this.rights_section.hide();
 				password_section.show();
-				this.detail_widget.content.find(".show_if_set").show();
+				this.detail_widget.content.find(".old_password_elements").show();
 			}
 			if(!user_data.IsSessionUser) {
 				this.content.find('.status_section input').prop('disabled', false);
@@ -121,6 +97,7 @@ Widget.types.user_detail = {
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
 			
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.user}} "+user_data.FullName);
+			this.detail_widget.content.find('input[name=first_name]').focus();
 		});
 	},
 		
@@ -129,6 +106,22 @@ Widget.types.user_detail = {
 		this.close_callback();
 	},
 	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.new_entry}}",
+			width: 600,
+			additionalButtons: [
+				{
+					text: "{{writeString=wns.user.reset_settings}}",
+					click: function() {
+						_this.resetSettings(function(result) {
+							result && Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.reset_settings.reset}}');
+						});
+					}
+				}
+			]
+		},
+		thumbnail_size: 180,
+		initial_category_id: null
+	}
 };
