@@ -101,7 +101,6 @@ class LinkUtil {
 		}
 
 		if($bIncludeLanguage === true) {
-			ErrorHandler::log(Session::language(), debug_backtrace());
 			array_unshift($mPath, Session::language(true)->getPathPrefix());
 		} elseif(is_string($bIncludeLanguage)) {
 			$bIncludeLanguage = LanguagePeer::retrieveByPK($bIncludeLanguage)->getPathPrefix();
