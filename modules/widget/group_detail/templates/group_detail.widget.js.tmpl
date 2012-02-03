@@ -1,21 +1,13 @@
 Widget.types.group_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.group.create}}",
-				width: 550
+		this.content.find('div.hide_if_not_saved').hide();
+		Widget.callStatic('detail', 'create_for_instance', this);
+		this.roles_section = this.content.find("div.roles_section").prepareWidget(function(roles) {
+			this.handle('saving', function(event, data) {
+				delete data.role_keys;
+				data.roles = roles.checked_roles();
 			});
-			if(this.auto_open) {
-				this.open();
-			}
-			this.roles_section = this.content.find("div.roles_section").prepareWidget(function(roles) {
-				this.handle('saving', function(event, data) {
-					delete data.role_keys;
-					data.roles = roles.checked_roles();
-				});
-			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -28,6 +20,7 @@ Widget.types.group_detail = {
 	},
 	
 	fill_data: function() {
+		this.detail_widget.disable();		
 		this.groupData(function(group_data) {
 			this.content.find("input[name='name']").val(group_data.Name);
 			this.content.find(".updated_info").text(group_data.UpdatedInfo);
@@ -38,14 +31,15 @@ Widget.types.group_detail = {
 				roles.set_checked(group_data.Roles);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = group_data.Name);
+			this.content.find('div.hide_if_not_saved').show();
+			this.detail_widget.enable();		
 		});
 	},
 	
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
-	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.group.create}}",
+			width: 550
+		}
+	}
 };
