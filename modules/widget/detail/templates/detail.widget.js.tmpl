@@ -22,7 +22,6 @@ Widget.types.detail = {
 			close_callback: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
-		console.log('instance_props', instance_props);
 		jQuery.extend(prototype, instance_props);
 		var old_fill_data = instance.fill_data;
 		instance.fill_data = function() {
@@ -83,6 +82,7 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
+		this.settings.delete_callback = instance.delete.bind(instance);
 		this.settings.close_callback = function(event) {
 			if(!event.originalEvent) {
 				//dialog('close') was called programmatically
@@ -136,6 +136,11 @@ Widget.types.detail = {
 			'class': 'secondary',
 			click: this.settings.cancel_callback
 		});
+		this.settings.has_delete_button && buttons.push({
+			text: "{{writeString=wns.delete}}",
+			'class': 'secondary',
+			click: this.settings.delete_callback
+		});
 		buttons = buttons.concat(this.settings.additionalButtons);
 		// option something like.....
 		
@@ -166,6 +171,10 @@ Widget.types.detail = {
 	
 	close: function() {
 		this.content.dialog('close');
+	},
+	
+	delete: function() {
+		// close after deletion and row_update
 	},
 	
 	has_dialog: false,
@@ -322,6 +331,9 @@ Widget.types.detail = {
 					list.reload();
 				}
 			};
+			detail.delete_callback = function(returnValue) {
+				// reload_row, or delete row depending on context
+			};
 			if(list.settings.initial_detail_id) {
 				var rowData = {};
 				rowData[idData] = list.settings.initial_detail_id;
@@ -360,7 +372,9 @@ Widget.types.detail = {
 		resizable: true,
 		closeOnEscape: true,
 		has_cancel_button: true,
+		has_delete_button: false,
 		auto_close_on_save: true,
+		delete_callback: jQuery.noop,
 		cancel_callback: jQuery.noop,
 		close_callback: jQuery.noop,
 		save_callback: jQuery.noop,
