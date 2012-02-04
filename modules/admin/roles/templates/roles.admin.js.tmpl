@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
 	
-		// add new role
+		// add buttons and search_input
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('role_detail', function(widget) {
 				widget.open();
@@ -26,10 +26,7 @@ jQuery(document).ready(function() {
 					content_list.reload();
 				};
 			});
-		}, 'n', true);
-		
-		// add new group
-		info_bar.add_button('add-new-item', function() {
+		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
 				widget.add_new_sidebar_input("{{writeString=wns.group.default_name}}", 'Group', sidebar);
 			});
@@ -39,9 +36,23 @@ jQuery(document).ready(function() {
 			}
 		});		
 			
-		/// @todo remove and edit buttons, only show if has permission
+		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
-			sidebar.delete_row(sidebar.active_row());
+			var rowData = sidebar.collect_row_data(sidebar.active_row());
+			if(rowData.group_id) {
+				content_list.getOption('groupHasRoles', rowData.group_id, function(result) {
+					if(!result) {
+						return sidebar.delete_row(sidebar.active_row());
+					}
+					var delete_message = "{{writeString=wns.group.delete_information}}";
+					Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
+						if(confirmed) {
+							content_list.setOption('groupId', null);
+							sidebar.delete_row(sidebar.active_row());
+						}
+					}.bind(this));
+				});
+			};
 		}).disable();
 		
 		var edit_item = info_bar.add_button('edit-item', function() {

@@ -79,12 +79,16 @@ class RoleListWidgetModule extends WidgetModule {
 		if($oRole) return $oRole->delete();
 	}
 	
+	public function getGroupHasRoles($iGroupId) {
+		return GroupRoleQuery::create()->filterByGroupId($iGroupId)->count() > 0;
+	}
+
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		$oCriteria->addJoin(RolePeer::ROLE_KEY, GroupRolePeer::ROLE_KEY, Criteria::LEFT_JOIN);
 		$oCriteria->addJoin(GroupRolePeer::GROUP_ID, GroupPeer::ID, Criteria::LEFT_JOIN);
 		if($this->oDelegateProxy->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(GroupRolePeer::GROUP_ID, $this->iGroupId);
+			$oCriteria->add(GroupRolePeer::GROUP_ID, $this->oDelegateProxy->getGroupId());
 		}
 		return $oCriteria;
 	}
