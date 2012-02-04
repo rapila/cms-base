@@ -17,7 +17,8 @@ jQuery(document).ready(function() {
 	}.deferred(handlers));
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
-		//File upload
+		
+		// prepare file_uplaod
 		Widget.create('file_upload', function(file_upload) {
 			file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
 				var dropped_on_document_category_id = sidebar.collect_row_data(target).document_category_id;
@@ -30,7 +31,7 @@ jQuery(document).ready(function() {
 			});
 		});
 	
-		// add buttons
+		// add buttons and search_input
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('document_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
@@ -44,13 +45,21 @@ jQuery(document).ready(function() {
 			Widget.create('sidebar_input', function(widget) {
 				widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', sidebar, 'rapila-document_categories_changed');
 			});
+		}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
+			content_list.set_search_string(search);
+			if(content_list.changed) {
+				content_list.reload();
+			}
 		});
 		
-		/// @todo remove and edit buttons, only show if has permission
+		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());
 			if(rowData.document_category_id) {
 				content_list.categoryHasDocuments(rowData.document_category_id, function(result) {
+					if(!result) {
+						return sidebar.delete_row(sidebar.active_row());
+					}
 					var delete_message = "{{writeString=wns.document_category.delete_information}}";
 					Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
 						if(confirmed) {
@@ -71,24 +80,9 @@ jQuery(document).ready(function() {
 				};
 			});
 		}).disable();
-
-		/// @todo implement delete actions etc
-		var action_item = info_bar.add_button('item-action', function() {
-				alert('action example: delete all currently shown documents');
-		}).disable();
 		
-		// search field
-		info_bar.add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
-			content_list.set_search_string(search);
-			if(content_list.changed) {
-				content_list.reload();
-			}
-		});
-		
-		// add row_count_info
-		info_bar.add_row_count_info_for_list(content_list);
-		
-		// sidebar selection changed
+		// sidebar click and selection changed
+		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var document_category_id = selection[0] && selection[0].document_category_id;
 			var has_detail = selection.length === 1 && document_category_id.constructor === Number;
@@ -96,10 +90,10 @@ jQuery(document).ready(function() {
 			edit_item[has_detail ? 'enable' : 'disable']();
 			content_list.set_document_category_id(document_category_id);
 			content_list.reload();
-			
 			jQuery('#new_sidebar_input').remove();
 		});
-		
-		sidebar.settings.row_click_active_mode = 'activate';
+
+		// add row_count_info
+		info_bar.add_row_count_info_for_list(content_list);		
 	});
 });

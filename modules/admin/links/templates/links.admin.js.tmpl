@@ -17,9 +17,8 @@ jQuery(document).ready(function() {
 	}.deferred(handlers));
 	
 	jQuery.when.apply(jQuery, handlers).then(function() {
-		// All widgets are ready to be used	
 		
-		// init info_bar
+		// add buttons and search_input
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('link_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('link_category_id');
@@ -39,7 +38,7 @@ jQuery(document).ready(function() {
 			}
 		});
 		
-		/// @todo remove and edit buttons, only show if has permission
+		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());
 			if(rowData.link_category_id) {
@@ -67,11 +66,9 @@ jQuery(document).ready(function() {
 				};
 			});
 		}).disable();
-	
-		// add row_count_info
-		info_bar.add_row_count_info_for_list(content_list);
 		
-		// sidebar selection changed
+		// sidebar selection change handler
+		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var link_category_id = selection[0] && selection[0].link_category_id;
 			var has_detail = selection.length === 1 && link_category_id.constructor === Number;
@@ -79,9 +76,9 @@ jQuery(document).ready(function() {
 			edit_item[has_detail ? 'enable' : 'disable']();
 			content_list.setOption('link_category_id', link_category_id);
 			content_list.reload();
-		});
+		});	
 		
-		// init sidebar
-		sidebar.settings.row_click_active_mode = 'activate';
+		// add row_count_info
+		info_bar.add_row_count_info_for_list(content_list);		
 	});
 });
