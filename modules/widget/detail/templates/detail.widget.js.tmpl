@@ -19,6 +19,10 @@ Widget.types.detail = {
 				this.close_callback();
 			},
 
+			delete: function() {
+				this.delete_callback();
+			},
+
 			close_callback: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
@@ -174,7 +178,7 @@ Widget.types.detail = {
 	},
 	
 	delete: function() {
-		// close after deletion and row_update
+		// this.content.dialog('close');
 	},
 	
 	has_dialog: false,
@@ -207,8 +211,6 @@ Widget.types.detail = {
 	},
 	
 	//Static methods
-	
-	
 	tabs_for: function(element) {
 		//Static call means this points to the prototype
 		var parent = this !== Widget.types.detail.prototype ? this.content : arguments[1];
@@ -330,9 +332,6 @@ Widget.types.detail = {
 				} else {
 					list.reload();
 				}
-			};
-			detail.delete_callback = function(returnValue) {
-				// reload_row, or delete row depending on context
 			};
 			if(list.settings.initial_detail_id) {
 				var rowData = {};
