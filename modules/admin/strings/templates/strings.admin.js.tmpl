@@ -1,28 +1,6 @@
 jQuery(document).ready(function() {
 	AdminInterface.content.find('table.string_list').prepareWidget(function(string_list) {
 		
-		// Sidebar
-		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
-			Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
-
-			sidebar.settings.row_click_active_mode = 'activate';
-			sidebar.handle('list-selection_changed', function(event, selection) {
-				string_list.setOption('name_space', selection[0] && selection[0].name_space);
-				string_list.reload();
-			});
-			
-			sidebar.handle('list_updated', function(event) {
-				
-			});
-		
-			// Add handlers for changed namespaces
-			string_list.handle('row-updated row-deleted', function(event, returnedResult) {
-				if(returnedResult.namespaces_changed) {
-					sidebar.reload();
-				}
-			});
-		});
-
 		// Add info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
@@ -40,6 +18,27 @@ jQuery(document).ready(function() {
 					string_list.reload();
 				}
 			}).add_row_count_info_for_list(string_list);
+		});
+
+		// Sidebar
+		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
+			Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
+			sidebar.settings.row_click_active_mode = 'activate';
+			sidebar.handle('list-selection_changed', function(event, selection) {
+				string_list.setOption('name_space', selection[0] && selection[0].name_space);
+				string_list.reload();
+			});
+			
+			sidebar.handle('list_updated', function(event) {
+				
+			});
+		
+			// Add handlers for changed namespaces
+			string_list.handle('row-updated row-deleted', function(event, returnedResult) {
+				if(returnedResult.namespaces_changed) {
+					sidebar.reload();
+				}
+			});
 		});
 	});
 });
