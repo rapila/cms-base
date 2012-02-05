@@ -3,15 +3,6 @@ Widget.types.document_type_detail = {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
-
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-		this.detail_widget.content.find('input[name=extension]').focus();
-	},
 	
 	fill_data: function() {
 		this.detail_widget.disable();		
