@@ -16,7 +16,6 @@ class UsersAdminModule extends AdminModule {
 			$this->oListWidget->oDelegateProxy->setGroupId($_REQUEST['group_id']);
 		}
 		$this->oSidebarWidget->setSetting('initial_selection', array('id' => $this->oListWidget->oDelegateProxy->getGroupId()));
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'user_id', Manager::usePath());
 	}
 	
 	public function mainContent() {

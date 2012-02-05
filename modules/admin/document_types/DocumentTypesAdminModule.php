@@ -10,11 +10,13 @@ class DocumentTypesAdminModule extends AdminModule {
 	
 	public function __construct() {
 		$this->oListWidget = new DocumentTypeListWidgetModule();
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'document_kind', $this->oListWidget->oDelegateProxy->getDocumentKind());
-
+		if(isset($_REQUEST['document_kind'])) {
+			$this->oListWidget->oDelegateProxy->setDocumentKind($_REQUEST['document_kind']);
+		}
 		$this->oSideBarWidget = new ListWidgetModule();
 		$this->oSideBarWidget->setListTag(new TagWriter('ul'));
 		$this->oSideBarWidget->setDelegate($this);
+		$this->oSideBarWidget->setSetting('initial_selection', array('document_kind' => $this->oListWidget->oDelegateProxy->getDocumentKind()));
 	}
 	
 	public function mainContent() {

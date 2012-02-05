@@ -7,8 +7,8 @@ class DashboardAdminModule extends AdminModule {
 	private $oModuleListWidget;
 	
 	public function __construct() {
-		$sUsePath = Manager::usePath();
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
+		// $sUsePath = Manager::usePath();
+		// $this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
 	}
 	
 	public function includeCustomResources($oResourceIncluder) {
