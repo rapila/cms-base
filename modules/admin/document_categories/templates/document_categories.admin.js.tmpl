@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
-	// init main content
 	AdminInterface.content.find('table.document_category_list').prepareWidget(function(document_category_list) {
-		// init sidebar
+		
+		// Info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_category_detail', function(widget) {
@@ -14,10 +14,7 @@ jQuery(document).ready(function() {
 				if(document_category_list.setSearch(search)) {
 					document_category_list.reload();
 				}
-			});
-			
-			// add row_count_info
-			info_bar.add_row_count_info_for_list(document_category_list);
+			}).add_row_count_info_for_list(document_category_list);
 		});
 	});
 });

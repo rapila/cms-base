@@ -36,7 +36,8 @@ jQuery(document).ready(function() {
 			if(content_list.setSearch(search)) {
 				content_list.reload();
 			}
-		});
+		}).add_row_count_info_for_list(content_list);		
+
 		
 		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
@@ -77,8 +78,5 @@ jQuery(document).ready(function() {
 			content_list.setOption('link_category_id', link_category_id);
 			content_list.reload();
 		});	
-		
-		// add row_count_info
-		info_bar.add_row_count_info_for_list(content_list);		
 	});
 });

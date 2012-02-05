@@ -1,8 +1,7 @@
 jQuery(document).ready(function() {
-	// init main content
 	AdminInterface.content.find('table.group_list').prepareWidget(function(group_list) {
-		// has no sidebar
-		// init infobar
+		
+		// Info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('group_detail', function(widget) {
@@ -15,10 +14,7 @@ jQuery(document).ready(function() {
 				if(group_list.setSearch(search)) {
 					group_list.reload();
 				}
-			});
-	
-			// add row_count_info
-			info_bar.add_row_count_info_for_list(group_list);
+			}).add_row_count_info_for_list(group_list);
 		});
 	});
 });

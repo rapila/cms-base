@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 			});
 		});
 	
-		// add buttons and search_input
+		// Add info_bar elements
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('document_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
@@ -50,9 +50,9 @@ jQuery(document).ready(function() {
 			if(content_list.changed) {
 				content_list.reload();
 			}
-		});
+		}).add_row_count_info_for_list(content_list);	
 		
-		// sidebar items edit and delete buttons
+		// Sidebar
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());
 			if(rowData.document_category_id) {
@@ -81,7 +81,6 @@ jQuery(document).ready(function() {
 			});
 		}).disable();
 		
-		// sidebar click and selection changed
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var document_category_id = selection[0] && selection[0].document_category_id;
@@ -92,8 +91,6 @@ jQuery(document).ready(function() {
 			content_list.reload();
 			jQuery('#new_sidebar_input').remove();
 		});
-
-		// add row_count_info
-		info_bar.add_row_count_info_for_list(content_list);		
+	
 	});
 });

@@ -1,8 +1,7 @@
 jQuery(document).ready(function() {
-	// init main content
 	AdminInterface.content.find('table.tags_list').prepareWidget(function(tags_list) {
-		// init sidebar
-
+		
+		// Sidebar
 		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 
 			sidebar.settings.row_click_active_mode = 'activate';
@@ -11,7 +10,7 @@ jQuery(document).ready(function() {
 				tags_list.reload();
 			});
 		
-			//Add handlers for changed namespaces
+			// Add handlers for changed namespaces
 			tags_list.handle('row-updated row-deleted', function(event, returnedResult) {
 				if(returnedResult.sidebar_changed) {
 					sidebar.reload();
@@ -19,16 +18,13 @@ jQuery(document).ready(function() {
 			});
 		});
 
-		// init info bar
+		// Info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				if(tags_list.setSearch(search)) {
 					tags_list.reload();
 				}
-			});
-	
-			// add row_count_info
-			info_bar.add_row_count_info_for_list(tags_list);
+			}).add_row_count_info_for_list(tags_list);
 		});
 	});
 });

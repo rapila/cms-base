@@ -1,8 +1,7 @@
 jQuery(document).ready(function() {
-	// init main content
 	AdminInterface.content.find('table.string_list').prepareWidget(function(string_list) {
-		// init sidebar
-
+		
+		// Sidebar
 		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 			Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
 
@@ -16,7 +15,7 @@ jQuery(document).ready(function() {
 				
 			});
 		
-			//Add handlers for changed namespaces
+			// Add handlers for changed namespaces
 			string_list.handle('row-updated row-deleted', function(event, returnedResult) {
 				if(returnedResult.namespaces_changed) {
 					sidebar.reload();
@@ -24,7 +23,7 @@ jQuery(document).ready(function() {
 			});
 		});
 
-		// init info bar
+		// Info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('string_detail', function(widget) {
@@ -40,10 +39,7 @@ jQuery(document).ready(function() {
 				if(string_list.setSearch(search)) {
 					string_list.reload();
 				}
-			});
-	
-			// add row_count_info
-			info_bar.add_row_count_info_for_list(string_list);
+			}).add_row_count_info_for_list(string_list);
 		});
 	});
 });
