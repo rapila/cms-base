@@ -31,10 +31,12 @@ Widget.types.detail = {
 		instance.fill_data = function() {
 			this.auto_fill = true;
 		};
+		
 		Widget.create('detail', function(detail) {
 			instance.fill_data = old_fill_data;
 			detail.set_instance(instance);
 			jQuery.extend(detail.settings, instance.settings.detail_widget);
+			instance.fire('opened');
 			if(instance.auto_open) {
 				detail.open();
 			}
