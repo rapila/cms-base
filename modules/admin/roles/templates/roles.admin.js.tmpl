@@ -1,24 +1,19 @@
 jQuery(document).ready(function() {
 
-	var sidebar = AdminInterface.sidebar;
-	var content_list = AdminInterface.content;
-	var info_bar = AdminInterface.info_bar;
-	
 	var handlers = [];
-	
-	sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+	var sidebar = AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	}.deferred(handlers));
-	content_list.children('[data-widget-type]').prepareWidget(function(widget) {
+	var content_list = AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
 		content_list = widget;
 	}.deferred(handlers));
-	info_bar.prepareWidget(function(widget) {
+	var info_bar = AdminInterface.info_bar.prepareWidget(function(widget) {
 		info_bar = widget;
 	}.deferred(handlers));
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
 	
-		// add buttons and search_input
+		// Add info_bar elements
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('role_detail', function(widget) {
 				widget.open();
@@ -36,7 +31,6 @@ jQuery(document).ready(function() {
 			}
 		}).add_row_count_info_for_list(content_list);
 
-		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());
 			if(rowData.group_id) {
@@ -66,7 +60,8 @@ jQuery(document).ready(function() {
 			});
 		}).disable();
 		
-		// list-selection_changed
+		// Sidebar
+		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var group_id = selection[0] && selection[0].group_id;
 			var has_detail = selection.length === 1 && group_id.constructor === Number;
@@ -75,7 +70,5 @@ jQuery(document).ready(function() {
 			content_list.setOption('group_id', group_id);
 			content_list.reload();
 		});
-		
-		sidebar.settings.row_click_active_mode = 'activate';
 	});
 });

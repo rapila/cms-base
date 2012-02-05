@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
  	AdminInterface.content.find('table.link_category_list').prepareWidget(function(link_category_list) {
 
-		// Info_bar elements
+		// Add info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('link_category_detail', function(widget) {
