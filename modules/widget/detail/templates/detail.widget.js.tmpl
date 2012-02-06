@@ -26,7 +26,6 @@ Widget.types.detail = {
 			close_callback: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
-		console.log('instance_props', instance_props);
 		jQuery.extend(prototype, instance_props);
 		var old_fill_data = instance.fill_data;
 		instance.fill_data = function() {
