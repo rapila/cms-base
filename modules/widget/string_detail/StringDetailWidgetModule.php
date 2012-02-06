@@ -18,7 +18,10 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		if($oString === null) {
 			$oString = new String();
 		}
-		return $oString->toArray();
+		$aResult = $oString->toArray();
+		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oString);
+		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oString);
+		return $aResult;
 	}
 	
 	public function getActiveLanguages() {

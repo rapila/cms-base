@@ -6,7 +6,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	private $iPageId = null;
 	private $oPage;
-		
+
 	public function doWidget() {
 		return $this->constructTemplate('edit');
 	}
@@ -19,10 +19,10 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	public function getPageData() {
 		$oPage = PagePeer::retrieveByPK($this->iPageId);
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
-		
+
 		// addition related page fields
-		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager')); 
-			
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage()));
+
 		// page properties are displayed if added to template
 		try {
 			$mAvailableProperties = $this->getAvailablePageProperties($oPage);

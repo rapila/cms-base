@@ -1,16 +1,7 @@
 Widget.types.document_type_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.document_type.create}}",
-				width: 480
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
+		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
 	open: function() {
@@ -23,18 +14,21 @@ Widget.types.document_type_detail = {
 	},
 	
 	fill_data: function() {
+		this.detail_widget.disable();		
 		this.typeData(function(type_data) {
 			this.content.find("input[name='extension']").val(type_data.Extension);
 			this.content.find("input[name='mimetype']").val(type_data.Mimetype);
 			this.detail_widget.set_title("{{writeString=wns.document_type}}"+" : "+(this.detail_widget.settings.title = type_data.Extension));
+			this.detail_widget.enable();		
+			this.detail_widget.content.find('input[name=extension]').select();
+			this.detail_widget.enable();		
 		});
 	},
 	
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
-	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.document_type.create}}",
+			width: 480
+		}
+	}
 };

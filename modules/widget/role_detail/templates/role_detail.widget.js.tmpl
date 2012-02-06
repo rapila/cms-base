@@ -4,20 +4,10 @@ Widget.types.role_detail = {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
 		this.right_content = jQuery.parseHTML("{{includeTemplate=right}}");
 		this.right_content.find('[name="page_id[]"]').prepareWidget();
-
-
 		this.content.find('div.hide_if_not_saved').hide();
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.role.create}}",
-				width: 540
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
-		
+
+		Widget.callStatic('detail', 'create_for_instance', this);
+
 		var rights_container = this.content.find('.rights_container');
 		rights_container.delegate('.delete_right', 'click', function(event) {
 			var delete_this_right = jQuery(this);
@@ -29,19 +19,12 @@ Widget.types.role_detail = {
 		add_new_right_button.click(function() {
 			_this.right_content.clone().appendTo(rights_container);
 		});
-		rights_container.after(add_new_right_button);
+		rights_container.after(add_new_right_button);		
 	},
 	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-	},
-		
 	fill_data: function() {
 		var _this = this;
+		this.detail_widget.disable();		
 		this.roleData(function(role_data) {
 			this.content.find("input[name='role_key']").val(role_data.RoleKey);
 			this.content.find("textarea[name='description']").val(role_data.Description);
@@ -62,14 +45,14 @@ Widget.types.role_detail = {
 				right_content.appendTo(rights_container);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);
+			this.detail_widget.enable();		
 		});
 	},
 	
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
-	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.role.create}}",
+			width: 540
+		}
+	}
 };
