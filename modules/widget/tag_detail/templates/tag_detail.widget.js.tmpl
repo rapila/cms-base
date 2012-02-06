@@ -1,24 +1,8 @@
 Widget.types.tag_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				width: 600
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
-	},
-	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-		this.detail_widget.content.find('input[name=name]').focus();
+
+		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	
 	init_language_tabs: function() {
@@ -39,7 +23,7 @@ Widget.types.tag_detail = {
 	
 	fill_data: function() {
 		_this = this;
-		this.getTagData(function(tag_data) {
+		this.tagData(function(tag_data) {
 			this.content.find("input[name='name']").val(tag_data.Name);
 			this.content.find(".updated_info").text(tag_data.UpdatedInfo);
 			this.content.find(".created_info").text(tag_data.CreatedInfo);
@@ -62,12 +46,10 @@ Widget.types.tag_detail = {
 			});
 		}
 	},
-
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
 	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+				width: 600
+		}
+	}
 };

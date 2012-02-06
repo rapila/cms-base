@@ -19,7 +19,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		return StringPeer::getString("tag.$sTagName", $sLanguageId, '');
 	}
 	
-	public function getTagData() {
+	public function tagData() {
 		$oTag = TagPeer::retrieveByPK($this->iTagId);
 		if($oTag === null) {
 			$oTag = new Tag();
