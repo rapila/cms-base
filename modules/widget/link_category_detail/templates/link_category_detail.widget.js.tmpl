@@ -1,16 +1,9 @@
 Widget.types.link_category_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.link_category.create}}",
-				width: 530
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
+		this.content.find('div.hide_if_not_saved').hide();
+
+		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	
 	open: function() {
@@ -21,8 +14,9 @@ Widget.types.link_category_detail = {
 		this.detail_widget.open();
 		this.detail_widget.content.find('input[name=name]').focus();
 	},
-	
+		
 	fill_data: function() {
+		this.detail_widget.disable();		
 		this.getLinkCategoryData(function(category_data) {
 			this.content.find("input[name='name']").val(category_data.Name);
 			this.content.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
@@ -31,14 +25,16 @@ Widget.types.link_category_detail = {
 			this.content.find(".created_info").text(category_data.CreatedInfo);
 			this.content.find("span[class='detail_id']").text(category_data.Id);
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
+			this.detail_widget.content.find("input[name='name']").select();
+			this.content.find('div.hide_if_not_saved').show();
+			this.detail_widget.enable();		
 		});
 	},
-
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
 	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.link_category.create}}",
+			width: 530
+		}
+	}
 };

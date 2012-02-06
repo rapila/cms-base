@@ -1,16 +1,8 @@
 Widget.types.string_detail = {
 	initialize: function() {
 		this.init_content();
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.new_entry}}",
-				width: 600
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
+		this.content.find('div.hide_if_not_saved').hide();
+		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	
 	open: function() {
@@ -22,13 +14,18 @@ Widget.types.string_detail = {
 	},
 	
 	fill_data: function() {
+		this.detail_widget.disable();		
 		var string_detail = this;
 		// get active strings and make sure the correct ones are highlighted
 		var active_languages = string_detail.getActiveLanguages();		
 		
 		this.stringData(function(string_data) {
 			this.content.find("input[name='string_key']").val(string_data.StringKey);
+			this.content.find(".updated_info").text(string_data.UpdatedInfo);
+			this.content.find(".created_info").text(string_data.CreatedInfo);
 			this.detail_widget.set_title(string_data.StringKey);
+			this.content.find('div.hide_if_not_saved').hide();
+			this.detail_widget.enable();		
 		});
 		if(!this.language_tabs) {
 			this.init_content();
@@ -68,8 +65,10 @@ Widget.types.string_detail = {
 		});
 	},
 	
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback && this.close_callback();
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.new_entry}}",
+			width: 600
+		}
 	}
 };

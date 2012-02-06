@@ -1,28 +1,13 @@
 Widget.types.language_detail = {
 	initialize: function() {
 		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		Widget.create('detail', function(widget) {
-			widget.set_instance(this);
-			jQuery.extend(widget.settings, {
-				title: "{{writeString=wns.language.create}}",
-				width: 400
-			});
-			if(this.auto_open) {
-				this.open();
-			}
-		}.bind(this));
-	},
-	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-		this.detail_widget.content.find('input[name=language_id]').focus();
+		this.content.find('div.hide_if_not_saved').hide();
+
+		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	
 	fill_data: function() {
+		this.detail_widget.disable();		
 		this.getLanguageData(function(language_data) {
 			this.content.find("input[name='language_id']").val(language_data.Id);
 			this.content.find("input[name='path_prefix']").val(language_data.PathPrefix);
@@ -36,14 +21,16 @@ Widget.types.language_detail = {
 			} else {
 				language_missing.text('').hide();
 			}
+			this.content.find('div.hide_if_not_saved').show();
+			this.detail_widget.content.find('input[name=language_id]').select();
+			this.detail_widget.enable();		
 		});
 	},
-
-	close: function() {
-		this.detail_widget.close();
-		this.close_callback();
-	},
 	
-	save_callback: jQuery.noop,
-	close_callback: jQuery.noop
+	settings: {
+		detail_widget: {
+			title: "{{writeString=wns.language.create}}",
+			width: 400
+		}
+	}
 };
