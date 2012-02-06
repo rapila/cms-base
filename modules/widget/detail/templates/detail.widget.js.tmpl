@@ -19,6 +19,10 @@ Widget.types.detail = {
 				this.close_callback();
 			},
 
+			delete: function() {
+				this.delete_callback();
+			},
+
 			close_callback: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
@@ -28,10 +32,12 @@ Widget.types.detail = {
 		instance.fill_data = function() {
 			this.auto_fill = true;
 		};
+		
 		Widget.create('detail', function(detail) {
 			instance.fill_data = old_fill_data;
 			detail.set_instance(instance);
 			jQuery.extend(detail.settings, instance.settings.detail_widget);
+			instance.fire('opened');
 			if(instance.auto_open) {
 				detail.open();
 			}
@@ -83,6 +89,7 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
+		this.settings.delete_callback = instance.delete.bind(instance);
 		this.settings.close_callback = function(event) {
 			if(!event.originalEvent) {
 				//dialog('close') was called programmatically
@@ -136,6 +143,11 @@ Widget.types.detail = {
 			'class': 'secondary',
 			click: this.settings.cancel_callback
 		});
+		this.settings.has_delete_button && buttons.push({
+			text: "{{writeString=wns.delete}}",
+			'class': 'secondary',
+			click: this.settings.delete_callback
+		});
 		buttons = buttons.concat(this.settings.additionalButtons);
 		// option something like.....
 		
@@ -168,6 +180,10 @@ Widget.types.detail = {
 		this.content.dialog('close');
 	},
 	
+	delete: function() {
+		// this.content.dialog('close');
+	},
+	
 	has_dialog: false,
 	content: null,
 	
@@ -198,8 +214,6 @@ Widget.types.detail = {
 	},
 	
 	//Static methods
-	
-	
 	tabs_for: function(element) {
 		//Static call means this points to the prototype
 		var parent = this !== Widget.types.detail.prototype ? this.content : arguments[1];
@@ -360,7 +374,9 @@ Widget.types.detail = {
 		resizable: true,
 		closeOnEscape: true,
 		has_cancel_button: true,
+		has_delete_button: false,
 		auto_close_on_save: true,
+		delete_callback: jQuery.noop,
 		cancel_callback: jQuery.noop,
 		close_callback: jQuery.noop,
 		save_callback: jQuery.noop,
