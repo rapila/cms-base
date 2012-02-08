@@ -11,7 +11,7 @@ class PagesAdminModule extends AdminModule {
 		try {
 			$this->oRootPage = PagePeer::getRootPage();
 		} catch (Exception $e) {
-			$this->oRootPage = PagePeer::initialiseRootPage();
+			$this->oRootPage = PagePeer::initializeRootPage();
 		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
