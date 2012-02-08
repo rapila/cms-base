@@ -26,10 +26,10 @@ class PagePeer extends BasePagePeer {
 	}
 
 	/**
-	 * initialiseRootPage()
+	 * initializeRootPage()
 	 * @return array of one page object
 	 */ 
-	public static function initialiseRootPage() {
+	public static function initializeRootPage() {
 		$oRootPage = new Page();
 		$oRootPage->makeRoot();
 		$oRootPage->setName('root');

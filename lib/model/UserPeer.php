@@ -178,6 +178,7 @@ class UserPeer extends BaseUserPeer {
       $oLanguage->save();
 			LanguagePeer::ignoreRights(false);
     }
+    AdminManager::setContentLanguage(Session::language());
 		return true;
 	}
 		
