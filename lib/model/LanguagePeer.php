@@ -72,7 +72,7 @@ class LanguagePeer extends BaseLanguagePeer {
 		$aLanguages = self::getLanguages($bActiveOnly, $oSortBySort);
 		foreach($aLanguages as $oLanguage) {
 			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();
-		}	
+		} 
 		if(!$oSortBySort) {
 			asort($aResult);
 		}	 
@@ -98,6 +98,25 @@ class LanguagePeer extends BaseLanguagePeer {
 			}
 		}
 		return $aLanguages;
+	}
+	
+ /**
+	* @param string $sLanguageId
+	* use cases:
+	* 1. at first users' creation
+	* 2. fallback method, creates language if it does not exist, but not at first users' login time, i.e. when languages have been truncated
+	* @return void
+	*/	
+	public static function createLanguageIfNoneExist($sLanguage) {
+		if(!LanguagePeer::hasNoLanguage()) {
+			return;
+		}
+		$oLanguage = new Language();
+		$oLanguage->setId($sLanguage);
+		$oLanguage->setPathPrefix($sLanguage);
+		$oLanguage->setIsActive(true);
+		LanguagePeer::ignoreRights(true);
+		$oLanguage->save();
 	}
 
 }

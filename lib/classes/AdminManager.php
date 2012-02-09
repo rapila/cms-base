@@ -40,32 +40,15 @@ class AdminManager extends Manager {
 			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
 				$sLanguageId = Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY);
 			} else {
-				// fallback
-				self::createLanguageIfNotExists($sLanguageId);
+				// fallback @see method doc
+				LanguagePeer::createLanguageIfNoneExist($sLanguageId);
 				return;
 			}
 		}
-		// fallback
-		self::createLanguageIfNotExists($sLanguageId);
+		// fallback @see method doc
+		LanguagePeer::createLanguageIfNoneExist($sLanguageId);
 		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
   }
-	/**
-	* @param string $sLanguageId
-	* fallback method, creates language if it does not exist
-	* use case: if language does not exist but it is not at first user login time, then language does not exist yet
-	* @see UserPeer commit 4e365199326f4bf6deb245d0e71806d9e67fb8bf
-	* @return void
-	*/	
-	private static function createLanguageIfNotExists($sLanguageId) {
-		if(LanguagePeer::languageExists($sLanguageId)) {
-			return;
-		}
-		$oLanguage = new Language();
-		$oLanguage->setId($sLanguageId);
-		$oLanguage->setPathPrefix($sLanguageId);
-		LanguagePeer::ignoreRights(true);
-		$oLanguage->save();
-	}
   
   public static function getContentLanguage() {
     $sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
