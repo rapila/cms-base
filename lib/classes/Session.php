@@ -58,7 +58,6 @@ class Session {
 				$oUser->setPassword($sPassword);
 				UserPeer::ignoreRights(true);
 				$oUser->save();
-				UserPeer::ignoreRights(false);
 				return $this->login($sUsername, $sPassword);
 			}
 			return 0;
@@ -67,7 +66,6 @@ class Session {
 			$oUser->setPassword($sPassword);
 			UserPeer::ignoreRights(true);
 			$oUser->save();
-			UserPeer::ignoreRights(false);
 		}
 		return $this->loginUser($oUser);
 	}
