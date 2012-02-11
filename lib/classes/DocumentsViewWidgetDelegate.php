@@ -42,11 +42,11 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'sort', 'file_info', 'document_kind', 'category_name');
+		$aResult = array('id', 'name_truncated', 'file_info', 'document_kind', 'category_name');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
-		return array_merge($aResult, array('is_protected', 'updated_at_formatted', 'delete'));
+		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
