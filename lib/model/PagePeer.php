@@ -34,6 +34,8 @@ class PagePeer extends BasePagePeer {
 		$oRootPage->makeRoot();
 		$oRootPage->setName('root');
 		$oRootPage->setIsInactive(false);
+		$oRootPage->setPageType('default');
+		$oRootPage->setTemplateName(Settings::getSetting('frontend', 'main_template', 'general'));
 		$oFirstUser = UserPeer::getFirstUser();
 		$oFirstUserId = $oFirstUser !== null ? $oFirstUser->getId() : 0;
 		$oRootPage->setCreatedBy($oFirstUserId);
