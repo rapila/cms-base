@@ -51,7 +51,6 @@ Widget.types.detail = {
 			//Static call means do the whole initialisation
 			return Widget.callStatic('detail', 'create_for_instance', instance);
 		}
-
 		instance.detail_widget = this; //Weak ref would be really great here…
 		this.instance = instance;
 		this.content = instance.content || instance._element;
@@ -225,7 +224,7 @@ Widget.types.detail = {
 			if(current_element.is('.ui-tabs-panel')) {
 				result.push.apply(result, current_element.parent().find('a[href="'+'#'+current_element.attr('id')+'"]').parent().get());
 			}
-		 current_element = current_element.parent();
+			current_element = current_element.parent();
 		}
 		return jQuery(result);
 	},
@@ -341,7 +340,7 @@ Widget.types.detail = {
 				var row = list.row_from_row_data(rowData);
 				open_with_id(list.settings.initial_detail_id, row);
 			}
-		}
+		};
 		if(list.connected_detail) {
 			init(list.connected_detail);
 		} else {
