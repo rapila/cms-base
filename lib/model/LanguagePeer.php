@@ -88,7 +88,14 @@ class LanguagePeer extends BaseLanguagePeer {
 	}
 
 	public static function getAdminLanguages() {
+	  // display registered languages instead of found and posibly incomplete ones
 		$aLanguages = array();
+		$aRegisteredLanguages = Settings::getSetting('admin', 'registered_user_languages', array());
+		foreach($aRegisteredLanguages as $sLanguageId) {
+      $aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId);
+		}
+		return $aLanguages;
+
 		// get language ini files to provide available user_language choice
 		$aLanguageFiles = ResourceFinder::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_BASE_ONLY));
 		foreach($aLanguageFiles as $sKey => $sValue) {
