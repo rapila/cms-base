@@ -6,6 +6,23 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	private $iPageId = null;
 	private $oPage;
+	
+	public function __construct($sSessionId) {
+		parent::__construct($sSessionId);
+		$this->setSetting('active_accordion', $this->getActiveAccordion());
+	}
+	
+	public function setActiveAccordion($iAccordion) {
+		Session::getSession()->setAttribute('active_accordion', $iAccordion);
+	}
+	
+	public function getActiveAccordion() {
+	  $iAccordion = Session::getSession()->getAttribute('active_accordion');
+	  if($iAccordion) {
+	    return $iAccordion;
+	  }
+	  return 0;
+	}
 
 	public function doWidget() {
 		return $this->constructTemplate('edit');
