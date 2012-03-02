@@ -20,12 +20,16 @@ Widget.types.detail = {
 			},
 
 			delete: function() {
-				this.delete_callback();
-				this.detail_widget.close();
+				this.do_delete(function(ok) {
+					if(ok) {
+						this.fire('deleted');
+						this.detail_widget.close();
+					}
+				}.bind(this));
 			},
 
 			close_callback: jQuery.noop,
-			delete_callback: jQuery.noop,
+			do_delete: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
 		jQuery.extend(prototype, instance_props);
@@ -36,8 +40,8 @@ Widget.types.detail = {
 
 		Widget.create('detail', function(detail) {
 			instance.fill_data = old_fill_data;
-			detail.set_instance(instance);
 			jQuery.extend(detail.settings, instance.settings.detail_widget);
+			detail.set_instance(instance);
 			instance.fire('opened');
 			if(instance.auto_open) {
 				detail.open();
@@ -300,7 +304,8 @@ Widget.types.detail = {
 		if(!idData) idData = 'id';
 		options = jQuery.extend({
 			colName: false,
-			eventName: 'dblclick'
+			eventName: 'dblclick',
+			initialized: jQuery.noop
 		}, (options || {}));
 		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
@@ -344,6 +349,7 @@ Widget.types.detail = {
 				var row = list.row_from_row_data(rowData);
 				open_with_id(list.settings.initial_detail_id, row);
 			}
+			options.initialized(detail, list);
 		};
 		if(list.connected_detail) {
 			init(list.connected_detail);
