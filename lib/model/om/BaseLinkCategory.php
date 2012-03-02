@@ -25,6 +25,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -95,6 +101,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linksScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -570,7 +582,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -661,7 +673,7 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -703,27 +715,24 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = LinkCategoryPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(LinkCategoryPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.LinkCategoryPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += LinkCategoryPeer::doUpdate($this, $con);
+			if ($this->linksScheduledForDeletion !== null) {
+				if (!$this->linksScheduledForDeletion->isEmpty()) {
+					LinkQuery::create()
+						->filterByPrimaryKeys($this->linksScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linksScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collLinks !== null) {
@@ -739,6 +748,110 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = LinkCategoryPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . LinkCategoryPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(LinkCategoryPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::IS_EXTERNALLY_MANAGED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_EXTERNALLY_MANAGED`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(LinkCategoryPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `link_categories` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`IS_EXTERNALLY_MANAGED`':
+						$stmt->bindValue($identifier, (int) $this->is_externally_managed, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1102,10 +1215,12 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getLinks() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1113,6 +1228,8 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1342,6 +1459,30 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Link objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $links A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinks(PropelCollection $links, PropelPDO $con = null)
+	{
+		$this->linksScheduledForDeletion = $this->getLinks(new Criteria(), $con)->diff($links);
+
+		foreach ($links as $link) {
+			// Fix issue with collection modified by reference
+			if ($link->isNew()) {
+				$link->setLinkCategory($this);
+			}
+			$this->addLink($link);
+		}
+
+		$this->collLinks = $links;
+	}
+
+	/**
 	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1382,11 +1523,19 @@ abstract class BaseLinkCategory extends BaseObject  implements Persistent
 			$this->initLinks();
 		}
 		if (!$this->collLinks->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinks[]= $l;
-			$l->setLinkCategory($this);
+			$this->doAddLink($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	Link $link The link object to add.
+	 */
+	protected function doAddLink($link)
+	{
+		$this->collLinks[]= $link;
+		$link->setLinkCategory($this);
 	}
 
 

@@ -25,6 +25,12 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -394,6 +400,294 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userGroupsRelatedByUserIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userRolesRelatedByUserIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentsRelatedByOwnerIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linksRelatedByOwnerIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagePropertysRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagePropertysRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pageStringsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pageStringsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $contentObjectsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $contentObjectsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectHistorysRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectHistorysRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languagesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languagesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $stringsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $stringsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userGroupsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userGroupsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupRolesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupRolesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $rolesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $rolesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userRolesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userRolesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $rightsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $rightsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentTypesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentTypesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentCategorysRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentCategorysRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tagsRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tagsRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tagInstancesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tagInstancesRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linksRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linksRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linkCategorysRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linkCategorysRelatedByUpdatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $referencesRelatedByCreatedByScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $referencesRelatedByUpdatedByScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -1340,7 +1634,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1431,7 +1725,7 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1466,32 +1760,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				$this->setLanguageRelatedByLanguageId($this->aLanguageRelatedByLanguageId);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = UserPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(UserPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += UserPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
+				$affectedRows += 1;
 				// Rewind the backend_settings LOB column, since PDO does not rewind after inserting value.
 				if ($this->backend_settings !== null && is_resource($this->backend_settings)) {
 					rewind($this->backend_settings);
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$this->resetModified();
+			}
+
+			if ($this->userGroupsRelatedByUserIdScheduledForDeletion !== null) {
+				if (!$this->userGroupsRelatedByUserIdScheduledForDeletion->isEmpty()) {
+					UserGroupQuery::create()
+						->filterByPrimaryKeys($this->userGroupsRelatedByUserIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userGroupsRelatedByUserIdScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collUserGroupsRelatedByUserId !== null) {
@@ -1499,6 +1790,15 @@ abstract class BaseUser extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->userRolesRelatedByUserIdScheduledForDeletion !== null) {
+				if (!$this->userRolesRelatedByUserIdScheduledForDeletion->isEmpty()) {
+					UserRoleQuery::create()
+						->filterByPrimaryKeys($this->userRolesRelatedByUserIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userRolesRelatedByUserIdScheduledForDeletion = null;
 				}
 			}
 
@@ -1510,11 +1810,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->documentsRelatedByOwnerIdScheduledForDeletion !== null) {
+				if (!$this->documentsRelatedByOwnerIdScheduledForDeletion->isEmpty()) {
+					DocumentQuery::create()
+						->filterByPrimaryKeys($this->documentsRelatedByOwnerIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentsRelatedByOwnerIdScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collDocumentsRelatedByOwnerId !== null) {
 				foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->linksRelatedByOwnerIdScheduledForDeletion !== null) {
+				if (!$this->linksRelatedByOwnerIdScheduledForDeletion->isEmpty()) {
+					LinkQuery::create()
+						->filterByPrimaryKeys($this->linksRelatedByOwnerIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linksRelatedByOwnerIdScheduledForDeletion = null;
 				}
 			}
 
@@ -1526,11 +1844,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->pagesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->pagesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					PageQuery::create()
+						->filterByPrimaryKeys($this->pagesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collPagesRelatedByCreatedBy !== null) {
 				foreach ($this->collPagesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->pagesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->pagesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					PageQuery::create()
+						->filterByPrimaryKeys($this->pagesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1542,11 +1878,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->pagePropertysRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->pagePropertysRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					PagePropertyQuery::create()
+						->filterByPrimaryKeys($this->pagePropertysRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagePropertysRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collPagePropertysRelatedByCreatedBy !== null) {
 				foreach ($this->collPagePropertysRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->pagePropertysRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->pagePropertysRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					PagePropertyQuery::create()
+						->filterByPrimaryKeys($this->pagePropertysRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagePropertysRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1558,11 +1912,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->pageStringsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->pageStringsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					PageStringQuery::create()
+						->filterByPrimaryKeys($this->pageStringsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pageStringsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collPageStringsRelatedByCreatedBy !== null) {
 				foreach ($this->collPageStringsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->pageStringsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->pageStringsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					PageStringQuery::create()
+						->filterByPrimaryKeys($this->pageStringsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pageStringsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1574,11 +1946,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->contentObjectsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->contentObjectsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					ContentObjectQuery::create()
+						->filterByPrimaryKeys($this->contentObjectsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->contentObjectsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collContentObjectsRelatedByCreatedBy !== null) {
 				foreach ($this->collContentObjectsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->contentObjectsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->contentObjectsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					ContentObjectQuery::create()
+						->filterByPrimaryKeys($this->contentObjectsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->contentObjectsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1590,11 +1980,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->languageObjectsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->languageObjectsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					LanguageObjectQuery::create()
+						->filterByPrimaryKeys($this->languageObjectsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLanguageObjectsRelatedByCreatedBy !== null) {
 				foreach ($this->collLanguageObjectsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->languageObjectsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->languageObjectsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					LanguageObjectQuery::create()
+						->filterByPrimaryKeys($this->languageObjectsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1606,11 +2014,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					LanguageObjectHistoryQuery::create()
+						->filterByPrimaryKeys($this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLanguageObjectHistorysRelatedByCreatedBy !== null) {
 				foreach ($this->collLanguageObjectHistorysRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					LanguageObjectHistoryQuery::create()
+						->filterByPrimaryKeys($this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1622,11 +2048,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->languagesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->languagesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					LanguageQuery::create()
+						->filterByPrimaryKeys($this->languagesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languagesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLanguagesRelatedByCreatedBy !== null) {
 				foreach ($this->collLanguagesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->languagesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->languagesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					LanguageQuery::create()
+						->filterByPrimaryKeys($this->languagesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languagesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1638,11 +2082,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->stringsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->stringsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					StringQuery::create()
+						->filterByPrimaryKeys($this->stringsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->stringsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collStringsRelatedByCreatedBy !== null) {
 				foreach ($this->collStringsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->stringsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->stringsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					StringQuery::create()
+						->filterByPrimaryKeys($this->stringsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->stringsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1654,11 +2116,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->userGroupsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->userGroupsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					UserGroupQuery::create()
+						->filterByPrimaryKeys($this->userGroupsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userGroupsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collUserGroupsRelatedByCreatedBy !== null) {
 				foreach ($this->collUserGroupsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->userGroupsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->userGroupsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					UserGroupQuery::create()
+						->filterByPrimaryKeys($this->userGroupsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userGroupsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1670,11 +2150,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->groupsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->groupsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					GroupQuery::create()
+						->filterByPrimaryKeys($this->groupsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collGroupsRelatedByCreatedBy !== null) {
 				foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->groupsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->groupsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					GroupQuery::create()
+						->filterByPrimaryKeys($this->groupsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1686,11 +2184,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->groupRolesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->groupRolesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					GroupRoleQuery::create()
+						->filterByPrimaryKeys($this->groupRolesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupRolesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collGroupRolesRelatedByCreatedBy !== null) {
 				foreach ($this->collGroupRolesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->groupRolesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->groupRolesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					GroupRoleQuery::create()
+						->filterByPrimaryKeys($this->groupRolesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupRolesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1702,11 +2218,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->rolesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->rolesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					RoleQuery::create()
+						->filterByPrimaryKeys($this->rolesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->rolesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collRolesRelatedByCreatedBy !== null) {
 				foreach ($this->collRolesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->rolesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->rolesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					RoleQuery::create()
+						->filterByPrimaryKeys($this->rolesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->rolesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1718,11 +2252,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->userRolesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->userRolesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					UserRoleQuery::create()
+						->filterByPrimaryKeys($this->userRolesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userRolesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collUserRolesRelatedByCreatedBy !== null) {
 				foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->userRolesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->userRolesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					UserRoleQuery::create()
+						->filterByPrimaryKeys($this->userRolesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userRolesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1734,11 +2286,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->rightsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->rightsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					RightQuery::create()
+						->filterByPrimaryKeys($this->rightsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->rightsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collRightsRelatedByCreatedBy !== null) {
 				foreach ($this->collRightsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->rightsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->rightsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					RightQuery::create()
+						->filterByPrimaryKeys($this->rightsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->rightsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1750,11 +2320,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->documentsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->documentsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					DocumentQuery::create()
+						->filterByPrimaryKeys($this->documentsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collDocumentsRelatedByCreatedBy !== null) {
 				foreach ($this->collDocumentsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->documentsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->documentsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					DocumentQuery::create()
+						->filterByPrimaryKeys($this->documentsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1766,11 +2354,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->documentTypesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->documentTypesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					DocumentTypeQuery::create()
+						->filterByPrimaryKeys($this->documentTypesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentTypesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collDocumentTypesRelatedByCreatedBy !== null) {
 				foreach ($this->collDocumentTypesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->documentTypesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->documentTypesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					DocumentTypeQuery::create()
+						->filterByPrimaryKeys($this->documentTypesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentTypesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1782,11 +2388,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->documentCategorysRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->documentCategorysRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					DocumentCategoryQuery::create()
+						->filterByPrimaryKeys($this->documentCategorysRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentCategorysRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collDocumentCategorysRelatedByCreatedBy !== null) {
 				foreach ($this->collDocumentCategorysRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->documentCategorysRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->documentCategorysRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					DocumentCategoryQuery::create()
+						->filterByPrimaryKeys($this->documentCategorysRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentCategorysRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1798,11 +2422,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->tagsRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->tagsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					TagQuery::create()
+						->filterByPrimaryKeys($this->tagsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tagsRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collTagsRelatedByCreatedBy !== null) {
 				foreach ($this->collTagsRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->tagsRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->tagsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					TagQuery::create()
+						->filterByPrimaryKeys($this->tagsRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tagsRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1814,11 +2456,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->tagInstancesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->tagInstancesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					TagInstanceQuery::create()
+						->filterByPrimaryKeys($this->tagInstancesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tagInstancesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collTagInstancesRelatedByCreatedBy !== null) {
 				foreach ($this->collTagInstancesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->tagInstancesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->tagInstancesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					TagInstanceQuery::create()
+						->filterByPrimaryKeys($this->tagInstancesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tagInstancesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1830,11 +2490,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->linksRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->linksRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					LinkQuery::create()
+						->filterByPrimaryKeys($this->linksRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linksRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLinksRelatedByCreatedBy !== null) {
 				foreach ($this->collLinksRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->linksRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->linksRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					LinkQuery::create()
+						->filterByPrimaryKeys($this->linksRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linksRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1846,11 +2524,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->linkCategorysRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->linkCategorysRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					LinkCategoryQuery::create()
+						->filterByPrimaryKeys($this->linkCategorysRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linkCategorysRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLinkCategorysRelatedByCreatedBy !== null) {
 				foreach ($this->collLinkCategorysRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->linkCategorysRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->linkCategorysRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					LinkCategoryQuery::create()
+						->filterByPrimaryKeys($this->linkCategorysRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linkCategorysRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1862,11 +2558,29 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->referencesRelatedByCreatedByScheduledForDeletion !== null) {
+				if (!$this->referencesRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+					ReferenceQuery::create()
+						->filterByPrimaryKeys($this->referencesRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->referencesRelatedByCreatedByScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collReferencesRelatedByCreatedBy !== null) {
 				foreach ($this->collReferencesRelatedByCreatedBy as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->referencesRelatedByUpdatedByScheduledForDeletion !== null) {
+				if (!$this->referencesRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+					ReferenceQuery::create()
+						->filterByPrimaryKeys($this->referencesRelatedByUpdatedByScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->referencesRelatedByUpdatedByScheduledForDeletion = null;
 				}
 			}
 
@@ -1883,6 +2597,179 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = UserPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(UserPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(UserPeer::USERNAME)) {
+			$modifiedColumns[':p' . $index++]  = '`USERNAME`';
+		}
+		if ($this->isColumnModified(UserPeer::PASSWORD)) {
+			$modifiedColumns[':p' . $index++]  = '`PASSWORD`';
+		}
+		if ($this->isColumnModified(UserPeer::DIGEST_HA1)) {
+			$modifiedColumns[':p' . $index++]  = '`DIGEST_HA1`';
+		}
+		if ($this->isColumnModified(UserPeer::FIRST_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`FIRST_NAME`';
+		}
+		if ($this->isColumnModified(UserPeer::LAST_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`LAST_NAME`';
+		}
+		if ($this->isColumnModified(UserPeer::EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = '`EMAIL`';
+		}
+		if ($this->isColumnModified(UserPeer::LANGUAGE_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`LANGUAGE_ID`';
+		}
+		if ($this->isColumnModified(UserPeer::IS_ADMIN)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_ADMIN`';
+		}
+		if ($this->isColumnModified(UserPeer::IS_BACKEND_LOGIN_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_BACKEND_LOGIN_ENABLED`';
+		}
+		if ($this->isColumnModified(UserPeer::IS_ADMIN_LOGIN_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_ADMIN_LOGIN_ENABLED`';
+		}
+		if ($this->isColumnModified(UserPeer::IS_INACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+		}
+		if ($this->isColumnModified(UserPeer::PASSWORD_RECOVER_HINT)) {
+			$modifiedColumns[':p' . $index++]  = '`PASSWORD_RECOVER_HINT`';
+		}
+		if ($this->isColumnModified(UserPeer::BACKEND_SETTINGS)) {
+			$modifiedColumns[':p' . $index++]  = '`BACKEND_SETTINGS`';
+		}
+		if ($this->isColumnModified(UserPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(UserPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(UserPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(UserPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `users` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`USERNAME`':
+						$stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
+						break;
+					case '`PASSWORD`':
+						$stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+						break;
+					case '`DIGEST_HA1`':
+						$stmt->bindValue($identifier, $this->digest_ha1, PDO::PARAM_STR);
+						break;
+					case '`FIRST_NAME`':
+						$stmt->bindValue($identifier, $this->first_name, PDO::PARAM_STR);
+						break;
+					case '`LAST_NAME`':
+						$stmt->bindValue($identifier, $this->last_name, PDO::PARAM_STR);
+						break;
+					case '`EMAIL`':
+						$stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+						break;
+					case '`LANGUAGE_ID`':
+						$stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
+						break;
+					case '`IS_ADMIN`':
+						$stmt->bindValue($identifier, (int) $this->is_admin, PDO::PARAM_INT);
+						break;
+					case '`IS_BACKEND_LOGIN_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->is_backend_login_enabled, PDO::PARAM_INT);
+						break;
+					case '`IS_ADMIN_LOGIN_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->is_admin_login_enabled, PDO::PARAM_INT);
+						break;
+					case '`IS_INACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+						break;
+					case '`PASSWORD_RECOVER_HINT`':
+						$stmt->bindValue($identifier, $this->password_recover_hint, PDO::PARAM_STR);
+						break;
+					case '`BACKEND_SETTINGS`':
+						if (is_resource($this->backend_settings)) {
+							rewind($this->backend_settings);
+						}
+						$stmt->bindValue($identifier, $this->backend_settings, PDO::PARAM_LOB);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -2864,10 +3751,12 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getUserGroupsRelatedByUserId() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -3157,6 +4046,8 @@ abstract class BaseUser extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -3478,6 +4369,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserGroupRelatedByUserId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userGroupsRelatedByUserId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserGroupsRelatedByUserId(PropelCollection $userGroupsRelatedByUserId, PropelPDO $con = null)
+	{
+		$this->userGroupsRelatedByUserIdScheduledForDeletion = $this->getUserGroupsRelatedByUserId(new Criteria(), $con)->diff($userGroupsRelatedByUserId);
+
+		foreach ($userGroupsRelatedByUserId as $userGroupRelatedByUserId) {
+			// Fix issue with collection modified by reference
+			if ($userGroupRelatedByUserId->isNew()) {
+				$userGroupRelatedByUserId->setUserRelatedByUserId($this);
+			}
+			$this->addUserGroupRelatedByUserId($userGroupRelatedByUserId);
+		}
+
+		$this->collUserGroupsRelatedByUserId = $userGroupsRelatedByUserId;
+	}
+
+	/**
 	 * Returns the number of related UserGroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3518,11 +4433,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserGroupsRelatedByUserId();
 		}
 		if (!$this->collUserGroupsRelatedByUserId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroupsRelatedByUserId[]= $l;
-			$l->setUserRelatedByUserId($this);
+			$this->doAddUserGroupRelatedByUserId($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserGroupRelatedByUserId $userGroupRelatedByUserId The userGroupRelatedByUserId object to add.
+	 */
+	protected function doAddUserGroupRelatedByUserId($userGroupRelatedByUserId)
+	{
+		$this->collUserGroupsRelatedByUserId[]= $userGroupRelatedByUserId;
+		$userGroupRelatedByUserId->setUserRelatedByUserId($this);
 	}
 
 
@@ -3619,6 +4542,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserRoleRelatedByUserId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userRolesRelatedByUserId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserRolesRelatedByUserId(PropelCollection $userRolesRelatedByUserId, PropelPDO $con = null)
+	{
+		$this->userRolesRelatedByUserIdScheduledForDeletion = $this->getUserRolesRelatedByUserId(new Criteria(), $con)->diff($userRolesRelatedByUserId);
+
+		foreach ($userRolesRelatedByUserId as $userRoleRelatedByUserId) {
+			// Fix issue with collection modified by reference
+			if ($userRoleRelatedByUserId->isNew()) {
+				$userRoleRelatedByUserId->setUserRelatedByUserId($this);
+			}
+			$this->addUserRoleRelatedByUserId($userRoleRelatedByUserId);
+		}
+
+		$this->collUserRolesRelatedByUserId = $userRolesRelatedByUserId;
+	}
+
+	/**
 	 * Returns the number of related UserRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3659,11 +4606,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserRolesRelatedByUserId();
 		}
 		if (!$this->collUserRolesRelatedByUserId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserRolesRelatedByUserId[]= $l;
-			$l->setUserRelatedByUserId($this);
+			$this->doAddUserRoleRelatedByUserId($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserRoleRelatedByUserId $userRoleRelatedByUserId The userRoleRelatedByUserId object to add.
+	 */
+	protected function doAddUserRoleRelatedByUserId($userRoleRelatedByUserId)
+	{
+		$this->collUserRolesRelatedByUserId[]= $userRoleRelatedByUserId;
+		$userRoleRelatedByUserId->setUserRelatedByUserId($this);
 	}
 
 
@@ -3760,6 +4715,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentRelatedByOwnerId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentsRelatedByOwnerId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentsRelatedByOwnerId(PropelCollection $documentsRelatedByOwnerId, PropelPDO $con = null)
+	{
+		$this->documentsRelatedByOwnerIdScheduledForDeletion = $this->getDocumentsRelatedByOwnerId(new Criteria(), $con)->diff($documentsRelatedByOwnerId);
+
+		foreach ($documentsRelatedByOwnerId as $documentRelatedByOwnerId) {
+			// Fix issue with collection modified by reference
+			if ($documentRelatedByOwnerId->isNew()) {
+				$documentRelatedByOwnerId->setUserRelatedByOwnerId($this);
+			}
+			$this->addDocumentRelatedByOwnerId($documentRelatedByOwnerId);
+		}
+
+		$this->collDocumentsRelatedByOwnerId = $documentsRelatedByOwnerId;
+	}
+
+	/**
 	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3800,11 +4779,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentsRelatedByOwnerId();
 		}
 		if (!$this->collDocumentsRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentsRelatedByOwnerId[]= $l;
-			$l->setUserRelatedByOwnerId($this);
+			$this->doAddDocumentRelatedByOwnerId($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentRelatedByOwnerId $documentRelatedByOwnerId The documentRelatedByOwnerId object to add.
+	 */
+	protected function doAddDocumentRelatedByOwnerId($documentRelatedByOwnerId)
+	{
+		$this->collDocumentsRelatedByOwnerId[]= $documentRelatedByOwnerId;
+		$documentRelatedByOwnerId->setUserRelatedByOwnerId($this);
 	}
 
 
@@ -3951,6 +4938,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LinkRelatedByOwnerId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $linksRelatedByOwnerId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinksRelatedByOwnerId(PropelCollection $linksRelatedByOwnerId, PropelPDO $con = null)
+	{
+		$this->linksRelatedByOwnerIdScheduledForDeletion = $this->getLinksRelatedByOwnerId(new Criteria(), $con)->diff($linksRelatedByOwnerId);
+
+		foreach ($linksRelatedByOwnerId as $linkRelatedByOwnerId) {
+			// Fix issue with collection modified by reference
+			if ($linkRelatedByOwnerId->isNew()) {
+				$linkRelatedByOwnerId->setUserRelatedByOwnerId($this);
+			}
+			$this->addLinkRelatedByOwnerId($linkRelatedByOwnerId);
+		}
+
+		$this->collLinksRelatedByOwnerId = $linksRelatedByOwnerId;
+	}
+
+	/**
 	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3991,11 +5002,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLinksRelatedByOwnerId();
 		}
 		if (!$this->collLinksRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinksRelatedByOwnerId[]= $l;
-			$l->setUserRelatedByOwnerId($this);
+			$this->doAddLinkRelatedByOwnerId($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LinkRelatedByOwnerId $linkRelatedByOwnerId The linkRelatedByOwnerId object to add.
+	 */
+	protected function doAddLinkRelatedByOwnerId($linkRelatedByOwnerId)
+	{
+		$this->collLinksRelatedByOwnerId[]= $linkRelatedByOwnerId;
+		$linkRelatedByOwnerId->setUserRelatedByOwnerId($this);
 	}
 
 
@@ -4117,6 +5136,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagesRelatedByCreatedBy(PropelCollection $pagesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->pagesRelatedByCreatedByScheduledForDeletion = $this->getPagesRelatedByCreatedBy(new Criteria(), $con)->diff($pagesRelatedByCreatedBy);
+
+		foreach ($pagesRelatedByCreatedBy as $pageRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pageRelatedByCreatedBy->isNew()) {
+				$pageRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addPageRelatedByCreatedBy($pageRelatedByCreatedBy);
+		}
+
+		$this->collPagesRelatedByCreatedBy = $pagesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Page objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4157,11 +5200,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPagesRelatedByCreatedBy();
 		}
 		if (!$this->collPagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddPageRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageRelatedByCreatedBy $pageRelatedByCreatedBy The pageRelatedByCreatedBy object to add.
+	 */
+	protected function doAddPageRelatedByCreatedBy($pageRelatedByCreatedBy)
+	{
+		$this->collPagesRelatedByCreatedBy[]= $pageRelatedByCreatedBy;
+		$pageRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -4233,6 +5284,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagesRelatedByUpdatedBy(PropelCollection $pagesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->pagesRelatedByUpdatedByScheduledForDeletion = $this->getPagesRelatedByUpdatedBy(new Criteria(), $con)->diff($pagesRelatedByUpdatedBy);
+
+		foreach ($pagesRelatedByUpdatedBy as $pageRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pageRelatedByUpdatedBy->isNew()) {
+				$pageRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addPageRelatedByUpdatedBy($pageRelatedByUpdatedBy);
+		}
+
+		$this->collPagesRelatedByUpdatedBy = $pagesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Page objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4273,11 +5348,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPagesRelatedByUpdatedBy();
 		}
 		if (!$this->collPagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddPageRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageRelatedByUpdatedBy $pageRelatedByUpdatedBy The pageRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddPageRelatedByUpdatedBy($pageRelatedByUpdatedBy)
+	{
+		$this->collPagesRelatedByUpdatedBy[]= $pageRelatedByUpdatedBy;
+		$pageRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -4349,6 +5432,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PagePropertyRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagePropertysRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagePropertysRelatedByCreatedBy(PropelCollection $pagePropertysRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->pagePropertysRelatedByCreatedByScheduledForDeletion = $this->getPagePropertysRelatedByCreatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByCreatedBy);
+
+		foreach ($pagePropertysRelatedByCreatedBy as $pagePropertyRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pagePropertyRelatedByCreatedBy->isNew()) {
+				$pagePropertyRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addPagePropertyRelatedByCreatedBy($pagePropertyRelatedByCreatedBy);
+		}
+
+		$this->collPagePropertysRelatedByCreatedBy = $pagePropertysRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related PageProperty objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4389,11 +5496,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPagePropertysRelatedByCreatedBy();
 		}
 		if (!$this->collPagePropertysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagePropertysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddPagePropertyRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PagePropertyRelatedByCreatedBy $pagePropertyRelatedByCreatedBy The pagePropertyRelatedByCreatedBy object to add.
+	 */
+	protected function doAddPagePropertyRelatedByCreatedBy($pagePropertyRelatedByCreatedBy)
+	{
+		$this->collPagePropertysRelatedByCreatedBy[]= $pagePropertyRelatedByCreatedBy;
+		$pagePropertyRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -4490,6 +5605,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PagePropertyRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagePropertysRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagePropertysRelatedByUpdatedBy(PropelCollection $pagePropertysRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->pagePropertysRelatedByUpdatedByScheduledForDeletion = $this->getPagePropertysRelatedByUpdatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByUpdatedBy);
+
+		foreach ($pagePropertysRelatedByUpdatedBy as $pagePropertyRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pagePropertyRelatedByUpdatedBy->isNew()) {
+				$pagePropertyRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addPagePropertyRelatedByUpdatedBy($pagePropertyRelatedByUpdatedBy);
+		}
+
+		$this->collPagePropertysRelatedByUpdatedBy = $pagePropertysRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related PageProperty objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4530,11 +5669,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPagePropertysRelatedByUpdatedBy();
 		}
 		if (!$this->collPagePropertysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagePropertysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddPagePropertyRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PagePropertyRelatedByUpdatedBy $pagePropertyRelatedByUpdatedBy The pagePropertyRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddPagePropertyRelatedByUpdatedBy($pagePropertyRelatedByUpdatedBy)
+	{
+		$this->collPagePropertysRelatedByUpdatedBy[]= $pagePropertyRelatedByUpdatedBy;
+		$pagePropertyRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -4631,6 +5778,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageStringRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pageStringsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPageStringsRelatedByCreatedBy(PropelCollection $pageStringsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->pageStringsRelatedByCreatedByScheduledForDeletion = $this->getPageStringsRelatedByCreatedBy(new Criteria(), $con)->diff($pageStringsRelatedByCreatedBy);
+
+		foreach ($pageStringsRelatedByCreatedBy as $pageStringRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pageStringRelatedByCreatedBy->isNew()) {
+				$pageStringRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addPageStringRelatedByCreatedBy($pageStringRelatedByCreatedBy);
+		}
+
+		$this->collPageStringsRelatedByCreatedBy = $pageStringsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related PageString objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4671,11 +5842,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPageStringsRelatedByCreatedBy();
 		}
 		if (!$this->collPageStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStringsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddPageStringRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageStringRelatedByCreatedBy $pageStringRelatedByCreatedBy The pageStringRelatedByCreatedBy object to add.
+	 */
+	protected function doAddPageStringRelatedByCreatedBy($pageStringRelatedByCreatedBy)
+	{
+		$this->collPageStringsRelatedByCreatedBy[]= $pageStringRelatedByCreatedBy;
+		$pageStringRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -4797,6 +5976,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageStringRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pageStringsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPageStringsRelatedByUpdatedBy(PropelCollection $pageStringsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->pageStringsRelatedByUpdatedByScheduledForDeletion = $this->getPageStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($pageStringsRelatedByUpdatedBy);
+
+		foreach ($pageStringsRelatedByUpdatedBy as $pageStringRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($pageStringRelatedByUpdatedBy->isNew()) {
+				$pageStringRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addPageStringRelatedByUpdatedBy($pageStringRelatedByUpdatedBy);
+		}
+
+		$this->collPageStringsRelatedByUpdatedBy = $pageStringsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related PageString objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4837,11 +6040,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initPageStringsRelatedByUpdatedBy();
 		}
 		if (!$this->collPageStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStringsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddPageStringRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageStringRelatedByUpdatedBy $pageStringRelatedByUpdatedBy The pageStringRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddPageStringRelatedByUpdatedBy($pageStringRelatedByUpdatedBy)
+	{
+		$this->collPageStringsRelatedByUpdatedBy[]= $pageStringRelatedByUpdatedBy;
+		$pageStringRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -4963,6 +6174,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ContentObjectRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $contentObjectsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setContentObjectsRelatedByCreatedBy(PropelCollection $contentObjectsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->contentObjectsRelatedByCreatedByScheduledForDeletion = $this->getContentObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByCreatedBy);
+
+		foreach ($contentObjectsRelatedByCreatedBy as $contentObjectRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($contentObjectRelatedByCreatedBy->isNew()) {
+				$contentObjectRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addContentObjectRelatedByCreatedBy($contentObjectRelatedByCreatedBy);
+		}
+
+		$this->collContentObjectsRelatedByCreatedBy = $contentObjectsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related ContentObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5003,11 +6238,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initContentObjectsRelatedByCreatedBy();
 		}
 		if (!$this->collContentObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collContentObjectsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddContentObjectRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	ContentObjectRelatedByCreatedBy $contentObjectRelatedByCreatedBy The contentObjectRelatedByCreatedBy object to add.
+	 */
+	protected function doAddContentObjectRelatedByCreatedBy($contentObjectRelatedByCreatedBy)
+	{
+		$this->collContentObjectsRelatedByCreatedBy[]= $contentObjectRelatedByCreatedBy;
+		$contentObjectRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -5104,6 +6347,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ContentObjectRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $contentObjectsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setContentObjectsRelatedByUpdatedBy(PropelCollection $contentObjectsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->contentObjectsRelatedByUpdatedByScheduledForDeletion = $this->getContentObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByUpdatedBy);
+
+		foreach ($contentObjectsRelatedByUpdatedBy as $contentObjectRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($contentObjectRelatedByUpdatedBy->isNew()) {
+				$contentObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addContentObjectRelatedByUpdatedBy($contentObjectRelatedByUpdatedBy);
+		}
+
+		$this->collContentObjectsRelatedByUpdatedBy = $contentObjectsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related ContentObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5144,11 +6411,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initContentObjectsRelatedByUpdatedBy();
 		}
 		if (!$this->collContentObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collContentObjectsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddContentObjectRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	ContentObjectRelatedByUpdatedBy $contentObjectRelatedByUpdatedBy The contentObjectRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddContentObjectRelatedByUpdatedBy($contentObjectRelatedByUpdatedBy)
+	{
+		$this->collContentObjectsRelatedByUpdatedBy[]= $contentObjectRelatedByUpdatedBy;
+		$contentObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -5245,6 +6520,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObjectRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjectsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjectsRelatedByCreatedBy(PropelCollection $languageObjectsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->languageObjectsRelatedByCreatedByScheduledForDeletion = $this->getLanguageObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByCreatedBy);
+
+		foreach ($languageObjectsRelatedByCreatedBy as $languageObjectRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageObjectRelatedByCreatedBy->isNew()) {
+				$languageObjectRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addLanguageObjectRelatedByCreatedBy($languageObjectRelatedByCreatedBy);
+		}
+
+		$this->collLanguageObjectsRelatedByCreatedBy = $languageObjectsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related LanguageObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5285,11 +6584,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguageObjectsRelatedByCreatedBy();
 		}
 		if (!$this->collLanguageObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddLanguageObjectRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObjectRelatedByCreatedBy $languageObjectRelatedByCreatedBy The languageObjectRelatedByCreatedBy object to add.
+	 */
+	protected function doAddLanguageObjectRelatedByCreatedBy($languageObjectRelatedByCreatedBy)
+	{
+		$this->collLanguageObjectsRelatedByCreatedBy[]= $languageObjectRelatedByCreatedBy;
+		$languageObjectRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -5411,6 +6718,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObjectRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjectsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjectsRelatedByUpdatedBy(PropelCollection $languageObjectsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->languageObjectsRelatedByUpdatedByScheduledForDeletion = $this->getLanguageObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByUpdatedBy);
+
+		foreach ($languageObjectsRelatedByUpdatedBy as $languageObjectRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageObjectRelatedByUpdatedBy->isNew()) {
+				$languageObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addLanguageObjectRelatedByUpdatedBy($languageObjectRelatedByUpdatedBy);
+		}
+
+		$this->collLanguageObjectsRelatedByUpdatedBy = $languageObjectsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related LanguageObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5451,11 +6782,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguageObjectsRelatedByUpdatedBy();
 		}
 		if (!$this->collLanguageObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddLanguageObjectRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObjectRelatedByUpdatedBy $languageObjectRelatedByUpdatedBy The languageObjectRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddLanguageObjectRelatedByUpdatedBy($languageObjectRelatedByUpdatedBy)
+	{
+		$this->collLanguageObjectsRelatedByUpdatedBy[]= $languageObjectRelatedByUpdatedBy;
+		$languageObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -5577,6 +6916,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObjectHistoryRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjectHistorysRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjectHistorysRelatedByCreatedBy(PropelCollection $languageObjectHistorysRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion = $this->getLanguageObjectHistorysRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByCreatedBy);
+
+		foreach ($languageObjectHistorysRelatedByCreatedBy as $languageObjectHistoryRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageObjectHistoryRelatedByCreatedBy->isNew()) {
+				$languageObjectHistoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistoryRelatedByCreatedBy);
+		}
+
+		$this->collLanguageObjectHistorysRelatedByCreatedBy = $languageObjectHistorysRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related LanguageObjectHistory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5617,11 +6980,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguageObjectHistorysRelatedByCreatedBy();
 		}
 		if (!$this->collLanguageObjectHistorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectHistorysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddLanguageObjectHistoryRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObjectHistoryRelatedByCreatedBy $languageObjectHistoryRelatedByCreatedBy The languageObjectHistoryRelatedByCreatedBy object to add.
+	 */
+	protected function doAddLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistoryRelatedByCreatedBy)
+	{
+		$this->collLanguageObjectHistorysRelatedByCreatedBy[]= $languageObjectHistoryRelatedByCreatedBy;
+		$languageObjectHistoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -5743,6 +7114,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObjectHistoryRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjectHistorysRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjectHistorysRelatedByUpdatedBy(PropelCollection $languageObjectHistorysRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion = $this->getLanguageObjectHistorysRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByUpdatedBy);
+
+		foreach ($languageObjectHistorysRelatedByUpdatedBy as $languageObjectHistoryRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageObjectHistoryRelatedByUpdatedBy->isNew()) {
+				$languageObjectHistoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistoryRelatedByUpdatedBy);
+		}
+
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy = $languageObjectHistorysRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related LanguageObjectHistory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5783,11 +7178,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguageObjectHistorysRelatedByUpdatedBy();
 		}
 		if (!$this->collLanguageObjectHistorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectHistorysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddLanguageObjectHistoryRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObjectHistoryRelatedByUpdatedBy $languageObjectHistoryRelatedByUpdatedBy The languageObjectHistoryRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistoryRelatedByUpdatedBy)
+	{
+		$this->collLanguageObjectHistorysRelatedByUpdatedBy[]= $languageObjectHistoryRelatedByUpdatedBy;
+		$languageObjectHistoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -5909,6 +7312,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languagesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguagesRelatedByCreatedBy(PropelCollection $languagesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->languagesRelatedByCreatedByScheduledForDeletion = $this->getLanguagesRelatedByCreatedBy(new Criteria(), $con)->diff($languagesRelatedByCreatedBy);
+
+		foreach ($languagesRelatedByCreatedBy as $languageRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageRelatedByCreatedBy->isNew()) {
+				$languageRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addLanguageRelatedByCreatedBy($languageRelatedByCreatedBy);
+		}
+
+		$this->collLanguagesRelatedByCreatedBy = $languagesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Language objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5949,11 +7376,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguagesRelatedByCreatedBy();
 		}
 		if (!$this->collLanguagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguagesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddLanguageRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageRelatedByCreatedBy $languageRelatedByCreatedBy The languageRelatedByCreatedBy object to add.
+	 */
+	protected function doAddLanguageRelatedByCreatedBy($languageRelatedByCreatedBy)
+	{
+		$this->collLanguagesRelatedByCreatedBy[]= $languageRelatedByCreatedBy;
+		$languageRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -6025,6 +7460,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languagesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguagesRelatedByUpdatedBy(PropelCollection $languagesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->languagesRelatedByUpdatedByScheduledForDeletion = $this->getLanguagesRelatedByUpdatedBy(new Criteria(), $con)->diff($languagesRelatedByUpdatedBy);
+
+		foreach ($languagesRelatedByUpdatedBy as $languageRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($languageRelatedByUpdatedBy->isNew()) {
+				$languageRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addLanguageRelatedByUpdatedBy($languageRelatedByUpdatedBy);
+		}
+
+		$this->collLanguagesRelatedByUpdatedBy = $languagesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Language objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6065,11 +7524,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLanguagesRelatedByUpdatedBy();
 		}
 		if (!$this->collLanguagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguagesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddLanguageRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageRelatedByUpdatedBy $languageRelatedByUpdatedBy The languageRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddLanguageRelatedByUpdatedBy($languageRelatedByUpdatedBy)
+	{
+		$this->collLanguagesRelatedByUpdatedBy[]= $languageRelatedByUpdatedBy;
+		$languageRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -6141,6 +7608,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of StringRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $stringsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setStringsRelatedByCreatedBy(PropelCollection $stringsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->stringsRelatedByCreatedByScheduledForDeletion = $this->getStringsRelatedByCreatedBy(new Criteria(), $con)->diff($stringsRelatedByCreatedBy);
+
+		foreach ($stringsRelatedByCreatedBy as $stringRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($stringRelatedByCreatedBy->isNew()) {
+				$stringRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addStringRelatedByCreatedBy($stringRelatedByCreatedBy);
+		}
+
+		$this->collStringsRelatedByCreatedBy = $stringsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related String objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6181,11 +7672,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initStringsRelatedByCreatedBy();
 		}
 		if (!$this->collStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collStringsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddStringRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	StringRelatedByCreatedBy $stringRelatedByCreatedBy The stringRelatedByCreatedBy object to add.
+	 */
+	protected function doAddStringRelatedByCreatedBy($stringRelatedByCreatedBy)
+	{
+		$this->collStringsRelatedByCreatedBy[]= $stringRelatedByCreatedBy;
+		$stringRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -6282,6 +7781,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of StringRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $stringsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setStringsRelatedByUpdatedBy(PropelCollection $stringsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->stringsRelatedByUpdatedByScheduledForDeletion = $this->getStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($stringsRelatedByUpdatedBy);
+
+		foreach ($stringsRelatedByUpdatedBy as $stringRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($stringRelatedByUpdatedBy->isNew()) {
+				$stringRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addStringRelatedByUpdatedBy($stringRelatedByUpdatedBy);
+		}
+
+		$this->collStringsRelatedByUpdatedBy = $stringsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related String objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6322,11 +7845,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initStringsRelatedByUpdatedBy();
 		}
 		if (!$this->collStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collStringsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddStringRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	StringRelatedByUpdatedBy $stringRelatedByUpdatedBy The stringRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddStringRelatedByUpdatedBy($stringRelatedByUpdatedBy)
+	{
+		$this->collStringsRelatedByUpdatedBy[]= $stringRelatedByUpdatedBy;
+		$stringRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -6423,6 +7954,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserGroupRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userGroupsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserGroupsRelatedByCreatedBy(PropelCollection $userGroupsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->userGroupsRelatedByCreatedByScheduledForDeletion = $this->getUserGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($userGroupsRelatedByCreatedBy);
+
+		foreach ($userGroupsRelatedByCreatedBy as $userGroupRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($userGroupRelatedByCreatedBy->isNew()) {
+				$userGroupRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addUserGroupRelatedByCreatedBy($userGroupRelatedByCreatedBy);
+		}
+
+		$this->collUserGroupsRelatedByCreatedBy = $userGroupsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related UserGroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6463,11 +8018,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserGroupsRelatedByCreatedBy();
 		}
 		if (!$this->collUserGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroupsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddUserGroupRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserGroupRelatedByCreatedBy $userGroupRelatedByCreatedBy The userGroupRelatedByCreatedBy object to add.
+	 */
+	protected function doAddUserGroupRelatedByCreatedBy($userGroupRelatedByCreatedBy)
+	{
+		$this->collUserGroupsRelatedByCreatedBy[]= $userGroupRelatedByCreatedBy;
+		$userGroupRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -6564,6 +8127,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserGroupRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userGroupsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserGroupsRelatedByUpdatedBy(PropelCollection $userGroupsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->userGroupsRelatedByUpdatedByScheduledForDeletion = $this->getUserGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($userGroupsRelatedByUpdatedBy);
+
+		foreach ($userGroupsRelatedByUpdatedBy as $userGroupRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($userGroupRelatedByUpdatedBy->isNew()) {
+				$userGroupRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addUserGroupRelatedByUpdatedBy($userGroupRelatedByUpdatedBy);
+		}
+
+		$this->collUserGroupsRelatedByUpdatedBy = $userGroupsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related UserGroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6604,11 +8191,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserGroupsRelatedByUpdatedBy();
 		}
 		if (!$this->collUserGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroupsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddUserGroupRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserGroupRelatedByUpdatedBy $userGroupRelatedByUpdatedBy The userGroupRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddUserGroupRelatedByUpdatedBy($userGroupRelatedByUpdatedBy)
+	{
+		$this->collUserGroupsRelatedByUpdatedBy[]= $userGroupRelatedByUpdatedBy;
+		$userGroupRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -6705,6 +8300,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of GroupRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupsRelatedByCreatedBy(PropelCollection $groupsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->groupsRelatedByCreatedByScheduledForDeletion = $this->getGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($groupsRelatedByCreatedBy);
+
+		foreach ($groupsRelatedByCreatedBy as $groupRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($groupRelatedByCreatedBy->isNew()) {
+				$groupRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addGroupRelatedByCreatedBy($groupRelatedByCreatedBy);
+		}
+
+		$this->collGroupsRelatedByCreatedBy = $groupsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Group objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6745,11 +8364,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initGroupsRelatedByCreatedBy();
 		}
 		if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddGroupRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	GroupRelatedByCreatedBy $groupRelatedByCreatedBy The groupRelatedByCreatedBy object to add.
+	 */
+	protected function doAddGroupRelatedByCreatedBy($groupRelatedByCreatedBy)
+	{
+		$this->collGroupsRelatedByCreatedBy[]= $groupRelatedByCreatedBy;
+		$groupRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -6821,6 +8448,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of GroupRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupsRelatedByUpdatedBy(PropelCollection $groupsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->groupsRelatedByUpdatedByScheduledForDeletion = $this->getGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($groupsRelatedByUpdatedBy);
+
+		foreach ($groupsRelatedByUpdatedBy as $groupRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($groupRelatedByUpdatedBy->isNew()) {
+				$groupRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addGroupRelatedByUpdatedBy($groupRelatedByUpdatedBy);
+		}
+
+		$this->collGroupsRelatedByUpdatedBy = $groupsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Group objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6861,11 +8512,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initGroupsRelatedByUpdatedBy();
 		}
 		if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddGroupRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	GroupRelatedByUpdatedBy $groupRelatedByUpdatedBy The groupRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddGroupRelatedByUpdatedBy($groupRelatedByUpdatedBy)
+	{
+		$this->collGroupsRelatedByUpdatedBy[]= $groupRelatedByUpdatedBy;
+		$groupRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -6937,6 +8596,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of GroupRoleRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupRolesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupRolesRelatedByCreatedBy(PropelCollection $groupRolesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->groupRolesRelatedByCreatedByScheduledForDeletion = $this->getGroupRolesRelatedByCreatedBy(new Criteria(), $con)->diff($groupRolesRelatedByCreatedBy);
+
+		foreach ($groupRolesRelatedByCreatedBy as $groupRoleRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($groupRoleRelatedByCreatedBy->isNew()) {
+				$groupRoleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addGroupRoleRelatedByCreatedBy($groupRoleRelatedByCreatedBy);
+		}
+
+		$this->collGroupRolesRelatedByCreatedBy = $groupRolesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related GroupRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6977,11 +8660,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initGroupRolesRelatedByCreatedBy();
 		}
 		if (!$this->collGroupRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddGroupRoleRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	GroupRoleRelatedByCreatedBy $groupRoleRelatedByCreatedBy The groupRoleRelatedByCreatedBy object to add.
+	 */
+	protected function doAddGroupRoleRelatedByCreatedBy($groupRoleRelatedByCreatedBy)
+	{
+		$this->collGroupRolesRelatedByCreatedBy[]= $groupRoleRelatedByCreatedBy;
+		$groupRoleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -7103,6 +8794,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of GroupRoleRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupRolesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupRolesRelatedByUpdatedBy(PropelCollection $groupRolesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->groupRolesRelatedByUpdatedByScheduledForDeletion = $this->getGroupRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($groupRolesRelatedByUpdatedBy);
+
+		foreach ($groupRolesRelatedByUpdatedBy as $groupRoleRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($groupRoleRelatedByUpdatedBy->isNew()) {
+				$groupRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addGroupRoleRelatedByUpdatedBy($groupRoleRelatedByUpdatedBy);
+		}
+
+		$this->collGroupRolesRelatedByUpdatedBy = $groupRolesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related GroupRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7143,11 +8858,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initGroupRolesRelatedByUpdatedBy();
 		}
 		if (!$this->collGroupRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddGroupRoleRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	GroupRoleRelatedByUpdatedBy $groupRoleRelatedByUpdatedBy The groupRoleRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddGroupRoleRelatedByUpdatedBy($groupRoleRelatedByUpdatedBy)
+	{
+		$this->collGroupRolesRelatedByUpdatedBy[]= $groupRoleRelatedByUpdatedBy;
+		$groupRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -7269,6 +8992,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of RoleRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $rolesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setRolesRelatedByCreatedBy(PropelCollection $rolesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->rolesRelatedByCreatedByScheduledForDeletion = $this->getRolesRelatedByCreatedBy(new Criteria(), $con)->diff($rolesRelatedByCreatedBy);
+
+		foreach ($rolesRelatedByCreatedBy as $roleRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($roleRelatedByCreatedBy->isNew()) {
+				$roleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addRoleRelatedByCreatedBy($roleRelatedByCreatedBy);
+		}
+
+		$this->collRolesRelatedByCreatedBy = $rolesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Role objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7309,11 +9056,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initRolesRelatedByCreatedBy();
 		}
 		if (!$this->collRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddRoleRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	RoleRelatedByCreatedBy $roleRelatedByCreatedBy The roleRelatedByCreatedBy object to add.
+	 */
+	protected function doAddRoleRelatedByCreatedBy($roleRelatedByCreatedBy)
+	{
+		$this->collRolesRelatedByCreatedBy[]= $roleRelatedByCreatedBy;
+		$roleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -7385,6 +9140,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of RoleRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $rolesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setRolesRelatedByUpdatedBy(PropelCollection $rolesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->rolesRelatedByUpdatedByScheduledForDeletion = $this->getRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($rolesRelatedByUpdatedBy);
+
+		foreach ($rolesRelatedByUpdatedBy as $roleRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($roleRelatedByUpdatedBy->isNew()) {
+				$roleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addRoleRelatedByUpdatedBy($roleRelatedByUpdatedBy);
+		}
+
+		$this->collRolesRelatedByUpdatedBy = $rolesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Role objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7425,11 +9204,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initRolesRelatedByUpdatedBy();
 		}
 		if (!$this->collRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddRoleRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	RoleRelatedByUpdatedBy $roleRelatedByUpdatedBy The roleRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddRoleRelatedByUpdatedBy($roleRelatedByUpdatedBy)
+	{
+		$this->collRolesRelatedByUpdatedBy[]= $roleRelatedByUpdatedBy;
+		$roleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -7501,6 +9288,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserRoleRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userRolesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserRolesRelatedByCreatedBy(PropelCollection $userRolesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->userRolesRelatedByCreatedByScheduledForDeletion = $this->getUserRolesRelatedByCreatedBy(new Criteria(), $con)->diff($userRolesRelatedByCreatedBy);
+
+		foreach ($userRolesRelatedByCreatedBy as $userRoleRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($userRoleRelatedByCreatedBy->isNew()) {
+				$userRoleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addUserRoleRelatedByCreatedBy($userRoleRelatedByCreatedBy);
+		}
+
+		$this->collUserRolesRelatedByCreatedBy = $userRolesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related UserRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7541,11 +9352,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserRolesRelatedByCreatedBy();
 		}
 		if (!$this->collUserRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserRolesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddUserRoleRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserRoleRelatedByCreatedBy $userRoleRelatedByCreatedBy The userRoleRelatedByCreatedBy object to add.
+	 */
+	protected function doAddUserRoleRelatedByCreatedBy($userRoleRelatedByCreatedBy)
+	{
+		$this->collUserRolesRelatedByCreatedBy[]= $userRoleRelatedByCreatedBy;
+		$userRoleRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -7642,6 +9461,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserRoleRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userRolesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserRolesRelatedByUpdatedBy(PropelCollection $userRolesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->userRolesRelatedByUpdatedByScheduledForDeletion = $this->getUserRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($userRolesRelatedByUpdatedBy);
+
+		foreach ($userRolesRelatedByUpdatedBy as $userRoleRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($userRoleRelatedByUpdatedBy->isNew()) {
+				$userRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addUserRoleRelatedByUpdatedBy($userRoleRelatedByUpdatedBy);
+		}
+
+		$this->collUserRolesRelatedByUpdatedBy = $userRolesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related UserRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7682,11 +9525,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initUserRolesRelatedByUpdatedBy();
 		}
 		if (!$this->collUserRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserRolesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddUserRoleRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserRoleRelatedByUpdatedBy $userRoleRelatedByUpdatedBy The userRoleRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddUserRoleRelatedByUpdatedBy($userRoleRelatedByUpdatedBy)
+	{
+		$this->collUserRolesRelatedByUpdatedBy[]= $userRoleRelatedByUpdatedBy;
+		$userRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -7783,6 +9634,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of RightRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $rightsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setRightsRelatedByCreatedBy(PropelCollection $rightsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->rightsRelatedByCreatedByScheduledForDeletion = $this->getRightsRelatedByCreatedBy(new Criteria(), $con)->diff($rightsRelatedByCreatedBy);
+
+		foreach ($rightsRelatedByCreatedBy as $rightRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($rightRelatedByCreatedBy->isNew()) {
+				$rightRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addRightRelatedByCreatedBy($rightRelatedByCreatedBy);
+		}
+
+		$this->collRightsRelatedByCreatedBy = $rightsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Right objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7823,11 +9698,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initRightsRelatedByCreatedBy();
 		}
 		if (!$this->collRightsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRightsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddRightRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	RightRelatedByCreatedBy $rightRelatedByCreatedBy The rightRelatedByCreatedBy object to add.
+	 */
+	protected function doAddRightRelatedByCreatedBy($rightRelatedByCreatedBy)
+	{
+		$this->collRightsRelatedByCreatedBy[]= $rightRelatedByCreatedBy;
+		$rightRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -7949,6 +9832,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of RightRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $rightsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setRightsRelatedByUpdatedBy(PropelCollection $rightsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->rightsRelatedByUpdatedByScheduledForDeletion = $this->getRightsRelatedByUpdatedBy(new Criteria(), $con)->diff($rightsRelatedByUpdatedBy);
+
+		foreach ($rightsRelatedByUpdatedBy as $rightRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($rightRelatedByUpdatedBy->isNew()) {
+				$rightRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addRightRelatedByUpdatedBy($rightRelatedByUpdatedBy);
+		}
+
+		$this->collRightsRelatedByUpdatedBy = $rightsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Right objects.
 	 *
 	 * @param      Criteria $criteria
@@ -7989,11 +9896,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initRightsRelatedByUpdatedBy();
 		}
 		if (!$this->collRightsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRightsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddRightRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	RightRelatedByUpdatedBy $rightRelatedByUpdatedBy The rightRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddRightRelatedByUpdatedBy($rightRelatedByUpdatedBy)
+	{
+		$this->collRightsRelatedByUpdatedBy[]= $rightRelatedByUpdatedBy;
+		$rightRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -8115,6 +10030,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentsRelatedByCreatedBy(PropelCollection $documentsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->documentsRelatedByCreatedByScheduledForDeletion = $this->getDocumentsRelatedByCreatedBy(new Criteria(), $con)->diff($documentsRelatedByCreatedBy);
+
+		foreach ($documentsRelatedByCreatedBy as $documentRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentRelatedByCreatedBy->isNew()) {
+				$documentRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addDocumentRelatedByCreatedBy($documentRelatedByCreatedBy);
+		}
+
+		$this->collDocumentsRelatedByCreatedBy = $documentsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8155,11 +10094,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentsRelatedByCreatedBy();
 		}
 		if (!$this->collDocumentsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddDocumentRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentRelatedByCreatedBy $documentRelatedByCreatedBy The documentRelatedByCreatedBy object to add.
+	 */
+	protected function doAddDocumentRelatedByCreatedBy($documentRelatedByCreatedBy)
+	{
+		$this->collDocumentsRelatedByCreatedBy[]= $documentRelatedByCreatedBy;
+		$documentRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -8306,6 +10253,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentsRelatedByUpdatedBy(PropelCollection $documentsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->documentsRelatedByUpdatedByScheduledForDeletion = $this->getDocumentsRelatedByUpdatedBy(new Criteria(), $con)->diff($documentsRelatedByUpdatedBy);
+
+		foreach ($documentsRelatedByUpdatedBy as $documentRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentRelatedByUpdatedBy->isNew()) {
+				$documentRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addDocumentRelatedByUpdatedBy($documentRelatedByUpdatedBy);
+		}
+
+		$this->collDocumentsRelatedByUpdatedBy = $documentsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8346,11 +10317,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentsRelatedByUpdatedBy();
 		}
 		if (!$this->collDocumentsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddDocumentRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentRelatedByUpdatedBy $documentRelatedByUpdatedBy The documentRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddDocumentRelatedByUpdatedBy($documentRelatedByUpdatedBy)
+	{
+		$this->collDocumentsRelatedByUpdatedBy[]= $documentRelatedByUpdatedBy;
+		$documentRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -8497,6 +10476,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentTypeRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentTypesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentTypesRelatedByCreatedBy(PropelCollection $documentTypesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->documentTypesRelatedByCreatedByScheduledForDeletion = $this->getDocumentTypesRelatedByCreatedBy(new Criteria(), $con)->diff($documentTypesRelatedByCreatedBy);
+
+		foreach ($documentTypesRelatedByCreatedBy as $documentTypeRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentTypeRelatedByCreatedBy->isNew()) {
+				$documentTypeRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addDocumentTypeRelatedByCreatedBy($documentTypeRelatedByCreatedBy);
+		}
+
+		$this->collDocumentTypesRelatedByCreatedBy = $documentTypesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related DocumentType objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8537,11 +10540,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentTypesRelatedByCreatedBy();
 		}
 		if (!$this->collDocumentTypesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentTypesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddDocumentTypeRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentTypeRelatedByCreatedBy $documentTypeRelatedByCreatedBy The documentTypeRelatedByCreatedBy object to add.
+	 */
+	protected function doAddDocumentTypeRelatedByCreatedBy($documentTypeRelatedByCreatedBy)
+	{
+		$this->collDocumentTypesRelatedByCreatedBy[]= $documentTypeRelatedByCreatedBy;
+		$documentTypeRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -8613,6 +10624,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentTypeRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentTypesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentTypesRelatedByUpdatedBy(PropelCollection $documentTypesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->documentTypesRelatedByUpdatedByScheduledForDeletion = $this->getDocumentTypesRelatedByUpdatedBy(new Criteria(), $con)->diff($documentTypesRelatedByUpdatedBy);
+
+		foreach ($documentTypesRelatedByUpdatedBy as $documentTypeRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentTypeRelatedByUpdatedBy->isNew()) {
+				$documentTypeRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addDocumentTypeRelatedByUpdatedBy($documentTypeRelatedByUpdatedBy);
+		}
+
+		$this->collDocumentTypesRelatedByUpdatedBy = $documentTypesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related DocumentType objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8653,11 +10688,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentTypesRelatedByUpdatedBy();
 		}
 		if (!$this->collDocumentTypesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentTypesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddDocumentTypeRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentTypeRelatedByUpdatedBy $documentTypeRelatedByUpdatedBy The documentTypeRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddDocumentTypeRelatedByUpdatedBy($documentTypeRelatedByUpdatedBy)
+	{
+		$this->collDocumentTypesRelatedByUpdatedBy[]= $documentTypeRelatedByUpdatedBy;
+		$documentTypeRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -8729,6 +10772,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentCategoryRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentCategorysRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentCategorysRelatedByCreatedBy(PropelCollection $documentCategorysRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->documentCategorysRelatedByCreatedByScheduledForDeletion = $this->getDocumentCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByCreatedBy);
+
+		foreach ($documentCategorysRelatedByCreatedBy as $documentCategoryRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentCategoryRelatedByCreatedBy->isNew()) {
+				$documentCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addDocumentCategoryRelatedByCreatedBy($documentCategoryRelatedByCreatedBy);
+		}
+
+		$this->collDocumentCategorysRelatedByCreatedBy = $documentCategorysRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related DocumentCategory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8769,11 +10836,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentCategorysRelatedByCreatedBy();
 		}
 		if (!$this->collDocumentCategorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentCategorysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddDocumentCategoryRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentCategoryRelatedByCreatedBy $documentCategoryRelatedByCreatedBy The documentCategoryRelatedByCreatedBy object to add.
+	 */
+	protected function doAddDocumentCategoryRelatedByCreatedBy($documentCategoryRelatedByCreatedBy)
+	{
+		$this->collDocumentCategorysRelatedByCreatedBy[]= $documentCategoryRelatedByCreatedBy;
+		$documentCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -8845,6 +10920,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of DocumentCategoryRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documentCategorysRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocumentCategorysRelatedByUpdatedBy(PropelCollection $documentCategorysRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->documentCategorysRelatedByUpdatedByScheduledForDeletion = $this->getDocumentCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByUpdatedBy);
+
+		foreach ($documentCategorysRelatedByUpdatedBy as $documentCategoryRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($documentCategoryRelatedByUpdatedBy->isNew()) {
+				$documentCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addDocumentCategoryRelatedByUpdatedBy($documentCategoryRelatedByUpdatedBy);
+		}
+
+		$this->collDocumentCategorysRelatedByUpdatedBy = $documentCategorysRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related DocumentCategory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -8885,11 +10984,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initDocumentCategorysRelatedByUpdatedBy();
 		}
 		if (!$this->collDocumentCategorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocumentCategorysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddDocumentCategoryRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	DocumentCategoryRelatedByUpdatedBy $documentCategoryRelatedByUpdatedBy The documentCategoryRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddDocumentCategoryRelatedByUpdatedBy($documentCategoryRelatedByUpdatedBy)
+	{
+		$this->collDocumentCategorysRelatedByUpdatedBy[]= $documentCategoryRelatedByUpdatedBy;
+		$documentCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -8961,6 +11068,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of TagRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tagsRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTagsRelatedByCreatedBy(PropelCollection $tagsRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->tagsRelatedByCreatedByScheduledForDeletion = $this->getTagsRelatedByCreatedBy(new Criteria(), $con)->diff($tagsRelatedByCreatedBy);
+
+		foreach ($tagsRelatedByCreatedBy as $tagRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($tagRelatedByCreatedBy->isNew()) {
+				$tagRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addTagRelatedByCreatedBy($tagRelatedByCreatedBy);
+		}
+
+		$this->collTagsRelatedByCreatedBy = $tagsRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Tag objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9001,11 +11132,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initTagsRelatedByCreatedBy();
 		}
 		if (!$this->collTagsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collTagsRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddTagRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	TagRelatedByCreatedBy $tagRelatedByCreatedBy The tagRelatedByCreatedBy object to add.
+	 */
+	protected function doAddTagRelatedByCreatedBy($tagRelatedByCreatedBy)
+	{
+		$this->collTagsRelatedByCreatedBy[]= $tagRelatedByCreatedBy;
+		$tagRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -9077,6 +11216,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of TagRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tagsRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTagsRelatedByUpdatedBy(PropelCollection $tagsRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->tagsRelatedByUpdatedByScheduledForDeletion = $this->getTagsRelatedByUpdatedBy(new Criteria(), $con)->diff($tagsRelatedByUpdatedBy);
+
+		foreach ($tagsRelatedByUpdatedBy as $tagRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($tagRelatedByUpdatedBy->isNew()) {
+				$tagRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addTagRelatedByUpdatedBy($tagRelatedByUpdatedBy);
+		}
+
+		$this->collTagsRelatedByUpdatedBy = $tagsRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Tag objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9117,11 +11280,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initTagsRelatedByUpdatedBy();
 		}
 		if (!$this->collTagsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collTagsRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddTagRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	TagRelatedByUpdatedBy $tagRelatedByUpdatedBy The tagRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddTagRelatedByUpdatedBy($tagRelatedByUpdatedBy)
+	{
+		$this->collTagsRelatedByUpdatedBy[]= $tagRelatedByUpdatedBy;
+		$tagRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -9193,6 +11364,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of TagInstanceRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tagInstancesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTagInstancesRelatedByCreatedBy(PropelCollection $tagInstancesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->tagInstancesRelatedByCreatedByScheduledForDeletion = $this->getTagInstancesRelatedByCreatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByCreatedBy);
+
+		foreach ($tagInstancesRelatedByCreatedBy as $tagInstanceRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($tagInstanceRelatedByCreatedBy->isNew()) {
+				$tagInstanceRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addTagInstanceRelatedByCreatedBy($tagInstanceRelatedByCreatedBy);
+		}
+
+		$this->collTagInstancesRelatedByCreatedBy = $tagInstancesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related TagInstance objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9233,11 +11428,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initTagInstancesRelatedByCreatedBy();
 		}
 		if (!$this->collTagInstancesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collTagInstancesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddTagInstanceRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	TagInstanceRelatedByCreatedBy $tagInstanceRelatedByCreatedBy The tagInstanceRelatedByCreatedBy object to add.
+	 */
+	protected function doAddTagInstanceRelatedByCreatedBy($tagInstanceRelatedByCreatedBy)
+	{
+		$this->collTagInstancesRelatedByCreatedBy[]= $tagInstanceRelatedByCreatedBy;
+		$tagInstanceRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -9334,6 +11537,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of TagInstanceRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tagInstancesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTagInstancesRelatedByUpdatedBy(PropelCollection $tagInstancesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->tagInstancesRelatedByUpdatedByScheduledForDeletion = $this->getTagInstancesRelatedByUpdatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByUpdatedBy);
+
+		foreach ($tagInstancesRelatedByUpdatedBy as $tagInstanceRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($tagInstanceRelatedByUpdatedBy->isNew()) {
+				$tagInstanceRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addTagInstanceRelatedByUpdatedBy($tagInstanceRelatedByUpdatedBy);
+		}
+
+		$this->collTagInstancesRelatedByUpdatedBy = $tagInstancesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related TagInstance objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9374,11 +11601,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initTagInstancesRelatedByUpdatedBy();
 		}
 		if (!$this->collTagInstancesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collTagInstancesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddTagInstanceRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	TagInstanceRelatedByUpdatedBy $tagInstanceRelatedByUpdatedBy The tagInstanceRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddTagInstanceRelatedByUpdatedBy($tagInstanceRelatedByUpdatedBy)
+	{
+		$this->collTagInstancesRelatedByUpdatedBy[]= $tagInstanceRelatedByUpdatedBy;
+		$tagInstanceRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -9475,6 +11710,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LinkRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $linksRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinksRelatedByCreatedBy(PropelCollection $linksRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->linksRelatedByCreatedByScheduledForDeletion = $this->getLinksRelatedByCreatedBy(new Criteria(), $con)->diff($linksRelatedByCreatedBy);
+
+		foreach ($linksRelatedByCreatedBy as $linkRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($linkRelatedByCreatedBy->isNew()) {
+				$linkRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addLinkRelatedByCreatedBy($linkRelatedByCreatedBy);
+		}
+
+		$this->collLinksRelatedByCreatedBy = $linksRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9515,11 +11774,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLinksRelatedByCreatedBy();
 		}
 		if (!$this->collLinksRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinksRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddLinkRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LinkRelatedByCreatedBy $linkRelatedByCreatedBy The linkRelatedByCreatedBy object to add.
+	 */
+	protected function doAddLinkRelatedByCreatedBy($linkRelatedByCreatedBy)
+	{
+		$this->collLinksRelatedByCreatedBy[]= $linkRelatedByCreatedBy;
+		$linkRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 
@@ -9641,6 +11908,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LinkRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $linksRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinksRelatedByUpdatedBy(PropelCollection $linksRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->linksRelatedByUpdatedByScheduledForDeletion = $this->getLinksRelatedByUpdatedBy(new Criteria(), $con)->diff($linksRelatedByUpdatedBy);
+
+		foreach ($linksRelatedByUpdatedBy as $linkRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($linkRelatedByUpdatedBy->isNew()) {
+				$linkRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addLinkRelatedByUpdatedBy($linkRelatedByUpdatedBy);
+		}
+
+		$this->collLinksRelatedByUpdatedBy = $linksRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9681,11 +11972,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLinksRelatedByUpdatedBy();
 		}
 		if (!$this->collLinksRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinksRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddLinkRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LinkRelatedByUpdatedBy $linkRelatedByUpdatedBy The linkRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddLinkRelatedByUpdatedBy($linkRelatedByUpdatedBy)
+	{
+		$this->collLinksRelatedByUpdatedBy[]= $linkRelatedByUpdatedBy;
+		$linkRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 
@@ -9807,6 +12106,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LinkCategoryRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $linkCategorysRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinkCategorysRelatedByCreatedBy(PropelCollection $linkCategorysRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->linkCategorysRelatedByCreatedByScheduledForDeletion = $this->getLinkCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByCreatedBy);
+
+		foreach ($linkCategorysRelatedByCreatedBy as $linkCategoryRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($linkCategoryRelatedByCreatedBy->isNew()) {
+				$linkCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addLinkCategoryRelatedByCreatedBy($linkCategoryRelatedByCreatedBy);
+		}
+
+		$this->collLinkCategorysRelatedByCreatedBy = $linkCategorysRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related LinkCategory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9847,11 +12170,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLinkCategorysRelatedByCreatedBy();
 		}
 		if (!$this->collLinkCategorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinkCategorysRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddLinkCategoryRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LinkCategoryRelatedByCreatedBy $linkCategoryRelatedByCreatedBy The linkCategoryRelatedByCreatedBy object to add.
+	 */
+	protected function doAddLinkCategoryRelatedByCreatedBy($linkCategoryRelatedByCreatedBy)
+	{
+		$this->collLinkCategorysRelatedByCreatedBy[]= $linkCategoryRelatedByCreatedBy;
+		$linkCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -9923,6 +12254,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LinkCategoryRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $linkCategorysRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinkCategorysRelatedByUpdatedBy(PropelCollection $linkCategorysRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->linkCategorysRelatedByUpdatedByScheduledForDeletion = $this->getLinkCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByUpdatedBy);
+
+		foreach ($linkCategorysRelatedByUpdatedBy as $linkCategoryRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($linkCategoryRelatedByUpdatedBy->isNew()) {
+				$linkCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addLinkCategoryRelatedByUpdatedBy($linkCategoryRelatedByUpdatedBy);
+		}
+
+		$this->collLinkCategorysRelatedByUpdatedBy = $linkCategorysRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related LinkCategory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -9963,11 +12318,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initLinkCategorysRelatedByUpdatedBy();
 		}
 		if (!$this->collLinkCategorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinkCategorysRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddLinkCategoryRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LinkCategoryRelatedByUpdatedBy $linkCategoryRelatedByUpdatedBy The linkCategoryRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddLinkCategoryRelatedByUpdatedBy($linkCategoryRelatedByUpdatedBy)
+	{
+		$this->collLinkCategorysRelatedByUpdatedBy[]= $linkCategoryRelatedByUpdatedBy;
+		$linkCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**
@@ -10039,6 +12402,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ReferenceRelatedByCreatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $referencesRelatedByCreatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setReferencesRelatedByCreatedBy(PropelCollection $referencesRelatedByCreatedBy, PropelPDO $con = null)
+	{
+		$this->referencesRelatedByCreatedByScheduledForDeletion = $this->getReferencesRelatedByCreatedBy(new Criteria(), $con)->diff($referencesRelatedByCreatedBy);
+
+		foreach ($referencesRelatedByCreatedBy as $referenceRelatedByCreatedBy) {
+			// Fix issue with collection modified by reference
+			if ($referenceRelatedByCreatedBy->isNew()) {
+				$referenceRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+			}
+			$this->addReferenceRelatedByCreatedBy($referenceRelatedByCreatedBy);
+		}
+
+		$this->collReferencesRelatedByCreatedBy = $referencesRelatedByCreatedBy;
+	}
+
+	/**
 	 * Returns the number of related Reference objects.
 	 *
 	 * @param      Criteria $criteria
@@ -10079,11 +12466,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initReferencesRelatedByCreatedBy();
 		}
 		if (!$this->collReferencesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collReferencesRelatedByCreatedBy[]= $l;
-			$l->setUserRelatedByCreatedBy($this);
+			$this->doAddReferenceRelatedByCreatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	ReferenceRelatedByCreatedBy $referenceRelatedByCreatedBy The referenceRelatedByCreatedBy object to add.
+	 */
+	protected function doAddReferenceRelatedByCreatedBy($referenceRelatedByCreatedBy)
+	{
+		$this->collReferencesRelatedByCreatedBy[]= $referenceRelatedByCreatedBy;
+		$referenceRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
 	/**
@@ -10155,6 +12550,30 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ReferenceRelatedByUpdatedBy objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $referencesRelatedByUpdatedBy A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setReferencesRelatedByUpdatedBy(PropelCollection $referencesRelatedByUpdatedBy, PropelPDO $con = null)
+	{
+		$this->referencesRelatedByUpdatedByScheduledForDeletion = $this->getReferencesRelatedByUpdatedBy(new Criteria(), $con)->diff($referencesRelatedByUpdatedBy);
+
+		foreach ($referencesRelatedByUpdatedBy as $referenceRelatedByUpdatedBy) {
+			// Fix issue with collection modified by reference
+			if ($referenceRelatedByUpdatedBy->isNew()) {
+				$referenceRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+			}
+			$this->addReferenceRelatedByUpdatedBy($referenceRelatedByUpdatedBy);
+		}
+
+		$this->collReferencesRelatedByUpdatedBy = $referencesRelatedByUpdatedBy;
+	}
+
+	/**
 	 * Returns the number of related Reference objects.
 	 *
 	 * @param      Criteria $criteria
@@ -10195,11 +12614,19 @@ abstract class BaseUser extends BaseObject  implements Persistent
 			$this->initReferencesRelatedByUpdatedBy();
 		}
 		if (!$this->collReferencesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collReferencesRelatedByUpdatedBy[]= $l;
-			$l->setUserRelatedByUpdatedBy($this);
+			$this->doAddReferenceRelatedByUpdatedBy($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	ReferenceRelatedByUpdatedBy $referenceRelatedByUpdatedBy The referenceRelatedByUpdatedBy object to add.
+	 */
+	protected function doAddReferenceRelatedByUpdatedBy($referenceRelatedByUpdatedBy)
+	{
+		$this->collReferencesRelatedByUpdatedBy[]= $referenceRelatedByUpdatedBy;
+		$referenceRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
 	}
 
 	/**

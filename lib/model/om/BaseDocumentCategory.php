@@ -25,6 +25,12 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -114,6 +120,12 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentsScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -695,7 +707,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -786,7 +798,7 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -828,27 +840,24 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = DocumentCategoryPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(DocumentCategoryPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.DocumentCategoryPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += DocumentCategoryPeer::doUpdate($this, $con);
+			if ($this->documentsScheduledForDeletion !== null) {
+				if (!$this->documentsScheduledForDeletion->isEmpty()) {
+					DocumentQuery::create()
+						->filterByPrimaryKeys($this->documentsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collDocuments !== null) {
@@ -864,6 +873,128 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = DocumentCategoryPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . DocumentCategoryPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(DocumentCategoryPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::SORT)) {
+			$modifiedColumns[':p' . $index++]  = '`SORT`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::MAX_WIDTH)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_WIDTH`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_EXTERNALLY_MANAGED`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `document_categories` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`SORT`':
+						$stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
+						break;
+					case '`MAX_WIDTH`':
+						$stmt->bindValue($identifier, $this->max_width, PDO::PARAM_INT);
+						break;
+					case '`IS_EXTERNALLY_MANAGED`':
+						$stmt->bindValue($identifier, (int) $this->is_externally_managed, PDO::PARAM_INT);
+						break;
+					case '`IS_INACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1257,10 +1388,12 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getDocuments() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1268,6 +1401,8 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1497,6 +1632,30 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Document objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documents A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocuments(PropelCollection $documents, PropelPDO $con = null)
+	{
+		$this->documentsScheduledForDeletion = $this->getDocuments(new Criteria(), $con)->diff($documents);
+
+		foreach ($documents as $document) {
+			// Fix issue with collection modified by reference
+			if ($document->isNew()) {
+				$document->setDocumentCategory($this);
+			}
+			$this->addDocument($document);
+		}
+
+		$this->collDocuments = $documents;
+	}
+
+	/**
 	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1537,11 +1696,19 @@ abstract class BaseDocumentCategory extends BaseObject  implements Persistent
 			$this->initDocuments();
 		}
 		if (!$this->collDocuments->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocuments[]= $l;
-			$l->setDocumentCategory($this);
+			$this->doAddDocument($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	Document $document The document object to add.
+	 */
+	protected function doAddDocument($document)
+	{
+		$this->collDocuments[]= $document;
+		$document->setDocumentCategory($this);
 	}
 
 

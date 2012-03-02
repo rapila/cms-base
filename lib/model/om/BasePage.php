@@ -25,6 +25,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -188,6 +194,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 */
 	protected $aNestedSetParent = null;
 	
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagePropertysScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pageStringsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $contentObjectsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $rightsScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -1002,7 +1032,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1104,7 +1134,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1146,27 +1176,24 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = PagePeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(PagePeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.PagePeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += PagePeer::doUpdate($this, $con);
+			if ($this->pagePropertysScheduledForDeletion !== null) {
+				if (!$this->pagePropertysScheduledForDeletion->isEmpty()) {
+					PagePropertyQuery::create()
+						->filterByPrimaryKeys($this->pagePropertysScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagePropertysScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collPagePropertys !== null) {
@@ -1174,6 +1201,15 @@ abstract class BasePage extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->pageStringsScheduledForDeletion !== null) {
+				if (!$this->pageStringsScheduledForDeletion->isEmpty()) {
+					PageStringQuery::create()
+						->filterByPrimaryKeys($this->pageStringsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pageStringsScheduledForDeletion = null;
 				}
 			}
 
@@ -1185,11 +1221,29 @@ abstract class BasePage extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->contentObjectsScheduledForDeletion !== null) {
+				if (!$this->contentObjectsScheduledForDeletion->isEmpty()) {
+					ContentObjectQuery::create()
+						->filterByPrimaryKeys($this->contentObjectsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->contentObjectsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collContentObjects !== null) {
 				foreach ($this->collContentObjects as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->rightsScheduledForDeletion !== null) {
+				if (!$this->rightsScheduledForDeletion->isEmpty()) {
+					RightQuery::create()
+						->filterByPrimaryKeys($this->rightsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->rightsScheduledForDeletion = null;
 				}
 			}
 
@@ -1206,6 +1260,164 @@ abstract class BasePage extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = PagePeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . PagePeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(PagePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(PagePeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(PagePeer::IDENTIFIER)) {
+			$modifiedColumns[':p' . $index++]  = '`IDENTIFIER`';
+		}
+		if ($this->isColumnModified(PagePeer::PAGE_TYPE)) {
+			$modifiedColumns[':p' . $index++]  = '`PAGE_TYPE`';
+		}
+		if ($this->isColumnModified(PagePeer::TEMPLATE_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`TEMPLATE_NAME`';
+		}
+		if ($this->isColumnModified(PagePeer::IS_INACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+		}
+		if ($this->isColumnModified(PagePeer::IS_FOLDER)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_FOLDER`';
+		}
+		if ($this->isColumnModified(PagePeer::IS_HIDDEN)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_HIDDEN`';
+		}
+		if ($this->isColumnModified(PagePeer::IS_PROTECTED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_PROTECTED`';
+		}
+		if ($this->isColumnModified(PagePeer::TREE_LEFT)) {
+			$modifiedColumns[':p' . $index++]  = '`TREE_LEFT`';
+		}
+		if ($this->isColumnModified(PagePeer::TREE_RIGHT)) {
+			$modifiedColumns[':p' . $index++]  = '`TREE_RIGHT`';
+		}
+		if ($this->isColumnModified(PagePeer::TREE_LEVEL)) {
+			$modifiedColumns[':p' . $index++]  = '`TREE_LEVEL`';
+		}
+		if ($this->isColumnModified(PagePeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(PagePeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(PagePeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(PagePeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `pages` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`IDENTIFIER`':
+						$stmt->bindValue($identifier, $this->identifier, PDO::PARAM_STR);
+						break;
+					case '`PAGE_TYPE`':
+						$stmt->bindValue($identifier, $this->page_type, PDO::PARAM_STR);
+						break;
+					case '`TEMPLATE_NAME`':
+						$stmt->bindValue($identifier, $this->template_name, PDO::PARAM_STR);
+						break;
+					case '`IS_INACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+						break;
+					case '`IS_FOLDER`':
+						$stmt->bindValue($identifier, (int) $this->is_folder, PDO::PARAM_INT);
+						break;
+					case '`IS_HIDDEN`':
+						$stmt->bindValue($identifier, (int) $this->is_hidden, PDO::PARAM_INT);
+						break;
+					case '`IS_PROTECTED`':
+						$stmt->bindValue($identifier, (int) $this->is_protected, PDO::PARAM_INT);
+						break;
+					case '`TREE_LEFT`':
+						$stmt->bindValue($identifier, $this->tree_left, PDO::PARAM_INT);
+						break;
+					case '`TREE_RIGHT`':
+						$stmt->bindValue($identifier, $this->tree_right, PDO::PARAM_INT);
+						break;
+					case '`TREE_LEVEL`':
+						$stmt->bindValue($identifier, $this->tree_level, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1692,10 +1904,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getPagePropertys() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1721,6 +1935,8 @@ abstract class BasePage extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1959,6 +2175,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageProperty objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagePropertys A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagePropertys(PropelCollection $pagePropertys, PropelPDO $con = null)
+	{
+		$this->pagePropertysScheduledForDeletion = $this->getPagePropertys(new Criteria(), $con)->diff($pagePropertys);
+
+		foreach ($pagePropertys as $pageProperty) {
+			// Fix issue with collection modified by reference
+			if ($pageProperty->isNew()) {
+				$pageProperty->setPage($this);
+			}
+			$this->addPageProperty($pageProperty);
+		}
+
+		$this->collPagePropertys = $pagePropertys;
+	}
+
+	/**
 	 * Returns the number of related PageProperty objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1999,11 +2239,19 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->initPagePropertys();
 		}
 		if (!$this->collPagePropertys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPagePropertys[]= $l;
-			$l->setPage($this);
+			$this->doAddPageProperty($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageProperty $pageProperty The pageProperty object to add.
+	 */
+	protected function doAddPageProperty($pageProperty)
+	{
+		$this->collPagePropertys[]= $pageProperty;
+		$pageProperty->setPage($this);
 	}
 
 
@@ -2125,6 +2373,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageString objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pageStrings A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPageStrings(PropelCollection $pageStrings, PropelPDO $con = null)
+	{
+		$this->pageStringsScheduledForDeletion = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
+
+		foreach ($pageStrings as $pageString) {
+			// Fix issue with collection modified by reference
+			if ($pageString->isNew()) {
+				$pageString->setPage($this);
+			}
+			$this->addPageString($pageString);
+		}
+
+		$this->collPageStrings = $pageStrings;
+	}
+
+	/**
 	 * Returns the number of related PageString objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2165,11 +2437,19 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->initPageStrings();
 		}
 		if (!$this->collPageStrings->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStrings[]= $l;
-			$l->setPage($this);
+			$this->doAddPageString($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageString $pageString The pageString object to add.
+	 */
+	protected function doAddPageString($pageString)
+	{
+		$this->collPageStrings[]= $pageString;
+		$pageString->setPage($this);
 	}
 
 
@@ -2316,6 +2596,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ContentObject objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $contentObjects A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setContentObjects(PropelCollection $contentObjects, PropelPDO $con = null)
+	{
+		$this->contentObjectsScheduledForDeletion = $this->getContentObjects(new Criteria(), $con)->diff($contentObjects);
+
+		foreach ($contentObjects as $contentObject) {
+			// Fix issue with collection modified by reference
+			if ($contentObject->isNew()) {
+				$contentObject->setPage($this);
+			}
+			$this->addContentObject($contentObject);
+		}
+
+		$this->collContentObjects = $contentObjects;
+	}
+
+	/**
 	 * Returns the number of related ContentObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2356,11 +2660,19 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->initContentObjects();
 		}
 		if (!$this->collContentObjects->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collContentObjects[]= $l;
-			$l->setPage($this);
+			$this->doAddContentObject($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	ContentObject $contentObject The contentObject object to add.
+	 */
+	protected function doAddContentObject($contentObject)
+	{
+		$this->collContentObjects[]= $contentObject;
+		$contentObject->setPage($this);
 	}
 
 
@@ -2482,6 +2794,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Right objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $rights A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setRights(PropelCollection $rights, PropelPDO $con = null)
+	{
+		$this->rightsScheduledForDeletion = $this->getRights(new Criteria(), $con)->diff($rights);
+
+		foreach ($rights as $right) {
+			// Fix issue with collection modified by reference
+			if ($right->isNew()) {
+				$right->setPage($this);
+			}
+			$this->addRight($right);
+		}
+
+		$this->collRights = $rights;
+	}
+
+	/**
 	 * Returns the number of related Right objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2522,11 +2858,19 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->initRights();
 		}
 		if (!$this->collRights->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collRights[]= $l;
-			$l->setPage($this);
+			$this->doAddRight($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	Right $right The right object to add.
+	 */
+	protected function doAddRight($right)
+	{
+		$this->collRights[]= $right;
+		$right->setPage($this);
 	}
 
 

@@ -25,6 +25,12 @@ abstract class BaseLink extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -875,7 +881,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -966,7 +972,7 @@ abstract class BaseLink extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1029,27 +1035,15 @@ abstract class BaseLink extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = LinkPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(LinkPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.LinkPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += LinkPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -1057,6 +1051,152 @@ abstract class BaseLink extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = LinkPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . LinkPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(LinkPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(LinkPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(LinkPeer::URL)) {
+			$modifiedColumns[':p' . $index++]  = '`URL`';
+		}
+		if ($this->isColumnModified(LinkPeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
+		}
+		if ($this->isColumnModified(LinkPeer::LANGUAGE_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`LANGUAGE_ID`';
+		}
+		if ($this->isColumnModified(LinkPeer::OWNER_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`OWNER_ID`';
+		}
+		if ($this->isColumnModified(LinkPeer::LINK_CATEGORY_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`LINK_CATEGORY_ID`';
+		}
+		if ($this->isColumnModified(LinkPeer::SORT)) {
+			$modifiedColumns[':p' . $index++]  = '`SORT`';
+		}
+		if ($this->isColumnModified(LinkPeer::IS_PRIVATE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_PRIVATE`';
+		}
+		if ($this->isColumnModified(LinkPeer::IS_INACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+		}
+		if ($this->isColumnModified(LinkPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(LinkPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(LinkPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(LinkPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `links` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`URL`':
+						$stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
+						break;
+					case '`DESCRIPTION`':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+					case '`LANGUAGE_ID`':
+						$stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
+						break;
+					case '`OWNER_ID`':
+						$stmt->bindValue($identifier, $this->owner_id, PDO::PARAM_INT);
+						break;
+					case '`LINK_CATEGORY_ID`':
+						$stmt->bindValue($identifier, $this->link_category_id, PDO::PARAM_INT);
+						break;
+					case '`SORT`':
+						$stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
+						break;
+					case '`IS_PRIVATE`':
+						$stmt->bindValue($identifier, (int) $this->is_private, PDO::PARAM_INT);
+						break;
+					case '`IS_INACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1505,6 +1645,18 @@ abstract class BaseLink extends BaseObject  implements Persistent
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value

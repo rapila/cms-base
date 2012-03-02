@@ -25,6 +25,12 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the tag_id field.
 	 * @var        int
 	 */
@@ -538,7 +544,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -629,7 +635,7 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -678,19 +684,15 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += TagInstancePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -698,6 +700,99 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(TagInstancePeer::TAG_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`TAG_ID`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::TAGGED_ITEM_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`TAGGED_ITEM_ID`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::MODEL_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`MODEL_NAME`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(TagInstancePeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `tag_instances` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`TAG_ID`':
+						$stmt->bindValue($identifier, $this->tag_id, PDO::PARAM_INT);
+						break;
+					case '`TAGGED_ITEM_ID`':
+						$stmt->bindValue($identifier, $this->tagged_item_id, PDO::PARAM_INT);
+						break;
+					case '`MODEL_NAME`':
+						$stmt->bindValue($identifier, $this->model_name, PDO::PARAM_STR);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1069,6 +1164,18 @@ abstract class BaseTagInstance extends BaseObject  implements Persistent
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}

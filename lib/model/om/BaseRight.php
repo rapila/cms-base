@@ -25,6 +25,12 @@ abstract class BaseRight extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -877,7 +883,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -968,7 +974,7 @@ abstract class BaseRight extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1024,27 +1030,15 @@ abstract class BaseRight extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = RightPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(RightPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.RightPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += RightPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -1052,6 +1046,146 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = RightPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . RightPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(RightPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(RightPeer::ROLE_KEY)) {
+			$modifiedColumns[':p' . $index++]  = '`ROLE_KEY`';
+		}
+		if ($this->isColumnModified(RightPeer::PAGE_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`PAGE_ID`';
+		}
+		if ($this->isColumnModified(RightPeer::IS_INHERITED)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INHERITED`';
+		}
+		if ($this->isColumnModified(RightPeer::MAY_EDIT_PAGE_DETAILS)) {
+			$modifiedColumns[':p' . $index++]  = '`MAY_EDIT_PAGE_DETAILS`';
+		}
+		if ($this->isColumnModified(RightPeer::MAY_EDIT_PAGE_CONTENTS)) {
+			$modifiedColumns[':p' . $index++]  = '`MAY_EDIT_PAGE_CONTENTS`';
+		}
+		if ($this->isColumnModified(RightPeer::MAY_DELETE)) {
+			$modifiedColumns[':p' . $index++]  = '`MAY_DELETE`';
+		}
+		if ($this->isColumnModified(RightPeer::MAY_CREATE_CHILDREN)) {
+			$modifiedColumns[':p' . $index++]  = '`MAY_CREATE_CHILDREN`';
+		}
+		if ($this->isColumnModified(RightPeer::MAY_VIEW_PAGE)) {
+			$modifiedColumns[':p' . $index++]  = '`MAY_VIEW_PAGE`';
+		}
+		if ($this->isColumnModified(RightPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(RightPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(RightPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(RightPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `rights` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`ROLE_KEY`':
+						$stmt->bindValue($identifier, $this->role_key, PDO::PARAM_STR);
+						break;
+					case '`PAGE_ID`':
+						$stmt->bindValue($identifier, $this->page_id, PDO::PARAM_INT);
+						break;
+					case '`IS_INHERITED`':
+						$stmt->bindValue($identifier, (int) $this->is_inherited, PDO::PARAM_INT);
+						break;
+					case '`MAY_EDIT_PAGE_DETAILS`':
+						$stmt->bindValue($identifier, (int) $this->may_edit_page_details, PDO::PARAM_INT);
+						break;
+					case '`MAY_EDIT_PAGE_CONTENTS`':
+						$stmt->bindValue($identifier, (int) $this->may_edit_page_contents, PDO::PARAM_INT);
+						break;
+					case '`MAY_DELETE`':
+						$stmt->bindValue($identifier, (int) $this->may_delete, PDO::PARAM_INT);
+						break;
+					case '`MAY_CREATE_CHILDREN`':
+						$stmt->bindValue($identifier, (int) $this->may_create_children, PDO::PARAM_INT);
+						break;
+					case '`MAY_VIEW_PAGE`':
+						$stmt->bindValue($identifier, (int) $this->may_view_page, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1481,6 +1615,18 @@ abstract class BaseRight extends BaseObject  implements Persistent
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value

@@ -25,6 +25,12 @@ abstract class BasePageString extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the page_id field.
 	 * @var        int
 	 */
@@ -739,7 +745,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -830,7 +836,7 @@ abstract class BasePageString extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -886,19 +892,15 @@ abstract class BasePageString extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += PageStringPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -906,6 +908,123 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(PageStringPeer::PAGE_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`PAGE_ID`';
+		}
+		if ($this->isColumnModified(PageStringPeer::LANGUAGE_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`LANGUAGE_ID`';
+		}
+		if ($this->isColumnModified(PageStringPeer::IS_INACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+		}
+		if ($this->isColumnModified(PageStringPeer::LINK_TEXT)) {
+			$modifiedColumns[':p' . $index++]  = '`LINK_TEXT`';
+		}
+		if ($this->isColumnModified(PageStringPeer::PAGE_TITLE)) {
+			$modifiedColumns[':p' . $index++]  = '`PAGE_TITLE`';
+		}
+		if ($this->isColumnModified(PageStringPeer::META_KEYWORDS)) {
+			$modifiedColumns[':p' . $index++]  = '`META_KEYWORDS`';
+		}
+		if ($this->isColumnModified(PageStringPeer::META_DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = '`META_DESCRIPTION`';
+		}
+		if ($this->isColumnModified(PageStringPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(PageStringPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(PageStringPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(PageStringPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `page_strings` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`PAGE_ID`':
+						$stmt->bindValue($identifier, $this->page_id, PDO::PARAM_INT);
+						break;
+					case '`LANGUAGE_ID`':
+						$stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
+						break;
+					case '`IS_INACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+						break;
+					case '`LINK_TEXT`':
+						$stmt->bindValue($identifier, $this->link_text, PDO::PARAM_STR);
+						break;
+					case '`PAGE_TITLE`':
+						$stmt->bindValue($identifier, $this->page_title, PDO::PARAM_STR);
+						break;
+					case '`META_KEYWORDS`':
+						$stmt->bindValue($identifier, $this->meta_keywords, PDO::PARAM_STR);
+						break;
+					case '`META_DESCRIPTION`':
+						$stmt->bindValue($identifier, $this->meta_description, PDO::PARAM_STR);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1323,6 +1442,18 @@ abstract class BasePageString extends BaseObject  implements Persistent
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}

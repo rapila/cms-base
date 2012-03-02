@@ -25,6 +25,12 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -93,6 +99,18 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $userGroupsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupRolesScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -502,7 +520,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -593,7 +611,7 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -635,27 +653,24 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = GroupPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(GroupPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.GroupPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += GroupPeer::doUpdate($this, $con);
+			if ($this->userGroupsScheduledForDeletion !== null) {
+				if (!$this->userGroupsScheduledForDeletion->isEmpty()) {
+					UserGroupQuery::create()
+						->filterByPrimaryKeys($this->userGroupsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->userGroupsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collUserGroups !== null) {
@@ -663,6 +678,15 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->groupRolesScheduledForDeletion !== null) {
+				if (!$this->groupRolesScheduledForDeletion->isEmpty()) {
+					GroupRoleQuery::create()
+						->filterByPrimaryKeys($this->groupRolesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupRolesScheduledForDeletion = null;
 				}
 			}
 
@@ -679,6 +703,104 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = GroupPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . GroupPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(GroupPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(GroupPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(GroupPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(GroupPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(GroupPeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(GroupPeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `groups` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1043,10 +1165,12 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getUserGroups() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1060,6 +1184,8 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1292,6 +1418,30 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserGroup objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $userGroups A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUserGroups(PropelCollection $userGroups, PropelPDO $con = null)
+	{
+		$this->userGroupsScheduledForDeletion = $this->getUserGroups(new Criteria(), $con)->diff($userGroups);
+
+		foreach ($userGroups as $userGroup) {
+			// Fix issue with collection modified by reference
+			if ($userGroup->isNew()) {
+				$userGroup->setGroup($this);
+			}
+			$this->addUserGroup($userGroup);
+		}
+
+		$this->collUserGroups = $userGroups;
+	}
+
+	/**
 	 * Returns the number of related UserGroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1332,11 +1482,19 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			$this->initUserGroups();
 		}
 		if (!$this->collUserGroups->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUserGroups[]= $l;
-			$l->setGroup($this);
+			$this->doAddUserGroup($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserGroup $userGroup The userGroup object to add.
+	 */
+	protected function doAddUserGroup($userGroup)
+	{
+		$this->collUserGroups[]= $userGroup;
+		$userGroup->setGroup($this);
 	}
 
 
@@ -1483,6 +1641,30 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of GroupRole objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupRoles A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupRoles(PropelCollection $groupRoles, PropelPDO $con = null)
+	{
+		$this->groupRolesScheduledForDeletion = $this->getGroupRoles(new Criteria(), $con)->diff($groupRoles);
+
+		foreach ($groupRoles as $groupRole) {
+			// Fix issue with collection modified by reference
+			if ($groupRole->isNew()) {
+				$groupRole->setGroup($this);
+			}
+			$this->addGroupRole($groupRole);
+		}
+
+		$this->collGroupRoles = $groupRoles;
+	}
+
+	/**
 	 * Returns the number of related GroupRole objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1523,11 +1705,19 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 			$this->initGroupRoles();
 		}
 		if (!$this->collGroupRoles->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collGroupRoles[]= $l;
-			$l->setGroup($this);
+			$this->doAddGroupRole($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	GroupRole $groupRole The groupRole object to add.
+	 */
+	protected function doAddGroupRole($groupRole)
+	{
+		$this->collGroupRoles[]= $groupRole;
+		$groupRole->setGroup($this);
 	}
 
 

@@ -25,6 +25,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        string
 	 */
@@ -130,6 +136,48 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pageStringsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $languageObjectHistorysScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $stringsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $usersRelatedByLanguageIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $documentsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $linksScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -619,7 +667,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -710,7 +758,7 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -752,19 +800,24 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				$this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += LanguagePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			if ($this->pageStringsScheduledForDeletion !== null) {
+				if (!$this->pageStringsScheduledForDeletion->isEmpty()) {
+					PageStringQuery::create()
+						->filterByPrimaryKeys($this->pageStringsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pageStringsScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collPageStrings !== null) {
@@ -772,6 +825,15 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->languageObjectsScheduledForDeletion !== null) {
+				if (!$this->languageObjectsScheduledForDeletion->isEmpty()) {
+					LanguageObjectQuery::create()
+						->filterByPrimaryKeys($this->languageObjectsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectsScheduledForDeletion = null;
 				}
 			}
 
@@ -783,11 +845,29 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->languageObjectHistorysScheduledForDeletion !== null) {
+				if (!$this->languageObjectHistorysScheduledForDeletion->isEmpty()) {
+					LanguageObjectHistoryQuery::create()
+						->filterByPrimaryKeys($this->languageObjectHistorysScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->languageObjectHistorysScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collLanguageObjectHistorys !== null) {
 				foreach ($this->collLanguageObjectHistorys as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->stringsScheduledForDeletion !== null) {
+				if (!$this->stringsScheduledForDeletion->isEmpty()) {
+					StringQuery::create()
+						->filterByPrimaryKeys($this->stringsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->stringsScheduledForDeletion = null;
 				}
 			}
 
@@ -799,6 +879,15 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->usersRelatedByLanguageIdScheduledForDeletion !== null) {
+				if (!$this->usersRelatedByLanguageIdScheduledForDeletion->isEmpty()) {
+					UserQuery::create()
+						->filterByPrimaryKeys($this->usersRelatedByLanguageIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->usersRelatedByLanguageIdScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collUsersRelatedByLanguageId !== null) {
 				foreach ($this->collUsersRelatedByLanguageId as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -807,11 +896,29 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->documentsScheduledForDeletion !== null) {
+				if (!$this->documentsScheduledForDeletion->isEmpty()) {
+					DocumentQuery::create()
+						->filterByPrimaryKeys($this->documentsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->documentsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collDocuments !== null) {
 				foreach ($this->collDocuments as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->linksScheduledForDeletion !== null) {
+				if (!$this->linksScheduledForDeletion->isEmpty()) {
+					LinkQuery::create()
+						->filterByPrimaryKeys($this->linksScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->linksScheduledForDeletion = null;
 				}
 			}
 
@@ -828,6 +935,105 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(LanguagePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(LanguagePeer::PATH_PREFIX)) {
+			$modifiedColumns[':p' . $index++]  = '`PATH_PREFIX`';
+		}
+		if ($this->isColumnModified(LanguagePeer::IS_ACTIVE)) {
+			$modifiedColumns[':p' . $index++]  = '`IS_ACTIVE`';
+		}
+		if ($this->isColumnModified(LanguagePeer::SORT)) {
+			$modifiedColumns[':p' . $index++]  = '`SORT`';
+		}
+		if ($this->isColumnModified(LanguagePeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+		}
+		if ($this->isColumnModified(LanguagePeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+		}
+		if ($this->isColumnModified(LanguagePeer::CREATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+		}
+		if ($this->isColumnModified(LanguagePeer::UPDATED_BY)) {
+			$modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `languages` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
+						break;
+					case '`PATH_PREFIX`':
+						$stmt->bindValue($identifier, $this->path_prefix, PDO::PARAM_STR);
+						break;
+					case '`IS_ACTIVE`':
+						$stmt->bindValue($identifier, (int) $this->is_active, PDO::PARAM_INT);
+						break;
+					case '`SORT`':
+						$stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
+						break;
+					case '`CREATED_AT`':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case '`UPDATED_AT`':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case '`CREATED_BY`':
+						$stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+						break;
+					case '`UPDATED_BY`':
+						$stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1259,7 +1465,6 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setId($this->getId());
 		$copyObj->setPathPrefix($this->getPathPrefix());
 		$copyObj->setIsActive($this->getIsActive());
 		$copyObj->setSort($this->getSort());
@@ -1268,10 +1473,12 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 		$copyObj->setCreatedBy($this->getCreatedBy());
 		$copyObj->setUpdatedBy($this->getUpdatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getPageStrings() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1315,10 +1522,13 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -1561,6 +1771,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PageString objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pageStrings A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPageStrings(PropelCollection $pageStrings, PropelPDO $con = null)
+	{
+		$this->pageStringsScheduledForDeletion = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
+
+		foreach ($pageStrings as $pageString) {
+			// Fix issue with collection modified by reference
+			if ($pageString->isNew()) {
+				$pageString->setLanguage($this);
+			}
+			$this->addPageString($pageString);
+		}
+
+		$this->collPageStrings = $pageStrings;
+	}
+
+	/**
 	 * Returns the number of related PageString objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1601,11 +1835,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initPageStrings();
 		}
 		if (!$this->collPageStrings->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPageStrings[]= $l;
-			$l->setLanguage($this);
+			$this->doAddPageString($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	PageString $pageString The pageString object to add.
+	 */
+	protected function doAddPageString($pageString)
+	{
+		$this->collPageStrings[]= $pageString;
+		$pageString->setLanguage($this);
 	}
 
 
@@ -1752,6 +1994,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObject objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjects A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjects(PropelCollection $languageObjects, PropelPDO $con = null)
+	{
+		$this->languageObjectsScheduledForDeletion = $this->getLanguageObjects(new Criteria(), $con)->diff($languageObjects);
+
+		foreach ($languageObjects as $languageObject) {
+			// Fix issue with collection modified by reference
+			if ($languageObject->isNew()) {
+				$languageObject->setLanguage($this);
+			}
+			$this->addLanguageObject($languageObject);
+		}
+
+		$this->collLanguageObjects = $languageObjects;
+	}
+
+	/**
 	 * Returns the number of related LanguageObject objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1792,11 +2058,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initLanguageObjects();
 		}
 		if (!$this->collLanguageObjects->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjects[]= $l;
-			$l->setLanguage($this);
+			$this->doAddLanguageObject($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObject $languageObject The languageObject object to add.
+	 */
+	protected function doAddLanguageObject($languageObject)
+	{
+		$this->collLanguageObjects[]= $languageObject;
+		$languageObject->setLanguage($this);
 	}
 
 
@@ -1943,6 +2217,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of LanguageObjectHistory objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $languageObjectHistorys A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLanguageObjectHistorys(PropelCollection $languageObjectHistorys, PropelPDO $con = null)
+	{
+		$this->languageObjectHistorysScheduledForDeletion = $this->getLanguageObjectHistorys(new Criteria(), $con)->diff($languageObjectHistorys);
+
+		foreach ($languageObjectHistorys as $languageObjectHistory) {
+			// Fix issue with collection modified by reference
+			if ($languageObjectHistory->isNew()) {
+				$languageObjectHistory->setLanguage($this);
+			}
+			$this->addLanguageObjectHistory($languageObjectHistory);
+		}
+
+		$this->collLanguageObjectHistorys = $languageObjectHistorys;
+	}
+
+	/**
 	 * Returns the number of related LanguageObjectHistory objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1983,11 +2281,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initLanguageObjectHistorys();
 		}
 		if (!$this->collLanguageObjectHistorys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLanguageObjectHistorys[]= $l;
-			$l->setLanguage($this);
+			$this->doAddLanguageObjectHistory($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to add.
+	 */
+	protected function doAddLanguageObjectHistory($languageObjectHistory)
+	{
+		$this->collLanguageObjectHistorys[]= $languageObjectHistory;
+		$languageObjectHistory->setLanguage($this);
 	}
 
 
@@ -2134,6 +2440,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of String objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $strings A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setStrings(PropelCollection $strings, PropelPDO $con = null)
+	{
+		$this->stringsScheduledForDeletion = $this->getStrings(new Criteria(), $con)->diff($strings);
+
+		foreach ($strings as $string) {
+			// Fix issue with collection modified by reference
+			if ($string->isNew()) {
+				$string->setLanguage($this);
+			}
+			$this->addString($string);
+		}
+
+		$this->collStrings = $strings;
+	}
+
+	/**
 	 * Returns the number of related String objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2174,11 +2504,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initStrings();
 		}
 		if (!$this->collStrings->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collStrings[]= $l;
-			$l->setLanguage($this);
+			$this->doAddString($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	String $string The string object to add.
+	 */
+	protected function doAddString($string)
+	{
+		$this->collStrings[]= $string;
+		$string->setLanguage($this);
 	}
 
 
@@ -2300,6 +2638,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UserRelatedByLanguageId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $usersRelatedByLanguageId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUsersRelatedByLanguageId(PropelCollection $usersRelatedByLanguageId, PropelPDO $con = null)
+	{
+		$this->usersRelatedByLanguageIdScheduledForDeletion = $this->getUsersRelatedByLanguageId(new Criteria(), $con)->diff($usersRelatedByLanguageId);
+
+		foreach ($usersRelatedByLanguageId as $userRelatedByLanguageId) {
+			// Fix issue with collection modified by reference
+			if ($userRelatedByLanguageId->isNew()) {
+				$userRelatedByLanguageId->setLanguageRelatedByLanguageId($this);
+			}
+			$this->addUserRelatedByLanguageId($userRelatedByLanguageId);
+		}
+
+		$this->collUsersRelatedByLanguageId = $usersRelatedByLanguageId;
+	}
+
+	/**
 	 * Returns the number of related User objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2340,11 +2702,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initUsersRelatedByLanguageId();
 		}
 		if (!$this->collUsersRelatedByLanguageId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collUsersRelatedByLanguageId[]= $l;
-			$l->setLanguageRelatedByLanguageId($this);
+			$this->doAddUserRelatedByLanguageId($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	UserRelatedByLanguageId $userRelatedByLanguageId The userRelatedByLanguageId object to add.
+	 */
+	protected function doAddUserRelatedByLanguageId($userRelatedByLanguageId)
+	{
+		$this->collUsersRelatedByLanguageId[]= $userRelatedByLanguageId;
+		$userRelatedByLanguageId->setLanguageRelatedByLanguageId($this);
 	}
 
 	/**
@@ -2416,6 +2786,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Document objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $documents A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setDocuments(PropelCollection $documents, PropelPDO $con = null)
+	{
+		$this->documentsScheduledForDeletion = $this->getDocuments(new Criteria(), $con)->diff($documents);
+
+		foreach ($documents as $document) {
+			// Fix issue with collection modified by reference
+			if ($document->isNew()) {
+				$document->setLanguage($this);
+			}
+			$this->addDocument($document);
+		}
+
+		$this->collDocuments = $documents;
+	}
+
+	/**
 	 * Returns the number of related Document objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2456,11 +2850,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initDocuments();
 		}
 		if (!$this->collDocuments->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collDocuments[]= $l;
-			$l->setLanguage($this);
+			$this->doAddDocument($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	Document $document The document object to add.
+	 */
+	protected function doAddDocument($document)
+	{
+		$this->collDocuments[]= $document;
+		$document->setLanguage($this);
 	}
 
 
@@ -2657,6 +3059,30 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Link objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $links A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLinks(PropelCollection $links, PropelPDO $con = null)
+	{
+		$this->linksScheduledForDeletion = $this->getLinks(new Criteria(), $con)->diff($links);
+
+		foreach ($links as $link) {
+			// Fix issue with collection modified by reference
+			if ($link->isNew()) {
+				$link->setLanguage($this);
+			}
+			$this->addLink($link);
+		}
+
+		$this->collLinks = $links;
+	}
+
+	/**
 	 * Returns the number of related Link objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2697,11 +3123,19 @@ abstract class BaseLanguage extends BaseObject  implements Persistent
 			$this->initLinks();
 		}
 		if (!$this->collLinks->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collLinks[]= $l;
-			$l->setLanguage($this);
+			$this->doAddLink($l);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param	Link $link The link object to add.
+	 */
+	protected function doAddLink($link)
+	{
+		$this->collLinks[]= $link;
+		$link->setLanguage($this);
 	}
 
 
