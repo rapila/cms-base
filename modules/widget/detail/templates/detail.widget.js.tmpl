@@ -21,9 +21,11 @@ Widget.types.detail = {
 
 			delete: function() {
 				this.delete_callback();
+				this.detail_widget.close();
 			},
 
 			close_callback: jQuery.noop,
+			delete_callback: jQuery.noop,
 			save_callback: jQuery.noop
 		}, prototype);
 		jQuery.extend(prototype, instance_props);
@@ -31,7 +33,7 @@ Widget.types.detail = {
 		instance.fill_data = function() {
 			this.auto_fill = true;
 		};
-		
+
 		Widget.create('detail', function(detail) {
 			instance.fill_data = old_fill_data;
 			detail.set_instance(instance);
@@ -58,7 +60,7 @@ Widget.types.detail = {
 
 		var _this = this;
 		var protector = new UnsavedChanges(this.content);
-		
+
 		if(this.content.is('form')) {
 			this.content.submit(function() {
 				_this.settings.save_callback();
@@ -87,7 +89,9 @@ Widget.types.detail = {
 			this.settings.dialogClass = this.settings.dialogClass+" detail-widget-"+instance._type;
 		}
 		this.settings.cancel_callback = instance.close.bind(instance);
-		this.settings.delete_callback = instance.delete.bind(instance);
+		if(this.settings.has_delete_button) {
+			this.settings.delete_callback = instance.delete.bind(instance);
+		}
 		this.settings.close_callback = function(event) {
 			if(!event.originalEvent) {
 				//dialog('close') was called programmatically
