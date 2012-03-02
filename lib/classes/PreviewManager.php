@@ -2,6 +2,7 @@
 
 class PreviewManager extends FrontendManager {
 	private $sOldSessionLanguage;
+	private $oAdminMenuWidget;
 	
 	private static $PREVIOUS_MANAGER;
 	
@@ -25,8 +26,8 @@ class PreviewManager extends FrontendManager {
 		
 		$oLoginWindowWidget = new LoginWindowWidgetModule();
 		LoginWindowWidgetModule::includeResources();
-    $oAdminMenuWidget = new AdminMenuWidgetModule();
-    AdminMenuWidgetModule::includeResources();
+		$this->oAdminMenuWidget = new AdminMenuWidgetModule(true);
+		AdminMenuWidgetModule::includeResources();
 	}
 	
 	protected function initLanguage() {
@@ -64,6 +65,7 @@ class PreviewManager extends FrontendManager {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
 		$oConstants->replaceIdentifier('page_type_widget_session', $oPageTypeWidget->getSessionKey());
+		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
 		ResourceIncluder::defaultIncluder()->addCustomJs($oConstants);
 		ResourceIncluder::defaultIncluder()->addResource('preview/preview.js');

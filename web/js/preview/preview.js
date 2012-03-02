@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 	
 	Widget.createWithElement('admin_menu', function(widget) {
 		widget._element.appendTo(document.body);
-	});
+	}, PreviewInterface.admin_menu_widget);
 });
 
 Widget.tooltip = jQuery.noop;

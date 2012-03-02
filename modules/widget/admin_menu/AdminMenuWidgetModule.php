@@ -2,8 +2,12 @@
 /**
  * @package modules.widget
  */
-class AdminMenuWidgetModule extends WidgetModule {
-	public function __construct() {
+class AdminMenuWidgetModule extends PersistentWidgetModule {
+	private $bPreview;
+	
+	public function __construct($bPreview = false) {
+		parent::__construct(null);
+		$this->bPreview = $bPreview;
 		$this->setSetting('current_manager', Manager::getManagerClassNormalized());
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/admin_menu.js');
@@ -35,15 +39,15 @@ class AdminMenuWidgetModule extends WidgetModule {
 			if(is_array($mValue)) {
 				$this->cleanModules($mValue);
 			} else if(is_string($mValue)) {
-			  if($mValue === 'edit') {
-          $mValue = "module.pages";
-			  }
-			  if(StringUtil::startsWith($mValue, 'module.')) {
-  				$sModuleName = substr($mValue, strlen('module.'));
-  				if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
-  					unset($aSettings[$iKey]);
-  				}
-  			}
+				if($mValue === 'edit') {
+					$mValue = "module.pages";
+				}
+				if(StringUtil::startsWith($mValue, 'module.')) {
+					$sModuleName = substr($mValue, strlen('module.'));
+					if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
+						unset($aSettings[$iKey]);
+					}
+				}
 			}
 		}
 		$aSettings = array_values($aSettings);
@@ -51,6 +55,7 @@ class AdminMenuWidgetModule extends WidgetModule {
 	
 	public function doWidget() {
 		$oTemplate = $this->constructTemplate('menu_bar');
+		$oTemplate->replaceIdentifier('session', $this->getSessionKey());
 		if(Session::getSession()->isAuthenticated()) {
 			$oTemplate->replaceIdentifier('style', 'block');
 		}
