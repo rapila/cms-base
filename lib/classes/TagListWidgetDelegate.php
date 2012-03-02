@@ -61,7 +61,7 @@ class CriteriaListTagListWidgetDelegate {
 			case 'display_name':
 				$aResult['display_heading'] = false;
 				$aResult['field_name'] = 'name';
-				break;		
+				break;
 			case 'magic_column':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_CLASSNAME;
 				$aResult['has_data'] = false;
