@@ -26,7 +26,7 @@ class PreviewManager extends FrontendManager {
 		
 		$oLoginWindowWidget = new LoginWindowWidgetModule();
 		LoginWindowWidgetModule::includeResources();
-		$this->oAdminMenuWidget = new AdminMenuWidgetModule(true);
+		$this->oAdminMenuWidget = new AdminMenuWidgetModule();
 		AdminMenuWidgetModule::includeResources();
 	}
 	
