@@ -67,7 +67,7 @@ h3.status{padding-left:.3em}
 .page_detail .ui-widget-content .template-container .ui-icon.ui-icon-pencil{background:transparent url("../../images/admin/icon_edit.png") no-repeat center bottom}
 .page_detail .available_modules li{padding:1px 5px;background-color:#f2f2f2;z-index:2}
 .page_detail .filled_modules ol.template-container li,.page_detail .template-container-description{white-space:nowrap;font-size:12px}
-.page_detail .template-container-description{font-size:13px;display:block;margin-top:.5em}
+.page_detail .template-container-description{display:block;margin-top:1em;color:#666}
 .page_detail div.ui-widget-content{border:0}
 .ui-icon-trash.delete_inactive{background-image:none}
 #admin_sidebar .ui-state-droppable,.image_browse_area.ui-state-droppable{color:#5b595b;cursor:pointer}
