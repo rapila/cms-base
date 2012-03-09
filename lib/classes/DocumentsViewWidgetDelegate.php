@@ -130,9 +130,10 @@ class DocumentsViewWidgetDelegate {
 	
 	public function allowSort($sSortColumn) {
 		$aListSettings = $this->oDelegateProxy->getListSettings();
-		if($aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_ALL || $aListSettings->getFilterColumnValue('document_category_id') === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+		if(!is_numeric($this->getDocumentCategoryId())) {
 			return false;
 		}
+		// make sure that no filters are active except for sidebar category
 		foreach($aListSettings->allFilterColumns() as $sColumnIdentifier) {
 			if($sColumnIdentifier === 'document_category_id') {
 				continue;
