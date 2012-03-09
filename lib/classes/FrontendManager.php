@@ -50,7 +50,7 @@ class FrontendManager extends Manager {
 		self::$CURRENT_PAGE = $oParent->getMe();
 		// See if the filter(s) changed anything
 		FilterModule::getFilters()->handleNavigationPathFound($this->oRootNavigationItem, $oMatchingNavigationItem);
-		
+
 		// There may now be new, virtual navigation items. Follow them.
 		while(self::hasNextPathItem()) {
 			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
@@ -61,13 +61,13 @@ class FrontendManager extends Manager {
 				break;
 			}
 		}
-		
+
 		// See if anything has changed
 		if(self::$CURRENT_NAVIGATION_ITEM !== $oMatchingNavigationItem && self::$CURRENT_NAVIGATION_ITEM instanceof PageNavigationItem) {
 			self::$CURRENT_NAVIGATION_ITEM->setCurrent(false); //It is, however, still active
 		}
 		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
-		
+
 		$iTimesUsed = 0;
 		while(self::hasNextPathItem()) {
 			$sKey = self::usePath();
@@ -78,23 +78,31 @@ class FrontendManager extends Manager {
 				$iTimesUsed++;
 			}
 			$this->aPathRequestParams[] = $sKey;
-			if(!isset($_REQUEST[$sKey])) {
+			if(!isset($_REQUEST[$sKey]) && $sValue !== null) {
 				$_REQUEST[$sKey] = $sValue;
 			}
 		}
 		for($i=1;$i<=$iTimesUsed;$i++) {
 			self::unusePath();
 		}
-		
+
 		if($oMatchingNavigationItem->isFolder()) {
 			$oFirstChild = $oMatchingNavigationItem->getFirstChild(Session::language(), false, true);
 			if($oFirstChild !== null) {
-				LinkUtil::redirectToManager($oFirstChild->getLink());
+				$aAdditionalPathItems = array();
+				$aRequestParams = LinkUtil::getRequestedParameters();
+				foreach(self::getRequestPath() as $iKey => $sPathItem) {
+					if(($iKey % 2) === 0 && isset($aRequestParams[$sPathItem])) {
+						unset($aRequestParams[$sPathItem]);
+					}
+					$aAdditionalPathItems[] = $sPathItem;
+				}
+				LinkUtil::redirectToManager(array_merge($oFirstChild->getLink(), $aAdditionalPathItems), null, $aRequestParams);
 			} else {
 				$this->bIsNotFound = true;
 			}
 		}
-		
+
 		if($oMatchingNavigationItem->isProtected()) {
 			if(!$oMatchingNavigationItem->isAccessible()) {
 				$oLoginPage = self::$CURRENT_PAGE->getLoginPage();
@@ -108,7 +116,7 @@ class FrontendManager extends Manager {
 				self::$CURRENT_PAGE = $oLoginPage;
 			}
 		}
-		
+
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
 	
