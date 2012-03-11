@@ -33,9 +33,9 @@ form.page_detail .status_section h3{border-bottom:none}
 form.page_detail h3 a,.ui-dialog-content h3 a{text-decoration:none;color:#666}
 form.page_detail label.for_checkbox,input[type=checkbox] + label.for_checkbox{margin-right:2em;padding-left:.2em;display:inline-block;padding-right:.5em}
 h3.status{padding-left:.3em}
-#admin_main .ui-list .ui-list-row.ui-state-hover,#admin_main .ui-list .ui-list-row.ui-state-active{background-image:url("theme/images/selected_row.png");background-repeat:repeat;background-attachment:scroll;border:0}
-#admin_main .ui-list tr.ui-list-row.ui-state-hover .ui-icon,#admin_main .ui-list tr.ui-list-row.ui-state-highlight .ui-icon{background-image:url("theme/images/ui-icons_000000_256x240.png")}
-#admin_main .ui-list td:first-child,#admin_main .ui-list th:first-child{min-width:15em}
+.ui-list .ui-list-row.ui-state-hover,.ui-list .ui-list-row.ui-state-active{background-image:url("theme/images/selected_row.png");background-repeat:repeat;background-attachment:scroll;border:0}
+.ui-list tr.ui-list-row.ui-state-hover .ui-icon,.ui-list tr.ui-list-row.ui-state-highlight .ui-icon{background-image:url("theme/images/ui-icons_000000_256x240.png")}
+.ui-list td:first-child,.ui-list th:first-child{min-width:15em}
 #admin_sidebar .ui-list th:first-child{padding-left:5px}
 #admin_sidebar .ui-list .ui-list-row.ui-state-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-active{border:none;background-color:#728697;background-image:none;border-bottom:1px solid #d4d8dc}
 #admin_sidebar .ui-list .ui-list-row.ui-state-highlight{border:none;background-image:none;border-bottom:1px solid #d4d8dc}
