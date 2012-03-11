@@ -549,6 +549,10 @@ Widget.types.list = {
 		}
 	},
 	
+	get_print_link: function() {
+		return '{{writeLink=list_export;manager=FileManager}}/'+this._instanceInformation.session_id;
+	},
+	
 	schema: null,
 	
 	types: {

@@ -54,7 +54,6 @@ class ListExportFileModule extends FileModule {
 		}
 	}
 	
-	
 	private static function includeField($sDisplayType, $aColumn) {
 		return $aColumn['has_data'] && $sDisplayType !== ListWidgetModule::DISPLAY_TYPE_DOCUMENT && $sDisplayType !== ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 	}
