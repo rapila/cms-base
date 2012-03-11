@@ -76,16 +76,21 @@ class LinkUtil {
 			$aPath = $aRequestPath;
 		}
 		if(!$bIgnoreRequest) {
-			foreach(array_diff_assoc($_REQUEST, $_COOKIE) as $sName=>$sValue) {
-				if($sName === 'path') {
-					continue;
-				}
-				if(!isset($aParameters[$sName])) {
-					$aParameters[$sName] = $sValue;
-				}
-			}
+			$aParameters = self::getRequestedParameters($aParameters);
 		}
 		return self::link($aPath, null, $aParameters, false);
+	}
+	
+	public static function getRequestedParameters($aOverrideParameters = array()) {
+		foreach(array_diff_assoc($_REQUEST, $_COOKIE) as $sName => $sValue) {
+			if($sName === 'path') {
+				continue;
+			}
+			if(!isset($aOverrideParameters[$sName])) {
+				$aOverrideParameters[$sName] = $sValue;
+			}
+		}
+		return $aOverrideParameters;
 	}
 
 	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
