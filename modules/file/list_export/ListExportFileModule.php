@@ -21,7 +21,7 @@ class ListExportFileModule extends FileModule {
 	public function renderFile() {
 		header('Content-Encoding: chunked');
 		header('Connection: keep-alive');
-		header('Content-Type: text/csv');
+		header('Content-Type: text/csv; charset=utf-8');
 		header('Content-Disposition: ' . sprintf('attachment;filename="%s.csv"', $this->sWidgetType));
 
 		$rCSV = fopen('php://output', 'w');
