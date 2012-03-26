@@ -167,6 +167,8 @@ class ErrorHandler {
 		$aError['referrer'] = @$_SERVER['HTTP_REFERER'];
 		$aError['host'] = @$_SERVER['HTTP_HOST'];
 		$aError['path'] = @$_SERVER['REQUEST_URI'];
+		$aError['request'] = @$_REQUEST;
+		$aError['cookies'] = @$_COOKIE;
 		
 		FilterModule::getFilters()->handleAnyError(array(&$aError));
 		if(self::shouldMailErrors()) {
@@ -176,7 +178,7 @@ class ErrorHandler {
 			}
 			if($sAddress) {
 				FilterModule::getFilters()->handleErrorEmailSend(array(&$sAddress, &$aError));
-				mb_send_mail($sAddress, "Error in rapila on ".$aError['host'], MAIN_DIR_FE.$aError['path'].print_r($aError, true));
+				mb_send_mail($sAddress, "Error in rapila on ".$aError['host'], $aError['path']."\n".print_r($aError, true));
 			}
 		}
 		if(self::shouldLogErrors()) {
