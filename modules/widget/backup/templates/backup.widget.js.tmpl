@@ -87,6 +87,9 @@ Widget.types.backup = {
 	
 	reload_backup_files: function(reload) {
 		this.possibleRestoreFiles(function(files) {
+			if(files.length === 0) {
+				files = {'' : "{{writeString=wns.backup.no_files_available}}"};
+			}
 			var _this = this;
 			this.backup_file.empty();
 			setTimeout(function(){ 
