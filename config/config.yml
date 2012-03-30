@@ -97,7 +97,7 @@ encoding:
   entities: xml_only
 
 session_default:
-  language: en &fe_language
+  language: de &fe_language
   content_language: *fe_language
   
 #language_chooser default

@@ -17,6 +17,10 @@ class String extends BaseString {
 		return parent::getText();
 	}
 	
+	public function getTextTruncated($iLength=70) {
+		return StringUtil::truncate($this->getText(), $iLength);
+	}
+	
 	public function getLanguagesAvailable() {
 	  $aLanguages[] = $this->getLanguageId();
 	  $aAvailableLanguages = StringPeer::getStringsByStringKey($this->getStringKey());
