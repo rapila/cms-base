@@ -85,6 +85,6 @@ label span.error_display,legend span.error_display,span.error_display{color:#f00
 .delete_drop_zone{float:left;height:100px;margin:23px 2px 2px 2px;padding:2px;width:100px}
 .add_entry,.remove_entry{height:24px;width:24px;margin-top:.2em;display:inline-block;cursor:pointer}
 td span.remove_entry{margin:0}
-.delete_entry{margin-left:1.5em;display:inline-block;cursor:pointer}
+.delete_entry{margin-left:.8em;display:inline-block;cursor:pointer}
 .error_display_indicator{background-image:url("../../images/admin/error_display_indicator_bg.png") !important;background-repeat:no-repeat !important;background-position:left top !important}
 .ui-progressbar{margin-top:.3em;height:1.5em;background-color:#999}
