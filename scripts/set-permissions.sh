@@ -24,7 +24,7 @@ sudo chown -R $owner:$group .
 echo "setting folder permissions – global"
 find . -type d \( -not -name 'vendor' -prune \) -print0 | xargs -0 chmod 755
 echo "setting file permissions – global"
-find . -type f \( -not -name 'vendor' -prune \) -print0 | xargs -0 chmod 644
+find . \( -not -name 'vendor' -prune \) -type f -print0 | xargs -0 chmod 644
 
 echo "setting file permissions – executable"
 sudo chmod a+x base/scripts/*
