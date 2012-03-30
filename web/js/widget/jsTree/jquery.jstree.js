@@ -2428,7 +2428,7 @@
 							0);
 						}
 					}, this))
-				.delegate("a", "mouseup.jstree", $.proxy(function (e) { 
+				.bind("mouseup.jstree", $.proxy(function (e) { 
 						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
 							this.dnd_finish(e);
 						}
