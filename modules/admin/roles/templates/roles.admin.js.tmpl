@@ -1,18 +1,23 @@
 jQuery(document).ready(function() {
 
 	var handlers = [];
-	var sidebar = AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+	
+	var sidebar = null;
+	AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	}.deferred(handlers));
-	var content_list = AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
+	
+	var content_list = null;
+	AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
 		content_list = widget;
 	}.deferred(handlers));
-	var info_bar = AdminInterface.info_bar.prepareWidget(function(widget) {
+	
+	var info_bar = null;
+	AdminInterface.info_bar.prepareWidget(function(widget) {
 		info_bar = widget;
 	}.deferred(handlers));
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
-	
 		// Add info_bar elements
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('role_detail', function(widget) {

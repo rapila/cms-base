@@ -4,11 +4,11 @@
  */
 class UserDetailWidgetModule extends PersistentWidgetModule {
 	private $iUserId = null;
-	
+
 	public function setUserId($iUserId) {
 		$this->iUserId = $iUserId;
 	}
-	
+
 	public function userData() {
 		$oUser = UserPeer::retrieveByPK($this->iUserId);
 		if(Session::getSession()->getUser()->mayEditUser($oUser)) {
@@ -26,7 +26,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			return $aResult;
 		}
 	}
-	
+
 	public function resetSettings() {
 		$oUser = UserPeer::retrieveByPK($this->iUserId);
 		if($oUser) {
@@ -76,32 +76,35 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oUser = UserPeer::retrieveByPK($this->iUserId);
 		}
-		
+
 		$this->validate($aUserData, $oUser);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		
+
 		$oUser->setUsername($aUserData['username']);
 		$oUser->setFirstName($aUserData['first_name']);
 		$oUser->setLastName($aUserData['last_name']);
 		$oUser->setEmail($aUserData['email']);
 		$oUser->setLanguageId($aUserData['language_id']); 
-		
+
 		//Password
 		if($aUserData['password'] !== '') {
 			$oUser->setPassword($aUserData['password']);
 			$oUser->setPasswordRecoverHint(null);
 		}
-		
-		//This also means the user’s an admin because non-admins can only edit themselves
+
+		//This also means the user’s an admin (or has the role “users”) because non-admins can only edit themselves
 		if(!$oUser->isSessionUser()) {
+			//Only admins may give or take admin rights, having the role “users” does not suffice
+			if(Session::user()->getIsAdmin()) {
+					$oUser->setIsAdmin($aUserData['is_admin']);
+			}
 			//Admin & inactive flags
-			$oUser->setIsBackendLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled'] || $aUserData['is_backend_login_enabled']);
-			$oUser->setIsAdminLoginEnabled($aUserData['is_admin'] || $aUserData['is_admin_login_enabled']);
-			$oUser->setIsAdmin($aUserData['is_admin']);
+			$oUser->setIsBackendLoginEnabled($oUser->getIsAdmin() || $aUserData['is_admin_login_enabled'] || $aUserData['is_backend_login_enabled']);
+			$oUser->setIsAdminLoginEnabled($oUser->getIsAdmin() || $aUserData['is_admin_login_enabled']);
 			$oUser->setIsInactive($aUserData['is_inactive']);
-			
+
 			//Groups
 			foreach($oUser->getUserGroupsRelatedByUserId() as $oUserGroup) {
 				$oUserGroup->delete();
@@ -132,10 +135,10 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			//Set the new session language for the currently logged-in user
 			Session::getSession()->setLanguage($oUser->getLanguageId());
 		}
-		
+
 		return $oUser->save();
 	}
-	
+
 	public function suggestPassword() {
 		return PasswordHash::generatePassword();
 	}

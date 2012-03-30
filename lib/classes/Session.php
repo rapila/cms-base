@@ -222,8 +222,22 @@ class Session {
 		return Settings::getSetting("session_default", $sAttribute, null);
 	}
 
+	/**
+	 * Shortcut for Session::getSession()->getLanguage();
+	 */
 	public static function language($bObject = false) {
 		return self::getSession()->getLanguage($bObject);
+	}
+
+	/**
+	 * Shortcut for Session::getSession()->getUser();
+	 */
+	public static function user($bObject = true) {
+		if($bObject) {
+			return self::getSession()->getUser();
+		} else {
+			return self::getSession()->getUserId();
+		}
 	}
 
 	public static function getSession() {
