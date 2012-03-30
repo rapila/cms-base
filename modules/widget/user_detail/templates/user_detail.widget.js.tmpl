@@ -23,10 +23,10 @@ Widget.types.user_detail = {
 			widget.settings.international_option = false;
 			widget.settings.use_admin_languages = true;
 		}, jQuery.noop);
-		this.content.find("div.user_groups_section").prepareWidget(function(widget) {
+		this.rights_section.find("div.user_groups_section").prepareWidget(function(widget) {
 			this.user_groups = widget;
 		}.bind(this));
-		this.content.find("div.roles_section").prepareWidget(function(widget) {
+		this.rights_section.find("div.roles_section").prepareWidget(function(widget) {
 			this.user_roles = widget;
 		}.bind(this));
 		
@@ -42,13 +42,7 @@ Widget.types.user_detail = {
 	},
 	
 	toggle_rights_section: function(show_roles_groups) {
-		this.rights_section.each(function() {
-			if(show_roles_groups) {
-				jQuery(this).show();
-			} else {
-				jQuery(this).hide();
-			}
-		});
+		this.rights_section[show_roles_groups ? 'show' : 'hide']();
 		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
 		this.admin_login_enabled.attr('disabled', !show_roles_groups);	
 		if(!show_roles_groups) {
@@ -69,12 +63,7 @@ Widget.types.user_detail = {
 				password_section.show();
 				this.detail_widget.content.find(".old_password_elements").show();
 			}
-			if(!user_data.IsSessionUser) {
-				this.content.find('.status_section input').prop('disabled', false);
-			}
-			if(user_data.IsSessionUser) {
-				this.content.find('.status_section input').prop('disabled', true);
-			}
+			this.content.find('.status_section input').prop('disabled', user_data.IsSessionUser);
 			this.content.find("input[name='old_password']").val();
 			this.content.find("input[name='first_name']").val(user_data.FirstName);
 			this.content.find("input[name='last_name']").val(user_data.LastName);
@@ -95,7 +84,7 @@ Widget.types.user_detail = {
 
 			this.user_roles.set_checked(user_data.ActiveUserRoleKeys);
 			this.user_groups.set_checked(user_data.ActiveUserGroupIds);
-			
+
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.user}} "+user_data.FullName);
 			this.detail_widget.content.find('input[name=first_name]').focus();
 		});
