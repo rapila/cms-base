@@ -22,13 +22,12 @@ echo "setting user/group to $owner:$group"
 sudo chown -R $owner:$group .
 
 echo "setting folder permissions – global"
-sudo chmod -R 755 .
+find . -type d \( -not -name 'vendor' -prune \) -print0 | xargs -0 chmod 755
 echo "setting file permissions – global"
-find . -type f -print0 | xargs -0 chmod 644
+find . -type f \( -not -name 'vendor' -prune \) -print0 | xargs -0 chmod 644
 
 echo "setting file permissions – executable"
 sudo chmod a+x base/scripts/*
-sudo chmod a+x base/lib/vendor/phing/bin/phing
 
 echo "setting folder permissions – apache-writable"
 sudo chmod -R 775 generated base/lib/model base/config base/data site/lib/model site/config site/data site/modules plugins/*/lib/model plugins/*/config plugins/*/data >& /dev/null
