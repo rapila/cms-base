@@ -2698,7 +2698,7 @@
 			'}' + 
 			'';
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
-		m = $("<div />").attr({ id : "jstree-marker" }).hide().html("&raquo;")
+		m = $("<div />").attr({ id : "jstree-marker" }).hide().html("&nbsp;&raquo;")
 			.bind("mouseleave mouseenter", function (e) { 
 				m.hide();
 				ml.hide();
