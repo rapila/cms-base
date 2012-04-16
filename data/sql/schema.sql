@@ -105,7 +105,8 @@ CREATE TABLE `page_strings`
 		ON DELETE CASCADE,
 	CONSTRAINT `page_strings_FK_2`
 		FOREIGN KEY (`language_id`)
-		REFERENCES `languages` (`id`),
+		REFERENCES `languages` (`id`)
+		ON DELETE CASCADE,
 	CONSTRAINT `page_strings_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
@@ -178,7 +179,8 @@ CREATE TABLE `language_objects`
 		ON DELETE CASCADE,
 	CONSTRAINT `language_objects_FK_2`
 		FOREIGN KEY (`language_id`)
-		REFERENCES `languages` (`id`),
+		REFERENCES `languages` (`id`)
+		ON DELETE CASCADE,
 	CONSTRAINT `language_objects_FK_3`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)

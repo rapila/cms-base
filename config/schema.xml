@@ -46,7 +46,7 @@
 		<reference local="page_id" foreign="id" />
 	</foreign-key>
 	<column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
-	<foreign-key foreignTable="languages">
+	<foreign-key foreignTable="languages" onDelete="cascade">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
 	<column name="is_inactive" type="boolean" size="1" default="1" />
@@ -80,7 +80,7 @@
 		<reference local="object_id" foreign="id" />
 	</foreign-key>
 	<column name="language_id" type="varchar" size="3" required="false" primaryKey="true" />
-	<foreign-key foreignTable="languages">
+	<foreign-key foreignTable="languages" onDelete="cascade">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
 	<column name="data" type="blob" />
