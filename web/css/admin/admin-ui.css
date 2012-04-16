@@ -88,3 +88,4 @@ td span.remove_entry{margin:0}
 .delete_entry{margin-left:.8em;display:inline-block;cursor:pointer}
 .error_display_indicator{background-image:url("../../images/admin/error_display_indicator_bg.png") !important;background-repeat:no-repeat !important;background-position:left top !important}
 .ui-progressbar{margin-top:.3em;height:1.5em;background-color:#999}
+noscript{text-align:center}
