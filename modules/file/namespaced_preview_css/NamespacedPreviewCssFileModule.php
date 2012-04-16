@@ -8,9 +8,9 @@ class NamespacedPreviewCssFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		
-		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
-			throw new Exception("Not allowed");
-		}
+		// if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
+		// 	throw new Exception("Not allowed");
+		// }
 		
 		array_unshift($aRequestPath, DIRNAME_WEB, ResourceIncluder::RESOURCE_TYPE_CSS);
 		$this->oFile = ResourceFinder::findResourceObject($aRequestPath);
