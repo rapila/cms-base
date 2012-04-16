@@ -10,6 +10,7 @@ class AdminManager extends Manager {
 	
 	public function __construct() {
 		parent::__construct();
+		SanityCheck::basicCheck();
 		$this->sModuleName = Manager::usePath();
 		if($this->sModuleName === null) {
 			$this->sModuleName = self::DEFAULT_MODULE;
