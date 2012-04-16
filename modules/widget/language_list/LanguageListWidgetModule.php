@@ -54,7 +54,7 @@ class LanguageListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_active', 'sort', 'delete');
+		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_default_edit', 'is_active', 'sort', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -77,6 +77,9 @@ class LanguageListWidgetModule extends WidgetModule {
 				break;
 			case 'is_default':
 				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
+				break;
+			case 'is_default_edit':
+				$aResult['heading'] = StringPeer::getString('wns.language.is_default_edit');
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
