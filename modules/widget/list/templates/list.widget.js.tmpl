@@ -288,6 +288,9 @@ Widget.types.list = {
 		}
 		var rowData = this.collect_row_data(row);
 		this.deleteRow(rowData, function(result) {
+			if(arguments[1]) {
+				return;
+			}
 			var active_rows = null;
 			if(row.hasClass(this.settings.row_click_active_class)) {
 				active_rows = this.active_row_datas().sort();
