@@ -6,9 +6,9 @@ class PreviewManager extends FrontendManager {
 	
 	private static $PREVIOUS_MANAGER;
 	
-	public function __construct() {
+	public function __construct($bShouldLogin=true) {
 		parent::__construct();
-		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
+		if($bShouldLogin && (!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled())) {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => self::getRequestedPath())));
 		}
 		
