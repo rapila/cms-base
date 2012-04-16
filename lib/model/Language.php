@@ -19,6 +19,10 @@ class Language extends BaseLanguage {
 		return Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, null) === $this->getId();
 	}
 
+	public function getIsDefaultEdit() {
+		return Settings::getSetting("session_default", AdminManager::CONTENT_LANGUAGE_SESSION_KEY, null) === $this->getId();
+	}
+
 	public static function languagesExist() {
 		return self::doCount(new Criteria()) > 0;
 	}
