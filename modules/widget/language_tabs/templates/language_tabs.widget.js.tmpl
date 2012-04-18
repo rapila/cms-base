@@ -35,9 +35,13 @@ Widget.types.language_tabs = {
 			inserter_is_parent = true;
 			inserter = this._element.parent();
 		}
-		this._element.appendTo(document.body).append('<ul/>').tabs(tab_config);
 		
+		this._element.appendTo(document.body).append('<ul/>').tabs(tab_config);
 		var languages = this.getLanguages();
+
+		if(Object.keys(languages).length < 2) {
+			this._element.find('ul').addClass('is_monolingual');
+		}
 		jQuery.each(languages, function(language_id, localized_name) {
 			current_language = language_id;
 			language_tabs._element.tabs('add', "#language_tabs-"+Widget.uuid()+'-'+language_id, localized_name);
