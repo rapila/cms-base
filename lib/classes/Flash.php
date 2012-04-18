@@ -6,7 +6,7 @@ class Flash {
 	const AFFECTED_INSTANCE_INDEXES_KEY = 'affected_instance_indexes';
 	const STRING_KEY_KEY = 'string_key';
 	
-	public static $EMAIL_CHECK_PATTERN = "/^([\w._\-%+]+|\".+\")@[\w-]+(\.[\w-]+)*(\.\w+)$/";
+	public static $EMAIL_CHECK_PATTERN = "([\w._\-%+]+|\".+\")@[\w-]+(\.[\w-]+)*(\.\w+)";
 	private static $INSTANCE = null;
 	
 	private $aMessages;
@@ -90,7 +90,7 @@ class Flash {
 	* @todo: IDN-Support
 	*/
 	public function checkForEmail($sName, $sFlashName = null) {
-		return $this->checkForPattern($sName, self::$EMAIL_CHECK_PATTERN, $sFlashName);
+		return $this->checkForPattern($sName, '/^'.self::$EMAIL_CHECK_PATTERN.'$/', $sFlashName);
 	}
 	
 	public function checkForValue($sName, $sFlashName = null) {
