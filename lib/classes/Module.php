@@ -203,6 +203,8 @@ abstract class Module {
 	public static function listModulesByTypeAndAspect($sType, $sAspect, $bListEnabledOnly = true) {
 		$aResult = array();
 		foreach(self::listModulesByType($sType, $bListEnabledOnly) as $sName => $aMetadata) {
+		  // ATTENTION: formatting of info.yml > aspects: aspect lines have to be indented!
+		  // the yaml files are not parsed correctly when generated
 			if(isset($aMetadata['module_info']['aspects']) && in_array($sAspect, $aMetadata['module_info']['aspects'])) {
 				$aResult[$sName] = $aMetadata;
 			}

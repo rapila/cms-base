@@ -362,7 +362,9 @@ class Page extends BasePage {
 		} else {
 			$aResults[$this->getId()] = $this;
 		}
-		foreach($this->getChildren() as $oChild) {
+		$oCriteria = new Criteria();
+		$oCriteria->addAscendingOrderByColumn(PagePeer::TREE_LEFT);
+		foreach($this->getChildren($oCriteria) as $oChild) {
 			$aResults = ($aResults + $oChild->getTree($bNameOnly, $oChild->getLevel()));
 		}
 		return $aResults;

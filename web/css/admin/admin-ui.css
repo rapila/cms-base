@@ -35,7 +35,6 @@ form.page_detail label.for_checkbox,input[type=checkbox] + label.for_checkbox{ma
 h3.status{padding-left:.3em}
 .ui-list .ui-list-row.ui-state-hover,.ui-list .ui-list-row.ui-state-active{background-image:url("theme/images/selected_row.png");background-repeat:repeat;background-attachment:scroll;border:0}
 .ui-list tr.ui-list-row.ui-state-hover .ui-icon,.ui-list tr.ui-list-row.ui-state-highlight .ui-icon{background-image:url("theme/images/ui-icons_000000_256x240.png")}
-.ui-list td:first-child,.ui-list th:first-child{min-width:15em}
 #admin_sidebar .ui-list th:first-child{padding-left:5px}
 #admin_sidebar .ui-list .ui-list-row.ui-state-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-active{border:none;background-color:#728697;background-image:none;border-bottom:1px solid #d4d8dc}
 #admin_sidebar .ui-list .ui-list-row.ui-state-highlight{border:none;background-image:none;border-bottom:1px solid #d4d8dc}
@@ -81,10 +80,11 @@ h3.status{padding-left:.3em}
 .users fieldset.option_groups{padding:0 0 .6em 0}
 .ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container	 div.ui-widget-content{padding:0;border-color:#cccdcf}
 label span.error_display:before,legend span.error_display:before{content:' '}
-label span.error_display,legend span.error_display,span.error_display{color:#f00}
+label span.error_display,legend span.error_display,.error_display{color:#f00}
 .delete_drop_zone{float:left;height:100px;margin:23px 2px 2px 2px;padding:2px;width:100px}
 .add_entry,.remove_entry{height:24px;width:24px;margin-top:.2em;display:inline-block;cursor:pointer}
 td span.remove_entry{margin:0}
 .delete_entry{margin-left:.8em;display:inline-block;cursor:pointer}
 .error_display_indicator{background-image:url("../../images/admin/error_display_indicator_bg.png") !important;background-repeat:no-repeat !important;background-position:left top !important}
 .ui-progressbar{margin-top:.3em;height:1.5em;background-color:#999}
+noscript{text-align:center}

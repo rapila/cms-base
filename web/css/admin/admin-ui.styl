@@ -150,7 +150,7 @@ input[type=checkbox] + label.for_checkbox
 h3.status
 	padding-left: .3em
 
-//List style for the content area (mostly table lists)
+// List style for the content area (mostly table lists)
 .ui-list
 	.ui-list-row.ui-state-hover,
 	.ui-list-row.ui-state-active
@@ -162,10 +162,6 @@ h3.status
 	tr.ui-list-row.ui-state-hover .ui-icon,
 	tr.ui-list-row.ui-state-highlight .ui-icon
 		background-image: url("theme/images/ui-icons_000000_256x240.png");
-
-	td:first-child,
-	th:first-child
-		min-width: 15em
 
 #admin_sidebar .ui-list th:first-child
 	padding-left:5px
@@ -382,7 +378,7 @@ legend span.error_display:before
 
 label span.error_display,
 legend span.error_display,
-span.error_display
+.error_display
 	color: red
 
 .delete_drop_zone
@@ -417,3 +413,5 @@ td span.remove_entry
 	height: 1.5em
 	background-color: #999
 
+noscript
+	text-align center

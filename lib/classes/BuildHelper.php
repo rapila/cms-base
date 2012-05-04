@@ -110,53 +110,57 @@ EOT;
 			copy($oAddition->getFullPath(), $sNewPath);
 		}
 	}
-		
+
 	/**
 	* Moves the model files of modules to that modules directories. Called by the generate-model.sh script
 	*/
 	private static function moveModel($bIsDevVersion = false) {
 		$aSchemaFiles = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, "schema.xml"), ResourceFinder::SEARCH_PLUGINS_ONLY);
+		$bHasPluginSchemas = count($aSchemaFiles) > 0;
 		foreach($aSchemaFiles as $sSchemaPath) {
-			self::moveModelInto($sSchemaPath);
+			self::moveModelForSchemaPath($sSchemaPath, $bIsDevVersion);
 		}
+
 		$sSchemaFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, "schema.xml"), ResourceFinder::SEARCH_SITE_ONLY);
+		$bHasSiteSchema = !!$sSchemaFile;
 		if($sSchemaFile) {
-			self::moveModelInto($sSchemaFile);
+			self::moveModelForSchemaPath($sSchemaFile, true); //Always rid `generated` of stuff belonging to `site`
 		}
-		
-		//Be safe
-		if($bIsDevVersion) {
-			$sSchemaFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, "schema.xml"), ResourceFinder::SEARCH_BASE_ONLY);
-			if($sSchemaFile) {
-				self::moveModelInto($sSchemaFile);
+
+		$sSchemaFile = ResourceFinder::findResource(array(DIRNAME_CONFIG, "schema.xml"), ResourceFinder::SEARCH_BASE_ONLY);
+		if($sSchemaFile) {
+			if($bIsDevVersion && $bHasPluginSchemas) {
+				print "NOT moving base model because it’s polluted by plugins’ models\n";
 			}
-		} else {
-			foreach(ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_GENERATED, DIRNAME_MODEL, '/.+\.php/'), ResourceFinder::SEARCH_MAIN_ONLY) as $sFilePath) {
-				unlink($sFilePath);
+			if($bIsDevVersion && $bHasSiteSchema) {
+				print "NOT moving base model because it’s polluted by site model\n";
 			}
+			self::moveModelForSchemaPath($sSchemaFile, $bIsDevVersion && !$bHasPluginSchemas && !$bHasSiteSchema); //Be safe: only build for base if schema files were neither found in site nor in any plugins. Also, the user must specifically have requested a “dev” build
 		}
 	}
 	
-	private static function moveModelInto($sSchemaPath) {
-		$sNewModelDir = dirname(dirname($sSchemaPath))."/".DIRNAME_LIB;
-		if(!is_dir($sNewModelDir)) {
-			mkdir($sNewModelDir);
+	private static function moveModelForSchemaPath($sSchemaPath, $bIsDevVersion) {
+		if($bIsDevVersion) {
+			$sNewModelDir = dirname(dirname($sSchemaPath))."/".DIRNAME_LIB;
+			if(!is_dir($sNewModelDir)) {
+				mkdir($sNewModelDir);
+			}
+			$sNewModelDir = $sNewModelDir."/".DIRNAME_MODEL;
+			if(!is_dir($sNewModelDir)) {
+				mkdir($sNewModelDir);
+			}
+
+			$sNewModelBaseDir = "$sNewModelDir/om";
+			if(!is_dir($sNewModelBaseDir)) {
+				mkdir($sNewModelBaseDir);
+			}
+
+			$sNewModelMapDir = "$sNewModelDir/map";
+			if(!is_dir($sNewModelMapDir)) {
+				mkdir($sNewModelMapDir);
+			}
 		}
-		$sNewModelDir = $sNewModelDir."/".DIRNAME_MODEL;
-		if(!is_dir($sNewModelDir)) {
-			mkdir($sNewModelDir);
-		}
-		
-		$sNewModelBaseDir = "$sNewModelDir/om";
-		if(!is_dir($sNewModelBaseDir)) {
-			mkdir($sNewModelBaseDir);
-		}
-		
-		$sNewModelMapDir = "$sNewModelDir/map";
-		if(!is_dir($sNewModelMapDir)) {
-			mkdir($sNewModelMapDir);
-		}
-		
+
 		$sSchema = file_get_contents($sSchemaPath);
 		preg_match_all(self::CLASSNAME_PATTERN, $sSchema, $aMatches);
 		$aMatches = $aMatches[1];
@@ -164,25 +168,32 @@ EOT;
 			$sClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "$sClassName.php"), ResourceFinder::SEARCH_MAIN_ONLY);
 			$sPeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "${sClassName}".self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
 			$sQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "${sClassName}".self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			
+
 			$sBaseClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."$sClassName.php"), ResourceFinder::SEARCH_MAIN_ONLY);
 			$sBasePeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."${sClassName}".self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
 			$sBaseQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."${sClassName}".self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			
+
 			//No editable version of the map class exists
 			$sMapClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'map', "${sClassName}".self::$MAP_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			
-			//Over-writable by the user
-			self::moveOverridableFile($sClassPath, $sClassName, $sNewModelDir);
-			self::moveOverridableFile($sPeerClassPath, $sClassName, $sNewModelDir, self::$PEER_SUFFIX);
-			self::moveOverridableFile($sQueryClassPath, $sClassName, $sNewModelDir, self::$QUERY_SUFFIX);
-			
-			//Not over-writable by the user (allow to re-generate)
-			self::moveNonOverridableFile($sBaseClassPath, $sClassName, $sNewModelBaseDir);
-			self::moveNonOverridableFile($sBasePeerClassPath, $sClassName, $sNewModelBaseDir, self::$PEER_SUFFIX);
-			self::moveNonOverridableFile($sBaseQueryClassPath, $sClassName, $sNewModelBaseDir, self::$QUERY_SUFFIX);
-			
-			self::moveNonOverridableFile($sMapClassPath, $sClassName, $sNewModelMapDir, self::$MAP_SUFFIX);
+
+			if($bIsDevVersion) {
+				//Over-writable by the user
+				self::moveOverridableFile($sClassPath, $sClassName, $sNewModelDir);
+				self::moveOverridableFile($sPeerClassPath, $sClassName, $sNewModelDir, self::$PEER_SUFFIX);
+				self::moveOverridableFile($sQueryClassPath, $sClassName, $sNewModelDir, self::$QUERY_SUFFIX);
+
+				//Not over-writable by the user (allow to re-generate)
+				self::moveNonOverridableFile($sBaseClassPath, $sClassName, $sNewModelBaseDir);
+				self::moveNonOverridableFile($sBasePeerClassPath, $sClassName, $sNewModelBaseDir, self::$PEER_SUFFIX);
+				self::moveNonOverridableFile($sBaseQueryClassPath, $sClassName, $sNewModelBaseDir, self::$QUERY_SUFFIX);
+
+				self::moveNonOverridableFile($sMapClassPath, $sClassName, $sNewModelMapDir, self::$MAP_SUFFIX);
+			} else {
+				// Remove all overridables and leave non-overridables in `generated` to be included
+				unlink($sClassPath);
+				unlink($sPeerClassPath);
+				unlink($sQueryClassPath);
+			}
 		}
 	}
 	
@@ -190,7 +201,7 @@ EOT;
 		$sClassName = "$sClassName$sSuffix.php";
 		$sClass = "$sDestination/$sClassName";
 		if(!file_exists($sClass)) {
-			print "Moving user-modifiable $sClassName to $sClass\n";
+			print "Moving user-modifiable $sClassName to $sDestination\n";
 			rename($sPath, $sClass);
 		} else {
 			print "[Deleting generated $sClassName because user-modified version exists]\n";
@@ -207,7 +218,7 @@ EOT;
 		if(file_exists($sClass)) {
 			unlink($sClass);
 		}
-		print "Moving generated $sClassName to $sClass\n";
+		print "Moving generated $sClassName to $sDestination\n";
 		rename($sPath, $sClass);
 	}
 	

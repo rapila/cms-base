@@ -2,15 +2,16 @@
 /**
  * @package manager
 */
-class LoginManager extends Manager {
+class LoginManager extends PreviewManager {
 	
 	const USER_NAME = 'user_name';
 	const LOGIN_PASSWORD = 'password';
 	private $sAction;
-	private $oTemplate;
+	public $oTemplate;
 	
 	public function __construct() {
-		parent::__construct();
+		parent::__construct(false);
+
 		$this->sAction = 'login';
 		if(Manager::isPost()) {
 			ArrayUtil::trimStringsInArray($_POST);
@@ -24,8 +25,7 @@ class LoginManager extends Manager {
 		//	• Send the email with the recovery link (and generate the hint)
 		//	• Add confirmation message to flash
 		if(isset($_POST['password_reset_user_name'])) {
-		  $oUser = UserQuery::create()->filterByIsInactive(false)->filterByUsername($_POST['password_reset_user_name'])->findOne();
-			$this->sAction = self::sendResetMail($oUser);
+			$this->sAction = self::processPasswordReset();
 		}
 		//3rd step: user has clicked on the reset link in the e-mail
 		//	• Validate the hint
@@ -52,10 +52,12 @@ class LoginManager extends Manager {
 	}
 	
 	public function render() {
-		$this->oTemplate->replaceIdentifier('login_action', $this->sAction);
-		$this->oTemplate->doIncludes();
-		$this->oTemplate->replaceIdentifier('action', LinkUtil::link());
-		$this->oTemplate->replaceIdentifier('login_title', StringPeer::getString($this->sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
+		$sAction = $this->sAction;
+		$this->oTemplate->replaceIdentifierCallback('renderLoginModule', function($oTemplateIdentifier) use ($sAction) {
+			$aOptions = array(LoginFrontendModule::MODE_SELECT_KEY => $oTemplateIdentifier->getParameter('template'));
+			$oLoginModule = new LoginFrontendModule(serialize($aOptions));
+			return $oLoginModule->renderFrontend($sAction);
+		}, null, Template::LEAVE_IDENTIFIERS);
 		$this->oTemplate->replaceIdentifier('domain_name', LinkUtil::getHostName());
 		if($this->sAction === 'login') {
 			$this->renderLogin();
@@ -120,13 +122,12 @@ class LoginManager extends Manager {
 			$oFlash->addMessage('login.empty_fields');
 			return 'password_forgotten';
 		}
-		
 		$oFlash->addMessage('login.recovery_link_sent');
-		$oUser = UserPeer::getUserByUsername($_POST['password_reset_user_name'], true);
+		$oUser = UserQuery::create()->filterByIsInactive(false)->filterByUsername($_POST['password_reset_user_name'])->findOne();
 		if($oUser === null) {
 			return 'login';
 		}
-    self::sendResetMail($oUser, false, $sLinkBase);
+		self::sendResetMail($oUser, false, $sLinkBase);
 		return 'login';
 	}
 	
@@ -140,7 +141,7 @@ class LoginManager extends Manager {
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
 		$oEmailTemplate->replaceIdentifier('username', $oUser->getUsername());
 		if($bShowUserName) {
-		  $oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('login.password_reset.your_username').': '.$oUser->getUsername());
+			$oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('login.password_reset.your_username').': '.$oUser->getUsername());
 		}
 		if($sLinkBase === null) {
 			if(Manager::$CURRENT_MANAGER instanceof FrontendManager) {
