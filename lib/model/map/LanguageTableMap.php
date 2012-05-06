@@ -56,8 +56,8 @@ class LanguageTableMap extends TableMap
 	{
 		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
 		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
-		$this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'PageStrings');
-		$this->addRelation('LanguageObject', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'LanguageObjects');
+		$this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), 'CASCADE', null, 'PageStrings');
+		$this->addRelation('LanguageObject', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), 'CASCADE', null, 'LanguageObjects');
 		$this->addRelation('LanguageObjectHistory', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'LanguageObjectHistorys');
 		$this->addRelation('String', 'String', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'Strings');
 		$this->addRelation('UserRelatedByLanguageId', 'User', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'UsersRelatedByLanguageId');

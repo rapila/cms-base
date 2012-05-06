@@ -649,8 +649,8 @@ class Template {
 	/**
 	* @return void
 	*/
-	public function replaceIdentifierCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags=0) {
-		$mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
+	public function replaceIdentifierCallback($sIdentifier, $mCallbackObject, $sCallbackMethod=null, $iFlags=0) {
+		$mFunction = $sCallbackMethod === null ? $mCallbackObject : array($mCallbackObject, $sCallbackMethod);
 		$this->replaceIdentifier($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
 	}
 

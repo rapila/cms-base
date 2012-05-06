@@ -52,9 +52,35 @@ class LanguageListWidgetModule extends WidgetModule {
 			$i++;
 		}
 	}
+	public function deleteRow($aRowData, $oCriteria) {
+		$oLanguage = LanguagePeer::doSelectOne($oCriteria);
+		if($oLanguage->getIsDefault()) {
+			throw new LocalizedException('language.delete_default.denied');
+		}
+		if($oLanguage->getIsDefaultEdit()) {
+			throw new LocalizedException('language.delete_default.denied');
+		}
+		if(LanguagePeer::doCount(new Criteria()) < 2) {
+			throw new LocalizedException('language.delete_last.denied');
+		}
+		$sLanguageId = $oLanguage->getId();
+		foreach(LanguageObjectQuery::create()->filterByLanguageId($sLanguageId)->find() as $oLanguageObject) {
+			$oHistory = $oLanguageObject->newHistory();
+			$oHistory->save();
+			$oLanguageObject->delete();
+		}
+		$iResult = $oLanguage->delete();
+		$oReplacementLanguage = LanguageQuery::create()->findOne();
+		if(AdminManager::getContentLanguage() === $sLanguageId) {
+			AdminManager::setContentLanguage(Settings::getSetting("session_default", AdminManager::CONTENT_LANGUAGE_SESSION_KEY, $oReplacementLanguage->getId()));
+		}
+		if(Session::language() === $sLanguageId) {
+			Session::getSession()->setLanguage(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, $oReplacementLanguage->getId()));
+		}
+	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_active', 'sort', 'delete');
+		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_default_edit', 'is_active', 'sort', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -77,6 +103,9 @@ class LanguageListWidgetModule extends WidgetModule {
 				break;
 			case 'is_default':
 				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
+				break;
+			case 'is_default_edit':
+				$aResult['heading'] = StringPeer::getString('wns.language.is_default_edit');
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');

@@ -6,12 +6,13 @@ class PreviewManager extends FrontendManager {
 	
 	private static $PREVIOUS_MANAGER;
 	
-	public function __construct() {
+	public function __construct($bShouldLogin=true) {
 		parent::__construct();
-		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
+		SanityCheck::basicCheck();
+		if($bShouldLogin && (!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled())) {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => self::getRequestedPath())));
 		}
-		
+
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.7.1');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);

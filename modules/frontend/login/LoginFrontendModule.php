@@ -42,7 +42,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 			}
 			$oTemplate->replaceIdentifier('function_template', $oFunctionTemplate, null, Template::LEAVE_IDENTIFIERS);
 		}
-		if($this->oUser) {
+		if($this->oUser && $this->oPage) {
 			$oPage = $this->oPage;
 			if(Session::getSession()->hasAttribute('login_referrer_page')) {
 				$oPage = Session::getSession()->getAttribute('login_referrer_page');
@@ -58,12 +58,12 @@ class LoginFrontendModule extends DynamicFrontendModule {
 			}
 		}
 		
-		$oTemplate->replaceIdentifier('login_title', StringPeer::getString('wns.login'));
+		$oTemplate->replaceIdentifier('login_title', StringPeer::getString($sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
 		$sOrigin = isset($_REQUEST['origin']) ? $_REQUEST['origin'] : LinkUtil::linkToSelf();
 		$oTemplate->replaceIdentifier('origin', $sOrigin);
 		
 		if($sAction !== 'logout') {
-			$oLoginPage = $this->oPage->getLoginPage();
+			$oLoginPage = $this->oPage ? $this->oPage->getLoginPage() : null;
 			$sLink = null;
 			if($oLoginPage === null) {
 				$sLink = LinkUtil::link('', 'LoginManager');
@@ -74,7 +74,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 		}
 		
 		if($sAction === 'login') {
-			$oLoginPage = $this->oPage->getLoginPage();
+			$oLoginPage = $this->oPage ? $this->oPage->getLoginPage() : null;
 			$sLink = null;
 			if($oLoginPage === null) {
 				$sLink = LinkUtil::link(array(), 'LoginManager', array('password_forgotten' => 'true'));
