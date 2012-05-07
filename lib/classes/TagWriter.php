@@ -84,7 +84,7 @@ class TagWriter {
 		return $oTagWriter->parse();
 	}
 
-	public static function getEmailLinkWriter($sLinkUrl, $sText=null) {
+	public static function getEmailLinkWriter($sLinkUrl, $sText=null, $sQuery='') {
 		if($sText === null) {
 			$sText = StringPeer::getString("email");
 		} else if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
@@ -97,8 +97,8 @@ class TagWriter {
 			$sLinkUrl = "mailto:".$sLinkUrl;
 		}
 
-		$oWriter = new TagWriter("a", array('class' => 'mailto_link', 'href' => $sLinkUrl), $sText);
-
+		$oWriter = new TagWriter("a", array('class' => 'mailto_link', 'href' => $sLinkUrl.$sQuery), $sText);
+    ErrorHandler::log($oWriter->parse());
 		return $oWriter;
 	}
 
