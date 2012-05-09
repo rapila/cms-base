@@ -143,12 +143,12 @@ class Cache {
 	/**
 	* Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
 	*/
-	public function setContents($mContents, $bForceSerialize = false) {
+	public function setContents($mContents, $bForceSerialize = false, $bAppend = false) {
 		if($this->cacheIsOffForWriting()) {
 			return;
 		}
 		if(!$bForceSerialize && is_string($mContents)) {
-			return file_put_contents($this->sFilePath, $mContents);
+			return file_put_contents($this->sFilePath, $mContents, $bAppend ? FILE_APPEND : 0);
 		}
 		return file_put_contents($this->sFilePath, serialize($mContents));
 	}
