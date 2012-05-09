@@ -2,12 +2,16 @@
 ///Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
 class Cache {
 	
+	const CACHE_EXTENSION = '.cache';
+	
+	const FLAG_FILE_DIRECT = 1;
+	
 	private $bCacheIsNeverOff;
 	private $sFileName;
 	private $sFilePath;
 	private $bCacheControlHeaderSent;
 	
-	public function __construct($sKey, $mPath=null) {
+	public function __construct($sKey, $mPath=null, $iFlags = 0) {
 		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
@@ -18,8 +22,11 @@ class Cache {
 			}
 		}
 		
-		$this->sFileName = md5($sKey);
-		$this->sFilePath = $sPath.'/'.$this->sFileName.'.cache';
+		$this->sFileName = $sKey;
+		if(($iFlags&self::FLAG_FILE_DIRECT) !== self::FLAG_FILE_DIRECT) {
+			$this->sFileName = md5($this->sFileName);
+		}
+		$this->sFilePath = $sPath.'/'.$this->sFileName.self::CACHE_EXTENSION;
 		
 		$this->bCacheControlHeaderSent = false;
 	}
