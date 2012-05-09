@@ -3,6 +3,7 @@
 class Cache {
 	
 	private $bCacheIsNeverOff;
+	private $sFileName;
 	private $sFilePath;
 	private $bCacheControlHeaderSent;
 	
@@ -17,8 +18,8 @@ class Cache {
 			}
 		}
 		
-		$sFileName = md5($sKey);
-		$this->sFilePath = $sPath.'/'.$sFileName.'.cache';
+		$this->sFileName = md5($sKey);
+		$this->sFilePath = $sPath.'/'.$this->sFileName.'.cache';
 		
 		$this->bCacheControlHeaderSent = false;
 	}
@@ -38,6 +39,13 @@ class Cache {
 	 */
 	public function getFilePath() {
 			return $this->sFilePath;
+	}
+	
+	/**
+	 * Returns the md5()’ed cache key.
+	 */
+	public function getFileName() {
+			return $this->sFileName;
 	}
 	
 	/**
