@@ -303,7 +303,24 @@ class ResourceIncluder {
 		return $aResult;
 	}
 	
-	public function getIncludes($bPrintNewlines = true) {
+	/**
+	* Returns a Template containing all of the necessary HTML code for the browser to load the included resources.
+	* @param $bPrintNewlines Whether to put each include on a new line. Turn this off for “location_only”-type includes.
+	* @param $bConsolidate Whether to consolidate CSS and JS includes into a single tag which will point to a new location which will serve all the scripts of one type concatenated.
+	* Valid values — true: Consolidate all css/js resources, false: Don’t consolidate, 'internal': Only consolidate internal scripts, but not the ones loaded from external servers, null: Use the default value from the general/consolidate_resources configuration seting from resource_includer.yml.
+	* Note that all concatenated scripts will have to be in the same charset, namely the one defined in the encoding/browser configuration setting.
+	*/
+	public function getIncludes($bPrintNewlines = true, $bConsolidate = null) {
+		if($bConsolidate === null) {
+			$bConsolidate = Settings::getSetting('general', 'consolidate_resources', false, 'resource_includer');
+		}
+		if($bConsolidate && !ini_get('allow_url_fopen')) {
+			// Never consolidate external files if fopen_wrappers are disabled
+			$bConsolidate = 'internal';
+		}
+		if($bConsolidate) {
+			$this->replaceContentsWithConsolidated($bConsolidate === 'internal');
+		}
 		$this->cleanupReverseDependencies();
 		$iTemplateFlags = 0;
 		if(!$bPrintNewlines) {
@@ -333,6 +350,71 @@ class ResourceIncluder {
 			}
 		}
 		return $oTemplate;
+	}
+	
+	private function replaceContentsWithConsolidated($bExcludeExternal = false) {
+		$sConsolidationKey = md5(serialize($this));
+		
+		//CSS stuff
+		$aCssInfo = null;
+		
+		//JS stuff
+		$aJsInfo = null;
+		
+		foreach($this->aIncludedResources as $iPriority => &$aIncludedResourcesOfType) {
+			foreach($aIncludedResourcesOfType as $iIndex => &$aResourceInfo) {
+				list($resource_type, $file_resource, $location, $content, $template) = null;
+				extract($aResourceInfo, EXTR_IF_EXISTS);
+				$this->consolidationStepForResourceType('css', $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, $aCssInfo, $resource_type, $file_resource, $location, $content, $template);
+				$this->consolidationStepForResourceType('js', $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, $aJsInfo, $resource_type, $file_resource, $location, $content, $template);
+			}
+		}
+		$this->cleanupConsolidator($aCssInfo);
+		$this->cleanupConsolidator($aJsInfo);
+	}
+	
+	private function consolidationStepForResourceType($sType, $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, &$aResourceTypeInfo, &$resource_type, &$file_resource, &$location, &$content, &$template) {
+		if($resource_type !== $sType && $template !== "inline_$sType") {
+			return;
+		}
+		//External location (no file_resource given) or location not determinable
+		if($file_resource === null && ($bExcludeExternal || ($location === null && $content === null))) {
+			$this->cleanupConsolidator($aResourceTypeInfo);
+		} else {
+			if($this->initConsolidator($sConsolidationKey, $sType, $iPriority, $iIndex, $aResourceTypeInfo)) {
+				$sContents = '';
+				if($file_resource !== null) {
+					$sContents = file_get_contents($file_resource->getFullPath());
+				} else if($location !== null) {
+					$sContents = file_get_contents($location);
+				} else if($content !== null) {
+					$sContents = $content;
+				}
+				$aResourceTypeInfo['cache']->setContents($sContents, false, true);
+			}
+		}
+	}
+	
+	private function initConsolidator($sConsolidationKey, $sType, $iPriority, $iIndex, &$aResourceTypeInfo) {
+		if($aResourceTypeInfo === null) {
+			$oCache = new Cache("$sConsolidationKey-$sType-$iPriority-$iIndex", DIRNAME_PRELOAD);
+			$aResourceTypeInfo = array('cache' => $oCache, 'type' => $sType, 'is_new' => !$oCache->cacheFileExists());
+		} else {
+			unset($this->aIncludedResources[$aResourceTypeInfo['priority']][$aResourceTypeInfo['index']]);
+		}
+		$aResourceTypeInfo['priority'] = $iPriority;
+		$aResourceTypeInfo['index'] = $iIndex;
+		return $aResourceTypeInfo['is_new'];
+	}
+	
+	private function cleanupConsolidator(&$aResourceTypeInfo) {
+		if($aResourceTypeInfo === null) {
+			return;
+		}
+		$sLink = LinkUtil::absoluteLink(LinkUtil::link(array('consolidated_resource', $aResourceTypeInfo['type'], $aResourceTypeInfo['cache']->getFileName()), 'FileManager'));
+		$aConsolidatorLink = array('location' => $sLink, 'template' => $aResourceTypeInfo['type']);
+		$this->aIncludedResources[$aResourceTypeInfo['priority']][$aResourceTypeInfo['index']] = $aConsolidatorLink;
+		$aResourceTypeInfo = null;
 	}
 	
 	public function addResourceFromTemplateIdentifier($oIdentifier) {
