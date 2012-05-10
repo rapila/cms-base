@@ -354,18 +354,18 @@ class ResourceIncluder {
 	
 	private function replaceContentsWithConsolidated($bExcludeExternal = false) {
 		$sConsolidationKey = md5(serialize($this));
-		
+
 		//CSS stuff
 		$aCssInfo = null;
-		
+
 		//JS stuff
 		$aJsInfo = null;
-		
+
 		foreach($this->aIncludedResources as $iPriority => &$aIncludedResourcesOfType) {
 			foreach($aIncludedResourcesOfType as $iIndex => &$aResourceInfo) {
-				list($resource_type, $file_resource, $location, $content, $template) = null;
+				list($resource_type, $file_resource, $location, $content, $template, $media) = null;
 				extract($aResourceInfo, EXTR_IF_EXISTS);
-				$this->consolidationStepForResourceType('css', $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, $aCssInfo, $resource_type, $file_resource, $location, $content, $template);
+				$this->consolidationStepForResourceType('css', $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, $aCssInfo, $resource_type, $file_resource, $location, $content, $template, $media);
 				$this->consolidationStepForResourceType('js', $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, $aJsInfo, $resource_type, $file_resource, $location, $content, $template);
 			}
 		}
@@ -373,8 +373,8 @@ class ResourceIncluder {
 		$this->cleanupConsolidator($aJsInfo);
 	}
 	
-	private function consolidationStepForResourceType($sType, $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, &$aResourceTypeInfo, &$resource_type, &$file_resource, &$location, &$content, &$template) {
-		if($resource_type !== $sType && $template !== "inline_$sType") {
+	private function consolidationStepForResourceType($sType, $sConsolidationKey, $bExcludeExternal, $iPriority, $iIndex, &$aResourceTypeInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
+		if($resource_type !== $sType) {
 			return;
 		}
 		//External location (no file_resource given) or location not determinable
@@ -386,9 +386,18 @@ class ResourceIncluder {
 				if($file_resource !== null) {
 					$sContents = file_get_contents($file_resource->getFullPath());
 				} else if($location !== null) {
+					if(StringUtil::startsWith($location, '/') && !StringUtil::startsWith($location, '//')) {
+						$location = LinkUtil::absoluteLink($location);
+					}
 					$sContents = file_get_contents($location);
 				} else if($content !== null) {
+					if($content instanceof Template) {
+						$content = $content->render();
+					}
 					$sContents = $content;
+				}
+				if($sType === 'css' && $media) {
+					$sContents = "@media $media { $sContents }";
 				}
 				$aResourceTypeInfo['cache']->setContents($sContents, false, true);
 			}
