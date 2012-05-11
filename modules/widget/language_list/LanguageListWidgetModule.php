@@ -55,13 +55,13 @@ class LanguageListWidgetModule extends WidgetModule {
 	public function deleteRow($aRowData, $oCriteria) {
 		$oLanguage = LanguagePeer::doSelectOne($oCriteria);
 		if($oLanguage->getIsDefault()) {
-			throw new LocalizedException('language.delete_default.denied');
+			throw new LocalizedException('wns.language.delete_default.denied');
 		}
 		if($oLanguage->getIsDefaultEdit()) {
-			throw new LocalizedException('language.delete_default.denied');
+			throw new LocalizedException('wns.language.delete_default.denied');
 		}
 		if(LanguagePeer::doCount(new Criteria()) < 2) {
-			throw new LocalizedException('language.delete_last.denied');
+			throw new LocalizedException('wns.language.delete_last.denied');
 		}
 		$sLanguageId = $oLanguage->getId();
 		foreach(LanguageObjectQuery::create()->filterByLanguageId($sLanguageId)->find() as $oLanguageObject) {
