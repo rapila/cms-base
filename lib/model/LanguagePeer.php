@@ -69,8 +69,11 @@ class LanguagePeer extends BaseLanguagePeer {
 		
 	public static function getLanguagesAssoc($bActiveOnly=false, $oSortBySort=false) {
 		$aResult = array();
-		$aLanguages = self::getLanguages($bActiveOnly, $oSortBySort);
-		foreach($aLanguages as $oLanguage) {
+		$oQuery = LanguageQuery::create();
+		if($bActiveOnly) {
+			$oQuery->filterByIsActive(true);
+		}
+		foreach($oQuery->orderByContext($oSortBySort)->find() as $oLanguage) {
 			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();
 		} 
 		if(!$oSortBySort) {
