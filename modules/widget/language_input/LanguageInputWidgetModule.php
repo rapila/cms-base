@@ -20,7 +20,7 @@ class LanguageInputWidgetModule extends WidgetModule {
 			}
 			return $aResult;
 		} else {
-			return WidgetJsonFileModule::jsonBaseObjects(LanguagePeer::getLanguages(false, null), array('id', 'language_name'));
+			return WidgetJsonFileModule::jsonBaseObjects(LanguageQuery::create()->orderByName()->find(), array('id', 'language_name'));
 		}
 	}
 	

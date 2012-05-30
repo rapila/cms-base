@@ -61,7 +61,8 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 		$oConnection = Propel::getConnection();
-		foreach(LanguagePeer::getLanguages() as $oLanguage) {
+		
+		foreach(LanguageQuery::create()->orderByName()->find() as $oLanguage) {
 			$oUpdateCriteria = new Criteria();
 			$oUpdateCriteria->add(StringPeer::LANGUAGE_ID, $oLanguage->getId());
 			$oUpdateCriteria->add(StringPeer::STRING_KEY, $this->sStringId);

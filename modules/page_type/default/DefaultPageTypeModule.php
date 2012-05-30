@@ -233,7 +233,8 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function paramsForObject($oObject) {
 		$aObject = array('id' => $oObject->getId());
 		$aObject['language_objects'] = array();
-		foreach(LanguagePeer::getLanguages() as $oLanguage) {
+		
+		foreach(LanguageQuery::create()->orderByName()->find() as $oLanguage) {
 			$aLanguageInfo = array();
 			$oLanguageObject = $oObject->getLanguageObject($oLanguage->getId());
 			$aLanguageInfo['exists_in_language'] = $oLanguageObject !== null;

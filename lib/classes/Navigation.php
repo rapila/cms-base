@@ -258,8 +258,7 @@ class Navigation {
 		// check whether manager needs language to be included
 		$bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
 		$aRequestPath = explode("/", Manager::getRequestedPath());
-
-		$aLanguages = LanguagePeer::getLanguages(true, true, !$bShowActiveLanguage);
+		$aLanguages = LanguageQuery::create()->filterByIsActive(true)->exclude(!$bShowActiveLanguage)->orderBySort()->find();
 		foreach($aLanguages as $i => $oLanguage) {
 			$oLangTemplate = null;
 			if($oLanguage->getId() === Session::language()) {
