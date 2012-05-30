@@ -22,7 +22,7 @@ class LanguageQuery extends BaseLanguageQuery {
 		if($bOrderBySort) {
 			return $this->orderBySort();
 		}
-		return $this->orderByName();
+		return $this->orderById();
 	}
 
 }
