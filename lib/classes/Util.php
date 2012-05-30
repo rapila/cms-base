@@ -118,7 +118,7 @@ class Util {
 	/**
 	 * @param int $iBits bitmap of bits to be checked (needle)
 	 * @param int $iBitmap bitmap to check against (haystack)
-	 * @return bolean, true if _ALL_ bits of needle are set in haystack, false otherwise
+	 * @return boolean, true if _ALL_ bits of needle are set in haystack, false otherwise
 	 */
 	public static function hasBitsSet($iBits, $iBitmap) {
 		return (($iBitmap & $iBits) === ($iBits));
