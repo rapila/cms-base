@@ -45,6 +45,9 @@ class LanguagePeer extends BaseLanguagePeer {
 		return $oQuery->count() > 0;
 	}
 
+	/**
+	* @deprecated Use query class methods
+	*/
 	public static function getLanguages($bActiveOnly = false, $bSortBySort = false, $mExcludeCurrent = false) {
 		$oCriteria = new Criteria();
 		if($bActiveOnly) {
