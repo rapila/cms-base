@@ -18,7 +18,23 @@ class PageQuery extends BasePageQuery {
 		}
 		return $this;
 	}
+	
+	public function descendantsOf($oPage) {
+		//Default implementation of childrenOf assumes $oPage is non-null.
+		if($oPage !== null) {
+			return parent::descendantsOf($oPage);
+		}
+		return $this;
+	}
 
+	public function childrenOf($oPage) {
+		//Default implementation of childrenOf assumes $oPage is non-null.
+		if($oPage === null) {
+			return $this->addUsingAlias(PagePeer::LEVEL_COL, 0, Criteria::EQUAL);
+		}
+		return parent::childrenOf($oPage);
+	}
+	
 	public function active($bIsActive = true) {
 		return $this->filterByIsInactive(!$bIsActive);
 	}
