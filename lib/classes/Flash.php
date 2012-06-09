@@ -93,6 +93,10 @@ class Flash {
 		return $this->checkForPattern($sName, '/^'.self::$EMAIL_CHECK_PATTERN.'$/', $sFlashName);
 	}
 	
+	public static function checkEmail($sEmail) {
+		return preg_match('/^'.self::$EMAIL_CHECK_PATTERN.'$/', $sEmail) !== 0;
+	}
+	
 	public function checkForValue($sName, $sFlashName = null) {
 		return $this->checkForExactNotMatch($sName, "", $sFlashName);
 	}
