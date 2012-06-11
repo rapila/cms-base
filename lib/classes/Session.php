@@ -131,8 +131,8 @@ class Session {
 		preg_match_all('@(' . $sKeys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $_SERVER['PHP_AUTH_DIGEST'], $aMatches, PREG_SET_ORDER);
 		
 		foreach ($aMatches as $aMatch) {
-				$aResult[$aMatch[1]] = $aMatch[3] ? $aMatch[3] : $aMatch[4];
-				unset($aNeededParts[$aMatch[1]]);
+			$aResult[$aMatch[1]] = $aMatch[3] ? $aMatch[3] : $aMatch[4];
+			unset($aNeededParts[$aMatch[1]]);
 		}
 		return $aNeededParts ? false : $aResult;
 	}
