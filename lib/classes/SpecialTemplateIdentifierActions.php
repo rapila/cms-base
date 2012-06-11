@@ -121,6 +121,14 @@ class SpecialTemplateIdentifierActions {
 		} else if($sDestination === "base_href") {
 			$sDestination = MAIN_DIR_FE;
 			$bIsAbsolute = true;
+		} elseif($sPage = $oTemplateIdentifier->getParameter('page')) {
+			$oPage = PageQuery::create()->filterByIdentifier($sPage)->findOne();
+			if($oPage === null) {
+				$oPage = PageQuery::create()->filterByName($sPage)->findOne();
+			}
+			if($oPage) {
+				$sDestination = LinkUtil::link($oPage->getLink());
+			}
 		} else {
 			$sManager = null;
 			if($oTemplateIdentifier->hasParameter('manager')) {
