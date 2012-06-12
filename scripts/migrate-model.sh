@@ -38,10 +38,13 @@ if [ ! -r "$path_to_buildfile" ]; then
 	exit 1
 fi
 
+SUDO="sudo -u $owner env RAPILA_ENVIRONMENT=${RAPILA_ENVIRONMENT}"
+
 cp base/build.properties generated/
 mkdir -p "./generated/migrations"
-sudo -u $owner "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations();"
-sudo -u $owner /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "$action"
-sudo -u $owner "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();"
+
+$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations();"
+$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "$action"
+$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();"
 rm "./generated/migrations/"*.php
 
