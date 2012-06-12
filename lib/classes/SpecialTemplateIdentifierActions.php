@@ -121,6 +121,18 @@ class SpecialTemplateIdentifierActions {
 		} else if($sDestination === "base_href") {
 			$sDestination = MAIN_DIR_FE;
 			$bIsAbsolute = true;
+		} elseif($sPage = $oTemplateIdentifier->getParameter('page')) {
+			$oPage = PageQuery::create()->filterByIdentifier($sPage)->findOne();
+			if($oPage === null) {
+				$oPage = PageQuery::create()->filterByName($sPage)->findOne();
+			}
+			$sManager = 'FrontendManager';
+			if($oTemplateIdentifier->hasParameter('manager')) {
+				$sManager = $oTemplateIdentifier->getParameter('manager');
+			}
+			if($oPage) {
+				$sDestination = LinkUtil::link($oPage->getLink(), $sManager);
+			}
 		} else {
 			$sManager = null;
 			if($oTemplateIdentifier->hasParameter('manager')) {
