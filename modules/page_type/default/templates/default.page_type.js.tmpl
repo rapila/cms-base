@@ -351,8 +351,7 @@
 						widget.handle('element_set', function(event, element) {
 							Widget.callStatic('detail', 'clickable_labels_for', element);
 							var save = function(is_draft) {
-								language_object_control.save(widget.save(), is_draft, function(result, error) {
-									//Don’t handle the error, it’s an unprivileged user whose data could not be saved
+								language_object_control.save(widget.save(), is_draft, function(result) {
 									//TODO: update object preview
 									var md = _this.find_structure(item_to_edit);
 									var language_id = item_to_edit.attr('data-language-id');
