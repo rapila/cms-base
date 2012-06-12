@@ -126,8 +126,12 @@ class SpecialTemplateIdentifierActions {
 			if($oPage === null) {
 				$oPage = PageQuery::create()->filterByName($sPage)->findOne();
 			}
+			$sManager = 'FrontendManager';
+			if($oTemplateIdentifier->hasParameter('manager')) {
+				$sManager = $oTemplateIdentifier->getParameter('manager');
+			}
 			if($oPage) {
-				$sDestination = LinkUtil::link($oPage->getLink());
+				$sDestination = LinkUtil::link($oPage->getLink(), $sManager);
 			}
 		} else {
 			$sManager = null;
