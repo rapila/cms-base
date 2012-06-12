@@ -262,6 +262,7 @@
 					Widget.create('language_object_control', function(language_object_control) {
 						language_object_control.editor(function(result) {
 							Widget.createWithElement(result[0], function(widget) {
+								language_object_control.detail_widget = widget;
 								if(widget.setObjectId) {
 									widget.setObjectId(container.attr('data-object-id'));
 								}
@@ -344,6 +345,7 @@
 			this.control_widget(item_to_edit, function(language_object_control) {
 				language_object_control.editor(function(result) {
 					Widget.createWithElement(result[0], function(widget) {
+						language_object_control.detail_widget = widget;
 						if(widget.setObjectId) {
 							widget.setObjectId(item_to_edit.attr('data-object-id'));
 						}
