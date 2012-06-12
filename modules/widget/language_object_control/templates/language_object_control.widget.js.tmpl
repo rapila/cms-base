@@ -1,13 +1,8 @@
 Widget.types['language_object_control'] = {
-	initialize: function() {
-		//called before this._element is available
-		
-	},
-
 	prepare: function() {
 		var _this = this;
-		//called when this._element is available
 		if(this._element) {
+			//Special case for when the widget is used outside the default page type
 			this.editor(function(result) {
 				Widget.createWithElement(result[0], function(widget) {
 					widget.handle('element_set', function(event, element) {
