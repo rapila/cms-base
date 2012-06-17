@@ -58,9 +58,13 @@ class LocaleUtil {
 		} else if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
-		return strftime("%$sFormat", $iTimestamp);
+		// add % only if not already set, double % are displayed differently on different server environment
+		$sPrefix = '%';
+		if(StringUtil::startsWith(trim($sFormat), "%")) {
+			$sPrefix = '';
+		}
+		return strftime("$sPrefix$sFormat", $iTimestamp);
 	}
-
 	public static function parseLocalizedDate($sDate, $sLanguageId, $sFormat="x") {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
