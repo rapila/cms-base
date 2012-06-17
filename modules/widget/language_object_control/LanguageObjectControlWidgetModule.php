@@ -21,6 +21,7 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function save($aData, $bSaveDraft = false) {
+		$mSaveData = $this->oModuleInstance->getSaveData($aData);
 		$oSaveInto = $this->oCurrentLanguageObject;
 		if($bSaveDraft) {
 			if($this->oCurrentLanguageObject->getHasDraft()) {
@@ -43,7 +44,7 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 				}
 			}
 		}
-		$oSaveInto->setData($this->oModuleInstance->getSaveData($aData));
+		$oSaveInto->setData($mSaveData);
 		return array('saved' => $oSaveInto->save(), 'language_object_exists' => !$this->oCurrentLanguageObject->isNew());
 	}
 	

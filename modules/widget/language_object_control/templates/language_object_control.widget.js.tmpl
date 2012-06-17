@@ -1,15 +1,11 @@
 Widget.types['language_object_control'] = {
-	initialize: function() {
-		//called before this._element is available
-		
-	},
-
 	prepare: function() {
 		var _this = this;
-		//called when this._element is available
 		if(this._element) {
+			//Special case for when the widget is used outside the default page type
 			this.editor(function(result) {
 				Widget.createWithElement(result[0], function(widget) {
+					_this.detail_widget = widget;
 					widget.handle('element_set', function(event, element) {
 						Widget.callStatic('detail', 'clickable_labels_for', element);
 						_this._element.append(element);
@@ -20,6 +16,14 @@ Widget.types['language_object_control'] = {
 					};
 				}, jQuery.noop, result[1]);
 			});
+		}
+	},
+	
+	validate_with: function(params) {
+		if(this.detail_widget && this.detail_widget._element) {
+			Widget.callStatic('detail', 'validate_with', params, this.detail_widget._element);
+		} else {
+			Widget.exception_type_handlers.ValidationException({parameters: params}, 'language_object_control', this.widgetId);
 		}
 	},
 	
