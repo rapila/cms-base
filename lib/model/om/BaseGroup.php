@@ -1865,14 +1865,13 @@ abstract class BaseGroup extends BaseObject  implements Persistent
 		if($oUser === false) {
 			$oUser = Session::getSession()->getUser();
 		}
-		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && GroupPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
-			return true;
-		}
-		if(GroupPeer::mayOperateOn($oUser, $this, $sOperation)) {
-			return true;
-		}
 		$bIsAllowed = false;
-		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && GroupPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			$bIsAllowed = true;
+		} else if(GroupPeer::mayOperateOn($oUser, $this, $sOperation)) {
+			$bIsAllowed = true;
+		}
+		FilterModule::getFilters()->handleGroupOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
 		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {

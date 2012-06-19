@@ -1558,14 +1558,13 @@ abstract class BaseTag extends BaseObject  implements Persistent
 		if($oUser === false) {
 			$oUser = Session::getSession()->getUser();
 		}
-		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && TagPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
-			return true;
-		}
-		if(TagPeer::mayOperateOn($oUser, $this, $sOperation)) {
-			return true;
-		}
 		$bIsAllowed = false;
-		FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+		if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && TagPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+			$bIsAllowed = true;
+		} else if(TagPeer::mayOperateOn($oUser, $this, $sOperation)) {
+			$bIsAllowed = true;
+		}
+		FilterModule::getFilters()->handleTagOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
 		return $bIsAllowed;
 	}
 	public function mayBeInserted($oUser = false) {
