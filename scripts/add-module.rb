@@ -280,7 +280,7 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('onNavigationPathFound', '', ['oRootNavigationItem', 'oMatchingNavigationItem'])
 		php_methods.push php_method('onPageHasBeenSet', '', ['oCurrentPage', 'bIsNotFound', 'oCurrentNavigationItem'])
 		php_methods.push unboxing_php_filter_method('onPageNotFoundDetectionComplete', ['bIsNotFoundMutable'], '', ['bIsNotFound', 'oCurrentPage', 'oCurrentNavigationItem', 'aContainer'])
-		php_methods.push php_method('onPageNotFound')f
+		php_methods.push php_method('onPageNotFound')
 		php_methods.push php_method('onBeforePageFill', '', ['oCurrentPage', 'oTemplate'])
 		php_methods.push unboxing_php_filter_method('onRequestFinished', ['oCurrentPage', 'bIsDynamic', 'bIsAjaxRequest', 'bIsCached'])
 		php_methods.push php_method('onFillPageAttributes', '', ['oCurrentPage', 'oTemplate'])
