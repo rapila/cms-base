@@ -280,7 +280,7 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('onNavigationPathFound', '', ['oRootNavigationItem', 'oMatchingNavigationItem'])
 		php_methods.push php_method('onPageHasBeenSet', '', ['oCurrentPage', 'bIsNotFound', 'oCurrentNavigationItem'])
 		php_methods.push unboxing_php_filter_method('onPageNotFoundDetectionComplete', ['bIsNotFoundMutable'], '', ['bIsNotFound', 'oCurrentPage', 'oCurrentNavigationItem', 'aContainer'])
-		php_methods.push php_method('onPageNotFound')
+		php_methods.push php_method('onPageNotFound')f
 		php_methods.push php_method('onBeforePageFill', '', ['oCurrentPage', 'oTemplate'])
 		php_methods.push unboxing_php_filter_method('onRequestFinished', ['oCurrentPage', 'bIsDynamic', 'bIsAjaxRequest', 'bIsCached'])
 		php_methods.push php_method('onFillPageAttributes', '', ['oCurrentPage', 'oTemplate'])
@@ -292,7 +292,7 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('onDefaultPageTypeFilledContainerWithModule', '', ['oContentObject', 'oModule', '$oTemplate', 'oFrontendTemplate', 'iModuleId'])
 		php_methods.push unboxing_php_filter_method('onMailGroups', ['aMailGroups'])
 		php_methods.push unboxing_php_filter_method('onMailGroupsRecipients', ['aRecipients'], '', ['aMailGroups', 'aContainer'])
-		php_methods.push unboxing_php_filter_method('onOperationIsDenied', ['bIsAllowed'], '', ['sOperation', 'oOnObject', 'oUser', 'aContainer'])
+		php_methods.push unboxing_php_filter_method('onXXXOperationCheck', ['bIsAllowed'], '', ['sOperation', 'oOnObject', 'oUser', 'aContainer'])
 	elsif $options[:type] == :file then
 		php_methods.push php_method('__construct', 'parent::__construct($aRequestPath);', ['aRequestPath'])
 			php_methods.push php_method('renderFile')

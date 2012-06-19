@@ -80,18 +80,18 @@ class DenyableBehaviour extends Behavior {
 
 	private function addMayOperate($oBuilder) {
 		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
+		$sModelName = $oBuilder->getStubObjectBuilder()->getClassname();
 		return 'public function mayOperate($sOperation, $oUser = false) {
 	if($oUser === false) {
 		$oUser = Session::getSession()->getUser();
 	}
-	if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, $sOperation)) {
-		return true;
-	}
-	if('.$sPeerClassname.'::mayOperateOn($oUser, $this, $sOperation)) {
-		return true;
-	}
 	$bIsAllowed = false;
-	FilterModule::getFilters()->handleOperationIsDenied($sOperation, $this, $oUser, array(&$bIsAllowed));
+	if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, $sOperation)) {
+		$bIsAllowed = true;
+	} else if('.$sPeerClassname.'::mayOperateOn($oUser, $this, $sOperation)) {
+		$bIsAllowed = true;
+	}
+	FilterModule::getFilters()->handle'.$sModelName.'OperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
 	return $bIsAllowed;
 }
 ';
