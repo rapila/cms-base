@@ -10,7 +10,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function roleData() {
-		$oRole = RolePeer::retrieveByPK($this->sRoleId);
+		$oRole = RoleQuery::create()->findPk($this->sRoleId);
 		$aResult = $oRole->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oRole);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oRole);
@@ -47,7 +47,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		if($this->sRoleId === null) {
 			$oRole = new Role();
 		} else {
-			$oRole = RolePeer::retrieveByPK($this->sRoleId);
+			$oRole = RoleQuery::create()->findPk($this->sRoleId);
 		}
 		$this->validate($aRoleData, $oRole);
 		if(!Flash::noErrors()) {

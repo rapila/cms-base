@@ -13,7 +13,7 @@ class TagFrontendModule extends DynamicFrontendModule {
 		
 		// FIXME: Keep track of output $oCorrespondingItems and refuse output if already done
 		foreach($aData['tags'] as $iTagID) {
-			$oTag = TagPeer::retrieveByPK($iTagID);
+			$oTag = TagQuery::create()->findPk($iTagID);
 			if($oTag === null) {
 				continue;
 			}

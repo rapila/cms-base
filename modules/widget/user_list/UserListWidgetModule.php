@@ -87,7 +87,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getGroupName() {
-		$oGroup = GroupPeer::retrieveByPK($this->oDelegateProxy->getGroupId());
+		$oGroup = GroupQuery::create()->findPk($this->oDelegateProxy->getGroupId());
 		if($oGroup) {
 			return $oGroup->getName();
 		}

@@ -66,7 +66,7 @@ class RoleListWidgetModule extends WidgetModule {
 	
 	public function getGroupName() {
 		if($this->oDelegateProxy->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oGroup = GroupPeer::retrieveByPK($this->oDelegateProxy->getGroupId());
+			$oGroup = GroupQuery::create()->findPk($this->oDelegateProxy->getGroupId());
 			if($oGroup) {
 				return $oGroup->getName();
 			}
@@ -75,7 +75,7 @@ class RoleListWidgetModule extends WidgetModule {
 	}
 	
 	public function deleteRow($aRowData, $oCriteria) {
-		$oRole = RolePeer::retrieveByPK($aRowData['role_key']);
+		$oRole = RoleQuery::create()->findPk($aRowData['role_key']);
 		if($oRole) return $oRole->delete();
 	}
 	

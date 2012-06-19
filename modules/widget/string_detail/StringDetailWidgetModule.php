@@ -36,7 +36,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getTextFor($sLanguageId) {
-		$oString = StringPeer::retrieveByPK($sLanguageId, $this->sStringId);
+		$oString = StringQuery::create()->findPk(array($sLanguageId, $this->sStringId));
 		if($oString === null) {
 			return '';
 		}
@@ -69,7 +69,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			
 			if(isset($aStringData['text_'.$oLanguage->getId()])) {
 				$sText = trim($aStringData['text_'.$oLanguage->getId()]);
-				$oString = StringPeer::retrieveByPK($oLanguage->getId(), $this->sStringId);
+				$oString = StringQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
 				
 				if($sText === '') {
 					if($oString !== null) {
@@ -89,7 +89,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 				$oString->setText($sText);
 				$oString->save();
 			} else {
-				$oString = StringPeer::retrieveByPK($oLanguage->getId(), $this->sStringId);
+				$oString = StringQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
 				if($oString === null) {
 					continue;
 				}

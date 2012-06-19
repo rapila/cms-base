@@ -34,7 +34,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageData() {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 
 		// addition related page fields
@@ -59,7 +59,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getActiveLanguages() {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$aActiveStrings = array();
 		foreach($oPage->getPageStrings() as $oPageString) {
 			if($oPageString->getIsInactive() === false) {
@@ -70,7 +70,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getLanguageData($sLanguageId) {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$oPageString = $oPage->getPageStringByLanguage($sLanguageId);
 		if($oPageString === null) {
 			$oPageString = new PageString();
@@ -163,13 +163,13 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function deletePage() {
-		$oPage = PagePeer::retrieveByPK($this->iPageId);
+		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$oPage->delete();
 		return $this->iPageId;
 	}
 	
 	public function createPage($iParentId, $sPageName) {
-		$oParentPage = PagePeer::retrieveByPK($iParentId);
+		$oParentPage = PageQuery::create()->findPk($iParentId);
 		if($oParentPage == null) {
 			$oParentPage = PagePeer::getRootPage();
 		}
@@ -216,7 +216,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function saveData($aPageData) {
-		$this->oPage = PagePeer::retrieveByPK($this->iPageId);
+		$this->oPage = PageQuery::create()->findPk($this->iPageId);
 		if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
 			throw new NotPermittedException('may_edit_page_details');
 		}

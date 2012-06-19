@@ -176,7 +176,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	private function contentObjectById($iObjectId) {
 		if(!isset($this->aContentObjects[$iObjectId])) {
-			$this->aContentObjects[$iObjectId] = ContentObjectPeer::retrieveByPK($iObjectId);
+			$this->aContentObjects[$iObjectId] = ContentObjectQuery::create()->findPk($iObjectId);
 		}
 		return $this->aContentObjects[$iObjectId];
 	}
@@ -313,7 +313,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
 		$iSort = (int) $iSort;
-		$oContentObject = ContentObjectPeer::retrieveByPK((int) $iObjectId);
+		$oContentObject = ContentObjectQuery::create()->findPk((int) $iObjectId);
 		// fix if content object is deleted in trash, it is moved at the same time but not found anymore!
 		if($oContentObject === null) {
 			return;

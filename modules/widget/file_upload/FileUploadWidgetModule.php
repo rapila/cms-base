@@ -19,7 +19,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$aFileInfo = $_FILES[$sFileKey];
 
 		if($aOptions['document_id']) {
-			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
+			$oDocument = DocumentQuery::create()->findPk($aOptions['document_id']);
 		} else {
 			$oDocument = new Document();
 		}
@@ -140,7 +140,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$iDocumentTypeId = $this->acceptsURL($sUrl, $bCreateType);
 		$oDocument = null;
 		if($aOptions['document_id']) {
-			$oDocument = DocumentPeer::retrieveByPK($aOptions['document_id']);
+			$oDocument = DocumentQuery::create()->findPk($aOptions['document_id']);
 		} else {
 			$oDocument = new Document();
 		}

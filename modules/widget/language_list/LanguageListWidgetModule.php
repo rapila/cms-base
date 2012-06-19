@@ -21,7 +21,7 @@ class LanguageListWidgetModule extends WidgetModule {
 	}
 	
 	public function toggleIsActive($aRowData) {
-		$oLanguage = LanguagePeer::retrieveByPK($aRowData['id']);
+		$oLanguage = LanguageQuery::create()->findPk($aRowData['id']);
 		if($oLanguage) {
 			$oLanguage->setIsActive(!$oLanguage->getIsActive());
 			$oLanguage->save();

@@ -26,7 +26,7 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function toggleIsInactive($aRowData) {
-		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($aRowData['id']);
+		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($aRowData['id']);
 		if($oDocumentCategory) {
 			$oDocumentCategory->setIsInactive(!$oDocumentCategory->getIsInactive());
 			$oDocumentCategory->save();

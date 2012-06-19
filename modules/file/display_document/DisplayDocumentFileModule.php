@@ -10,7 +10,7 @@ class DisplayDocumentFileModule extends FileModule {
 		if(!isset($this->aPath[0])) {
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
-		$this->oDocument = DocumentPeer::retrieveByPK($this->aPath[0]);
+		$this->oDocument = DocumentQuery::create()->findPk($this->aPath[0]);
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
 			$oErrorPage = PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
 			if($oErrorPage) {

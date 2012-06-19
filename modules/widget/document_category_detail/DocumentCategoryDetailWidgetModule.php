@@ -11,7 +11,7 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function categoryData() {
-		$oDocumentCategory = DocumentCategoryPeer::retrieveByPK($this->iCategoryId);
+		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->iCategoryId);
 		$aResult = $oDocumentCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocumentCategory);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocumentCategory);
@@ -29,7 +29,7 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iCategoryId === null) {
 			$oCategory = new DocumentCategory();
 		} else {
-			$oCategory = DocumentCategoryPeer::retrieveByPK($this->iCategoryId);
+			$oCategory = DocumentCategoryQuery::create()->findPk($this->iCategoryId);
 		}
 		$oCategory->setName($aDocumentCategoryData['name']);
 		$oCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);

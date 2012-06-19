@@ -11,7 +11,7 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function groupData() {
-		$oGroup = GroupPeer::retrieveByPK($this->iGroupId);
+		$oGroup = GroupQuery::create()->findPk($this->iGroupId);
 		$aResult = $oGroup->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oGroup);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oGroup);
@@ -23,7 +23,7 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iGroupId === null) {
 			$oGroup = new Group();
 		} else {
-			$oGroup = GroupPeer::retrieveByPK($this->iGroupId);
+			$oGroup = GroupQuery::create()->findPk($this->iGroupId);
 		}
 		$oGroup->setName($aGroupData['name']);
 

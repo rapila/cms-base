@@ -24,7 +24,7 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function toggleIsInactive($aRowData) {
-		$oLink = LinkPeer::retrieveByPK($aRowData['id']);
+		$oLink = LinkQuery::create()->findPk($aRowData['id']);
 		if($oLink) {
 			$oLink->setIsInactive(!$oLink->getIsInactive());
 			$oLink->save();
@@ -101,7 +101,7 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getLinkCategoryName() {
-		$oLinkCategory = LinkCategoryPeer::retrieveByPK($this->oDelegateProxy->getLinkCategoryId());
+		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->oDelegateProxy->getLinkCategoryId());
 		if($oLinkCategory) {
 			return $oLinkCategory->getName();
 		}

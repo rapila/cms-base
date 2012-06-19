@@ -8,7 +8,7 @@ require_once 'model/om/BaseLanguageObjectHistory.php';
  */
 class LanguageObjectHistory extends BaseLanguageObjectHistory {
 	/**
-	* Corresponds to the overriding of {@link LanguageObjectPeer::retrieveByPK()}
+	* Corresponds to the overriding of {@link LanguageObjectHistoryQuery::create()->findPk()}
 	* Provides a unified way of working with stored references (in the references or tags tables)
 	*/
 	public function getId() {

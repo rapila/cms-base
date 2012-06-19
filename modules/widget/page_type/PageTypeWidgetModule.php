@@ -13,11 +13,11 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 	
 	public function setPageType($sPageType, $iPageId, $sLanguageId = null) {
 		$this->sPageType = $sPageType;
-		$oPage = PagePeer::retrieveByPK($iPageId);
+		$oPage = PageQuery::create()->findPk($iPageId);
 		if($oPage === null) {
 			throw new Exception("Invalid Page ID: $iPageId");
 		}
-		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, PagePeer::retrieveByPK($iPageId), null, $sLanguageId);
+		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, PageQuery::create()->findPk($iPageId), null, $sLanguageId);
 	}
 	
 	public function getPageType() {

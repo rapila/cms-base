@@ -35,7 +35,7 @@ class DocumentThumbnailViewWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function thumbnail($iDocumentId, $iThumbnailSize) {
-		return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iThumbnailSize);
+		return DocumentQuery::create()->findPk($iDocumentId)->getPreview($iThumbnailSize);
 	}
 		
 	public function setAllowsMultiselect($bInitialAllowsMultiselect) {

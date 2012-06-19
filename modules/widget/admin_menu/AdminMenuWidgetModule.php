@@ -72,7 +72,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private static function getPageFullPathArray() {
-		$oPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+		$oPage = PageQuery::create()->findPk(Session::getSession()->getAttribute('persistent_page_id'));
 		return ($oPage ? $oPage->getFullPathArray() : array());
 	}
 	

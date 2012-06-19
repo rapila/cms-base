@@ -37,7 +37,7 @@ class Session {
 			unset($_GET['logout']);
 			return;
 		}
-		$this->oUser = UserPeer::retrieveByPK($this->iUserId);
+		$this->oUser = UserQuery::create()->findPk($this->iUserId);
 	}
 
 	public function isAuthenticated() {
@@ -145,10 +145,10 @@ class Session {
 	public function getLanguage($bObject = false) {
 		$sResult = $this->getAttribute(self::SESSION_LANGUAGE_KEY);
 		if($bObject) {
-			$sResult = LanguagePeer::retrieveByPK($sResult);
+			$sResult = LanguageQuery::create()->findPk($sResult);
 			if(!$sResult) {
 				//If an object was explicitly requested, most likely, it’s supposed to be a content language
-				$sResult = LanguagePeer::retrieveByPK(AdminManager::getContentLanguage());
+				$sResult = LanguageQuery::create()->findPk(AdminManager::getContentLanguage());
 			}
 		}
 		return $sResult;

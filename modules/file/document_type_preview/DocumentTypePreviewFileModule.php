@@ -14,7 +14,7 @@ class DocumentTypePreviewFileModule extends FileModule {
 		if(!isset($this->aPath[0])) {
 			throw new Exception("Error in DocumentTypePreviewFileModule->__construct: no type given");
 		}
-		$this->oDocumentType = DocumentTypePeer::retrieveByPK($this->aPath[0]);
+		$this->oDocumentType = DocumentTypeQuery::create()->findPk($this->aPath[0]);
 		if($this->oDocumentType === null) {
 			throw new Exception("Error in DocumentTypePreviewFileModule->__construct: type invalid: {$this->aPath[0]}");
 		}

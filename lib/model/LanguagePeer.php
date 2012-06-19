@@ -23,7 +23,7 @@ class LanguagePeer extends BaseLanguagePeer {
 		if($bByPath) {
 			$oLanguage = LanguageQuery::create()->filterByPathPrefix($sLanguageId)->findOne();
 		} else {
-			$oLanguage = LanguagePeer::retrieveByPK($sLanguageId);
+			$oLanguage = LanguageQuery::create()->findPk($sLanguageId);
 		}
 		if($oLanguage === null) {
 			return false;

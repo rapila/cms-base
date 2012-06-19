@@ -26,7 +26,7 @@ class Right extends BaseRight {
 		}
 		if($this->getIsInherited() && $mPage !== null) {
 			if(!is_object($oPage)) {
-				$oPage = PagePeer::retrieveByPK($mPage);
+				$oPage = PageQuery::create()->findPk($mPage);
 			}
 			if($oPage !== null && $oPage->getParent() !== null) {
 				return $this->rightFits($oPage->getParent(), $sMethodName);

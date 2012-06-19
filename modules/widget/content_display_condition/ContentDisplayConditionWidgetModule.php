@@ -14,7 +14,7 @@ class ContentDisplayConditionWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function retrieveCondition() {
-		$oContentObject = ContentObjectPeer::retrieveByPK($this->iContentObjectId);
+		$oContentObject = ContentObjectQuery::create()->findPk($this->iContentObjectId);
 		$rCondition = $oContentObject->getConditionSerialized();
 		if($rCondition === null) {
 			return null;
@@ -30,7 +30,7 @@ class ContentDisplayConditionWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function saveData($aCondition) {
-		$oContentObject = ContentObjectPeer::retrieveByPK($this->iContentObjectId);
+		$oContentObject = ContentObjectQuery::create()->findPk($this->iContentObjectId);
 		$bHasCondition = false;
 		if(trim($aCondition['condition_left']) === '') {
 			$oContentObject->setConditionSerialized(null);

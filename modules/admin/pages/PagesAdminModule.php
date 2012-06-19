@@ -19,12 +19,12 @@ class PagesAdminModule extends AdminModule {
 		$oInitialPage = null;
 
 		if(Manager::hasNextPathItem()) {
-			$oInitialPage = PagePeer::retrieveByPK(Manager::usePath());
+			$oInitialPage = PageQuery::create()->findPk(Manager::usePath());
 			if($oInitialPage !== null) {
 				Session::getSession()->setAttribute('persistent_page_id', $oInitialPage->getId());
 			}
 		} else if(Session::getSession()->hasAttribute('persistent_page_id')) {
-      $oInitialPage = PagePeer::retrieveByPK(Session::getSession()->getAttribute('persistent_page_id'));
+      $oInitialPage = PageQuery::create()->findPk(Session::getSession()->getAttribute('persistent_page_id'));
 		}
 		if($oInitialPage === null) {
 			$oInitialPage = $this->oRootPage;
@@ -45,7 +45,7 @@ class PagesAdminModule extends AdminModule {
 		if($iId === null) {
 			$aResult[] = self::propertiesFromPage($this->oRootPage);
 		} else {
-			$oParentPage = PagePeer::retrieveByPK($iId);
+			$oParentPage = PageQuery::create()->findPk($iId);
 			if($oParentPage !== null) {
 				foreach($oParentPage->getChildren() as $oChild) {
 					$aResult[] = self::propertiesFromPage($oChild);
@@ -68,12 +68,12 @@ class PagesAdminModule extends AdminModule {
 	}
 	
 	public function loadItem($iId) {
-		return self::propertiesFromPage(PagePeer::retrieveByPK($iId));
+		return self::propertiesFromPage(PageQuery::create()->findPk($iId));
 	}
 	
 	public function moveItem($iIdNew, $iIdRef, $sPosition) {
-		$oPage = PagePeer::retrieveByPK($iIdNew);
-		$oRefPage = PagePeer::retrieveByPK($iIdRef);
+		$oPage = PageQuery::create()->findPk($iIdNew);
+		$oRefPage = PageQuery::create()->findPk($iIdRef);
 		if($sPosition === 'first' || $sPosition === 'inside') {
 			$oPage->moveToFirstChildOf($oRefPage);
 		} else if($sPosition === 'before') {

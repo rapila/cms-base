@@ -26,7 +26,7 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function toggleIsInactive($aRowData) {
-		$oLinkCategory = LinkCategoryPeer::retrieveByPK($aRowData['id']);
+		$oLinkCategory = LinkCategoryQuery::create()->findPk($aRowData['id']);
 		if($oLinkCategory) {
 			$oLinkCategory->setIsInactive(!$oLinkCategory->getIsInactive());
 			$oLinkCategory->save();

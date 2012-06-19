@@ -11,7 +11,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function linkData() {
-		$oLink = LinkPeer::retrieveByPK($this->iLinkId);
+		$oLink = LinkQuery::create()->findPk($this->iLinkId);
 		if($oLink === null) {
 			return array();
 		}
@@ -33,7 +33,7 @@ class LinkDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iLinkId === null) {
 			$oLink = new Link();
 		} else {
-			$oLink = LinkPeer::retrieveByPK($this->iLinkId);
+			$oLink = LinkQuery::create()->findPk($this->iLinkId);
 		}
 		$oLink->setUrl(LinkUtil::getUrlWithProtocolIfNotSet($aLinkData['url']));
 		$oLink->setName($aLinkData['name']);

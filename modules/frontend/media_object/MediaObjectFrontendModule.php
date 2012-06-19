@@ -17,7 +17,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 		}
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
 		foreach($aOptions as $aDocumentInfo) {
-			$oDocument = DocumentPeer::retrieveByPK($aDocumentInfo['document_id']);
+			$oDocument = DocumentQuery::create()->findPk($aDocumentInfo['document_id']);
 			$sMimeType = @$aDocumentInfo['mimetype'];
 			$sSrc = null;
 			
@@ -152,7 +152,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 			return null;
 		}
 		$aData = $aData[0];
-		$oDocument = DocumentPeer::retrieveByPK($aData['document_id']);
+		$oDocument = DocumentQuery::create()->findPk($aData['document_id']);
 		return Util::nameForObject($oDocument);
 	}
 	

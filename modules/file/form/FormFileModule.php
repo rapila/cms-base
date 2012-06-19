@@ -22,7 +22,7 @@ class FormFileModule extends FileModule {
     }
     $this->sLanguageId = $this->aPath[0];
     $this->iObjectId = $this->aPath[1];
-    $oFormDataLanguageObject = LanguageObjectPeer::retrieveByPK($this->iObjectId, $this->sLanguageId);
+    $oFormDataLanguageObject = LanguageObjectQuery::create()->findPk(array($this->iObjectId, $this->sLanguageId));
     if($oFormDataLanguageObject == null || $oFormDataLanguageObject->getContentObject()->getObjectType() !== 'form') {
       throw new Exception("Error in FormFileModule->__construct: object ID does not correspond to form object in given language");
     }

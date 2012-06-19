@@ -7,14 +7,14 @@
 class PageQuery extends BasePageQuery {
 	public function filterByParentAndName($sName, $mParent, $mCurrentToExclude = null) {
 		if(!($mParent instanceof Page)) {
-			$mParent = PagePeer::retrieveByPK($mParent);
+			$mParent = PageQuery::create()->findPk($mParent);
 		}
 		$this->filterByName($sName)->childrenOf($mParent);
 		if($mCurrentToExclude !== null) {
 			if($mCurrentToExclude instanceof Page) {
 				$mCurrentToExclude = $mCurrentToExclude->getId();
 			}
-			$this->add(PagePeer::ID, $mCurrentToExclude, Criteria::NOT_EQUAL);
+			$this->filterById($mCurrentToExclude, Criteria::NOT_EQUAL);
 		}
 		return $this;
 	}

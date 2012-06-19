@@ -11,7 +11,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getTagString($sLanguageId) {
-		$oTag = TagPeer::retrieveByPK($this->iTagId);
+		$oTag = TagQuery::create()->findPk($this->iTagId);
 		if($oTag === null) {
 			return null;
 		}
@@ -20,7 +20,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function tagData() {
-		$oTag = TagPeer::retrieveByPK($this->iTagId);
+		$oTag = TagQuery::create()->findPk($this->iTagId);
 		if($oTag === null) {
 			$oTag = new Tag();
 		}
@@ -40,7 +40,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function deleteTaggedItem($iTagId, $iTaggedItemId, $sModelName) {
-		$oTagInstance = TagInstancePeer::retrieveByPK($iTagId, $iTaggedItemId, $sModelName);
+		$oTagInstance = TagInstanceQuery::create()->findPk(array($iTagId, $iTaggedItemId, $sModelName));
 		if($oTagInstance) {
 			$oTagInstance->delete();
 		}
@@ -66,7 +66,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iTagId === null) {
 			$oTag = new Tag();
 		} else {
-			$oTag = TagPeer::retrieveByPK($this->iTagId);
+			$oTag = TagQuery::create()->findPk($this->iTagId);
 		}
 		$this->validate($aTagData);
 		if(!Flash::noErrors()) {

@@ -152,7 +152,7 @@ EOT;
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		$oString = StringPeer::retrieveByPK($sLanguageId, $sStringKey);
+		$oString = StringQuery::create()->findPk(array($sLanguageId, $sStringKey));
 	
 		if(!$sContent) {
 			if($oString !== null) {

@@ -30,7 +30,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function documentData() {
 		$aResult = array();
-		$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
+		$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
 		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
@@ -50,9 +50,9 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public static function documentPreview($iDocumentId, $iSize) {
-		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
+		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument) {
-			return DocumentPeer::retrieveByPK($iDocumentId)->getPreview($iSize);
+			return DocumentQuery::create()->findPk($iDocumentId)->getPreview($iSize);
 		}
 		return null;
 	}
@@ -74,7 +74,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iDocumentId === null) {
 			$oDocument = new Document();
 		} else {
-			$oDocument = DocumentPeer::retrieveByPK($this->iDocumentId);
+			$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
 		}
 		$this->validate($aDocumentData, $oDocument);
 		if(!Flash::noErrors()) {

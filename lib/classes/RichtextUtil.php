@@ -94,7 +94,7 @@ class RichtextUtil {
 	
 	public static function imageCallback($oIdentifier) {
 		$iDocumentId = $oIdentifier->getValue();
-		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
+		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument !== null && $oDocument->isImage()) {
 			$oWriter = new TagWriter('img', $oIdentifier->getParameters());
 			$aParameters = array();
@@ -111,7 +111,7 @@ class RichtextUtil {
 	
 	public static function imageCallbackBe($oIdentifier) {
 		$iDocumentId = $oIdentifier->getValue();
-		$oDocument = DocumentPeer::retrieveByPK($iDocumentId);
+		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument !== null && $oDocument->isImage()) {
 			$oWriter = new TagWriter('img', $oIdentifier->getParameters());
 			$oWriter->setParameter('src', self::getLink(array('display_document', $oDocument->getId()), 'FileManager'));
@@ -125,7 +125,7 @@ class RichtextUtil {
 	}
 	
 	public static function internalLinkCallback($oIdentifier) {
-		$oPage = PagePeer::retrieveByPK($oIdentifier->getValue());
+		$oPage = PageQuery::create()->findPk($oIdentifier->getValue());
 		if($oPage) {
 			$sLink = self::getLink($oPage->getFullPathArray(), "FrontendManager");
 			return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier, null, $oPage);
@@ -133,7 +133,7 @@ class RichtextUtil {
 	}
 	
 	public static function internalLinkCallbackBe($oIdentifier) {
-		$oPage = PagePeer::retrieveByPK($oIdentifier->getValue());
+		$oPage = PageQuery::create()->findPk($oIdentifier->getValue());
 		if($oPage) {
 			$sLink = self::getLink(array('internal_link_proxy', $oPage->getId()), 'FileManager');
 			return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier, null, $oPage);
@@ -152,7 +152,7 @@ class RichtextUtil {
 	}
 	
 	public static function externalLinkCallback($oIdentifier) {
-		$oLink = LinkPeer::retrieveByPK($oIdentifier->getValue());
+		$oLink = LinkQuery::create()->findPk($oIdentifier->getValue());
 		if($oLink) {
 			//Mailto-Link handling
 			if(StringUtil::startsWith($oLink->getUrl(), 'mailto:')) {
@@ -164,7 +164,7 @@ class RichtextUtil {
 	}
 	
 	public static function externalLinkCallbackBe($oIdentifier) {
-		$oLink = LinkPeer::retrieveByPK($oIdentifier->getValue());
+		$oLink = LinkQuery::create()->findPk($oIdentifier->getValue());
 		if($oLink) {
 			return self::writeTagForIdentifier("a", array('href' => self::getLink(array('external_link_proxy', $oLink->getId()), 'FileManager')), $oIdentifier, null, $oLink);
 		} else {
@@ -173,7 +173,7 @@ class RichtextUtil {
 	}
 	
 	public static function fileLinkCallback($oIdentifier) {
-		$oDocument = DocumentPeer::retrieveByPK($oIdentifier->getValue());
+		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
 		 return self::writeTagForIdentifier("a", array('href' => self::getLink(array('display_document', $oDocument->getId()), 'FileManager'), 'title' => $oDocument->getDescription() ? $oDocument->getDescription() : $oDocument->getName(), 'rel' => 'document', 'class' => 'document_link '.$oDocument->getExtension()), $oIdentifier, null, $oDocument);
 		} else {
@@ -182,7 +182,7 @@ class RichtextUtil {
 	}
 	
 	public static function fileLinkCallbackBe($oIdentifier) {
-		$oDocument = DocumentPeer::retrieveByPK($oIdentifier->getValue());
+		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
 			return self::writeTagForIdentifier("a", array('href' => self::getLink(array('display_document', $oDocument->getId()), 'FileManager')), $oIdentifier, null, $oDocument);
 		} else {

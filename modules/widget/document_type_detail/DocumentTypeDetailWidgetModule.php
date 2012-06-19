@@ -11,7 +11,7 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function typeData() {
-		return DocumentTypePeer::retrieveByPK($this->iTypeId)->toArray();
+		return DocumentTypeQuery::create()->findPk($this->iTypeId)->toArray();
 	}
 	
 	private function validate($aDocumentTypeData, $oType) {
@@ -30,7 +30,7 @@ class DocumentTypeDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iTypeId === null) {
 			$oType = new DocumentType();
 		} else {
-			$oType = DocumentTypePeer::retrieveByPK($this->iTypeId);
+			$oType = DocumentTypeQuery::create()->findPk($this->iTypeId);
 		}
 		$this->validate($aDocumentTypeData, $oType);
 		if(!Flash::noErrors()) {

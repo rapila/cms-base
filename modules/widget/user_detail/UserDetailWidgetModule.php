@@ -10,7 +10,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function userData() {
-		$oUser = UserPeer::retrieveByPK($this->iUserId);
+		$oUser = UserQuery::create()->findPk($this->iUserId);
 		if(Session::getSession()->getUser()->mayEditUser($oUser)) {
 			$aResult = $oUser->toArray();
 			$aResult['FullName'] = $oUser->getFullName();
@@ -28,7 +28,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function resetSettings() {
-		$oUser = UserPeer::retrieveByPK($this->iUserId);
+		$oUser = UserQuery::create()->findPk($this->iUserId);
 		if($oUser) {
 			$oUser->resetBackendSettings();
 			$oUser->save();
@@ -74,7 +74,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		if($this->iUserId === null) {
 			$oUser = new User();
 		} else {
-			$oUser = UserPeer::retrieveByPK($this->iUserId);
+			$oUser = UserQuery::create()->findPk($this->iUserId);
 		}
 
 		$this->validate($aUserData, $oUser);
