@@ -24,6 +24,6 @@ class LanguageQuery extends BaseLanguageQuery {
 		}
 		return $this->orderById();
 	}
-
+	
 }
 

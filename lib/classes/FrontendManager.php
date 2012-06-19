@@ -122,7 +122,7 @@ class FrontendManager extends Manager {
 	
 	protected function initLanguage() {
 		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
-			$oLanguage = LanguagePeer::retrieveByPath(self::usePath());
+			$oLanguage = LanguageQuery::create()->filterByPathPrefix(self::usePath())->findOne();
 			Session::getSession()->setLanguage($oLanguage);
 		} else {
 			if(!LanguagePeer::languageIsActive(Session::language())) {

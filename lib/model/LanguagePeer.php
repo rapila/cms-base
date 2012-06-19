@@ -21,7 +21,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	public static function languageIsActive($sLanguageId, $bByPath = false) {
 		$oLanguage = null;
 		if($bByPath) {
-			$oLanguage = LanguagePeer::retrieveByPath($sLanguageId);
+			$oLanguage = LanguageQuery::create()->filterByPathPrefix($sLanguageId)->findOne();
 		} else {
 			$oLanguage = LanguagePeer::retrieveByPK($sLanguageId);
 		}
@@ -29,10 +29,6 @@ class LanguagePeer extends BaseLanguagePeer {
 			return false;
 		}
 		return $oLanguage->getIsActive();
-	}
-
-	public static function retrieveByPath($sLanguagePathPrefix) {
-		return LanguageQuery::create()->filterByPathPrefix($sLanguagePathPrefix)->findOne();
 	}
 
 	public static function languageExists($sLanguageId, $bByPath = false) {
@@ -121,7 +117,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	* @return void
 	*/	
 	public static function createLanguageIfNoneExist($sLanguage) {
-		if(!LanguagePeer::hasNoLanguage()) {
+		if(LanguageQuery::create()->count() > 0) {
 			return;
 		}
 		$oLanguage = new Language();
