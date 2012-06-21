@@ -130,11 +130,10 @@ class User extends BaseUser {
 				return true;
 			}
 		}
-		//Case 6: Access is restricted to pages to which another role allows access to
+		//Case 6: Access is restricted to certain roles: allow if roles with page_rights grant limited access
 		if($sModuleName === 'pages') {
-			$aRightsWithPages = RightQuery::create()->filterByPageId(1, Criteria::GREATER_EQUAL)->find()->toKeyValue('Id', 'RoleKey');
-			foreach($aRightsWithPages as $sRoleKey) {
-				if(isset($aUserRoles[$sRoleKey])) {
+			foreach($aUserRoles as $oRole) {
+				if($oRole->countRights() > 0) {
 					return true;
 				}
 			}
