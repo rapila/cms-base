@@ -130,7 +130,16 @@ class User extends BaseUser {
 				return true;
 			}
 		}
-		//Case 6: User is not in allowed roles
+		//Case 6: Access is restricted to pages to which another role allows access to
+		if($sModuleName === 'pages') {
+			$aRightsWithPages = RightQuery::create()->filterByPageId(1, Criteria::GREATER_EQUAL)->find()->toKeyValue('Id', 'RoleKey');
+			foreach($aRightsWithPages as $sRoleKey) {
+				if(isset($aUserRoles[$sRoleKey])) {
+					return true;
+				}
+			}
+		}
+		//Case 7: User is not in allowed roles
 		return false;
 	}
 	
