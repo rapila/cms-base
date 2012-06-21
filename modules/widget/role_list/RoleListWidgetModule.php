@@ -75,7 +75,7 @@ class RoleListWidgetModule extends WidgetModule {
 	}
 	
 	public function deleteRow($aRowData, $oCriteria) {
-		$oRole = RoleQuery::create()->findPk($aRowData['role_key']);
+		$oRole = RoleQuery::create()->findPk($aRowData['id']);
 		if($oRole) return $oRole->delete();
 	}
 	
