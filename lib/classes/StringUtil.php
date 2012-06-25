@@ -87,6 +87,10 @@ class StringUtil {
 		$sInput = mb_ereg_replace('-|–|—|_|\.', '-', $sInput);
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
 		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
+		$sNewName = str_replace($sReplaceSpaceWith.$sReplaceSpaceWith, $sReplaceSpaceWith, $sNewName);
+		if(substr($sNewName,-1) === $sReplaceSpaceWith) {
+			$sNewName = substr($sNewName, 0, -1);
+		}
 		if($sNewName !== "") {
 			return $sNewName;
 		} else {
