@@ -87,15 +87,17 @@ class StringUtil {
 		$sInput = mb_ereg_replace('-|–|—|_|\.', '-', $sInput);
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
 		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
-		$sNewName = str_replace($sReplaceSpaceWith.$sReplaceSpaceWith, $sReplaceSpaceWith, $sNewName);
-		if(substr($sNewName,-1) === $sReplaceSpaceWith) {
-			$sNewName = substr($sNewName, 0, -1);
-		}
+		$sNewName = trim($sNewName, $sReplaceSpaceWith);
 		if($sNewName !== "") {
 			return $sNewName;
 		} else {
 			return null;
 		}
+	}
+	
+	public static function normalizePath($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
+		$sPath = self::normalize($sInput, $sReplaceSpaceWith, $sReplaceNonWordsWith);
+		return preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sPath);
 	}
 
 	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
