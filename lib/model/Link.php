@@ -39,6 +39,13 @@ class Link extends BaseLink {
 		$oTemplate->replaceIdentifier("title", $this->getName());
 		$oTemplate->replaceIdentifier("description", $this->getDescription());
 		$oTemplate->replaceIdentifier("url", $this->getUrl());
+		$aUrl = explode('://', $this->getUrl());
+		if(isset($aUrl[1])) {
+			$sUrlWithoutProtocol = $aUrl[1];
+		} else {
+			$sUrlWithoutProtocol = $this->getUrl();
+		}
+		$oTemplate->replaceIdentifier("url_without_protocol", $sUrlWithoutProtocol);
 		$oTemplate->replaceIdentifier('link_category_id', $this->getLinkCategoryId());
 		$oTemplate->replaceIdentifier('category_id', $this->getLinkCategoryId());
 		if($this->getLinkCategory() !== null) {
