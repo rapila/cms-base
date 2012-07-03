@@ -88,6 +88,14 @@ class Page extends BasePage {
 	public function getPageStringByLanguage($sLanguageId) {
 		return PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
 	}
+	
+	public function hasPageStringByLanguage($sLanguageId, $bOnlyActive = true) {
+		$oQuery = PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId);
+		if($bOnlyActive) {
+			$oQuery->filterByIsInactive(false);
+		}
+		return $oQuery->count() > 0;
+	}
 
 	public function getPageProperties() {
 		return $this->getPagePropertys();
