@@ -7,15 +7,19 @@
 class LanguageQuery extends BaseLanguageQuery {
 
 	public function exclude($mExclude = false) {
+		if(!$mExclude) {
+			return $this;
+		}
 		if($mExclude === 'default') {
 			$mExclude = Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'de');
-		} else if($mExclude === true) {
+		} else if($mExclude === 'current') {
 			$mExclude = Session::language();
+		} else if($mExclude === 'edit') {
+			$mExclude = AdminManager::getContentLanguage();
+		} else if($mExclude instanceof Language) {
+			$mExclude = $mExclude->getId();
 		}
-		if($mExclude !== false) {
-			return $this->filterById($mExclude, Criteria::NOT_EQUAL);
-		}
-		return $this;
+		return $this->filterById($mExclude, Criteria::NOT_EQUAL);
 	}
 	
 	public function orderByContext($bOrderBySort = false) {
