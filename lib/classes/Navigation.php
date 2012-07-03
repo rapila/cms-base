@@ -243,11 +243,17 @@ class Navigation {
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('languages'), null, true);
 		$oLanguageTemplate = new Template(Settings::getSetting("language_chooser", 'template', 'language'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
 		$sLinkSeparator = Settings::getSetting("language_chooser", 'link_separator', ' | ');
-		$oLanguageActiveTemplate = $oLanguageTemplate;
+		$oLanguageActiveTemplate = null;
 		$bShowActiveLanguage = Settings::getSetting("language_chooser", 'show_active_language', false);
 		
-		if($bShowActiveLanguage && Settings::getSetting("language_chooser", 'template_active', false) !== false) {
-			$oLanguageActiveTemplate = new Template(Settings::getSetting("language_chooser", 'template_active', 'language_active'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
+		$bIsPreview = Manager::getCurrentManager() instanceof PreviewManager;
+		
+		if($bShowActiveLanguage) {
+			if(Settings::getSetting("language_chooser", 'template_active', false) !== false) {
+				$oLanguageActiveTemplate = new Template(Settings::getSetting("language_chooser", 'template_active', 'language_active'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
+			} else {
+				$oLanguageActiveTemplate = clone $oLanguageTemplate;
+			}
 		}
 		
 		//Find request variables
@@ -258,12 +264,14 @@ class Navigation {
 		// check whether manager needs language to be included
 		$bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
 		$aRequestPath = explode("/", Manager::getRequestedPath());
-		$aLanguages = LanguageQuery::create()->filterByIsActive(true)->exclude(!$bShowActiveLanguage)->orderBySort()->find();
+		$aLanguages = LanguageQuery::create()->filterByIsActive(true)->exclude($bShowActiveLanguage ? false : ($bIsPreview ? 'edit' : 'current'))->orderBySort()->find();
 		foreach($aLanguages as $i => $oLanguage) {
 			$oLangTemplate = null;
 			if($oLanguage->getId() === Session::language()) {
-				$oLangTemplate = clone $oLanguageActiveTemplate;
+				$oLangTemplate = $oLanguageActiveTemplate;
 				$oLangTemplate->replaceIdentifier('class', 'active');
+			} else if(!FrontendManager::$CURRENT_PAGE->hasPageStringByLanguage($oLanguage->getId(), !$bIsPreview)) {
+				continue;
 			} else {
 				$oLangTemplate = clone $oLanguageTemplate;
 			}
