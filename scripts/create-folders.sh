@@ -4,6 +4,7 @@ mkdir -p generated/caches/config
 mkdir -p generated/caches/full_page
 mkdir -p generated/caches/resource_finder
 mkdir -p generated/caches/preload
+mkdir -p generated/caches/purifier
 mkdir -p generated/caches/images
 mkdir -p generated/caches/lang
 mkdir -p generated/caches/templates
