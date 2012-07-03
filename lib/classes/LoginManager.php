@@ -141,7 +141,7 @@ class LoginManager extends PreviewManager {
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
 		$oEmailTemplate->replaceIdentifier('username', $oUser->getUsername());
 		if($bShowUserName) {
-			$oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('login.password_reset.your_username').': '.$oUser->getUsername());
+			$oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('wns.login.password_reset.your_username').': '.$oUser->getUsername());
 		}
 		if($sLinkBase === null) {
 			if(Manager::$CURRENT_MANAGER instanceof FrontendManager) {
