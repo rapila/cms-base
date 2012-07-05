@@ -98,7 +98,6 @@ class TagWriter {
 		}
 
 		$oWriter = new TagWriter("a", array('class' => 'mailto_link', 'href' => $sLinkUrl.$sQuery), $sText);
-    ErrorHandler::log($oWriter->parse());
 		return $oWriter;
 	}
 
