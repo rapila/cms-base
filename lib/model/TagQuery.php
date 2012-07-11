@@ -23,5 +23,17 @@ class TagQuery extends BaseTagQuery {
 	public function exclude($iTagId) {
 		return $this->filterById($iTagId, Criteria::NOT_EQUAL);
 	}
+	
+	public function withTagInstanceCountFilteredByModel($sModelName = null) {
+		$this->joinTagInstance();
+		if($sModelName !== null) {
+			$this->useQuery('TagInstance')->filterByModelName($sModelName)->endUse();
+		}
+		$this->withColumn('COUNT('.TagInstancePeer::TAGGED_ITEM_ID.')', 'TagInstanceCount');
+		$this->groupById();
+		return $this;
+	}
+
+
 }
 
