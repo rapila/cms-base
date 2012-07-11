@@ -27,4 +27,8 @@ class DocumentQuery extends BaseDocumentQuery {
 		$this->add($oLangCriterion);
 		return $this;
 	}
+	
+	public function recent() {
+		return $this->orderByCreatedAt(Criteria::DESC);
+	}
 }
