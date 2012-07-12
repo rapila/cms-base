@@ -134,7 +134,7 @@ class Util {
 		return $aBitsDissected;
 	}
 	
-	public static function formatCreatedInfo($oObject, $sFormat = 'x %H:%M') {
+	public static function formatCreatedInfo($oObject, $sFormat = '%x %H:%M') {
 		$aResult = array();
 		if($oObject->getCreatedAt() !== null) {
 			$aResult[] = $oObject->getCreatedAtFormatted(null, $sFormat);
@@ -145,7 +145,7 @@ class Util {
 		return implode(' / ', $aResult);
 	}
 	
-	public static function formatUpdatedInfo($oObject, $sFormat = 'x %H:%M') {
+	public static function formatUpdatedInfo($oObject, $sFormat = '%x %H:%M') {
 		$aResult = array();
 		if($oObject->getUpdatedAt() !== null) {
 			$aResult[] = $oObject->getUpdatedAtFormatted(null, $sFormat);
