@@ -23,17 +23,14 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		$sWithoutCategory = StringPeer::getString('wns.documents.select_without_title');
-		foreach(self::getDocumentWithoutCategoryId() as $oDocument) {
-			$aResult[$sWithoutCategory][$oDocument->getId()] = $oDocument->getName();
+		foreach(self::getDocumentsWithoutCategoryId() as $iId => $sName) {
+			$aResult[$sWithoutCategory][$iId] = $sName;
 		}
 		return $aResult;
 	}
 
-	private static function getDocumentWithoutCategoryId() {
-		$oCriteria = new Criteria();
-		$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, null, Criteria::ISNULL);
-		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
-		return DocumentPeer::doSelect($oCriteria);
+	private static function getDocumentsWithoutCategoryId() {
+		return DocumentQuery::create()->filterByDocumentCategoryId(null, Criteria::ISNULL)->orderByName()->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public function getElementType() {
