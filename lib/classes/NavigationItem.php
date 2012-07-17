@@ -133,7 +133,7 @@ abstract class NavigationItem {
 	public function getFirstChild($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		foreach($this->getChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) as $oChild) {
 			if($oChild->isFolder()) {
-				return $oChild->getFirstChild();
+				return $oChild->getFirstChild($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 			}
 			return $oChild;
 		}
