@@ -52,8 +52,8 @@ abstract class NavigationItem {
 			return count($this->aCustomChildren) > 0;
 		}
 		foreach($this->aCustomChildren as $oChild) {
-			if(!$bIncludeDisabled || $oChild->isEnabled()) {
-				if(!$bIncludeInvisible || $oChild->isVisible()) {
+			if($bIncludeDisabled || $oChild->isEnabled()) {
+				if($bIncludeInvisible || $oChild->isVisible()) {
 					return true;
 				}
 			}
