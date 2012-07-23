@@ -5,9 +5,14 @@
  * @package    propel.generator.model
  */
 class TagInstanceQuery extends BaseTagInstanceQuery {
-	public function filterByTagName($sTagName) {
+	public function filterByTagName($mTagName) {
 		$this->innerJoinTag();
-		$this->add(TagPeer::NAME, $sTagName);
+		if(!is_array($mTagName)) {
+			$this->add(TagPeer::NAME, $mTagName);
+		}
+		foreach($mTagName as $sTagName) {
+			$this->add(TagPeer::NAME, $sTagName);
+		}
 		return $this;
 	}
 }
