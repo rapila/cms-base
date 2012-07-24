@@ -186,6 +186,11 @@ Widget.types.detail = {
 		this.content.dialog('close');
 	},
 	
+	destroy: function() {
+		this.content.dialog('destroy');
+		this.content.remove();
+	},
+	
 	delete: function() {
 		// this.content.dialog('close');
 	},
