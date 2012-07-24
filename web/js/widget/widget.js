@@ -93,6 +93,18 @@ String.prototype.escapeSelector = function() {
 					hk.add(handler);
 				}.bind(this));
 				return el;
+			},
+			unhandle: function(event, handler) {
+				for(name in hook) {
+					if(!hook[name][event]) {
+						return;
+					}
+					if(handler) {
+						hook[name][event].remove(handler);
+					} else {
+						hook[name][event].empty();
+					}
+				}
 			}
 		};
 	};
@@ -158,6 +170,10 @@ String.prototype.escapeSelector = function() {
 		handle: function(event, handler, isOnce, fireIfPast) {
 			return EventHook(this).handle(event, handler, isOnce, fireIfPast);
 		},
+
+		unhandle: function(event, handler) {
+			return EventHook(this).unhandle(event, handler);
+		},
 	
 		_widgetInformation: {},
 		_instanceInformation: {},
@@ -173,6 +189,10 @@ String.prototype.escapeSelector = function() {
 	
 		handle: function(event, handler, isOnce, fireIfPast) {
 			return EventHook(this).handle(event, handler, isOnce, fireIfPast);
+		},
+	
+		unhandle: function(event, handler) {
+			return EventHook(this).unhandle(event, handler);
 		},
 	
 		uuid: function() {
