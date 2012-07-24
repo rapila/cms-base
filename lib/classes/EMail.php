@@ -171,6 +171,7 @@ class EMail {
 		if(strpos($sName, ',') !== false) {
 			$sName = "\"$sName\"";
 		}
+		$sName = '=?'.Settings::getSetting("encoding", "db", "utf-8").'?B?'.base64_encode($sName).'?=';
 		return "$sName <$sAddress>";
 	}
 }
