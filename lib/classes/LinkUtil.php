@@ -53,13 +53,30 @@ class LinkUtil {
 	
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
 		if($sProtocol === null) {
-			//FIXME: use https if request was done over SSL
-			$sProtocol = 'http://';
+			$sProtocol = !self::isSSL() ? 'http://' : 'https://';
 		}
-		if($sHost === null) {
+		if($sHost === null && isset($_SERVER['HTTP_HOST'])) {
 			$sHost = $_SERVER['HTTP_HOST'];
 		}
+		if($sHost === null) {
+			$sHost = Settings::getSetting('domain_holder', 'domain', null);
+		}
 		return "$sProtocol$sHost$sLocation";
+	}
+	
+	public static function isSSL() {
+		// http://stackoverflow.com/questions/7304182/detecting-ssl-with-php
+		if(isset($_SERVER['HTTPS'])) {
+			if('on' == strtolower($_SERVER['HTTPS'])) {
+				return true;
+			}
+			if('1' == $_SERVER['HTTPS']) {
+				return true;
+			}
+		} elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
+			return true;
+		}
+		return false;
 	}
 
 	public static function linkToSelf($mPath=null, $aParameters=null, $bIgnoreRequest = false) {
