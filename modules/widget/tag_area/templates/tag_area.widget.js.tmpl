@@ -1,6 +1,7 @@
 Widget.types.tag_area = {
 	prepare: function() {
 		this._element.addClass('tag_area');
+		this.has_tags = false;
 		if(this.settings.dnd) {
 			this.dnd = Widget.create('model_drag_and_drop');
 		}
@@ -15,8 +16,12 @@ Widget.types.tag_area = {
 		this.listTags(function(all_tags) {
 			this._element.empty();
 			jQuery.each(all_tags, function(i, tag) {
+				_this.has_tags = true;
 				_this.append_tag(tag.Name);
 			});
+			if(_this.has_tags === false) {
+				_this._element.append(jQuery('<span/>').addClass('no_tags_message').text("{{writeString=tag_area.item_is_not_tagged}}"));
+			}
 		});
 	},
 	
