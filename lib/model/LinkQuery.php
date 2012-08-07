@@ -19,10 +19,7 @@ class LinkQuery extends BaseLinkQuery {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		$oLangCriterion = $this->getNewCriterion(LinkPeer::LANGUAGE_ID, $sLanguageId);
-		$oLangCriterion->addOr($this->getNewCriterion(LinkPeer::LANGUAGE_ID, null));
-		$this->add($oLangCriterion);
-		return $this;
+		return $this->filterByLanguageId(null, Criteria::ISNULL)->_or()->filterByLanguageId(Session::language());
 	}
 
 
