@@ -22,10 +22,7 @@ class DocumentQuery extends BaseDocumentQuery {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		$oLangCriterion = $this->getNewCriterion(DocumentPeer::LANGUAGE_ID, $sLanguageId);
-		$oLangCriterion->addOr($this->getNewCriterion(DocumentPeer::LANGUAGE_ID, null));
-		$this->add($oLangCriterion);
-		return $this;
+		return $this->filterByLanguageId(null, Criteria::ISNULL)->_or()->filterByLanguageId(Session::language());
 	}
 	
 	public function recent() {
