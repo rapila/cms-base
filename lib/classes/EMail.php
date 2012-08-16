@@ -3,21 +3,39 @@
 * @package email
 */
 class EMail {
+	
 	private $aRecipients;
+	
 	private $aCarbonCopyRecipients;
+	
 	private $aBlindCarbonCopyRecipients;
+	
 	private $sCharset;
+	
 	private $sMimeType;
+	
 	private $oContent;
+	
 	private $sSenderName;
+	
 	private $sSenderAddress;
+	
 	private $sReplyTo;
+	
 	private $sSubject;
 	
 	private $oFlash;
 	
 	const SEPARATOR = "\n";
 	
+ /** __construct()
+	* @param string subject
+	* @param mixed Template|String
+	* @param boolean is html email
+	* @param boolean use multi part
+	* 
+	* @return void
+	*/
 	public function __construct($sSubject, $oContent = null, $bIsHtml = false, $bUseMultipart = false) {
 		$this->aRecipients = array();
 		$this->aCarbonCopyRecipients = array();
@@ -42,54 +60,44 @@ class EMail {
 		$this->sSubject = $sSubject;
 	}
 	
-	public function setCharset($sCharset)
-	{
-			$this->sCharset = $sCharset;
+	public function setCharset($sCharset) {
+		$this->sCharset = $sCharset;
 	}
 
-	public function getCharset()
-	{
-			return $this->sCharset;
+	public function getCharset() {
+		return $this->sCharset;
 	}
 	
-	public function setTemplate($oContent)
-	{
-			$this->oContent = $oContent;
+	public function setTemplate($oContent) {
+		$this->oContent = $oContent;
 	}
 
-	public function getTemplate()
-	{
-			return $this->oContent;
+	public function getTemplate() {
+		return $this->oContent;
 	}
 	
-	public function setRecipients($aRecipients)
-	{
-			$this->aRecipients = $aRecipients;
+	public function setRecipients($aRecipients) {
+		$this->aRecipients = $aRecipients;
 	}
 
-	public function getRecipients()
-	{
-			return $this->aRecipients;
+	public function getRecipients() {
+		return $this->aRecipients;
 	}
 	
-	public function setCarbonCopyRecipients($aCarbonCopyRecipients)
-	{
-			$this->aCarbonCopyRecipients = $aCarbonCopyRecipients;
+	public function setCarbonCopyRecipients($aCarbonCopyRecipients) {
+		$this->aCarbonCopyRecipients = $aCarbonCopyRecipients;
 	}
 
-	public function getCarbonCopyRecipients()
-	{
-			return $this->aCarbonCopyRecipients;
+	public function getCarbonCopyRecipients() {
+		return $this->aCarbonCopyRecipients;
 	}
 	
-	public function setBlindCarbonCopyRecipients($aBlindCarbonCopyRecipients)
-	{
-			$this->aBlindCarbonCopyRecipients = $aBlindCarbonCopyRecipients;
+	public function setBlindCarbonCopyRecipients($aBlindCarbonCopyRecipients) {
+		$this->aBlindCarbonCopyRecipients = $aBlindCarbonCopyRecipients;
 	}
 
-	public function getBlindCarbonCopyRecipients()
-	{
-			return $this->aBlindCarbonCopyRecipients;
+	public function getBlindCarbonCopyRecipients() {
+		return $this->aBlindCarbonCopyRecipients;
 	}
 	
 	public function addRecipient($sAddress, $sName = null) {
@@ -104,23 +112,21 @@ class EMail {
 		$this->aBlindCarbonCopyRecipients[$sAddress] = $sName;
 	}
 	
-	public function setSender($sSenderName, $sSenderAddress)
-	{
-			$this->sSenderName = $sSenderName;
-			$this->sSenderAddress = $sSenderAddress;
+	public function setSender($sSenderName, $sSenderAddress) {
+		$this->sSenderName = $sSenderName;
+		$this->sSenderAddress = $sSenderAddress;
 	}
 
-	public function getSender()
-	{
-			return array($this->sSenderName, $this->sSenderAddress);
+	public function getSender() {
+		return array($this->sSenderName, $this->sSenderAddress);
 	}
 	
 	public function setReplyTo($sReplyTo) {
-			$this->sReplyTo = $sReplyTo;
+		$this->sReplyTo = $sReplyTo;
 	}
 
 	public function getReplyTo() {
-			return $this->sReplyTo;
+		return $this->sReplyTo;
 	}
 	
 	public function send() {
@@ -184,8 +190,7 @@ class EMailAddressInvalidException extends Exception {
 		$this->sAddress = $sAddress;
 	}
 
-	public function getAddress()
-	{
-			return $this->sAddress;
+	public function getAddress() {
+		return $this->sAddress;
 	}
 }
