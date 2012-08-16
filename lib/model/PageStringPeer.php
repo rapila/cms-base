@@ -11,15 +11,5 @@
  * @package model
  */ 
 class PageStringPeer extends BasePageStringPeer {
-
-	public static function initializeRootPageString($sPagestring, $iPageId, $sLanguageId) {
-		$sPageString = new PageString();
-		$sPageString->setPageId($iPageId);
-		$sPageString->setLanguageId($sLanguageId);
-		$sPageString->setPageTitle($sPagestring);
-		$sPageString->setIsInactive(false);
-		$sPageString->save();
-		return $sPageString;
-	}
 }
 

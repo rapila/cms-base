@@ -12,7 +12,7 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		$this->oDocument = DocumentQuery::create()->findPk($this->aPath[0]);
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
-			$oErrorPage = PagePeer::getPageByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
+			$oErrorPage = PageQuery::create()->findOneByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
 			if($oErrorPage) {
 				LinkUtil::redirect(LinkUtil::link($oErrorPage->getLinkArray(), "FrontendManager"));
 			} else {

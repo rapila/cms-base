@@ -174,10 +174,6 @@ class UserPeer extends BaseUserPeer {
     AdminManager::setContentLanguage(Session::language());
 		return true;
 	}
-		
-	public static function getFirstUser() {
-		return self::doSelectOne(new Criteria());
-	}
 	
 	public static function userExists($mUser=null) {
 		if($mUser === null) {

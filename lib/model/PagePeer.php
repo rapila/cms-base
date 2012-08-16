@@ -27,6 +27,7 @@ class PagePeer extends BasePagePeer {
 
 	/**
 	 * initializeRootPage()
+ 	 * @deprecated use {@link PagesAdminModule::initializeRootPage()}
 	 * @return array of one page object
 	 */ 
 	public static function initializeRootPage() {
@@ -36,14 +37,16 @@ class PagePeer extends BasePagePeer {
 		$oRootPage->setIsInactive(false);
 		$oRootPage->setPageType('default');
 		$oRootPage->setTemplateName(Settings::getSetting('frontend', 'main_template', 'general'));
-		$oFirstUser = UserPeer::getFirstUser();
+		$oFirstUser = UserQuery::create()->findOne();
 		$oFirstUserId = $oFirstUser !== null ? $oFirstUser->getId() : 0;
 		$oRootPage->setCreatedBy($oFirstUserId);
 		$oRootPage->setUpdatedBy($oFirstUserId);
+		$sPageString = new PageString();
+		$sPageString->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'de'));
+		$sPageString->setPageTitle('Home');
+		$sPageString->setIsInactive(false);
+		$oRootPage->addPageString($sPageString);
 		$oRootPage->save();
-		$sLanguageId = Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'de');
-		$oPageString = PageStringPeer::initializeRootPageString( 'Home', $oRootPage->getId(), $sLanguageId);
-		$oRootPage->addPageString($oPageString);
 		return $oRootPage;
 	}
 	
@@ -51,12 +54,20 @@ class PagePeer extends BasePagePeer {
 		return PageQuery::create()->filterByParentAndName($sName, $iParentId, $iCurrentPageId)->count() > 0;
 	}
 
+	/**
+	* getPageByName()
+ 	* @deprecated Use page query directly because it is simple and clear
+ 	*/
 	public static function getPageByName($sName) {
-		return PageQuery::create()->filterByName($sName)->findOne();
+		return PageQuery::create()->findOneByName($sName);
 	}
-
+	
+	/**
+	* getPageByIdentifier()
+ 	* @deprecated Use page query directly because it is simple and clear
+ 	*/
 	public static function getPageByIdentifier($sIdentifier) {
-		return PageQuery::create()->filterByIdentifier($sIdentifier)->findOne();
+		return PageQuery::create()->findOneByIdentifier($sIdentifier);
 	}
 
 	public static function getLastUpdatedTimestamp() {

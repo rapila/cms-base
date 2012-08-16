@@ -182,7 +182,7 @@ class FrontendManager extends Manager {
 			$sErrorPageName = Settings::getSetting('error_pages', 'not_found', null);
 			$oPage = null;
 			if($sErrorPageName) {
-				$oPage = PagePeer::getPageByName($sErrorPageName);
+				$oPage = PageQuery::create()->findOneByName($sErrorPageName);
 			}
 			if($oPage === null) {
 				die(StringPeer::getString('wns.page.not_found'));
@@ -315,13 +315,13 @@ class FrontendManager extends Manager {
 	 * - get a page by name
 	 * - get a page by id
 	 * - get a page by identifier string
-	 * - get nearest neighbor page {@link PagePeer::getPageByName()}
+	 * - get nearest neighbor page {@link PageQuery::findOneByName()}
 	 */
 	public static function replacePageLinkIdentifier($oTemplateIdentifier) {
 		$oPage = null;
 		$iIdentifier = $oTemplateIdentifier->getParameter('identifier');
 		if($iIdentifier !== null) {
-			$oPage = PagePeer::getPageByIdentifier($iIdentifier);
+			$oPage = PageQuery::create()->findOneByIdentifier($iIdentifier);
 		} else {
 			$iId = $oTemplateIdentifier->getParameter('id');
 			if($iId !== null) {
@@ -332,7 +332,7 @@ class FrontendManager extends Manager {
 					if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
 						$oPage = self::$CURRENT_PAGE->getPageOfName($sName);
 					} else {
-						$oPage = PagePeer::getPageByName($sName);
+						$oPage = PageQuery::create()->findOneByName($sName);
 					}
 				}
 			}

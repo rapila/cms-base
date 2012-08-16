@@ -122,9 +122,9 @@ class SpecialTemplateIdentifierActions {
 			$sDestination = MAIN_DIR_FE;
 			$bIsAbsolute = true;
 		} elseif($sPage = $oTemplateIdentifier->getParameter('page')) {
-			$oPage = PageQuery::create()->filterByIdentifier($sPage)->findOne();
+			$oPage = PageQuery::create()->findOneByIdentifier($sPage);
 			if($oPage === null) {
-				$oPage = PageQuery::create()->filterByName($sPage)->findOne();
+				$oPage = PageQuery::create()->findOneByName($sPage);
 			}
 			$sManager = 'FrontendManager';
 			if($oTemplateIdentifier->hasParameter('manager')) {

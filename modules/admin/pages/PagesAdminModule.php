@@ -11,7 +11,7 @@ class PagesAdminModule extends AdminModule {
 		try {
 			$this->oRootPage = PagePeer::getRootPage();
 		} catch (Exception $e) {
-			$this->oRootPage = PagePeer::initializeRootPage();
+			$this->oRootPage = self::initializeRootPage();
 		}
 		$this->oTreeWidget = new TreeWidgetModule();
 		$this->oTreeWidget->setDelegate($this);
@@ -34,6 +34,26 @@ class PagesAdminModule extends AdminModule {
 		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'initial_page_tree_left', $oInitialPage->getTreeLeft());
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/template.css', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
+	}
+	
+	private static function initializeRootPage() {
+		$oRootPage = new Page();
+		$oRootPage->makeRoot();
+		$oRootPage->setName('root');
+		$oRootPage->setIsInactive(false);
+		$oRootPage->setPageType('default');
+		$oRootPage->setTemplateName(Settings::getSetting('frontend', 'main_template', 'general'));
+		$oFirstUser = UserQuery::create()->findOne();
+		$oFirstUserId = $oFirstUser !== null ? $oFirstUser->getId() : 0;
+		$oRootPage->setCreatedBy($oFirstUserId);
+		$oRootPage->setUpdatedBy($oFirstUserId);
+		$sPageString = new PageString();
+		$sPageString->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'de'));
+		$sPageString->setPageTitle('Home');
+		$sPageString->setIsInactive(false);
+		$oRootPage->addPageString($sPageString);
+		$oRootPage->save();
+		return $oRootPage;
 	}
 	
 	public function usedWidgets() {
