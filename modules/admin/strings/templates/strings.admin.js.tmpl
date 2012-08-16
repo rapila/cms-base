@@ -1,44 +1,56 @@
 jQuery(document).ready(function() {
-	AdminInterface.content.find('table.string_list').prepareWidget(function(string_list) {
-		
-		// Add info_bar elements
-		AdminInterface.info_bar.prepareWidget(function(info_bar) {
-			info_bar.add_button('add-new-item', function() {
-				Widget.create('string_detail', function(widget) {
-					widget.open();
-					widget.save_callback = function(result, error) {
-						if(result.namespaces_changed) {
-							Widget.fire('strings-namespaces-changed');
-						}
-						string_list.reload();
-					};
-				});
-			}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
-				if(string_list.setSearch(search)) {
-					string_list.reload();
-				}
-			}).add_row_count_info_for_list(string_list);
-		});
 
-		// Sidebar
-		var sidebar = AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
-			Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
-			sidebar.settings.row_click_active_mode = 'activate';
-			sidebar.handle('list-selection_changed', function(event, selection) {
-				string_list.setOption('name_space', selection[0] && selection[0].name_space);
-				string_list.reload();
-			});
-			
-			sidebar.handle('list_updated', function(event) {
-				
-			});
+	var sidebar = AdminInterface.sidebar;
+	var content_list = AdminInterface.content;
+	var info_bar = AdminInterface.info_bar;
+	
+	var handlers = [];
+	
+	sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
+		sidebar = widget;
+	}.deferred(handlers));
+	content_list.children('[data-widget-type]').prepareWidget(function(widget) {
+		content_list = widget;
+	}.deferred(handlers));
+	info_bar.prepareWidget(function(widget) {
+		info_bar = widget;
+	}.deferred(handlers));
+	
+	jQuery.when.apply(jQuery, handlers).then(function() {
 		
-			// Add handlers for changed namespaces
-			string_list.handle('row-updated row-deleted', function(event, returnedResult) {
-				if(returnedResult.namespaces_changed) {
-					sidebar.reload();
-				}
+		// Add new string button, search_input and list count
+		info_bar.add_button('add-new-item', function() {
+			Widget.create('string_detail', function(widget) {
+				widget.open();
+				widget.save_callback = function(result, error) {
+					if(result.namespaces_changed) {
+						Widget.fire('strings-namespaces-changed');
+					}
+					content_list.reload();
+				};
 			});
+		}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
+			if(content_list.setSearch(search)) {
+				content_list.reload();
+			}
+		}).add_row_count_info_for_list(content_list);
+		
+		// Sidebar selection change handler
+		Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));
+		sidebar.settings.row_click_active_mode = 'activate';
+		sidebar.handle('list-selection_changed', function(event, selection) {
+			content_list.setOption('name_space', selection[0] && selection[0].name_space);
+			content_list.reload();
+		});
+		
+		// Add handlers for changed namespaces
+		content_list.handle('row-updated row-deleted', function(event, returnedResult) {
+			if(returnedResult.namespaces_changed) {
+				sidebar.reload();
+			}
 		});
 	});
 });
+
+
+
