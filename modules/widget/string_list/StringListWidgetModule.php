@@ -79,8 +79,7 @@ class StringListWidgetModule extends WidgetModule {
 	}
 
 	public function getCriteria() {
-		$oCriteria = new Criteria();
-		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
-		return $oCriteria;
+		// @todo order by content_edit or session_default language first in order to display text that makes sense
+		return StringQuery::create()->groupByStringKey();
 	}
 }
