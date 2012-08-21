@@ -10,7 +10,7 @@ class TagParser {
 	
 	public function __construct($sInput) {
 		$this->sInput = str_replace('&nbsp;', '&#160;', $sInput);
-		
+
 		$iParseHandle = xml_parser_create(Settings::getSetting("encoding", "browser", "utf-8"));
 		xml_parser_set_option($iParseHandle, XML_OPTION_CASE_FOLDING, 0);
 		xml_parser_set_option($iParseHandle, XML_OPTION_SKIP_WHITE, 1);
@@ -44,13 +44,11 @@ class TagParser {
 		$this->oCurrentTag->appendChild($sCharacters);
 	}
 	
-	public function setTag($oTag)
-	{
-			$this->oTag = $oTag;
+	public function setTag($oTag) {
+		$this->oTag = $oTag;
 	}
 
-	public function getTag()
-	{
-			return $this->oTag;
+	public function getTag() {
+		return $this->oTag;
 	}
 }
