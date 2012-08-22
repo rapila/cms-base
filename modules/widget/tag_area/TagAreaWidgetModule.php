@@ -29,6 +29,10 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 			return true;
 		}
 		$oTag->delete();
+		// @todo relaod tagArea if tag has been deleted
+		// if($this->tagId($sTagName) === null) {
+		// 	return 'reload';
+		// }
 		return true;
 	}
 	
