@@ -102,10 +102,7 @@ class Page extends BasePage {
 	}
 	
 	public function getPagePropertyByName($sPropertyName) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(PagePropertyPeer::PAGE_ID, $this->getId());
-		$oCriteria->add(PagePropertyPeer::NAME, $sPropertyName);
-		return PagePropertyPeer::doSelectOne($oCriteria);
+	  return PagePropertyQuery::create()->filterByPageId($this->getId())->filterByName($sPropertyName)->findOne();
 	}
 	
 	public function getPagePropertyValue($sPropertyName, $sDefaultValue = null) {
@@ -122,7 +119,8 @@ class Page extends BasePage {
 	* @param $sPropertyValue the new value. Set null if you wish to remove the property
 	*/
 	public function updatePageProperty($sPropertyName, $sPropertyValue) {
-		$this->getPageProperties();
+		// I don't see any use of calling this without using it
+		// $this->getPageProperties();
 		$oTempProperty = $this->getPagePropertyByName($sPropertyName);
 		if($oTempProperty !== null) {
 			if($sPropertyValue === null || $sPropertyValue === '') {
