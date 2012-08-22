@@ -32,13 +32,24 @@ class RichtextUtil {
 		return $oRichtextUtil->parseInputFromEditor();
 	}
 	
-	public function parseInputFromEditor($sInput = null) {
+	/**
+	* Returns a TagParser instance all the handlers set correctly to parse text coming from a richtext area.
+	*/
+	public function getTagParser($sInput = null) {
 		if($sInput === null) {
 			$sInput = $_POST[$this->sAreaName];
 		}
 		$oTagParser = new TagParser("<text>".$sInput."</text>");
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
-		return $oTagParser->getTag()->__toString();
+		return $oTagParser;
+	}
+	
+	/**
+	* Returns a string with parsed text coming from a richtext area.
+	* Calls getTagParser internally but also does the parsing by calling __toString.
+	*/
+	public function parseInputFromEditor($sInput = null) {
+		return $this->getTagParser($sInput)->getTag()->__toString();
 	}
 	
 	public static function parseStorageForOutput($sStorage, $bIsAdmin) {

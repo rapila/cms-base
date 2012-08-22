@@ -28,7 +28,7 @@ class FrontendManager extends Manager {
 		}
 		$this->oRootNavigationItem = PageNavigationItem::navigationItemForPage($oRootPage);
 		$oMatchingNavigationItem = $this->oRootNavigationItem;
-		
+
 		while(self::hasNextPathItem()) {
 			$oNextNavigationItem = $oMatchingNavigationItem->namedChild(self::usePath(), Session::language(), false, true);
 			if($oNextNavigationItem !== null) {
@@ -38,7 +38,7 @@ class FrontendManager extends Manager {
 				break;
 			}
 		}
-		
+
 		self::$CURRENT_NAVIGATION_ITEM = $oMatchingNavigationItem;
 		$oParent = $oMatchingNavigationItem;
 		while(!($oParent instanceof PageNavigationItem)) {
@@ -141,10 +141,10 @@ class FrontendManager extends Manager {
 	public function render() {
 		FilterModule::getFilters()->handleRequestStarted();
 		$bIsDynamic = false;
-		$aAllowedParams = array('container' => array(), 'navigation' => array());
+		$aAllowedParams = array();
 		
 		$bIsAjaxRequest = Manager::isPost() && Manager::isXMLHttpRequest();
-		$aAjaxSections = array();
+		$aAjaxSections = array('container' => array(), 'navigation' => array());
 		///@todo remove legacy support when the need fades
 		$bIsLegacyAjaxRequest = $bIsAjaxRequest && isset($_REQUEST['container_only']);
 		if($bIsAjaxRequest) {
@@ -164,37 +164,36 @@ class FrontendManager extends Manager {
 			}
 			asort($aAjaxSections);
 		}
-		
-		
+
 		$sPageType = self::$CURRENT_PAGE->getPageType();
 		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM);
 		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, ($bIsAjaxRequest ? $aAjaxSections['container'] : null));
-		
+
 		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
-		
+
 		$this->bIsNotFound = $this->bIsNotFound || $bParamsNotAllowed;
 		FilterModule::getFilters()->handlePageNotFoundDetectionComplete($this->bIsNotFound, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM, array(&$this->bIsNotFound));
-		
+
 		if($this->bIsNotFound) {
 			FilterModule::getFilters()->handlePageNotFound();
 			LinkUtil::sendHTTPStatusCode(404, 'Not Found');
 			$sErrorPageName = Settings::getSetting('error_pages', 'not_found', null);
 			$oPage = null;
 			if($sErrorPageName) {
-				$oPage = PagePeer::getPageByName($sErrorPageName);
+				$oPage = PageQuery::create()->findOneByName($sErrorPageName);
 			}
 			if($oPage === null) {
 				die(StringPeer::getString('wns.page.not_found'));
 			}
 			self::$CURRENT_PAGE = $oPage;
 			self::$CURRENT_NAVIGATION_ITEM = PageNavigationItem::navigationItemForPage($oPage);
-			
+
 			//Set correct page type of 404 page
 			$sPageType = self::$CURRENT_PAGE->getPageType();
 			$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
 		}
-		
+
 		if(!$bIsAjaxRequest) {
 			$oOutput = $this->getXHTMLOutput();
 			$oOutput->render();
@@ -283,7 +282,7 @@ class FrontendManager extends Manager {
 	protected function fillContent() { 
 		$this->oPageType->display($this->oTemplate, false);
 	}
-			
+
 	/**
 	 * fillAttributes()
 	 */
@@ -315,13 +314,13 @@ class FrontendManager extends Manager {
 	 * - get a page by name
 	 * - get a page by id
 	 * - get a page by identifier string
-	 * - get nearest neighbor page {@link PagePeer::getPageByName()}
+	 * - get nearest neighbor page {@link PageQuery::findOneByName()}
 	 */
 	public static function replacePageLinkIdentifier($oTemplateIdentifier) {
 		$oPage = null;
 		$iIdentifier = $oTemplateIdentifier->getParameter('identifier');
 		if($iIdentifier !== null) {
-			$oPage = PagePeer::getPageByIdentifier($iIdentifier);
+			$oPage = PageQuery::create()->findOneByIdentifier($iIdentifier);
 		} else {
 			$iId = $oTemplateIdentifier->getParameter('id');
 			if($iId !== null) {
@@ -332,7 +331,7 @@ class FrontendManager extends Manager {
 					if($oTemplateIdentifier->hasParameter('nearest_neighbour')) {
 						$oPage = self::$CURRENT_PAGE->getPageOfName($sName);
 					} else {
-						$oPage = PagePeer::getPageByName($sName);
+						$oPage = PageQuery::create()->findOneByName($sName);
 					}
 				}
 			}

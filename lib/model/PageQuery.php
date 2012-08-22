@@ -5,6 +5,7 @@
  * @package    propel.generator.model
  */
 class PageQuery extends BasePageQuery {
+	
 	public function filterByParentAndName($sName, $mParent, $mCurrentToExclude = null) {
 		if(!($mParent instanceof Page)) {
 			$mParent = PageQuery::create()->findPk($mParent);
@@ -20,7 +21,7 @@ class PageQuery extends BasePageQuery {
 	}
 	
 	public function descendantsOf($oPage) {
-		//Default implementation of childrenOf assumes $oPage is non-null.
+		// Default implementation of childrenOf assumes $oPage is non-null.
 		if($oPage !== null) {
 			return parent::descendantsOf($oPage);
 		}
@@ -28,7 +29,7 @@ class PageQuery extends BasePageQuery {
 	}
 
 	public function childrenOf($oPage) {
-		//Default implementation of childrenOf assumes $oPage is non-null.
+		// Default implementation of childrenOf assumes $oPage is non-null.
 		if($oPage === null) {
 			return $this->addUsingAlias(PagePeer::LEVEL_COL, 0, Criteria::EQUAL);
 		}

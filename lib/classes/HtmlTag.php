@@ -15,13 +15,11 @@ class HtmlTag {
 		$this->aParameters = array_merge($this->aParameters, $aParameters);
 	}
 	
-	public function setParameters($aParameters)
-	{
+	public function setParameters($aParameters) {
 			$this->aParameters = $aParameters;
 	}
 
-	public function getParameters()
-	{
+	public function getParameters() {
 			return $this->aParameters;
 	}
 	
@@ -44,33 +42,27 @@ class HtmlTag {
 		return isset($this->aParameters[$sParameterName]);
 	}
 	
-	public function setName($sName)
-	{
+	public function setName($sName) {
 			$this->sName = $sName;
 	}
 
-	public function getName()
-	{
+	public function getName() {
 			return $this->sName;
 	}
 	
-	public function setChildren($aChildren)
-	{
+	public function setChildren($aChildren) {
 			$this->aChildren = $aChildren;
 	}
 
-	public function getChildren()
-	{
+	public function getChildren() {
 			return $this->aChildren;
 	}
 	
-	public function setParent($oParent)
-	{
+	public function setParent($oParent) {
 			$this->oParent = $oParent;
 	}
 
-	public function getParent()
-	{
+	public function getParent() {
 			return $this->oParent;
 	}
 	
@@ -88,22 +80,26 @@ class HtmlTag {
 		}
 	}
 	
-	public function setParseCallback($mParseCallback)
-	{
-			$this->mParseCallback = $mParseCallback;
-			foreach($this->aChildren as $mChild) {
-				if(!$mChild instanceof HtmlTag) {
-					continue;
-				}
-				$mChild->setParseCallback($mParseCallback);
+	public function setParseCallback($mParseCallback) {
+		$this->mParseCallback = $mParseCallback;
+		foreach($this->aChildren as $mChild) {
+			if(!$mChild instanceof HtmlTag) {
+				continue;
 			}
+			$mChild->setParseCallback($mParseCallback);
+		}
 	}
 
-	public function getParseCallback()
-	{
+	public function getParseCallback() {
 			return $this->mParseCallback;
 	}
 	
+	/**
+	* Does the actual parsing of the tag to produce valid XHTML output. The default implementation uses a TagWriter to produce the tag contents, passing it the name, parameters and parsed children (as string).
+	*
+	* If a parse callback is set, it relies on its implementation to return valid output given the parsed children.
+	* Most callbacks will want to use TagWriter as well but transform the output a bit before doing so.
+	*/
 	public function __toString() {
 		$sParsedChildren = "";
 		foreach($this->aChildren as $mChild) {
