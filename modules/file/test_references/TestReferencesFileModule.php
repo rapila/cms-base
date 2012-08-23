@@ -1,8 +1,8 @@
 <?php
 class TestReferencesFileModule extends FileModule {
 	
-	private static $LOOSE_FROMS = array();
-	private static $LOOSE_TOS = array();
+	private static $REFERENCES_WITHOUT_FROM = array();
+	private static $REFERENCES_WITHOUT_TO = array();
 
 	const DO_CLEANUP = 'do_cleanup';
 	
@@ -21,18 +21,18 @@ class TestReferencesFileModule extends FileModule {
 				if($bCleanup) {
 					$oReference->delete();
 				} else {
-					self::$LOOSE_FROMS[] = $oReference;
+					self::$REFERENCES_WITHOUT_FROM[] = $oReference;
 				}
 			}
 			if($oReference && $oReference->getTo() === null) {
 				if($bCleanup) {
 					$oReference->delete();
 				} else {
-					self::$LOOSE_TOS[] = $oReference;
+					self::$REFERENCES_WITHOUT_TO[] = $oReference;
 				}
 			}
 		}
-		if(count(self::$LOOSE_FROMS) === 0 && count(self::$LOOSE_TOS) === 0) {
+		if(count(self::$REFERENCES_WITHOUT_FROM) === 0 && count(self::$REFERENCES_WITHOUT_TO) === 0) {
 			if(!$bCleanup) {
 				print StringPeer::getString('test_references.references_are_ok', null, null, array('count' => count($aReferences)));
 			} else {
@@ -40,11 +40,11 @@ class TestReferencesFileModule extends FileModule {
 				print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references'), 'FileManager')), StringPeer::getString('test_references.test_again')));
 			}
 		} else {
-			if(count(self::$LOOSE_FROMS) > 0) {
-				print TagWriter::quickTag('p', array(), count(self::$LOOSE_FROMS). StringPeer::getString('test_references.loose_from_references_found'));
+			if(count(self::$REFERENCES_WITHOUT_FROM) > 0) {
+				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_FROM). StringPeer::getString('test_references.loose_from_references_found'));
 			}
-			if(count(self::$LOOSE_TOS) > 0) {
-				print TagWriter::quickTag('p', array(), count(self::$LOOSE_TOS). StringPeer::getString('test_references.loose_to_references_found'));
+			if(count(self::$REFERENCES_WITHOUT_TO) > 0) {
+				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_TO). StringPeer::getString('test_references.loose_to_references_found'));
 			}
 			print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references', self::DO_CLEANUP), 'FileManager')), StringPeer::getString('test_references.remove_loose_ends')));
 		}
