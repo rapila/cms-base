@@ -18,14 +18,18 @@ class LocalJsLibraryFileModule extends FileModule {
 		$oIncluder = new ResourceIncluder();
 		$sLibraryVersion = $_GET['version'];
 		$bUseCompression = BooleanParser::booleanForString($_GET['use_compression']);
-		$bUseSsl = BooleanParser::booleanForString($_GET['use_ssl']);
-		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $sLibraryVersion, $bUseCompression, false, $bUseSsl, ResourceIncluder::PRIORITY_NORMAL, false);
+		//Don’t use SSL for downloads
+		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $sLibraryVersion, $bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
 		$sContents = '';
 		foreach($oIncluder->getResourceInfosForIncludedResourcesOfPriority() as $aInfo) {
 			if(isset($aInfo['file_resource'])) {
 				$sContents .= file_get_contents($aInfo['file_resource']->getFullPath());
 			} else {
-				$sContents .= file_get_contents($aInfo['location']);
+				$sLocation = $aInfo['location'];
+				if(StringUtil::startsWith($sLocation, '//')) {
+					$sLocation = 'http:'.$sLocation;
+				}
+				$sContents .= file_get_contents($sLocation);
 			}
 		}
 		$oCache->setContents($sContents);

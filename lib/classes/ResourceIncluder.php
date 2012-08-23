@@ -115,6 +115,9 @@ class ResourceIncluder {
 		}
 
 		if($sFinalLocation === null && $mFileResource === null && !$bIncludeAll) {
+			if(is_array($mLocation)) {
+				$mLocation = implode('/', $mLocation);
+			}
 			throw new Exception("Error in ResourceIncluder->addResource(): Specified internal file $mLocation could not be found.");
 		}
 		
@@ -182,7 +185,18 @@ class ResourceIncluder {
 		}
 	}
 	
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = false, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null, $sIeCondition = null) {
+	/**
+	* Add a JavaScript Library to this ResourceIncluder instance.
+	* @param string $sLibraryName The library’s name as configured in the config files
+	* @param string $sLibraryVersion The library’s version number, should be as specific as possible. If multiple libraries are included at different versions, only the higher versioned instances are included.
+	* @param boolean|null $bUseCompression Whether we should include a GZIPped-Minified version of the said Library. If set to null, the default will be used (as configured in the “use_compressed_libraries” setting of the “general” section of the resource_includer.yml config file).
+	* @param boolean $bInlcudeDependencies Whether to include all the necessary dependencies (as configured in the “library_dependencies” section of the resource_includer.yml config file) of this library.
+	* @param boolean|null $bUseSsl Whether to force the usage or non-usage of SSL. If null, this will use the library’s configured location (which should start with a protocol-agnostic “//”). To force either HTTP or HTTPS, use false or true, respectively. This will also determine how the library will be included when proxied (not, however, how it will be fetched, which is always unencrypted HTTP).
+	* @param int $iPriority Which priority level to use when addin this library’s reference. One of the defined priority constants (ResourceIncluder::PRIORITY_FIRST, ResourceIncluder::PRIORITY_NORMAL, ResourceIncluder::PRIORITY_LAST).
+	* @param boolean|null $bUseLocalProxy Whether we should proxy the included library through our own server. If set to null, the default will be used (as configured in the “use_local_library_cache” setting of the “general” section of the resource_includer.yml config file, which is off by default for production environments). This is useful for environments that need to be testable without an active internet connection or for production environments where libraries should not be loaded from external sources due to privacy concerns.
+	* @param string $sIeCondition An IE conditional-comment condition to put around the include. Will only print conditional comments when not null. Example: “lt IE 9”.
+	*/
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = null, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null, $sIeCondition = null) {
 		if($bUseLocalProxy === null) {
 			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', false, 'resource_includer');
 		}
@@ -235,14 +249,24 @@ class ResourceIncluder {
 		}
 		
 		if($bUseLocalProxy) {
-			$this->addResource(LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression), 'use_ssl' => BooleanParser::stringForBoolean($bUseSsl))), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
+			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression)));
+			if($bUseSsl !== null) {
+				$sLink = LinkUtil::absoluteLink($sLink, null, $bUseSsl ? 'https://' : 'http://');
+			}
+			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
 		
 		//Add resource
 		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, $sLibraryUrl);
-		if($bUseSsl) {
-			$sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
+		if($bUseSsl !== null) {
+			if(StringUtil::startsWith($sLibraryUrl, '//')) {
+				$sLibraryUrl = ($bUseSsl ? 'https://' : 'http://').substr($sLibraryUrl, 2);
+			} else if($bUseSsl) {
+				$sLibraryUrl = str_replace('http://', 'https://', $sLibraryUrl);
+			} else {
+				$sLibraryUrl = str_replace('https://', 'http://', $sLibraryUrl);
+			}
 		}
 
 		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
