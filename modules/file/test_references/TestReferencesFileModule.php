@@ -37,6 +37,7 @@ class TestReferencesFileModule extends FileModule {
 				print StringPeer::getString('test_references.references_are_ok', null, null, array('count' => count($aReferences)));
 			} else {
 				print StringPeer::getString('test_references.wrong_references_removed');
+				print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references'), 'FileManager')), StringPeer::getString('test_references.test_again')));
 			}
 		} else {
 			if(count(self::$LOOSE_FROMS) > 0) {
