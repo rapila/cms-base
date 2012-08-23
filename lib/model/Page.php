@@ -384,6 +384,17 @@ class Page extends BasePage {
 		}
 		$this->delete();
 	}
+	
+	public function delete(PropelPDO $oCon = null) {
+		foreach($this->getContentObjects() as $oContentObject) {
+			foreach($oContentObject->getLanguageObjects() as $oLanguageObject) {
+				foreach(ReferencePeer::getReferencesFromObject($oLanguageObject) as $oReference) {
+					$oReference->delete();
+				}
+			}
+		}
+		parent::delete($oCon);
+	}
 
 	///Override moveSubtreeTo to store the old parent
 	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
