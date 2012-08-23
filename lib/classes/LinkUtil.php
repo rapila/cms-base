@@ -42,6 +42,9 @@ class LinkUtil {
 		if($sHost !== false) {
 			$sLocation = self::absoluteLink($sLocation, $sHost, $sProtocol);
 		}
+		if(StringUtil::startsWith($sLocation, '//')) {
+			$sLocation = (self::isSSL() ? 'https:' : 'http:').$sLocation;
+		}
 		$sRedirectString = "Location: $sLocation";
 		header($sRedirectString);exit;
 	}
@@ -53,7 +56,7 @@ class LinkUtil {
 	
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
 		if($sProtocol === null) {
-			$sProtocol = !self::isSSL() ? 'http://' : 'https://';
+			$sProtocol = '//';
 		}
 		if($sHost === null && isset($_SERVER['HTTP_HOST'])) {
 			$sHost = $_SERVER['HTTP_HOST'];
