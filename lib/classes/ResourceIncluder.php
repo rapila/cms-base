@@ -88,7 +88,7 @@ class ResourceIncluder {
 		} else if(!is_string($mLocation)) {
 			//Unknown input type given -> throw Exception
 			throw new Exception("Eror in ResourceIncluder->addResource(): given location $mLocation is in unknown format");
-		} else if(preg_match('/\w+\:/', $mLocation) !== 0) {
+		} else if(preg_match('/\w+\:/', $mLocation) !== 0 || StringUtil::startsWith($mLocation, '//')) {
 			//Absolute URL given with protocol -> set Location directly (external)
 			$sFinalLocation = $mLocation;
 		} else if(StringUtil::startsWith($mLocation, '/')) {
