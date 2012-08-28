@@ -57,6 +57,10 @@ class LinkUtil {
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
 		if($sProtocol === null) {
 			$sProtocol = '//';
+		} else if($sProtocol === true) {
+			$sProtocol = 'https://';
+		} else if($sProtocol === false) {
+			$sProtocol = 'http://';
 		}
 		if($sHost === null && isset($_SERVER['HTTP_HOST'])) {
 			$sHost = $_SERVER['HTTP_HOST'];
