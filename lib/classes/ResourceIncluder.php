@@ -85,6 +85,12 @@ class ResourceIncluder {
 			} else {
 				$mFileResource = ResourceFinder::findResourceObject($mLocation);
 			}
+		} else if($mLocation instanceof NavigationItem) {
+			$sFinalLocation = LinkUtil::link($mLocation->getLink(), 'FrontendManager');
+			$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
+			if($sTemplateName === null) {
+				$sTemplateName = 'link';
+			}
 		} else if(!is_string($mLocation)) {
 			//Unknown input type given -> throw Exception
 			throw new Exception("Eror in ResourceIncluder->addResource(): given location $mLocation is in unknown format");
