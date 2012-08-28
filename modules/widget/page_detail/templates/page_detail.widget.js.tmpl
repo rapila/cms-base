@@ -183,7 +183,7 @@ Widget.types.page_detail = {
 		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
 			_this.configuration_has_been_loaded = false;
 		});
-		this._element.find(".page_href").text(page_data.PageHref).attr('href', page_data.PageHref);
+		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 		// references
 		var count_references = page_data.CountReferences;
