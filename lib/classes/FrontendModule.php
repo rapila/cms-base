@@ -132,6 +132,10 @@ abstract class FrontendModule extends Module {
 		return $this->oLanguageObject;
 	}
 	
+	public function setLanguageObject($oLanguageObject) {
+		$this->oLanguageObject = $oLanguageObject;
+	}
+	
 	/**
 	 * @param LanguageObject $oLanguageObject The language object with the data whose content info you want
 	 * description: should return some helpful information in page_detail filled_module, displaying filtered unserialized language object data

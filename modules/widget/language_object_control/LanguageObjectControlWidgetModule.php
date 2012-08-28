@@ -21,7 +21,8 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function save($aData, $bSaveDraft = false) {
-		$mSaveData = $this->oModuleInstance->getSaveData($aData);
+		$oToSave = null;
+		$oToDelete = null;
 		$oSaveInto = $this->oCurrentLanguageObject;
 		if($bSaveDraft) {
 			if($this->oCurrentLanguageObject->getHasDraft()) {
@@ -29,7 +30,7 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 			} else {
 				$oSaveInto = $this->oCurrentLanguageObject->newHistory(true);
 				if(!$this->oCurrentLanguageObject->isNew()) {
-					$this->oCurrentLanguageObject->save();
+					$oToSave = $this->oCurrentLanguageObject;
 				}
 			}
 		} else {
@@ -37,12 +38,22 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 				$oDraft = $this->oCurrentLanguageObject->getDraft();
 				$this->oCurrentLanguageObject->setHasDraft(false);
 				if($this->oCurrentLanguageObject->isNew()) {
-					$oDraft->delete();
+					$oToDelete = $oDraft;
 				} else {
 					$oDraft->setData($this->oCurrentLanguageObject->getData());
-					$oDraft->save();
+					$oToSave = $oDraft;
 				}
 			}
+		}
+		//Make sure the modules carries the correct LanguageObject(History) to be able to track references and stuff.
+		$this->oModuleInstance->setLanguageObject($oSaveInto);
+		$mSaveData = $this->oModuleInstance->getSaveData($aData);
+		//Don’t do this earlier in case getSaveData threw an exception.
+		if($oToSave) {
+			$oToSave->save();
+		}
+		if($oToDelete) {
+			$oToDelete->delete();
 		}
 		$oSaveInto->setData($mSaveData);
 		return array('saved' => $oSaveInto->save(), 'language_object_exists' => !$this->oCurrentLanguageObject->isNew());
