@@ -386,13 +386,6 @@ class Page extends BasePage {
 	}
 	
 	public function delete(PropelPDO $oCon = null) {
-		foreach($this->getContentObjects() as $oContentObject) {
-			foreach($oContentObject->getLanguageObjects() as $oLanguageObject) {
-				foreach(ReferencePeer::getReferencesFromObject($oLanguageObject) as $oReference) {
-					$oReference->delete();
-				}
-			}
-		}
 		parent::delete($oCon);
 	}
 
