@@ -11,6 +11,9 @@ class PageNavigationItem extends NavigationItem {
 	public function __construct(Page $oMe, $oParent = null) {
 		$this->oMe = $oMe;
 		$this->bIsCurrent = null;
+		if($oParent === null && !$oMe->isRoot()) {
+			$oParent = self::navigationItemForPage($oMe->getParent());
+		}
 		parent::__construct($oParent);
 	}
 	
@@ -85,6 +88,14 @@ class PageNavigationItem extends NavigationItem {
 	
 	public function getLink() {
 		return $this->oMe->getFullPathArray();
+	}
+	
+	protected function getCanonicalImpl($sLanguageId = null) {
+		$oCanonical = $this->oMe->getCanonical();
+		if($oCanonical && (!$sLanguageId || $oCanonical->hasPageStringByLanguage($sLanguageId))) {
+			return self::navigationItemForPage($oCanonical);
+		}
+		return null;
 	}
 	
 	public function isProtected() {

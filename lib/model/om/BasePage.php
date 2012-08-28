@@ -89,6 +89,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $is_protected;
 
 	/**
+	 * The value for the canonical_id field.
+	 * @var        int
+	 */
+	protected $canonical_id;
+
+	/**
 	 * The value for the tree_left field.
 	 * @var        int
 	 */
@@ -131,6 +137,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 	protected $updated_by;
 
 	/**
+	 * @var        Page
+	 */
+	protected $aPageRelatedByCanonicalId;
+
+	/**
 	 * @var        User
 	 */
 	protected $aUserRelatedByCreatedBy;
@@ -139,6 +150,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 * @var        User
 	 */
 	protected $aUserRelatedByUpdatedBy;
+
+	/**
+	 * @var        array Page[] Collection to store aggregation of Page objects.
+	 */
+	protected $collPagesRelatedById;
 
 	/**
 	 * @var        array PageProperty[] Collection to store aggregation of PageProperty objects.
@@ -194,6 +210,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 */
 	protected $aNestedSetParent = null;
 	
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $pagesRelatedByIdScheduledForDeletion = null;
 
 	/**
 	 * An array of objects scheduled for deletion.
@@ -331,6 +353,16 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function getIsProtected()
 	{
 		return $this->is_protected;
+	}
+
+	/**
+	 * Get the [canonical_id] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getCanonicalId()
+	{
+		return $this->canonical_id;
 	}
 
 	/**
@@ -672,6 +704,30 @@ abstract class BasePage extends BaseObject  implements Persistent
 	} // setIsProtected()
 
 	/**
+	 * Set the value of [canonical_id] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function setCanonicalId($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->canonical_id !== $v) {
+			$this->canonical_id = $v;
+			$this->modifiedColumns[] = PagePeer::CANONICAL_ID;
+		}
+
+		if ($this->aPageRelatedByCanonicalId !== null && $this->aPageRelatedByCanonicalId->getId() !== $v) {
+			$this->aPageRelatedByCanonicalId = null;
+		}
+
+		return $this;
+	} // setCanonicalId()
+
+	/**
 	 * Set the value of [tree_left] column.
 	 * 
 	 * @param      int $v new value
@@ -880,13 +936,14 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->is_folder = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
 			$this->is_hidden = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
 			$this->is_protected = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-			$this->tree_left = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-			$this->tree_right = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-			$this->tree_level = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->created_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->updated_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->created_by = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->updated_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->canonical_id = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->tree_left = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->tree_right = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->tree_level = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->created_by = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->updated_by = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -895,7 +952,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = PagePeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 17; // 17 = PagePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Page object", $e);
@@ -918,6 +975,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
+		if ($this->aPageRelatedByCanonicalId !== null && $this->canonical_id !== $this->aPageRelatedByCanonicalId->getId()) {
+			$this->aPageRelatedByCanonicalId = null;
+		}
 		if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
 			$this->aUserRelatedByCreatedBy = null;
 		}
@@ -963,8 +1023,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
+			$this->aPageRelatedByCanonicalId = null;
 			$this->aUserRelatedByCreatedBy = null;
 			$this->aUserRelatedByUpdatedBy = null;
+			$this->collPagesRelatedById = null;
+
 			$this->collPagePropertys = null;
 
 			$this->collPageStrings = null;
@@ -1162,6 +1225,13 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
+			if ($this->aPageRelatedByCanonicalId !== null) {
+				if ($this->aPageRelatedByCanonicalId->isModified() || $this->aPageRelatedByCanonicalId->isNew()) {
+					$affectedRows += $this->aPageRelatedByCanonicalId->save($con);
+				}
+				$this->setPageRelatedByCanonicalId($this->aPageRelatedByCanonicalId);
+			}
+
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
 					$affectedRows += $this->aUserRelatedByCreatedBy->save($con);
@@ -1185,6 +1255,23 @@ abstract class BasePage extends BaseObject  implements Persistent
 				}
 				$affectedRows += 1;
 				$this->resetModified();
+			}
+
+			if ($this->pagesRelatedByIdScheduledForDeletion !== null) {
+				if (!$this->pagesRelatedByIdScheduledForDeletion->isEmpty()) {
+					PageQuery::create()
+						->filterByPrimaryKeys($this->pagesRelatedByIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->pagesRelatedByIdScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collPagesRelatedById !== null) {
+				foreach ($this->collPagesRelatedById as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
 			}
 
 			if ($this->pagePropertysScheduledForDeletion !== null) {
@@ -1307,6 +1394,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PagePeer::IS_PROTECTED)) {
 			$modifiedColumns[':p' . $index++]  = '`IS_PROTECTED`';
 		}
+		if ($this->isColumnModified(PagePeer::CANONICAL_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`CANONICAL_ID`';
+		}
 		if ($this->isColumnModified(PagePeer::TREE_LEFT)) {
 			$modifiedColumns[':p' . $index++]  = '`TREE_LEFT`';
 		}
@@ -1365,6 +1455,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 						break;
 					case '`IS_PROTECTED`':
 						$stmt->bindValue($identifier, (int) $this->is_protected, PDO::PARAM_INT);
+						break;
+					case '`CANONICAL_ID`':
+						$stmt->bindValue($identifier, $this->canonical_id, PDO::PARAM_INT);
 						break;
 					case '`TREE_LEFT`':
 						$stmt->bindValue($identifier, $this->tree_left, PDO::PARAM_INT);
@@ -1484,6 +1577,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
+			if ($this->aPageRelatedByCanonicalId !== null) {
+				if (!$this->aPageRelatedByCanonicalId->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aPageRelatedByCanonicalId->getValidationFailures());
+				}
+			}
+
 			if ($this->aUserRelatedByCreatedBy !== null) {
 				if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
@@ -1501,6 +1600,14 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collPagesRelatedById !== null) {
+					foreach ($this->collPagesRelatedById as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 				if ($this->collPagePropertys !== null) {
 					foreach ($this->collPagePropertys as $referrerFK) {
@@ -1595,24 +1702,27 @@ abstract class BasePage extends BaseObject  implements Persistent
 				return $this->getIsProtected();
 				break;
 			case 9:
-				return $this->getTreeLeft();
+				return $this->getCanonicalId();
 				break;
 			case 10:
-				return $this->getTreeRight();
+				return $this->getTreeLeft();
 				break;
 			case 11:
-				return $this->getTreeLevel();
+				return $this->getTreeRight();
 				break;
 			case 12:
-				return $this->getCreatedAt();
+				return $this->getTreeLevel();
 				break;
 			case 13:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 14:
-				return $this->getCreatedBy();
+				return $this->getUpdatedAt();
 				break;
 			case 15:
+				return $this->getCreatedBy();
+				break;
+			case 16:
 				return $this->getUpdatedBy();
 				break;
 			default:
@@ -1653,20 +1763,27 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$keys[6] => $this->getIsFolder(),
 			$keys[7] => $this->getIsHidden(),
 			$keys[8] => $this->getIsProtected(),
-			$keys[9] => $this->getTreeLeft(),
-			$keys[10] => $this->getTreeRight(),
-			$keys[11] => $this->getTreeLevel(),
-			$keys[12] => $this->getCreatedAt(),
-			$keys[13] => $this->getUpdatedAt(),
-			$keys[14] => $this->getCreatedBy(),
-			$keys[15] => $this->getUpdatedBy(),
+			$keys[9] => $this->getCanonicalId(),
+			$keys[10] => $this->getTreeLeft(),
+			$keys[11] => $this->getTreeRight(),
+			$keys[12] => $this->getTreeLevel(),
+			$keys[13] => $this->getCreatedAt(),
+			$keys[14] => $this->getUpdatedAt(),
+			$keys[15] => $this->getCreatedBy(),
+			$keys[16] => $this->getUpdatedBy(),
 		);
 		if ($includeForeignObjects) {
+			if (null !== $this->aPageRelatedByCanonicalId) {
+				$result['PageRelatedByCanonicalId'] = $this->aPageRelatedByCanonicalId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
 			if (null !== $this->aUserRelatedByCreatedBy) {
 				$result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUserRelatedByUpdatedBy) {
 				$result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collPagesRelatedById) {
+				$result['PagesRelatedById'] = $this->collPagesRelatedById->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 			if (null !== $this->collPagePropertys) {
 				$result['PagePropertys'] = $this->collPagePropertys->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1739,24 +1856,27 @@ abstract class BasePage extends BaseObject  implements Persistent
 				$this->setIsProtected($value);
 				break;
 			case 9:
-				$this->setTreeLeft($value);
+				$this->setCanonicalId($value);
 				break;
 			case 10:
-				$this->setTreeRight($value);
+				$this->setTreeLeft($value);
 				break;
 			case 11:
-				$this->setTreeLevel($value);
+				$this->setTreeRight($value);
 				break;
 			case 12:
-				$this->setCreatedAt($value);
+				$this->setTreeLevel($value);
 				break;
 			case 13:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 14:
-				$this->setCreatedBy($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 15:
+				$this->setCreatedBy($value);
+				break;
+			case 16:
 				$this->setUpdatedBy($value);
 				break;
 		} // switch()
@@ -1792,13 +1912,14 @@ abstract class BasePage extends BaseObject  implements Persistent
 		if (array_key_exists($keys[6], $arr)) $this->setIsFolder($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setIsHidden($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setIsProtected($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setTreeLeft($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setTreeRight($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setTreeLevel($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setCreatedBy($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[9], $arr)) $this->setCanonicalId($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setTreeLeft($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setTreeRight($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setTreeLevel($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setCreatedBy($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setUpdatedBy($arr[$keys[16]]);
 	}
 
 	/**
@@ -1819,6 +1940,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PagePeer::IS_FOLDER)) $criteria->add(PagePeer::IS_FOLDER, $this->is_folder);
 		if ($this->isColumnModified(PagePeer::IS_HIDDEN)) $criteria->add(PagePeer::IS_HIDDEN, $this->is_hidden);
 		if ($this->isColumnModified(PagePeer::IS_PROTECTED)) $criteria->add(PagePeer::IS_PROTECTED, $this->is_protected);
+		if ($this->isColumnModified(PagePeer::CANONICAL_ID)) $criteria->add(PagePeer::CANONICAL_ID, $this->canonical_id);
 		if ($this->isColumnModified(PagePeer::TREE_LEFT)) $criteria->add(PagePeer::TREE_LEFT, $this->tree_left);
 		if ($this->isColumnModified(PagePeer::TREE_RIGHT)) $criteria->add(PagePeer::TREE_RIGHT, $this->tree_right);
 		if ($this->isColumnModified(PagePeer::TREE_LEVEL)) $criteria->add(PagePeer::TREE_LEVEL, $this->tree_level);
@@ -1896,6 +2018,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$copyObj->setIsFolder($this->getIsFolder());
 		$copyObj->setIsHidden($this->getIsHidden());
 		$copyObj->setIsProtected($this->getIsProtected());
+		$copyObj->setCanonicalId($this->getCanonicalId());
 		$copyObj->setTreeLeft($this->getTreeLeft());
 		$copyObj->setTreeRight($this->getTreeRight());
 		$copyObj->setTreeLevel($this->getTreeLevel());
@@ -1910,6 +2033,12 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$copyObj->setNew(false);
 			// store object hash to prevent cycle
 			$this->startCopy = true;
+
+			foreach ($this->getPagesRelatedById() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addPageRelatedById($relObj->copy($deepCopy));
+				}
+			}
 
 			foreach ($this->getPagePropertys() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1981,6 +2110,55 @@ abstract class BasePage extends BaseObject  implements Persistent
 			self::$peer = new PagePeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Declares an association between this object and a Page object.
+	 *
+	 * @param      Page $v
+	 * @return     Page The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setPageRelatedByCanonicalId(Page $v = null)
+	{
+		if ($v === null) {
+			$this->setCanonicalId(NULL);
+		} else {
+			$this->setCanonicalId($v->getId());
+		}
+
+		$this->aPageRelatedByCanonicalId = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the Page object, it will not be re-added.
+		if ($v !== null) {
+			$v->addPageRelatedById($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated Page object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Page The associated Page object.
+	 * @throws     PropelException
+	 */
+	public function getPageRelatedByCanonicalId(PropelPDO $con = null)
+	{
+		if ($this->aPageRelatedByCanonicalId === null && ($this->canonical_id !== null)) {
+			$this->aPageRelatedByCanonicalId = PageQuery::create()->findPk($this->canonical_id, $con);
+			/* The following can be used additionally to
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aPageRelatedByCanonicalId->addPagesRelatedById($this);
+			 */
+		}
+		return $this->aPageRelatedByCanonicalId;
 	}
 
 	/**
@@ -2092,6 +2270,9 @@ abstract class BasePage extends BaseObject  implements Persistent
 	 */
 	public function initRelation($relationName)
 	{
+		if ('PageRelatedById' == $relationName) {
+			return $this->initPagesRelatedById();
+		}
 		if ('PageProperty' == $relationName) {
 			return $this->initPagePropertys();
 		}
@@ -2104,6 +2285,204 @@ abstract class BasePage extends BaseObject  implements Persistent
 		if ('Right' == $relationName) {
 			return $this->initRights();
 		}
+	}
+
+	/**
+	 * Clears out the collPagesRelatedById collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPagesRelatedById()
+	 */
+	public function clearPagesRelatedById()
+	{
+		$this->collPagesRelatedById = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPagesRelatedById collection.
+	 *
+	 * By default this just sets the collPagesRelatedById collection to an empty array (like clearcollPagesRelatedById());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initPagesRelatedById($overrideExisting = true)
+	{
+		if (null !== $this->collPagesRelatedById && !$overrideExisting) {
+			return;
+		}
+		$this->collPagesRelatedById = new PropelObjectCollection();
+		$this->collPagesRelatedById->setModel('Page');
+	}
+
+	/**
+	 * Gets an array of Page objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Page is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 * @throws     PropelException
+	 */
+	public function getPagesRelatedById($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedById || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedById) {
+				// return empty collection
+				$this->initPagesRelatedById();
+			} else {
+				$collPagesRelatedById = PageQuery::create(null, $criteria)
+					->filterByPageRelatedByCanonicalId($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPagesRelatedById;
+				}
+				$this->collPagesRelatedById = $collPagesRelatedById;
+			}
+		}
+		return $this->collPagesRelatedById;
+	}
+
+	/**
+	 * Sets a collection of PageRelatedById objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $pagesRelatedById A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPagesRelatedById(PropelCollection $pagesRelatedById, PropelPDO $con = null)
+	{
+		$this->pagesRelatedByIdScheduledForDeletion = $this->getPagesRelatedById(new Criteria(), $con)->diff($pagesRelatedById);
+
+		foreach ($pagesRelatedById as $pageRelatedById) {
+			// Fix issue with collection modified by reference
+			if ($pageRelatedById->isNew()) {
+				$pageRelatedById->setPageRelatedByCanonicalId($this);
+			}
+			$this->addPageRelatedById($pageRelatedById);
+		}
+
+		$this->collPagesRelatedById = $pagesRelatedById;
+	}
+
+	/**
+	 * Returns the number of related Page objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Page objects.
+	 * @throws     PropelException
+	 */
+	public function countPagesRelatedById(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPagesRelatedById || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPagesRelatedById) {
+				return 0;
+			} else {
+				$query = PageQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByPageRelatedByCanonicalId($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPagesRelatedById);
+		}
+	}
+
+	/**
+	 * Method called to associate a Page object to this object
+	 * through the Page foreign key attribute.
+	 *
+	 * @param      Page $l Page
+	 * @return     Page The current object (for fluent API support)
+	 */
+	public function addPageRelatedById(Page $l)
+	{
+		if ($this->collPagesRelatedById === null) {
+			$this->initPagesRelatedById();
+		}
+		if (!$this->collPagesRelatedById->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddPageRelatedById($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	PageRelatedById $pageRelatedById The pageRelatedById object to add.
+	 */
+	protected function doAddPageRelatedById($pageRelatedById)
+	{
+		$this->collPagesRelatedById[]= $pageRelatedById;
+		$pageRelatedById->setPageRelatedByCanonicalId($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Page is new, it will return
+	 * an empty collection; or if this Page has previously
+	 * been saved, it will retrieve related PagesRelatedById from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Page.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 */
+	public function getPagesRelatedByIdJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+		return $this->getPagesRelatedById($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Page is new, it will return
+	 * an empty collection; or if this Page has previously
+	 * been saved, it will retrieve related PagesRelatedById from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Page.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 */
+	public function getPagesRelatedByIdJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageQuery::create(null, $criteria);
+		$query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+		return $this->getPagesRelatedById($query, $con);
 	}
 
 	/**
@@ -2962,6 +3341,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 		$this->is_folder = null;
 		$this->is_hidden = null;
 		$this->is_protected = null;
+		$this->canonical_id = null;
 		$this->tree_left = null;
 		$this->tree_right = null;
 		$this->tree_level = null;
@@ -2990,6 +3370,11 @@ abstract class BasePage extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collPagesRelatedById) {
+				foreach ($this->collPagesRelatedById as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collPagePropertys) {
 				foreach ($this->collPagePropertys as $o) {
 					$o->clearAllReferences($deep);
@@ -3015,6 +3400,10 @@ abstract class BasePage extends BaseObject  implements Persistent
 		// nested_set behavior
 		$this->collNestedSetChildren = null;
 		$this->aNestedSetParent = null;
+		if ($this->collPagesRelatedById instanceof PropelCollection) {
+			$this->collPagesRelatedById->clearIterator();
+		}
+		$this->collPagesRelatedById = null;
 		if ($this->collPagePropertys instanceof PropelCollection) {
 			$this->collPagePropertys->clearIterator();
 		}
@@ -3031,6 +3420,7 @@ abstract class BasePage extends BaseObject  implements Persistent
 			$this->collRights->clearIterator();
 		}
 		$this->collRights = null;
+		$this->aPageRelatedByCanonicalId = null;
 		$this->aUserRelatedByCreatedBy = null;
 		$this->aUserRelatedByUpdatedBy = null;
 	}

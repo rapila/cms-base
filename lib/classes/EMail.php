@@ -36,7 +36,7 @@ class EMail {
 	* 
 	* @return void
 	*/
-	public function __construct($sSubject, $oContent = null, $bIsHtml = false, $bUseMultipart = false) {
+	public function __construct($sSubject, $oContent = null, $bIsHtml = false) {
 		$this->aRecipients = array();
 		$this->aCarbonCopyRecipients = array();
 		$this->aBlindCarbonCopyRecipients = array();

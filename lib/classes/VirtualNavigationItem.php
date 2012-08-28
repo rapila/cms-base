@@ -8,6 +8,7 @@ class VirtualNavigationItem extends NavigationItem {
 	private $sLinkText;
 	private $mData;
 	private $sType;
+	private $oCanonical;
 	public $bIsIndexed = true;
 
 	/**
@@ -17,12 +18,13 @@ class VirtualNavigationItem extends NavigationItem {
 	 * @param string $sLinkText Page link text. Defaults to title.
 	 * @param mixed $mData Additional data to be stored for later retrieval
 	 */
-	public function __construct($sType, $sName, $sTitle, $sLinkText = null, $mData = null) {
+	public function __construct($sType, $sName, $sTitle, $sLinkText = null, $mData = null, $oCanonical = null) {
 		$this->sType = $sType;
 		$this->sName = (string) $sName;
 		$this->sTitle = $sTitle;
 		$this->sLinkText = ($sLinkText === null ? $sTitle : $sLinkText);
 		$this->mData = $mData;
+		$this->oCanonical = $oCanonical;
 		parent::__construct(null);
 	}
 	
@@ -89,6 +91,10 @@ class VirtualNavigationItem extends NavigationItem {
 	
 	public function getName() {
 		return $this->sName;
+	}
+	
+	protected function getCanonicalImpl($sLanguageId = null) {
+		$this->oCanonical;
 	}
 	
 	public function isProtected() {

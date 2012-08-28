@@ -5215,6 +5215,31 @@ abstract class BaseUser extends BaseObject  implements Persistent
 		$pageRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PagesRelatedByCreatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 */
+	public function getPagesRelatedByCreatedByJoinPageRelatedByCanonicalId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageQuery::create(null, $criteria);
+		$query->joinWith('PageRelatedByCanonicalId', $join_behavior);
+
+		return $this->getPagesRelatedByCreatedBy($query, $con);
+	}
+
 	/**
 	 * Clears out the collPagesRelatedByUpdatedBy collection
 	 *
@@ -5361,6 +5386,31 @@ abstract class BaseUser extends BaseObject  implements Persistent
 	{
 		$this->collPagesRelatedByUpdatedBy[]= $pageRelatedByUpdatedBy;
 		$pageRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
+	 * been saved, it will retrieve related PagesRelatedByUpdatedBy from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in User.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array Page[] List of Page objects
+	 */
+	public function getPagesRelatedByUpdatedByJoinPageRelatedByCanonicalId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = PageQuery::create(null, $criteria);
+		$query->joinWith('PageRelatedByCanonicalId', $join_behavior);
+
+		return $this->getPagesRelatedByUpdatedBy($query, $con);
 	}
 
 	/**

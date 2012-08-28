@@ -20,6 +20,7 @@ CREATE TABLE `pages`
 	`is_folder` TINYINT(1) DEFAULT 0,
 	`is_hidden` TINYINT(1) DEFAULT 0,
 	`is_protected` TINYINT(1) DEFAULT 0,
+	`canonical_id` INTEGER,
 	`tree_left` INTEGER,
 	`tree_right` INTEGER,
 	`tree_level` INTEGER,
@@ -29,13 +30,18 @@ CREATE TABLE `pages`
 	`updated_by` INTEGER,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `pages_U_1` (`identifier`),
-	INDEX `pages_FI_1` (`created_by`),
-	INDEX `pages_FI_2` (`updated_by`),
+	INDEX `pages_FI_1` (`canonical_id`),
+	INDEX `pages_FI_2` (`created_by`),
+	INDEX `pages_FI_3` (`updated_by`),
 	CONSTRAINT `pages_FK_1`
+		FOREIGN KEY (`canonical_id`)
+		REFERENCES `pages` (`id`)
+		ON DELETE SET NULL,
+	CONSTRAINT `pages_FK_2`
 		FOREIGN KEY (`created_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL,
-	CONSTRAINT `pages_FK_2`
+	CONSTRAINT `pages_FK_3`
 		FOREIGN KEY (`updated_by`)
 		REFERENCES `users` (`id`)
 		ON DELETE SET NULL

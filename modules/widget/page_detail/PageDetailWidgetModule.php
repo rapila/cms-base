@@ -230,6 +230,16 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$this->oPage->setIsHidden($aPageData['is_hidden']);
 		$this->oPage->setIsFolder($aPageData['is_folder']);
 		$this->oPage->setIsProtected($aPageData['is_protected']);
+		$mCanonicalId = null;
+		if($aPageData['canonical_id'] !== '') {
+			$oCanonicalPage = PageQuery::create()->findPk($aPageData['canonical_id']);
+			if($oCanonicalPage === null || $oCanonicalPage->isDescendentOf($this->oPage)) {
+				$mCanonicalId = null;
+			} else {
+				$mCanonicalId = $aPageData['canonical_id'];
+			}
+		} 
+		$this->oPage->setCanonicalId($mCanonicalId);
 		if($aPageData['template_name'] === "") {
 			$this->oPage->setTemplateName(null);
 		} else {

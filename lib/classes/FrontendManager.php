@@ -192,6 +192,8 @@ class FrontendManager extends Manager {
 			//Set correct page type of 404 page
 			$sPageType = self::$CURRENT_PAGE->getPageType();
 			$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE);
+		} else {
+			$this->addCanonicalLink();
 		}
 
 		if(!$bIsAjaxRequest) {
@@ -261,6 +263,13 @@ class FrontendManager extends Manager {
 	
 	protected function useFullPageCache() {
 		return Settings::getSetting('general', 'use_full_page_cache', true);
+	}
+	
+	protected function addCanonicalLink() {
+		$oCanonical = self::$CURRENT_NAVIGATION_ITEM->getCanonical(Session::language());
+		if($oCanonical) {
+			ResourceIncluder::defaultIncluder()->addResource($oCanonical, null, null, array('rel' => 'canonical'));
+		}
 	}
 
 	/**

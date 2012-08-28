@@ -140,6 +140,23 @@ abstract class NavigationItem {
 		return null;
 	}
 	
+	protected abstract function getCanonicalImpl($sLanguageId = null);
+	
+	public function getCanonical($sLanguageId = null) {
+		$oCanonical = $this->getCanonicalImpl($sLanguageId);
+		if($oCanonical) {
+			return $oCanonical;
+		}
+		if($this->getParent() === null) {
+			return null;
+		}
+		$oParentCanonical = $this->getParent()->getCanonical();
+		if($oParentCanonical === null) {
+			return null;
+		}
+		return $oParentCanonical->namedChild($this->getName(), $sLanguageId, !$this->isEnabled(), !$this->isVisible());
+	}
+	
 	public abstract function isProtected();
 	public function isAccessible() {
 		if(!$this->isProtected()) {

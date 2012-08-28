@@ -15,6 +15,7 @@
  * @method     PageQuery orderByIsFolder($order = Criteria::ASC) Order by the is_folder column
  * @method     PageQuery orderByIsHidden($order = Criteria::ASC) Order by the is_hidden column
  * @method     PageQuery orderByIsProtected($order = Criteria::ASC) Order by the is_protected column
+ * @method     PageQuery orderByCanonicalId($order = Criteria::ASC) Order by the canonical_id column
  * @method     PageQuery orderByTreeLeft($order = Criteria::ASC) Order by the tree_left column
  * @method     PageQuery orderByTreeRight($order = Criteria::ASC) Order by the tree_right column
  * @method     PageQuery orderByTreeLevel($order = Criteria::ASC) Order by the tree_level column
@@ -32,6 +33,7 @@
  * @method     PageQuery groupByIsFolder() Group by the is_folder column
  * @method     PageQuery groupByIsHidden() Group by the is_hidden column
  * @method     PageQuery groupByIsProtected() Group by the is_protected column
+ * @method     PageQuery groupByCanonicalId() Group by the canonical_id column
  * @method     PageQuery groupByTreeLeft() Group by the tree_left column
  * @method     PageQuery groupByTreeRight() Group by the tree_right column
  * @method     PageQuery groupByTreeLevel() Group by the tree_level column
@@ -44,6 +46,10 @@
  * @method     PageQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PageQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     PageQuery leftJoinPageRelatedByCanonicalId($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageRelatedByCanonicalId relation
+ * @method     PageQuery rightJoinPageRelatedByCanonicalId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageRelatedByCanonicalId relation
+ * @method     PageQuery innerJoinPageRelatedByCanonicalId($relationAlias = null) Adds a INNER JOIN clause to the query using the PageRelatedByCanonicalId relation
+ *
  * @method     PageQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
  * @method     PageQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
  * @method     PageQuery innerJoinUserRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByCreatedBy relation
@@ -51,6 +57,10 @@
  * @method     PageQuery leftJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByUpdatedBy relation
  * @method     PageQuery rightJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByUpdatedBy relation
  * @method     PageQuery innerJoinUserRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UserRelatedByUpdatedBy relation
+ *
+ * @method     PageQuery leftJoinPageRelatedById($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageRelatedById relation
+ * @method     PageQuery rightJoinPageRelatedById($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageRelatedById relation
+ * @method     PageQuery innerJoinPageRelatedById($relationAlias = null) Adds a INNER JOIN clause to the query using the PageRelatedById relation
  *
  * @method     PageQuery leftJoinPageProperty($relationAlias = null) Adds a LEFT JOIN clause to the query using the PageProperty relation
  * @method     PageQuery rightJoinPageProperty($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PageProperty relation
@@ -80,6 +90,7 @@
  * @method     Page findOneByIsFolder(boolean $is_folder) Return the first Page filtered by the is_folder column
  * @method     Page findOneByIsHidden(boolean $is_hidden) Return the first Page filtered by the is_hidden column
  * @method     Page findOneByIsProtected(boolean $is_protected) Return the first Page filtered by the is_protected column
+ * @method     Page findOneByCanonicalId(int $canonical_id) Return the first Page filtered by the canonical_id column
  * @method     Page findOneByTreeLeft(int $tree_left) Return the first Page filtered by the tree_left column
  * @method     Page findOneByTreeRight(int $tree_right) Return the first Page filtered by the tree_right column
  * @method     Page findOneByTreeLevel(int $tree_level) Return the first Page filtered by the tree_level column
@@ -97,6 +108,7 @@
  * @method     array findByIsFolder(boolean $is_folder) Return Page objects filtered by the is_folder column
  * @method     array findByIsHidden(boolean $is_hidden) Return Page objects filtered by the is_hidden column
  * @method     array findByIsProtected(boolean $is_protected) Return Page objects filtered by the is_protected column
+ * @method     array findByCanonicalId(int $canonical_id) Return Page objects filtered by the canonical_id column
  * @method     array findByTreeLeft(int $tree_left) Return Page objects filtered by the tree_left column
  * @method     array findByTreeRight(int $tree_right) Return Page objects filtered by the tree_right column
  * @method     array findByTreeLevel(int $tree_level) Return Page objects filtered by the tree_level column
@@ -192,7 +204,7 @@ abstract class BasePageQuery extends ModelCriteria
 	 */
 	protected function findPkSimple($key, $con)
 	{
-		$sql = 'SELECT `ID`, `NAME`, `IDENTIFIER`, `PAGE_TYPE`, `TEMPLATE_NAME`, `IS_INACTIVE`, `IS_FOLDER`, `IS_HIDDEN`, `IS_PROTECTED`, `TREE_LEFT`, `TREE_RIGHT`, `TREE_LEVEL`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `pages` WHERE `ID` = :p0';
+		$sql = 'SELECT `ID`, `NAME`, `IDENTIFIER`, `PAGE_TYPE`, `TEMPLATE_NAME`, `IS_INACTIVE`, `IS_FOLDER`, `IS_HIDDEN`, `IS_PROTECTED`, `CANONICAL_ID`, `TREE_LEFT`, `TREE_RIGHT`, `TREE_LEVEL`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `pages` WHERE `ID` = :p0';
 		try {
 			$stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -520,6 +532,48 @@ abstract class BasePageQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query on the canonical_id column
+	 *
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCanonicalId(1234); // WHERE canonical_id = 1234
+	 * $query->filterByCanonicalId(array(12, 34)); // WHERE canonical_id IN (12, 34)
+	 * $query->filterByCanonicalId(array('min' => 12)); // WHERE canonical_id > 12
+	 * </code>
+	 *
+	 * @see       filterByPageRelatedByCanonicalId()
+	 *
+	 * @param     mixed $canonicalId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByCanonicalId($canonicalId = null, $comparison = null)
+	{
+		if (is_array($canonicalId)) {
+			$useMinMax = false;
+			if (isset($canonicalId['min'])) {
+				$this->addUsingAlias(PagePeer::CANONICAL_ID, $canonicalId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($canonicalId['max'])) {
+				$this->addUsingAlias(PagePeer::CANONICAL_ID, $canonicalId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(PagePeer::CANONICAL_ID, $canonicalId, $comparison);
+	}
+
+	/**
 	 * Filter the query on the tree_left column
 	 *
 	 * Example usage:
@@ -808,6 +862,80 @@ abstract class BasePageQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related Page object
+	 *
+	 * @param     Page|PropelCollection $page The related object(s) to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByPageRelatedByCanonicalId($page, $comparison = null)
+	{
+		if ($page instanceof Page) {
+			return $this
+				->addUsingAlias(PagePeer::CANONICAL_ID, $page->getId(), $comparison);
+		} elseif ($page instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(PagePeer::CANONICAL_ID, $page->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByPageRelatedByCanonicalId() only accepts arguments of type Page or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the PageRelatedByCanonicalId relation
+	 *
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function joinPageRelatedByCanonicalId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('PageRelatedByCanonicalId');
+
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'PageRelatedByCanonicalId');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Use the PageRelatedByCanonicalId relation Page object
+	 *
+	 * @see       useQuery()
+	 *
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PageQuery A secondary query class using the current class as primary query
+	 */
+	public function usePageRelatedByCanonicalIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinPageRelatedByCanonicalId($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'PageRelatedByCanonicalId', 'PageQuery');
+	}
+
+	/**
 	 * Filter the query by a related User object
 	 *
 	 * @param     User|PropelCollection $user The related object(s) to use as filter
@@ -953,6 +1081,79 @@ abstract class BasePageQuery extends ModelCriteria
 		return $this
 			->joinUserRelatedByUpdatedBy($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'UserRelatedByUpdatedBy', 'UserQuery');
+	}
+
+	/**
+	 * Filter the query by a related Page object
+	 *
+	 * @param     Page $page  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function filterByPageRelatedById($page, $comparison = null)
+	{
+		if ($page instanceof Page) {
+			return $this
+				->addUsingAlias(PagePeer::ID, $page->getCanonicalId(), $comparison);
+		} elseif ($page instanceof PropelCollection) {
+			return $this
+				->usePageRelatedByIdQuery()
+				->filterByPrimaryKeys($page->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByPageRelatedById() only accepts arguments of type Page or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the PageRelatedById relation
+	 *
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PageQuery The current query, for fluid interface
+	 */
+	public function joinPageRelatedById($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('PageRelatedById');
+
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'PageRelatedById');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Use the PageRelatedById relation Page object
+	 *
+	 * @see       useQuery()
+	 *
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PageQuery A secondary query class using the current class as primary query
+	 */
+	public function usePageRelatedByIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinPageRelatedById($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'PageRelatedById', 'PageQuery');
 	}
 
 	/**

@@ -4,7 +4,7 @@
  */
 class Navigation {
 	private static $TEMPLATES = array();
-	
+
 	private $aConfig = null;
 	private $iMaxLevel = 0;
 	private $sLinkPrefix;
@@ -28,6 +28,7 @@ class Navigation {
 	private $sTemplatesDir;
 	private $bShowOnlyEnabledChildren;
 	private $bShowOnlyVisibleChildren;
+	private $bExcludeDuplicates;
 	private $bPrintNewline;
 	private $sLanguageId;
 	
@@ -65,6 +66,7 @@ class Navigation {
 		}
 		$this->bShowOnlyEnabledChildren = isset($this->aConfig["show_inactive"]) ? ($this->aConfig["show_inactive"] !== true) : true;
 		$this->bShowOnlyVisibleChildren = isset($this->aConfig["show_hidden"]) ? ($this->aConfig["show_hidden"] !== true) : true;
+		$this->bExcludeDuplicates = isset($this->aConfig["exclude_duplicates"]) ? ($this->aConfig["exclude_duplicates"] === true) : false;
 		$this->bPrintNewline = isset($this->aConfig["no_newline"]) ? ($this->aConfig["no_newline"] !== true) : true;
 		$this->sLanguageId = isset($this->aConfig["language"]) ? $this->aConfig["language"] : Session::language();
 	} // __construct()
@@ -90,6 +92,10 @@ class Navigation {
 		foreach($aNavigationItems as $oNavigationItem) {
 			$oBooleanParser = new BooleanParser(self::$BOOLEAN_PARSER_DEFAULT_VALUES);
 			$bHasChildren = $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
+			
+			if($this->bExcludeDuplicates && $oNavigationItem->getCanonical()) {
+				continue;
+			}
 
 			if($bHasChildren) {
 				$oBooleanParser->has_children = true;

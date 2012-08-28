@@ -47,6 +47,7 @@ class PageTableMap extends TableMap
 		$this->addColumn('IS_FOLDER', 'IsFolder', 'BOOLEAN', false, 1, false);
 		$this->addColumn('IS_HIDDEN', 'IsHidden', 'BOOLEAN', false, 1, false);
 		$this->addColumn('IS_PROTECTED', 'IsProtected', 'BOOLEAN', false, 1, false);
+		$this->addForeignKey('CANONICAL_ID', 'CanonicalId', 'INTEGER', 'pages', 'ID', false, null, null);
 		$this->addColumn('TREE_LEFT', 'TreeLeft', 'INTEGER', false, null, null);
 		$this->addColumn('TREE_RIGHT', 'TreeRight', 'INTEGER', false, null, null);
 		$this->addColumn('TREE_LEVEL', 'TreeLevel', 'INTEGER', false, null, null);
@@ -62,8 +63,10 @@ class PageTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
+		$this->addRelation('PageRelatedByCanonicalId', 'Page', RelationMap::MANY_TO_ONE, array('canonical_id' => 'id', ), 'SET NULL', null);
 		$this->addRelation('UserRelatedByCreatedBy', 'User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), 'SET NULL', null);
 		$this->addRelation('UserRelatedByUpdatedBy', 'User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), 'SET NULL', null);
+		$this->addRelation('PageRelatedById', 'Page', RelationMap::ONE_TO_MANY, array('id' => 'canonical_id', ), 'SET NULL', null, 'PagesRelatedById');
 		$this->addRelation('PageProperty', 'PageProperty', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PagePropertys');
 		$this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PageStrings');
 		$this->addRelation('ContentObject', 'ContentObject', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'ContentObjects');

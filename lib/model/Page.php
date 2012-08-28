@@ -376,6 +376,10 @@ class Page extends BasePage {
 		return $aResults;
 	}
 	
+	public function getCanonical() {
+		return $this->getPageRelatedByCanonicalId();	
+	}
+	
 	public function deletePageAndDescendants() {
 		if($this->hasChildren()) {
 			foreach($this->getChildren() as $oPage) {

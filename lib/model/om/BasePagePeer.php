@@ -26,13 +26,13 @@ abstract class BasePagePeer {
 	const TM_CLASS = 'PageTableMap';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 16;
+	const NUM_COLUMNS = 17;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 16;
+	const NUM_HYDRATE_COLUMNS = 17;
 
 	/** the column name for the ID field */
 	const ID = 'pages.ID';
@@ -60,6 +60,9 @@ abstract class BasePagePeer {
 
 	/** the column name for the IS_PROTECTED field */
 	const IS_PROTECTED = 'pages.IS_PROTECTED';
+
+	/** the column name for the CANONICAL_ID field */
+	const CANONICAL_ID = 'pages.CANONICAL_ID';
 
 	/** the column name for the TREE_LEFT field */
 	const TREE_LEFT = 'pages.TREE_LEFT';
@@ -120,12 +123,12 @@ abstract class BasePagePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Identifier', 'PageType', 'TemplateName', 'IsInactive', 'IsFolder', 'IsHidden', 'IsProtected', 'TreeLeft', 'TreeRight', 'TreeLevel', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'identifier', 'pageType', 'templateName', 'isInactive', 'isFolder', 'isHidden', 'isProtected', 'treeLeft', 'treeRight', 'treeLevel', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::IDENTIFIER, self::PAGE_TYPE, self::TEMPLATE_NAME, self::IS_INACTIVE, self::IS_FOLDER, self::IS_HIDDEN, self::IS_PROTECTED, self::TREE_LEFT, self::TREE_RIGHT, self::TREE_LEVEL, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'IDENTIFIER', 'PAGE_TYPE', 'TEMPLATE_NAME', 'IS_INACTIVE', 'IS_FOLDER', 'IS_HIDDEN', 'IS_PROTECTED', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'identifier', 'page_type', 'template_name', 'is_inactive', 'is_folder', 'is_hidden', 'is_protected', 'tree_left', 'tree_right', 'tree_level', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Identifier', 'PageType', 'TemplateName', 'IsInactive', 'IsFolder', 'IsHidden', 'IsProtected', 'CanonicalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'identifier', 'pageType', 'templateName', 'isInactive', 'isFolder', 'isHidden', 'isProtected', 'canonicalId', 'treeLeft', 'treeRight', 'treeLevel', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::IDENTIFIER, self::PAGE_TYPE, self::TEMPLATE_NAME, self::IS_INACTIVE, self::IS_FOLDER, self::IS_HIDDEN, self::IS_PROTECTED, self::CANONICAL_ID, self::TREE_LEFT, self::TREE_RIGHT, self::TREE_LEVEL, self::CREATED_AT, self::UPDATED_AT, self::CREATED_BY, self::UPDATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'IDENTIFIER', 'PAGE_TYPE', 'TEMPLATE_NAME', 'IS_INACTIVE', 'IS_FOLDER', 'IS_HIDDEN', 'IS_PROTECTED', 'CANONICAL_ID', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'identifier', 'page_type', 'template_name', 'is_inactive', 'is_folder', 'is_hidden', 'is_protected', 'canonical_id', 'tree_left', 'tree_right', 'tree_level', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -135,12 +138,12 @@ abstract class BasePagePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Identifier' => 2, 'PageType' => 3, 'TemplateName' => 4, 'IsInactive' => 5, 'IsFolder' => 6, 'IsHidden' => 7, 'IsProtected' => 8, 'TreeLeft' => 9, 'TreeRight' => 10, 'TreeLevel' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, 'CreatedBy' => 14, 'UpdatedBy' => 15, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'pageType' => 3, 'templateName' => 4, 'isInactive' => 5, 'isFolder' => 6, 'isHidden' => 7, 'isProtected' => 8, 'treeLeft' => 9, 'treeRight' => 10, 'treeLevel' => 11, 'createdAt' => 12, 'updatedAt' => 13, 'createdBy' => 14, 'updatedBy' => 15, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::IDENTIFIER => 2, self::PAGE_TYPE => 3, self::TEMPLATE_NAME => 4, self::IS_INACTIVE => 5, self::IS_FOLDER => 6, self::IS_HIDDEN => 7, self::IS_PROTECTED => 8, self::TREE_LEFT => 9, self::TREE_RIGHT => 10, self::TREE_LEVEL => 11, self::CREATED_AT => 12, self::UPDATED_AT => 13, self::CREATED_BY => 14, self::UPDATED_BY => 15, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'IDENTIFIER' => 2, 'PAGE_TYPE' => 3, 'TEMPLATE_NAME' => 4, 'IS_INACTIVE' => 5, 'IS_FOLDER' => 6, 'IS_HIDDEN' => 7, 'IS_PROTECTED' => 8, 'TREE_LEFT' => 9, 'TREE_RIGHT' => 10, 'TREE_LEVEL' => 11, 'CREATED_AT' => 12, 'UPDATED_AT' => 13, 'CREATED_BY' => 14, 'UPDATED_BY' => 15, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'page_type' => 3, 'template_name' => 4, 'is_inactive' => 5, 'is_folder' => 6, 'is_hidden' => 7, 'is_protected' => 8, 'tree_left' => 9, 'tree_right' => 10, 'tree_level' => 11, 'created_at' => 12, 'updated_at' => 13, 'created_by' => 14, 'updated_by' => 15, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Identifier' => 2, 'PageType' => 3, 'TemplateName' => 4, 'IsInactive' => 5, 'IsFolder' => 6, 'IsHidden' => 7, 'IsProtected' => 8, 'CanonicalId' => 9, 'TreeLeft' => 10, 'TreeRight' => 11, 'TreeLevel' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, 'CreatedBy' => 15, 'UpdatedBy' => 16, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'pageType' => 3, 'templateName' => 4, 'isInactive' => 5, 'isFolder' => 6, 'isHidden' => 7, 'isProtected' => 8, 'canonicalId' => 9, 'treeLeft' => 10, 'treeRight' => 11, 'treeLevel' => 12, 'createdAt' => 13, 'updatedAt' => 14, 'createdBy' => 15, 'updatedBy' => 16, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::IDENTIFIER => 2, self::PAGE_TYPE => 3, self::TEMPLATE_NAME => 4, self::IS_INACTIVE => 5, self::IS_FOLDER => 6, self::IS_HIDDEN => 7, self::IS_PROTECTED => 8, self::CANONICAL_ID => 9, self::TREE_LEFT => 10, self::TREE_RIGHT => 11, self::TREE_LEVEL => 12, self::CREATED_AT => 13, self::UPDATED_AT => 14, self::CREATED_BY => 15, self::UPDATED_BY => 16, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'IDENTIFIER' => 2, 'PAGE_TYPE' => 3, 'TEMPLATE_NAME' => 4, 'IS_INACTIVE' => 5, 'IS_FOLDER' => 6, 'IS_HIDDEN' => 7, 'IS_PROTECTED' => 8, 'CANONICAL_ID' => 9, 'TREE_LEFT' => 10, 'TREE_RIGHT' => 11, 'TREE_LEVEL' => 12, 'CREATED_AT' => 13, 'UPDATED_AT' => 14, 'CREATED_BY' => 15, 'UPDATED_BY' => 16, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'identifier' => 2, 'page_type' => 3, 'template_name' => 4, 'is_inactive' => 5, 'is_folder' => 6, 'is_hidden' => 7, 'is_protected' => 8, 'canonical_id' => 9, 'tree_left' => 10, 'tree_right' => 11, 'tree_level' => 12, 'created_at' => 13, 'updated_at' => 14, 'created_by' => 15, 'updated_by' => 16, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -221,6 +224,7 @@ abstract class BasePagePeer {
 			$criteria->addSelectColumn(PagePeer::IS_FOLDER);
 			$criteria->addSelectColumn(PagePeer::IS_HIDDEN);
 			$criteria->addSelectColumn(PagePeer::IS_PROTECTED);
+			$criteria->addSelectColumn(PagePeer::CANONICAL_ID);
 			$criteria->addSelectColumn(PagePeer::TREE_LEFT);
 			$criteria->addSelectColumn(PagePeer::TREE_RIGHT);
 			$criteria->addSelectColumn(PagePeer::TREE_LEVEL);
@@ -238,6 +242,7 @@ abstract class BasePagePeer {
 			$criteria->addSelectColumn($alias . '.IS_FOLDER');
 			$criteria->addSelectColumn($alias . '.IS_HIDDEN');
 			$criteria->addSelectColumn($alias . '.IS_PROTECTED');
+			$criteria->addSelectColumn($alias . '.CANONICAL_ID');
 			$criteria->addSelectColumn($alias . '.TREE_LEFT');
 			$criteria->addSelectColumn($alias . '.TREE_RIGHT');
 			$criteria->addSelectColumn($alias . '.TREE_LEVEL');
@@ -438,6 +443,9 @@ abstract class BasePagePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
+		// Invalidate objects in PagePeer instance pool,
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		PagePeer::clearInstancePool();
 		// Invalidate objects in PagePropertyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PagePropertyPeer::clearInstancePool();
@@ -919,6 +927,58 @@ abstract class BasePagePeer {
 
 
 	/**
+	 * Returns the number of rows matching criteria, joining the related PageRelatedByCanonicalId table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptPageRelatedByCanonicalId(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(PagePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			PagePeer::addSelectColumns($criteria);
+		}
+
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(PagePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(PagePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
 	 * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
 	 *
 	 * @param      Criteria $criteria
@@ -1011,6 +1071,103 @@ abstract class BasePagePeer {
 		}
 		$stmt->closeCursor();
 		return $count;
+	}
+
+
+	/**
+	 * Selects a collection of Page objects pre-filled with all related objects except PageRelatedByCanonicalId.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of Page objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptPageRelatedByCanonicalId(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		PagePeer::addSelectColumns($criteria);
+		$startcol2 = PagePeer::NUM_HYDRATE_COLUMNS;
+
+		UserPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+		UserPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+		$criteria->addJoin(PagePeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+		$criteria->addJoin(PagePeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = PagePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = PagePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = PagePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				PagePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined User rows
+
+				$key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = UserPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = UserPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UserPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (Page) to the collection in $obj2 (User)
+				$obj2->addPageRelatedByCreatedBy($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined User rows
+
+				$key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = UserPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = UserPeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UserPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (Page) to the collection in $obj3 (User)
+				$obj3->addPageRelatedByUpdatedBy($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
 	}
 
 
@@ -1250,6 +1407,7 @@ abstract class BasePagePeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += PagePeer::doOnDeleteCascade(new Criteria(PagePeer::DATABASE_NAME), $con);
+			PagePeer::doOnDeleteSetNull(new Criteria(PagePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(PagePeer::TABLE_NAME, $con, PagePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1305,6 +1463,10 @@ abstract class BasePagePeer {
 			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
 			$c = clone $criteria;
 			$affectedRows += PagePeer::doOnDeleteCascade($c, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			PagePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1377,6 +1539,37 @@ abstract class BasePagePeer {
 			$affectedRows += RightPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     void
+	 */
+	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
+	{
+
+		// first find the objects that are implicated by the $criteria
+		$objects = PagePeer::doSelect($criteria, $con);
+		foreach ($objects as $obj) {
+
+			// set fkey col in related Page rows to NULL
+			$selectCriteria = new Criteria(PagePeer::DATABASE_NAME);
+			$updateValues = new Criteria(PagePeer::DATABASE_NAME);
+			$selectCriteria->add(PagePeer::CANONICAL_ID, $obj->getId());
+			$updateValues->add(PagePeer::CANONICAL_ID, null);
+
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+		}
 	}
 
 	/**
@@ -1656,9 +1849,9 @@ abstract class BasePagePeer {
 				while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 					$key = PagePeer::getPrimaryKeyHashFromRow($row, 0);
 					if (null !== ($object = PagePeer::getInstanceFromPool($key))) {
-						$object->setLeftValue($row[9]);
-						$object->setRightValue($row[10]);
-						$object->setLevel($row[11]);
+						$object->setLeftValue($row[10]);
+						$object->setRightValue($row[11]);
+						$object->setLevel($row[12]);
 						$object->clearNestedSetChildren();
 					}
 				}

@@ -47,6 +47,7 @@ Widget.types.page_detail = {
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
+		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget();
 		Widget.callStatic('detail', 'clickable_labels_for', this._element);
 	},
 	
@@ -179,6 +180,7 @@ Widget.types.page_detail = {
 		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);
 		this._element.find("input[name='is_hidden']").prop('checked', page_data.IsHidden);
 		this._element.find("input[name='is_protected']").prop('checked', page_data.IsProtected);
+		this.canonical_id_dropdown.val(page_data.CanonicalId == null ? "" : page_data.CanonicalId);
 		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
 		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
 			_this.configuration_has_been_loaded = false;

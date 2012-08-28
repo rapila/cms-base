@@ -12,6 +12,10 @@
 	<column name="is_folder" type="boolean" size="1" default="0" />
 	<column name="is_hidden" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
+	<column name="canonical_id" type="integer" />
+	<foreign-key foreignTable="pages" onDelete="setnull">
+		<reference local="canonical_id" foreign="id"/>
+	</foreign-key>
 	<unique>
 		<unique-column name="identifier" />
 	</unique>
