@@ -233,7 +233,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$mCanonicalId = null;
 		if($aPageData['canonical_id'] !== '') {
 			$oCanonicalPage = PageQuery::create()->findPk($aPageData['canonical_id']);
-			if($oCanonicalPage === null || $oCanonicalPage->isDescendentOf($this->oPage)) {
+			if($oCanonicalPage === null || $oCanonicalPage->isDescendantOf($this->oPage)) {
 				$mCanonicalId = null;
 			} else {
 				$mCanonicalId = $aPageData['canonical_id'];
