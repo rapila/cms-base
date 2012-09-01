@@ -47,7 +47,9 @@ Widget.types.page_detail = {
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
 		}.bind(this));
-		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget();
+		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget(function(widget) {
+			widget.settings.default_value_label = '-------';
+		}, jQuery.noop);
 		Widget.callStatic('detail', 'clickable_labels_for', this._element);
 	},
 	

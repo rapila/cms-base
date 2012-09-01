@@ -1,12 +1,12 @@
 <form class="page_detail">
 	<div class="status_section">
 	<h3 class="status">Status</h3>
-		<label for="name" class="validate-page.name_required validate-page.name_unique_required" style="padding-left:.4em;">{{writeString=wns.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" />
+		<label for="name" class="validate-page.name_required validate-page.name_unique_required help" title="{{writeString=wns.page.path_name_hint}}" style="padding-left:.4em;">{{writeString=wns.page.path_name}}</label><input type="text" name="name" class="ui-widget-content path_input" />
 		<a class="page_href" style="font-family:Courier;"></a><br />
-		<input type="checkbox" name="global_is_active" /><label class="for_checkbox" for="global_is_active">{{writeString=wns.page.global_active}}</label> 
-		<input type="checkbox" name="is_hidden" /><label for="is_hidden" class="for_checkbox">{{writeString=wns.page.hidden}}</label> 
-		<input type="checkbox" name="is_protected" /><label for="is_protected" class="for_checkbox">{{writeString=wns.page.protected}}</label> 
-		<input type="checkbox" name="is_folder" /><label for="is_folder" class="for_checkbox">{{writeString=wns.page.folder}}</label> 
+		<input type="checkbox" name="global_is_active" /><label class="for_checkbox help" for="global_is_active" title="{{writeString=wns.page.global_active_hint}}">{{writeString=wns.page.global_active}}</label> 
+		<input type="checkbox" name="is_hidden" /><label for="is_hidden" class="for_checkbox help" title="{{writeString=wns.page.hidden_hint}}">{{writeString=wns.page.hidden}}</label> 
+		<input type="checkbox" name="is_protected" /><label for="is_protected" class="for_checkbox help" title="{{writeString=wns.page.protected_hint}}">{{writeString=wns.page.protected}}</label> 
+		<input type="checkbox" name="is_folder" /><label for="is_folder" class="for_checkbox help" title="{{writeString=wns.page.folder_hint}}">{{writeString=wns.page.folder}}</label> 
 	</div>
 	<div class="accordion">
 		<h3 class="content_tab"><a href="#">{{writeString=wns.page.header.description}}</a></h3>
