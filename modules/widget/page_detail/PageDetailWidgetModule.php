@@ -232,12 +232,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$this->oPage->setIsProtected($aPageData['is_protected']);
 		$mCanonicalId = null;
 		if($aPageData['canonical_id'] !== '') {
-			$oCanonicalPage = PageQuery::create()->findPk($aPageData['canonical_id']);
-			if($oCanonicalPage === null || $oCanonicalPage->isDescendantOf($this->oPage)) {
-				$mCanonicalId = null;
-			} else {
-				$mCanonicalId = $aPageData['canonical_id'];
-			}
+			$mCanonicalId = $this->validateCanonicalId($aPageData['canonical_id']);
 		} 
 		$this->oPage->setCanonicalId($mCanonicalId);
 		if($aPageData['template_name'] === "") {
@@ -253,6 +248,21 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		
 		// save if no errors
 		return $this->oPage->save();
+	}
+	
+	private function validateCanonicalId($mCanonicalId) {
+		$oCanonicalPage = PageQuery::create()->findPk($mCanonicalId);
+		if($oCanonicalPage === null) {
+			// this should not happen, something would be wrong about our data handling?
+			return null;
+		}
+		if(Util::equals($oCanonicalPage, $this->oPage)) {
+			return null;
+		}
+		// @todo should we exclude pages from being canonical, i.e.
+		// • descendants of a duplicate $oCanonicalPage->isDescendantOf($this->oPage)
+		// • root
+		return $mCanonicalId;
 	}
 	
 	private function handlePageStrings($aPageData) {
