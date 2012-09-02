@@ -34,15 +34,15 @@ class TagQuery extends BaseTagQuery {
 	* that are usefull in the context, i.e. journal. All Tags should be related to entries of the configured journal
 	* return $this
 	*/
-	public function withTagInstanceCountFilteredByModel($sModelName = null, $aIncludeIds = array()) {
+	public function withTagInstanceCountFilteredByModel($sModelName = null, $aAllowedTaggedItemIds = array()) {
 		$this->joinTagInstance();
-		if($sModelName !== null || $aIncludeIds) {
-			if($sModelName !== null && $aIncludeIds) {
-				$this->useQuery('TagInstance')->filterByModelName($sModelName)->filterByTaggedItemId($aIncludeIds)->endUse();
+		if($sModelName !== null || $aAllowedTaggedItemIds) {
+			if($sModelName !== null && $aAllowedTaggedItemIds) {
+				$this->useQuery('TagInstance')->filterByModelName($sModelName)->filterByTaggedItemId($aAllowedTaggedItemIds)->endUse();
 			} elseif($sModelName) {
 				$this->useQuery('TagInstance')->filterByModelName($sModelName)->endUse();
 			} else {
-				$this->useQuery('TagInstance')->filterByTaggedItemId($aIncludeIds)->endUse();
+				$this->useQuery('TagInstance')->filterByTaggedItemId($aAllowedTaggedItemIds)->endUse();
 			}
 		}
 		$this->withColumn('COUNT('.TagInstancePeer::TAGGED_ITEM_ID.')', 'TagInstanceCount');
