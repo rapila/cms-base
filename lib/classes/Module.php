@@ -280,6 +280,10 @@ abstract class Module {
 		return self::getNameByClassName(get_class($this));
 	}
 	
+	public static function moduleName() {
+		return self::getNameByClassName(get_called_class());
+	}
+	
 	public static function isValidModuleClassName($sName) {
 		return StringUtil::endsWith($sName, StringUtil::camelize(self::getType(), true)."Module");
 	}
