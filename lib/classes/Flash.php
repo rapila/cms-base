@@ -5,6 +5,8 @@ class Flash {
 	const STRING_PARAMETERS_KEY = 'string_parameters';
 	const AFFECTED_INSTANCE_INDEXES_KEY = 'affected_instance_indexes';
 	const STRING_KEY_KEY = 'string_key';
+	const CLASS_NAME_KEY = 'class_name';
+	const TAG_NAME_KEY = 'tag_name';
 	
 	public static $EMAIL_CHECK_PATTERN = "([\w._\-%+]+|\".+\")@[\w-]+(\.[\w-]+)*(\.\w+)";
 	private static $INSTANCE = null;
@@ -27,9 +29,10 @@ class Flash {
 		} else {
 			$this->aArrayToCheck = $_POST;
 		}
+		return $this;
 	}
 	
-	public function addMessage($sName, $mParameters = null) {
+	public function addMessage($sName, $mParameters = null, $sStringKey = null, $sClassName = null, $sTagName = null) {
 		if($this->bErrorReportingFinished) {
 			throw new Exception("Error in Flash->addMessage(), tried to add message after cleanup, probably due to wrong usage of Flash");
 		}
@@ -41,7 +44,17 @@ class Flash {
 		if($mParameters !== null) {
 			$aValue[self::STRING_PARAMETERS_KEY] = $mParameters;
 		}
+		if($sStringKey !== null) {
+			$aValue[self::STRING_KEY_KEY] = $sStringKey;
+		}
+		if($sClassName !== null) {
+			$aValue[self::CLASS_NAME_KEY] = $sClassName;
+		}
+		if($sTagName !== null) {
+			$aValue[self::TAG_NAME_KEY] = $sTagName;
+		}
 		$this->aMessages[$sName] = $aValue;
+		return $this;
 	}
 	
 	public function addAffectedIndex($sName, $iIndex) {
@@ -179,15 +192,24 @@ class Flash {
 		if(!isset($this->aMessages[$sName])) {
 			return null;
 		}
+		$aMessageAttribs = $this->aMessages[$sName];
 		$aParameters = array();
-		if(isset($this->aMessages[$sName][self::STRING_PARAMETERS_KEY])) {
-			$aParameters = $this->aMessages[$sName][self::STRING_PARAMETERS_KEY];
+		if(isset($aMessageAttribs[self::STRING_PARAMETERS_KEY])) {
+			$aParameters = $aMessageAttribs[self::STRING_PARAMETERS_KEY];
 		}
 		$sStringKey = "flash.$sName";
-		if(isset($this->aMessages[$sName][self::STRING_KEY_KEY])) {
-			$sStringKey = $this->aMessages[$sName][self::STRING_KEY_KEY];
+		if(isset($aMessageAttribs[self::STRING_KEY_KEY])) {
+			$sStringKey = $aMessageAttribs[self::STRING_KEY_KEY];
 		}
-		$oTag = new TagWriter('span', array('class' => 'error_display'), StringPeer::getString($sStringKey, null, null, $aParameters));
+		$sClassName = 'error_display';
+		if(isset($aMessageAttribs[self::CLASS_NAME_KEY])) {
+			$sClassName = $aMessageAttribs[self::CLASS_NAME_KEY];
+		}
+		$sTagName = 'span';
+		if(isset($aMessageAttribs[self::TAG_NAME_KEY])) {
+			$sTagName = $aMessageAttribs[self::TAG_NAME_KEY];
+		}
+		$oTag = new TagWriter($sTagName, array('class' => $sClassName), StringPeer::getString($sStringKey, null, null, $aParameters));
 		return $oTag->parse();
 	}
 	
@@ -202,11 +224,13 @@ class Flash {
 	
 	public function finishReporting() {
 		$this->bErrorReportingFinished = true;
+		return $this;
 	}
 	
 	public function unfinishReporting() {
 		$this->bErrorReportingFinished = false;
 		$this->aMessages = array();
+		return $this;
 	}
 	
 	public static function noErrors() {
@@ -219,6 +243,7 @@ class Flash {
 	
 	public function stick() {
 		Session::getSession()->setAttribute(self::FLASH_KEY, $this);
+		return $this;
 	}
 	
 	public function __sleep() {
