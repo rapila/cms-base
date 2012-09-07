@@ -121,6 +121,9 @@ class FrontendManager extends Manager {
 	}
 	
 	protected function initLanguage() {
+		/**
+		* @todo: switch language according to ACCEPT_LANGUAGE if language not in path
+		*/
 		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
 			$oLanguage = LanguageQuery::create()->filterByPathPrefix(self::usePath())->findOne();
 			Session::getSession()->setLanguage($oLanguage);
