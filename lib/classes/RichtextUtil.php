@@ -6,7 +6,7 @@ class RichtextUtil {
 	
 	private static $RICHTEXT_INDEX = 0;
 	
-	public static $USE_ABSOLUTE_LINKS = false;
+	public static $USE_ABSOLUTE_LINKS = null;
 	
 	private $sAreaName;
 	private $aSettings;
@@ -202,8 +202,8 @@ class RichtextUtil {
 	}
 	
 	private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
-		if(self::$USE_ABSOLUTE_LINKS) {
-			return LinkUtil::absoluteLink(LinkUtil::link($mLocation, $sManager, $aParameters));
+		if(self::$USE_ABSOLUTE_LINKS !== null) {
+			return LinkUtil::absoluteLink(LinkUtil::link($mLocation, $sManager, $aParameters), null, self::$USE_ABSOLUTE_LINKS);
 		} else {
 			return LinkUtil::link($mLocation, $sManager, $aParameters);
 		}

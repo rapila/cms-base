@@ -106,11 +106,32 @@ class SpecialTemplateIdentifierActions {
 		}
 		return '"'.$oTemplateIdentifier->getValue().'"';
 	}
-	
+
+	/**
+	* Create internal links.
+	* The identifier value signifies the destination. It can be either a path or one of the following special values: “to_self”, “host_only”, “base_href”.
+	* The following additional parameters are allowed: “is_absolute”, “page”, “ignore_request”, “manager”
+	* Implicitly, the value of is_absolute determines the type of absolute link generated.
+	* A value of “false” will not generate absolute links.
+	* Using “auto” will determine server-side whether to use http or https for protocol.
+	* Setting is_absolute to “http” or “https” will set the protocol accordingly.
+	* Any other value (including “true”) will generate a protocol-relative URL (starting with //), meaning the reference is determined on the client-side.
+	* Creating a “base_href” link will always make it absolute and not explicitly setting “is_absolute” will default to “auto” (instead of “true” as is the case with all other link types).
+	*/	
 	public function writeLink($oTemplateIdentifier) {
 		$sDestination = $oTemplateIdentifier->getValue();
 		$aParameters = $oTemplateIdentifier->getParameters();
-		$bIsAbsolute = $oTemplateIdentifier->getParameter('is_absolute') === 'true';
+		$bIsAbsolute = $oTemplateIdentifier->hasParameter('is_absolute') && $oTemplateIdentifier->getParameter('is_absolute') !== 'false';
+		$bAbsoluteType = $oTemplateIdentifier->getParameter('is_absolute');
+		if($bAbsoluteType === 'http') {
+			$bAbsoluteType = false;
+		} else if($bAbsoluteType === 'https') {
+			$bAbsoluteType = true;
+		} else if($bAbsoluteType === 'auto') {
+			$bAbsoluteType = LinkUtil::isSSL();
+		} else {
+			$bAbsoluteType = null;
+		}
 		unset($aParameters['is_absolute']);
 		if($sDestination === "to_self") {
 			$bIgnoreRequest = $oTemplateIdentifier->getParameter('ignore_request') === 'true';
@@ -121,6 +142,9 @@ class SpecialTemplateIdentifierActions {
 		} else if($sDestination === "base_href") {
 			$sDestination = MAIN_DIR_FE;
 			$bIsAbsolute = true;
+			if(!$oTemplateIdentifier->hasParameter('is_absolute')) {
+				$bAbsoluteType = LinkUtil::isSSL();
+			}
 		} elseif($sPage = $oTemplateIdentifier->getParameter('page')) {
 			$oPage = PageQuery::create()->findOneByIdentifier($sPage);
 			if($oPage === null) {
@@ -142,7 +166,7 @@ class SpecialTemplateIdentifierActions {
 			$sDestination = LinkUtil::link($sDestination, $sManager, $aParameters);
 		}
 		if($bIsAbsolute) {
-			return LinkUtil::absoluteLink($sDestination);
+			return LinkUtil::absoluteLink($sDestination, null, $bAbsoluteType);
 		} else {
 			return $sDestination;
 		}

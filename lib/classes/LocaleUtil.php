@@ -29,7 +29,10 @@ class LocaleUtil {
 	/**
 	* Sets the locale settings of a given locale category to the passed locale. If a language is passed instead of a locale, the locale is searched using {@link LocaleUtil::getLocaleId()}. This function tries to set the locale using the current browser output encoding. If this fails, it tries to set the locale with the default encoding.
 	*/
-	public static function setLocaleToLanguageId($sLanguageId, $iCategory = LC_ALL) {
+	public static function setLocaleToLanguageId($sLanguageId = null, $iCategory = LC_ALL) {
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
 		if(strpos($sLanguageId, "_") === false) {
 			$sLanguageId = self::getLocaleId($sLanguageId);
 		}
