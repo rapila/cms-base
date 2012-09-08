@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the Rapila package.
  * For the full copyright and license information, please view the LICENSE
@@ -10,36 +9,50 @@
 
 /**
  * SimplePager
- * this iPager has been inspired by the PropelPager
- * • all Peer usage removed
+ * • inspired by the PropelPager
+ * • handling only query objects
+ * 
  * Example Usage:
  * 
  * $oQuery = ExampleQuery::create()->whateverQuery();
- * $oPager = new SimplePager($oQuery, 1, 50);
- *	
- * Some template:
+ * 
+ * $oPager = new SimplePager($oQuery, 1, 50); [query, page, max_rows per_page] 
+ * 
+ * $oPager->requiresPagination()
+ * $oPager->setPageLinkBase(url_without_page)
+ * 
+ * $oPager->getPreviousLink()
+ * $oPager->getNextLink()
+ * 
+ * foreach($oPager->getPreviousLinks() as $iPage) {
+ * 		echo $oPager->getPageLink($iPage);
+ * }
+ * 
+ * $oPager->getCollection()[->getData()]
+ * 
  * 
  * @author		Jürg Messmer <jm@mosaics.ch>
- * @version   0.9
+ * @version   0.8
+ * 20120908.1121
  */
-class SimplePager implements Countable, Iterator {
+class SimplePager implements Iterator {
 
-	// Criteria without count and limit
+	// Query without count and limit
 	private $oQuery;
 	
-	// total of records
-	private $iRecordCount;
+	// Total of records
+	private $iTotalRecordCount;
 	
-	// total of expected pages
-	private $iPagesCount;
+	// Total of expected pages
+	private $iTotalPagesCount;
 	
-	// current page
+	// Current page
 	private $iPage;
 	
-	// propel collection
-	private $aResult = null;
+	// Propel collection
+	private $oCollection = null;
 
-	//Iterator vars
+	// Iterator vars
 	private $iCurrentKey = 0;
 
 	/** @var        int Start row (offset) */
@@ -55,14 +68,14 @@ class SimplePager implements Countable, Iterator {
 	 * Create a new Simple Pager.
 	 * @param      Criteria $oQuery
 	 * @param      int $iPage The current iPage (1-based).
-	 * @param      int $iRowsPerPage The number of rows that should be displayed per iPage.
+	 * @param      int $iMaxRowsPerPage The number of rows that should be displayed per iPage.
 	 */
-	public function __construct($oQuery, $iPage = 1, $iRowsPerPage = 25) {
+	public function __construct($oQuery, $iPage = 1, $iMaxRowsPerPage = 25) {
 		$this->oQuery = $oQuery;
-		$this->iRecordCount = $oQuery->count();
-		$this->iPagesCount = (int) ceil($this->iRecordCount / $iRowsPerPage);
+		$this->iTotalRecordCount = $oQuery->count();
+		$this->iTotalPageCount = (int) ceil($this->iTotalRecordCount / $iMaxRowsPerPage);
 		$this->setPage($iPage);
-		$this->setRowsPerPage($iRowsPerPage);
+		$this->setRowsPerPage($iMaxRowsPerPage);
 	}
 	
 	/**
@@ -72,7 +85,7 @@ class SimplePager implements Countable, Iterator {
 		if($this->iMaxRowsPerPage === 0) {
 			return false;
 		}
-		return $this->iMaxRowsPerPage < $this->iRecordCount;
+		return $this->iMaxRowsPerPage < $this->iTotalRecordCount;
 	}
 	
 	/**
@@ -86,14 +99,13 @@ class SimplePager implements Countable, Iterator {
 	/**
 	 * Get the iPaged resultset
 	 *
-	 * @return     mixed $aResult PropelCollection/array
+	 * @return PropelCollection
 	 */
-	public function getResult($bReturnArray = false) {
-		if (!isset($this->aResult)) {
+	public function getCollection() {
+		if (!isset($this->oCollection)) {
 			$this->find();
 		}
-
-		return $this->aResult;
+		return $this->oCollection;
 	}
 
 	/**
@@ -105,7 +117,7 @@ class SimplePager implements Countable, Iterator {
 	private function find() {
 		$this->oQuery->setOffset($this->iStart);
 		$this->oQuery->setLimit($this->iMaxRowsPerPage);
-		$this->aResult = $this->getQuery()->find();
+		$this->oCollection = $this->getQuery()->find();
 	}
 	
 	/**
@@ -120,7 +132,7 @@ class SimplePager implements Countable, Iterator {
 	 * Get the first iPage
 	 *
 	 * For now I can only think of returning 1 always.
-	 * It should probably return 0 if there are no iPagesCount
+	 * It should probably return 0 if there are no iTotalPageCount
 	 *
 	 * @return     int 1
 	 */
@@ -143,7 +155,7 @@ class SimplePager implements Countable, Iterator {
 	 * @return     int $lastPage
 	 */
 	public function getLastPage() {
-		$iTotalPages = $this->getTotalPages();
+		$iTotalPages = $this->getTotalPageCount();
 		if ($iTotalPages == 0) {
 			return 1;
 		} else {
@@ -161,19 +173,19 @@ class SimplePager implements Countable, Iterator {
 	}
 
 	/**
-	 * get total iPagesCount
+	 * get total iTotalPageCount
 	 *
-	 * @return     int $this->iPagesCount
+	 * @return     int $this->iTotalPageCount
 	 */
-	public function getTotalPages() {
-		if (!isset($this->iPagesCount)) {
+	public function getTotalPageCount() {
+		if (!isset($this->iTotalPageCount)) {
 			if ($this->iMaxRowsPerPage > 0) {
-					$this->iPagesCount = (int) ceil($this->getTotalRecordCount()/$this->iMaxRowsPerPage);
+					$this->iTotalPageCount = (int) ceil($this->getTotalRecordCount()/$this->iMaxRowsPerPage);
 			} else {
-					$this->iPagesCount = 0;
+					$this->iTotalPageCount = 0;
 			}
 		}
-		return $this->iPagesCount;
+		return $this->iTotalPageCount;
 	}
 
 	/**
@@ -183,7 +195,7 @@ class SimplePager implements Countable, Iterator {
 	 * @return     array $links
 	 */
 	public function getPreviousLinks($iRange = 5) {
-		$iTotal = $this->getTotalPages();
+		$iTotal = $this->getTotalPageCount();
 		$iStart = $this->getPage() - 1;
 		$iEnd = $this->getPage() - $iRange;
 		$first =  $this->getFirstPage();
@@ -205,7 +217,7 @@ class SimplePager implements Countable, Iterator {
 	 * @return     array $links
 	 */
 	public function getNextLinks($iRange = 5) {
-		$iTotal = $this->getTotalPages();
+		$iTotal = $this->getTotalPageCount();
 		$iStart = $this->getPage() + 1;
 		$iEnd = $this->getPage() + $iRange;
 		$last =  $this->getLastPage();
@@ -258,6 +270,15 @@ class SimplePager implements Countable, Iterator {
 	}
 	
 	/**
+	 * @param int $iPage
+	 *
+	 * @return string
+	 */	
+	public function getPageLink($iPage) {
+		return $this->sPageLinkBase.$iPage;
+	}
+	
+	/**
 	 * get relative or absolute page link
 	 *
 	 * @return     mixed string/null
@@ -267,7 +288,7 @@ class SimplePager implements Countable, Iterator {
 			throw new Exception("Error in __METHOD__: use of method requires sPageLinkBase");
 		}
 		if($iPage = $this->getPrevious()) {
-			return $this->sPageLinkBase.$iPage;
+			return $this->getPageLink($iPage);
 		}
 		return false;
 	}
@@ -282,7 +303,7 @@ class SimplePager implements Countable, Iterator {
 			throw new Exception("Error in __METHOD__: use of method requires sPageLinkBase");
 		}
 		if($iPage = $this->getNext()) {
-			return $this->sPageLinkBase.$iPage;
+			return $this->getPageLink($iPage);
 		}
 		return false;
 	}
@@ -308,10 +329,10 @@ class SimplePager implements Countable, Iterator {
 	
 	/**
 	 * Set the number of rows per iPage.
-	 * @param      int $iRowsPerPage
+	 * @param      int $iMaxRowsPerPage
 	 */
-	public function setRowsPerPage($iRowsPerPage) {
-		$this->iMaxRowsPerPage = (int) $iRowsPerPage;
+	public function setRowsPerPage($iMaxRowsPerPage) {
+		$this->iMaxRowsPerPage = (int) $iMaxRowsPerPage;
 		// (re-)calculate iStart rec
 		$this->calculateStart();
 	}
@@ -337,7 +358,7 @@ class SimplePager implements Countable, Iterator {
 	 * @return     int Total number of records - disregarding iPage, maxrows, etc.
 	 */
 	public function getTotalRecordCount() {
-		return $this->iRecordCount;
+		return $this->iTotalRecordCount;
 	}
 
 	/**
@@ -362,7 +383,7 @@ class SimplePager implements Countable, Iterator {
 	 * @return 	int
 	 */
 	public function count() {
-		return count($this->getResult());
+		return count($this->getCollection());
 	}
 	
 	/**
@@ -370,10 +391,10 @@ class SimplePager implements Countable, Iterator {
 	 * @return mixed
 	 */
 	public function current() {
-		if (!isset($this->aResult)) {
+		if (!isset($this->oCollection)) {
 			$this->find();
 		}
-		return $this->aResult[$this->iCurrentKey];
+		return $this->oCollection[$this->iCurrentKey];
 	}
 
 	/**
@@ -405,10 +426,10 @@ class SimplePager implements Countable, Iterator {
 	 * @return boolean
 	 */
 	public function valid() {
-		if (!isset($this->aResult)) {
+		if (!isset($this->oCollection)) {
 			$this->find();
 		}
-		return in_array($this->iCurrentKey, array_keys($this->aResult));
+		return in_array($this->iCurrentKey, array_keys($this->oCollection));
 	}
 
 }
