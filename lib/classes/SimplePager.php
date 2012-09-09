@@ -27,15 +27,24 @@
  * foreach($oPager->getPreviousLinks() as $iPage) {
  * 		echo $oPager->getPageLink($iPage);
  * }
+ * // returns PropelCollection
+ * $oPager->getResult()[->getData()]
  * 
- * $oPager->getCollection()[->getData()]
+ * Iterate since PropelObjects extends ArrayObject
+ * $oIterator = $oPager->getResult()->getIterator();
+ * while ($oIterator->valid()) {
+ *	 echo $oIterator->current();
+ *	 $oIterator->next();
+ * }
  * 
+ * // Queries executed with defined select 
+ * $oPager->getQuery()->select('fieldName1', 'fieldName2')->find() // etc
  * 
  * @author		Jürg Messmer <jm@mosaics.ch>
  * @version   0.8
  * 20120908.1121
  */
-class SimplePager implements Iterator {
+class SimplePager {
 
 	// Query without count and limit
 	private $oQuery;
@@ -50,7 +59,7 @@ class SimplePager implements Iterator {
 	private $iPage;
 	
 	// Propel collection
-	private $oCollection = null;
+	private $aResult = null;
 
 	// Iterator vars
 	private $iCurrentKey = 0;
@@ -101,11 +110,19 @@ class SimplePager implements Iterator {
 	 *
 	 * @return PropelCollection
 	 */
-	public function getCollection() {
-		if (!isset($this->oCollection)) {
+	public function getResult() {
+		if (!isset($this->aResult)) {
 			$this->find();
 		}
-		return $this->oCollection;
+		return $this->aResult;
+	}
+	
+	/**
+	 * @return query object
+	 */	
+	public function getQuery() {
+		$this->oQuery->setOffset($this->iStart);
+		return $this->oQuery->setLimit($this->iMaxRowsPerPage);
 	}
 
 	/**
@@ -117,15 +134,7 @@ class SimplePager implements Iterator {
 	private function find() {
 		$this->oQuery->setOffset($this->iStart);
 		$this->oQuery->setLimit($this->iMaxRowsPerPage);
-		$this->oCollection = $this->getQuery()->find();
-	}
-	
-	/**
-	 * @return query object
-	 */	
-	public function getQuery() {
-		$this->oQuery->setOffset($this->iStart);
-		return $this->oQuery->setLimit($this->iMaxRowsPerPage);
+		$this->aResult = $this->getQuery()->find();
 	}
 
 	/**
@@ -170,22 +179,6 @@ class SimplePager implements Iterator {
 	 */
 	public function atLastPage() {
 		return $this->getPage() == $this->getLastPage();
-	}
-
-	/**
-	 * get total iTotalPageCount
-	 *
-	 * @return     int $this->iTotalPageCount
-	 */
-	public function getTotalPageCount() {
-		if (!isset($this->iTotalPageCount)) {
-			if ($this->iMaxRowsPerPage > 0) {
-					$this->iTotalPageCount = (int) ceil($this->getTotalRecordCount()/$this->iMaxRowsPerPage);
-			} else {
-					$this->iTotalPageCount = 0;
-			}
-		}
-		return $this->iTotalPageCount;
 	}
 
 	/**
@@ -235,7 +228,7 @@ class SimplePager implements Iterator {
 	/**
 	 * Returns whether last iPage is complete
 	 *
-	 * @return     bool Last iPage complete or not
+	 * @return bool Last iPage complete or not
 	 */
 	public function isLastPageComplete() {
 		return !($this->getTotalRecordCount() % $this->iMaxRowsPerPage);
@@ -244,7 +237,7 @@ class SimplePager implements Iterator {
 	/**
 	 * get previous id
 	 *
-	 * @return     mixed $prev
+	 * @return mixed $prev
 	 */
 	public function getPrevious() {
 		if ($this->getPage() != $this->getFirstPage()) {
@@ -258,7 +251,7 @@ class SimplePager implements Iterator {
 	/**
 	 * get next id
 	 *
-	 * @return     mixed $next
+	 * @return mixed $next
 	 */
 	public function getNext() {
 		if ($this->getPage() != $this->getLastPage()) {
@@ -370,6 +363,22 @@ class SimplePager implements Iterator {
 	}
 
 	/**
+	 * get total iTotalPageCount
+	 *
+	 * @return     int $this->iTotalPageCount
+	 */
+	public function getTotalPageCount() {
+		if (!isset($this->iTotalPageCount)) {
+			if ($this->iMaxRowsPerPage > 0) {
+					$this->iTotalPageCount = (int) ceil($this->getTotalRecordCount()/$this->iMaxRowsPerPage);
+			} else {
+					$this->iTotalPageCount = 0;
+			}
+		}
+		return $this->iTotalPageCount;
+	}
+	
+	/**
 	 * Sets max rows (limit).
 	 * @param      int $iValue
 	 * @return     void
@@ -383,53 +392,6 @@ class SimplePager implements Iterator {
 	 * @return 	int
 	 */
 	public function count() {
-		return count($this->getCollection());
+		return count($this->getResult());
 	}
-	
-	/**
-	 * Returns the current element of the iterator
-	 * @return mixed
-	 */
-	public function current() {
-		if (!isset($this->oCollection)) {
-			$this->find();
-		}
-		return $this->oCollection[$this->iCurrentKey];
-	}
-
-	/**
-	 * Returns the current key of the iterator
-	 * @return int
-	 */
-	public function key() {
-		return $this->iCurrentKey;
-	}
-
-	/**
-	 * Advances the iterator to the next element
-	 * @return void
-	 */
-	public function next() {
-		$this->iCurrentKey++;
-	}
-
-	/**
-	 * Resets the iterator to the first element
-	 * @return void
-	 */
-	public function rewind() {
-		$this->iCurrentKey = 0;
-	}
-
-	/**
-	 * Checks if the current key exists in the container
-	 * @return boolean
-	 */
-	public function valid() {
-		if (!isset($this->oCollection)) {
-			$this->find();
-		}
-		return in_array($this->iCurrentKey, array_keys($this->oCollection));
-	}
-
 }
