@@ -75,9 +75,9 @@ class SimplePager {
 
 	/**
 	 * Create a new Simple Pager.
-	 * @param      Criteria $oQuery
-	 * @param      int $iPage The current iPage (1-based).
-	 * @param      int $iMaxRowsPerPage The number of rows that should be displayed per iPage.
+	 * @param  Criteria $oQuery
+	 * @param  int $iPage The current iPage (1-based).
+	 * @param  int $iMaxRowsPerPage The number of rows that should be displayed per iPage.
 	 */
 	public function __construct($oQuery, $iPage = 1, $iMaxRowsPerPage = 25) {
 		$this->oQuery = $oQuery;
@@ -98,8 +98,8 @@ class SimplePager {
 	}
 	
 	/**
-	 * basic pager url without page number
-	 * @return     void
+	 * Basic pager url without page number
+	 * @return  void
 	 */
 	public function setPageLinkBase($sPageLinkBaseBase) {
 		$this->sPageLinkBase = $sPageLinkBaseBase;
@@ -143,7 +143,7 @@ class SimplePager {
 	 * For now I can only think of returning 1 always.
 	 * It should probably return 0 if there are no iTotalPageCount
 	 *
-	 * @return     int 1
+	 * @return  int 1
 	 */
 	public function getFirstPage() {
 		return '1';
@@ -152,7 +152,7 @@ class SimplePager {
 	/**
 	 * Convenience method to indicate whether current iPage is the first iPage.
 	 *
-	 * @return     boolean
+	 * @return  boolean
 	 */
 	public function atFirstPage() {
 		return $this->getPage() == $this->getFirstPage();
@@ -161,7 +161,7 @@ class SimplePager {
 	/**
 	 * Get last iPage
 	 *
-	 * @return     int $lastPage
+	 * @return  int $lastPage
 	 */
 	public function getLastPage() {
 		$iTotalPages = $this->getTotalPageCount();
@@ -173,19 +173,19 @@ class SimplePager {
 	}
 
 	/**
-	 * Convenience method to indicate whether current iPage is the last iPage.
+	 * Convenience method to indicate whether current iPage is the last page.
 	 *
-	 * @return     boolean
+	 * @return  boolean
 	 */
 	public function atLastPage() {
 		return $this->getPage() == $this->getLastPage();
 	}
 
 	/**
-	 * get an array of previous id's
+	 * Get an array of previous id's
 	 *
-	 * @param      int $iRange
-	 * @return     array $links
+	 * @param  int $iRange
+	 * @return  array $links
 	 */
 	public function getPreviousLinks($iRange = 5) {
 		$iTotal = $this->getTotalPageCount();
@@ -204,10 +204,10 @@ class SimplePager {
 	}
 
 	/**
-	 * get an array of next id's
+	 * Get an array of next id's
 	 *
-	 * @param      int $iRange
-	 * @return     array $links
+	 * @param  int $iRange
+	 * @return  array $links
 	 */
 	public function getNextLinks($iRange = 5) {
 		$iTotal = $this->getTotalPageCount();
@@ -226,16 +226,16 @@ class SimplePager {
 	}
 
 	/**
-	 * Returns whether last iPage is complete
+	 * Returns whether last page is complete
 	 *
-	 * @return bool Last iPage complete or not
+	 * @return bool Last page complete or not
 	 */
 	public function isLastPageComplete() {
 		return !($this->getTotalRecordCount() % $this->iMaxRowsPerPage);
 	}
 
 	/**
-	 * get previous id
+	 * Get previous id
 	 *
 	 * @return mixed $prev
 	 */
@@ -249,7 +249,7 @@ class SimplePager {
 	}
 
 	/**
-	 * get next id
+	 * Get next id
 	 *
 	 * @return mixed $next
 	 */
@@ -274,7 +274,7 @@ class SimplePager {
 	/**
 	 * get relative or absolute page link
 	 *
-	 * @return     mixed string/null
+	 * @return  mixed string/null
 	 */	
 	public function getPreviousLink() {
 		if($this->sPageLinkBase === null) {
@@ -289,7 +289,7 @@ class SimplePager {
 	/**
 	 * get relative or absolute page link
 	 *
-	 * @return     mixed string/null
+	 * @return  mixed string/null
 	 */	
 	public function getNextLink() {
 		if($this->sPageLinkBase === null) {
@@ -303,8 +303,8 @@ class SimplePager {
 	
 	/**
 	 * Set the current iPage number (First iPage is 1).
-	 * @param      int $iPage
-	 * @return     void
+	 * @param  int $iPage
+	 * @return  void
 	 */
 	public function setPage($iPage) {
 		$this->iPage = $iPage;
@@ -314,7 +314,7 @@ class SimplePager {
 
 	/**
 	 * Get current iPage.
-	 * @return     int
+	 * @return  int
 	 */
 	public function getPage() {
 		return $this->iPage;
@@ -322,7 +322,7 @@ class SimplePager {
 	
 	/**
 	 * Set the number of rows per iPage.
-	 * @param      int $iMaxRowsPerPage
+	 * @param  int $iMaxRowsPerPage
 	 */
 	public function setRowsPerPage($iMaxRowsPerPage) {
 		$this->iMaxRowsPerPage = (int) $iMaxRowsPerPage;
@@ -332,15 +332,15 @@ class SimplePager {
 
 	/**
 	 * Get number of rows per iPage.
-	 * @return     int
+	 * @return  int
 	 */
 	public function getRowsPerPage() {
 		return $this->iMaxRowsPerPage;
 	}
 
 	/**
-	 * Calculate iStartrow / max rows based on current iPage and rows-per-iPage.
-	 * @return     void
+	 * Calculate start row / max rows based on current iPage and iMaxRowsPerPage.
+	 * @return  void
 	 */
 	private function calculateStart() { 	
 		$this->iStart = ( ($this->iPage - 1) * $this->iMaxRowsPerPage );
@@ -348,15 +348,15 @@ class SimplePager {
 
 	/**
 	 * Gets the total number of (un-LIMITed) records.
-	 * @return     int Total number of records - disregarding iPage, maxrows, etc.
+	 * @return int Total number of records - disregarding iPage, iMaxRowsPerPage, etc.
 	 */
 	public function getTotalRecordCount() {
 		return $this->iTotalRecordCount;
 	}
 
 	/**
-	 * Sets the iStart row or offset.
-	 * @param      int $iValue
+	 * Sets the start row or offset.
+	 * @param int 
 	 */
 	public function setStart($iValue) {
 		$this->iStart = $iValue;
@@ -365,7 +365,7 @@ class SimplePager {
 	/**
 	 * get total iTotalPageCount
 	 *
-	 * @return     int $this->iTotalPageCount
+	 * @return int Total page count
 	 */
 	public function getTotalPageCount() {
 		if (!isset($this->iTotalPageCount)) {
@@ -380,8 +380,8 @@ class SimplePager {
 	
 	/**
 	 * Sets max rows (limit).
-	 * @param      int $iValue
-	 * @return     void
+	 * @param  int $iValue
+	 * @return  void
 	 */
 	public function setMaxRowPerPage($iValue) {
 		$this->iMaxRowsPerPage = $iValue;
