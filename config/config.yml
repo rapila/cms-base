@@ -49,7 +49,7 @@ admin:
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
   
-  registered_user_languages: ['de', 'en', 'es']
+  registered_user_languages: ['de', 'en']
 
 error_handling:
   should_stop_on_recoverable_errors: false
