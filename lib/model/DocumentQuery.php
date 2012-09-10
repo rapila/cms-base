@@ -28,4 +28,8 @@ class DocumentQuery extends BaseDocumentQuery {
 	public function recent() {
 		return $this->orderByCreatedAt(Criteria::DESC);
 	}
+	
+	public function recentlyUpdated() {
+		return $this->orderByUpdatedAt(Criteria::DESC);
+	}
 }
