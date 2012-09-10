@@ -15,6 +15,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	const STATIC_STRING_NAMESPACE = 'language';
 	
 	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
+		ErrorHandler::log('language: ', self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId);
 		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 
@@ -89,22 +90,12 @@ class LanguagePeer extends BaseLanguagePeer {
 		return self::doCount(new Criteria()) <= 1;
 	}
 
-	public static function getAdminLanguages() {
+	public static function getAdminLanguages($bDisplayOriginalLanguage = false) {
 	  // display registered languages instead of found and posibly incomplete ones
 		$aLanguages = array();
 		$aRegisteredLanguages = Settings::getSetting('admin', 'registered_user_languages', array());
 		foreach($aRegisteredLanguages as $sLanguageId) {
-      $aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId);
-		}
-		return $aLanguages;
-
-		// get language ini files to provide available user_language choice
-		$aLanguageFiles = ResourceFinder::getFolderContents(ResourceFinder::findResource(DIRNAME_LANG, ResourceFinder::SEARCH_BASE_ONLY));
-		foreach($aLanguageFiles as $sKey => $sValue) {
-			if(StringUtil::endsWith($sKey, '.ini')) {
-				$sLanguageId = substr($sKey, 0, -4);	
-				$aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId);
-			}
+      $aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId, $bDisplayOriginalLanguage ? $sLanguageId : null);
 		}
 		return $aLanguages;
 	}
