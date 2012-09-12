@@ -10,20 +10,47 @@ class LocaleUtil {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			$sAcceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-			$aAcceptLanguages = explode(',' , $sAcceptLanguage);
-			foreach($aAcceptLanguages as $sLocaleIdWithQ) {
-				$aLocaleIdWithQ = explode(';', $sLocaleIdWithQ);
-				$sLocaleId = $aLocaleIdWithQ[0];
-				$aLocaleIds = explode('-' , $sLocaleId);
-				$sAcceptLang = $aLocaleIds[0];
-				if($sAcceptLang == $sLanguageId && isset($aLocaleIds[1])) {
-					return $sAcceptLang."_".strtoupper($aLocaleIds[1]);
-				}
-			}
+		$aAccepts = self::acceptLocales($sLanguageId);
+		if(count($aAccepts) > 0) {
+			return $aAccepts[0]->language_id."_".$aAccepts[0]->country_code;
 		}
 		return $sLanguageId."_".strtoupper($sLanguageId);
+	}
+	
+	public static function acceptLocales($sLanguageId = false) {
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
+		$fQSlantAmount = 0.0001;
+		$aResult = array();
+		if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+			$sAcceptLanguage = trim($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			if($sAcceptLanguage) {
+				$aAcceptLanguages = explode(',' , $sAcceptLanguage);
+				$fQSlant = $fQSlantAmount * count($aAcceptLanguages);
+				foreach($aAcceptLanguages as $sLocaleIdWithQ) {
+					$aLocaleIdWithQ = explode(';', $sLocaleIdWithQ);
+					$aLocaleId = explode('-', $aLocaleIdWithQ[0]);
+					$aQ = isset($aLocaleIdWithQ[1]) ? explode('=', $aLocaleIdWithQ[1]) : null;
+					$oResult = new StdClass();
+					$oResult->q = $aQ ? (float) $aQ[1] : 1.0;
+					$oResult->q_slanted = $oResult->q + $fQSlant;
+					$fQSlant -= $fQSlantAmount;
+					$oResult->language_id = strtolower($aLocaleId[0]);
+					if($sLanguageId && $oResult->language_id !== $sLanguageId) {
+						continue;
+					}
+					$oResult->country_code = strtoupper(isset($aLocaleId[1]) ? $aLocaleId[1] : $aLocaleId[0]);
+					$aResult[] = $oResult;
+				}
+				usort($aResult, function($a, $b) {
+					if($a->q_slanted > $b->q_slanted) { return -1; }
+					if($a->q_slanted == $b->q_slanted) { return 0; }
+					return 1;
+				});
+			}
+		}
+		return $aResult;
 	}
 
 	/**

@@ -32,6 +32,10 @@ class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-DE,de-AT";
 		$this->assertSame("en_US", LocaleUtil::getLocaleId("en"));
 	}
+	public function testGetLocaleIdENq() {
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "de-DE ; q = 0.3,en-US;q=0.8,de-AT";
+		$this->assertSame("de_AT", LocaleUtil::getLocaleId("de"));
+	}
 	public function testGetLocaleIdDE() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-AT";
 		$this->assertSame("de_AT", LocaleUtil::getLocaleId("de"));
