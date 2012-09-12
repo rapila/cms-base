@@ -13,7 +13,7 @@ Widget.types.language_input = {
 			}
 			return false;
 		}
-		var languages = this.getLanguages(this.settings.use_admin_languages);
+		var languages = this.getLanguages(this.settings.use_admin_languages, this.settings.display_in_original_language);
 		jQuery.each(languages, function(i, language) {
 			option.clone().text(language.language_name).attr('value', language.id).appendTo(this._element);
 		}.bind(this));
@@ -35,7 +35,11 @@ Widget.types.language_input = {
 		this._element.val(current_value);
 	},
 	
-	val: function() {
+	val: function(value) {
+		if(value) {
+			this._element.val(value);
+			return;
+		}
 		return this._element.val();
 	},
 	
@@ -43,6 +47,7 @@ Widget.types.language_input = {
 		international_option: "{{writeString=wns.language.international}}",
 		hide_on_monolingual: true,
 		use_admin_languages: false,
+		display_in_original_language: false,
 		store_value: false
 	}
 };

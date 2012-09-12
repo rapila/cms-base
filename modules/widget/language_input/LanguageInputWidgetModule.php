@@ -11,9 +11,9 @@ class LanguageInputWidgetModule extends WidgetModule {
 		$this->setSetting('is_monolingual', LanguagePeer::isMonolingual());
 	}
 
-	public function getLanguages($bUseAdminLanguages = false) {
+	public function getLanguages($bUseAdminLanguages = false, $bDisplayInOriginalLanguage = false) {
 		if($bUseAdminLanguages) {
-			$aLanguages = LanguagePeer::getAdminLanguages();
+			$aLanguages = LanguagePeer::getAdminLanguages($bDisplayInOriginalLanguage);
 			$aResult = array();
 			foreach($aLanguages as $sLanguageId => $sLanguageName) {
 				$aResult[] = array('id' => $sLanguageId, 'language_name' => $sLanguageName);
