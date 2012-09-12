@@ -46,7 +46,7 @@ class XHTMLOutput {
 		if(@stristr(@$_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) {
 			if(preg_match("/application\/xhtml\+xml;q=([01]|0\.\d{1,3}|1\.0)/i", $_SERVER["HTTP_ACCEPT"], $matches)) {
 				$xhtml_q = $matches[1];
-				if(preg_match("/text\/html;q=q=([01]|0\.\d{1,3}|1\.0)/i", $_SERVER["HTTP_ACCEPT"], $matches)) {
+				if(preg_match("/text\/html;q=([01]|0\.\d{1,3}|1\.0)/i", $_SERVER["HTTP_ACCEPT"], $matches)) {
 					$html_q = $matches[1];
 					if((float)$xhtml_q >= (float)$html_q) {
 						$this->sContentType = "application/xhtml+xml";
