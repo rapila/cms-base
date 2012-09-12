@@ -18,6 +18,6 @@ class UtilLocaleTests extends PHPUnit_Framework_TestCase {
 	public function testGetLocaleId() {
 		Session::getSession()->resetAttribute("preferred_user_language");
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en,en-us;q=0.7,en-uk;q=0.3";
-		$this->assertSame("en_US", LocaleUtil::getLocaleId("en"));
+		$this->assertSame("en_EN", LocaleUtil::getLocaleId("en"));
 	}
 }

@@ -121,20 +121,28 @@ class FrontendManager extends Manager {
 	}
 	
 	protected function initLanguage() {
-		/**
-		* @todo: switch language according to ACCEPT_LANGUAGE if language not in path
-		*/
 		if(self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
 			$oLanguage = LanguageQuery::create()->filterByPathPrefix(self::usePath())->findOne();
 			Session::getSession()->setLanguage($oLanguage);
 		} else {
-			if(!LanguagePeer::languageIsActive(Session::language())) {
-				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
+			// If we’ve got a valid session language set (and it’s not just from the default), use that
+			if(Session::getSession()->hasAttribute(Session::SESSION_LANGUAGE_KEY) && LanguagePeer::languageIsActive(Session::language())) {
+				LinkUtil::redirectToLanguage();
 			}
-			if(!LanguagePeer::languageIsActive(Session::language())) {
-				LinkUtil::redirectToManager(array('pages'), "AdminManager");
+			// Otherwise, use the first of the user’s accept languages that is valid
+			foreach(LocaleUtil::acceptLocales() as $oAcceptLocale) {
+				if(LanguagePeer::languageIsActive($oAcceptLocale->language_id)) {
+					Session::getSession()->setLanguage($oAcceptLocale->language_id);
+					LinkUtil::redirectToLanguage();
+				}
 			}
-			LinkUtil::redirectToLanguage();
+			// As a last resort, try, the default session language
+			Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
+			if(LanguagePeer::languageIsActive(Session::language())) {
+				LinkUtil::redirectToLanguage();
+			}
+			// If all fails, redirect to the admin manager, where new languages can be created/activated
+			LinkUtil::redirectToManager(array('pages'), "AdminManager");
 		}
 	}
 	
