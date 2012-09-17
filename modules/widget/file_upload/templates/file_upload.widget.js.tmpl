@@ -95,7 +95,7 @@ Widget.types.file_upload = {
 							jQuery(this).dialog("close");
 							options.error && options.error(error);
 						}
-					}});
+					}, dialogClass: 'file_upload_error'});
 				} else {
 					options.error && options.error(error);
 				}
