@@ -113,3 +113,4 @@ ol.ui-editable-items-list li.display_info::before{content:'';content:none;width:
 #widget-notifications .ui-notify .ui-badge{background-color:#f00;-moz-border-radius:12px;-webkit-border-radius:12px;border-radius:12px;font-weight:bold;color:#fff;padding:1px 5px}
 #widget-notifications .ui-notify .close-handle.ui-icon{margin-right:0;margin-top:-12px;cursor:pointer}
 .help{cursor:help}
+div.ui-dialog.file_upload_error{z-index:20000 !important}
