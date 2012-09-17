@@ -134,15 +134,17 @@ class FrontendManager extends Manager {
 				if(LanguagePeer::languageIsActive($oAcceptLocale->language_id)) {
 					Session::getSession()->setLanguage($oAcceptLocale->language_id);
 					LinkUtil::redirectToLanguage();
+					return;
 				}
 			}
 			// As a last resort, try, the default session language
 			Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
 			if(LanguagePeer::languageIsActive(Session::language())) {
 				LinkUtil::redirectToLanguage();
+				return;
 			}
 			// If all fails, redirect to the admin manager, where new languages can be created/activated
-			LinkUtil::redirectToManager(array('pages'), "AdminManager");
+			LinkUtil::redirectToManager(array('languages'), "AdminManager");
 		}
 	}
 	

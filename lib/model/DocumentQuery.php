@@ -29,7 +29,8 @@ class DocumentQuery extends BaseDocumentQuery {
 		return $this->orderByCreatedAt(Criteria::DESC);
 	}
 	
-	public function recentlyUpdated() {
-		return $this->orderByUpdatedAt(Criteria::DESC);
+	public function recentlyUpdated($nbDays = 365) {
+		$this->orderByUpdatedAt(Criteria::DESC);
+		return parent::recentlyUpdated($nbDays);
 	}
 }

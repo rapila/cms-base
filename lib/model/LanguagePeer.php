@@ -15,7 +15,6 @@ class LanguagePeer extends BaseLanguagePeer {
 	const STATIC_STRING_NAMESPACE = 'language';
 	
 	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
-		ErrorHandler::log('language: ', self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId);
 		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 
