@@ -2,7 +2,7 @@ Widget.types.document_detail = {
 	initialize: function() {
 		var _this = this;
 		
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
 		this.file_upload = this.content.find("input[name='file_upload']");
 		this.uploader = Widget.create('file_upload');
@@ -110,7 +110,7 @@ Widget.types.document_detail = {
 	upload_error: function(error) {
 		this.file_upload.attr('disabled', false);
 		if(error && !error.reporting_done) {
-			this.detail_widget.validate_with({upload: {string: jQuery.parseHTML('<span class="error_display"/>').text(error.message)}});
+			this.detail_widget.validate_with({upload: {string: Widget.parseHTML('<span class="error_display"/>').text(error.message)}});
 		}
 	},
 	

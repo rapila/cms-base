@@ -98,9 +98,9 @@ class AdminManager extends Manager {
 	private function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName);
-		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.7.1");
+		$this->oResourceIncluder->addJavaScriptLibrary('jquery', "1.8.1");
 		$this->oResourceIncluder->addCustomJs($oConstants);
-		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', 1);
+		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', '1.8.23');
 		$this->oResourceIncluder->addResource('admin/admin-skeleton.css');
 		$this->oResourceIncluder->addResource('admin/theme/jquery-ui-1.7.2.custom.css');
 		$this->oResourceIncluder->addResource('widget/widget.css');

@@ -1,6 +1,6 @@
 Widget.types.admin_menu = {
 	prepare: function() {
-		this.button_prototype = jQuery.parseHTML('{{includeTemplate=menu_button.incl}}');
+		this.button_prototype = Widget.parseHTML('{{includeTemplate=menu_button.incl}}');
 		this.toolbar = this._element.children();
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
@@ -99,7 +99,7 @@ Widget.types.admin_menu = {
 	},
 		
 	addSpacer: function(width, is_right_container) {
-		return this.addElement(jQuery.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
+		return this.addElement(Widget.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
 	},
 	
 	settings: {

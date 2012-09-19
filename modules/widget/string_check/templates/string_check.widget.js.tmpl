@@ -1,7 +1,7 @@
 Widget.types.string_check = {
 	prepare: function() {
 		var _this = this;
-		this._element.append(jQuery.parseHTML("{{includeTemplate=check}}"));
+		this._element.append(Widget.parseHTML("{{includeTemplate=check}}"));
 
 		//Check options
 		this.check_result = this._element.find('ol.check_result');

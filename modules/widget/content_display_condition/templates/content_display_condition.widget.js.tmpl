@@ -1,7 +1,7 @@
 Widget.types.content_display_condition = {
 	initialize: function() {
 		var _this = this;
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			widget.set_instance(this);
 			jQuery.extend(widget.settings, {

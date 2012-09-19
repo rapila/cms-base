@@ -183,6 +183,16 @@ String.prototype.escapeSelector = function() {
 	});
 
 	jQuery.extend(Widget, {
+		parseHTML: function(html, instanciateWidgets) {
+			html = jQuery(jQuery.parseHTML(jQuery.trim(html), false));
+			if(instanciateWidgets) {
+				html.widgetElements().each(function() {
+					jQuery(this).prepareWidget();
+				});
+			}
+			return html;
+		},
+		
 		fire: function(eventName, realEvent) {
 			return EventHook(this).fire(eventName, realEvent, jQuery.makeArray(arguments));
 		},
@@ -209,7 +219,9 @@ String.prototype.escapeSelector = function() {
 					widgetInformation = info;
 					if(!Widget.types[widgetType]) {
 						if(widgetInformation.resources !== '') {
-							var resources = jQuery.parseHTML(widgetInformation.resources);
+							var resources = document.createElement('div');
+							resources.innerHTML = widgetInformation.resources;
+							resources = jQuery(resources.childNodes);
 							Widget.fire('loadInfo-resources', resources);
 							var head = jQuery('head');
 							//Add scripts
@@ -373,7 +385,7 @@ String.prototype.escapeSelector = function() {
 				session = arguments[3];
 			}
 			Widget.create(widgetType, intermediateCallback, function(widget) {
-				widget._element = jQuery.parseHTML(widget._instanceInformation.content);
+				widget._element = Widget.parseHTML(widget._instanceInformation.content);
 				widget.fire('element_set', widget._element);
 				widget.handle('prepared', function(event, widget) {
 					if(finishCallback.resolveWith) {
@@ -413,9 +425,9 @@ String.prototype.escapeSelector = function() {
 			var highlight = severity == 'info' ? 'highlight' : 'error';
 			var display;
 			if(options.searchInfo) {
-				display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
+				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
 			} else {
-				display = jQuery.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
+				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 			}
 			display.hide().appendTo(notification_area).data('identifier', options.identifier);
 		
@@ -638,7 +650,7 @@ String.prototype.escapeSelector = function() {
 					var error_object = {message: error, exception_type: statusCode};
 					if(statusCode === 'parsererror') {
 						var text = jQuery.trim(request.responseText);
-						error_object.message = jQuery.parseHTML(text);
+						error_object.message = Widget.parseHTML(text);
 					}
 					var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
 					action.shift();
@@ -816,18 +828,6 @@ String.prototype.escapeSelector = function() {
 	});
 
 	jQuery.extend(jQuery, {
-		parseHTML: function(html, instanciateWidgets, elementName) {
-			var element = document.createElement(elementName || 'div');
-			element.innerHTML = jQuery.trim(html);
-			var result = jQuery(element.childNodes);
-			if(instanciateWidgets) {
-				result.widgetElements().each(function() {
-					jQuery(this).prepareWidget();
-				});
-			}
-			return result;
-		},
-	
 		validateEmail: function(email) {
 			var email_regex = /^[\w._\-%+]+@[\w\-]+(\.[\w\-]+)*(\.\w+)$/;
 			return email.length > 4 && email_regex.test(email);

@@ -1,6 +1,6 @@
 Widget.types.tag_frontend_config = {
 	prepare: function() {
-		var content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		var content = Widget.parseHTML("{{includeTemplate=edit}}");
 		var _this = this;
 		this._element.append(content);
 		this.types_dropdown = this._element.find("select[name='types[]']");

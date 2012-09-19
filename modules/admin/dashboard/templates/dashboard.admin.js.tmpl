@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
 		
 		var create_skeleton = function(module) {
 			var uid = module.uid;
-			var container = jQuery.parseHTML('{{includeTemplate=container}}').hide();
+			var container = Widget.parseHTML('{{includeTemplate=container}}').hide();
 			var heading = container.find('.dashboard-widget-head h3').text(module.title);
 			container.attr('id', uid);
 			container.css({backgroundColor: module.color});
@@ -145,7 +145,7 @@ jQuery(document).ready(function() {
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			dashboard_control.listDashboardModules(true, function(modules) {
 				info_bar.add_button('add-new-item', function() {
-					var dialog = jQuery.parseHTML('{{includeTemplate=add_dialog}}');
+					var dialog = Widget.parseHTML('{{includeTemplate=add_dialog}}');
 					
 					var columns = {};
 					db.find('.dashboard-column').each(function() {

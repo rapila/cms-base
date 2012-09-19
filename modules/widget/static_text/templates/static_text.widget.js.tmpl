@@ -8,7 +8,7 @@ Widget.types.static_text = {
 	},
 	
 	dashboard_config_form: function() {
-		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
+		var form = Widget.parseHTML('{{includeTemplate=config_form}}');
 		form.find('textarea').val(this.settings.dashboard.text);
 		form.attr('data-widget-type', 'rich_text').prepareWidget(function(widget) {
 			widget.settings.height = 230;

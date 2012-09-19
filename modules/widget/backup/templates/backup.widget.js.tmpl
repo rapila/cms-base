@@ -1,7 +1,7 @@
 Widget.types.backup = {
 	prepare: function() {
 		var _this = this;
-		this._element.append(jQuery.parseHTML("{{includeTemplate=backup}}"));
+		this._element.append(Widget.parseHTML("{{includeTemplate=backup}}"));
 
 		//Backup files and
 		this.backup_file = this._element.find('select[name="backup_file"]');

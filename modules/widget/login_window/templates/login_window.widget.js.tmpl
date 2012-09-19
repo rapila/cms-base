@@ -2,7 +2,7 @@ Widget.types.login_window = {
 	initialize: function() {
 		this.login_markup = jQuery('<div class="rapila_alert"><form/></div>');
 		var _this = this;
-		this.login_markup.children('form').append(jQuery.parseHTML("{{includeTemplate=login_window.incl}}")).bind('submit', function(event) {
+		this.login_markup.children('form').append(Widget.parseHTML("{{includeTemplate=login_window.incl}}")).bind('submit', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			var form = jQuery(this);
@@ -25,7 +25,7 @@ Widget.types.login_window = {
 			_this.login_markup.find('.ui-notify').hide();
 			
 			var forgotten_alert = jQuery('<div class="rapila_alert"><form/></div>');
-			forgotten_alert.children('form').append(jQuery.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).one('submit', function(event) {
+			forgotten_alert.children('form').append(Widget.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).one('submit', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
 				var input_field = forgotten_alert.find('input[name="user_name_or_email"]').keyup(function() {

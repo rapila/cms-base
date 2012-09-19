@@ -127,7 +127,7 @@ var Dashboard = (function($) {
 		var _this = this,
 			$ = this.jQuery,
 			settings = this.settings,
-			$sortableItems = $('> li.'+settings.widgetSelector, settings.columns);
+			$sortableItems = $('> li'+settings.widgetSelector, settings.columns);
 			
 		$(settings.widgetSelector,$(settings.columns)).each(function (i) {
 			if (!_this.getWidgetSettings(this.id).movable) {

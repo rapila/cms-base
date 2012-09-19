@@ -17,7 +17,7 @@ Widget.types.recent_activity = {
 	},
 	
 	dashboard_config_form: function() {
-		var form = jQuery.parseHTML('{{includeTemplate=config_form}}');
+		var form = Widget.parseHTML('{{includeTemplate=config_form}}');
 		form.find('input[name=days]').val(this.settings.dashboard.days);
 		jQuery.each(this.settings.dashboard.models, function(i, type) {
 			type && form.find('input[type=checkbox][value="'+type+'"]').prop('checked', true);

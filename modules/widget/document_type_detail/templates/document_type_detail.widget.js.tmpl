@@ -1,6 +1,6 @@
 Widget.types.document_type_detail = {
 	initialize: function() {
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	

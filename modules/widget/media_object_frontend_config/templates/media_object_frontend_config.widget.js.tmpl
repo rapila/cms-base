@@ -23,7 +23,7 @@ Widget.types.media_object_frontend_config = {
 		});
 		this.preview = this._element.find('.preview');
 		this.config = this._element.find('.config');
-		this.entry_prototype = jQuery.parseHTML('{{includeTemplate=entry}}');
+		this.entry_prototype = Widget.parseHTML('{{includeTemplate=entry}}');
 		this._element.find('a').bind('click', function(event) {
 			_this.add_entry();
 		});
@@ -134,7 +134,7 @@ Widget.types.media_object_frontend_config = {
 	
 	update_preview: function() {
 		this.renderPreview(this._element.serializeArrayKV(), function(result) {
-			this.preview.empty().append(jQuery.parseHTML(result));
+			this.preview.empty().append(Widget.parseHTML(result));
 		});
 	},
 	

@@ -259,7 +259,7 @@ Widget.types.detail = {
 				return;
 			}
 			if(message.constructor === String) {
-				message = jQuery.parseHTML(message);
+				message = Widget.parseHTML(message);
 			}
 			element.find('.validate-'+key.escapeSelector()).each(function(index) {
 				if(!parameters.affected_instance_indexes || parameters.affected_instance_indexes.indexOf(index) > -1) {

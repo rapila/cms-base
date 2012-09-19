@@ -56,7 +56,7 @@
 				_this.possible_frontend_modules = possible_frontend_modules;
 			}.deferred(waiters));
 
-			this.filled_module_li = jQuery.parseHTML('{{includeTemplate=filled_module}}');
+			this.filled_module_li = Widget.parseHTML('{{includeTemplate=filled_module}}');
 
 			jQuery.when.apply(jQuery, waiters).then(function() {
 				_this.has_updated_structure = true;
@@ -68,7 +68,7 @@
 		update_admin_container: function(container, language_id) {
 			var _this = this;
 			container.empty();
-			container.append(jQuery.parseHTML('{{includeTemplate=admin}}'));
+			container.append(Widget.parseHTML('{{includeTemplate=admin}}'));
 			var filled_modules = container.find('.filled_modules');
 
 			var bind = function(method) {
@@ -94,7 +94,7 @@
 			
 			var container_html = this.containers.html;
 			if(container_html) {
-				jQuery.parseHTML(container_html).appendTo(filled_modules);
+				Widget.parseHTML(container_html).appendTo(filled_modules);
 			}
 			if(this.containers.css_parsed) {
 				filled_modules.addClass('css_parsed');
@@ -188,7 +188,7 @@
 				// Get the container
 				var filled_container = jQuery(this);
 				// Append the preview bar
-				var preview_bar = jQuery.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
+				var preview_bar = Widget.parseHTML('{{includeTemplate=preview_bar}}').hide().appendTo(document.body);
 				preview_bar.data('filled_container', filled_container);
 				filled_container.data('preview_bar', preview_bar);
 				filled_container.data('protector', new UnsavedChanges());
@@ -237,7 +237,7 @@
 			var cleanup = function(preview_bar, container) {
 				container.data('protector').unprotect(container.children()).release();
 				page_type.callPageTypeMethod('adminPreview', container.attr('data-object-id'), function(result, error) {
-					var elements = jQuery.parseHTML(result.preview_contents);
+					var elements = Widget.parseHTML(result.preview_contents);
 					container.empty().append(elements);
 					container.removeClass('editing');
 					preview_bar.removeClass('loading');

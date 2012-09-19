@@ -64,7 +64,7 @@ Widget.types.document_thumbnail_view = {
 			});
 		}).appendTo(doc);
 		
-		var document_object = jQuery.parseHTML(theDocument.preview);
+		var document_object = Widget.parseHTML(theDocument.preview);
 		doc.append(document_object);
 		// handle edit
 		doc.bind('dblclick', function(event) {

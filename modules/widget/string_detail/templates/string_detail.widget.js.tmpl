@@ -47,7 +47,7 @@ Widget.types.string_detail = {
 	
 	init_content: function() {
 		var string_detail = this;
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
+		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		var language_content = this.content.find('.edit_language_content');
 		Widget.createWithElement('language_tabs', function(widget) {
 			string_detail.language_tabs = widget;
@@ -56,7 +56,7 @@ Widget.types.string_detail = {
 			});
 		}, function(language_tabs) {
 			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
-				var language_content = jQuery.parseHTML('{{includeTemplate=edit_language}}');
+				var language_content = Widget.parseHTML('{{includeTemplate=edit_language}}');
 				var textarea = language_content.find('textarea');
 				textarea.attr('name', textarea.attr('name')+language_id);
 				textarea.val(string_detail.getTextFor(language_id));

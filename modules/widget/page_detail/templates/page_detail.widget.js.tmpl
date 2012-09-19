@@ -129,7 +129,7 @@ Widget.types.page_detail = {
 			});
 		}, function(language_tabs) {
 			language_tabs.handle('tab.created', function(event, language_id, tab_content) {
-				tab_content.append(jQuery.parseHTML('{{includeTemplate=edit_language}}'));
+				tab_content.append(Widget.parseHTML('{{includeTemplate=edit_language}}'));
 				var language_data = _this.getLanguageData(language_id);
 				tab_content.find('label.validate-page_title_required_language_id').removeClass('validate-page_title_required_language_id').addClass('validate-page_title_required_'+language_id);
 				tab_content.find("input[name='edited_languages[]']").val(language_id);
@@ -208,7 +208,7 @@ Widget.types.page_detail = {
 			var default_name = "{{writeString=wns.default}}";
 			for(property_name in page_data.page_properties) {
 				var attrs = page_data.page_properties[property_name];
-				var property_container = jQuery.parseHTML('{{includeTemplate=property_container}}');
+				var property_container = Widget.parseHTML('{{includeTemplate=property_container}}');
 				property_container.data('propertyName', property_name);
 				var label = property_container.find('label').text(attrs.display_name);
 				var input = property_container.find('input').val(attrs.value);

@@ -1,8 +1,8 @@
 Widget.types.role_detail = {
 	initialize: function() {
 		var _this = this;
-		this.content = jQuery.parseHTML("{{includeTemplate=edit}}");
-		this.right_content = jQuery.parseHTML("{{includeTemplate=right}}");
+		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
+		this.right_content = Widget.parseHTML("{{includeTemplate=right}}");
 		this.right_content.find('[name="page_id[]"]').prepareWidget();
 		this.content.find('div.hide_if_not_saved').hide();
 

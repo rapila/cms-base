@@ -14,8 +14,8 @@ class PreviewManager extends FrontendManager {
 		}
 
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
-		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.7.1');
-		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', 1);
+		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.8.1');
+		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', '1.8.23');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');

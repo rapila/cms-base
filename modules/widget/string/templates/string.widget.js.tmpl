@@ -6,7 +6,7 @@ Widget.types.string = {
 	
 	get_string_as_html: function() {
 		var result = this.getStringAsHTML.apply(this, arguments);
-		return jQuery.parseHTML(result.string);
+		return Widget.parseHTML(result.string);
 	},
 	
 	handle_strings_for_list_result: function(string_key, keys, widget, no_result_message, option_getter) {
