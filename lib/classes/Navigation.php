@@ -232,6 +232,9 @@ class Navigation {
 			if(isset($aConfig['page_identifier']) && $aConfig['page_identifier'] !== $oNavigationItem->getIdentifier()) {
 				continue;
 			}
+			if(isset($aConfig['page_type']) && $aConfig['page_type'] !== $oNavigationItem->getType()) {
+				continue;
+			}
 			if(!isset($aConfig['on']) || $oBooleanParser->parse($aConfig['on'])) {
 				return $aConfig;
 			}

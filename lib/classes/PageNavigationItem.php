@@ -86,6 +86,10 @@ class PageNavigationItem extends NavigationItem {
 		return $this->oMe->getName();
 	}
 	
+	public function getType() {
+		return $this->oMe->getPageType();
+	}
+	
 	public function getLink() {
 		return $this->oMe->getFullPathArray();
 	}

@@ -114,6 +114,7 @@ abstract class NavigationItem {
 	public abstract function getLinkText($sLanguageId = null);
 	public abstract function getDescription($sLanguageId = null);
 	public abstract function getName();
+	public abstract function getType();
 	
 	public function getIdentifier() {
 		return null;
