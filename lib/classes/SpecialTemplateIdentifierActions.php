@@ -271,7 +271,10 @@ class SpecialTemplateIdentifierActions {
 		$sText = $oIdentifier->getValue();
 		$sReplacement = $oIdentifier->getParameter('with');
 		if($oIdentifier->hasParameter('matching')) {
-			$sPattern = '/'.$oIdentifier->getParameter('matching').'/';
+			$sPattern = $oIdentifier->getParameter('matching');
+			if(!StringUtil::startsWith($sPattern, '/')) {
+				$sPattern = '/'.$sPattern.'/';
+			}
 			return preg_replace($sPattern, $sReplacement, $sText);
 		} else {
 			$sSearch = $oIdentifier->getParameter('string');
