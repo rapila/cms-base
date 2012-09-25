@@ -98,10 +98,16 @@ class SimplePager {
 	}
 	
 	/**
-	 * Basic pager url without page number
+	 * Set the asic pager url without page number
+	 *
+	 * @param string base url
+	 * description: the base url without the page id
 	 * @return  void
 	 */
 	public function setPageLinkBase($sPageLinkBaseBase) {
+		if(!StringUtil::endsWith('/', $sPageLinkBaseBase)) {
+			$sPageLinkBaseBase = $sPageLinkBaseBase.'/';
+		}
 		$this->sPageLinkBase = $sPageLinkBaseBase;
 	}
 
