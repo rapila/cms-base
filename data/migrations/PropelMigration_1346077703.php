@@ -36,15 +36,19 @@ class PropelMigration_1346077703
 	 */
 	public function getUpSQL()
 	{
-		return array (
-  'rapila' => '
-ALTER TABLE `pages` ADD
-(
-	`canonical_id` INTEGER
-);
-',
-);
+		return array ('rapila' => '
+			# This is a fix for InnoDB in MySQL >= 4.1.x
+			# It "suspends judgement" for fkey relationships until are tables are set.
+			SET FOREIGN_KEY_CHECKS = 0;
+
+			ALTER TABLE `pages` ADD `canonical_id` INTEGER AFTER `is_protected`;
+
+			# This restores the fkey checks, after having unset them earlier
+			SET FOREIGN_KEY_CHECKS = 1;
+			'
+		);
 	}
+
 
 	/**
 	 * Get the SQL statements for the Down migration
@@ -54,12 +58,7 @@ ALTER TABLE `pages` ADD
 	 */
 	public function getDownSQL()
 	{
-		return array (
-  'rapila' => '
-
-ALTER TABLE `pages` DROP `canonical_id`;
-',
-);
+		return array ('rapila' => 'ALTER TABLE `pages` DROP `canonical_id`;');
 	}
 
 }
