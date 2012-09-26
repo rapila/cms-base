@@ -32,7 +32,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
 		$aResult = $oDocument->toArray(BasePeer::TYPE_PHPNAME, false);
-		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso');
+		$sDimensions = '';
+		if($sValue = $oDocument->getDimensionsIfImage()) {
+			$sDimensions = ' ('.$sValue.')';
+		}
+		$aResult['FileInfo'] = $oDocument->getExtension().'/'.DocumentPeer::getDocumentSize($oDocument->getDataSize(), 'auto_iso').$sDimensions;
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocument);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocument);
 		$aResult['ContentCreatedAt'] = $oDocument->getContentCreatedAt('d.m.Y');

@@ -123,6 +123,20 @@ class Document extends BaseDocument {
 		return Image::imageFromStream($this->getData());
 	}
 	
+	public function getDimensionsIfImage($sPostfix = "px") {
+		if(!$this->isImage()) {
+			return null;
+		}
+		$oImage = $this->getImage();
+		if($oImage && $oImage->getOriginalHeight()) {
+			$aResult = array();
+			$aResult[] = $oImage->getOriginalWidth();
+			$aResult[] = $oImage->getOriginalHeight();
+			return implode('x', $aResult).$sPostfix;
+		}
+		return null;
+	}
+	
 	public function getDataSize(PropelPDO $oConnection = null) {
 		if($this->iDataSize === null) {
 			$oCriteria = $this->buildPkeyCriteria();
