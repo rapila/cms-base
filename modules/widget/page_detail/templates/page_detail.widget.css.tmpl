@@ -84,10 +84,10 @@ body.pages #admin_main {
 	font-size: 1.5em;
 	float: left;
 	height: 100%;
-	margin: 23px 2px 2px 2px;
-	padding: 2px;
+	margin: 23px 2px 2px 20px;
+	padding: 0px;
 	min-height: 200px;
-	width: 100px;
+	width: 61px;
 }
 
 .delete_drop_zone span {
@@ -102,8 +102,13 @@ body.pages #admin_main {
 	color: #f00;
 }
 
+div.delete_drop_zone.ui-droppable {
+	background: transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat 0 center !important;
+	border-color: transparent !important;
+}
+
 div.delete_drop_zone.ui-state-droppable {
-	background: transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat center center  !important;
+	background: transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat -61px center   !important;
 	border-color: transparent !important;
 }
 
