@@ -340,12 +340,9 @@ class FrontendManager extends Manager {
 	 */
 	public static function replacePageLinkIdentifier($oTemplateIdentifier) {
 		$oPage = null;
-		$iIdentifier = $oTemplateIdentifier->getParameter('identifier');
-		if($iIdentifier !== null) {
-			$oPage = PageQuery::create()->findOneByIdentifier($iIdentifier);
-			if($oPage === null) {
-				$oPage = PageQuery::create()->findPk($iIdentifier);
-			}
+		$sIdentifier = $oTemplateIdentifier->getParameter('identifier');
+		if($sIdentifier !== null) {
+			$oPage = PageQuery::create()->findOneByIdentifier($sIdentifier);
 		} else {
 			$iId = $oTemplateIdentifier->getParameter('id');
 			if($iId !== null) {
