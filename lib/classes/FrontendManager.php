@@ -343,6 +343,9 @@ class FrontendManager extends Manager {
 		$iIdentifier = $oTemplateIdentifier->getParameter('identifier');
 		if($iIdentifier !== null) {
 			$oPage = PageQuery::create()->findOneByIdentifier($iIdentifier);
+			if($oPage === null) {
+				$oPage = PageQuery::create()->findPk($iIdentifier);
+			}
 		} else {
 			$iId = $oTemplateIdentifier->getParameter('id');
 			if($iId !== null) {
