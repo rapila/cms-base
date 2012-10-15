@@ -33,7 +33,7 @@ class LocaleUtil {
 					$aLocaleId = explode('-', $aLocaleIdWithQ[0]);
 					$aQ = isset($aLocaleIdWithQ[1]) ? explode('=', $aLocaleIdWithQ[1]) : null;
 					$oResult = new StdClass();
-					$oResult->q = $aQ ? (float) $aQ[1] : 1.0;
+					$oResult->q = $aQ && isset($aQ[1]) ? (float) $aQ[1] : 1.0;
 					$oResult->q_slanted = $oResult->q + $fQSlant;
 					$fQSlant -= $fQSlantAmount;
 					$oResult->language_id = strtolower($aLocaleId[0]);
@@ -43,6 +43,7 @@ class LocaleUtil {
 					$oResult->country_code = strtoupper(isset($aLocaleId[1]) ? $aLocaleId[1] : $aLocaleId[0]);
 					$aResult[] = $oResult;
 				}
+				// FIXME: This sort algorithm isn’t stable so we’re using $fQSlant to give higher priority to languages that come first
 				usort($aResult, function($a, $b) {
 					if($a->q_slanted > $b->q_slanted) { return -1; }
 					if($a->q_slanted == $b->q_slanted) { return 0; }
