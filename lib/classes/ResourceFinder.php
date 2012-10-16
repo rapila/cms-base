@@ -71,50 +71,94 @@ class ResourceFinder {
 		$this->bNoCache = $bNoCache;
 		return $this;
 	}
-
-	public function searchMainOnly() {
+	
+	public function mainOnly() {
 		$this->iFlag = self::SEARCH_MAIN_ONLY;
 		$this->bFindAll = false;
 		$this->mResult = false;
 		return $this;
 	}
-
-	public function searchBaseOnly() {
+	
+	public function baseOnly() {
 		$this->iFlag = self::SEARCH_BASE_ONLY;
 		$this->bFindAll = false;
 		$this->mResult = false;
 		return $this;
 	}
 
-	public function searchSiteOnly() {
+	public function siteOnly() {
 		$this->iFlag = self::SEARCH_SITE_ONLY;
 		$this->bFindAll = false;
 		$this->mResult = false;
 		return $this;
 	}
 
-	public function searchPluginsOnly() {
+	public function pluginsOnly() {
 		$this->iFlag = self::SEARCH_PLUGINS_ONLY;
 		$this->mResult = false;
 		return $this;
 	}
 
-	public function searchBaseFirst() {
+	public function baseFirst() {
 		$this->iFlag = self::SEARCH_BASE_FIRST;
 		$this->mResult = false;
 		return $this;
 	}
 
-	public function searchSiteFirst() {
+	public function siteFirst() {
 		$this->iFlag = self::SEARCH_SITE_FIRST;
 		$this->mResult = false;
 		return $this;
 	}
 
-	public function searchPluginsFirst() {
+	public function pluginsFirst() {
 		$this->iFlag = self::SEARCH_PLUGINS_FIRST;
 		$this->mResult = false;
 		return $this;
+	}
+
+	/**
+	* @deprecated use mainOnly()
+	*/
+	public function searchMainOnly() {
+		return $this->mainOnly();
+	}
+	/**
+	* @deprecated use baseOnly()
+	*/
+	public function searchBaseOnly() {
+		return $this->baseOnly();
+	}
+	/**
+	* @deprecated use siteOnly()
+	*/
+	public function searchSiteOnly() {
+		return $this->siteOnly();
+	}
+	/**
+	* @deprecated use pluginsOnly()
+	*/
+	public function searchPluginsOnly() {
+		return $this->pluginsOnly();
+	}
+	
+	/**
+	* @deprecated use baseFirst()
+	*/
+	public function searchBaseFirst() {
+		return $this->baseFirst();
+	}
+	/**
+	* @deprecated use siteFirst()
+	*/
+	public function searchSiteFirst() {
+		return $this->siteFirst();
+	}
+	/**
+	* @deprecated use pluginsFirst()
+	*/
+	public function searchPluginsFirst() {
+		return $this->pluginsFirst();
 	}
 
 	public function resultIsArray() {
