@@ -14,8 +14,8 @@ if [ "$1" = "list" ]; then
 <?php
 require_once('base/lib/inc.php');
 
-$aRepInfo = json_decode(file_get_contents('https://github.com/api/v2/json/organizations/rapila/public_repositories'), true);
-foreach($aRepInfo['repositories'] as $aRepo) {
+$aRepInfo = json_decode(file_get_contents('https://api.github.com/orgs/rapila/repos'), true);
+foreach($aRepInfo as $aRepo) {
 if(!StringUtil::startsWith($aRepo['name'], 'plugin-')) {
 	continue;
 }
