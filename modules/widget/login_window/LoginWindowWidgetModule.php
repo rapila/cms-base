@@ -22,18 +22,18 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function resetRequest($sUserNameOrPassword) {
-    if($sUserNameOrPassword === '') {
+		if($sUserNameOrPassword === '') {
 			throw new LocalizedException('flash.login.username_or_email_required');
 		}
-	  $oUser = UserPeer::getUserByUsername($sUserNameOrPassword);
-	  $bShowUserName = false;
-	  if($oUser === null) {
-	    $oUser = UserPeer::getUserByEmail($sUserNameOrPassword);
-	    $bShowUserName = true;
-	  }
-	  if($oUser) {
-	    LoginManager::sendResetMail($oUser, $bShowUserName);
-	  }
+		$oUser = UserQuery::create()->filterByUsername($sUserNameOrPassword)->findOne();
+		$bShowUserName = false;
+		if($oUser === null) {
+			$oUser = UserQuery::create()->filterByEmail($sUserNameOrPassword)->findOne();
+			$bShowUserName = true;
+		}
+		if($oUser) {
+			LoginManager::sendResetMail($oUser, $bShowUserName);
+		}
 	}
 	
 	public function getIsLoggedIn() {

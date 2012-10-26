@@ -187,12 +187,21 @@ class UserPeer extends BaseUserPeer {
 		return self::retrieveByPK($iUserId) !== null;
 	}
 	
+	/**
+	* @deprecated use query methods
+	* UserQuery::create()->filterByEmail($sEmail)->findOne();
+	*/
 	public static function getUserByEmail($sEmail) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(UserPeer::EMAIL, $sEmail);
 		return UserPeer::doSelectOne($oCriteria);
 	}
 	
+	/**
+	* @deprecated use query methods
+	* Example: UserQuery::create()->filterByUsername($sUserName);
+	* and individually use filterByIsInactive() if required
+	*/
 	public static function getUserByUsername($sUserName, $bActiveOnly = false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::USERNAME, $sUserName);

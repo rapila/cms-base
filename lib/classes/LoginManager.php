@@ -167,7 +167,7 @@ class LoginManager extends PreviewManager {
 	
 	public static function passwordReset() {
 		$oFlash = Flash::getFlash();
-		$oUser = UserPeer::getUserByUsername(trim($_REQUEST['recover_username']), true);
+		$oUser = UserQuery::create()->filterByUsername(trim($_REQUEST['recover_username']))->isActive()->findOne();
 		if($oUser === null || md5($oUser->getPasswordRecoverHint()) !== $_REQUEST['recover_hint']) {
 			$oFlash->addMessage('login.recovery.invalid');
 			return 'login';
@@ -180,7 +180,7 @@ class LoginManager extends PreviewManager {
 	
 	public static function loginNewPassword($sReferrer = '') {
 		$oFlash = Flash::getFlash();
-		$oUser = UserPeer::getUserByUsername(trim($_REQUEST['recover_username']), true);
+		$oUser = UserQuery::create()->filterByUsername(trim($_REQUEST['recover_username']))->isActive()->findOne();
 		if($oUser === null || md5($oUser->getPasswordRecoverHint()) !== $_REQUEST['recover_hint']) {
 			$oFlash->addMessage('login.recovery.invalid');
 			return 'login';

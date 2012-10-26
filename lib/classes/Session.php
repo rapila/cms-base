@@ -49,7 +49,7 @@ class Session {
 	}
 
 	public function login($sUsername, $sPassword) {
-		$oUser = UserPeer::getUserByUsername($sUsername);
+		$oUser = UserQuery::create()->filterByUsername($sUsername)->findOne();
 		if($oUser === null) {
 			return 0;
 		}
@@ -81,7 +81,7 @@ class Session {
 		}
 		
 		// analyze the PHP_AUTH_DIGEST variable
-		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserPeer::getUserByUsername($aDigestContent['username'])) === null) {
+		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserQuery::create()->filterByUsername($aDigestContent['username'])->findOne()) === null) {
 			return 0;
 		}
 		

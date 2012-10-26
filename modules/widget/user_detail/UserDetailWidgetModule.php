@@ -45,7 +45,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->checkForValue('last_name', 'last_name_required');
 		$oFlash->checkForEmail('email', 'valid_email');
 		if($oUser->isNew() || $aUserData['username'] !== $oUser->getUsername()) {
-			$oCheckedUser = UserPeer::getUserByUsername($aUserData['username']);
+			$oCheckedUser = UserQuery::create()->filterByUsername($aUserData['username'])->findOne();
 			if($oCheckedUser !== null && $oCheckedUser->getId() !== $oUser->getId()) {
 				$oFlash->addMessage('username_exists');
 			}
