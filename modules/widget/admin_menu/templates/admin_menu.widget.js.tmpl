@@ -193,7 +193,10 @@ Widget.types.admin_menu = {
 					});
 				}
 				widget.handle('prepared', function() {
-					select.val(selected);
+					select.val(window.AdminInterface.content_language);
+				});
+				Widget.handle('rapila-language_changed', function(event, language) {
+					select.val(language);
 				});
 			});
 			return {element: select, callback: jQuery.noop};
