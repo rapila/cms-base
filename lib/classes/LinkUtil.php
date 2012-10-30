@@ -9,19 +9,31 @@ class LinkUtil {
 		self::redirect(LinkUtil::link($mPath, $mManager, $aParameters, $bIncludeLanguage));
 	}
 
-	//redirectToLanguage can only be used if language attribute is still in REQUEST_PATH
-	public static function redirectToLanguage($bNoRedirectIfNonMultilingual=true, $sLanguageId=null) {
-		if($bNoRedirectIfNonMultilingual && !Settings::getSetting('general', 'multilingual', true)) {
-			return;
-		}
+	//redirectToLanguage can only be used if language attribute is still in REQUEST_PATH (if it ever was)
+	public static function redirectToLanguage($sLanguageId = null) {
 		if($sLanguageId == null) {
 			$sLanguageId = Session::language();
 		}
-		$oLanguage = LanguageQuery::create()->findPk($sLanguageId);
-		if(Manager::hasNextPathItem() && (strlen(Manager::peekNextPathItem()) === 2 || LanguagePeer::languageExists(Manager::peekNextPathItem(), true))) {
-			Manager::usePath();
+		$oLanguage = LanguageQuery::language($sLanguageId)->findOne();
+		$sLanguageInPathId = null;
+		if(Manager::hasNextPathItem()) {
+			$oLanguageInPath = LanguageQuery::language(Manager::peekNextPathItem(), true)->findOne();
+			if($oLanguageInPath && $oLanguageInPath->getIsActive()) {
+				Manager::usePath();
+				$sLanguageInPathId = $oLanguageInPath->getId();
+			}
 		}
-		self::redirectToManager(array_merge(array($oLanguage->getPathPrefix()), Manager::getRequestPath()), null, array(), false);
+		$sManager = Manager::getManagerClassNormalized(null);
+		$bShouldIncludeLanguageInLink = $sManager::shouldIncludeLanguageInLink();
+		if($bShouldIncludeLanguageInLink) {
+			if($sLanguageInPathId === $sLanguageId) {
+				return;
+			}
+		} else if($sLanguageInPathId === null) {
+			//Did not include language in link and should not
+			return;
+		}
+		self::redirectToManager(Manager::getRequestPath(), $sManager, array(), ($bShouldIncludeLanguageInLink ? $oLanguage : false));
 	}
 
 	/**
@@ -126,12 +138,14 @@ class LinkUtil {
 		$sPrefix = Manager::getPrefixForManager($mManager);
 
 		if($bIncludeLanguage === null) {
-			$bIncludeLanguage = call_user_func(array($mManager, 'shouldIncludeLanguageInLink'));
+			$bIncludeLanguage = $mManager::shouldIncludeLanguageInLink();
 		}
 
 		if($bIncludeLanguage === true) {
 			array_unshift($mPath, Session::language(true)->getPathPrefix());
-		} elseif(is_string($bIncludeLanguage)) {
+		} else if($bIncludeLanguage instanceof Language) {
+			array_unshift($mPath, $bIncludeLanguage->getPathPrefix());
+		} else if(is_string($bIncludeLanguage)) {
 			$bIncludeLanguage = LanguageQuery::create()->findPk($bIncludeLanguage)->getPathPrefix();
 			array_unshift($mPath, $bIncludeLanguage);
 		}
