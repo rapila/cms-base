@@ -23,7 +23,7 @@ Widget.types.login_window = {
 			username.val(username.data('default_value')).addClass('input_default_state');
 			password.val(password.data('default_value')).addClass('input_default_state');
 			_this.login_markup.find('.ui-notify').hide();
-			
+
 			var forgotten_alert = jQuery('<div class="rapila_alert"><form/></div>');
 			forgotten_alert.children('form').append(Widget.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).one('submit', function(event) {
 				event.preventDefault();
