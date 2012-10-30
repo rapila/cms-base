@@ -315,9 +315,11 @@ Widget.types.detail = {
 		options.eventName = 'list-'+(options.colName ? 'cell' : 'row')+'_'+options.eventName;
 		list.settings.row_click_active_mode = 'activate';
 		var init = function(detail) {
-			var open_with_id = function(id, row) {
-				detail[idMethod](id);
-				detail.current_row = row;
+			var open_with_id = function(rowData) {
+				var data = {};
+				data[idData] = rowData[idData];
+				detail[idMethod](data[idData]);
+				detail.current_row_data = rowData;
 				detail.fill_data();
 				detail.open();
 			};
@@ -335,15 +337,15 @@ Widget.types.detail = {
 					return;
 				}
 				
-				open_with_id(row.data(idData), row);
+				open_with_id(list.collect_row_data(row));
 				event.preventDefault();
 				event.stopPropagation();
 			});
 			detail.save_callback = function(returnValue) {
-				if(detail.current_row) {
+				if(detail.current_row_data) {
 					var additionalData = jQuery.isPlainObject(returnValue) ? returnValue : {};
-					list.update_row(detail.current_row, additionalData);
-					delete detail.current_row;
+					list.update_row(list.row_from_row_data(detail.current_row_data), additionalData);
+					delete detail.current_row_data;
 				} else {
 					list.reload();
 				}
@@ -351,8 +353,7 @@ Widget.types.detail = {
 			if(list.settings.initial_detail_id) {
 				var rowData = {};
 				rowData[idData] = list.settings.initial_detail_id;
-				var row = list.row_from_row_data(rowData);
-				open_with_id(list.settings.initial_detail_id, row);
+				open_with_id(rowData);
 			}
 			options.initialized(detail, list);
 		};
