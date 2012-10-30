@@ -389,7 +389,7 @@ Widget.types.list = {
 		}
 		this.sort = this.getOrderColumnSort();
 		if(load_heading) {
-			this.schema = this.getSchema();
+			this.schema = this.getSchema(load_heading === 'force');
 			if(this._element.is('table')) {
 				var col = jQuery('<col/>');
 				jQuery.each(this.schema, function(i, column) {
