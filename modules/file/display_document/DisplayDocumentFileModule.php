@@ -29,7 +29,7 @@ class DisplayDocumentFileModule extends FileModule {
 	public function renderFile() {
 		$mMaxWidth = is_numeric(@$_REQUEST['max_width']) ? (int)$_REQUEST['max_width'] : 'full';
 		$mMaxHeight = is_numeric(@$_REQUEST['max_height']) ? (int)$_REQUEST['max_height'] : 'full';
-		if($this->oDocument->getDocumentKind() != 'image') {
+		if(!$this->oDocument->isGDImage()) {
 			$mMaxWidth = 'full';
 			$mMaxHeight = 'full';
 		}
