@@ -21,7 +21,7 @@ class StringListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('id', 'string_key', 'text_truncated', 'languages_available', 'delete');
+		return array('id', 'string_key', 'text_truncated_current', 'languages_available', 'delete');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -35,8 +35,8 @@ class StringListWidgetModule extends WidgetModule {
 			case 'string_key':
 				$aResult['heading'] = StringPeer::getString('wns.string.string_key');
 				break;
-			case 'text_truncated':
-				$aResult['heading'] = StringPeer::getString('wns.string.string_text').' ('.AdminManager::getContentLanguage().')';
+			case 'text_truncated_current':
+				$aResult['heading'] = StringPeer::getString('wns.string.string_text.heading', null, 'Text', array('language_id' => AdminManager::getContentLanguage()));
 				break;
 			case 'languages_available':
 				$aResult['heading'] = StringPeer::getString('wns.languages_filled');
@@ -65,7 +65,7 @@ class StringListWidgetModule extends WidgetModule {
 		if($sColumnIdentifier === 'name_space') {
 			return StringPeer::STRING_KEY;
 		}
-		if($sColumnIdentifier === 'text_truncated') {
+		if($sColumnIdentifier === 'text_truncated_current') {
 			return StringPeer::TEXT;
 		}
 		return null;

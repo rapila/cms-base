@@ -21,12 +21,20 @@ class String extends BaseString {
 		return StringUtil::truncate($this->getText(), $iLength);
 	}
 	
+	public function getTextTruncatedCurrent($iLength=70) {
+		$sLanguageId = AdminManager::getContentLanguage();
+		if($this->getLanguageId() === $sLanguageId) {
+			return $this->getTextTruncated($iLength);
+		} else {
+			$oString = StringQuery::create()->findPk(array($sLanguageId, $this->getStringKey()));
+			if($oString) {
+				return $oString->getTextTruncated($iLength);
+			}
+		}
+		return null;
+	}
+	
 	public function getLanguagesAvailable() {
-	  $aLanguages[] = $this->getLanguageId();
-	  $aAvailableLanguages = StringPeer::getStringsByStringKey($this->getStringKey());
-    foreach(StringPeer::getStringsByStringKey($this->getStringKey(),$this->getLanguageId()) as $oString) {
-      $aLanguages[] = $oString->getLanguageId();
-    }
-	  return implode(', ', $aLanguages);
+		return implode(', ', StringQuery::create()->filterByStringKey($this->getStringKey())->orderByLanguageId()->select('LanguageId')->find()->toArray());
 	}
 }
