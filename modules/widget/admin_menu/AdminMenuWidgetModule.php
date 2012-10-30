@@ -77,6 +77,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getPageLink() {
-		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage());
+		Session::getSession()->setLanguage(AdminManager::getContentLanguage());
+		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager');
 	}
 }
