@@ -5,6 +5,16 @@
  * @package    propel.generator.model
  */
 class LanguageQuery extends BaseLanguageQuery {
+	
+	public static function language($sLanguageId, $bByPath = false) {
+		$oQuery = self::create();
+		if($bByPath) {
+			$oQuery->filterByPathPrefix($sLanguageId);
+		} else {
+			$oQuery->filterById($sLanguageId);
+		}
+		return $oQuery;
+	}
 
 	public function exclude($mExclude = false) {
 		if(!$mExclude) {

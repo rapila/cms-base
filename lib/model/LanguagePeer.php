@@ -19,12 +19,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	}
 
 	public static function languageIsActive($sLanguageId, $bByPath = false) {
-		$oLanguage = null;
-		if($bByPath) {
-			$oLanguage = LanguageQuery::create()->filterByPathPrefix($sLanguageId)->findOne();
-		} else {
-			$oLanguage = LanguageQuery::create()->findPk($sLanguageId);
-		}
+		$oLanguage = LanguageQuery::language($sLanguageId, $bByPath)->findOne();
 		if($oLanguage === null) {
 			return false;
 		}
@@ -32,12 +27,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	}
 
 	public static function languageExists($sLanguageId, $bByPath = false) {
-		$oQuery = LanguageQuery::create();
-		if($bByPath) {
-			$oQuery->filterByPathPrefix($sLanguageId);
-		} else {
-			$oQuery->filterById($sLanguageId);
-		}
+		$oQuery = LanguageQuery::language($sLanguageId, $bByPath);
 		return $oQuery->count() > 0;
 	}
 
