@@ -34,6 +34,7 @@ class DisplayDocumentFileModule extends FileModule {
 			$mMaxHeight = 'full';
 		}
 		
+		
 		$sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
 		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
 		
@@ -52,25 +53,28 @@ class DisplayDocumentFileModule extends FileModule {
 		
 		$rDataStream = $this->oDocument->getData();
 		
-		if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
-			$oImage = Image::imageFromData(stream_get_contents($rDataStream));
-			if(is_int($mMaxWidth) && is_int($mMaxHeight)) {
-				$oImage->setSize($mMaxWidth, $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
-			} else if(is_int($mMaxWidth)) {
-				$oImage->setSize($mMaxWidth, 0, Image::RESIZE_TO_WIDTH);
-			} else {
-				$oImage->setSize(0, $mMaxHeight, Image::RESIZE_TO_HEIGHT);
+		
+		try {
+			if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
+				$oImage = Image::imageFromStream($rDataStream);
+				if(is_int($mMaxWidth) && is_int($mMaxHeight)) {
+					$oImage->setSize($mMaxWidth, $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
+				} else if(is_int($mMaxWidth)) {
+					$oImage->setSize($mMaxWidth, 0, Image::RESIZE_TO_WIDTH);
+				} else {
+					$oImage->setSize(0, $mMaxHeight, Image::RESIZE_TO_HEIGHT);
+				}
+				//Since $bDontBlowUp is true, do a preliminary check whether it’s necessary to even use the image class
+				if($oImage->getScalingFactor() < 1.0) {
+					$oImage->setFileType($this->oDocument->getDocumentType()->getExtension());
+					$oImage->render(true, null, $oCache); exit;
+				} else {
+					//Free up space
+					$oImage->destroy();
+					rewind($rDataStream);
+				}
 			}
-			//Since $bDontBlowUp is true, do a preliminary check whether it’s necessary to even use the image class
-			if($oImage->getScalingFactor() < 1.0) {
-				$oImage->setFileType($this->oDocument->getDocumentType()->getExtension());
-				$oImage->render(true, null, $oCache); exit;
-			} else {
-				//Free up space
-				$oImage->destroy();
-				rewind($rDataStream);
-			}
-		}
+		} catch(Exception $ex) {} //Ignore unrecognized image format
 		
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
