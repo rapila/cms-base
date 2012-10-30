@@ -67,7 +67,7 @@ abstract class NavigationItem {
 			$this->aChildren[$sKey] = $this->getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 		}
 		$this->prepareChildren();
-		return ($this->getCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) + $this->aChildren[$sKey]);
+		return ($this->aChildren[$sKey] + $this->getCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible));
 	}
 	
 	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
