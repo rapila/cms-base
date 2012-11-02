@@ -12,6 +12,10 @@
  */ 
 class TagPeer extends BaseTagPeer {
 	
+	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$oCriteria->add($oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE));
+	}
+	
 	public static function allTaggedIdsForModel($sModelName, $sTagName = null) {
 		$oCriteria = TagInstanceQuery::create()->innerJoinTag()->filterByModelName($sModelName);
 		if($sTagName !== null) {
