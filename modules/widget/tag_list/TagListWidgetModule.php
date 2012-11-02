@@ -45,4 +45,13 @@ class TagListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function getCriteria() {
+		$oQuery = TagQuery::create()->distinct();
+		if($this->oDelegateProxy->getModelName() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->joinTagInstance()->useQuery('TagInstance')->filterByModelName($this->oDelegateProxy->getModelName())->endUse();
+		}
+		return $oQuery;
+	}
+	
 }
