@@ -19,16 +19,22 @@ class User extends BaseUser {
 	const IS_ADMIN_USER = 'user-admin';
 	
 	public function getFullName() {
-		if($this->getFirstName() && $this->getLastName()) {
-			return $this->getFirstName(). ' '.$this->getLastName();
-		}
+		return implode(' ', $this->getFullNameArray());
+	}
+	
+	public function getFullNameInverted($sSeparator=', ') {
+		return implode($sSeparator=', ', array_reverse($this->getFullNameArray()));
+	}
+	
+	public function getFullNameArray() {
+		$aResult = array();
 		if($this->getFirstName()) {
-			return $this->getFirstName();
+			$aResult[] = $this->getFirstName();
 		}
 		if($this->getLastName()) {
-			return $this->getLastName();
+			$aResult[] = $this->getLastName();
 		}
-		return $this->getUsername();
+		return $aResult;
 	}
 	
 	public function getInitials() {
