@@ -3,6 +3,7 @@
  * @package modules.widget
  */
 class TagListWidgetModule extends WidgetModule {
+
 	private $oListWidget;
 	public $oDelegateProxy;
 	
@@ -11,18 +12,18 @@ class TagListWidgetModule extends WidgetModule {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Tag", 'name');
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
 	}
-	
+
 	public function doWidget() {
 		$aTagAttributes = array('class' => 'tag_list');
 		$oListTag = new TagWriter('table', $aTagAttributes);
 		$this->oListWidget->setListTag($oListTag);
 		return $this->oListWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'name', 'tag_instance_count', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => false);
 		switch($sColumnIdentifier) {
