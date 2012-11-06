@@ -40,6 +40,10 @@ class Document extends BaseDocument {
 		return $this->getDocumentType()->isImageType();
 	}
 	
+	public function isGDImage() {
+		return $this->getDocumentType()->isGDImageType();
+	}
+	
 	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
 		return LinkUtil::link(array($sFileModule, $this->getId()), "FileManager", $aUrlParameters);
 	}
@@ -70,7 +74,7 @@ class Document extends BaseDocument {
 		if($oTemplate->hasIdentifier('size')) {
 			$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
 		}
-		if($this->isImage() && $oTemplate->hasIdentifier('dimension', Template::$ANY_VALUE)) {
+		if($this->isGDImage() && $oTemplate->hasIdentifier('dimension', Template::$ANY_VALUE)) {
 			$oImage = $this->getImage();
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalWidth(), 'width');
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalHeight(), 'height');
@@ -124,16 +128,19 @@ class Document extends BaseDocument {
 	}
 	
 	public function getDimensionsIfImage($sPostfix = "px") {
-		if(!$this->isImage()) {
+		if(!$this->isGDImage()) {
 			return null;
 		}
-		$oImage = $this->getImage();
-		if($oImage && $oImage->getOriginalHeight()) {
-			$aResult = array();
-			$aResult[] = $oImage->getOriginalWidth();
-			$aResult[] = $oImage->getOriginalHeight();
-			return implode('x', $aResult).$sPostfix;
-		}
+		try {
+			$oImage = $this->getImage();
+			if($oImage && $oImage->getOriginalHeight()) {
+				$aResult = array();
+				$aResult[] = $oImage->getOriginalWidth();
+				$aResult[] = $oImage->getOriginalHeight();
+				return implode('x', $aResult).$sPostfix;
+			}
+		} catch(Exception $ex) {} //Ignore unrecognized image format
+
 		return null;
 	}
 	
