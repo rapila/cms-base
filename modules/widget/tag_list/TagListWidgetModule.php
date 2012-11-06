@@ -46,4 +46,14 @@ class TagListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
+	
+	public function getCriteria() {
+		$aExcludes = array(CriteriaListWidgetDelegate::SELECT_ALL, 'Tag');
+		$oQuery = TagQuery::create()->distinct();
+		if(!in_array($this->oDelegateProxy->getModelName(), $aExcludes)) {
+			$oQuery->joinTagInstance()->useQuery('TagInstance')->filterByModelName($this->oDelegateProxy->getModelName())->endUse();
+		}
+		return $oQuery;
+	}
+	
 }

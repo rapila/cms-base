@@ -86,8 +86,8 @@ frontend:
   doctype: strict
   protect_email_addresses: false
   display_string_keys: false #override this to see all used string keys directly in frontend
-  re_captcha_private_key: '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'
-  re_captcha_public_key: '6Lfm_gQAAAAAACIbK9PxwwhDhkGJHcHEcdIRRRR9'
+  re_captcha_private_key: 'change-this'
+  re_captcha_public_key: 'change-this' #You can register for a key at https://www.google.com/recaptcha/admin/create
   re_captcha_theme: 'white'
 
 encoding:

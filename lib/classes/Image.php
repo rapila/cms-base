@@ -263,7 +263,11 @@ class Image {
 	}
 	
 	public static function imageFromData($sImageData) {
-		return new Image(imagecreatefromstring($sImageData));
+			$rImageResource = @imagecreatefromstring($sImageData);
+			if(!$rImageResource) {
+				throw new Exception("imagecreatefromstring: Unrecognized image format");
+			}
+			return new Image($rImageResource);
 	}
 	
 	public static function imageFromStream($rImageResource) {
