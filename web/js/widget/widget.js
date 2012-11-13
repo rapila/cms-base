@@ -211,37 +211,44 @@ String.prototype.escapeSelector = function() {
 				return v.toString(16);
 			}).toUpperCase();
 		},
+
+		includeResources: function(res, type) {
+			if(jQuery.trim(res) === '') {
+				return;
+			}
+			var resources = document.createElement('div');
+			resources.innerHTML = res;
+			resources = jQuery(resources.childNodes);
+			Widget.fire('loadInfo-resources', resources, type);
+			var head = jQuery('head');
+			//Add scripts
+			resources.filter('script').each(function() {
+				var script = jQuery(this);
+				if(!script.attr('src')) {
+					head.append(this.cloneNode(true));
+				} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
+					head.append(this.cloneNode(true));
+				}
+			});
+			//Add styles
+			head.append(resources.find('style'));
+			//Add linked elements (mostly CSS)
+			resources.filter('link').each(function() {
+				if(head.find('link[href="'+this.getAttribute('href')+'"]').length === 0) {
+					head.append(this);
+				}
+			});
+		},
 	
 		loadInfo: function(widgetType) {
 			var widgetInformation = null;
 			if(!Widget.widgetInformation[widgetType]) {
 				Widget.widgetJSON(widgetType, null, 'widgetInformation', function(info) {
 					widgetInformation = info;
+					//No JS has been loaded for the widget
 					if(!Widget.types[widgetType]) {
-						if(widgetInformation.resources !== '') {
-							var resources = document.createElement('div');
-							resources.innerHTML = widgetInformation.resources;
-							resources = jQuery(resources.childNodes);
-							Widget.fire('loadInfo-resources', resources);
-							var head = jQuery('head');
-							//Add scripts
-							resources.filter('script').each(function() {
-								var script = jQuery(this);
-								if(!script.attr('src')) {
-									head.append(this.cloneNode(true));
-								} else if(head.find('script[src="'+script.attr('src')+'"]').length === 0) {
-									head.append(this.cloneNode(true));
-								}
-							});
-							//Add styles
-							head.append(resources.find('style'));
-							//Add linked elements (mostly CSS)
-							resources.filter('link').each(function() {
-								if(head.find('link[href="'+this.getAttribute('href')+'"]').length === 0) {
-									head.append(this);
-								}
-							});
-						}
+						//Load CSS and JS associated with this widget
+						Widget.includeResources(widgetInformation.resources, 'widget');
 						if(!Widget.types[widgetType]){
 							Widget.types[widgetType] = {}; //An empty widget type… useful if it only exposes PHP methods
 						}
