@@ -2,21 +2,20 @@
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
 	
-	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aErrorContext = null, $bNeverPrint = false) {
-		if($aErrorContext === null) {
-			$aErrorContext = debug_backtrace();
-		}
+	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aContext = null, $aTrace = null, $bNeverPrint = false) {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
 		}
-		$aTrace = debug_backtrace();
-		array_shift($aTrace); //Remove ErrorHandler::handleError call;
+		if($aTrace === null) {
+			$aTrace = debug_backtrace();
+			array_shift($aTrace); //Remove ErrorHandler::handleError call;
+		}
+		self::cleanTrace($aTrace);
 		$aError = array("code" => $iErrorNumber,
 										"message" => $sErrorString,
 										"filename" => $sErrorFile,
 										"line" => $iErrorLine,
-										"trace" => $aTrace,
-										"context" => $aErrorContext);
+										"trace" => $aTrace);
 		self::handle($aError, $bNeverPrint);
 		if($bNeverPrint || self::shouldContinue($iErrorNumber)) {
 			return true;
@@ -25,7 +24,7 @@ class ErrorHandler {
 	}
 	
 	public static function handleException($oException, $bNeverPrint = false) {
-		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), $oException->getTrace(), $bNeverPrint);
+		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), null, $oException->getTrace(), $bNeverPrint);
 	}
 	
 	/**
@@ -147,13 +146,27 @@ class ErrorHandler {
 		return $sResult;
 	}
 	
-	public static function trace($aTrace = null) {
+	private static function cleanTrace(&$aTrace) {
+		foreach($aTrace as &$aTraceInfo) {
+			$sFile = '';
+			if(isset($aTraceInfo['file'])) {
+				$sFile = ' in '.$aTraceInfo['file'].' ('.$aTraceInfo['line'].')';
+			}
+			$sFunction = $aTraceInfo['function'].'()'.$sFile;
+			if(isset($aTraceInfo['class'])) {
+				$sFunction = $aTraceInfo['class'].$aTraceInfo['type'].$sFunction;
+			}
+			$aTraceInfo = $sFunction;
+		}
+	}
+	
+	public static function trace($bClean = true, $aTrace = null) {
 		if($aTrace === null) {
 			$aTrace = debug_backtrace();
+			array_shift($aTrace); //Remove ErrorHandler::trace call;
 		}
-		foreach($aTrace as $iKey => $aTraceInfo) {
-			unset($aTrace[$iKey]['args']);
-			unset($aTrace[$iKey]['object']);
+		if($bClean) {
+			self::cleanTrace($aTrace);
 		}
 		self::log($aTrace);
 	}
