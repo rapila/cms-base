@@ -184,23 +184,17 @@ Widget.types.tree = {
 	},
 	
 	/**
-	* Reloads the children of a given element (li) as well as its properties. The item retains its open/closed state
+	* Reloads the children of a given element (li) as well as its properties.
+	* The item retains its open/closed state (except if true is passed for the `open` argument, in which case it is opened)
 	* @param element the element to reload
 	*/
-	reload_element: function(element) {
+	reload_element: function(element, open) {
 		this._tree.refresh(element);
-		// this.update_element(element);
-		// opener = element.children('.tree-opener');
-		// var sub_list = element.find(this.settings.tag_name);
-		// if(sub_list.length === 0 && !opener.is('.no-children')) {
-		// 	return;
-		// }
-		// sub_list.remove();
-		// if(opener.is('.opened') || opener.is('.no-children')) {
-		// 	opener.removeClass('opened no-children').addClass('closed');
-		// 	//Reload immediately
-		// 	this.open(element, opener);
-		// }
+		if(open) {
+			this._element.one('refresh.jstree', function() {
+				this._tree.open_node(element);
+			}.bind(this));
+		}
 	},
 	
 	update_elements: function() {
