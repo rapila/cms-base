@@ -202,7 +202,7 @@ class CriteriaListWidgetDelegate {
 			return;
 		}
 		if(!method_exists($this->sPeerClassName, 'addSearchToCriteria')) {
-			throw new LocalizedException('wns.module.search_not_implemented', array('model', $this->sPeerClassName));
+			throw new LocalizedException('wns.module.search_not_implemented', array('model' => $this->sPeerClassName));
 		}
 		call_user_func(array($this->sPeerClassName, 'addSearchToCriteria'), $this->oListSettings->getSearchPhrase(), $oCriteria);
 	}
