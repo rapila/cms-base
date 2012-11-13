@@ -81,6 +81,9 @@ class LinkListWidgetModule extends WidgetModule {
 		if($sColumnIdentifier === 'link_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
+		if($sColumnIdentifier === 'language_id') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
 		return null;
 	}
 
