@@ -10,12 +10,10 @@ Widget.types.page_type = {
 				this.methods[method_name] = this.callPageTypeMethod.bind(this, method_name);
 			}.bind(this));
 		});
-		var js_location = this.getPageTypeJs();
-		jQuery.ajax({
-			url: js_location,
-			dataType: 'script',
-			async: false
-		});
+		if(!Widget.types.page_type.types[this.settings.page_type]) {
+			var resources = this.getPageTypeResources();
+			Widget.includeResources(resources, 'page_type');
+		}
 	},
 
 	page_type_js: function() {

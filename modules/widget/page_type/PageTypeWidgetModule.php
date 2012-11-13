@@ -24,12 +24,10 @@ class PageTypeWidgetModule extends PersistentWidgetModule {
 		return $this->sPageType;
 	}
 	
-	public function getPageTypeJs() {
-		$sResourceUrl = TemplateResourceFileModule::getAvailableResource($this->sPageType, 'page_type', ResourceIncluder::RESOURCE_TYPE_JS, array());
-		if($sResourceUrl === null) {
-			throw new LocalizedException("widget.page_type.no_js_exists", array('exception_location' => __METHOD__, 'page_type' => $this->sPageType));
-		}
-		return $sResourceUrl;
+	public function getPageTypeResources() {
+		$oIncluder = new ResourceIncluder();
+		TemplateResourceFileModule::includeAvailableResources(get_class($this->oPageType), false, $oIncluder);
+		return $oIncluder->getIncludes()->render();;
 	}
 
 	public function getPageTypeMethods() {
