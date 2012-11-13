@@ -403,6 +403,24 @@ String.prototype.escapeSelector = function() {
 				}, false);
 			}, session);
 		},
+		
+		createOnce: function(widgetType, apply, finish, intermediate, context) {
+			context = context || [Widget.types[widgetType], '__createOnceInstance'];
+			finish = finish || jQuery.noop;
+			intermediate = intermediate || jQuery.noop;
+			if(context[0] && context[0][context[1]]) {
+				apply(context[0][context[1]]);
+			} else {
+				Widget.create(widgetType, intermediate, function(widget) {
+					finish.apply(window, arguments);
+					if(!context[0]) {
+						context[0] = Widget.types[widgetType];
+					}
+					context[0][context[1]] = widget;
+					apply(widget);
+				});
+			}
+		},
 	
 		notifyUser: function(severity, message) {
 			var options = {
