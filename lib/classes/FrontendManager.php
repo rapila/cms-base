@@ -296,9 +296,6 @@ class FrontendManager extends Manager {
 		}
 	}
 
-	/**
-	 * fillNavigation()
-	 */
 	private function fillNavigation() {
 		$aNavigations = $this->oTemplate->listValuesByIdentifier("navigation");
 		if(count($aNavigations) > 0) {
@@ -309,17 +306,11 @@ class FrontendManager extends Manager {
 		}
 	}
 	
-	/**
-	 * fillContent()
-	 */
 	protected function fillContent() { 
 		$this->oPageType->display($this->oTemplate, false);
 	}
 
-	/**
-	 * fillAttributes()
-	 */
-	private function fillAttributes() { 
+	protected function fillAttributes() { 
 		FilterModule::getFilters()->handleFillPageAttributes(self::$CURRENT_PAGE, $this->oTemplate);
 		$this->oTemplate->replaceIdentifier("meta_keywords", self::$CURRENT_PAGE->getConsolidatedKeywords());
 		$this->oTemplate->replaceIdentifier("meta_description", self::$CURRENT_PAGE->getDescription());
@@ -340,7 +331,7 @@ class FrontendManager extends Manager {
 	}
 
 	/**
-	 * replacePageLinkIdentifier()
+	 * Used as a callback to calculate the value of `page_link` identifiers in the template.
 	 * @param TemplateIdentifier $oTemplateIdentifier The TemplateIdentifier whose name is “page_link”
 	 * @return Template the Template containing a link
 	 * used in fillAttributes to replace page_link identifiers

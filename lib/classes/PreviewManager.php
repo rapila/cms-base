@@ -13,22 +13,30 @@ class PreviewManager extends FrontendManager {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => self::getRequestedPath())));
 		}
 
+		//Fix JSON requests when using Prototype in the frontend
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
+		//Add jQuery and jQuery UI
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.8.1');
 		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', '1.8.23');
+		//Add client widget handling code
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
 		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
-		// ResourceIncluder::defaultIncluder()->addResource('widget/widget.css');
+		//Override some site styles in specific regions
 		ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
 		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
+		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
-		
+
+		//preview-interface.css contains things like the edit buttons
 		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
-		
-		$oLoginWindowWidget = new LoginWindowWidgetModule();
+
+		//Include the resources of widgets we know we’re gonna use.
+		$oLoginWindowWidget = WidgetModule::getWidget('login_window');
 		LoginWindowWidgetModule::includeResources();
-		$this->oAdminMenuWidget = new AdminMenuWidgetModule();
+		$this->oAdminMenuWidget = WidgetModule::getWidget('admin_menu');
 		AdminMenuWidgetModule::includeResources();
+		$this->oPageTypeWidget = WidgetModule::getWidget('page_type');
+		PageTypeWidgetModule::includeResources();
 	}
 	
 	protected function initLanguage() {
@@ -48,6 +56,10 @@ class PreviewManager extends FrontendManager {
 		Session::getSession()->setLanguage(AdminManager::getContentLanguage());
 	}
 	
+	protected function getXHTMLOutput() {
+		return new XHTMLOutput('html5', true, 'preview');
+	}
+	
 	public function render() {
 		if(!$this->bIsNotFound) {
 			Session::getSession()->setAttribute('persistent_page_id', self::$CURRENT_PAGE->getId());
@@ -55,17 +67,17 @@ class PreviewManager extends FrontendManager {
 		parent::render();
 		Session::getSession()->setLanguage($this->sOldSessionLanguage);
 	}
-	
-	protected function getXHTMLOutput() {
-		return new XHTMLOutput('html5', true, 'preview');
+
+	protected function fillAttributes() {
+		TemplateResourceFileModule::includeAvailableResources(get_class($this->oPageType));
+		return parent::fillAttributes();
 	}
 	
 	protected function fillContent() {
-		$oPageTypeWidget = WidgetModule::getWidget('page_type');
-		$oPageTypeWidget->setPageTypeModule($this->oPageType);
+		$this->oPageTypeWidget->setPageTypeModule($this->oPageType);
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
-		$oConstants->replaceIdentifier('page_type_widget_session', $oPageTypeWidget->getSessionKey());
+		$oConstants->replaceIdentifier('page_type_widget_session', $this->oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
 		ResourceIncluder::defaultIncluder()->addCustomJs($oConstants);
