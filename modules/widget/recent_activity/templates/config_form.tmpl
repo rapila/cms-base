@@ -1,4 +1,11 @@
 <form>
-	<label for="days">Days: </label><input type="number" name="days" />
-	<label>Modules: </label><input type="checkbox" name="models[]" value="Page" /><label for="models[]">{{writeString=module.admin.pages}}</label> <input type="checkbox" name="models[]" value="Document" /><label for="models[]">{{writeString=module.admin.documents}}</label> <input type="checkbox" name="models[]" value="Link" /><label for="models[]">{{writeString=module.admin.links}}</label>
+	<div>
+		<label for="days">{{writeString=recent_activity.days}}: </label><input type="number" name="days" />
+	</div>
+	<div class="option_list">
+		<label>{{writeString=recent_activity.modules}}: </label>
+		<label><input type="checkbox" name="models[]" value="Page" />{{writeString=module.admin.pages}}</label>
+		<label><input type="checkbox" name="models[]" value="Document" />{{writeString=module.admin.documents}}</label>
+		<label><input type="checkbox" name="models[]" value="Link" />{{writeString=module.admin.links}}</label>
+	</div>
 </form>
