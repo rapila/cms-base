@@ -95,19 +95,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	*/	
 	public static function getFrontendTemplates($bExcludeDefault = true) {
 		$aResult = array();
-		$bDefaultExists = false;
 		$sDefaultTemplate = Settings::getSetting('frontend', 'main_template', 'general');
 		foreach(Template::listTemplates(DIRNAME_TEMPLATES) as $i => $sTemplateName) {
-			if ($sDefaultTemplate === $sTemplateName) {
-				$bDefaultExists = true;
+			if (Settings::getSetting('frontend', 'main_template', 'general') === $sTemplateName && $bExcludeDefault) {
 				continue;
 			} 
 			$aResult[$i]['is_default'] = false;
 			$aResult[$i]['value'] = $sTemplateName;
 			$aResult[$i]['name'] = StringUtil::makeReadableName($sTemplateName);
-		}
-		if(!$bDefaultExists) {
-			throw new LocalizedException('wns.page.main_template_configuration_error', array('method_name' => 'PageDetailWidgetModule::getFrontendTemplates()', 'template_name' => $sDefaultTemplate.'.tmpl'));
 		}
 		$aResult[$i+1]['value'] = "";
 		$aResult[$i+1]['is_default'] = true;
