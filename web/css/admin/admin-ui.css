@@ -53,6 +53,7 @@ h3.status{padding-left:.3em}
 .page_detail .available_modules li,.page_detail .filled_modules ol.template-container li{list-style:none inside;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;padding:2px 6px;border:1px solid #ccc;margin:2px;text-align:left;background:#e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom}
 .page_detail .filled_modules ol.template-container{display:block;min-height:70px !important;min-width:150px !important;border:1px solid #eee !important;background-color:#fff;border-color:#dfdfdf;}
 .page_detail .filled_modules ol.template-container li{margin:3px;padding:5px 6px;min-height:15.6px;}
+.page_detail .filled_modules ol.template-container li.inherited_from{background:#fff url("");border:none}
 .page_detail .filled_modules ol.template-container li.language_object_empty{background:#e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom;}
 .page_detail .filled_modules ol.template-container li.language_object_empty .remove_button{display:none}
 .page_detail .filled_modules ol.template-container li .edit_condition_button{opacity:.5;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50)}

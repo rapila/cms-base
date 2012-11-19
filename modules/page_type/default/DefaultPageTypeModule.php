@@ -209,7 +209,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$sContainerName = $oContainer->getValue();
 			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
 			$bHasNoObjects = count($aObjects) === 0;
-			
+
 			$oInheritedFrom = null;
 			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
 				$oInheritedFrom = $this->oPage;
@@ -221,6 +221,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$aResult[$sContainerName]['inherited_from'] = null;
 			if($oInheritedFrom !== null) {
 				$aResult[$sContainerName]['inherited_from'] = $oInheritedFrom->getId();
+				$aResult[$sContainerName]['inherited_from_name'] = $oInheritedFrom->getName();
 			}
 			$aResult[$sContainerName]['contents'] = array();
 			foreach($aObjects as $oObject) {

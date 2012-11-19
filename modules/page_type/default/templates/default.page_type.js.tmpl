@@ -64,6 +64,16 @@
 				callback();
 			});
 		},
+		
+		update_inheritance_info: function(container, container_params) {
+			var inherited_from = container.find('li.inherited_from');
+			if(inherited_from.length === 0) {
+				var inherit_info = "{{writeString=wns.page.content_inherited_from}}";
+				inherit_info.replace("page_name_placeholder", container_params.inherited_from_name);
+				var element = jQuery('<li/>').addClass('inherited_from').html(jQuery('<span/>').addClass('module_name').text(inherit_info.replace("page_name_placeholder", container_params.inherited_from_name)));
+				element.appendTo(container);
+			}
+		},
 
 		update_admin_container: function(container, language_id) {
 			var _this = this;
@@ -111,12 +121,16 @@
 					li.attr({'data-object-type': content_params.object_type, 'data-container': container_name, 'data-object-id': content_params.id, 'data-language-id': language_id});
 					_this.update_content_properties(li, {content: content_params});
 				});
+				if(container_params.inherited_from) {
+					_this.update_inheritance_info(target, container_params);
+				}
 			});
 			
 			filled_modules_containers.sortable({
 				connectWith: filled_modules.find('ol'),
 				helper: 'clone',
 				update: function(event, ui) {
+
 					if(ui.sender) {
 						return;
 					}
@@ -124,7 +138,6 @@
 					// get final target (not original one)
 					var target = jQuery(item).parent();
 					var position = target.children().index(item);
-						
 					// just move within container
 					if(target.attr('data-container-name') === item.attr('data-container')) {
 						_this.methods.adminMoveObject(item.attr('data-object-id'), position, function() {
