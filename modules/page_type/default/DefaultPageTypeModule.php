@@ -208,21 +208,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 		foreach($aContainers as $oContainer) {
 			$sContainerName = $oContainer->getValue();
 			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
-			$bHasNoObjects = count($aObjects) === 0;
-
-			$oInheritedFrom = null;
-			if(BooleanParser::booleanForString($oContainer->getParameter('inherit')) && $bHasNoObjects) {
-				$oInheritedFrom = $this->oPage;
-				$iInheritedObjectCount = 0;
-				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
-					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
-				}
-			}
-			$aResult[$sContainerName]['inherited_from'] = null;
-			if($oInheritedFrom !== null) {
-				$aResult[$sContainerName]['inherited_from'] = $oInheritedFrom->getId();
-				$aResult[$sContainerName]['inherited_from_name'] = $oInheritedFrom->getName();
-			}
 			$aResult[$sContainerName]['contents'] = array();
 			foreach($aObjects as $oObject) {
 				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
@@ -377,8 +362,28 @@ class DefaultPageTypeModule extends PageTypeModule {
 	public function adminGetContainers() {
 		$oTemplate = $this->oPage->getTemplate();
 		foreach($oTemplate->identifiersMatching('container', Template::$ANY_VALUE) as $oIdentifier) {
-			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('span', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$oIdentifier->getValue(), null, $oIdentifier->getValue())), true)), null);
-			$oTemplate->replaceIdentifier($oIdentifier, TagWriter::quickTag('ol', array('class' => 'template-container template-container-'.$oIdentifier->getValue(), 'data-container-name' => $oIdentifier->getValue(), 'data-container-string' => StringPeer::getString('container_name.'.$oIdentifier->getValue(), null, $oIdentifier->getValue()))));
+			$oInheritedFrom = null;
+			$sContainerName = $oIdentifier->getValue();
+			if(BooleanParser::booleanForString($oIdentifier->getParameter('inherit'))) {
+				$oInheritedFrom = $this->oPage;
+				$iInheritedObjectCount = 0;
+				while ($iInheritedObjectCount === 0 && ($oInheritedFrom = $oInheritedFrom->getParent()) !== null) {
+					$iInheritedObjectCount = $oInheritedFrom->countObjectsForContainer($sContainerName);
+				}
+			}
+			$sInheritedFrom = $oInheritedFrom ? $oInheritedFrom->getName() : '';
+
+			$aTagParams = array('class' => 'template-container template-container-'.$sContainerName, 'data-container-name' => $sContainerName, 'data-container-string' => StringPeer::getString('container_name.'.$sContainerName, null, $sContainerName), 'data-inherited-from' => $sInheritedFrom);
+			$aContainerTag = TagWriter::quickTag('ol', $aTagParams);
+
+			//Replace container info
+			//…name
+			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('div', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
+			//…additional info
+			$oTemplate->replaceIdentifierMultiple($oIdentifier, TagWriter::quickTag('div', array('class' => 'template-container-info')));
+
+			//Replace actual container
+			$oTemplate->replaceIdentifier($oIdentifier, $aContainerTag);
 		}
 		
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
@@ -446,7 +451,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function cleanupContainerStructure($mTag, $oParent = null) {
 		if(!($mTag instanceof HtmlTag)) {
 			//Text node
-			if(!$oParent->hasParameter('data-container-name') && $oParent->getParameter('class') != 'template-container-description') {
+			if(!$oParent->hasParameter('data-container-name') && !StringUtil::startsWith($oParent->getParameter('class'), 'template-container-')) {
 				$oParent->removeChild($mTag);
 			}
 			return;
@@ -454,7 +459,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		foreach($mTag->getChildren() as $mChild) {
 			$this->cleanupContainerStructure($mChild, $mTag);
 		}
-		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name') && ($oParent === null || $oParent->getParameter('class') != 'template-container-description')) {
+		if(count($mTag->getChildren()) === 0 && !$mTag->hasParameter('data-container-name') && ($oParent === null || !StringUtil::startsWith($oParent->getParameter('class'), 'template-container-')) && !StringUtil::startsWith($mTag->getParameter('class'), 'template-container-')) {
 			if($oParent === null) {
 				return null;
 			}

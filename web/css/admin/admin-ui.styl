@@ -209,7 +209,6 @@ h3.status
 
 // For the default page type
 .page_detail
-
 	.filled_modules
 		min-width: 350px
 		max-width: 500px
@@ -218,9 +217,81 @@ h3.status
 		background-color: transparent
 		font-size: 4px
 		position: relative
+		&.css_parsed
+			width: 500px
+		ol.template-container
+			display: block
+			min-height: 70px !important
+			min-width: 150px !important
+			border: 1px solid #eeeeee !important
+			background-color: #FFF
+			border-color: #DFDFDF
 
-	.filled_modules.css_parsed
-		width: 500px
+			.ui-icon
+				height: 20px
+				margin: -2px 2px 0 0
+				width: 26px
+				&.ui-icon-trash
+					background: transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
+				&.ui-icon-wrench
+					background: transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
+				&.ui-icon-pencil
+					background: transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
+
+			li
+				margin: 3px
+				padding: 5px 6px
+				min-height: 15.6px
+				&.language_object_empty
+					background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
+					.remove_button
+						display: none
+			
+				.edit_condition_button
+					opacity: 0.5
+				&.has_condition
+					.edit_condition_button
+						opacity: 1
+				
+				.draft_status
+					display: none
+				&.is_draft .draft_status
+					display: inline
+					text-transform: uppercase
+					cursor: url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
+					cursor: url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
+					margin-right: -13px
+					transform: rotate(-40deg)
+					color: #AF1A15
+					background-color: rgba(255, 255, 255, 0.6)
+					border-radius: 2px
+					border: 1px solid #AF1A15
+					float: left
+					font-size: 0.6em
+					font-weight: bold
+					padding: 1px 2px 1px 3px
+					position: relative
+					left: -15px
+					top: -1px
+					&:hover
+						opacity: 0.5
+
+
+		ol.template-container li,
+		.template-container-description,
+		.template-container-info
+			white-space nowrap
+			font-size 12px
+		.template-container-description,
+		.template-container-info
+			color #666666
+			margin 0
+		.template-container-description
+			margin-top 1em
+		.template-container-info
+			margin-top 0.2em
+			position absolute
+			font-style italic
 
 	.available_modules
 		min-width: 125px
@@ -243,85 +314,12 @@ h3.status
 		margin: 2px
 		text-align: left
 		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom
-		
-	.filled_modules ol.template-container
-		display: block
-		min-height: 70px !important
-		min-width: 150px !important
-		border: 1px solid #eeeeee !important
-		background-color: #FFF
-		border-color: #DFDFDF
-
-		li
-			margin: 3px
-			padding: 5px 6px
-			min-height: 15.6px
-			&.inherited_from
-				background: white url('');
-				border: none
-			&.language_object_empty
-				background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
-				.remove_button
-					display: none
-			
-			.edit_condition_button
-				opacity: 0.5
-			&.has_condition
-				.edit_condition_button
-					opacity: 1
-				
-			.draft_status
-				display: none
-			&.is_draft .draft_status
-				display: inline
-				text-transform: uppercase
-				cursor: url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
-				cursor: url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
-				margin-right: -13px
-				transform: rotate(-40deg)
-				color: #AF1A15
-				background-color: rgba(255, 255, 255, 0.6)
-				border-radius: 2px
-				border: 1px solid #AF1A15
-				float: left
-				font-size: 0.6em
-				font-weight: bold
-				padding: 1px 2px 1px 3px
-				position: relative
-				left: -15px
-				top: -1px
-				&:hover
-					opacity: 0.5
-
-	.ui-widget-content .template-container .ui-icon
-		height: 20px
-		margin: -2px 2px 0 0
-		width: 26px
-
-	.ui-widget-content .template-container .ui-icon.ui-icon-trash
-		background: transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
-
-	.ui-widget-content .template-container .ui-icon.ui-icon-wrench
-		background: transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
-
-	.ui-widget-content .template-container .ui-icon.ui-icon-pencil
-		background: transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
 
 	.available_modules li
 		padding: 0px 5px
 		margin: 0 0 -1px 0
 		background-color: #f2f2f2
 		z-index: 2
-
-	.filled_modules ol.template-container li,
-	.template-container-description
-		white-space: nowrap
-		font-size: 12px
-
-	.template-container-description
-		display:block
-		margin-top: 1em
-		color: #666666
 
 	div.ui-widget-content
 		border: 0
