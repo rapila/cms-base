@@ -3,165 +3,161 @@
 @import "nib"
 
 .ui-corner-all
-	border-radius: 3px;
+	border-radius 3px;
 
 .ui-selectable-helper
-	z-index: 4000 !important
+	z-index 4000 !important
 
 .ui-notify
-	margin-left: auto
-	margin-right: auto
-	width: auto
+	margin-left auto
+	margin-right auto
+	width auto
 
 	.ui-state-highlight
-		background-image: none
+		background-image none
 
 	&.search_info
-		min-width: 50em
-		padding: .5em
-		vertical-align: top
+		min-width 50em
+		padding 0.5em
+		vertical-align top
 
 	ul
-		margin: 0
-		padding: 0
+		margin 0
+		padding 0
 		
 	.ui-state-error ul
-		margin-left: .5em
-		list-style: none
+		margin-left 0.5em
+		list-style none
 
 	li
-		margin: 0
-		margin-left: 1.3em
+		margin 0
+		margin-left 1.3em
 		padding:.2em 0
 
 .ui-loading
-	background: transparent url("../../images/admin/loader.gif") no-repeat scroll top left
-	min-width: 24px
-	min-height: 24px
+	background transparent url("../../images/admin/loader.gif") no-repeat scroll top left
+	min-width 24px
+	min-height 24px
 
 .ui-loading-add
-	background: transparent url("../../images/admin/loader_add_button.gif") no-repeat scroll top left
-	min-width: 24px
-	min-height: 24px
+	background transparent url("../../images/admin/loader_add_button.gif") no-repeat scroll top left
+	min-width 24px
+	min-height 24px
 
-.ui-notify > div
-	padding: 0.3em
-
-.ui-notify .ui-icon
-	float: left
-	margin-right: 10px
+.ui-notify 
+	> div
+		padding 0.3em
+	.ui-icon
+		float left
+		margin-right 10px
 
 .ui-icon-application
 	background-position:-32px -96px
 .ui-icon-audio
 	background-position:-144px -160px
 .ui-icon-text
-	background-position: -240px -128px
+	background-position -240px -128px
 
 .ui-state-default,
 #admin_sidebar .ui-state-default
-	background: transparent
+	background transparent
 
-.rapila_alert.ui-dialog-content
-	background-color: #2D3238
-	color: #FFF
-	padding-bottom: 0px
-
-.rapila_alert.ui-dialog-content p
-	font-size: 1.1em
-
-.rapila_alert .ui-icon-alert
-	display:block
-	float: left
-	
-.rapila_alert.ui-dialog-content span.text
-	display: block
-	margin-left: 1.5em
-
-.rapila_alert.ui-dialog-content .ui-icon
-	background-image: url("theme/images/ui-icons_b8d600_256x240.png")
+.rapila_alert
+	&.ui-dialog-content
+		background-color #2D3238
+		color #FFF
+		padding-bottom 0px
+	&.ui-dialog-content p
+		font-size 1.1em
+	&.ui-icon-alert
+		display:block
+		float left
+	&.ui-dialog-content span.text
+		display block
+		margin-left 1.5em
+	&.ui-dialog-content .ui-icon
+		background-image url("theme/images/ui-icons_b8d600_256x240.png")
 
 #admin_sidebar
 	.ui-tree,
 	.ui-list,
 	.ui-list-row.ui-state-active,
 	.ui-list-row.ui-state-hover
-		font-weight: 700
+		font-weight 700
 
 	.ui-tree li.ui-state-active li
-		color: #000
+		color #000
 
 	.ui-state-droppable
-		background-image: none
+		background-image none
 
 	span.sidebar_input_save
-		float: right
-		margin-top: 2px
-		display: none
-		height: 16px
-		width: 16px
+		float right
+		margin-top 2px
+		display none
+		height 16px
+		width 16px
 
 	span.sidebar_input_save.active
-		display: inline-block
+		display inline-block
 
 form.page_detail
-	background-color: #FFF
-	margin: 0
-	padding: 0
-	vertical-align: top
+	background-color #FFF
+	margin 0
+	padding 0
+	vertical-align top
 
-/*form.page_detail h3,*/
 form.page_detail .status_section,
 .pages #admin_main,
 .ui-widget-content h3
-	background-color: #ebedef
+	background-color #ebedef
 
 form.page_detail .ui-state-active,
 form.page_detail .ui-widget-content .ui-state-active
-	background-image: none
+	background-image none
 
-form.page_detail .status_section
-	border-top: none
-	border-bottom: #C1C2C4 1px solid
-	padding-bottom: .5em
-	padding-left: 1.6em
-
-form.page_detail .status_section h3
-	border-bottom: none
+form.page_detail 
+	.status_section
+		border-top none
+		border-bottom #C1C2C4 1px solid
+		padding-bottom 0.5em
+		padding-left 1.6em
+		h3
+			border-bottom none
 
 .status_section h3
-	font-size: 12px
-	background-color: transparent
-	border-bottom: none
-	margin-bottom: .5em
+	font-size 12px
+	background-color transparent
+	border-bottom none
+	margin-bottom 0.5em
 
 form.page_detail h3 a,
 .ui-dialog-content h3 a
-	text-decoration: none
-	color: #666
+	text-decoration none
+	color #666
 
 form.page_detail label.for_checkbox,
 input[type=checkbox] + label.for_checkbox
-	margin-right: 2em
+	margin-right 2em
 	padding-left:.2em
-	display: inline-block
-	padding-right: 0.5em
+	display inline-block
+	padding-right 0.5em
 
 h3.status
-	padding-left: .3em
+	padding-left 0.3em
 
 // List style for the content area (mostly table lists)
 .ui-list
 	.ui-list-row.ui-state-hover,
 	.ui-list-row.ui-state-active
-		background-image: url('theme/images/selected_row.png')
-		background-repeat: repeat
-		background-attachment: scroll
-		border: 0
+		background-image url('theme/images/selected_row.png')
+		background-repeat repeat
+		background-attachment scroll
+		border 0
 
 	tr.ui-list-row.ui-state-hover .ui-icon,
 	tr.ui-list-row.ui-state-highlight .ui-icon
-		background-image: url("theme/images/ui-icons_000000_256x240.png");
+		background-image url("theme/images/ui-icons_000000_256x240.png");
 
 #admin_sidebar .ui-list th:first-child
 	padding-left:5px
@@ -169,112 +165,110 @@ h3.status
 //List style for the sidebar (mostly ul lists)
 #admin_sidebar
 	.ui-list
-		.ui-list-row.ui-state-hover,
-		.ui-list-row.ui-state-active
-			border: none
-			background-color: sidebar_highlight_color
-			background-image: none
-			border-bottom: 1px solid border_color
-
-		.ui-list-row.ui-state-highlight
-			border: none
-			background-image: none
-			border-bottom: 1px solid border_color
-
 		.ui-list-row
-			cursor: pointer
-			background-color: transparent
-
-		.ui-state-active
-			color: white
-
-		.ui-list-row
-			font-size: 1.2em
-			padding: 3px 3px 3px 10px
-			border-bottom: 1px solid #DDD
-			line-height: 20px
-
-		ol > li.ui-list-row.ui-state-hover
-			border: none
-
+			cursor pointer
+			background-color transparent
+			font-size 1.2em
+			padding 3px 3px 3px 10px
+			border-bottom 1px solid #DDD
+			line-height 20px
+			&.ui-state-hover,
+			&.ui-state-active
+				border none
+				background-color sidebar_highlight_color
+				background-image none
+				border-bottom 1px solid border_color
+				color #fff
+			&.ui-state-highlight
+				border none
+				background-image none
+				border-bottom 1px solid border_color
+		
 		.ui-list-row,
 		.ui-list-row .ui-list-cell:first-child
-			padding-left: 5px
+			padding-left 5px
+
+		.ui-state-active
+			color white
+
+		ol > li.ui-list-row.ui-state-hover
+			border none
+
 
 		li.ui-list-headrow span
-			padding-left: 5px
+			padding-left 5px
 
 		th
-			line-height: 14px
+			line-height 14px
 
 // For the default page type
 .page_detail
 	.filled_modules
-		min-width: 350px
-		max-width: 500px
-		min-height: 300px
+		min-width 350px
+		max-width 500px
+		min-height 300px
 		float:left
-		background-color: transparent
-		font-size: 4px
-		position: relative
+		background-color transparent
+		font-size 4px
+		position relative
 		&.css_parsed
-			width: 500px
+			width 500px
 		ol.template-container
-			display: block
-			min-height: 70px !important
-			min-width: 150px !important
-			border: 1px solid #eeeeee !important
-			background-color: #FFF
-			border-color: #DFDFDF
+			display block
+			min-height 70px !important
+			min-width 150px !important
+			border 1px solid #eeeeee !important
+			background-color #FFF
+			border-color #DFDFDF
 
 			.ui-icon
-				height: 20px
-				margin: -2px 2px 0 0
-				width: 26px
+				height 20px
+				margin -2px 2px 0 0
+				width 26px
 				&.ui-icon-trash
-					background: transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
+					background transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
 				&.ui-icon-wrench
-					background: transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
+					background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
 				&.ui-icon-pencil
-					background: transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
+					background transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
 
 			li
-				margin: 3px
-				padding: 5px 6px
-				min-height: 15.6px
+				margin 3px
+				padding 5px 6px
+				min-height 15.6px
 				&.language_object_empty
-					background: #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
+					background #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
 					.remove_button
-						display: none
+						display none
 			
 				.edit_condition_button
-					opacity: 0.5
+					opacity 0.5
 				&.has_condition
 					.edit_condition_button
-						opacity: 1
+						opacity 1
 				
 				.draft_status
-					display: none
+					display none
 				&.is_draft .draft_status
-					display: inline
-					text-transform: uppercase
-					cursor: url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
-					cursor: url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
-					margin-right: -13px
-					transform: rotate(-40deg)
-					color: #AF1A15
-					background-color: rgba(255, 255, 255, 0.6)
-					border-radius: 2px
-					border: 1px solid #AF1A15
-					float: left
-					font-size: 0.6em
-					font-weight: bold
-					padding: 1px 2px 1px 3px
-					position: relative
-					left: -15px
-					top: -1px
+					display inline
+					text-transform uppercase
+					cursor url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
+					cursor url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
+					margin-right -13px
+					transform rotate(-40deg)
+					color #AF1A15
+					background-color rgba(255, 255, 255, 0.6)
+					border-radius 2px
+					border 1px solid #AF1A15
+					float left
+					font-size 0.6em
+					font-weight bold
+					padding 1px 2px 1px 3px
+					position relative
+					left -15px
+					top -1px
 					&:hover
-						opacity: 0.5
+						opacity 0.5
 
 
 		ol.template-container li,
@@ -294,38 +288,38 @@ h3.status
 			font-style italic
 
 	.available_modules
-		min-width: 125px
-		max-width: 250px
-		margin: 15px 0 0 26px
-		min-height: 150px
-		padding: 0
+		min-width 125px
+		max-width 250px
+		margin 15px 0 0 26px
+		min-height 150px
+		padding 0
 		float:left
 		li > *
-			display: none
+			display none
 		li > .module_name
-			display: inline
+			display inline
 
 	.available_modules li,
 	.filled_modules ol.template-container li
-		list-style: none inside
-		border-radius: 3px
-		padding: 2px 6px
-		border: 1px solid #ccc
-		margin: 2px
-		text-align: left
-		background: #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom
+		list-style none inside
+		border-radius 3px
+		padding 2px 6px
+		border 1px solid #ccc
+		margin 2px
+		text-align left
+		background #e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom
 
 	.available_modules li
-		padding: 0px 5px
-		margin: 0 0 -1px 0
-		background-color: #f2f2f2
-		z-index: 2
+		padding 0px 5px
+		margin 0 0 -1px 0
+		background-color #f2f2f2
+		z-index 2
 
 	div.ui-widget-content
-		border: 0
+		border 0
 
 .ui-icon-trash.delete_inactive
-	background-image: none
+	background-image none
 
 
 /* Interaction Cues addition
@@ -333,86 +327,86 @@ h3.status
 
 #admin_sidebar .ui-state-droppable,
 .image_browse_area.ui-state-droppable
-	color: #5b595b
-	cursor: pointer
+	color #5b595b
+	cursor pointer
 
 .pointer
-	cursor: pointer
+	cursor pointer
 
 .image_browse_area.ui-state-droppable,
 div.ui-state-droppable
-	border: 1px solid #b8d600
-	cursor: pointer
+	border 1px solid #b8d600
+	cursor pointer
 	
 .image_browse_area.ui-state-droppable
-	background-color: #e3ef99
+	background-color #e3ef99
 
 .ui-state-droppable a,
 .ui-widget-content .ui-state-droppable a
-	color: #5b595b
-	cursor: pointer
+	color #5b595b
+	cursor pointer
 
 *[data-widget-type=tree].ui-widget-content
 	.ui-icon
-		background-image: url("../../images/admin/icon_triangle_open_active.png")
-		background-position: 6px 6px
+		background-image url("../../images/admin/icon_triangle_open_active.png")
+		background-position 6px 6px
 
 	.jstree-closed > .ui-icon
-		background-image: url("../../images/admin/icon_triangle_closed.png")
-		background-position: 6px 5px
+		background-image url("../../images/admin/icon_triangle_closed.png")
+		background-position 6px 5px
 
 	.jstree-closed > .ui-icon:hover
-		background-image: url("../../images/admin/icon_triangle_closed_active.png")
-		background-position: 6px 5px
+		background-image url("../../images/admin/icon_triangle_closed_active.png")
+		background-position 6px 5px
 
 .users fieldset.option_groups
-	padding: 0 0 .6em 0
+	padding 0 0 0.6em 0
 
 .ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,
 .ui-accordion .ui-accordion-content.configuration_container	 div.ui-widget-content
-	padding: 0
-	border-color: #CCCDCF
+	padding 0
+	border-color #CCCDCF
 
 label span.error_display:before,
 legend span.error_display:before
-	content: ' '
+	content ' '
 
 label span.error_display,
 legend span.error_display,
 .error_display
-	color: red
+	color red
 
 .delete_drop_zone
-	float: left
-	height: 100px
-	margin: 23px 2px 2px 2px
-	padding: 2px
-	width: 100px
+	float left
+	height 100px
+	margin 23px 2px 2px 2px
+	padding 2px
+	width 100px
 
 .add_entry, .remove_entry
-	height: 24px
-	width: 24px
-	margin-top: .2em
-	display: inline-block
-	cursor: pointer
+	height 24px
+	width 24px
+	margin-top 0.2em
+	display inline-block
+	cursor pointer
 
 td span.remove_entry
-	margin: 0
+	margin 0
 
 .delete_entry
-	margin-left: 0.8em;
-	display: inline-block;
-	cursor: pointer
+	margin-left 0.8em;
+	display inline-block;
+	cursor pointer
 
 .error_display_indicator
-	background-image: url("../../images/admin/error_display_indicator_bg.png") !important
-	background-repeat: no-repeat !important
-	background-position: left top !important
+	background-image url("../../images/admin/error_display_indicator_bg.png") !important
+	background-repeat no-repeat !important
+	background-position left top !important
 
 .ui-progressbar
-	margin-top: .3em
-	height: 1.5em
-	background-color: #999
+	margin-top 0.3em
+	height 1.5em
+	background-color #999
 
 noscript
 	text-align center
