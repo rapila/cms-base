@@ -30,8 +30,12 @@ class TagPeer extends BaseTagPeer {
 	}
 
 	public static function droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId) {
-		TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
-		return 'tagged';
+		try {
+			TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
+			return 'tagged';
+		} catch (Exception $e) {
+			return 're-tagged';
+		}
 	}
 	
 	public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {
