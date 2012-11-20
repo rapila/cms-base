@@ -31,10 +31,8 @@ Widget.types.link_detail = {
 		}, jQuery.noop);
 	},
 
-	
 	fill_data: function() {
-		this.detail_widget.disable();		
-		var _this = this;
+		this.detail_widget.disable();
 		this.linkData(function(link_data) {
 			if(link_data.LinkCategoryId === null) {
 				link_data.LinkCategoryId = '';
@@ -46,7 +44,7 @@ Widget.types.link_detail = {
 				url_preview.attr('href', link_data.Url);
 			}
 			
-			if(!_this.settings.predefined_link_category_id) {
+			if(!this.settings.predefined_link_category_id) {
 				this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
 			}
 			this.content.find("textarea[name='description']").val(link_data.Description);
