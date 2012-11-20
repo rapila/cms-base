@@ -11,7 +11,7 @@ li.jstree-last.jstree-leaf {
 	height: 25px;
 	min-height: 25px;
 }
-*[data-widget-type=tree] li a,
+*[data-widget-type=tree] li > a,
 *[data-widget-type=tree] li ins {
 	height: 25px;
 	line-height: 25px;
@@ -20,7 +20,7 @@ li.jstree-last.jstree-leaf {
 *[data-widget-type=tree] { list-style: none inside; }
 
 *[data-widget-type=tree] li,
-*[data-widget-type=tree] li a ins {
+*[data-widget-type=tree] li > a ins {
 	clear: left;
 	cursor: pointer;
 }
@@ -39,14 +39,14 @@ li.jstree-last.jstree-leaf {
 
 *[data-widget-type=tree] .tree-opener.no-children { background-image: none; }
 
-*[data-widget-type=tree] li a,
-*[data-widget-type=tree] li a.ui-state-default {
+*[data-widget-type=tree] li > a,
+*[data-widget-type=tree] li > a.ui-state-default {
   color: #444444;
   font-weight: 700;
   text-decoration: none;
 }
 
-*[data-widget-type=tree] li.page_is_inactive a {
+*[data-widget-type=tree] li.page_is_inactive > a {
   color: #888888;
 }
 
@@ -83,16 +83,7 @@ li.jstree-last.jstree-leaf {
 }
 
 *[data-widget-type=tree] li.ui-state-hover > a,
-*[data-widget-type=tree] li.ui-state-active li.ui-state-hover > a,
-*[data-widget-type=tree] li.ui-state-hover li.ui-state-active > a,
-*[data-widget-type=tree] li.ui-state-active,
 *[data-widget-type=tree] li.ui-state-active > a { color: white; }
-
-
-*[data-widget-type=tree] li.ui-state-hover li a,
-*[data-widget-type=tree] li.ui-state-active li a {
-	color: #444444;
-}
 
 *[data-widget-type=tree] li li,
 *[data-widget-type=tree] li li.ui-state-hover,
@@ -212,5 +203,4 @@ body #jstree-marker {
 	border:1px solid #e3ef99; border-left:0;
 	z-index: 10000;
 }
-
 
