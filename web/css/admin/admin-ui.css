@@ -1,4 +1,4 @@
-.ui-corner-all{-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px}
+.ui-corner-all{-webkit-border-radius:3px;border-radius:3px}
 .ui-selectable-helper{z-index:4000 !important}
 .ui-notify{margin-left:auto;margin-right:auto;width:auto;}
 .ui-notify .ui-state-highlight{background-image:none}
@@ -50,16 +50,16 @@ h3.status{padding-left:.3em}
 .page_detail .available_modules{min-width:125px;max-width:250px;margin:15px 0 0 26px;min-height:150px;padding:0;float:left;}
 .page_detail .available_modules li > *{display:none}
 .page_detail .available_modules li > .module_name{display:inline}
-.page_detail .available_modules li,.page_detail .filled_modules ol.template-container li{list-style:none inside;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;padding:2px 6px;border:1px solid #ccc;margin:2px;text-align:left;background:#e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom}
+.page_detail .available_modules li,.page_detail .filled_modules ol.template-container li{list-style:none inside;-webkit-border-radius:3px;border-radius:3px;padding:2px 6px;border:1px solid #ccc;margin:2px;text-align:left;background:#e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom}
 .page_detail .filled_modules ol.template-container{display:block;min-height:70px !important;min-width:150px !important;border:1px solid #eee !important;background-color:#fff;border-color:#dfdfdf;}
 .page_detail .filled_modules ol.template-container li{margin:3px;padding:5px 6px;min-height:15.6px;}
 .page_detail .filled_modules ol.template-container li.language_object_empty{background:#e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom;}
 .page_detail .filled_modules ol.template-container li.language_object_empty .remove_button{display:none}
-.page_detail .filled_modules ol.template-container li .edit_condition_button{opacity:.5;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50)}
-.page_detail .filled_modules ol.template-container li.has_condition .edit_condition_button{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
+.page_detail .filled_modules ol.template-container li .edit_condition_button{opacity:.5 ;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50) ;filter:alpha(opacity=50) }
+.page_detail .filled_modules ol.template-container li.has_condition .edit_condition_button{opacity:1 ;-ms-filter:none;filter:none}
 .page_detail .filled_modules ol.template-container li .draft_status{display:none}
-.page_detail .filled_modules ol.template-container li.is_draft .draft_status{display:inline;text-transform:uppercase;cursor:url("../../icons/admin/cursor-remove.png"),not-allowed;cursor:url("../../icons/admin/cursor-remove.png") 3px 3px,not-allowed;margin-right:-13px;-webkit-transform:rotate(-40deg);-moz-transform:rotate(-40deg);transform:rotate(-40deg);color:#af1a15;background-color:rgba(255,255,255,0.60);-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px;border:1px solid #af1a15;float:left;font-size:.6em;font-weight:bold;padding:1px 2px 1px 3px;position:relative;left:-15px;top:-1px;}
-.page_detail .filled_modules ol.template-container li.is_draft .draft_status:hover{opacity:.5;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50)}
+.page_detail .filled_modules ol.template-container li.is_draft .draft_status{display:inline;text-transform:uppercase;cursor:url("../../icons/admin/cursor-remove.png"),not-allowed;cursor:url("../../icons/admin/cursor-remove.png") 3px 3px,not-allowed;margin-right:-13px;-webkit-transform:rotate(-40deg);-moz-transform:rotate(-40deg);-o-transform:rotate(-40deg);-ms-transform:rotate(-40deg);transform:rotate(-40deg);color:#af1a15;background-color:rgba(255,255,255,0.60);-webkit-border-radius:2px;border-radius:2px;border:1px solid #af1a15;float:left;font-size:.6em;font-weight:bold;padding:1px 2px 1px 3px;position:relative;left:-15px;top:-1px;}
+.page_detail .filled_modules ol.template-container li.is_draft .draft_status:hover{opacity:.5 ;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50) ;filter:alpha(opacity=50) }
 .page_detail .ui-widget-content .template-container .ui-icon{height:20px;margin:-2px 2px 0 0;width:26px}
 .page_detail .ui-widget-content .template-container .ui-icon.ui-icon-trash{background:transparent url("../../images/admin/icon_trash.png") no-repeat center bottom}
 .page_detail .ui-widget-content .template-container .ui-icon.ui-icon-wrench{background:transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom}
