@@ -1,7 +1,7 @@
 Widget.types.tag_panel = {
 	initialize: function() {
 		var _this = this;
-		this.panel = jQuery('<div/>').addClass('tag_panel ui-corner-all ui-widget-content').css({visibility: 'hidden'}).appendTo(document.body);
+		this.panel = jQuery('<div/>').addClass('tag_panel ui-corner-all ui-widget-content').css({visibility: 'hidden'}).appendTo(document.body).css(this.settings.panel_style);
 		Widget.createWithElement('tag_area', function(tag_area) {
 			tag_area.handle('element_set', function(event, element) {
 				_this.panel.prepend(element);
@@ -41,36 +41,63 @@ Widget.types.tag_panel = {
 		return this.panel.is(":visible");
 	},
 	
-	hide: function(from) {
+	hide: function(to) {
 		if(this.panel.css('visibility') === 'hidden') {
 			this.panel.hide().css('visibility', '');
 		}
-		if(!from) {
-			from = 'above'; //Currently the only supported orientation
+		if(!to) {
+			to = 'above'; //Currently the only supported orientation
 		}
-		this.panel.animate({opacity: 0, top: this.panel.position().top-this.panel.height()}, {
-			complete: this.panel.hide.bind(this.panel)
-		});
-	},
-	
-	show_at: function(position, from) {
-		if(this.panel.css('visibility') === 'hidden') {
-			this.panel.hide().css('visibility', '');
-		}
-		if(!from) {
-			from = 'above'; //Currently the only supported orientation
-		}
-		position.left -= this.panel.width()/2;
-		this.panel.css({opacity: 0, left: position.left, top: position.top-this.panel.height()});
-		this.panel.show();
-		this.panel.animate({opacity: 1, top: position.top});
-	},
-	
-	toggle_at: function(position) {
-		if(this.is_visible()) {
-			this.hide();
+		var destination = {opacity: 0};
+		if(to === 'above' || to === 'below') {
+			destination[to === 'above' ? 'top' : 'bottom'] = -this.panel.height();
 		} else {
-			this.show_at(position);
+			destination[to] = -this.panel.width();
+		}
+		this.panel.animate(destination, {complete: jQuery.fn.hide.bind(this.panel)});
+	},
+	
+	show_at: function(origin, from) {
+		origin = jQuery.extend({
+			left: undefined,
+			right: undefined,
+			top: undefined,
+			bottom: undefined
+		}, origin);
+		if(this.panel.css('visibility') === 'hidden') {
+			this.panel.hide().css('visibility', '');
+		}
+		if(!from) {
+			from = 'above'; //Currently the only supported orientation
+		}
+		var initial = jQuery.extend({opacity: 0}, origin);
+		if(from === 'above') {
+			initial.top = -this.panel.height();
+		} else if(from === 'below') {
+			initial.bottom = -this.panel.height();
+		} else if(from === 'left') {
+			initial.left = -this.panel.width();
+		} else if(from === 'right') {
+			initial.right = -this.panel.width();
+		}
+		this.panel.css(initial);
+		this.panel.show();
+		var destination = jQuery.extend({opacity: 1}, origin);
+		this.panel.animate(destination);
+	},
+	
+	toggle_at: function(origin, from) {
+		if(this.is_visible()) {
+			this.hide(from);
+		} else {
+			this.show_at(origin, from);
+		}
+	},
+	
+	settings: {
+		panel_style: {
+			width: null,
+			height: null
 		}
 	}
 };

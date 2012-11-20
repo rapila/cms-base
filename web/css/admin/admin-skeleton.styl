@@ -33,7 +33,7 @@ body
 	background-image url('../../images/admin/loader_big.gif')
 	background-position center center
 	z-index 10001
-			
+
 #admin_sidebar, #admin_main
 	overflow-y auto
 	position absolute
@@ -81,7 +81,7 @@ body
 		padding 0
 		margin 0
 
-#admin_info_bar 
+#admin_info_bar
 	left 0
 	right 0
 	height info_bar_height
@@ -100,18 +100,19 @@ body
 		border-right border
 		margin-left -(sidebar_resizer_width)
 		float left
-	.infobar_right 
-		position relative
+	.infobar_right
+		position absolute
 		left initial_sidebar_width
-		max-width 75em
-		min-width 40em
-		margin-right initial_sidebar_width + 30px
+		right 0
 		form
 			margin-left 24px
 		input
 			float left
 			width 20em
 			font-size 0.95em
+		.infobar_commons
+			position absolute
+			right 0
 	.infobar_left
 		position absolute
 	.info-bar-element
@@ -119,6 +120,9 @@ body
 		height info_bar_height
 		border none
 		border-right border
+		&.rapila-icon
+			font-size 1.2em
+			color #666666
 	select.info-bar-element
 		vertical-align middle
 		padding 4px 0 2px
@@ -146,8 +150,6 @@ body
 		display block
 		line-height info_bar_height
 		vertical-align middle
-
-#admin_info_bar 
 	.search_field
 		padding 0 4px
 	.search_button
