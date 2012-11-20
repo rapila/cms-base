@@ -42,7 +42,7 @@ Widget.types.detail = {
 			instance.fill_data = old_fill_data;
 			jQuery.extend(detail.settings, instance.settings.detail_widget);
 			detail.set_instance(instance);
-			instance.fire('opened');
+			instance.fire('detail-created');
 			if(instance.auto_open) {
 				detail.open();
 			}
@@ -128,6 +128,9 @@ Widget.types.detail = {
 	
 	open: function() {
 		this.fire('opening');
+		if(this.instance) {
+			this.instance.fire('opening');
+		}
 		if(this.has_dialog) {
 			this.clear_validation();
 			this.content.dialog('open');
@@ -135,6 +138,9 @@ Widget.types.detail = {
 			return;
 		}
 		this.fire('opening-initial');
+		if(this.instance) {
+			this.instance.fire('opening-initial');
+		}
 		this.loader.appendTo(this.content).hide();
 		var detail_widget = this;
 		var buttons = [
@@ -180,6 +186,10 @@ Widget.types.detail = {
 		});
 		this.select();
 		this.has_dialog = true;
+		this.fire('opened');
+		if(this.instance) {
+			this.instance.fire('opened');
+		}
 	},
 	
 	close: function() {
