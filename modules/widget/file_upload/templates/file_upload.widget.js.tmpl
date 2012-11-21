@@ -18,8 +18,8 @@ Widget.types.file_upload = {
 		var _this = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
-			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
-			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
+			current_drag_is_file = event.dataTransfer && (event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files"));
+			if(single_file_only && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
 				return;
 			}
@@ -48,7 +48,7 @@ Widget.types.file_upload = {
 				el.removeClass('ui-state-droppable-hover');
 			}
 		}).bind('drop', function(event) {
-			if(single_file_only && event.dataTransfer.files.length > 1) {
+			if(!event.dataTransfer || (single_file_only && event.dataTransfer.files.length > 1)) {
 				return false;
 			}
 			var target = jQuery(event.target), callback_result = null;

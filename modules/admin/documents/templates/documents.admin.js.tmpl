@@ -50,7 +50,7 @@ jQuery(document).ready(function() {
 			if(content_list.changed) {
 				content_list.reload();
 			}
-		}).add_row_count_info_for_list(content_list);	
+		}).add_row_count_info_for_list(content_list).add_tag_panel();
 		
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());

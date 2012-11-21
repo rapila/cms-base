@@ -9,7 +9,9 @@ Widget.types.model_drag_and_drop = {
 		if(!droppable_only) {
 			element.draggable({
 				revert: 'invalid',
-				helper: 'clone'
+				helper: 'clone',
+				zIndex: 2500,
+				appendTo: document.body
 			});
 		}
 		element.droppable({
@@ -23,10 +25,13 @@ Widget.types.model_drag_and_drop = {
 			drop: function(event, ui) {
 				var draggable = ui.draggable;
 				var dragged_model = draggable.attr('data-model-name');
-				var draggable_item_id = draggable.attr('data-item-id');
-				_this.drop(dragged_model, draggable_item_id, model_name, item_id, function(success) {
+				var dragged_item_id = draggable.attr('data-item-id');
+				if(!dragged_model || !dragged_item_id) {
+					return;
+				}
+				_this.drop(dragged_model, dragged_item_id, model_name, item_id, function(success) {
 					if(success) {
-						_this.fire('model_drag_and_drop-'+success, dragged_model, draggable_item_id, model_name, item_id);
+						_this.fire('model_drag_and_drop-'+success, dragged_model, dragged_item_id, model_name, item_id);
 					}
 				});
 			},

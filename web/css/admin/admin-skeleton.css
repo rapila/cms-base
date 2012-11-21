@@ -3,7 +3,7 @@ body{font-size:.75em;margin:0 0;}
 body .login h1{text-align:center;font-size:5em;color:#c2c2c2}
 #admin_area,#admin_info_bar,#viewscreen_loader{position:absolute;overflow:hidden;left:0;right:0}
 #admin_area{top:31px;bottom:25px;background-color:#fff}
-#viewscreen_loader{top:31px;left:0;right:0;bottom:0;background-color:rgba(220,220,220,0.50);background-repeat:no-repeat;background-image:url("../../images/admin/loader_big.gif");background-position:center center;z-index:10001}
+#viewscreen_loader{top:31px;left:0;right:0;bottom:0;background-color:rgba(220,220,220,0.5);background-repeat:no-repeat;background-image:url("../../images/admin/loader_big.gif");background-position:center center;z-index:10001}
 #admin_sidebar,#admin_main{overflow-y:auto;position:absolute;top:0;bottom:0;background-color:#f6f6f6}
 #admin_main{padding:0 2px 0 0;border-left:1px solid #d4d8dc;overflow-y:scroll;left:0}
 #admin_sidebar + #admin_main{left:277px}
@@ -17,11 +17,13 @@ body .login h1{text-align:center;font-size:5em;color:#c2c2c2}
 #admin_info_bar{left:0;right:0;height:24px;bottom:0;border-top:1px solid #d4d8dc;}
 #admin_info_bar .infobar_context{position:relative}
 #admin_info_bar .sidebar_resizer{position:relative;background-image:url("../../images/admin/sidebar_resizer.png");width:20px;height:24px;left:277px;cursor:ew-resize;padding-right:0;border-right:1px solid #d4d8dc;margin-left:-20px;float:left}
-#admin_info_bar .infobar_right{position:relative;left:277px;max-width:75em;min-width:40em;margin-right:307px;}
+#admin_info_bar .infobar_right{position:absolute;left:277px;right:0;}
 #admin_info_bar .infobar_right form{margin-left:24px}
 #admin_info_bar .infobar_right input{float:left;width:20em;font-size:.95em}
+#admin_info_bar .infobar_right .infobar_commons{position:absolute;right:0}
 #admin_info_bar .infobar_left{position:absolute}
-#admin_info_bar .info-bar-element{float:left;height:24px;border:none;border-right:1px solid #d4d8dc}
+#admin_info_bar .info-bar-element{float:left;height:24px;border:none;border-right:1px solid #d4d8dc;}
+#admin_info_bar .info-bar-element.rapila-icon{font-size:1.2em;color:#666}
 #admin_info_bar select.info-bar-element{vertical-align:middle;padding:4px 0 2px}
 #admin_info_bar .info-bar-button{width:24px;background-color:transparent;background-repeat:no-repeat;background-position:center center;padding-right:1px;cursor:pointer}
 #admin_info_bar .info-bar-element{line-height:24px;vertical-align:middle;}
