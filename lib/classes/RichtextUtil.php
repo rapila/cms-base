@@ -136,17 +136,22 @@ class RichtextUtil {
 	}
 	
 	public static function internalLinkCallback($oIdentifier) {
-		$oPage = PageQuery::create()->findPk($oIdentifier->getValue());
+		$aValue = explode('/', $oIdentifier->getValue());
+		$iId = array_shift($aValue);
+		$oPage = PageQuery::create()->findPk($iId);
 		if($oPage) {
-			$sLink = self::getLink($oPage->getFullPathArray(), "FrontendManager");
+			$sLink = self::getLink(array_merge($oPage->getFullPathArray(), $aValue), "FrontendManager");
 			return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier, null, $oPage);
 		}
 	}
 	
 	public static function internalLinkCallbackBe($oIdentifier) {
-		$oPage = PageQuery::create()->findPk($oIdentifier->getValue());
+		$aValue = explode('/', $oIdentifier->getValue());
+		$iId = $aValue[0];
+		$oPage = PageQuery::create()->findPk($iId);
+		array_unshift($aValue, 'internal_link_proxy');
 		if($oPage) {
-			$sLink = self::getLink(array('internal_link_proxy', $oPage->getId()), 'FileManager');
+			$sLink = self::getLink($aValue, 'FileManager');
 			return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier, null, $oPage);
 		}
 	}
@@ -250,10 +255,11 @@ class RichtextUtil {
 		}
 		if($oHtmlTag->getName() === 'a') {
 			if($sParsedChildren === '') return '';
-			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
+			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)((/.+)*)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
 			if($bHasMatched) {
 				$sFileMethod = $aMatches[1];
 				$iId = $aMatches[2];
+				$sAdditional = $aMatches[3];
 				$sIdentifier = 'file_link';
 				$sModel = 'Document';
 				if($sFileMethod === 'external_link_proxy') {
@@ -264,7 +270,7 @@ class RichtextUtil {
 					$sModel = 'Page';
 				}
 				$this->addTrackReference($iId, $sModel);
-				return TemplateIdentifier::constructIdentifier($sIdentifier, $iId, array_merge($oHtmlTag->getParameters(), array('link_text' => $sParsedChildren)));
+				return TemplateIdentifier::constructIdentifier($sIdentifier, "$iId$sAdditional", array_merge($oHtmlTag->getParameters(), array('link_text' => $sParsedChildren)));
 			} else if(strpos($oHtmlTag->getParameter('href'), "mailto:") === 0) {
 				return TemplateIdentifier::constructIdentifier("mailto_link", substr($oHtmlTag->getParameter('href'), strlen("mailto:")), array("link_text" => $sParsedChildren));
 			}
