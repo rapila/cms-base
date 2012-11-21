@@ -2,7 +2,7 @@ Widget.types.page_input = {
 	prepare: function() {
 		var _this = this;
 		var option = jQuery('<option/>');
-		this.pages(function(pages) {
+		this.pages(this.settings.include_virtual, function(pages) {
 			jQuery.each(pages, function(i, data) {
 				option.clone().text((new Array(data.level+1)).join('  ')+data.name).attr('value', data.page_id).appendTo(_this._element);
 			});
@@ -34,6 +34,7 @@ Widget.types.page_input = {
 	
 	settings: {
 		default_value_label: null,
-		initial_value: null
+		initial_value: null,
+		include_virtual: false
 	}
 };

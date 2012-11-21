@@ -82,16 +82,20 @@ class PageNavigationItem extends NavigationItem {
 		return $this->oMe->getIdentifier();
 	}
 	
+	public function getLink() {
+		return $this->oMe->getFullPathArray();
+	}
+	
+	public function getId() {
+		return $this->oMe->getId();
+	}
+	
 	public function getName() {
 		return $this->oMe->getName();
 	}
 	
 	public function getType() {
 		return $this->oMe->getPageType();
-	}
-	
-	public function getLink() {
-		return $this->oMe->getFullPathArray();
 	}
 	
 	protected function getCanonicalImpl($sLanguageId = null) {

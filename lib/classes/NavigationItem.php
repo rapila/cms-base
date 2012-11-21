@@ -127,6 +127,17 @@ abstract class NavigationItem {
 		return array_merge($this->oParent->getLink(), array($this->getName()));
 	}
 	
+	/**
+	* Gets a value uniquely identifying this navigation item. This could be a full path or an internal id of the backing store.
+	* Note: This is NOT the same as the identifier retrieved using @link(getIdentifier()) as that is allowed to return null in some implementations.
+	*/
+	public function getId() {
+		if($this->isRoot()) {
+			return "";
+		}
+		return "{$this->oParent->getId()}/{$this->getName()}";
+	}
+	
 	public function getParent() {
 		return $this->oParent;
 	}
