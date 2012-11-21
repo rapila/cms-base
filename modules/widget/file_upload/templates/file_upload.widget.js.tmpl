@@ -18,8 +18,8 @@ Widget.types.file_upload = {
 		var _this = this;
 		var current_drag_is_file = false;
 		element.bind('dragenter', function(event) {
-			current_drag_is_file = event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files");
-			if(single_file_only && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
+			current_drag_is_file = event.dataTransfer && (event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files"));
+			if(single_file_only && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
 				return;
 			}
@@ -48,7 +48,7 @@ Widget.types.file_upload = {
 				el.removeClass('ui-state-droppable-hover');
 			}
 		}).bind('drop', function(event) {
-			if(single_file_only && event.dataTransfer.files.length > 1) {
+			if(!event.dataTransfer || (single_file_only && event.dataTransfer.files.length > 1)) {
 				return false;
 			}
 			var target = jQuery(event.target), callback_result = null;
@@ -79,23 +79,50 @@ Widget.types.file_upload = {
 		});
 	},
 	
-	upload_file: function(file, options) {
-		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
-		this.accepts(file.name, file.type, function(result, error) {
+	open_type_callbacks: {},
+	
+	upload: function(obj, options, accepts_method, accepts_params, do_method) {
+		accepts_params.splice(accepts_params.length, 0, function(result, error) {
 			if(error && error.exception_type === 'LocalizedException') {
 				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
 				if(!options.unacceptable || !options.unacceptable(error)) {
 					var _this = this;
-					jQuery('<div/>').text(error.message).dialog({buttons: {
-						"{{writeString=wns.document_type.allow}}": function() {
-							jQuery(this).dialog("close");
-							_this.do_upload(file, options, true);
-						},
-						"{{writeString=wns.cancel}}": function() {
-							jQuery(this).dialog("close");
-							options.error && options.error(error);
-						}
-					}, dialogClass: 'file_upload_error'});
+					var dialog_key = error.parameters.extension+'|'+error.parameters.mimetype;
+					var succ = function() {
+						_this[do_method](obj, options, true);
+					};
+					var err = options.error ? function() {
+						options.error(error);
+					} : jQuery.noop;
+					var dialog;
+					//Make sure only one dialog is ever displayed for each type. Dismissing it (with either success or failure), continues or aborts all uploads depending on said decision.
+					if(!_this.open_type_callbacks[dialog_key]) {
+						dialog = {};
+						dialog.element = jQuery('<div/>').text(error.message);
+						dialog.element.dialog({
+							buttons: {
+								"{{writeString=wns.document_type.allow}}": function() {
+									dialog.element.dialog("close");
+									jQuery.each(dialog.successes, function(i, succ) {succ();});
+									delete _this.open_type_callbacks[dialog_key];
+								},
+								"{{writeString=wns.cancel}}": function() {
+									dialog.element.dialog("destroy");
+									jQuery.each(dialog.errors, function(i, err) {err();});
+									delete _this.open_type_callbacks[dialog_key];
+								}
+							},
+							dialogClass: 'file_upload_error'
+						});
+						dialog.successes = [];
+						dialog.errors = [];
+						_this.open_type_callbacks[dialog_key] = dialog;
+					} else {
+						dialog = _this.open_type_callbacks[dialog_key];
+					}
+					//Make sure the upload/error handler gets called when the dialog is being dismissed.
+					dialog.successes.push(succ);
+					dialog.errors.push(err);
 				} else {
 					options.error && options.error(error);
 				}
@@ -103,12 +130,24 @@ Widget.types.file_upload = {
 				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 				options.error && options.error(error);
 			} else {
-				this.do_upload(file, options);
+				this[do_method](obj, options);
 			}
 		});
+		this[accepts_method].apply(this, accepts_params);
 	},
 	
-	do_upload: function(file, options, create_type) {
+	upload_file: function(file, options) {
+		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
+		this.upload(file, options, 'accepts', [file.name, file.type], 'do_upload_file');
+	},
+
+	upload_url: function(url, options) {
+		var name = url.substr(0, url.lastIndexOf('/'));
+		options = jQuery.extend({}, this.settings.default_options, {name: name}, options || {});
+		this.upload(url, options, 'acceptsURL', [url], 'do_upload_url');
+	},
+	
+	do_upload_file: function(file, options, create_type) {
 		var _this = this;
 		var size = file.size;
 		var notification = jQuery(document.createElement('div')).text('{{writeString=wns.upload_status}} '+(parseInt(size/1024, 10))+' KiB');
@@ -139,33 +178,6 @@ Widget.types.file_upload = {
 				notification.close();
 			}
 		}, json_options);
-	},
-
-	upload_url: function(url, options) {
-		var name = url.substr(0, url.lastIndexOf('/'));
-		options = jQuery.extend({}, this.settings.default_options, {name: name}, options || {});
-		this.acceptsURL(url, function(result, error) {
-			if(error) {
-				//Return true on unacceptable to ask user to add the file (default if no unacceptable option provided)
-				if(!options.unacceptable || !options.unacceptable(error)) {
-					var _this = this;
-					jQuery('<div/>').text(error.message).dialog({buttons: {
-						"{{writeString=wns.document_type.allow}}": function() {
-							jQuery(this).dialog("close");
-							_this.do_upload(url, options, true);
-						},
-						"{{writeString=wns.cancel}}": function() {
-							jQuery(this).dialog("close");
-							options.error && options.error(error);
-						}
-					}});
-				} else {
-					options.error && options.error(error);
-				}
-			} else {
-				this.do_upload_url(url, options);
-			}
-		});
 	},
 
 	do_upload_url: function(url, options, create_type) {

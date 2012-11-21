@@ -78,7 +78,19 @@ Widget.types.info_bar = {
 					is_before: is_before
 				});
 			},
-	
+
+			add_tag_panel: function(is_before) {
+				var result = this.add_button('open-tag-panel rapila-icon', function() {
+					Widget.create('tag_panel', function(tag_panel) {
+						tag_panel.settings.panel_style = {width: '300px'}
+					}, function(tag_panel) {
+						tag_panel.toggle_at({right: '0px', top: '120px', bottom: '60px'}, 'right');
+					});
+				}, 't', 'commons', is_before, "{{writeString=wns.tags.panel}}");
+				result.element.html('&#xf100;');
+				return result;
+			},
+
 			add_menu: function(class_name) {
 				return this;
 			},
@@ -144,7 +156,7 @@ Widget.types.info_bar = {
 			add_row_count_info_for_list: function(list) {
 				var row_count_info = jQuery('<span/>').addClass('row_count_info');
 				list.handle('reloaded', function() {
-					row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\{total\};current=$\{current\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
+					row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\\{total\\};current=$\\{current\\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
 				}, false, true);
 				return add_item({element: row_count_info, parent: 'right'});
 			}
@@ -157,6 +169,7 @@ Widget.types.info_bar = {
 		this.resizer = this._element.find('.sidebar_resizer');
 		this.infobar_left = this._element.find('.infobar_left');
 		this.infobar_right = this._element.find('.infobar_right');
+		this.infobar_commons = this.infobar_right.find('.infobar_commons');
 		this.admin_menu_right = this._element.find('.admin_menu_right');
 		this.admin_menu_left = this._element.find('.admin_menu_left');
 		

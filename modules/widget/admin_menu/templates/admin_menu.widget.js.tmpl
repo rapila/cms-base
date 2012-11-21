@@ -119,7 +119,7 @@ Widget.types.admin_menu = {
 			var current_module = AdminInterface.current_admin_module;
 			var default_title = '{{writeString=wns.module_select.default_option.title}}';
 			// todo: remove checked or style when no option is selected
-			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option'));
+			result.element.append(jQuery('<option/>').text(default_title).addClass('default_option default'));
 			var separator_class = '';
 			var active_val = false;
 			jQuery.each(items, function(i, item) {

@@ -63,6 +63,7 @@ class PagesAdminModule extends AdminModule {
 	public function listChildren($iId) {
 		$aResult = array();
 		if($iId === null) {
+			$this->oRootPage->reload();
 			$aResult[] = self::propertiesFromPage($this->oRootPage);
 		} else {
 			$oParentPage = PageQuery::create()->findPk($iId);

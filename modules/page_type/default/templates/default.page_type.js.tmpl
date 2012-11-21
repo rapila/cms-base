@@ -102,7 +102,7 @@
 				filled_modules.removeClass('css_parsed');
 			}
 			
-			var filled_modules_containers = filled_modules.find('ol');
+			var filled_modules_containers = filled_modules.find('ol[data-container-name]');
 			jQuery.each(this.filled_frontend_modules, function(container_name, container_params) {
 				var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 				jQuery.each(container_params.contents, function(i, content_params) {
@@ -111,20 +111,21 @@
 					li.attr({'data-object-type': content_params.object_type, 'data-container': container_name, 'data-object-id': content_params.id, 'data-language-id': language_id});
 					_this.update_content_properties(li, {content: content_params});
 				});
+				_this.update_additional_container_info(target);
 			});
 			
 			filled_modules_containers.sortable({
-				connectWith: filled_modules.find('ol'),
+				connectWith: filled_modules_containers,
 				helper: 'clone',
 				update: function(event, ui) {
+
 					if(ui.sender) {
 						return;
 					}
-					var item = ui.item;
+					var item = jQuery(ui.item);
 					// get final target (not original one)
-					var target = jQuery(item).parent();
+					var target = item.parent();
 					var position = target.children().index(item);
-						
 					// just move within container
 					if(target.attr('data-container-name') === item.attr('data-container')) {
 						_this.methods.adminMoveObject(item.attr('data-object-id'), position, function() {
@@ -136,12 +137,15 @@
 					}
 					// move to container and resort
 					if(item.attr('data-container')) {
+						var source = filled_modules_containers.filter('[data-container-name='+item.attr('data-container')+']');
 						item.attr('data-container', target.attr('data-container-name'));
 						_this.methods.adminMoveObject(item.attr('data-object-id'), position, target.attr('data-container-name'), function() {
 							md = _this.find_structure(item);
 							md.container.contents.splice(md.index, 1);
 							_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, md.content);
 						});
+						_this.update_additional_container_info(target);
+						_this.update_additional_container_info(source);
 						return;
 					}
 					// add new object, prepare for delete
@@ -152,6 +156,7 @@
 						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
 						_this.update_content_properties(item, {content: content_params});
 					});
+					_this.update_additional_container_info(target);
 				}
 			});
 
@@ -316,6 +321,7 @@
 		//Admin helper methods
 		remove_object: function(event, item_to_remove, force) {
 			var _this = this;
+			var container = item_to_remove.parent();
 			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), !!force, function(deleted) {
 				var md = _this.find_structure(item_to_remove);
 				if(deleted && !force) {
@@ -327,6 +333,7 @@
 					//Remove the item in the structure
 					md.container.contents.splice(md.index, 1);
 					item_to_remove.remove();
+					_this.update_additional_container_info(container);
 				}
 			});
 		},
@@ -442,6 +449,25 @@
 			
 			element.find('.module_name').text(props.object_type_display_name);
 			element.attr('title', lang_props.content_info);
+		},
+		
+		update_additional_container_info: function(container) {
+			var info = container.prev('.template-container-info');
+			var inherit_info = container.data('inheritedFrom');
+			if(inherit_info !== undefined) {
+				var inherited_from = info.find('.inherited_from');
+				if(inherited_from.length === 0) {
+					var inherit_info_text = "{{writeString=wns.page.content_inherited_from}}";
+					inherit_info_text = inherit_info_text.replace("${page_name}", inherit_info);
+					inherited_from = jQuery('<div/>').addClass('inherited_from').text(inherit_info_text).hide();
+					info.append(inherited_from);
+				}
+				if(container.find('li[data-container]').length) {
+					inherited_from.hide();
+				} else {
+					inherited_from.show();
+				}
+			}
 		},
 
 		drop_draft: function(event, item_to_edit) {
