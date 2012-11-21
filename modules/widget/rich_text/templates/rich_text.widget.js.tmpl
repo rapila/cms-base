@@ -58,22 +58,23 @@ Widget.types.rich_text = {
 				linkType.items.unshift(['{{writeString=wns.richtext.internal_link}}', 'internal']);
 				linkType.setup = function(data) {
 					if(data.type === 'url' && data.url && data.url.protocol === undefined) {
-						var id = data.url.url.split(/\//).pop(), index;
+						var url = data.url.url;
+						var id = url.split(/\//).pop(), index;
 						if((index = id.indexOf('?')) > -1) {
 							id = id.substring(0, index);
 						}
-						if(data.url.url.indexOf('/internal_link_proxy/') > -1) {
+						if(url.indexOf('/internal_link_proxy/') > -1) {
 							data.type = 'internal';
+							id = url.substring(url.indexOf('/internal_link_proxy/')+'/internal_link_proxy/'.length);
 							data.internal_link_id = id;
-						} else if(data.url.url.indexOf('/external_link_proxy/') > -1) {
+						} else if(url.indexOf('/external_link_proxy/') > -1) {
 							data.type = 'external';
 							data.external_link_id = id;
-						} else if(data.url.url.indexOf('/display_document/') > -1) {
+						} else if(url.indexOf('/display_document/') > -1) {
 							data.type = 'document';
 							data.document_id = id;
 						}
 					}
-					//@todo: change type to match link if display_document, external_link_proxy or internal_link_proxy is part of the path
 					this.setValue(data.type);
 				};
 				linkType.commit = function(data) {
@@ -263,17 +264,20 @@ Widget.types.rich_text = {
 		var chooser = dialog.getContentElement('info', name);
 		var chooser_element = jQuery(chooser.getElement().$);
 		var _this = this;
-		Widget.createWithElement(widget, function(widget) {
-			_this[name+'_widget'] = widget;
-			widget.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}';
-			widget.handle('element_set', function() {
+		Widget.createWithElement(widget, function(wdgt) {
+			_this[name+'_widget'] = wdgt;
+			wdgt.settings.default_value_label = '{{writeString=wns.richtext.links.use_url}}';
+			if(widget === 'page_input') {
+				wdgt.settings.include_virtual = true;
+			}
+			wdgt.handle('element_set', function() {
 				if(chooser_element.data('id')) {
-					widget.value(chooser_element.data('id'));
+					wdgt.value(chooser_element.data('id'));
 				}
-				widget._element.addClass('cke_skin_kama cke_dialog_ui_input_select');
-				widget._element.appendTo(chooser_element);
-				widget._element.change(function() {
-					dialog.setValueOf('info', 'url', widget[url_function]());
+				wdgt._element.addClass('cke_skin_kama cke_dialog_ui_input_select');
+				wdgt._element.appendTo(chooser_element);
+				wdgt._element.change(function() {
+					dialog.setValueOf('info', 'url', wdgt[url_function]());
 					dialog.setValueOf('info', 'protocol', '');
 				});
 			});
