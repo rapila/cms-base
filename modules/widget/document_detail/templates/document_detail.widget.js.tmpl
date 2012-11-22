@@ -40,7 +40,7 @@ Widget.types.document_detail = {
 			widget.settings.deletable = true;
 			widget.setModelName('Document');
 			widget.handle('element_set', function(event, element) {
-				_this.content.find('div.tags').append(element);
+				_this.content.find('div.tags_in_detail').append(element);
 			});
 		}, jQuery.noop);
 			

@@ -26,7 +26,7 @@ Widget.types.link_detail = {
 			widget.settings.deletable = true;
 			widget.setModelName('Link');
 			widget.handle('element_set', function(event, element) {
-				link_detail.content.prepend(element);
+				link_detail.content.find('div.tags_in_detail').append(element);
 			});
 		}, jQuery.noop);
 	},
