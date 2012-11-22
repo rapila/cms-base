@@ -165,6 +165,9 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function deletePage() {
 		$oPage = PageQuery::create()->findPk($this->iPageId);
+		if($oPage->isRoot()) {
+			throw new LocalizedException('wns.page.delete_root_restriction_message', array('page_name' => $oPage->getName()));
+		} 
 		$oPage->delete();
 		return $this->iPageId;
 	}
