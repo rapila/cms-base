@@ -73,7 +73,7 @@ Widget.types.document_detail = {
 	},
 
 	fill_data: function(upload_mode) {
-		this.detail_widget && this.detail_widget.set_is_loading(true);
+		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.content.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
@@ -118,7 +118,7 @@ Widget.types.document_detail = {
 				this.tag_area.setTaggedItemId(document_data.Id);
 				this.tag_area.reload_tags();
 			}
-			this.detail_widget && this.detail_widget.set_is_loading(false);
+			this.detail_widget.enable();
 		});
 	},
 
