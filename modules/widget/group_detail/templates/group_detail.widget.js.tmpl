@@ -20,7 +20,7 @@ Widget.types.group_detail = {
 	},
 	
 	fill_data: function() {
-		this.detail_widget.disable();		
+		this.detail_widget.disable()
 		this.groupData(function(group_data) {
 			this.content.find("input[name='name']").val(group_data.Name);
 			this.content.find(".updated_info").text(group_data.UpdatedInfo);
