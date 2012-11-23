@@ -2,10 +2,14 @@ Widget.types.tag_area = {
 	prepare: function() {
 		var _this = this;
 		this._element.addClass('tag_area');
-		this._element.append(jQuery('<div/>').addClass('no_tags_message').text("{{writeString=tag_area.item_is_not_tagged}}"));
 		if(this.settings.drop_zone === null) {
 			this.settings.drop_zone = this.getModelName();
 		}
+		var default_text = "{{writeString=tag_area.item_is_not_tagged}}";
+		if(this.settings.drop_zone === null) {
+			default_text = "{{writeString=tag_area.has_no_tags}}";
+		}
+		this._element.append(jQuery('<div/>').addClass('no_tags_message').text(default_text));
 		if(this.settings.dnd || this.settings.drop_zone) {
 			this.dnd = Widget.create('model_drag_and_drop');
 			this.dnd.handle('model_drag_and_drop-tagged', function(event, dragged_model, dragged_item_id, model_name, item_id) {
@@ -14,6 +18,7 @@ Widget.types.tag_area = {
 				}
 			});
 		}
+
 		if(this.settings.auto_load) {
 			this.reload_tags();
 		}
