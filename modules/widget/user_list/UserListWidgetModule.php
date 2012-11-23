@@ -108,7 +108,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = UserQuery::create();
+		$oCriteria = UserQuery::create()->distinct();
 		$sUserKind = $this->oDelegateProxy->getUserKind();
 		if($sUserKind !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			if($sUserKind === User::IS_ADMIN_USER) {
