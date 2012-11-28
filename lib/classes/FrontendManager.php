@@ -325,7 +325,7 @@ class FrontendManager extends Manager {
 		$this->oTemplate->replaceIdentifier("page_id", self::$CURRENT_PAGE->getId());
 		$this->oTemplate->replaceIdentifierCallback("page_link", 'FrontendManager', 'replacePageLinkIdentifier');
 		if(Settings::getSetting('general', 'multilingual', true) && $this->oTemplate->hasIdentifier('language_chooser')) {
-			$this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser(), null, Template::NO_HTML_ESCAPE);
+			$this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser($this->oTemplate), null, Template::NO_HTML_ESCAPE);
 		}
 		FilterModule::getFilters()->handleFillAttributesFinished(self::$CURRENT_PAGE, $this->oTemplate);
 	}
