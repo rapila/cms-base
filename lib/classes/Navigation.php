@@ -243,12 +243,13 @@ class Navigation {
 	}
 	
 	/**
+	 * @param main template
 	 * description: 
 	 * - @see config.yml section language_chooser
 	 * - use parameter replaced in method
 	 * @return Template The rendered language chooser
 	 */		
-	public static function getLanguageChooser() {
+	public static function getLanguageChooser($oMainTemplate) {
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('languages'), null, true);
 		$oLanguageTemplate = new Template(Settings::getSetting("language_chooser", 'template', 'language'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
 		$sLinkSeparator = Settings::getSetting("language_chooser", 'link_separator', ' | ');
@@ -265,31 +266,43 @@ class Navigation {
 			}
 		}
 		
-		//Find request variables
+		// Find request variables
 		$aParameters = array_diff_assoc($_REQUEST, $_COOKIE);
 		unset($aParameters['path']);
 		unset($aParameters['content_language']);
 		
-		// check whether manager needs language to be included
+		// Check whether manager needs language to be included
 		$bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
 		$aRequestPath = explode("/", Manager::getRequestedPath());
 		$aLanguages = LanguageQuery::create()->filterByIsActive(true)->exclude($bShowActiveLanguage ? false : ($bIsPreview ? 'edit' : 'current'))->orderBySort()->find();
+
 		foreach($aLanguages as $i => $oLanguage) {
 			$oLangTemplate = null;
+			$oPageString = null;
 			if($oLanguage->getId() === Session::language()) {
 				$oLangTemplate = $oLanguageActiveTemplate;
 				$oLangTemplate->replaceIdentifier('class', 'active');
-			} else if(!FrontendManager::$CURRENT_PAGE->hasPageStringByLanguage($oLanguage->getId(), !$bIsPreview)) {
-				continue;
 			} else {
+				$oPageString = PageStringQuery::create()->filterByPage(FrontendManager::$CURRENT_PAGE)->filterByLanguageId($oLanguage->getId())->filterByIsInactive(false)->findOne();
+				if($oPageString === null) {
+					continue;
+				}
 				$oLangTemplate = clone $oLanguageTemplate;
+				
 			}
-			// if language is included, replace it by oLanguage->getId() and set include_language param to false
+			// If language is included, replace it by language id and set include_language param to false
 			if($bCurrentPathIncludesLanguage) {
-				$aRequestPath[0] = $oLanguage->getPathPrefix();	 
-				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, $aParameters, false));
+				$aRequestPath[0] = $oLanguage->getPathPrefix();
+				$sLink = LinkUtil::link($aRequestPath, null, $aParameters, false);
 			} else {
-				$oLangTemplate->replaceIdentifier('link', LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId()))));
+				$sLink = LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId())));
+			}
+			$oLangTemplate->replaceIdentifier('link', $sLink);
+			
+			// Add alternate language links
+			if($oPageString) {
+				$oHreflangLink = TagWriter::quickTag('link', array('rel' => 'alternate', 'type' => 'text/html', 'hreflang' => $oLanguage->getId(), 'lang' => $oLanguage->getId(), 'href' =>  $sLink, 'title' => $oPageString->getPageTitle()));
+				$oMainTemplate->replaceIdentifierMultiple('hreflang_links', $oHreflangLink);
 			}
 			$oLangTemplate->replaceIdentifier('id', $oLanguage->getId());
 			$oLangTemplate->replaceIdentifier('name', $oLanguage->getLanguageName($oLanguage->getId()));
@@ -300,6 +313,6 @@ class Navigation {
 			}
 		}
 		return $oTemplate;
-	} // getLanguageChooser()
+	}
 	
 } // end class Navigation
