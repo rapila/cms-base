@@ -26,9 +26,5 @@ class TagInputWidgetModule extends PersistentWidgetModule {
 	public function getElementType() {
 		return 'select';
 	}
-	
-	public function getName() {
-		return 'bla';
-	}
 
 }
