@@ -21,6 +21,11 @@ class LinkQuery extends BaseLinkQuery {
 		}
 		return $this->filterByLanguageId(null, Criteria::ISNULL)->_or()->filterByLanguageId(Session::language());
 	}
+	
+	public function filterByTagId($aTagId) {
+		$aTaggedLinkIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Link')->select(array('TaggedItemId'))->find();
+		return $this->filterById($aTaggedLinkIds, Criteria::IN);
+	}
 
 
 }
