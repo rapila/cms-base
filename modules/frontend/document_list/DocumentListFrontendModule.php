@@ -66,11 +66,11 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	}
 	
 	public static function getTagOptions() {
-		return TagQuery::create()->filterByTaggedModel('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		return TagQuery::create()->filterByTagged('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 
 	public static function getTemplateOptions() {
-		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);	
+		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
 	}
 	
 	public static function getSortOptions() {

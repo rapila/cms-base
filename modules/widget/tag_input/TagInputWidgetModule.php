@@ -8,8 +8,8 @@ class TagInputWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getTags($sModelName) {
-		$oQuery = TagQuery::create()->filterByTaggedModel($sModelName);
-		return $oQuery->select('Id', 'Name')->find()->toKeyValue('Id', 'Name');
+		$oQuery = TagQuery::create()->filterByTagged($sModelName);
+		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public function setSelectedTagId($sSelectedTagId) {
@@ -26,9 +26,4 @@ class TagInputWidgetModule extends PersistentWidgetModule {
 	public function getElementType() {
 		return 'select';
 	}
-	
-	public function getName() {
-		return 'Debug Name Only';
-	}
-
 }
