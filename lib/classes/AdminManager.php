@@ -3,7 +3,7 @@
 class AdminManager extends Manager {
 	
 	const DEFAULT_MODULE = 'dashboard';
-  const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
+	const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
 	private $sModuleName;
 	private $oModule;
 	private $oResourceIncluder;
@@ -49,15 +49,15 @@ class AdminManager extends Manager {
 		// fallback @see method doc
 		LanguagePeer::createLanguageIfNoneExist($sLanguageId);
 		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
-  }
-  
-  public static function getContentLanguage() {
-    $sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
-    if($sLanguageId === null) {
-      $sLanguageId = Session::language();
-    }
-    return $sLanguageId;
-  }
+	}
+	
+	public static function getContentLanguage() {
+		$sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
+		if($sLanguageId === null) {
+			$sLanguageId = Session::language();
+		}
+		return $sLanguageId;
+	}
 
 	public static function setCurrentPage($oPage) {
 		FrontendManager::$CURRENT_PAGE = $oPage;
@@ -158,11 +158,11 @@ class AdminManager extends Manager {
 		
 		foreach($this->oModule->usedWidgets() as $mWidget) {
 			if(!is_string($mWidget)) {
-        $mWidget = get_class($mWidget);
+				$mWidget = get_class($mWidget);
 			} else {
 				$mWidget = WidgetModule::getClassNameByName($mWidget);
 			}
-      call_user_func(array($mWidget, 'includeResources'), $this->oResourceIncluder);
+			call_user_func(array($mWidget, 'includeResources'), $this->oResourceIncluder);
 		}
 		
 		$this->oModule->includeCustomResources($this->oResourceIncluder);
