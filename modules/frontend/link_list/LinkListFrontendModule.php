@@ -75,24 +75,15 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	} 
 	
 	public static function getCategoryOptions() {
-		$oCriteria = LinkCategoryQuery::create()->orderByName();
+		$oQuery = LinkCategoryQuery::create()->orderByName();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
-			$oCriteria->filterByIsExternallyManaged(false);
+			$oQuery->filterByIsExternallyManaged(false);
 		}
-		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
-		$aResult = array();
-		foreach(LinkCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
-			$aResult[$aCategory['ID']] = $aCategory['NAME'];
-		}
-		return $aResult;
+		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public static function getTagOptions() {
-		$aResult = array();
-		foreach(TagQuery::create()->filterByTaggedModel('Link')->find() as $oTag) {
-			$aResult[$oTag->getId()] = $oTag->getName();
-		}
-		return $aResult;
+		return TagQuery::create()->filterByTaggedModel('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public static function getContentInfo($oLanguageObject) {

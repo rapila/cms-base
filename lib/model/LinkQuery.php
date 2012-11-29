@@ -7,12 +7,7 @@
 class LinkQuery extends BaseLinkQuery {
 
 	public function excludeExternallyManaged() {
-		$this->addJoin(LinkPeer::LINK_CATEGORY_ID, LinkCategoryPeer::ID, Criteria::LEFT_JOIN);
-		$oManagedFalse = $this->getNewCriterion(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, false, Criteria::EQUAL);
-		$oManagedNull = $this->getNewCriterion(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL);
-		$oManagedFalse->addOr($oManagedNull);
-		$this->addAnd($oManagedFalse);
-		return $this;
+		return $this->useLinkCategoryQuery()->filterByIsExternallyManaged(false)->endUse();
 	}
 	
 	public function filterByDisplayLanguage($sLanguageId = null) {
