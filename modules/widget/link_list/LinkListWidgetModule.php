@@ -63,7 +63,7 @@ class LinkListWidgetModule extends WidgetModule {
 				break;
 			case 'has_tags':
 				$aResult['heading'] = '';
-				$aResult['heading_filter'] = array('language_input', $this->oTagFilter->getSessionKey());
+				$aResult['heading_filter'] = array('tag_input', $this->oTagFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;
 			case 'category_name':

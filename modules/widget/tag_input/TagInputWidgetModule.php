@@ -9,7 +9,7 @@ class TagInputWidgetModule extends PersistentWidgetModule {
 	
 	public function getTags($sModelName) {
 		$oQuery = TagQuery::create()->filterByTaggedModel($sModelName);
-		return $oQuery->select('Id', 'Name')->find()->toKeyValue('Id', 'Name');
+		return $oQuery->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public function setSelectedTagId($sSelectedTagId) {

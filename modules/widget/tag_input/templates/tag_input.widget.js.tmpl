@@ -7,7 +7,7 @@ Widget.types.tag_input = {
 	reload: function() {
 		this._element.empty();
 		this._element.populate({'': '-------'});
-		this._element.populate(this.getTags($this.settings.model_name), this.getSelectedTagId());
+		this._element.populate(this.getTags(this.settings.model_name), this.getSelectedTagId());
 	},
 	
 	val: function(value) {

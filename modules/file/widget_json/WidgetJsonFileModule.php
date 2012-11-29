@@ -90,11 +90,8 @@ class WidgetJsonFileModule extends FileModule {
 			}
 			$aNewArgs = array_merge(array($this->sWidgetType), $aInstanceArgs);
 			$oWidget = call_user_func_array(array('WidgetModule', 'getModuleInstance'), $aNewArgs);
-		} else {
-			/** @todo remove after debugging bug mentioned in issue #151 */
-			ErrorHandler::log('session_key', $sWidgetClass, get_class($oWidget), $aRequest['session_key']);
-			
 		}
+		
 		if($this->sAction === 'instanciateWidget') {
 			$this->checkPermissions($sWidgetClass);
 			$aInformation = array();
