@@ -7,6 +7,7 @@ abstract class WidgetModule extends Module {
 	
 	protected $sPersistentSessionKey = null;
 	protected $sInputName = null;
+	private $bIsNew = false;
 	protected $aInitialSettings = array();
 	
 	public function doWidget() {
@@ -39,6 +40,14 @@ abstract class WidgetModule extends Module {
 	
 	public static function needsLogin() {
 		return true;
+	}
+	
+	public function setNew($bIsNew = true) {
+		$this->bIsNew = $bIsNew;
+	}
+	
+	public function isNew() {
+		return $this->bIsNew;
 	}
 	
 	public function setInputName($sInputName) {
@@ -105,6 +114,10 @@ abstract class WidgetModule extends Module {
 		if($sSessionKey !== null) {
 			$oWidget = Session::getSession()->getArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $sSessionKey);
 			if($oWidget !== null) {
+				if($oWidget->getModuleName() !== $sWidgetType) {
+					throw new Exception("Widget with session key $sSessionKey expected to be $sWidgetType, but found ".$oWidget->getModuleName());
+				}
+				$oWidget->setNew(false); //Widget has been retrieved from session → is definitely not new
 				return $oWidget;
 			}
 		}
@@ -115,7 +128,9 @@ abstract class WidgetModule extends Module {
 			array_shift($aArgs);
 		}
 		array_unshift($aArgs, $sWidgetType);
-		return call_user_func_array(array("WidgetModule", "getModuleInstance"), $aArgs);
+		$oWidget = call_user_func_array(array("WidgetModule", "getModuleInstance"), $aArgs);
+		$oWidget->setNew(true); //Widget just been created → mark as being “new”
+		return $oWidget;
 	}
 	
 	//This method is all the way at the bottom because phpDocumentor can’t handle the static:: keyword.
