@@ -2,11 +2,11 @@
 /**
  * @package modules.widget
  */
-class LanguageInputWidgetModule extends WidgetModule {
+class LanguageInputWidgetModule extends PersistentWidgetModule {
 
 	var $sSelectedLanguageId;
 
-	public function __construct($sWidgetId) {
+	public function __construct($sWidgetId = null) {
 		parent::__construct($sWidgetId);
 		$this->setSetting('is_monolingual', LanguagePeer::isMonolingual());
 	}
