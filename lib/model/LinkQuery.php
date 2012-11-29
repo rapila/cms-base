@@ -7,7 +7,7 @@
 class LinkQuery extends BaseLinkQuery {
 
 	public function excludeExternallyManaged() {
-		return $this->useLinkCategoryQuery()->filterByIsExternallyManaged(false)->endUse();
+		return $this->useLinkCategoryQuery()->filterByIsExternallyManaged(false)->_or()->filterByIsExternallyManaged(null, Criteria::ISNULL)->endUse();
 	}
 	
 	public function filterByDisplayLanguage($sLanguageId = null) {
