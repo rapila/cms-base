@@ -14,6 +14,10 @@ class TagQuery extends BaseTagQuery {
 		return $this->distinct()->useTagInstanceQuery()->filterByTaggedItemId($mItemId)->endUse();
 	}
 	
+	public function filterByTaggedModelAndId($sModelName, $mItemId) {
+		return $this->distinct()->useTagInstanceQuery()->filterByModelName('Link')->filterByTaggedItemId($mItemId)->endUse();
+	}
+	
 	public function exclude($iTagId) {
 		return $this->filterById($iTagId, Criteria::NOT_EQUAL);
 	}
