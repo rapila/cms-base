@@ -7,17 +7,11 @@
 class TagQuery extends BaseTagQuery {
 	
 	public function filterByTaggedModel($sModelName) {
-		$this->setDistinct();
-		$this->innerJoinTagInstance();
-		$this->add(TagInstancePeer::MODEL_NAME, $sModelName);
-		return $this;
+		return $this->distinct()->useTagInstanceQuery()->filterByModelName($sModelName)->endUse();
 	}
 	
 	public function filterByTaggedItem($mItemId) {
-		$this->setDistinct();
-		$this->innerJoinTagInstance();
-		$this->add(TagInstancePeer::TAGGED_ITEM_ID, $mItemId);
-		return $this;
+		return $this->distinct()->useTagInstanceQuery()->filterByTaggedItemId($mItemId)->endUse();
 	}
 	
 	public function exclude($iTagId) {
