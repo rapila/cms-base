@@ -243,6 +243,14 @@ class Document extends BaseDocument {
 	  return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
 	
+	public function hasTags() {
+		return $this->getHasTags();
+	}
+
+	public function getHasTags() {
+		return TagQuery::create()->filterByTagged($this)->count() > 0;
+	}
+
 	public function hasReferees() {
 		return count($this->getReferees()) > 0;
 	}
