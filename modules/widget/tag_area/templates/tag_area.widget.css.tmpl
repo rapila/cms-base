@@ -3,13 +3,14 @@
 }
 
 .tag > * {
-	height: 24px;
+	height: 22px;
 	display: inline-block;
 	background-repeat: no-repeat;
-	padding-top: 11px;
+	padding-top: 10px;
 }
 
 .tag_area .no_tags_message {
+	color: #f9f9f9;
 	padding: 0.5em;
 }
 .tag_area.has_tags > .no_tags_message {
@@ -29,10 +30,11 @@
 .tag > .tag_end {
 	background-image: url("{{writeDirectInclude=admin/tag_end.png;template=location_only}}");
 	padding-left: 1px;
-	width: 14px;
+	line-height: 14px;
+	width: 12px;
 }
 
 .tag > .tag_end.deletable {
 	cursor: pointer;
-	color: red;
+	color: #e3ef99;
 }
