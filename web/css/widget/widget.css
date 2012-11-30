@@ -1,6 +1,5 @@
 @font-face{font-family:'Rapila-Icons';src:url("../../fonts/Rapila-UI-Icons.woff") format('woff'),url("../../fonts/Rapila-UI-Icons.otf") format('truetype'),url("../../fonts/Rapila-UI-Icons.svg#Rapila-UI-Icons") format('svg');font-weight:normal;font-style:normal}
 .ui-state-droppable,.ui-widget-content.ui-state-droppable{background-image:url("../../images/admin/drag_and_drop.png");background-repeat:no-repeat;background-position:center center;color:#666;cursor:pointer}
-.ui-state-droppable{border:1px solid #e1e1e1}
 .ui-state-droppable-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-droppable-hover,.ui-dialog.document_detail .ui-state-droppable-hover .preview.ui-state-droppable{background-color:#e3ef99 !important;background-image:url("../../images/admin/drag_and_drop_hover.png");background-repeat:no-repeat;background-position:center center}
 .ui-dialog.document_detail .ui-state-droppable-hover{background-color:#fff !important}
 #admin_sidebar .ui-list .ui-list-row.ui-state-droppable-hover,#admin_sidebar .ui-list .ui-list-row.ui-state-active.ui-state-droppable-hover{background-image:url("../../images/admin/drag_and_drop_sidebar_hover.png");background-position:right center}
