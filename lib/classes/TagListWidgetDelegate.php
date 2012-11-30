@@ -71,7 +71,7 @@ class CriteriaListTagListWidgetDelegate {
 	}
 	
 	public function getCustomListElements() {
-		if($this->oTagList->getIncludeAllAndWithout() && TagQuery::create()->filterByTaggedModel($this->oTagList->getTaggedModelName())->count() > 0) {
+		if($this->oTagList->getIncludeAllAndWithout() && TagQuery::create()->filterByTagged($this->oTagList->getTaggedModelName())->count() > 0) {
 			return array(
 				array('name' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'display_name' => StringPeer::getString('wns.tags.select_all_title'),
@@ -84,6 +84,6 @@ class CriteriaListTagListWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		return TagQuery::create()->filterByTaggedModel($this->oTagList->getTaggedModelName());
+		return TagQuery::create()->filterByTagged($this->oTagList->getTaggedModelName());
 	}
 }

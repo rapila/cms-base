@@ -2,6 +2,19 @@ Widget.types.tag_input = {
 	prepare: function() {
 		this.reload();
 		Widget.handle('rapila-tags_changed', this.reload.bind(this));
+
+		//Add change handler
+		this._element.change(function() {
+			if(this.settings.store_value) {
+				this.setSelectedTagId(this._element.val());
+			}
+			this.fire('value-changed', this._element.val());
+		}.bind(this));
+		var current_value = this.getSelectedTagId();
+		if(current_value === null) {
+			current_value = '';
+		}
+		this._element.val(current_value);
 	},
 	
 	reload: function() {
@@ -19,7 +32,8 @@ Widget.types.tag_input = {
 	},
 	
 	settings: {
-		model_name: null
+		model_name: null,
+		store_value: false
 	}
 	
 };

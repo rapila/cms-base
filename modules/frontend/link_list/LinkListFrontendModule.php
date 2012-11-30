@@ -83,7 +83,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	}
 	
 	public static function getTagOptions() {
-		return TagQuery::create()->filterByTaggedModel('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		return TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public static function getContentInfo($oLanguageObject) {

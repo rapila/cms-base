@@ -37,7 +37,7 @@ class Link extends BaseLink {
 	}
 	
 	public function getHasTags() {
-		return TagQuery::create()->filterByTaggedModelAndId('Link', $this->getId())->count() > 0;
+		return TagQuery::create()->filterByTagged($this)->count() > 0;
 	}
 	
 	public function renderListItem($oTemplate) {

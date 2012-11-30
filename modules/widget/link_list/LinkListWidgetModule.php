@@ -161,8 +161,8 @@ class LinkListWidgetModule extends WidgetModule {
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			$oQuery->excludeExternallyManaged();
 		}
-		if($this->oTagFilter && $this->oTagFilter->getSelectedTagId()) {
-			$oQuery->filterByTagId($this->oTagFilter->getSelectedTagId());
+		if($this->oTagFilter && $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags') !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->filterByTagId($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
 		}
 		return $oQuery;
 	}

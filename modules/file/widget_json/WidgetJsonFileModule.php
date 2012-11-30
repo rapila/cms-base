@@ -101,7 +101,7 @@ class WidgetJsonFileModule extends FileModule {
 				$oWidgetContents = $oWidgetContents->render();
 			}
 			$aInformation['content'] = $oWidgetContents;
-			$aInformation['is_new'] = $bIsNew;
+			$aInformation['is_new'] = $oWidget->isNew();
 			$aInformation['initial_settings'] = $oWidget->allSettings();
 			return $aInformation;
 		}
