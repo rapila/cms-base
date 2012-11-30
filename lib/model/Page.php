@@ -101,6 +101,10 @@ class Page extends BasePage {
 		return $this->getPagePropertys();
 	}
 	
+	public function getPagePropertiesWithoutNamespace() {
+		return PagePropertyQuery::create()->filterByPage($this)->filterByName("%:%", Criteria::NOT_LIKE)->find();
+	}
+	
 	public function getPagePropertyByName($sPropertyName) {
 	  return PagePropertyQuery::create()->filterByPageId($this->getId())->filterByName($sPropertyName)->findOne();
 	}
