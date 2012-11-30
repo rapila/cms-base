@@ -7,8 +7,8 @@
 class TagInstanceQuery extends BaseTagInstanceQuery {
 	public function filterByTagged($sModel = null, $iId = null) {
 		if($sModel instanceof BaseObject) {
-			$sModel = get_class($sModel);
 			$iId = Util::idForObject($sModel);
+			$sModel = get_class($sModel);
 		}
 		if($sModel !== null) {
 			$this->filterByModelName($sModel);
