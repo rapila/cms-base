@@ -13,28 +13,6 @@ class TagQuery extends BaseTagQuery {
 		return $this;
 	}
 	
-	/**
-	* @deprecated use filterByTagged($sModelName)
-	*/
-	public function filterByTaggedModel($sModelName) {
-		return $this->filterByTagged($sModelName);
-	}
-	
-	/**
-	* Shortcut for filterByTagged(null, $mItemId);
-	* NOTE: This method does not make much sense: ids are not guaranteed to be unique across models.
-	*/
-	public function filterByTaggedItem($mItemId) {
-		return $this->distinct()->useTagInstanceQuery()->filterByTaggedItemId($mItemId)->endUse();
-	}
-	
-	/**
-	* @deprecated use filterByTagged($sModelName, $mItemId)
-	*/
-	public function filterByTaggedModelAndId($sModelName, $mItemId) {
-		return $this->filterByTagged($sModelName, $mItemId);
-	}
-	
 	public function exclude($iTagId) {
 		if(is_array($iTagId)) {
 			return $this->filterById($iTagId, Criteria::NOT_IN);
