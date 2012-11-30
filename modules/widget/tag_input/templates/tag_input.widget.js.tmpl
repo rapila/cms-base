@@ -19,7 +19,7 @@ Widget.types.tag_input = {
 	
 	reload: function() {
 		this._element.empty();
-		this._element.populate({'': '-------'});
+		this._element.populate({'': this.settings.default_option_text});
 		this._element.populate(this.getTags(this.settings.model_name), this.getSelectedTagId());
 	},
 	
@@ -33,7 +33,8 @@ Widget.types.tag_input = {
 	
 	settings: {
 		model_name: null,
-		store_value: false
+		store_value: false,
+		default_option_text: "{{writeString=wns.tag_input.default_option_text}}"
 	}
 	
 };
