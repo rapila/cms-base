@@ -139,7 +139,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
 		$aResult = array();
 		$aSetProperties = array();
-		foreach($oPage->getPagePropertiesWithoutNamespace() as $oPageProperty) {
+		foreach($oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oPageProperty) {
 			$aSetProperties[$oPageProperty->getName()] = $oPageProperty->getValue();
 		}
 		foreach($aAvailablePageProperties as $oProperty) {
@@ -296,7 +296,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private function handlePageProperties($aPageData) {
-		foreach($this->oPage->getPagePropertiesWithoutNamespace() as $oProperty) {
+		foreach($this->oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oProperty) {
 			$oProperty->delete();
 		}
 		// set valid posted page properties

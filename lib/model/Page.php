@@ -97,16 +97,19 @@ class Page extends BasePage {
 		return $oQuery->count() > 0;
 	}
 
+	/**
+	* @deprecated use getPagePropertyQuery() instead
+	*/
 	public function getPageProperties() {
 		return $this->getPagePropertys();
 	}
 	
-	public function getPagePropertiesWithoutNamespace() {
-		return PagePropertyQuery::create()->filterByPage($this)->filterByName("%:%", Criteria::NOT_LIKE)->find();
+	public function getPagePropertyQuery() {
+		return PagePropertyQuery::create()->filterByPage($this);
 	}
 	
 	public function getPagePropertyByName($sPropertyName) {
-	  return PagePropertyQuery::create()->filterByPageId($this->getId())->filterByName($sPropertyName)->findOne();
+	  return $this->getPagePropertyQuery()->filterByName($sPropertyName)->findOne();
 	}
 	
 	public function getPagePropertyValue($sPropertyName, $sDefaultValue = null) {
