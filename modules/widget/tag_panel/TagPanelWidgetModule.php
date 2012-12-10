@@ -5,7 +5,7 @@
 */
 
 class TagPanelWidgetModule extends WidgetModule {
-	
+	// @todo: remove if not used?
 	public function listTags() {
 		return TagQuery::create()->find()->toArray();
 	}
