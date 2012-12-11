@@ -21,7 +21,6 @@ select[data-widget-type=page_input]{background-color:#fff;border:1px solid #dbdb
 select option.default{font-style:oblique}
 select.ui-widget-content:hover,input.ui-widget-content:hover,textarea.ui-widget-content:hover,select.ui-widget-content:focus,input.ui-widget-content:focus,textarea.ui-widget-content:focus{border-color:#b5b5b5}
 .ui-image-picker-image{float:left;line-height:160px;margin:0 5px 5px 0;padding:5px;vertical-align:middle;text-align:center;}
-.ui-image-picker-image.ui-icon.ui-icon-trash{position:absolute;bottom:2px;right:2px}
 .ui-image-picker-image object{vertical-align:middle}
 .ui-image-picker-image.ui-widget-content{position:relative;border:none;background-color:#fff;margin:0 1px 2px;text-align:center;vertical-align:middle}
 .ui-sortable-handle,.ui-sortable-handle_inactive{background-image:url("../../images/admin/sortable_handler_inactive.png");background-repeat:no-repeat;background-position:center center;min-width:16px;height:12px}

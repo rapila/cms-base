@@ -5,7 +5,7 @@
 <table name="pages" phpName="Page">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 	<column name="name" type="varchar" required="true" size="50" />
-	<column name="identifier" type="varchar" size="30" />
+	<column name="identifier" type="varchar" size="50" />
 	<column name="page_type" type="varchar" size="15" />
 	<column name="template_name" type="varchar" size="50" />
 	<column name="is_inactive" type="boolean" size="1" default="1" />
