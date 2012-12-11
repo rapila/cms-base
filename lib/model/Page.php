@@ -362,24 +362,8 @@ class Page extends BasePage {
 		return $this->getFullPathArray(func_get_args());
 	}
 	
-	/**
-	* @deprecated use PagePeer::getRootPage()->getIterator()
-	* @todo replace usages with Propel 1.5’s RecursiveIterator
-	*/
-	public function getTree($bNameOnly = false, $iLevel = 0) {
-		$aResults = array();
-		if($bNameOnly) {
-			$aResults[$this->getId()]['value'] = $this->getName();
-			$aResults[$this->getId()]['level'] = $iLevel;
-		} else {
-			$aResults[$this->getId()] = $this;
-		}
-		$oCriteria = new Criteria();
-		$oCriteria->addAscendingOrderByColumn(PagePeer::TREE_LEFT);
-		foreach($this->getChildren($oCriteria) as $oChild) {
-			$aResults = ($aResults + $oChild->getTree($bNameOnly, $oChild->getLevel()));
-		}
-		return $aResults;
+	public function getCanonical() {
+		return $this->getPageRelatedByCanonicalId();
 	}
 	
 	public function deletePageAndDescendants() {
