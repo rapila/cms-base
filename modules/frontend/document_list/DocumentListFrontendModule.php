@@ -47,7 +47,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		
 		// Check document kind
 		if(isset($aOptions['document_kind']) && $aOptions['document_kind'] != null) {
-			$oCriteria->filterByDocumentKind($aOptions['document_kind']);
+			$oQuery->filterByDocumentKind($aOptions['document_kind']);
 		}
 		
 		// Sort order only in case of one category and no tags
