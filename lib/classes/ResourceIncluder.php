@@ -412,7 +412,7 @@ class ResourceIncluder {
 			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type given for indecisive $sLocation");
 		}
 		$sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
-		if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg') {
+		if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg' || $sExtension === 'svg') {
 			return self::RESOURCE_TYPE_IMAGE;
 		} else if($sExtension === 'ico') {
 			return self::RESOURCE_TYPE_ICON;
