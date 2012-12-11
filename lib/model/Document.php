@@ -72,7 +72,7 @@ class Document extends BaseDocument {
 		$oTemplate->replaceIdentifier('document_type', $this->getMimetype());
 		$oTemplate->replaceIdentifier('document_kind', $this->getDocumentKind());
 		if($oTemplate->hasIdentifier('size')) {
-			$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'kb'));
+			$oTemplate->replaceIdentifier("size", DocumentPeer::getDocumentSize($this->getDataSize(), 'auto_iso'));
 		}
 		if($this->isGDImage() && $oTemplate->hasIdentifier('dimension', Template::$ANY_VALUE)) {
 			$oImage = $this->getImage();
@@ -243,6 +243,14 @@ class Document extends BaseDocument {
 	  return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
 	
+	public function hasTags() {
+		return $this->getHasTags();
+	}
+
+	public function getHasTags() {
+		return TagQuery::create()->filterByTagged($this)->count() > 0;
+	}
+
 	public function hasReferees() {
 		return count($this->getReferees()) > 0;
 	}

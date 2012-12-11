@@ -11,34 +11,11 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
-		$oCriteria = DocumentQuery::create();
-		if(!Session::getSession()->isAuthenticated()) {
-			$oCriteria->filterByIsProtected(false);
-		}
-		$aCategories = isset($aOptions['document_categories']) ? (is_array($aOptions['document_categories']) ? $aOptions['document_categories'] : array($aOptions['document_categories'])) : array();
-		if(count($aCategories) > 1) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories, Criteria::IN);
-		} else if(count($aCategories) === 1) {
-			$oCriteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $aCategories[0]);
-		}
-		if(isset($aOptions['document_kind']) && $aOptions['document_kind']) {
-			$oCriteria->filterByDocumentKind($aOptions['document_kind']);
-		}
-		
-		$oCriteria->filterByDisplayLanguage();
-
-		if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
-			$oCriteria->addAscendingOrderByColumn(DocumentPeer::SORT);
-		}
-		$oCriteria->addAscendingOrderByColumn(DocumentPeer::NAME);
-		$aDocuments = $oCriteria->find();
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
-			$oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));
-			foreach($aDocuments as $i => $oDocument) {
-				$oItemTemplate = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
-				$oItemTemplate->replaceIdentifier('model', 'Document');
-				$oItemTemplate->replaceIdentifier('counter', $i+1);
+			$oItemPrototype = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
+			foreach(self::listQuery($aOptions)->find() as $i => $oDocument) {
+				$oItemTemplate = clone $oItemPrototype;
 				$oDocument->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
@@ -46,6 +23,60 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 			$oListTemplate = new Template("", null, true);
 		}
 		return $oListTemplate;
+	}
+	
+	public static function listQuery($aOptions) {
+		$oQuery = DocumentQuery::create()->filterByDisplayLanguage();
+		if(!Session::getSession()->isAuthenticated()) {
+			$oQuery->filterByIsProtected(false);
+		}
+		
+		// Link categories
+		$aCategories = isset($aOptions['document_categories']) ? (is_array($aOptions['document_categories']) ? $aOptions['document_categories'] : array($aOptions['document_categories'])) : array();
+		$iCountCategories = count($aCategories);
+		if($iCountCategories > 0) {
+			$oQuery->filterByDocumentCategoryId($aCategories);
+		}
+		
+		// Tags
+		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
+		$bHasTags = count($aTags) > 0;
+		if($bHasTags) {
+			$oQuery->filterByTagId($aTags);
+		}
+		
+		// Check document kind
+		if(isset($aOptions['document_kind']) && $aOptions['document_kind'] != null) {
+			$oQuery->filterByDocumentKind($aOptions['document_kind']);
+		}
+		
+		// Sort order only in case of one category and no tags
+		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
+			$oQuery->orderBySort();
+		}
+		return $oQuery->orderByName();
+	}
+
+	public static function getCategoryOptions() {
+		$oQuery = DocumentCategoryQuery::create()->orderByName();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
+			$oQuery->filterByIsExternallyManaged(false);
+		}
+		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+	}
+	
+	public static function getTagOptions() {
+		return TagQuery::create()->filterByTagged('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+	}
+
+	public static function getTemplateOptions() {
+		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
+	}
+	
+	public static function getSortOptions() {
+		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
+		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
+		return $aResult;
 	}
 	
 	public function getSaveData($mData) {
@@ -59,22 +90,13 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return parent::getSaveData($mData);
 	}
-
-	public static function getTemplateOptions() {
-		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);	
-	}
-	
-	public static function getSortOptions() {
-		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
-		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
-		return $aResult;
-	} 
 	
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {
 			return null;
 		}
 		$aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
+		$aOutput = array();
 		if(isset($aData['document_categories']) && is_array($aData['document_categories'])) {
 			$aResult = array();
 			foreach(self::getCategoryOptions() as $iCategory => $sName) {
@@ -83,21 +105,21 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				return StringPeer::getString('wns.document_category').': '.implode(', ', $aResult);
+				$aOutput[] = StringPeer::getString('wns.document_category').': '.implode(', ', $aResult);
 			}
 		}
-	}
-
-	public static function getCategoryOptions() {
-		$oCriteria = DocumentCategoryQuery::create()->orderByName();
-		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
-			$oCriteria->filterByIsExternallyManaged(false);
+		if(isset($aData['tags']) && is_array($aData['tags'])) {
+			$aResult = array();
+			foreach(self::getTagOptions() as $iTagId => $sName) {
+				if(in_array($iTagId, $aData['tags'])) {
+					$aResult[] = $sName;
+				}
+			}
+			if(count($aResult) > 0) {
+				$aOutput[] = StringPeer::getString('wns.tags').': '.implode(', ', $aResult);
+			}
 		}
-		$oCriteria->clearSelectColumns()->addSelectColumn(DocumentCategoryPeer::ID)->addSelectColumn(DocumentCategoryPeer::NAME);
-		$aResult = array();
-		foreach(DocumentCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
-			$aResult[$aCategory['ID']] = $aCategory['NAME'];
-		}
-		return $aResult;
+		return implode("\n", $aOutput);
 	}
+	
 }

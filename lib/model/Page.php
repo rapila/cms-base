@@ -97,12 +97,19 @@ class Page extends BasePage {
 		return $oQuery->count() > 0;
 	}
 
+	/**
+	* @deprecated use getPagePropertyQuery() instead
+	*/
 	public function getPageProperties() {
 		return $this->getPagePropertys();
 	}
 	
+	public function getPagePropertyQuery() {
+		return PagePropertyQuery::create()->filterByPage($this);
+	}
+	
 	public function getPagePropertyByName($sPropertyName) {
-	  return PagePropertyQuery::create()->filterByPageId($this->getId())->filterByName($sPropertyName)->findOne();
+	  return $this->getPagePropertyQuery()->filterByName($sPropertyName)->findOne();
 	}
 	
 	public function getPagePropertyValue($sPropertyName, $sDefaultValue = null) {
@@ -119,8 +126,6 @@ class Page extends BasePage {
 	* @param $sPropertyValue the new value. Set null if you wish to remove the property
 	*/
 	public function updatePageProperty($sPropertyName, $sPropertyValue) {
-		// I don't see any use of calling this without using it
-		// $this->getPageProperties();
 		$oTempProperty = $this->getPagePropertyByName($sPropertyName);
 		if($oTempProperty !== null) {
 			if($sPropertyValue === null || $sPropertyValue === '') {
@@ -142,9 +147,10 @@ class Page extends BasePage {
 	}
 	
 	/**
-	* Add a temporary page property to the page for the duration of the request. 
+	* Add a temporary page property to the page for the duration of the request.
 	*/
 	public function addTempPageProperty($sName, $sValue) {
+		// Make sure the page properties are loaded so we won’t override them later on
 		$this->getPageProperties();
 		$oTempProperty = new PageProperty();
 		$oTempProperty->setName($sName);
@@ -356,8 +362,24 @@ class Page extends BasePage {
 		return $this->getFullPathArray(func_get_args());
 	}
 	
-	public function getCanonical() {
-		return $this->getPageRelatedByCanonicalId();	
+	/**
+	* @deprecated use PagePeer::getRootPage()->getIterator()
+	* @todo replace usages with Propel 1.5’s RecursiveIterator
+	*/
+	public function getTree($bNameOnly = false, $iLevel = 0) {
+		$aResults = array();
+		if($bNameOnly) {
+			$aResults[$this->getId()]['value'] = $this->getName();
+			$aResults[$this->getId()]['level'] = $iLevel;
+		} else {
+			$aResults[$this->getId()] = $this;
+		}
+		$oCriteria = new Criteria();
+		$oCriteria->addAscendingOrderByColumn(PagePeer::TREE_LEFT);
+		foreach($this->getChildren($oCriteria) as $oChild) {
+			$aResults = ($aResults + $oChild->getTree($bNameOnly, $oChild->getLevel()));
+		}
+		return $aResults;
 	}
 	
 	public function deletePageAndDescendants() {
@@ -367,10 +389,6 @@ class Page extends BasePage {
 			}
 		}
 		$this->delete();
-	}
-	
-	public function delete(PropelPDO $oCon = null) {
-		parent::delete($oCon);
 	}
 
 	///Override moveSubtreeTo to store the old parent

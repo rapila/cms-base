@@ -1,0 +1,40 @@
+Widget.types.tag_input = {
+	prepare: function() {
+		this.reload();
+		Widget.handle('rapila-tags_changed', this.reload.bind(this));
+
+		//Add change handler
+		this._element.change(function() {
+			if(this.settings.store_value) {
+				this.setSelectedTagId(this._element.val());
+			}
+			this.fire('value-changed', this._element.val());
+		}.bind(this));
+		var current_value = this.getSelectedTagId();
+		if(current_value === null) {
+			current_value = '';
+		}
+		this._element.val(current_value);
+	},
+	
+	reload: function() {
+		this._element.empty();
+		this._element.populate({'': this.settings.default_option_text});
+		this._element.populate(this.getTags(this.settings.model_name), this.getSelectedTagId());
+	},
+	
+	val: function(value) {
+		if(value) {
+			this._element.val(value);
+			return;
+		}
+		return this._element.val();
+	},
+	
+	settings: {
+		model_name: null,
+		store_value: false,
+		default_option_text: "{{writeString=wns.tag_input.default_option_text}}"
+	}
+	
+};

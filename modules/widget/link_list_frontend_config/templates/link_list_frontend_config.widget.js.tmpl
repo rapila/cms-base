@@ -9,6 +9,9 @@ Widget.types.link_list_frontend_config = {
 			if(select_name === 'link_categories') {
 				select_name += '[]';
 			}
+			if(select_name === 'tags') {
+				select_name += '[]';
+			}
 			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
 			if(config_name !== 'template') {
 				select.change(_this.reload_preview.bind(_this));
@@ -38,8 +41,8 @@ Widget.types.link_list_frontend_config = {
 		var _this = this;
 		this.result_list.empty();
 		this.allLinks(this._element.serializeArrayKV(), function(links) {
-			jQuery.each(links, function(i, link) {
-				_this.result_list.append(jQuery('<li/>').text(link.NAME).attr('title', "{{writeString=wns.edit_entry}}").data('id', link.ID));
+			jQuery.each(links, function(id, name) {
+				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});
 		});
 	},

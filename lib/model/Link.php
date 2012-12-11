@@ -32,6 +32,14 @@ class Link extends BaseLink {
 		return StringUtil::truncate($this->getDescription(), $iLength);
 	}
 	
+	public function hasTags() {
+		return $this->getHasTags();
+	}
+	
+	public function getHasTags() {
+		return TagQuery::create()->filterByTagged($this)->count() > 0;
+	}
+	
 	public function renderListItem($oTemplate) {
 		$oTemplate->replaceIdentifier("id", $this->getId());
 		$oTemplate->replaceIdentifier("name", $this->getName());

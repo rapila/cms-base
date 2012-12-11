@@ -60,6 +60,7 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);
+
 		if($this->sAction == 'widgetInformation') {
 			$aInformation = array();
 			$sWidgetClass::includeResources();
@@ -76,20 +77,13 @@ class WidgetJsonFileModule extends FileModule {
 				throw new LocalizedException('wns.file.widget_json.method_does_not_exist', array('method' => $sMethodName, 'widget' => $sWidgetClass));
 			}
 			return array("result" => call_user_func_array(array($sWidgetClass, $sMethodName), isset($aRequest['method_parameters']) ? $aRequest['method_parameters'] : array()));
-		} 
-		$oWidget = null;
-		if(isset($aRequest['session_key'])) {
-			$oWidget = Session::getSession()->getArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $aRequest['session_key']);
 		}
-		$bIsNew = $oWidget === null;
-		if($bIsNew) {
-			$aInstanceArgs = array(@$aRequest['session_key']);
-			if(isset($aRequest['instance_args'])) {
-				$aInstanceArgs = $aRequest['instance_args'];
-			}
-			$aNewArgs = array_merge(array($this->sWidgetType), $aInstanceArgs);
-			$oWidget = call_user_func_array(array('WidgetModule', 'getModuleInstance'), $aNewArgs);
+		$aInstanceArgs = array(@$aRequest['session_key']);
+		if(isset($aRequest['instance_args'])) {
+			$aInstanceArgs = $aRequest['instance_args'];
 		}
+		$aNewArgs = array_merge(array($this->sWidgetType), $aInstanceArgs);
+		$oWidget = call_user_func_array(array('WidgetModule', 'getWidget'), $aNewArgs);
 		if($this->sAction === 'instanciateWidget') {
 			$this->checkPermissions($sWidgetClass);
 			$aInformation = array();
@@ -99,7 +93,7 @@ class WidgetJsonFileModule extends FileModule {
 				$oWidgetContents = $oWidgetContents->render();
 			}
 			$aInformation['content'] = $oWidgetContents;
-			$aInformation['is_new'] = $bIsNew;
+			$aInformation['is_new'] = $oWidget->isNew();
 			$aInformation['initial_settings'] = $oWidget->allSettings();
 			return $aInformation;
 		}

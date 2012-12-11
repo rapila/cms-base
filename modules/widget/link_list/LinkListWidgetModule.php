@@ -6,6 +6,7 @@ class LinkListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	private $oLanguageFilter;
+	private $oTagFilter;
 	public $oDelegateProxy;
 	
 	
@@ -16,6 +17,10 @@ class LinkListWidgetModule extends WidgetModule {
 		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 		if(!LanguagePeer::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
+		}
+		if(TagInstanceQuery::create()->filterByModelName('Link')->count() > 0) {
+			$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
+			$this->oTagFilter->setSetting('model_name', 'Link');
 		}
 	}
 	
@@ -35,6 +40,9 @@ class LinkListWidgetModule extends WidgetModule {
 		$aResult = array('id', 'name_truncated', 'sort', 'url', 'category_name');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
+		}		
+		if($this->oTagFilter !== null) {
+			$aResult[] = 'has_tags';
 		}
 		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}
@@ -53,8 +61,10 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = StringPeer::getString('wns.url');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
-			case 'description_truncated':
-				$aResult['heading'] = StringPeer::getString('wns.description');
+			case 'has_tags':
+				$aResult['heading'] = '';
+				$aResult['heading_filter'] = array('tag_input', $this->oTagFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
 				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('wns.link_category_list');
@@ -83,6 +93,9 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		if($sColumnIdentifier === 'language_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
+		}
+		if($sColumnIdentifier === 'has_tags') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
 		}
 		return null;
 	}
@@ -147,6 +160,9 @@ class LinkListWidgetModule extends WidgetModule {
 		$oQuery = LinkQuery::create();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			$oQuery->excludeExternallyManaged();
+		}
+		if($this->oTagFilter && $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags') !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->filterByTagId($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
 		}
 		return $oQuery;
 	}

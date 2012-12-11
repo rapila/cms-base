@@ -5,13 +5,9 @@
  * @package    propel.generator.model
  */
 class DocumentQuery extends BaseDocumentQuery {
+	
 	public function excludeExternallyManaged() {
-		$this->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-		$oManagedFalse = $this->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false, Criteria::EQUAL);
-		$oManagedNull = $this->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, null, Criteria::ISNULL);
-		$oManagedFalse->addOr($oManagedNull);
-		$this->addAnd($oManagedFalse);
-		return $this;
+		return $this->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->_or()->filterByIsExternallyManaged(null, Criteria::ISNULL)->endUse();
 	}
 		
 	public function filterByDocumentKind($sDocumentKind = 'image') {
@@ -28,5 +24,11 @@ class DocumentQuery extends BaseDocumentQuery {
 	public function recent() {
 		return $this->orderByCreatedAt(Criteria::DESC);
 	}
+	
+	public function filterByTagId($aTagId) {
+		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(array('TaggedItemId'))->find();
+		return $this->filterById($aTaggedIds, Criteria::IN);
+	}
+	
 	
 }

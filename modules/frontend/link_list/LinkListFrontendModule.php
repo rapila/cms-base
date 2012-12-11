@@ -11,38 +11,12 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
-		$oCriteria = LinkQuery::create();
-		$bOneTagnameOnly = false;
-		$aCategories = null;
-		if(isset($aOptions['tags']) && is_array($aOptions['tags']) && (count($aOptions['tags']) > 0)) {
-			$aLinks = LinkPeer::getLinksByTagName($aOptions['tags']);
-			$bOneTagnameOnly = count($aOptions['tags']) === 1;
-		} else {
-      $aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
-
-			$oCriteria->filterByDisplayLanguage();
-
-		  if(count($aCategories) > 1) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories, Criteria::IN);
-		  } else if(count($aCategories) === 1) {
-				$oCriteria->add(LinkPeer::LINK_CATEGORY_ID, $aCategories[0]);
-			}
-			if(isset($aOptions['sort_by']) && $aOptions['sort_by'] === self::SORT_BY_SORT) {
-				$oCriteria->addAscendingOrderByColumn(LinkPeer::SORT);
-			}
-      $oCriteria->addAscendingOrderByColumn(LinkPeer::NAME);
-		}
 		try {
 			$oListTemplate = new Template($aOptions['template']);
-			if($bOneTagnameOnly) {
-        $oListTemplate->replaceIdentifier('tag_name', StringPeer::getString('tagname.'.$aOptions['tags'][0], null, $aOptions['tags'][0]));
-			} else if(is_array($aCategories)) {
-			  $oListTemplate->replaceIdentifier('category_ids', implode('|', $aCategories));
-			}
-			foreach($oCriteria->find() as $i => $oLink) {
-				$oItemTemplate = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);
+			$oItemPrototype = new Template($aOptions['template'].self::LIST_ITEM_POSTFIX);
+			foreach(self::listQuery($aOptions)->find() as $i => $oLink) {
+				$oItemTemplate = clone $oItemPrototype;
 				$oItemTemplate->replaceIdentifier('model', 'Link');
-				$oItemTemplate->replaceIdentifier('counter', $i+1);
 				$oLink->renderListItem($oItemTemplate);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
@@ -66,6 +40,30 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		return $bResult;
 	}
 	
+	public static function listQuery($aOptions) {
+		$oQuery = LinkQuery::create()->filterByDisplayLanguage();
+		
+		// Link categories
+		$aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
+		$iCountCategories = count($aCategories);
+		if($iCountCategories > 0) {
+			$oQuery->filterByLinkCategoryId($aCategories);
+		}
+		
+		// Tags
+		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
+		$bHasTags = count($aTags) > 0;
+		if($bHasTags) {
+			$oQuery->filterByTagId($aTags);
+		}
+		
+		// Sort order only in case of one category and no tags
+		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
+			$oQuery->orderBySort();
+		}
+		return $oQuery->orderByName();	
+	}
+	
 	public static function getTemplateOptions() {
 		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);	
 	}
@@ -74,19 +72,18 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
 		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
 		return $aResult;
-	}	
+	} 
 	
 	public static function getCategoryOptions() {
-		$oCriteria = LinkCategoryQuery::create()->orderByName();
+		$oQuery = LinkCategoryQuery::create()->orderByName();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
-			$oCriteria->filterByIsExternallyManaged(false);
+			$oQuery->filterByIsExternallyManaged(false);
 		}
-		$oCriteria->clearSelectColumns()->addSelectColumn(LinkCategoryPeer::ID)->addSelectColumn(LinkCategoryPeer::NAME);
-		$aResult = array();
-		foreach(LinkCategoryPeer::doSelectStmt($oCriteria)->fetchAll(PDO::FETCH_ASSOC) as $aCategory) {
-			$aResult[$aCategory['ID']] = $aCategory['NAME'];
-		}
-		return $aResult;
+		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+	}
+	
+	public static function getTagOptions() {
+		return TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 	
 	public static function getContentInfo($oLanguageObject) {
@@ -94,6 +91,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 			return null;
 		}
 		$aData = @unserialize(stream_get_contents($oLanguageObject->getData()));
+		$aOutput = array();
 		if(isset($aData['link_categories']) && is_array($aData['link_categories'])) {
 			$aResult = array();
 			foreach(self::getCategoryOptions() as $iCategory => $sName) {
@@ -102,9 +100,21 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				return StringPeer::getString('wns.link_category').': '.implode(', ', $aResult);
+				$aOutput[] = StringPeer::getString('wns.link_category').': '.implode(', ', $aResult);
 			}
 		}
+		if(isset($aData['tags']) && is_array($aData['tags'])) {
+			$aResult = array();
+			foreach(self::getTagOptions() as $iTagId => $sName) {
+				if(in_array($iTagId, $aData['tags'])) {
+					$aResult[] = $sName;
+				}
+			}
+			if(count($aResult) > 0) {
+				$aOutput[] = StringPeer::getString('wns.tags').': '.implode(', ', $aResult);
+			}
+		}
+		return implode("\n", $aOutput);
 	}
 
 }

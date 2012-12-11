@@ -11,12 +11,7 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 	
 	public function listTags() {
 		$oQuery = TagQuery::create();
-		if($this->sModelName !== null) {
-			$oQuery->filterByTaggedModel($this->sModelName);
-			if($this->mTaggedItemId !== null) {
-				$oQuery->filterByTaggedItem($this->mTaggedItemId);
-			}
-		}
+		$oQuery->filterByTagged($this->sModelName, $this->mTaggedItemId);
 		return $oQuery->find()->toArray();
 	}
 	

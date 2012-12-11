@@ -8,12 +8,17 @@ class DocumentsViewWidgetDelegate {
 	
 	private $oDocumentKindFilter;
 	private $oLanguageFilter;
+	private $oTagFilter;
 	
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
 		if(!LanguagePeer::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
+		}
+		if(TagInstanceQuery::create()->filterByModelName('Document')->count() > 0) {
+			$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
+			$this->oTagFilter->setSetting('model_name', 'Document');
 		}
 	}
 	
@@ -46,6 +51,9 @@ class DocumentsViewWidgetDelegate {
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
+		if($this->oTagFilter !== null) {
+			$aResult[] = 'has_tags';
+		}
 		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
 	}
 	
@@ -75,6 +83,11 @@ class DocumentsViewWidgetDelegate {
 			case 'language_id':
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
+				break;
+			case 'has_tags':
+				$aResult['heading'] = '';
+				$aResult['heading_filter'] = array('tag_input', $this->oTagFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
 				break;
 			case 'is_protected':
@@ -125,6 +138,9 @@ class DocumentsViewWidgetDelegate {
 		if($sColumnIdentifier === 'document_category_id') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_IS;
 		}
+		if($sColumnIdentifier === 'has_tags') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
+		}
 		return null;
 	}
 	
@@ -171,6 +187,9 @@ class DocumentsViewWidgetDelegate {
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
 			$oQuery->excludeExternallyManaged();
 		}
+		if($this->oTagFilter && $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags') !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->filterByTagId($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
+		}
 		return $oQuery;
 	}
 	
@@ -215,4 +234,5 @@ class DocumentsViewWidgetDelegate {
 	public function getSearch() {
 		return $this->oDelegateProxy->getSearch();
 	}
+	
 }

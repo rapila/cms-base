@@ -69,6 +69,7 @@ h3.status{padding-left:.3em}
 .page_detail .available_modules li > .module_name{display:inline}
 .page_detail .available_modules li{padding:1px 5px 0;margin:0 0 -1px 0;background-color:#f2f2f2;z-index:2}
 .page_detail div.ui-widget-content{border:0}
+.ui-image-picker-image .ui-icon.ui-icon-trash{position:absolute;bottom:2px;right:2px}
 .ui-icon-trash.delete_inactive{background-image:none}
 #admin_sidebar .ui-state-droppable,.image_browse_area.ui-state-droppable{color:#5b595b;cursor:pointer}
 .pointer{cursor:pointer}

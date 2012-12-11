@@ -9,6 +9,9 @@ Widget.types.document_list_frontend_config = {
 			if(select_name === 'document_categories') {
 				select_name += '[]';
 			}
+			if(select_name === 'tags') {
+				select_name += '[]';
+			}
 			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name], (select_name === 'list_template'));
 			if(config_name !== 'list_template') {
 				select.change(_this.reload_preview.bind(_this));
@@ -38,8 +41,8 @@ Widget.types.document_list_frontend_config = {
 		var _this = this;
 		this.result_list.empty();
 		this.allDocuments(this._element.serializeArrayKV(), function(files) {
-			jQuery.each(files, function(i, file) {
-				_this.result_list.append(jQuery('<li/>').text(file.NAME).attr('title', "{{writeString=wns.edit_entry}}").data('id', file.ID));
+			jQuery.each(files, function(id, name) {
+				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});
 		});
 	},

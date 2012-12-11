@@ -6,21 +6,17 @@
  */
 class TagQuery extends BaseTagQuery {
 	
-	public function filterByTaggedModel($sModelName) {
-		$this->setDistinct();
-		$this->innerJoinTagInstance();
-		$this->add(TagInstancePeer::MODEL_NAME, $sModelName);
-		return $this;
-	}
-	
-	public function filterByTaggedItem($mItemId) {
-		$this->setDistinct();
-		$this->innerJoinTagInstance();
-		$this->add(TagInstancePeer::TAGGED_ITEM_ID, $mItemId);
+	public function filterByTagged($sModel = null, $iId = null) {
+		$q = $this->distinct()->useTagInstanceQuery();
+		$q->filterByTagged($sModel, $iId);
+		$q->endUse();
 		return $this;
 	}
 	
 	public function exclude($iTagId) {
+		if(is_array($iTagId)) {
+			return $this->filterById($iTagId, Criteria::NOT_IN);
+		}
 		return $this->filterById($iTagId, Criteria::NOT_EQUAL);
 	}
 	/**
