@@ -48,5 +48,13 @@ class Tag extends BaseTag {
 	  $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
 	  return $this->countTagInstances($oCriteria);
 	}
+	
+	public function getAvailableStrings() {
+		$aStrings = StringQuery::create()->filterByStringKey('tag.'.$this->getName())->select('LanguageId')->find()->toArray();
+		if(is_array($aStrings) && !empty($aStrings)) {
+			return implode(', ', $aStrings);
+		}
+		return null;
+	}
 }
 
