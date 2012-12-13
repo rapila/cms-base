@@ -1,15 +1,22 @@
 <form>
 	<div class="status_section">
-		<input type="checkbox" name="is_active" />
-		<label for="is_active">{{writeString=wns.is_online}}</label><br />
 		<div class="hide_if_not_saved">
   		<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
   		<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
 		</div>
 	</div>
-	<label for="language_id" class="validate-language_id_required">{{writeString=wns.language_id}}*</label>
-	<input type="text" name="language_id" class="ui-widget-content" maxlegth="2" style="width:4em;"/><br />
-	<label for="path_prefix" class="validate-path_prefix_unique">{{writeString=wns.language.path_prefix}}*</label>
-	<input type="text" name="path_prefix" class="ui-widget-content" maxlegth="2" style="width:6em;"/><br />
+	<div class="group_fields">
+		<label for="language_id" class="validate-language_id_required">{{writeString=wns.language_id}}*</label>
+		<input type="text" name="language_id" class="ui-widget-content" maxlegth="2" style="width:4em;"/>
+	</div>
+	<div class="group_fields" style="margin-left:1em;">
+		<label for="path_prefix" class="validate-path_prefix_unique">{{writeString=wns.language.path_prefix}}*</label>
+		<input type="text" name="path_prefix" class="ui-widget-content" maxlegth="2" style="width:6em;"/>
+	</div>
+	<div class="group_fields">
+		<label for="is_active">{{writeString=wns.is_online}}</label>
+		<input type="checkbox" name="is_active" />
+	</div><br />
 	<div class="check_static_strings" style="display:none;color:red;"></div>
+	<br />
 </form>

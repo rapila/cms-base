@@ -25,11 +25,13 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
-	private function validate($aLanguageData) {
+	private function validate($aLanguageData, $oLanguage) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aLanguageData);
 		$oFlash->checkForLength('language_id', 2, 5, 'language_id_required');
-		$oFlash->checkForValue('path_prefix', 'path_prefix_required');
+		if($oFlash->checkForValue('path_prefix', 'path_prefix_required')) {
+			$oFlash->checkForValue('path_prefix', 'path_prefix_unique');
+		}
 		if(LanguageQuery::create()->filterByPathPrefix($aLanguageData['path_prefix'])->filterById($aLanguageData['language_id'], Criteria::NOT_EQUAL)->count() > 0) {
 			$oFlash->addMessage('path_prefix_unique');
 		}
@@ -46,7 +48,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 			$oLanguage = new Language();
 			$oLanguage->setId($aLanguageData['language_id']);
 		}
-		$this->validate($aLanguageData);
+		$this->validate($aLanguageData, $oLanguage);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
