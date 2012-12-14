@@ -49,10 +49,10 @@ class Tag extends BaseTag {
 	  return $this->countTagInstances($oCriteria);
 	}
 	
-	public function getAvailableStrings() {
-		$aStrings = StringQuery::create()->filterByStringKey('tag.'.$this->getName())->select('LanguageId')->find()->toArray();
-		if(is_array($aStrings) && !empty($aStrings)) {
-			return implode(', ', $aStrings);
+	public function getLanguageIdsOfStrings() {
+		$aLanguages = StringQuery::create()->filterByStringKey('tag.'.$this->getName())->select('LanguageId')->find()->toArray();
+		if(is_array($aLanguages) && !empty($aLanguages)) {
+			return $aLanguages;
 		}
 		return null;
 	}

@@ -21,7 +21,7 @@ class TagListWidgetModule extends WidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('id', 'name', 'tag_instance_count', 'available_strings', 'delete');
+		return array('id', 'name', 'tag_instance_count', 'language_ids_of_strings', 'delete');
 	}
 
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -38,7 +38,7 @@ class TagListWidgetModule extends WidgetModule {
 			case 'tag_instance_count':
 				$aResult['heading'] = StringPeer::getString('wns.tag.instance_count');
 				break;
-			case 'available_strings':
+			case 'language_ids_of_strings':
 				$aResult['heading'] = StringPeer::getString('wns.tag.available_strings');
 				break;
 			case 'delete':
