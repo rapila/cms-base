@@ -35,7 +35,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aRoleData);
 		if($oFlash->checkForValue('role_key', 'role_key_required')) {
-			if($oCheckRole = RoleQuery::create()->filterByRoleKey($aRoleData['role_key'])->count() > 0) {
+			if($oCheckRole = RoleQuery::create()->filterByRoleKey($aRoleData['role_key'])->findOne()) {
 				if(!Util::equals($oCheckRole, $oRole)) {
 					$oFlash->addMessage('role_key_exists');
 				}
@@ -44,18 +44,28 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 	
+	private function hasRoles($sRoleKey) {
+		
+	}
+	
 	public function saveData($aRoleData) {
 		$oRole = null;
 		if($this->sRoleId === null) {
 			$oRole = new Role();
 		} else {
 			$oRole = RoleQuery::create()->findPk($this->sRoleId);
+			// If the role_key has changed and the new key does not exist yet, delete the current role and create a new one
+			if($oRole->getRoleKey() !== $aRoleData['role_key']) {
+				if(RoleQuery::create()->filterByRoleKey($aRoleData['role_key'])->count() === 0) {
+					$oRole->delete();
+					$oRole = new Role();
+				}
+			}
 		}
 		$this->validate($aRoleData, $oRole);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		// @todo allow role_key change. Delete and create new
 		$oRole->setRoleKey($aRoleData['role_key']);
 		$oRole->setDescription($aRoleData['description']);
 		if(isset($aRoleData['page_id'])) {
