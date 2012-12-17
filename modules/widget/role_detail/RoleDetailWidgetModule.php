@@ -44,10 +44,6 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 	
-	private function hasRoles($sRoleKey) {
-		
-	}
-	
 	public function saveData($aRoleData) {
 		$oRole = null;
 		if($this->sRoleId === null) {
@@ -101,8 +97,6 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 				$oRight->save();
 			}
 		}
-		// ErrorHandler::log('role_key', $oRole->isModified(), $aRoleData['role_key'], $oRole->toArray());
-		$oRole->save();
-		return $oRole->getRoleKey();
+		return $oRole->save();
 	}
 }
