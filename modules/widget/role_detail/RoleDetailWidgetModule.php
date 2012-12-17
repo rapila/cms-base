@@ -35,8 +35,10 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aRoleData);
 		if($oFlash->checkForValue('role_key', 'role_key_required')) {
-			if($oRole->getRoleKey() !== $aRoleData['role_key'] && RoleQuery::create()->filterByRoleKey($aRoleData['role_key'])->count() > 0) {
-				$oFlash->addMessage('role_key_exists');
+			if($oCheckRole = RoleQuery::create()->filterByRoleKey($aRoleData['role_key'])->count() > 0) {
+				if(!Util::equals($oCheckRole, $oRole)) {
+					$oFlash->addMessage('role_key_exists');
+				}
 			}
 		}
 		$oFlash->finishReporting();
@@ -88,6 +90,8 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 				$oRight->save();
 			}
 		}
-		return $oRole->save();
+		$oRole->save();
+		ErrorHandler::log('role_key', $aRoleData['role_key'], $oRole->toArray());
+		return $oRole->getRoleKey();
 	}
 }
