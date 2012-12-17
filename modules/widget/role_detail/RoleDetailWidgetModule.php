@@ -55,6 +55,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
+		// @todo allow role_key change. Delete and create new
 		$oRole->setRoleKey($aRoleData['role_key']);
 		$oRole->setDescription($aRoleData['description']);
 		if(isset($aRoleData['page_id'])) {
@@ -90,8 +91,8 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 				$oRight->save();
 			}
 		}
+		// ErrorHandler::log('role_key', $oRole->isModified(), $aRoleData['role_key'], $oRole->toArray());
 		$oRole->save();
-		ErrorHandler::log('role_key', $aRoleData['role_key'], $oRole->toArray());
 		return $oRole->getRoleKey();
 	}
 }
