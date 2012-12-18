@@ -97,6 +97,7 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 				$oRight->save();
 			}
 		}
-		return $oRole->save();
+		$oRole->save();
+		return array('id' => $oRole->getRoleKey());
 	}
 }
