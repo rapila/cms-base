@@ -31,7 +31,8 @@ Widget.types.tag_detail = {
 				var item = jQuery('<li/>').text(params.name+" ("+params.model_name+")");
 				var delete_button = jQuery("<span/>").addClass('ui-icon ui-icon-trash').click(function() {
 					_this.deleteTaggedItem(tag_data.Id, params.tagged_item_id, params.model_name, function(result) {
-						result && item.remove();
+						result.removed && item.remove();
+						result.model_removed && Widget.fire('tag-models-changed');
 					});
 				}).appendTo(item);
 				tagged_items.append(item);

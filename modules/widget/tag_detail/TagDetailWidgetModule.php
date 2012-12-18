@@ -40,11 +40,16 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function deleteTaggedItem($iTagId, $iTaggedItemId, $sModelName) {
+		$oResult = new stdClass();
+		$oResult->removed = true;
+		$oResult->model_removed = false;
 		$oTagInstance = TagInstanceQuery::create()->findPk(array($iTagId, $iTaggedItemId, $sModelName));
 		if($oTagInstance) {
+			$sModelName = $oTagInstance->getModelName();
 			$oTagInstance->delete();
+			$oResult->model_removed = TagInstanceQuery::create()->filterByModelName($sModelName)->count() === 0;
 		}
-		return true;
+		return $oResult;
 	}
 	
 	private function validate($aTagData) {

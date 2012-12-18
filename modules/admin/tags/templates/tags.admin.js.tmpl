@@ -31,5 +31,6 @@ jQuery(document).ready(function() {
 			content_list.setOption('tag_model_name', selection[0] && selection[0].tag_model_name);
 			content_list.reload();
 		});
+		Widget.handle('tag-models-changed', sidebar.reload.bind(sidebar));
 	});
 });
