@@ -24,7 +24,7 @@ class TagsAdminModule extends AdminModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		return array('title', 'model_name', 'magic_column');
+		return array('title', 'tag_model_name', 'magic_column');
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -33,7 +33,7 @@ class TagsAdminModule extends AdminModule {
 			case 'title':
 				$aResult['heading'] = StringPeer::getString('wns.tag_instance.model_name');
 				break;
-			case 'model_name':
+			case 'tag_model_name':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'magic_column':
@@ -47,7 +47,7 @@ class TagsAdminModule extends AdminModule {
 	public static function getCustomListElements() {
 		if(TagInstancePeer::doCount(TagInstancePeer::getTaggedModelsCriteria())) {
 		 	return array(
-				array('model_name' => CriteriaListWidgetDelegate::SELECT_ALL,
+				array('tag_model_name' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
@@ -58,10 +58,7 @@ class TagsAdminModule extends AdminModule {
 	public static function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
 		foreach(TagInstancePeer::getTaggedModels() as $sModel => $sModelName) {
-			$aResult[] = array('title' => $sModelName, 'model_name' => $sModel);
-		}
-		if($iRowCount === null) {
-			$iRowCount = count($aResult);
+			$aResult[] = array('title' => $sModelName, 'tag_model_name' => $sModel);
 		}
 		$aResult = array_merge(self::getCustomListElements(), $aResult);
 		return $aResult;

@@ -7,6 +7,8 @@ class TagListWidgetModule extends WidgetModule {
 	private $oListWidget;
 	public $oDelegateProxy;
 	
+	public $sTagModelName = CriteriaListWidgetDelegate::SELECT_ALL;
+	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Tag", 'name');
@@ -50,11 +52,17 @@ class TagListWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 	
+	public function getFilterTypeForColumn($sFilterColumn) {
+		if($sFilterColumn === 'tag_model_name') {
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
+		}
+	}
+	
 	public function getCriteria() {
+		$oQuery = TagQuery::create();
 		$aExcludes = array(CriteriaListWidgetDelegate::SELECT_ALL, 'Tag');
-		$oQuery = TagQuery::create()->distinct();
-		if(!in_array($this->oDelegateProxy->getModelName(), $aExcludes)) {
-			$oQuery->joinTagInstance()->useQuery('TagInstance')->filterByModelName($this->oDelegateProxy->getModelName())->endUse();
+		if($this->oDelegateProxy->getTagModelName() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->distinct()->joinTagInstance()->useQuery('TagInstance')->filterByModelName($this->oDelegateProxy->getTagModelName())->endUse();
 		}
 		return $oQuery;
 	}
