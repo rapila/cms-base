@@ -13,6 +13,7 @@ Widget.types.page_detail = {
 		
 		//Init buttons
 		var buttons = this._element.find('.page_detail_controls');
+		buttons.find(':button').button();
 		buttons.find('[name=save]').addClass('primary ui-state-active').click(function() {
 			_this.save();
 			return false;
