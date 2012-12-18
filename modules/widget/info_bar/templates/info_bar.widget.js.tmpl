@@ -110,19 +110,27 @@ Widget.types.info_bar = {
 					accesskey: 'f',
 					class_name: 'default_state search_field'
 				});
+				
+				var previous_search = null;
 
 				var clear_button = this.add_button('search_field_reset', null, null, true).element.hide();
 				var search_button = this.add_button('search_button', function() {
-					if(search_input.is('.default_state')) {
+					if((search_input.is('.default_state') || search_input.val() === '') && !previous_search) {
 						Widget.notifyUser(Widget.logSeverity.INFO, "{{writeString=wns.not_applicable.add_search_word}}");
 						return;
 					}
-					click_handler(search_input.val());
+					if(search_input.is('.default_state')) {
+						previous_search = null;
+					} else {
+						previous_search = search_input.val();
+					}
+					click_handler(previous_search);
 				}, null, true).element;
 				clear_button.click(function(event) {
 					search_input.val('').focus();
 					search_button.removeClass('active');
-					click_handler(null);
+					previous_search = null;
+					click_handler(previous_search);
 					jQuery(this).hide();
 				});
 
@@ -138,15 +146,15 @@ Widget.types.info_bar = {
 					if(event.which === 27) { 
 						return clear_button.click();
 					}
-					if(event.which === 13) {
-						return search_button.click();
-					}
 					if(search_input.val() === '') {
 						clear_button.hide();
 						search_button.removeClass('active');
 					} else {
 						clear_button.show();
 						search_button.addClass('active');
+					}
+					if(event.which === 13) {
+						return search_button.click();
 					}
 				});
 
