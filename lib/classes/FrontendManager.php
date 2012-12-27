@@ -122,34 +122,34 @@ class FrontendManager extends Manager {
 	
 	protected function initLanguage() {
 		$bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
-		if($bIsMultilingual && self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
+		if($bIsMultilingual && self::hasNextPathItem() && LanguageQuery::languageIsActive(self::peekNextPathItem(), true)) {
 			$oLanguage = LanguageQuery::create()->filterByPathPrefix(self::usePath())->findOne();
 			Session::getSession()->setLanguage($oLanguage);
 		} else {
 			// If site is monolingual, try setting the session default as a shortcut
 			if($bIsMultilingual) {
 				// If we’ve got a valid session language set (and it’s not just from the default), use that
-				if(Session::getSession()->hasAttribute(Session::SESSION_LANGUAGE_KEY) && LanguagePeer::languageIsActive(Session::language())) {
+				if(Session::getSession()->hasAttribute(Session::SESSION_LANGUAGE_KEY) && LanguageQuery::languageIsActive(Session::language())) {
 					LinkUtil::redirectToLanguage();
 				}
 				// Otherwise, use the first of the user’s accept languages that is valid
 				foreach(LocaleUtil::acceptLocales() as $oAcceptLocale) {
-					if(LanguagePeer::languageIsActive($oAcceptLocale->language_id)) {
+					if(LanguageQuery::languageIsActive($oAcceptLocale->language_id)) {
 						Session::getSession()->setLanguage($oAcceptLocale->language_id);
 						LinkUtil::redirectToLanguage();
 					}
 				}
 				// As a last resort, try, the default session language
 				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
-				if(LanguagePeer::languageIsActive(Session::language())) {
+				if(LanguageQuery::languageIsActive(Session::language())) {
 					LinkUtil::redirectToLanguage();
 				}
 			} else {
-				if(LanguagePeer::languageIsActive(Session::language())) {
+				if(LanguageQuery::languageIsActive(Session::language())) {
 					return;
 				} else {
 					Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
-					if(LanguagePeer::languageIsActive(Session::language())) {
+					if(LanguageQuery::languageIsActive(Session::language())) {
 						return;
 					}
 				}

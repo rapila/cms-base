@@ -8,7 +8,7 @@ require_once 'model/om/BaseLanguage.php';
  */ 
 class Language extends BaseLanguage {
 	public function getLanguageName($sLanguageId = null) {
-		return LanguagePeer::getLanguageName($this->getId(), $sLanguageId);
+		return LanguageInputWidgetModule::getLanguageName($this->getId(), $sLanguageId);
 	}
 	
 	public function getName() {

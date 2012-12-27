@@ -13,7 +13,7 @@ class DocumentsViewWidgetDelegate {
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
-		if(!LanguagePeer::isMonolingual()) {
+		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
 		if(TagInstanceQuery::create()->filterByModelName('Document')->count() > 0) {

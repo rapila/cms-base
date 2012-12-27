@@ -53,14 +53,18 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 	}
 	
 	private function checkStrings($sCheckLanguageId = null) {
-		$aAllStringObjects = StringQuery::create()->orderByStringKey()->find();
 		$aAllStrings = array();
-		$aAllLanguages = LanguagePeer::getLanguagesAssoc();
-		foreach($aAllStringObjects as $oString) {
-			if(!in_array($oString->getStringKey(), $aAllStrings))
+		foreach(StringQuery::create()->orderByStringKey()->find() as $oString) {
+			if(!in_array($oString->getStringKey(), $aAllStrings)) {
 				$aAllStrings[] = $oString->getStringKey();
+			}
 		}
 
+		$aAllLanguages = array();
+		foreach(LanguageQuery::create()->orderById()->find() as $oLanguage) {
+			$aAllLanguages[$oLanguage->getId()] = $oLanguage->getLanguageName();
+		} 
+		
 		foreach($aAllStrings as $sStringKey) {
 			foreach($aAllLanguages as $sLanguageId => $sLanguageName) {
 				if($sCheckLanguageId && $sCheckLanguageId === $sLanguageId) {

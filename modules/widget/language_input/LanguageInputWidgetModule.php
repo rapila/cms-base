@@ -8,12 +8,12 @@ class LanguageInputWidgetModule extends PersistentWidgetModule {
 
 	public function __construct($sWidgetId = null) {
 		parent::__construct($sWidgetId);
-		$this->setSetting('is_monolingual', LanguagePeer::isMonolingual());
+		$this->setSetting('is_monolingual', self::isMonolingual());
 	}
-
+	
 	public function getLanguages($bUseAdminLanguages = false, $bDisplayInOriginalLanguage = false) {
 		if($bUseAdminLanguages) {
-			$aLanguages = LanguagePeer::getAdminLanguages($bDisplayInOriginalLanguage);
+			$aLanguages = self::getAdminLanguages($bDisplayInOriginalLanguage);
 			$aResult = array();
 			foreach($aLanguages as $sLanguageId => $sLanguageName) {
 				$aResult[] = array('id' => $sLanguageId, 'language_name' => $sLanguageName);
@@ -22,6 +22,25 @@ class LanguageInputWidgetModule extends PersistentWidgetModule {
 		} else {
 			return WidgetJsonFileModule::jsonBaseObjects(LanguageQuery::create()->orderById()->find(), array('id', 'language_name'));
 		}
+	}
+	
+	public static function getAdminLanguages($bDisplayOriginalLanguage = false) {
+		// display registered languages instead of found and possibly incomplete ones
+		$aLanguages = array();
+		$aRegisteredLanguages = Settings::getSetting('admin', 'registered_user_languages', array());
+		foreach($aRegisteredLanguages as $sLanguageId) {
+			$aLanguages[$sLanguageId] = self::getLanguageName($sLanguageId, $bDisplayOriginalLanguage ? $sLanguageId : null);
+		}
+		return $aLanguages;
+	}
+
+	public function isMonolingual() {
+		return LanguageQuery::create()->count() <= 1;
+	}
+	
+	const STATIC_STRING_NAMESPACE = 'language';
+	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
+		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 	
 	public function setSessionLanguage($sLanguage) {

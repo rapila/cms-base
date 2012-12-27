@@ -33,24 +33,43 @@ class AdminManager extends Manager {
 	}
 	
 	public static function setContentLanguage($sLanguageId) {
-		if(!LanguagePeer::languageExists($sLanguageId)) {
-			if(LanguagePeer::languageExists(Session::language())) {
+		if(!LanguageQuery::languageExists($sLanguageId)) {
+			if(LanguageQuery::languageExists(Session::language())) {
 				$sLanguageId = Session::language();
-			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY))) {
+			} else if(LanguageQuery::languageExists(Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY))) {
 				$sLanguageId = Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY);
-			} else if(LanguagePeer::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
+			} else if(LanguageQuery::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
 				$sLanguageId = Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY);
 			} else {
 				// fallback @see method doc
-				LanguagePeer::createLanguageIfNoneExist($sLanguageId);
+				self::createLanguageIfNoneExist($sLanguageId);
 				return;
 			}
 		}
 		// fallback @see method doc
-		LanguagePeer::createLanguageIfNoneExist($sLanguageId);
+		self::createLanguageIfNoneExist($sLanguageId);
 		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
 	}
 	
+	/**
+	* @param string $sLanguageId
+	* use cases:
+	* 1. at first users' creation
+	* 2. fallback method, creates language if it does not exist, but not at first users' login time, i.e. when languages have been truncated
+	* @return void
+	*/	
+	public static function createLanguageIfNoneExist($sLanguage) {
+		if(LanguageQuery::create()->count() > 0) {
+			return;
+		}
+		$oLanguage = new Language();
+		$oLanguage->setId($sLanguage);
+		$oLanguage->setPathPrefix($sLanguage);
+		$oLanguage->setIsActive(true);
+		LanguagePeer::ignoreRights(true);
+		$oLanguage->save();
+	}
+
 	public static function getContentLanguage() {
 		$sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
 		if($sLanguageId === null) {
