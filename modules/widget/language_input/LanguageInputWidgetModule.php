@@ -34,7 +34,7 @@ class LanguageInputWidgetModule extends PersistentWidgetModule {
 		return $aLanguages;
 	}
 
-	public function isMonolingual() {
+	public static function isMonolingual() {
 		return LanguageQuery::create()->count() <= 1;
 	}
 	
