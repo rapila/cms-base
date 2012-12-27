@@ -67,16 +67,16 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 	
 	public function getDocumentKindName() {
 		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return DocumentTypePeer::getDocumentKindName($this->oDelegateProxy->getDocumentKind());
+			return DocumentKindInputWidgetModule::getDocumentKindName($this->oDelegateProxy->getDocumentKind());
 		}
 		return $this->oDelegateProxy->getDocumentKind();
 	}
 	
 	public function getCriteria() {
-		$oCriteria = new Criteria();
+		$oQuery = DocumentTypeQuery::create();
 		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(DocumentTypePeer::MIMETYPE, $this->oDelegateProxy->getDocumentKind().'/%', Criteria::LIKE);
+			$oQuery->filterByMimetype($this->oDelegateProxy->getDocumentKind().'/%', Criteria::LIKE);
 		}
-		return $oCriteria;
+		return $oQuery;
 	}
 }

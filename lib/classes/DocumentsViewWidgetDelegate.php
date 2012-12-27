@@ -224,7 +224,7 @@ class DocumentsViewWidgetDelegate {
 		if($this->getDocumentKind() === CriteriaListWidgetDelegate::SELECT_ALL) {
 			return $this->getDocumentKind();
 		}
-		return DocumentTypePeer::getDocumentKindName($this->getDocumentKind());
+		return DocumentKindInputWidgetModule::getDocumentKindName($this->getDocumentKind());
 	}
 
 	public function setSearch($sSearch) {

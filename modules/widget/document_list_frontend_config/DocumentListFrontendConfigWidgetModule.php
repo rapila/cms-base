@@ -10,7 +10,7 @@ class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule 
 		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();
 		$aResult['document_categories'] = $aDocumentCategories;
 		$aResult['tags'] = DocumentListFrontendModule::getTagOptions();
-		$aResult['document_kind'] = array('' => StringPeer::getString('wns.document_kind.all')) + DocumentTypePeer::getDocumentKindsAssoc();
+		$aResult['document_kind'] = array('' => StringPeer::getString('wns.document_kind.all')) + DocumentKindInputWidgetModule::getDocumentKindsAssoc();
 		$aResult['list_template'] = array_keys(DocumentListFrontendModule::getTemplateOptions());
 		if(count($aDocumentCategories) > 0) {
 		  $aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();

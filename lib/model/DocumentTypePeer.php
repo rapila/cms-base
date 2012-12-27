@@ -10,47 +10,46 @@
  * @package model
  */ 
 class DocumentTypePeer extends BaseDocumentTypePeer {
-	
+	/**
+	* @deprecated use DocumentKindInputWidgetModule::getDocumentKindsAssoc()
+	*/
 	public static function getDocumentKindsAssoc() {
-		$oCriteria = new Criteria();
-		$aResult = array();
-		foreach(self::doSelect($oCriteria) as $oDocumentType) {
-			$aKind = explode('/', $oDocumentType->getMimeType());
-			$aResult[$aKind[0]] = self::getDocumentKindName($aKind[0]);
-		}
-		asort($aResult);
-		return $aResult;
+		return DocumentKindInputWidgetModule::getDocumentKindsAssoc();
 	}
 	
+	/**
+	* @deprecated use DocumentKindInputWidgetModule::getDocumentKindName()
+	*/
 	public static function getDocumentKindName($sKey) {
-		return StringPeer::getString('wns.document_kind.'.$sKey);
+		return DocumentKindInputWidgetModule::getDocumentKindName($sKey);
 	}
 		
+	/**
+	* @deprecated use DocumentTypeQuery::findDocumentTypeByMimetype()
+	*/
 	public static function getDocumentTypeByMimetype($sMimetype=null) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::MIMETYPE, $sMimetype);
-		return self::doSelectOne($oCriteria);
+		return DocumentTypeQuery::findDocumentTypeByMimetype($sMimetype);
 	}
 	
+	/**
+	* @deprecated use DocumentTypeQuery::findDocumentTypeByExtension()
+	*/
 	public static function getDocumentTypeByExtension($sExtension=null) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(self::EXTENSION, $sExtension);
-		return self::doSelectOne($oCriteria);
+		return DocumentTypeQuery::findDocumentTypeByExtension($sExtension);
 	}
 	
-	public static function getDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind='image', $bLike=true) {
-		$oQuery = DocumentTypeQuery::create()->filterByDocumentKind($sMimeTypeKind, $bLike);
-		$aResult = array();
-		foreach($oQuery->find() as $aDocumentType) {
-			$aResult[$aDocumentType->getId()]=$aDocumentType->getMimetype();
-		}
-		return $aResult;
-	}
-
+	/**
+	* @deprecated use DocumentTypeQuery::findDocumentTypeIDsByKind()
+	*/
 	public static function getDocumentTypeIDsByKind($sMimeTypeKind, $bLike = true) {
-		$oQuery = DocumentTypeQuery::create()->filterByDocumentKind($sMimeTypeKind, $bLike);
-		$oQuery->clearSelectColumns()->addSelectColumn(DocumentTypePeer::ID);
-		return DocumentTypePeer::doSelectStmt($oQuery)->fetchAll(PDO::FETCH_COLUMN);
+		return DocumentTypeQuery::findDocumentTypeIDsByKind($sMimeTypeKind, $bLike);
+	}
+	
+	/**
+	* @deprecated use DocumentTypeQuery::findDocumentTypeAndMimetypeByDocumentKind()
+	*/
+	public static function getDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind = 'image', $bLike = true) {
+		return DocumentTypeQuery::findDocumentTypeAndMimetypeByDocumentKind($sMimeTypeKind, $bLike);
 	}
 	
 	public static function getMostAgreedMimetypes($sFileName, $aDocTypeCompare = array(), $sBaseName = null) {

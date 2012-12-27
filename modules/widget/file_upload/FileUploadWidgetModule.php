@@ -82,10 +82,10 @@ class FileUploadWidgetModule extends WidgetModule {
 		$sFileName = implode('.', $aName);
 		$oDocumentType = null;
 		if($sMimeType !== null) {
-			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+			$oDocumentType = DocumentTypeQuery::findDocumentTypeByMimetype($sMimeType);
 		}
 		if($oDocumentType === null && $sExtension !== null) {
-			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
+			$oDocumentType = DocumentTypeQuery::findDocumentTypeByExtension($sExtension);
 		}
 		if($oDocumentType === null) {
 			if($sExtension === null) {
@@ -112,7 +112,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$oDocumentType = null;
 		if($aHeaders && isset($aHeaders['Content-Type'])) {
 			$sMimeType = $aHeaders['Content-Type'];
-			$oDocumentType = DocumentTypePeer::getDocumentTypeByMimetype($sMimeType);
+			$oDocumentType = DocumentTypeQuery::findDocumentTypeByMimetype($sMimeType);
 		}
 		if($oDocumentType === null && $sExtension !== null) {
 			$oDocumentType = DocumentTypePeer::getDocumentTypeByExtension($sExtension);
