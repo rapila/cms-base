@@ -95,10 +95,10 @@ class LanguagePeer extends BaseLanguagePeer {
 	}
 	
 	/**
-	* @deprecated moved to AdminManager::isMonolingual(), is only used in admin context
+	* @deprecated moved to LanguageInputWidgetModule::isMonolingual(), is only used in admin context
 	*/	
 	public static function isMonolingual() {
-		return self::doCount(new Criteria()) <= 1;
+		return LanguageInputWidgetModule::isMonolingual();
 	}
 
 	/**
@@ -118,15 +118,7 @@ class LanguagePeer extends BaseLanguagePeer {
 	* @deprecated moved to AdminManager::createLanguageIfNoneExist(), is only used in admin context
 	*/
 	public static function createLanguageIfNoneExist($sLanguage) {
-		if(LanguageQuery::create()->count() > 0) {
-			return;
-		}
-		$oLanguage = new Language();
-		$oLanguage->setId($sLanguage);
-		$oLanguage->setPathPrefix($sLanguage);
-		$oLanguage->setIsActive(true);
-		LanguagePeer::ignoreRights(true);
-		$oLanguage->save();
+		AdminManager::createLanguageIfNoneExist($sLanguage);
 	}
 
 }

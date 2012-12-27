@@ -44,5 +44,16 @@ class LanguageQuery extends BaseLanguageQuery {
 		return LanguageQuery::language($sLanguageId, $bByPath)->count() > 0;
 	}
 	
+	/**
+	* @deprecated always use correct sort order in context
+	*/
+	public function orderByContext($bOrderBySort = false) {
+		if($bOrderBySort) {
+			return $this->orderBySort();
+		}
+		return $this->orderById();
+	}
+	
+	
 }
 
