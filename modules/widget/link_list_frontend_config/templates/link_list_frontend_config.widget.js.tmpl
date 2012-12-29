@@ -40,7 +40,11 @@ Widget.types.link_list_frontend_config = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		this.allLinks(this._element.serializeArrayKV(), function(links) {
+		var options = this._element.serializeArrayKV();
+		if(options.tags && options.tags[0] === '') {
+			options.tags = [];
+		}
+		this.allLinks(options, function(links) {
 			jQuery.each(links, function(id, name) {
 				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});

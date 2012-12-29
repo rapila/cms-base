@@ -40,7 +40,11 @@ Widget.types.document_list_frontend_config = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		this.allDocuments(this._element.serializeArrayKV(), function(files) {
+		var options = this._element.serializeArrayKV();
+		if(options.tags && options.tags[0] === '') {
+			options.tags = [];
+		}
+		this.allDocuments(options, function(files) {
 			jQuery.each(files, function(id, name) {
 				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});
