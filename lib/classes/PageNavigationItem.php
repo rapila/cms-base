@@ -22,7 +22,7 @@ class PageNavigationItem extends NavigationItem {
 	}
 	
 	public function getLevel() {
-		$this->oMe->getLevel();
+		return $this->oMe->getLevel();
 	}
 	
 	protected function getChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) {
