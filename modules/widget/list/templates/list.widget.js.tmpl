@@ -38,7 +38,7 @@ Widget.types.list = {
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
 			var isOver = event.type === 'mouseenter' || event.type === 'mousein' || event.type === 'mouseover';
-			var row = jQuery(th	is);
+			var row = jQuery(this);
 			if(widget.settings.row_hover) {
 				row[isOver ? 'addClass' : 'removeClass']('ui-state-hover');
 			}
@@ -142,6 +142,9 @@ Widget.types.list = {
 			if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
 				var rowDragId = rowData[this.settings.row_model_drag_and_drop_identifier];
 				this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowDragId, true);
+				this.settings.dnd.handle('model-dragged-onto-'+this.settings.row_model_name+'-'+rowDragId, function() {
+					_this.update_row(row);
+				});
 			}
 		}
 
