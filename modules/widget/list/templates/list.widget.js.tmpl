@@ -37,11 +37,12 @@ Widget.types.list = {
 		});
 		
 		this._element.delegate('.ui-list-row', 'hover', function(event) {
-			var row = jQuery(this);
+			var isOver = event.type === 'mouseenter' || event.type === 'mousein' || event.type === 'mouseover';
+			var row = jQuery(th	is);
 			if(widget.settings.row_hover) {
-				row.toggleClass('ui-state-hover');
+				row[isOver ? 'addClass' : 'removeClass']('ui-state-hover');
 			}
-			return widget.fire.apply(widget, ['list-row_hover', event].concat(row_metadata(row)));
+			return widget.fire.apply(widget, ['list-row_hover', event].concat(row_metadata(row)).concat([isOver]));
 		});
 		
 		if(widget._element.is('table')) {
