@@ -118,33 +118,33 @@ Widget.types.list = {
 		}).get();
 	},
 	
-	insert_row: function(rowData, isHeading, position) {
+	insert_row: function(rowData, isHeading, previousRow) {
+		var _this = this;
 		isHeading = !!isHeading;
-		var row = this.row_prototype.clone();
+		var row = previousRow || this.row_prototype.clone();
 		if(isHeading) {
 			row.addClass('ui-list-headrow').removeClass('ui-list-row');
 		}
 		var className = isHeading ? 'ui-list-heading' : 'ui-list-cell';
 		var column_prototype = jQuery(isHeading ? "<th>" : "<td>").addClass(className);
 		jQuery.each(this.schema, function(i) {
-			var cell = this._element.is('table') ? column_prototype.clone() : row;
-			row.append(this.insert_cell(row, cell, i, rowData, isHeading));
-		}.bind(this));
-		if(position) {
-			position.after(row);
-			return row;
+			var cell = _this._element.is('table') ? column_prototype.clone() : row;
+			row.append(_this.insert_cell(row, cell, i, rowData, isHeading));
+		});
+
+		if(!previousRow) {
+			if(isHeading) {
+				this._element.prepend(row);
+			} else {
+				this._element.append(row);
+			}
+
+			if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
+				var rowDragId = rowData[this.settings.row_model_drag_and_drop_identifier];
+				this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowDragId, true);
+			}
 		}
 
-		if(isHeading) {
-			this._element.prepend(row);
-		} else {
-			this._element.append(row);
-		}
-		
-		if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
-			this.settings.dnd.init_dnd(row, this.settings.row_model_name, rowData[this.settings.row_model_drag_and_drop_identifier], true);
-		}
-		
 		return row;
 	},
 	
@@ -340,19 +340,15 @@ Widget.types.list = {
 			row = this.row_from_number(row);
 		}
 		var rowData = this.collect_row_data(row);
-		
+
 		jQuery.extend(rowData, (additonalData || {}));
 		this.rowFromData(rowData, function(row_contents) {
-			var newRow = null;
-			var was_active = row.hasClass(this.settings.row_click_active_class);
 			if(row_contents !== null) {
-				newRow = this.insert_row(row_contents, false, row);
-				if(was_active) {
-					newRow.addClass(this.settings.row_click_active_class);
-				}
+				this.insert_row(row_contents, false, row.empty());
+			} else {
+				row.remove();
 			}
-			row.remove();
-			this.fire('row-updated', additonalData, newRow, rowData);
+			this.fire('row-updated', additonalData, row, rowData);
 		});
 	},
 	
