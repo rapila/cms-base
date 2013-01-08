@@ -44,9 +44,11 @@ Widget.types.model_drag_and_drop = {
 					element.effect('highlight', {}, 1500);
 					_this.drop(dragged_model, dragged_item_id, model_name, item_id, function(success) {
 						_this.fire('model_drag_and_drop', success, dragged_model, dragged_item_id, model_name, item_id);
-						if(success) { // success is either false or a domain-specific string like “tagged”, depending on the model of the dragged item
-							_this.fire('model_drag_and_drop-'+success, dragged_model, dragged_item_id, model_name, item_id);
-							_this.fire('model-dragged-onto-'+model_name+'-'+item_id, dragged_model, dragged_item_id);
+						if(success) { // success.status is either false or a domain-specific string like “tagged”, depending on the model of the dragged item
+							var status = success.status;
+							_this.fire('model_drag_and_drop-'+status, dragged_model, dragged_item_id, model_name, item_id, success);
+							_this.fire('model-dragged-onto-'+model_name, item_id, dragged_model, dragged_item_id, status, success);
+							_this.fire('model-dragged-onto-'+model_name+'-'+item_id, dragged_model, dragged_item_id, status, success);
 						}
 					});
 				}

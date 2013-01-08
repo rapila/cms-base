@@ -51,8 +51,11 @@ jQuery(document).ready(function() {
 				content_list.reload();
 			}
 		}).add_row_count_info_for_list(content_list).add_tag_panel();
-		Widget.handle('tag_input_visibility_changed', content_list.reload.bind(content_list));
-		
+		Widget.handle('rapila-tag-removed-from-Document', function(event, result) {
+			console.log(result, content_list.widgetId);
+			content_list.reload(result.is_removed_from_model ? 'force' : false);
+		});
+
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var rowData = sidebar.collect_row_data(sidebar.active_row());
 			if(rowData.document_category_id) {

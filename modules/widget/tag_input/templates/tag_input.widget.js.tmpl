@@ -1,7 +1,32 @@
 Widget.types.tag_input = {
 	prepare: function() {
+		var _this = this;
 		this.reload();
-		Widget.handle('rapila-tags_changed', this.reload.bind(this));
+
+		this.dnd = Widget.create('model_drag_and_drop');
+		if(this.settings.model_name) {
+			this.dnd.handle('model-dragged-onto-'+this.settings.model_name, function(event, item_id, dragged_model, dragged_item_id, status, success) {
+				if(status === 'tagged' && success.is_new_to_model) {
+					_this.reload();
+				}
+			});
+			Widget.handle('rapila-tag-removed-from-'+this.settings.model_name, function(event, result) {
+				if(result.is_removed_from_model) {
+					_this.reload();
+				}
+			});
+		} else {
+			this.dnd.handle('model_drag_and_drop-tagged', function(event, dragged_model, dragged_item_id, model_name, item_id, success) {
+				if(success.is_new) {
+					_this.reload();
+				}
+			});
+			Widget.handle('rapila-tag-removed', function(event, model, result) {
+				if(result.is_removed) {
+					_this.reload();
+				}
+			});
+		}
 
 		//Add change handler
 		this._element.change(function() {
@@ -18,13 +43,18 @@ Widget.types.tag_input = {
 	},
 	
 	reload: function() {
+		var prev = this.val();
 		this._element.empty();
 		this._element.populate({'': this.settings.default_option_text});
 		this._element.populate(this.getTags(this.settings.model_name), this.getSelectedTagId());
+		this.val(prev);
+		if(this.val() !== prev) {
+			this._element.change();
+		}
 	},
 	
 	val: function(value) {
-		if(value) {
+		if(arguments.length > 0) {
 			this._element.val(value);
 			return;
 		}

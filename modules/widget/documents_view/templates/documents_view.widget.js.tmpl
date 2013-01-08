@@ -56,9 +56,9 @@ Widget.types.documents_view = {
 		}, this.getSessionForView(widget_name));
 	},
 	
-	reload: function() {
+	reload: function(force) {
 		this.mark_background_views_dirty();
-		this.active_tab.data('widget').reload();
+		this.active_tab.data('widget').reload(force);
 		this.changed = false;
 		jQuery('.ui-tabs-panel').focus();
 	},

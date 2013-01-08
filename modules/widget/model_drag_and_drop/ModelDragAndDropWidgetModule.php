@@ -9,7 +9,11 @@ class ModelDragAndDropWidgetModule extends WidgetModule {
 	public function drop($sDroppedModelName, $mDroppedId, $sDroppableModelName, $mDroppableId) {
 		$sPeerClass = "{$sDroppedModelName}Peer";
 		if(method_exists($sPeerClass, 'droppedOnto')) {
-			return $sPeerClass::droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId);
+			$mResult = $sPeerClass::droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId);
+			if(is_string($mResult)) {
+				$mResult = array('status' => $mResult);
+			}
+			return $mResult;
 		}
 		return false;
 	}

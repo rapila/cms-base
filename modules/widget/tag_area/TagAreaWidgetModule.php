@@ -20,15 +20,19 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 			throw new Exception('Can only delete specific tags');
 		}
 		$oTag = TagInstanceQuery::create()->filterByModelName($this->sModelName)->filterByTaggedItemId($this->mTaggedItemId)->filterByTagName($sTagName)->findOne();
+		$oResult = new stdClass();
+		$oResult->model_name = $this->sModelName;
+		$oResult->tagged_item_id = $this->mTaggedItemId;
 		if(!$oTag) {
-			return true;
+			$oResult->is_removed = false;
+			$oResult->is_removed_from_model = false;
+		} else {
+			$oTag->delete();
+			$oQuery = TagInstanceQuery::create()->filterByTagName($sTagName);
+			$oResult->is_removed = $oQuery->count() === 0;
+			$oResult->is_removed_from_model = $oResult->is_removed || $oQuery->filterByModelName($this->sModelName)->count() === 0;
 		}
-		$oTag->delete();
-		// @todo relaod tagArea if tag has been deleted
-		// if($this->tagId($sTagName) === null) {
-		// 	return 'reload';
-		// }
-		return true;
+		return $oResult;
 	}
 	
 	public function tagId($sTagName) {
