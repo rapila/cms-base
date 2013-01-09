@@ -17,10 +17,12 @@ class LinkListWidgetModule extends WidgetModule {
 		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
-		if(TagInstanceQuery::create()->filterByModelName('Link')->count() > 0) {
-			$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
-			$this->oTagFilter->setSetting('model_name', 'Link');
-		}
+		$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
+		$this->oTagFilter->setSetting('model_name', 'Link');
+	}
+	
+	private static function hasTags() {
+		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
 	}
 	
 	public function doWidget() {
@@ -40,7 +42,7 @@ class LinkListWidgetModule extends WidgetModule {
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}		
-		if($this->oTagFilter !== null) {
+		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
 		}
 		return array_merge($aResult, array('updated_at_formatted', 'delete'));

@@ -37,6 +37,9 @@ jQuery(document).ready(function() {
 				content_list.reload();
 			}
 		}).add_row_count_info_for_list(content_list).add_tag_panel();
+		Widget.handle('rapila-tag-removed-from-Link', function(event, result) {
+			content_list.reload(result.is_removed_from_model ? 'force' : false);
+		});
 
 		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
