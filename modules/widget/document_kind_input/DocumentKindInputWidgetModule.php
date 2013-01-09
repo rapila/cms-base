@@ -5,9 +5,14 @@
 class DocumentKindInputWidgetModule extends PersistentWidgetModule {
 
 	private $sSelectedDocumentKind = null;
+	
+	public function __construct($sSessionKey, $bDocumentKindsWithDocuments = false) {
+		// $aArgs = func_get_args();
+		// ErrorHandler::log('bDocumentKindsWithDocuments', $bDocumentKindsWithDocuments, $aArgs);
+	}
 		
-	public function getDocumentKinds() {
-		return self::getDocumentKindsAssoc();
+	public function getDocumentKinds($bWithDocumentsOnly = false) {
+		return self::getDocumentKindsAssoc($bWithDocumentsOnly);
 	}
 
 	public static function getDocumentKindsAssoc($bWithDocumentsOnly = false) {

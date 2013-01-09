@@ -13,6 +13,7 @@ class DocumentsViewWidgetDelegate {
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
+		$this->oDocumentKindFilter->setSetting('with_documents_only', false);
 		
 		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
