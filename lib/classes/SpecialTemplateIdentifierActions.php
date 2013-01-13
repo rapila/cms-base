@@ -15,7 +15,6 @@ class SpecialTemplateIdentifierActions {
 	}
 	
 	public function writeString($oTemplateIdentifier) {
-		$sLanguageId = null;
 		$sDefaultValue = null;
 		if($oTemplateIdentifier->hasParameter('defaultValue')) {
 			$sDefaultValue = $oTemplateIdentifier->getParameter('defaultValue');
