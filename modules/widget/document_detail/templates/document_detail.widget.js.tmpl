@@ -138,11 +138,9 @@ Widget.types.document_detail = {
 			this.current_detail_id = result;
 			this.save(true);
 		}
-		// check rafi
 		if(no_reload) {
 			this.fill_data(is_new ? 'new' : 'existing');
 		}
-		//TODO: reload list row
 	},	
 	
 	save: function(should_remain_open) {
