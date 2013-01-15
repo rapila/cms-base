@@ -61,7 +61,7 @@ Widget.types.list = {
 		if(row && row.constructor === Number) {
 			row = this.row_from_number(row);
 		}
-		var previous_selection = this.active_row_datas().sort();
+		previous_selection = previous_selection || this.active_row_datas().sort();
 		if(!row) {
 			this.all_rows().removeClass(this.settings.row_click_active_class);
 		} else if(this.settings.row_click_active_mode) {
