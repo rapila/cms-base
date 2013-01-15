@@ -72,7 +72,7 @@ mkdir -p "./generated/migrations"
 
 cp base/build.properties generated/ && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations('$part');" && \
-$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=propel_miration_${part/\//_}" "$action" && \
+$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${part/\//_}" "$action" && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 rm "./generated/migrations/"*.php 2> /dev/null
 
