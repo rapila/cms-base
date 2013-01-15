@@ -136,6 +136,7 @@ Widget.types.document_detail = {
 		if(is_new) {
 			this.setDocumentId(result);
 			this.current_detail_id = result;
+			this.save(true);
 		}
 		// check rafi
 		if(no_reload) {
@@ -143,6 +144,17 @@ Widget.types.document_detail = {
 		}
 		//TODO: reload list row
 	},	
+	
+	save: function(should_remain_open) {
+		if(should_remain_open) {
+			this.settings.remains_open = true;
+		}
+		this.detail_widget.settings.save_callback();
+		if(should_remain_open) {
+			this.settings.remains_open = false;
+		}
+	},
+	
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.new_entry}}",
