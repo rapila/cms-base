@@ -11,7 +11,7 @@ class DocumentQuery extends BaseDocumentQuery {
 	}
 		
 	public function filterByDocumentKind($sDocumentKind = 'image') {
-		return $this->filterByDocumentTypeId(DocumentTypePeer::getDocumentTypeIDsByKind($sDocumentKind), Criteria::IN);
+		return $this->filterByDocumentTypeId(DocumentTypeQuery::findDocumentTypeIDsByKind($sDocumentKind), Criteria::IN);
 	}
 	
 	public function filterByDisplayLanguage($sLanguageId = null) {

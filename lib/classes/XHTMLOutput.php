@@ -109,7 +109,9 @@ class XHTMLOutput {
 	}
 	
 	public function fixCodeForHtml($sBuffer) {
-		return preg_replace("!\s*/>!", ">", $sBuffer);
+		$sBuffer = preg_replace("!\\s*/>!", ">", $sBuffer);
+		$sBuffer = preg_replace("!(<[^<>]*)xml:lang\s*=\s*(['\"]\w*['\"])([^<>]*>)!", '$1lang=$2$3', $sBuffer);
+		return $sBuffer;
 	}
 	
 	public function fixCodeForXhtml5($sBuffer) {

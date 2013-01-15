@@ -83,6 +83,8 @@ Widget.types.tag_area = {
 				if(!this._element.find('.tag').length) {
 					this._element.removeClass('has_tags');
 				}
+				Widget.fire('rapila-tag-removed', name, result);
+				Widget.fire('rapila-tag-removed-from-'+result.model_name, result);
 			}
 		});
 		return false;

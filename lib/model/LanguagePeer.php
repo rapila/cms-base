@@ -12,12 +12,17 @@
  */ 
 class LanguagePeer extends BaseLanguagePeer {
 	
+	/**
+	* @deprecated moved to LanguageInputWidgetModule::getLanguageName()
+	*/	
 	const STATIC_STRING_NAMESPACE = 'language';
-	
 	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
 		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 
+	/**
+	* @deprecated Use query class method languageIsActive
+	*/
 	public static function languageIsActive($sLanguageId, $bByPath = false) {
 		$oLanguage = LanguageQuery::language($sLanguageId, $bByPath)->findOne();
 		if($oLanguage === null) {
@@ -25,14 +30,17 @@ class LanguagePeer extends BaseLanguagePeer {
 		}
 		return $oLanguage->getIsActive();
 	}
-
+	
+	/**
+	* @deprecated Use query class method languageExists
+	*/
 	public static function languageExists($sLanguageId, $bByPath = false) {
 		$oQuery = LanguageQuery::language($sLanguageId, $bByPath);
 		return $oQuery->count() > 0;
 	}
 
 	/**
-	* @deprecated Use query class methods
+	* @deprecated use query methods directly in context
 	*/
 	public static function getLanguages($bActiveOnly = false, $bSortBySort = false, $mExcludeCurrent = false) {
 		$oCriteria = new Criteria();
@@ -56,13 +64,21 @@ class LanguagePeer extends BaseLanguagePeer {
 		return self::doSelect($oCriteria);
 	}
 		
+	/**
+	* @deprecated use query methods directly in context
+	*/
 	public static function getLanguagesAssoc($bActiveOnly=false, $oSortBySort=false) {
 		$aResult = array();
 		$oQuery = LanguageQuery::create();
 		if($bActiveOnly) {
 			$oQuery->filterByIsActive(true);
 		}
-		foreach($oQuery->orderByContext($oSortBySort)->find() as $oLanguage) {
+		if($oSortBySort) {
+			$oQuery->orderBySort();
+		} else {
+			$oQuery->orderById();
+		}
+		foreach($oQuery->find() as $oLanguage) {
 			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();
 		} 
 		if(!$oSortBySort) {
@@ -70,15 +86,24 @@ class LanguagePeer extends BaseLanguagePeer {
 		}	 
 		return $aResult;
 	}
-	
+
+	/**
+	* @deprecated not used or too simple to have a dedicated method
+	*/	
 	public static function hasNoLanguage() {
 		return self::doCount(new Criteria()) === 0;
 	}
 	
+	/**
+	* @deprecated moved to LanguageInputWidgetModule::isMonolingual(), is only used in admin context
+	*/	
 	public static function isMonolingual() {
-		return self::doCount(new Criteria()) <= 1;
+		return LanguageInputWidgetModule::isMonolingual();
 	}
 
+	/**
+	* @deprecated moved to LanguageInputWidgetModule::getAdminLanguages()
+	*/
 	public static function getAdminLanguages($bDisplayOriginalLanguage = false) {
 	  // display registered languages instead of found and posibly incomplete ones
 		$aLanguages = array();
@@ -89,23 +114,11 @@ class LanguagePeer extends BaseLanguagePeer {
 		return $aLanguages;
 	}
 	
- /**
-	* @param string $sLanguageId
-	* use cases:
-	* 1. at first users' creation
-	* 2. fallback method, creates language if it does not exist, but not at first users' login time, i.e. when languages have been truncated
-	* @return void
-	*/	
+	/**
+	* @deprecated moved to AdminManager::createLanguageIfNoneExist(), is only used in admin context
+	*/
 	public static function createLanguageIfNoneExist($sLanguage) {
-		if(LanguageQuery::create()->count() > 0) {
-			return;
-		}
-		$oLanguage = new Language();
-		$oLanguage->setId($sLanguage);
-		$oLanguage->setPathPrefix($sLanguage);
-		$oLanguage->setIsActive(true);
-		LanguagePeer::ignoreRights(true);
-		$oLanguage->save();
+		AdminManager::createLanguageIfNoneExist($sLanguage);
 	}
 
 }

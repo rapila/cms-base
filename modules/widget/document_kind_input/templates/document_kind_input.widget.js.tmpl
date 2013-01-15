@@ -22,7 +22,7 @@ Widget.types.document_kind_input = {
 		}
 
 		var option = jQuery('<option/>');
-		var document_kinds = this.getDocumentKinds();
+		var document_kinds = this.getDocumentKinds(this.settings.with_documents_only);
 		jQuery.each(document_kinds, function(value, name) {
 			option.clone().text(name).val(value).appendTo(this._element);
 		}.bind(this));
@@ -31,6 +31,7 @@ Widget.types.document_kind_input = {
 	},
 	
 	settings: {
-		store_value: false
+		store_value: false,
+		with_documents_only: false
 	}
 };

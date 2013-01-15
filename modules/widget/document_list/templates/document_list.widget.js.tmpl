@@ -21,7 +21,7 @@ Widget.types.document_list = {
 				if(col.identifier === 'is_inactive') {
 					this.toggle_boolean(row, col.identifier);
 					event.stopPropagation();
-				}				
+				}
 				if(col.identifier === 'is_protected') {
 					this.toggle_boolean(row, col.identifier);
 					event.stopPropagation();
@@ -40,7 +40,7 @@ Widget.types.document_list = {
 		return this.list;
 	},
 	
-	reload: function() {
-		this.list.reload();
+	reload: function(force) {
+		this.list.reload(force);
 	}
 };

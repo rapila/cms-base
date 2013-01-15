@@ -26,7 +26,7 @@ Widget.types.role_detail = {
 		var _this = this;
 		this.detail_widget.disable();		
 		this.roleData(function(role_data) {
-			this.content.find("input[name='role_key']").val(role_data.RoleKey);
+			this.content.find("input[name='role_key']").val(role_data.RoleKey).prop('disabled', role_data.RoleIsUsed);
 			this.content.find("textarea[name='description']").val(role_data.Description);
 			this.content.find(".updated_info").text(role_data.UpdatedInfo);
 			this.content.find(".created_info").text(role_data.CreatedInfo);

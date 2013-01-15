@@ -4,7 +4,12 @@
  */
 class LanguageTabsWidgetModule extends WidgetModule {
 	public function getLanguages() {
-	  return LanguagePeer::getLanguagesAssoc(false, true);
+		$aResult = array();
+		foreach(LanguageQuery::create()->orderBySort()->find() as $oLanguage) {
+			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();
+		} 
+		asort($aResult);
+		return $aResult;
 	}
 	
 	public function updateContentLanguage($sLanguageId) {

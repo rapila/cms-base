@@ -1,1 +1,1 @@
-<link rel="{{rel;defaultValue=alternate}}" href="{{location}}" />
+<link rel="{{rel;defaultValue=alternate}}" {{if=ne;1=\{\{title\}\};2=}}title="{{title}}" {{endIf}}{{if=ne;1=\{\{type\}\};2=}}type="{{type}}" {{endIf}}{{if=ne;1=\{\{lang\}\};2=}}xml:lang="{{lang}}" hreflang="{{lang}}" {{endIf}}href="{{location}}" />

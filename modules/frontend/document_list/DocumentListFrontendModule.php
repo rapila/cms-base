@@ -62,11 +62,19 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
 			$oQuery->filterByIsExternallyManaged(false);
 		}
-		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		$aResult = $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
+			$aResult = array('' => ' ---- ')+$aResult;
+		}
+		return $aResult;
 	}
 	
 	public static function getTagOptions() {
-		return TagQuery::create()->filterByTagged('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		$aResult = TagQuery::create()->filterByTagged('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
+			$aResult = array('' => ' ---- ')+$aResult;
+		}
+		return $aResult;
 	}
 
 	public static function getTemplateOptions() {
@@ -88,6 +96,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 		}
+		ErrorHandler::log($mData);
 		return parent::getSaveData($mData);
 	}
 	

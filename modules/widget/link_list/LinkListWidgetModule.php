@@ -9,19 +9,20 @@ class LinkListWidgetModule extends WidgetModule {
 	private $oTagFilter;
 	public $oDelegateProxy;
 	
-	
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
-		if(!LanguagePeer::isMonolingual()) {
+		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
-		if(TagInstanceQuery::create()->filterByModelName('Link')->count() > 0) {
-			$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
-			$this->oTagFilter->setSetting('model_name', 'Link');
-		}
+		$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
+		$this->oTagFilter->setSetting('model_name', 'Link');
+	}
+	
+	private static function hasTags() {
+		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
 	}
 	
 	public function doWidget() {
@@ -41,8 +42,10 @@ class LinkListWidgetModule extends WidgetModule {
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}		
-		if($this->oTagFilter !== null) {
+		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
+		} else {
+			$this->oDelegateProxy->getListSettings()->setFilterColumnValue('has_tags', CriteriaListWidgetDelegate::SELECT_ALL);
 		}
 		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}

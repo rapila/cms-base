@@ -479,9 +479,13 @@ class ResourceFinder {
 		}
 	}
 	
+	public static function pluginFinder() {
+		return self::create()->addPath(DIRNAME_PLUGINS)->addExpression(self::ANY_NAME_OR_TYPE_PATTERN)->mainOnly();
+	}
+	
 	private static function getPluginPaths($bReverseOrder = false) {
 		if(self::$PLUGINS === null) {
-			self::$PLUGINS = array_values(self::findResourcesByExpressions(array(DIRNAME_PLUGINS, self::ANY_NAME_OR_TYPE_PATTERN), self::SEARCH_MAIN_ONLY));
+			self::$PLUGINS = array_values(self::pluginFinder()->find());
 		}
 		if($bReverseOrder === true) {
 			return array_reverse(self::$PLUGINS);

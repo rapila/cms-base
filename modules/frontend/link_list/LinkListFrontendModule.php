@@ -79,11 +79,19 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			$oQuery->filterByIsExternallyManaged(false);
 		}
-		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		$aResult = $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
+			$aResult = array('' => ' ---- ')+$aResult;
+		}
+		return $aResult;
 	}
 	
 	public static function getTagOptions() {
-		return TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		$aResult = TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
+			$aResult = array('' => ' ---- ')+$aResult;
+		}
+		return $aResult;
 	}
 	
 	public static function getContentInfo($oLanguageObject) {

@@ -1,4 +1,11 @@
 Widget.types.model_drag_and_drop = {
+	draggable_is_on_top_of: function(draggable, helper, location) {
+		helper.css({pointerEvents: 'none'});
+		var onto = document.elementFromPoint(location.x, location.y);
+		helper.css({pointerEvents: ''});
+		return draggable.is(onto) || draggable.has(onto).length > 0;
+	},
+	
 	init_dnd: function(element, model_name, item_id, droppable_only) {
 		var _this = this;
 		
@@ -14,13 +21,17 @@ Widget.types.model_drag_and_drop = {
 				appendTo: document.body
 			});
 		}
+
 		element.droppable({
 			accept: function(draggable) {
 				var dragged_model = jQuery(draggable).attr('data-model-name');
 				if(!dragged_model || !_this.possible_targets[dragged_model]) {
 					return false;
 				}
-				return (_this.possible_targets[dragged_model] === '*' || jQuery.inArray(model_name, _this.possible_targets[dragged_model]) > -1);
+				if(!(_this.possible_targets[dragged_model] === '*' || jQuery.inArray(model_name, _this.possible_targets[dragged_model]) > -1)) {
+					return false;
+				}
+				return true;
 			},
 			drop: function(event, ui) {
 				var draggable = ui.draggable;
@@ -29,13 +40,21 @@ Widget.types.model_drag_and_drop = {
 				if(!dragged_model || !dragged_item_id) {
 					return;
 				}
-				_this.drop(dragged_model, dragged_item_id, model_name, item_id, function(success) {
-					if(success) {
-						_this.fire('model_drag_and_drop-'+success, dragged_model, dragged_item_id, model_name, item_id);
-					}
-				});
+				if(_this.draggable_is_on_top_of(element, ui.helper, {x: event.clientX, y: event.clientY})) {
+					element.effect('highlight', {}, 1500);
+					_this.drop(dragged_model, dragged_item_id, model_name, item_id, function(success) {
+						_this.fire('model_drag_and_drop', success, dragged_model, dragged_item_id, model_name, item_id);
+						if(success) { // success.status is either false or a domain-specific string like “tagged”, depending on the model of the dragged item
+							var status = success.status;
+							_this.fire('model_drag_and_drop-'+status, dragged_model, dragged_item_id, model_name, item_id, success);
+							_this.fire('model-dragged-onto-'+model_name, item_id, dragged_model, dragged_item_id, status, success);
+							_this.fire('model-dragged-onto-'+model_name+'-'+item_id, dragged_model, dragged_item_id, status, success);
+						}
+					});
+				}
 			},
-			hoverClass: 'ui-state-droppable'
+			hoverClass: 'ui-state-droppable',
+			tolerance: 'pointer'
 		});
 	},
 	

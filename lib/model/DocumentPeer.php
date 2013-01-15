@@ -122,8 +122,7 @@ class DocumentPeer extends BaseDocumentPeer {
 		}
 		return round($iDocLength/$fOutputDividor, $iRoundCount)." ".$sFormat;
 	}
-	
-	
+
 	public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
 		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, $iDocumentCategory, $bDocumentKindIsNotInverted, $bExcludeExternallyManaged);
 		$oCriteria->addAscendingOrderByColumn(self::NAME);
@@ -136,7 +135,7 @@ class DocumentPeer extends BaseDocumentPeer {
 			$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
 		}
 		if($sDocumentKind !== null) {
-			$oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypePeer::getDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
+			$oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypeQuery::findDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
 		}
 		return $oCriteria;
 	}

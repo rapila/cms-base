@@ -13,13 +13,17 @@ class DocumentsViewWidgetDelegate {
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
-		if(!LanguagePeer::isMonolingual()) {
+		$this->oDocumentKindFilter->setSetting('with_documents_only', false);
+		
+		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
-		if(TagInstanceQuery::create()->filterByModelName('Document')->count() > 0) {
-			$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
-			$this->oTagFilter->setSetting('model_name', 'Document');
-		}
+		$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
+		$this->oTagFilter->setSetting('model_name', 'Document');
+	}
+	
+	private static function hasTags() {
+		return TagInstanceQuery::create()->filterByModelName('Document')->count() > 0;
 	}
 	
 	public function setDelegateProxy($oDelegateProxy) {
@@ -51,7 +55,7 @@ class DocumentsViewWidgetDelegate {
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
-		if($this->oTagFilter !== null) {
+		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
 		}
 		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
@@ -224,7 +228,7 @@ class DocumentsViewWidgetDelegate {
 		if($this->getDocumentKind() === CriteriaListWidgetDelegate::SELECT_ALL) {
 			return $this->getDocumentKind();
 		}
-		return DocumentTypePeer::getDocumentKindName($this->getDocumentKind());
+		return DocumentKindInputWidgetModule::getDocumentKindName($this->getDocumentKind());
 	}
 
 	public function setSearch($sSearch) {

@@ -169,8 +169,8 @@ class UserPeer extends BaseUserPeer {
 		UserPeer::ignoreRights(true);
 		$oFirstUser->save();
 		UserPeer::ignoreRights(false);
-		LanguagePeer::createLanguageIfNoneExist(Session::language());
-		// make sure that this first language is the content language too @see
+		// make sure that this first language exists and is the content language too
+		AdminManager::createLanguageIfNoneExist(Session::language());
     AdminManager::setContentLanguage(Session::language());
 		return true;
 	}

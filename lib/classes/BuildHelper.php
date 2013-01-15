@@ -17,6 +17,7 @@ class BuildHelper {
 	public static function preMigrate() {
 		self::preBuild();
 		self::generateBuildXml();
+		self::convertLegacyMigrationTable();
 	}
 
 	public static function postMigrate() {
@@ -25,11 +26,31 @@ class BuildHelper {
 		Cache::clearAllCaches();
 	}
 
-	public static function consolidateMigrations() {
-		foreach(ResourceFinder::create()->addPath('data', 'migrations')->addExpression('/\.php$/')->all()->returnObjects()->find() as $oMigration) {
-			print "Copying migration {$oMigration->getFileName()} from {$oMigration->getInstancePrefix()}\n";
+	public static function consolidateMigrations($sPart = 'base') {
+		$aPaths = explode('/', $sPart);
+
+		foreach(ResourceFinder::create($aPaths)->mainOnly()->addPath('data', 'migrations')->addExpression('/\.php$/')->all()->returnObjects()->find() as $oMigration) {
+			print "Copying migration {$oMigration->getFileName()} from $sPart\n";
 			copy($oMigration->getFullPath(), MAIN_DIR.'/'.DIRNAME_GENERATED.'/migrations/'.$oMigration->getFileName());
 		}
+	}
+	
+	private static function convertLegacyMigrationTable() {
+		$oConnection = Propel::getConnection();
+		$iCurrentMigration = null;
+		try {
+			$iCurrentMigration = (int)$oConnection->query('SELECT * FROM `propel_migration`', PDO::FETCH_COLUMN, 0)->fetch();
+		} catch(PDOException $e) {
+			// Migration table removed already. Nothing to do.
+			return;
+		}
+		$aPaths = array_merge(array(DIRNAME_SITE, DIRNAME_BASE), array_keys(ResourceFinder::pluginFinder()->find()));
+		foreach($aPaths as $sPath) {
+			$sTableName = '_migration_'.str_replace('/', '_', $sPath);
+			$oConnection->exec("CREATE TABLE $sTableName (version int(11) DEFAULT '0')");
+			$oConnection->exec("INSERT INTO $sTableName (version) VALUES ($iCurrentMigration)");
+		}
+		$oConnection->exec("DROP TABLE propel_migration");
 	}
 	
 	public static function preBuild($bIsDevVersion = false) {

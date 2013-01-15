@@ -32,12 +32,28 @@ class LanguageQuery extends BaseLanguageQuery {
 		return $this->filterById($mExclude, Criteria::NOT_EQUAL);
 	}
 	
+	public static function languageIsActive($sLanguageId, $bByPath = false) {
+		$oLanguage = LanguageQuery::language($sLanguageId, $bByPath)->findOne();
+		if($oLanguage === null) {
+			return false;
+		}
+		return $oLanguage->getIsActive();
+	}
+
+	public static function languageExists($sLanguageId, $bByPath = false) {
+		return LanguageQuery::language($sLanguageId, $bByPath)->count() > 0;
+	}
+	
+	/**
+	* @deprecated always use correct sort order in context
+	*/
 	public function orderByContext($bOrderBySort = false) {
 		if($bOrderBySort) {
 			return $this->orderBySort();
 		}
 		return $this->orderById();
 	}
+	
 	
 }
 

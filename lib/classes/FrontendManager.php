@@ -122,34 +122,34 @@ class FrontendManager extends Manager {
 	
 	protected function initLanguage() {
 		$bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
-		if($bIsMultilingual && self::hasNextPathItem() && LanguagePeer::languageIsActive(self::peekNextPathItem(), true)) {
+		if($bIsMultilingual && self::hasNextPathItem() && LanguageQuery::languageIsActive(self::peekNextPathItem(), true)) {
 			$oLanguage = LanguageQuery::create()->filterByPathPrefix(self::usePath())->findOne();
 			Session::getSession()->setLanguage($oLanguage);
 		} else {
 			// If site is monolingual, try setting the session default as a shortcut
 			if($bIsMultilingual) {
 				// If we’ve got a valid session language set (and it’s not just from the default), use that
-				if(Session::getSession()->hasAttribute(Session::SESSION_LANGUAGE_KEY) && LanguagePeer::languageIsActive(Session::language())) {
+				if(Session::getSession()->hasAttribute(Session::SESSION_LANGUAGE_KEY) && LanguageQuery::languageIsActive(Session::language())) {
 					LinkUtil::redirectToLanguage();
 				}
 				// Otherwise, use the first of the user’s accept languages that is valid
 				foreach(LocaleUtil::acceptLocales() as $oAcceptLocale) {
-					if(LanguagePeer::languageIsActive($oAcceptLocale->language_id)) {
+					if(LanguageQuery::languageIsActive($oAcceptLocale->language_id)) {
 						Session::getSession()->setLanguage($oAcceptLocale->language_id);
 						LinkUtil::redirectToLanguage();
 					}
 				}
 				// As a last resort, try, the default session language
 				Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
-				if(LanguagePeer::languageIsActive(Session::language())) {
+				if(LanguageQuery::languageIsActive(Session::language())) {
 					LinkUtil::redirectToLanguage();
 				}
 			} else {
-				if(LanguagePeer::languageIsActive(Session::language())) {
+				if(LanguageQuery::languageIsActive(Session::language())) {
 					return;
 				} else {
 					Session::getSession()->resetAttribute(Session::SESSION_LANGUAGE_KEY);
-					if(LanguagePeer::languageIsActive(Session::language())) {
+					if(LanguageQuery::languageIsActive(Session::language())) {
 						return;
 					}
 				}
@@ -264,9 +264,9 @@ class FrontendManager extends Manager {
 			$this->fillNavigation();
 		}
 		$this->fillContent();
-		
+
 		$this->renderTemplate();
-		
+
 		if($oCache !== null) {
 			$oCache->setContents($this->oTemplate->getSentOutput());
 		}
@@ -292,7 +292,7 @@ class FrontendManager extends Manager {
 	protected function addCanonicalLink() {
 		$oCanonical = self::$CURRENT_NAVIGATION_ITEM->getCanonical(Session::language());
 		if($oCanonical) {
-			ResourceIncluder::defaultIncluder()->addResource($oCanonical, null, null, array('rel' => 'canonical'));
+			ResourceIncluder::metaIncluder()->addResource($oCanonical, null, null, array('rel' => 'canonical'));
 		}
 	}
 
@@ -310,11 +310,20 @@ class FrontendManager extends Manager {
 		$this->oPageType->display($this->oTemplate, false);
 	}
 
-	protected function fillAttributes() { 
+	protected function fillAttributes() {
 		FilterModule::getFilters()->handleFillPageAttributes(self::$CURRENT_PAGE, $this->oTemplate);
-		$this->oTemplate->replaceIdentifier("meta_keywords", self::$CURRENT_PAGE->getConsolidatedKeywords());
-		$this->oTemplate->replaceIdentifier("meta_description", self::$CURRENT_PAGE->getDescription());
-		$this->oTemplate->replaceIdentifier("description", self::$CURRENT_NAVIGATION_ITEM->getDescription());
+
+		$oMetaIncluder = ResourceIncluder::metaIncluder();
+		$sKeywords = self::$CURRENT_PAGE->getConsolidatedKeywords();
+		$sDescription = self::$CURRENT_PAGE->getDescription();
+
+		$oMetaIncluder->addMeta('keywords', $sKeywords);
+		$oMetaIncluder->addMeta('description', $sDescription);
+		// FIXME: Deprecated. Use the meta includer for this.
+		$this->oTemplate->replaceIdentifier("meta_keywords", $sKeywords);
+		$this->oTemplate->replaceIdentifier("meta_description", $sDescription);
+
+		$this->oTemplate->replaceIdentifier("description", $sDescription);
 		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
 		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
 		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_NAVIGATION_ITEM->getName());

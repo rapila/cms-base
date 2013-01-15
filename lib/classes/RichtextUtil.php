@@ -140,7 +140,11 @@ class RichtextUtil {
 		$iId = array_shift($aValue);
 		$oPage = PageQuery::create()->findPk($iId);
 		if($oPage) {
-			$sLink = self::getLink(array_merge($oPage->getFullPathArray(), $aValue), "FrontendManager");
+			$mManager = Manager::getManagerClassNormalized();
+			if($mManager !== "PreviewManager") {
+				$mManager = "FrontendManager";
+			}
+			$sLink = self::getLink(array_merge($oPage->getFullPathArray(), $aValue), $mManager);
 			return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier, null, $oPage);
 		}
 	}

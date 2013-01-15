@@ -15,11 +15,22 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oRole);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oRole);
 		$aResult['rights'] = array();
+		$aResult['RoleIsUsed'] = self::roleIsUsed($oRole);
 		foreach($oRole->getRightsJoinPage() as $oRight) {
 			$aResult["rights"][$oRight->getId()] = $oRight->toArray();
 		}
 		$this->getModulesAndRequiredRights();
 		return $aResult;
+	}
+	
+	private static function roleIsUsed($oRole) {
+		if($oRole->isNew()) {
+			return false;
+		}
+		$iCountRolesUsed = UserRoleQuery::create()->filterByRole($oRole)->joinUserRelatedByUserId()->count();
+		$iCountRolesInGroupsUsed = UserGroupQuery::create()->filterByRole($oRole)->joinUserRelatedByUserId()->count();
+		ErrorHandler::log('roleIsUsed', $oRole->getRoleKey(), $iCountRolesUsed, $iCountRolesInGroupsUsed);
+		return ($iCountRolesUsed + $iCountRolesInGroupsUsed) > 0;
 	}
 	
 	public function getModulesAndRequiredRights() {

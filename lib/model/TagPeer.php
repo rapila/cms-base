@@ -30,12 +30,18 @@ class TagPeer extends BaseTagPeer {
 	}
 
 	public static function droppedOnto($mDroppedId, $sDroppableModelName, $mDroppableId) {
+		$oQuery = TagInstanceQuery::create()->filterByTagName($mDroppedId);
+		$oResult = new stdClass();
+		$oResult->status = 'tagged';
+		$oResult->is_new = $oQuery->count() === 0;
+		$oResult->is_new_to_model = $oResult->is_new || $oQuery->filterByModelName($sDroppableModelName)->count() === 0;
+		$oResult->is_first_of_model = TagInstanceQuery::create()->filterByModelName($sDroppableModelName)->count() === 0;
 		try {
 			TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
-			return 'tagged';
 		} catch (Exception $e) {
-			return 're-tagged';
+			$oResult->status = 're-tagged';
 		}
+		return $oResult;
 	}
 	
 	public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {

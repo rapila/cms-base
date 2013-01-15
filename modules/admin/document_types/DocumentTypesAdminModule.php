@@ -28,7 +28,7 @@ class DocumentTypesAdminModule extends AdminModule {
 	}
 	
 	public function numberOfRows() {
-		return count(DocumentTypePeer::getDocumentKindsAssoc());
+		return count(DocumentKindInputWidgetModule::getDocumentKindsAssoc());
 	}
 
 	public function getColumnIdentifiers() {
@@ -66,7 +66,7 @@ class DocumentTypesAdminModule extends AdminModule {
 	
 	private static function getDocumentKinds() {
 		if(self::$aDOCUMENT_KINDS === null) {
-			self::$aDOCUMENT_KINDS = DocumentTypePeer::getDocumentKindsAssoc();	
+			self::$aDOCUMENT_KINDS = DocumentKindInputWidgetModule::getDocumentKindsAssoc();	
 			asort(self::$aDOCUMENT_KINDS);	
 		}
 		return self::$aDOCUMENT_KINDS;
