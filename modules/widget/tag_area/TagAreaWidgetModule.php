@@ -31,6 +31,7 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 			$oQuery = TagInstanceQuery::create()->filterByTagName($sTagName);
 			$oResult->is_removed = $oQuery->count() === 0;
 			$oResult->is_removed_from_model = $oResult->is_removed || $oQuery->filterByModelName($this->sModelName)->count() === 0;
+			$oResult->was_last_of_model = $oResult->is_removed_from_model && TagInstanceQuery::create()->filterByModelName($this->sModelName)->count() === 0;
 		}
 		return $oResult;
 	}
