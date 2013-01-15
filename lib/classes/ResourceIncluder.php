@@ -1,11 +1,15 @@
 <?php
 class ResourceIncluder {
+	/// The default resource includer. Many plugins and internal modules use this so you should have at least one {{writeResourceIncludes}} without the includer name in your template.
 	const DEFAULT_INSTANCE_NAME = 'ResourceIncluder_default';
+	/// The Resource includer for meta tags like keywords, description and link tags (excluding stylesheet links). This ({{writeResourceIncludes=meta}}) is not required to have in your template but highly recommended.
+	const META_INSTANCE_NAME = 'meta';
 	
 	const RESOURCE_TYPE_CSS = 'css';
 	const RESOURCE_TYPE_JS = 'js';
 	const RESOURCE_TYPE_IMAGE = 'images';
 	const RESOURCE_TYPE_ICON = 'icons';
+	const RESOURCE_TYPE_INTERNAL_LINK = 'internal_link';
 	
 	const PRIORITY_FIRST = -1;
 	const PRIORITY_NORMAL = 0;
@@ -45,6 +49,14 @@ class ResourceIncluder {
 	 */
 	public static function defaultIncluder() {
 		return self::namedIncluder(self::DEFAULT_INSTANCE_NAME);
+	}
+	
+	/**
+	 * @static Get the includer used for meta tags. Same as calling ResourceIncluder::namedIncluder(ResourceIncluder::META_INSTANCE_NAME).
+	 * @return ResourceIncluder the meta includer
+	 */
+	public static function metaIncluder() {
+		return self::namedIncluder(self::META_INSTANCE_NAME);
 	}
 	
 	public function __construct() {
@@ -298,6 +310,22 @@ class ResourceIncluder {
 	
 	public function addCustomCss($mCustomCss, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
 		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomCss), $iPriority, $bEndsDependencyList);
+	}
+	
+	/**
+	* Add a meta tag. This adds a custom resource with the “meta” template.
+	* Note: This will not add anything if the content is empty.
+	* @param $sName The name (or http-equiv) attribute of the resulting tag.
+	* @param $sContent The resulting tag’s content.
+	* @param $bIsHttpEquiv Whether this is a meta tag used with the name or the http-equiv attribute.
+	*/
+	public function addMeta($sName, $sContent, $bIsHttpEquiv = false) {
+		if(!$sContent) {
+			return;
+		}
+		$aResourceInfo = array('template' => 'meta', 'content' => $sContent);
+		$aResourceInfo[$bIsHttpEquiv ? 'http-equiv' : 'name'] = $sName;
+		$this->addCustomResource($aResourceInfo);
 	}
 	
 	public function addReverseDependency($sIdentifier, $bIsBefore = false) {
