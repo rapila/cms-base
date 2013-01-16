@@ -21,6 +21,10 @@ class FileUploadWidgetModule extends WidgetModule {
 		if($aOptions['document_id']) {
 			$oDocument = DocumentQuery::create()->findPk($aOptions['document_id']);
 		} else {
+			/**
+			* @todo ignoreRights should possibly be handled differently, see issue #160 
+			*/
+			DocumentPeer::ignoreRights(true);
 			$oDocument = new Document();
 		}
 		if($oDocument === null) {
@@ -64,7 +68,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$oDocument->save();
 		return $oDocument->getId();
 	}
-
+	
 	public static function includeResources($oResourceIncluder = null) {
 		if($oResourceIncluder == null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
@@ -142,6 +146,10 @@ class FileUploadWidgetModule extends WidgetModule {
 		if($aOptions['document_id']) {
 			$oDocument = DocumentQuery::create()->findPk($aOptions['document_id']);
 		} else {
+			/**
+			* @todo ignoreRights should possibly be handled differently, see issue #160 
+			*/
+			DocumentPeer::ignoreRights(true);
 			$oDocument = new Document();
 		}
 		//this needs fopen wrappers enabled
