@@ -51,12 +51,19 @@ jQuery(document).ready(function() {
 				content_list.reload();
 			}
 		}).add_row_count_info_for_list(content_list).add_tag_panel();
+		
+		// tag remove and drop handlers
 		Widget.handle('rapila-tag-removed-from-Document', function(event, result) {
-			if(result.is_removed_from_model) {
+			if(result.was_last_of_model) {
 				content_list.reload('force');
-			} else {
-				content_list_widget = content_list.active_tab.data('widget'));
-				content_list_widget.update_row(content_list_widget.row_from_row_data({id: result.tagged_item_id}));
+			}
+		});
+		Widget.create('model_drag_and_drop').handle('model-dragged-onto-Document', function(event, item_id, dragged_model, dragged_item_id, status, success) {
+			if(dragged_model !== 'Tag') {
+				return;
+			}
+			if(success.is_first_of_model) {
+				content_list.reload('force');
 			}
 		});
 

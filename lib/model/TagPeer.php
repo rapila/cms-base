@@ -35,6 +35,7 @@ class TagPeer extends BaseTagPeer {
 		$oResult->status = 'tagged';
 		$oResult->is_new = $oQuery->count() === 0;
 		$oResult->is_new_to_model = $oResult->is_new || $oQuery->filterByModelName($sDroppableModelName)->count() === 0;
+		$oResult->is_first_of_model = TagInstanceQuery::create()->filterByModelName($sDroppableModelName)->count() === 0;
 		try {
 			TagInstancePeer::newTagInstance($mDroppedId, $sDroppableModelName, $mDroppableId);
 		} catch (Exception $e) {

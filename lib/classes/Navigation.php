@@ -301,8 +301,7 @@ class Navigation {
 			
 			// Add alternate language links
 			if($oPageString) {
-				$oHreflangLink = TagWriter::quickTag('link', array('rel' => 'alternate', 'type' => 'text/html', 'hreflang' => $oLanguage->getId(), 'lang' => $oLanguage->getId(), 'href' =>  $sLink, 'title' => $oPageString->getPageTitle()));
-				$oMainTemplate->replaceIdentifierMultiple('hreflang_links', $oHreflangLink);
+				ResourceIncluder::metaIncluder()->addCustomResource(array('template' => 'link', 'rel' => 'alternate', 'lang' => $oLanguage->getId(), 'location' =>  $sLink, 'title' => $oPageString->getPageTitle()));
 			}
 			$oLangTemplate->replaceIdentifier('id', $oLanguage->getId());
 			$oLangTemplate->replaceIdentifier('name', $oLanguage->getLanguageName($oLanguage->getId()));

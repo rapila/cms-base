@@ -44,6 +44,8 @@ class LinkListWidgetModule extends WidgetModule {
 		}		
 		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
+		} else {
+			$this->oDelegateProxy->getListSettings()->setFilterColumnValue('has_tags', CriteriaListWidgetDelegate::SELECT_ALL);
 		}
 		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}
