@@ -24,8 +24,7 @@ class LinkUtil {
 			}
 		}
 		$sManager = Manager::getManagerClassNormalized(null);
-		$bShouldIncludeLanguageInLink = $sManager::shouldIncludeLanguageInLink();
-		if($bShouldIncludeLanguageInLink) {
+		if($sManager::shouldIncludeLanguageInLink()) {
 			if($sLanguageInPathId === $sLanguageId) {
 				return;
 			}
@@ -33,7 +32,7 @@ class LinkUtil {
 			//Did not include language in link and should not
 			return;
 		}
-		self::redirectToManager(Manager::getRequestPath(), $sManager, array(), ($bShouldIncludeLanguageInLink ? $oLanguage : false));
+		self::redirectToManager(Manager::getRequestPath(), $sManager, array(), $oLanguage);
 	}
 
 	/**
@@ -129,7 +128,7 @@ class LinkUtil {
 		return $aOverrideParameters;
 	}
 
-	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
+	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $mLanguage=null) {
 		if(!is_array($mPath)) {
 			$mPath = explode("/", $mPath);
 		}
@@ -137,17 +136,17 @@ class LinkUtil {
 		$mManager = Manager::getManagerClassNormalized($mManager);
 		$sPrefix = Manager::getPrefixForManager($mManager);
 
-		if($bIncludeLanguage === null) {
-			$bIncludeLanguage = $mManager::shouldIncludeLanguageInLink();
-		}
+		if($mManager::shouldIncludeLanguageInLink() && $mLanguage !== false) {
+			if($mLanguage === null && $mLanguage === true) {
+				$mLanguage = Session::language(true);
+			}
 
-		if($bIncludeLanguage === true) {
-			array_unshift($mPath, Session::language(true)->getPathPrefix());
-		} else if($bIncludeLanguage instanceof Language) {
-			array_unshift($mPath, $bIncludeLanguage->getPathPrefix());
-		} else if(is_string($bIncludeLanguage)) {
-			$bIncludeLanguage = LanguageQuery::create()->findPk($bIncludeLanguage)->getPathPrefix();
-			array_unshift($mPath, $bIncludeLanguage);
+			if($mLanguage instanceof Language) {
+				array_unshift($mPath, $mLanguage->getPathPrefix());
+			} else if(is_string($mLanguage)) {
+				$mLanguage = LanguageQuery::create()->findPk($mLanguage)->getPathPrefix();
+				array_unshift($mPath, $mLanguage);
+			}
 		}
 
 		foreach($mPath as $iKey => $sValue) {
