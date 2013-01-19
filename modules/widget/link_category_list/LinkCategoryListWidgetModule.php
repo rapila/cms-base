@@ -14,7 +14,7 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "LinkCategory", 'name');
 		$this->oListWidget->setDelegate($this->oDelegateProxy);
-		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', null, true);
+		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', true);
 		$this->oDelegateProxy->setInternallyManagedOnly(true);
 	}
 
@@ -77,4 +77,5 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 		}
 		return $oCriteria;
 	}
+	
 }
