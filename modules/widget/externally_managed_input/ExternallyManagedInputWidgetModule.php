@@ -6,8 +6,7 @@ class ExternallyManagedInputWidgetModule extends WidgetModule {
 	
 	private $bExcludeExternallyManaged;
 	
-	public function __construct($sSessionKey, $sDefaultSelection = true) {
-		parent::__construct($sSessionKey);
+	public function __construct($sDefaultSelection = true) {
 		$this->bExcludeExternallyManaged = $sDefaultSelection;
 	}
 	
