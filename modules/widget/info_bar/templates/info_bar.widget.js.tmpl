@@ -39,6 +39,9 @@ Widget.types.info_bar = {
 			if(opts.accesskey) {
 				opts.element.attr('accesskey', opts.accesskey);
 			}
+			if(opts.documentation) {
+				opts.element.attr('data-documentation-part', opts.documentation);
+			}
 			opts.element.addClass('info-bar-element').addClass(opts.class_name);
 			func.call(opts.element, opts.parent);
 			if(opts.action) {
