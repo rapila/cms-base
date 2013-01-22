@@ -1,0 +1,14 @@
+default:
+  priority: -1
+  docs:
+    dashboard.template-chooser:
+      de:
+        title: 'Dashboard Template-Wähler'
+        html: 'Der <em>Template-Wähler</em> wird benutzt…'
+      en:
+        title: 'Dashboard template chooser'
+        html: 'The <em>template chooser</em> is used for…'
+rapi.la:
+  provider: json_based
+  metadata_url: 'http://rapi.la/get_file/documentation/metadata'
+  content_url: 'http://rapi.la/get_file/documentation/content/${language}/${part}'

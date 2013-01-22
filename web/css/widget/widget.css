@@ -106,3 +106,4 @@ div.ui-dialog.file_upload_error{z-index:20000 !important}
 #widget-notifications .ui-notify .ui-badge,#widget-notifications .ui-notify .close-handle.ui-icon{float:right;display:block;margin-top:-8px;margin-right:-8px}
 #widget-notifications .ui-notify .ui-badge{background-color:#f00;border-radius:12px;border-radius:12px;font-weight:bold;color:#fff;padding:1px 5px}
 #widget-notifications .ui-notify .close-handle.ui-icon{margin-right:0;margin-top:-12px;cursor:pointer}
+.highlight-documentation *[data-documentation-part]{cursor:help !important}

@@ -147,7 +147,7 @@ class FileUploadWidgetModule extends WidgetModule {
 			$oDocument = DocumentQuery::create()->findPk($aOptions['document_id']);
 		} else {
 			/**
-			* @todo ignoreRights should possibly be handled differently, see issue #160 
+			* @todo ignoreRights should possibly be handled differently, see issue #160
 			*/
 			DocumentPeer::ignoreRights(true);
 			$oDocument = new Document();

@@ -1,0 +1,26 @@
+Widget.types['documentation_display'] = {
+	prepare: function() {
+		var _this = this;
+		this._element.on('click', '*[data-documentation-part]', function(event) {
+			if(!event.altKey) {
+				return;
+			}
+			event.stopPropagation();
+			event.preventDefault();
+			_this.partFor(jQuery(this).data('documentationPart'), function(result) {
+				var html = jQuery('<div/>').html(result.content);
+				html.dialog({title: result.title});
+			});
+			return false;
+		});
+		this._element.on('keydown', function(event) {
+			if(event.altKey) {
+				_this._element.addClass('highlight-documentation');
+			}
+		});
+		this._element.on('keyup', function(event) {
+			_this._element.removeClass('highlight-documentation');
+		});
+	}
+	
+};

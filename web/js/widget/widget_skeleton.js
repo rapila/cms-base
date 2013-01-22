@@ -53,4 +53,9 @@
 		});
 		Widget.widgetJSON('-', ids, 'destroy');
 	});
+	
+	// Inline documentation display
+	Widget.create('documentation_display', function(widget) {
+		widget._element = jQuery(document.body);
+	});
 })();

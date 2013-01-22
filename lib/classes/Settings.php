@@ -69,13 +69,17 @@ class Settings {
 	public static function getSettingIf($mCondition, $sSection, $sKey, $mDefaultValue, $sPath = null) {
 		return self::getInstance($sPath)->_getSettingIf($mCondition, $sSection, $sKey, $mDefaultValue);
 	}
+	
+	public static function createCacheKey($sFileName) {
+		return "$sFileName.yml-".ErrorHandler::getEnvironment();
+	}
 
 	public static function getInstance($sFileName=null) {
 		if($sFileName === null) {
 			$sFileName = "config";
 		}
+		$sCacheKey = self::createCacheKey($sFileName);
 		$sFileName = "$sFileName.yml";
-		$sCacheKey = "$sFileName-".ErrorHandler::getEnvironment();
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
 			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
