@@ -135,12 +135,12 @@ class LinkUtil {
 
 		$mManager = Manager::getManagerClassNormalized($mManager);
 		$sPrefix = Manager::getPrefixForManager($mManager);
-
-		if($mManager::shouldIncludeLanguageInLink() && $mLanguage !== false) {
-			if($mLanguage === null && $mLanguage === true) {
+		
+		if($mLanguage !== false && ($mLanguage === true || $mManager::shouldIncludeLanguageInLink())) {
+			if($mLanguage === null || $mLanguage === true) {
 				$mLanguage = Session::language(true);
 			}
-
+			
 			if($mLanguage instanceof Language) {
 				array_unshift($mPath, $mLanguage->getPathPrefix());
 			} else if(is_string($mLanguage)) {
