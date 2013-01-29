@@ -51,7 +51,6 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 			case 'is_externally_managed':
         $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
 				$aResult['heading_filter'] = array('externally_managed_input', $this->oExternallyManagedInputFilter->getSessionKey());
-				$aResult['is_sortable'] = true;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
