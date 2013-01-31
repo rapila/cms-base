@@ -38,7 +38,10 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'sort', 'url', 'category_name');
+		$aResult = array('id', 'name_truncated', 'sort', 'url');
+		if(LinkCategoryQuery::create()->count() > 0) {
+			$aResult[] = 'category_name';
+		}
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}		

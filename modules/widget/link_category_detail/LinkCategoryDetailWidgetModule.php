@@ -34,9 +34,14 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$oCategory->setName($aLinkCategoryData['name']);
 		$oCategory->setIsExternallyManaged($aLinkCategoryData['is_externally_managed']);
     $this->validate($aLinkCategoryData);
+		$mReload = LinkCategoryQuery::create()->count() === 0 ? 'reload_list' : null;
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		return $oCategory->save();
+		$aResult = $oCategory->save();
+		if($mReload) {
+			return $mReload;
+		}
+		return $aResult;
 	}
 }
