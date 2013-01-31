@@ -36,9 +36,14 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 			$oCategory->setMaxWidth(null);
 		}
 		$this->validate($aLinkCategoryData);
+		$mReload = LinkCategoryQuery::create()->count() === 0 ? 'reload_list' : null;
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		return $oCategory->save();
+		$aResult = $oCategory->save();
+		if($mReload) {
+			return $mReload;
+		}
+		return $aResult;
 	}
 }
