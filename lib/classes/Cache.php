@@ -2,11 +2,16 @@
 ///Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
 class Cache {
 	
+	const CACHE_EXTENSION = '.cache';
+	
+	const FLAG_FILE_DIRECT = 1;
+	
 	private $bCacheIsNeverOff;
+	private $sFileName;
 	private $sFilePath;
 	private $bCacheControlHeaderSent;
 	
-	public function __construct($sKey, $mPath=null) {
+	public function __construct($sKey, $mPath=null, $iFlags = 0) {
 		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
@@ -17,8 +22,11 @@ class Cache {
 			}
 		}
 		
-		$sFileName = md5($sKey);
-		$this->sFilePath = $sPath.'/'.$sFileName.'.cache';
+		$this->sFileName = $sKey;
+		if(($iFlags&self::FLAG_FILE_DIRECT) !== self::FLAG_FILE_DIRECT) {
+			$this->sFileName = md5($this->sFileName);
+		}
+		$this->sFilePath = $sPath.'/'.$this->sFileName.self::CACHE_EXTENSION;
 		
 		$this->bCacheControlHeaderSent = false;
 	}
@@ -38,6 +46,13 @@ class Cache {
 	 */
 	public function getFilePath() {
 			return $this->sFilePath;
+	}
+	
+	/**
+	 * Returns the md5()’ed cache key.
+	 */
+	public function getFileName() {
+			return $this->sFileName;
 	}
 	
 	/**
@@ -143,12 +158,12 @@ class Cache {
 	/**
 	* Saves the cache file with the given contents. If value is a string, the data is saved to the file in raw, serialized otherwise
 	*/
-	public function setContents($mContents, $bForceSerialize = false) {
+	public function setContents($mContents, $bForceSerialize = false, $bAppend = false) {
 		if($this->cacheIsOffForWriting()) {
 			return;
 		}
 		if(!$bForceSerialize && is_string($mContents)) {
-			return file_put_contents($this->sFilePath, $mContents);
+			return file_put_contents($this->sFilePath, $mContents, $bAppend ? FILE_APPEND : 0);
 		}
 		return file_put_contents($this->sFilePath, serialize($mContents));
 	}
