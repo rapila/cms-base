@@ -291,6 +291,10 @@ class ResourceIncluder {
 	}
 	
 	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
+		if(!isset($aResourceInfo['resource_type'])) {
+			$aResourceInfo['resource_type'] = $aResourceInfo['template'];
+		}
+		ksort($aResourceInfo);
 		$sIdentifier = self::RESOURCE_PREFIX_CUSTOM.md5(serialize($aResourceInfo));
 		if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
 			if($iPrevResoucePriority === $iPriority) {
@@ -427,7 +431,7 @@ class ResourceIncluder {
 	}
 	
 	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
-		if($resource_type !== $sType) {
+		if($resource_type !== $sType && $resource_type !== "inline_$sType") {
 			return;
 		}
 		//External location (no file_resource given) or location not determinable
@@ -437,13 +441,18 @@ class ResourceIncluder {
 			$this->initConsolidator($sType, $iPriority, $sKey, $aConsolidatorInfo);
 			$oCache = new Cache('consolidated-'.$sKey, DIRNAME_PRELOAD);
 			if(!$oCache->cacheFileExists()) {
+				$sRelativeLocationRoot = null;
 				$sContents = '';
 				if($file_resource !== null) {
 					$sContents = file_get_contents($file_resource->getFullPath());
+					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, LinkUtil::isSSL());
 				} else if($location !== null) {
-					if(StringUtil::startsWith($location, '/') && !StringUtil::startsWith($location, '//')) {
-						$location = LinkUtil::absoluteLink($location);
+					if(StringUtil::startsWith($location, '//')) {
+						$location = (LinkUtil::isSSL() ? 'https' : 'http').$location;
+					} else if(StringUtil::startsWith($location, '/')) {
+						$location = LinkUtil::absoluteLink($location, null, LinkUtil::isSSL());
 					}
+					$sRelativeLocationRoot = $location;
 					$sContents = file_get_contents($location);
 				} else if($content !== null) {
 					if($content instanceof Template) {
@@ -451,8 +460,32 @@ class ResourceIncluder {
 					}
 					$sContents = $content;
 				}
-				if($sType === 'css' && $media) {
+				if($sType === self::RESOURCE_TYPE_CSS && $media) {
 					$sContents = "@media $media { $sContents }";
+				}
+				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
+					// Make sure to use relative locations
+					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
+					if($iSlashPosition !== false) {
+						$sRelativeLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition+1);
+					}
+					// Find url() tokens
+					$sContents = preg_replace_callback(',url\\s*\\(\\s*(\'[^\']+\'|\"[^\"]+\"|[^(\'\"]+?)\\s*\\),', function($aMatches) use($sRelativeLocationRoot) {
+						// Convert /something/../ to /
+						$sQuote = '';
+						$sUrl = $aMatches[1];
+						$sFirst = substr($sUrl, 0, 1);
+						if($sFirst === '"' || $sFirst === "'") {
+							$sQuote = $sFirst;
+							$sUrl = substr($sUrl, 1, -1);
+						}
+						$sUrl = $sRelativeLocationRoot.$sUrl;
+						$sParentPattern = ',/[^/]+/\\.\\./,';
+						while(preg_match($sParentPattern, $sUrl) === 1) {
+							$sUrl = preg_replace($sParentPattern, '/', $sUrl, 1);
+						}
+						return "url($sQuote$sUrl$sQuote)";
+					}, $sContents);
 				}
 				$oCache->setContents($sContents);
 			}

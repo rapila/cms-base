@@ -45,14 +45,14 @@ class Cache {
 	 * Returns the full path to the cache file. Note that this file may not yet exist
 	 */
 	public function getFilePath() {
-			return $this->sFilePath;
+		return $this->sFilePath;
 	}
 	
 	/**
 	 * Returns the md5()’ed cache key.
 	 */
 	public function getFileName() {
-			return $this->sFileName;
+		return $this->sFileName;
 	}
 	
 	/**
