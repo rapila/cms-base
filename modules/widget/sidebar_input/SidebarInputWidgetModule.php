@@ -11,10 +11,9 @@ class SidebarInputWidgetModule extends WidgetModule {
 	}
 	
 	private function createDefaultBaseObject($sModelName, $sItemName) {
-		$sPeerClassName = "{$sModelName}Peer";
-		$oCriteria = new Criteria();
-		$oCriteria->add(constant("$sPeerClassName::NAME"), $sItemName);
-		if($sPeerClassName::doCount($oCriteria) > 0) {
+		// maybe you have to create custom filterByName() and setName()
+		$sQueryClass = "{$sModelName}Query";
+		if($sQueryClass::create()->filterByName($sItemName)->count() > 0) {
 			throw new LocalizedException("wns.input.object_exists");
 		}
 		$oModel = new $sModelName();
