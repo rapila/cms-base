@@ -95,7 +95,7 @@ String.prototype.escapeSelector = function() {
 				return el;
 			},
 			unhandle: function(event, handler) {
-				for(name in hook) {
+				for(var name in hook) {
 					if(!hook[name][event]) {
 						return;
 					}
@@ -405,7 +405,11 @@ String.prototype.escapeSelector = function() {
 		},
 		
 		createOnce: function(widgetType, apply, finish, intermediate, context) {
-			context = context || [Widget.types[widgetType], '__createOnceInstance'];
+			context = context || Widget.types[widgetType];
+			if(!Array.isArray(context)) {
+				context = [context, '__createOnceInstance'];
+			}
+			apply = apply || jQuery.noop;
 			finish = finish || jQuery.noop;
 			intermediate = intermediate || jQuery.noop;
 			if(context[0] && context[0][context[1]]) {
