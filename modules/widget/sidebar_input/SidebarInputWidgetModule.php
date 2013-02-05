@@ -8,6 +8,10 @@ class SidebarInputWidgetModule extends WidgetModule {
 		if(!method_exists($sModelName, 'setName')) {
 			return false;
 		}
+		return $this->createDefaultBaseObject($sModelName, $sItemName);
+	}
+	
+	private function createDefaultBaseObject($sModelName, $sItemName) {
 		// maybe you have to create custom filterByName() and setName()
 		$sQueryClass = "{$sModelName}Query";
 		if($sQueryClass::create()->filterByName($sItemName)->count() > 0) {
