@@ -1,9 +1,9 @@
 Widget.types.model_drag_and_drop = {
-	draggable_is_on_top_of: function(draggable, helper, location) {
+	draggable_is_on_top_of: function(droppable, helper, location) {
 		helper.css({pointerEvents: 'none'});
 		var onto = document.elementFromPoint(location.x, location.y);
 		helper.css({pointerEvents: ''});
-		return draggable.is(onto) || draggable.has(onto).length > 0;
+		return droppable.is(onto) || droppable.has(onto).length > 0;
 	},
 	
 	init_dnd: function(element, model_name, item_id, droppable_only) {
