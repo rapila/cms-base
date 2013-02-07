@@ -263,7 +263,16 @@ class SpecialTemplateIdentifierActions {
 		} else {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
-		return $oResourceIncluder->getIncludes();
+		$bConsolidate = null;
+		if($oTemplateIdentifier->hasParameter('consolidate')) {
+			$bConsolidate = $oTemplateIdentifier->getParameter('consolidate');
+			if($bConsolidate === 'false') {
+				$bConsolidate = false;
+			} else if($bConsolidate !== 'internal') {
+				$bConsolidate = true;
+			}
+		}
+		return $oResourceIncluder->getIncludes(!$oTemplateIdentifier->hasParameter('noNewlines'), $bConsolidate);
 	}
 
 	public function replaceIn($oIdentifier) {

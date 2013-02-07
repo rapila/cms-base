@@ -1,2 +1,3 @@
 general:
   use_compressed_libraries: true
+  consolidate_resources: 'internal'
