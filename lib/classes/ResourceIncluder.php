@@ -371,6 +371,7 @@ class ResourceIncluder {
 	* @param $bConsolidate Whether to consolidate CSS and JS includes into a single tag which will point to a new location which will serve all the scripts of one type concatenated.
 	* Valid values — true: Consolidate all css/js resources, false: Don’t consolidate, 'internal': Only consolidate internal scripts, but not the ones loaded from external servers, null: Use the default value from the general/consolidate_resources configuration seting from resource_includer.yml.
 	* Note that all concatenated scripts will have to be in the same charset, namely the one defined in the encoding/browser configuration setting.
+	* Also note that a value of "internal" for $bConsolidate will only have an effect on js libraries if they’re not being locally cached (use_local_library_cache is false)
 	*/
 	public function getIncludes($bPrintNewlines = true, $bConsolidate = null) {
 		if($bConsolidate === null) {
@@ -468,9 +469,13 @@ class ResourceIncluder {
 					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
 					if($iSlashPosition !== false) {
 						$sRelativeLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition+1);
+						$iSlashPosition = strpos($sRelativeLocationRoot, '/', strlen('http://'));
+						$sAbsoluteLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition);
+					} else {
+						$sAbsoluteLocationRoot = $sRelativeLocationRoot;
 					}
 					// Find url() tokens
-					$sContents = preg_replace_callback(',url\\s*\\(\\s*(\'[^\']+\'|\"[^\"]+\"|[^(\'\"]+?)\\s*\\),', function($aMatches) use($sRelativeLocationRoot) {
+					$sContents = preg_replace_callback(',url\\s*\\(\\s*(\'[^\']+\'|\"[^\"]+\"|[^(\'\"]+?)\\s*\\),', function($aMatches) use($sRelativeLocationRoot, $sAbsoluteLocationRoot) {
 						// Convert /something/../ to /
 						$sQuote = '';
 						$sUrl = $aMatches[1];
@@ -483,10 +488,10 @@ class ResourceIncluder {
 							return (LinkUtil::isSSL() ? 'https' : 'http').$sUrl;
 						}
 						if(StringUtil::startsWith($sUrl, '/')) {
-							// FIXME: Find the server root of $sRelativeLocationRoot and 
+							return $sAbsoluteLocationRoot.$sUrl;
 						}
 						// Absolutize only relative URLs (the ones not starting with a protocol)
-						if(!preg_match(',^[a-z][a-z\\.-+]*:,', $sRelativeLocationRoot)) {
+						if(!preg_match(',^[a-z][a-z.\\-+]*:,', $sRelativeLocationRoot)) {
 							return $sUrl;
 						}
  						// Fix explicit relative URLs (./)
