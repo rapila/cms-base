@@ -463,8 +463,8 @@ class ResourceIncluder {
 				if($sType === self::RESOURCE_TYPE_CSS && $media) {
 					$sContents = "@media $media { $sContents }";
 				}
+				// Fix relative locations
 				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
-					// Make sure to use relative locations
 					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
 					if($iSlashPosition !== false) {
 						$sRelativeLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition+1);
@@ -479,7 +479,21 @@ class ResourceIncluder {
 							$sQuote = $sFirst;
 							$sUrl = substr($sUrl, 1, -1);
 						}
+						if(StringUtil::startsWith($sUrl, '//')) {
+							return (LinkUtil::isSSL() ? 'https' : 'http').$sUrl;
+						}
+						if(StringUtil::startsWith($sUrl, '/')) {
+							// FIXME: Find the server root of $sRelativeLocationRoot and 
+						}
+						// Absolutize only relative URLs (the ones not starting with a protocol)
+						if(!preg_match(',^[a-z][a-z\\.-+]*:,', $sRelativeLocationRoot)) {
+							return $sUrl;
+						}
+ 						// Fix explicit relative URLs (./)
+						$sUrl = preg_replace(',^\\./+,', '', $sUrl);
+						// Prepend the coomon root for the relative location
 						$sUrl = $sRelativeLocationRoot.$sUrl;
+						// Resolve Uplinks (/some-place/../)
 						$sParentPattern = ',/[^/]+/\\.\\./,';
 						while(preg_match($sParentPattern, $sUrl) === 1) {
 							$sUrl = preg_replace($sParentPattern, '/', $sUrl, 1);
