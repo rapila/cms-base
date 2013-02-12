@@ -25,7 +25,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		}
 	}
 	
-	public function getModuleConfig() {
+	public function moduleConfig() {
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
 		$aResult = array();

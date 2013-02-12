@@ -7,32 +7,34 @@ Widget.types.admin_menu = {
 		this.activity_indicator = jQuery();
 		var _this = this;
 		
-		jQuery.each(this.getModuleConfig(), function(i, config) {
-			var is_right = (i === 'right');
-			jQuery.each(config, function(i, config_item) {
-				var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
-				if(!to_add) {
-					return;
-				}
-				if(to_add.callback) {
-					if(to_add.text !== undefined) {
-						_this.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
-					} else {
-						if(_this.settings.attach_events) {
-							to_add.element.click(to_add.callback);
+		this.moduleConfig(function(module_config) {
+			jQuery.each(module_config, function(i, config) {
+				var is_right = (i === 'right');
+				jQuery.each(config, function(i, config_item) {
+					var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					if(!to_add) {
+						return;
+					}
+					if(to_add.callback) {
+						if(to_add.text !== undefined) {
+							_this.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
+						} else {
+							if(_this.settings.attach_events) {
+								to_add.element.click(to_add.callback);
+							}
+							_this.addElement(to_add.element, is_right);
 						}
-						_this.addElement(to_add.element, is_right);
-					}
-				} else {
-					if(to_add.text) {
-						_this.addButton(to_add.text, jQuery.noop, is_right, to_add.element, to_add);
 					} else {
-						_this.addElement(to_add.element, is_right);
+						if(to_add.text) {
+							_this.addButton(to_add.text, jQuery.noop, is_right, to_add.element, to_add);
+						} else {
+							_this.addElement(to_add.element, is_right);
+						}
 					}
-				}
+				});
 			});
+			Widget.handle('rapila-logged_in', this.show.bind(this), true, true);
 		});
-		Widget.handle('rapila-logged_in', this.show.bind(this), true, true);
 	},
 	
 	activity: function() {
