@@ -10,20 +10,7 @@ Widget.types.admin_menu = {
 		jQuery.each(this.getModuleConfig(), function(i, config) {
 			var is_right = (i === 'right');
 			jQuery.each(config, function(i, config_item) {
-				var name = null;
-				var args = [];
-				if(jQuery.isArray(config_item)) {
-					name = 'menu';
-					args[0] = config_item;
-				} else if(!config_item) {
-					_this.addSpacer(15, is_right);
-					return;
-				} else {
-					name = config_item.split('.');
-					args = name.slice(1);
-					name = name[0];
-				}
-				var to_add = _this.predefined_elements[name].apply(_this, args);
+				var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
 				if(!to_add) {
 					return;
 				}
@@ -120,19 +107,16 @@ Widget.types.admin_menu = {
 			var separator_class = '';
 			var active_val = false;
 			jQuery.each(items, function(i, item) {
-				if(!item) {
+				if(item.type === 'spacer') {
 					//handle Separator
 					separator_class = 'separator_top';
 					return;
 				}
-				var name = item.split('.');
-				var args = name.slice(1);
-				name = name[0];
-				var item_contents = _this.predefined_elements[name].apply(_this, args);
+				var item_contents = _this.predefined_elements[item.type].apply(_this, item.args);
 				if(!item_contents) {
 					return;
 				}
-				var value = args[0];
+				var value = item.args[0];
 				var option = jQuery('<option/>').text(item_contents.text).attr('value', value).addClass(separator_class);
 				option.data('action', item_contents.callback);
 				if(item_contents.is_active) {
@@ -159,13 +143,13 @@ Widget.types.admin_menu = {
 			result.callback = jQuery.noop;
 			return result;
 		},
+
+		spacer: function(width) {
+			return {element: Widget.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>')};
+		},
 		
-		module: function(module) {
+		module: function(module, module_info) {
 			var result = {};
-			var module_info = this.getModule(module);
-			if(!module_info.may) {
-				return null;
-			}
 			if(AdminInterface.current_admin_module === module) {
 				result.is_active = true;
 			} else {
@@ -230,11 +214,10 @@ Widget.types.admin_menu = {
 			return result;
 		},
 		
-		logout: function() {
+		logout: function(page_link) {
 			var _this = this;
 			var result = {};
 			result.callback = function() {
-				var page_link = _this.getPageLink();
 				Widget.create('login_window', function(login_window) {
 					login_window.logout(function() {
 						window.location.href = page_link;
@@ -247,9 +230,8 @@ Widget.types.admin_menu = {
 			return result;
 		},
 		
-		user: function() {
+		user: function(user_info) {
 			var _this = this;
-			var user_info = this.getUserInfo();
 			return {text: user_info.FullName, callback: function() {
 				var _this = this;
 				Widget.create('user_detail', function(widget) {
