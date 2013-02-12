@@ -17,7 +17,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		return true;
 	}
 	
-	public function getUserInfo() {
+	private function getUserInfo() {
 		if(Session::getSession()->isAuthenticated()) {
 			$aResult['FullName'] = Session::getSession()->getUser()->getFullName();
 			$aResult['Id'] = Session::getSession()->getUserId();
