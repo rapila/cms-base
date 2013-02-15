@@ -2,30 +2,18 @@ Widget.types.link_category_detail = {
 	initialize: function() {
 		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		this.content.find('div.hide_if_not_saved').hide();
-
 		Widget.callStatic('detail', 'create_for_instance', this);
-	},
-	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-		this.detail_widget.content.find('input[name=name]').focus();
 	},
 		
 	fill_data: function() {
 		this.detail_widget.disable();		
-		this.getLinkCategoryData(function(category_data) {
+		this.loadData(function(category_data) {
 			this.content.find("input[name='name']").val(category_data.Name);
-			this.content.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
 			this.content.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
 			this.content.find(".updated_info").text(category_data.UpdatedInfo);
 			this.content.find(".created_info").text(category_data.CreatedInfo);
 			this.content.find("span[class='detail_id']").text(category_data.Id);
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
-			this.detail_widget.content.find("input[name='name']").select();
 			this.content.find('div.hide_if_not_saved').show();
 			this.detail_widget.enable();		
 		});
