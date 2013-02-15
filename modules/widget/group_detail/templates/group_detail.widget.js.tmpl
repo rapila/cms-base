@@ -11,14 +11,6 @@ Widget.types.group_detail = {
 		}.bind(this));
 	},
 	
-	open: function() {
-		if(!this.detail_widget) {
-			this.auto_open = true;
-			return false;
-		}
-		this.detail_widget.open();
-	},
-	
 	fill_data: function() {
 		this.detail_widget.disable()
 		this.groupData(function(group_data) {
