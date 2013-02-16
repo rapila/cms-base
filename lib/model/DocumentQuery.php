@@ -9,7 +9,7 @@ class DocumentQuery extends BaseDocumentQuery {
 	public function excludeExternallyManaged() {
 		return $this->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->_or()->filterByIsExternallyManaged(null, Criteria::ISNULL)->endUse();
 	}
-		
+
 	public function filterByDocumentKind($sDocumentKind = 'image') {
 		return $this->filterByDocumentTypeId(DocumentTypeQuery::findDocumentTypeIDsByKind($sDocumentKind), Criteria::IN);
 	}
@@ -29,6 +29,4 @@ class DocumentQuery extends BaseDocumentQuery {
 		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(array('TaggedItemId'))->find();
 		return $this->filterById($aTaggedIds, Criteria::IN);
 	}
-	
-	
 }

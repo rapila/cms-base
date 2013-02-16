@@ -17,9 +17,9 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		}
 		// find files in database ordered by category
 		foreach(DocumentCategoryQuery::create()->filterByIsExternallyManaged(false)->orderByName()->find() as $oCategory) {
-			$aDocuments = DocumentPeer::getDocumentsByCategory($oCategory->getId());
-			foreach($aDocuments as $oDocument) {
-				$aResult[$oCategory->getName()][$oDocument->getId()] = $oDocument->getName();
+			$aDocuments = DocumentQuery::create()->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->endUse()->orderByDocumentCategoryId()->orderByName()->select(array('Id', 'Name'))->find();
+			foreach($aDocuments as $aDocument) {
+				$aResult[$oCategory->getName()][$aDocument['Id']] = $aDocument['Name'];
 			}
 		}
 		$sWithoutCategory = StringPeer::getString('wns.documents.select_without_title');

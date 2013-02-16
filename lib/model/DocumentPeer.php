@@ -10,6 +10,7 @@
  * @package model
  */
 class DocumentPeer extends BaseDocumentPeer {
+	
 	public static $LICENSES = array(
 	  "by" => array(
 	    'image' => 'http://i.creativecommons.org/l/by/3.0/80x15.png',
@@ -52,6 +53,13 @@ class DocumentPeer extends BaseDocumentPeer {
 			'disclaimer' => 'all'
 		)
 	);
+
+	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
+		$oCriteria->add($oSearchCriterion);
+	}
+	
 	public static function getDocumentSize($mDocContent = null, $sFormat = 'auto', $iRoundCount=1) {
 		$iDocLength = 0;
 		if(is_string($mDocContent)) {
@@ -123,49 +131,41 @@ class DocumentPeer extends BaseDocumentPeer {
 		return round($iDocLength/$fOutputDividor, $iRoundCount)." ".$sFormat;
 	}
 
+	/**
+	*	@deprecated
+	* use query methods of DocumentQuery and document related query classes and query notation in general directly
+	*/
 	public static function getDocumentsByKindAndCategory($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
-		$oCriteria = self::getDocumentsByKindAndCategoryCriteria($sDocumentKind, $iDocumentCategory, $bDocumentKindIsNotInverted, $bExcludeExternallyManaged);
-		$oCriteria->addAscendingOrderByColumn(self::NAME);
-		return self::doSelect($oCriteria);
-	}
-
-	public static function getDocumentsByKindAndCategoryCriteria($sDocumentKind=null, $iDocumentCategory=null, $bDocumentKindIsNotInverted=true, $bExcludeExternallyManaged = true) {
-		$oCriteria = self::getDocumentsCriteria($bExcludeExternallyManaged);
+		$oQuery = DocumentQuery::create()->joinDocumentType();
+		if($bExcludeExternallyManaged) {
+			$oQuery->excludeExternallyManaged();
+		}
 		if($iDocumentCategory !== null) {
-			$oCriteria->add(self::DOCUMENT_CATEGORY_ID, $iDocumentCategory);
+			$oQuery->filterByDocumentCategory($iDocumentCategory);
 		}
 		if($sDocumentKind !== null) {
-			$oCriteria->add(self::DOCUMENT_TYPE_ID, array_keys(DocumentTypeQuery::findDocumentTypeAndMimetypeByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted)), Criteria::IN);
+			$oQuery->filterByDocumentKind($sDocumentKind, $bDocumentKindIsNotInverted);
 		}
-		return $oCriteria;
+		return $oQuery->orderByName()->find();
 	}
 	
-	public static function getDocumentsCriteria($bExcludeExternallyManaged = true) {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID);
-		$oCriteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, Criteria::LEFT_JOIN);
-		if($bExcludeExternallyManaged) {
-			$oExternalCriterion = $oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, null);
-			$oExternalCriterion->addOr($oCriteria->getNewCriterion(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false));
-			$oCriteria->add($oExternalCriterion);
-		}
-		return $oCriteria;
-	}
-		
-	public static function addSearchToCriteria($sSearch, $oCriteria) {
-		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
-		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
-		$oCriteria->add($oSearchCriterion);
-	}
-		
+	/**
+	*	@deprecated
+	*/
 	public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
 		return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
 	}
 	
+	/**
+	*	@deprecated
+	*/
 	public static function getDocumentsByKindOfNotImage($bExcludeExternallyManaged = true) {
 		return self::getDocumentsByKindAndCategory('image', null, false, $bExcludeExternallyManaged);
 	}
 	
+	/**
+	*	@deprecated
+	*/
 	// changed this for use in get_link_array, ordered by category for easier access in tinymce
 	public static function getDocumentsByKindOfImage($bExcludeExternallyManaged = true) {
 		return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
