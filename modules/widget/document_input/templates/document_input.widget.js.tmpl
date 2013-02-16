@@ -8,7 +8,7 @@ Widget.types.document_input = {
 		var _this = this;
 		var optgroup = jQuery('<optgroup/>');
 		var option = jQuery('<option/>');
-		this._element.addClass('cke_skin_kama cke_dialog_ui_input_select ui-widget-content').empty();
+		this._element.addClass('ui-widget-content').empty();
 		this.allDocumentsByCategories(function(document_categories) {
 			jQuery.each(document_categories, function(optgroup_label, documents) {
 				var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
