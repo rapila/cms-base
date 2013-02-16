@@ -142,7 +142,6 @@ class MediaObjectFrontendModule extends FrontendModule {
 		return '';
 	}
 
-	
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {
 			return null;
@@ -154,9 +153,5 @@ class MediaObjectFrontendModule extends FrontendModule {
 		$aData = $aData[0];
 		$oDocument = DocumentQuery::create()->findPk($aData['document_id']);
 		return Util::nameForObject($oDocument);
-	}
-	
-	private function replaceDocumentOptions($oTemplate, $iSelectedId = null) {
-		$oTemplate->replaceIdentifier("available_documents", TagWriter::optionsFromObjects(DocumentPeer::getDocumentsByKindAndCategory(), "getId", "getNameAndExtension", $iSelectedId));
 	}
 }
