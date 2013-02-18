@@ -9,7 +9,7 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$this->sLanguageId = $sLanguageId;
 	}
 	
-	public function getLanguageData() {
+	public function languageData() {
 		$oLanguage = LanguageQuery::create()->findPk($this->sLanguageId);
 		$aResult = $oLanguage->toArray();
 		$aResult['LanguageName'] = $oLanguage->getLanguageName();

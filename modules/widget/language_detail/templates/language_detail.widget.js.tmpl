@@ -8,7 +8,7 @@ Widget.types.language_detail = {
 	
 	fill_data: function() {
 		this.detail_widget.disable();		
-		this.getLanguageData(function(language_data) {
+		this.languageData(function(language_data) {
 			this.content.find("input[name='language_id']").val(language_data.Id);
 			this.content.find("input[name='path_prefix']").val(language_data.PathPrefix);
 			this.content.find("input[name='is_active']").prop('checked', language_data.IsActive);
