@@ -277,7 +277,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 		
 		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
 		$oWidget = WidgetModule::getWidget('language_object_control', null, $oCurrentLanguageObject, $oModuleInstance);
-		return $oWidget->getSessionKey();
+		$oResult = new stdClass();
+		$oResult->control_session_key = $oWidget->getSessionKey();
+		$oResult->type = $oCurrentContentObject->getObjectType();
+		return $oResult;
 	}
 	
 	public function adminPreview($iObjectId) {

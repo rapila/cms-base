@@ -171,6 +171,9 @@ class DocumentPeer extends BaseDocumentPeer {
 		return self::getDocumentsByKindAndCategory('image', null, true, $bExcludeExternallyManaged);
 	}
 
+	/**
+	*	@deprecated
+	*/
 	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
 		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
 	}
