@@ -33,27 +33,25 @@ class DisplayDocumentFileModule extends FileModule {
 			$mMaxWidth = 'full';
 			$mMaxHeight = 'full';
 		}
-		
-		
+
 		$sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
 		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
-		
+
 		$sDisplay = "inline";
 		if(isset($_REQUEST['download']) && $_REQUEST['download'] == "true") {
 			$sDisplay = "attachment";
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
-		
+
 		$iTimestamp = $this->oDocument->getUpdatedAt();
 		if($oCache->cacheFileExists() && !$oCache->isOlderThan($iTimestamp)) {
 			$oCache->sendCacheControlHeaders($iTimestamp);
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;
 		}
-		
+
 		$rDataStream = $this->oDocument->getData();
-		
-		
+
 		try {
 			if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
 				$oImage = Image::imageFromStream($rDataStream);
@@ -75,7 +73,7 @@ class DisplayDocumentFileModule extends FileModule {
 				}
 			}
 		} catch(Exception $ex) {} //Ignore unrecognized image format
-		
+
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
 		$oCache->setContents(stream_get_contents($rDataStream));
