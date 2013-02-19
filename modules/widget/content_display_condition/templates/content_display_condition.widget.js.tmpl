@@ -1,7 +1,7 @@
 Widget.types.content_display_condition = {
 	initialize: function() {
 		var _this = this;
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		Widget.create('detail', function(widget) {
 			widget.set_instance(this);
 			jQuery.extend(widget.settings, {
@@ -12,7 +12,7 @@ Widget.types.content_display_condition = {
 			this.fill_data();
 			widget.open();
 		}.bind(this));
-		this.content.find('.suggestions li').click(function() {
+		this._element.find('.suggestions li').click(function() {
 			var li = jQuery(this);
 			var data = {
 				condition_left: li.attr('data-condition_left'),
@@ -33,9 +33,9 @@ Widget.types.content_display_condition = {
 	
 	set_data: function(condition) {
 		if(condition !== null) {
-			this.content.find('[name="condition_left"]').val(condition.condition_left);
-			this.content.find('[name="comparison"]').val(condition.comparison);
-			this.content.find('[name="condition_right"]').val(condition.condition_right);
+			this._element.find('[name="condition_left"]').val(condition.condition_left);
+			this._element.find('[name="comparison"]').val(condition.comparison);
+			this._element.find('[name="condition_right"]').val(condition.condition_right);
 		}
 	},
 	
