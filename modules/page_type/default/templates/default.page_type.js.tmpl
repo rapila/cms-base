@@ -263,7 +263,8 @@
 				}
 				container.addClass('editing');
 				preview_bar.addClass('loading');
-				page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(control_session_key) {
+				page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(edit_data) {
+					container.attr('data-editing-object-type', edit_data.type);
 					Widget.create('language_object_control', function(language_object_control) {
 						language_object_control.editor(function(result) {
 							Widget.createWithElement(result[0], function(widget) {
@@ -291,7 +292,7 @@
 								container.position_bar();
 							}, result[1]);
 						});
-					}, control_session_key);
+					}, edit_data.control_session_key);
 				});
 			}).delegate('.cancel', 'click', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');

@@ -13,6 +13,8 @@ class PreviewManager extends FrontendManager {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => self::getRequestedPath())));
 		}
 
+		ResourceIncluder::defaultIncluder()->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE.Manager::getPrefixForManager('FileManager').'";');
+
 		//Fix JSON requests when using Prototype in the frontend
 		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		//Add jQuery and jQuery UI

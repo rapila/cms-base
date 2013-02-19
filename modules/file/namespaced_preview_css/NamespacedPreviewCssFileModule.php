@@ -41,8 +41,8 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		//	}
 		// }
 		
-		//Triple all rules and prepend specific strings
-		$aPrependages = array('#rapila_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications', 'body > .cke_skin_kama');
+		//Multiply all rules and prepend specific strings
+		$aPrependages = array('#rapila_admin_menu', '.filled-container.editing', '.ui-dialog', '.cke_dialog_contents', '#widget-notifications', '.cke_reset', 'body > .cke_reset_all');
 		foreach($oCssContents->getAllDeclarationBlocks() as $oBlock) {
 			$aNewSelector = array();
 			foreach($oBlock->getSelectors() as $iKey => $oSelector) {
