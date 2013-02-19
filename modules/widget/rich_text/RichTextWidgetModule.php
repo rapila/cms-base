@@ -136,7 +136,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 				$aResult = array_merge($aResult, $aRowElements, array('/'));
 			}
 			array_pop($aResult);
-			$this->setSetting('toolbar_Full', $aResult);
+			$this->setSetting('toolbar', $aResult);
 			unset($this->aModuleSettings['toolbar']);
 		}
 	}
