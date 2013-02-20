@@ -263,8 +263,8 @@
 				}
 				container.addClass('editing');
 				preview_bar.addClass('loading');
-				page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(edit_data) {
-					container.attr('data-editing-object-type', edit_data.type);
+				page_type.callPageTypeMethod('adminEdit', container.attr('data-object-id'), function(edit_info) {
+					container.attr('data-editing-object-type', edit_info.type);
 					Widget.create('language_object_control', function(language_object_control) {
 						language_object_control.editor(function(result) {
 							Widget.createWithElement(result[0], function(widget) {
@@ -292,7 +292,7 @@
 								container.position_bar();
 							}, result[1]);
 						});
-					}, edit_data.control_session_key);
+					}, edit_info.control_session_key);
 				});
 			}).delegate('.cancel', 'click', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
@@ -341,10 +341,10 @@
 
 		control_widget: function(item_to_edit, callback) {
 			var md = this.find_structure(item_to_edit).content;
-			this.methods.adminEdit(item_to_edit.attr('data-object-id'), item_to_edit.attr('data-language-id'), function(control_session_key) {
+			this.methods.adminEdit(item_to_edit.attr('data-object-id'), item_to_edit.attr('data-language-id'), function(edit_info) {
 				Widget.create('language_object_control', function(language_object_control) {
 					callback(language_object_control, md);
-				}, control_session_key);
+				}, edit_info.control_session_key);
 			});
 		},
 	
