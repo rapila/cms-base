@@ -1,38 +1,38 @@
 Widget.types.role_detail = {
 	initialize: function() {
 		var _this = this;
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		this.right_content = Widget.parseHTML("{{includeTemplate=right}}");
-		this.right_content.find('[name="page_id[]"]').prepareWidget();
-		this.content.find('div.hide_if_not_saved').hide();
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element.find('div.hide_if_not_saved').hide();
 
 		Widget.callStatic('detail', 'create_for_instance', this);
 
-		var rights_container = this.content.find('.rights_container');
+		this.right_content = Widget.parseHTML("{{includeTemplate=right}}");
+		this.right_content.find('[name="page_id[]"]').prepareWidget();
+		var rights_container = this._element.find('.rights_container');
 		rights_container.delegate('.delete_right', 'click', function(event) {
 			var delete_this_right = jQuery(this);
 			var right_content = delete_this_right.closest('.role-rights');
 			right_content.remove();
 		});
-		
+
 		var add_new_right_button = jQuery('<a/>').addClass('add-new-item add_entry').text(' ');
 		add_new_right_button.click(function() {
 			_this.right_content.clone().appendTo(rights_container);
 		});
-		rights_container.after(add_new_right_button);		
+		rights_container.after(add_new_right_button);
 	},
 	
 	fill_data: function() {
 		var _this = this;
-		this.detail_widget.disable();		
+		this.detail_widget.disable();
 		this.roleData(function(role_data) {
-			this.content.find("input[name='role_key']").val(role_data.RoleKey).prop('disabled', role_data.RoleIsUsed);
-			this.content.find("textarea[name='description']").val(role_data.Description);
-			this.content.find(".updated_info").text(role_data.UpdatedInfo);
-			this.content.find(".created_info").text(role_data.CreatedInfo);
-			this.content.find('div.hide_if_not_saved').show();
-			var rights_container = this.content.find('.rights_container').empty();
+			this._element.find("input[name='role_key']").val(role_data.RoleKey).prop('disabled', role_data.RoleIsUsed);
+			this._element.find("textarea[name='description']").val(role_data.Description);
+			this._element.find(".updated_info").text(role_data.UpdatedInfo);
+			this._element.find(".created_info").text(role_data.CreatedInfo);
+			this._element.find('div.hide_if_not_saved').show();
 
+			var rights_container = this._element.find('.rights_container').empty();
 			jQuery.each(role_data.rights, function(right_id, rights_data) {
 				var right_content = _this.right_content.clone();
 				right_content.find('select[name="page_id[]"]').val(rights_data.PageId);
