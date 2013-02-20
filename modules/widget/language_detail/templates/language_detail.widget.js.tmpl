@@ -1,28 +1,29 @@
 Widget.types.language_detail = {
 	initialize: function() {
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		this.content.find('div.hide_if_not_saved').hide();
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element.find('div.hide_if_not_saved').hide();
 
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 	
 	fill_data: function() {
-		this.detail_widget.disable();		
+		this.detail_widget.disable();
 		this.languageData(function(language_data) {
-			this.content.find("input[name='language_id']").val(language_data.Id);
-			this.content.find("input[name='path_prefix']").val(language_data.PathPrefix);
-			this.content.find("input[name='is_active']").prop('checked', language_data.IsActive);
-			this.content.find(".updated_info").text(language_data.UpdatedInfo);
-			this.content.find(".created_info").text(language_data.CreatedInfo);
-			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.content_language}}"+language_data.LanguageName);
+			this._element.find("input[name='language_id']").val(language_data.Id);
+			this._element.find("input[name='path_prefix']").val(language_data.PathPrefix);
+			this._element.find("input[name='is_active']").prop('checked', language_data.IsActive);
+			this._element.find(".updated_info").text(language_data.UpdatedInfo);
+			this._element.find(".created_info").text(language_data.CreatedInfo);
+			this._element.find('div.hide_if_not_saved').show();
+
 			var language_missing = this.detail_widget.content.find('div.check_static_strings');
 			if(language_data.LanguageStringMissing) {
 				language_missing.text(language_data.LanguageStringMissing).show();
 			} else {
 				language_missing.text('').hide();
 			}
-			this.content.find('div.hide_if_not_saved').show();
-			this.detail_widget.content.find('input[name=language_id]').select();
+
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.content_language}}"+language_data.LanguageName);
 			this.detail_widget.enable();		
 		});
 	},
