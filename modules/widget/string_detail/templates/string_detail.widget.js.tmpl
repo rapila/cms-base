@@ -1,46 +1,15 @@
 Widget.types.string_detail = {
 	initialize: function() {
 		this.init_content();
-		this.content.find('div.hide_if_not_saved').hide();
+		this._element.find('div.hide_if_not_saved').hide();
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
-	fill_data: function() {
-		this.detail_widget.disable();		
-		var string_detail = this;
-		// get active strings and make sure the correct ones are highlighted
-		var active_languages = string_detail.getActiveLanguages();		
-		
-		this.stringData(function(string_data) {
-			this.content.find("input[name='string_key']").val(string_data.StringKey);
-			this.content.find(".updated_info").text(string_data.UpdatedInfo);
-			this.content.find(".created_info").text(string_data.CreatedInfo);
-			this.detail_widget.set_title(string_data.StringKey);
-			this.content.find('div.hide_if_not_saved').hide();
-			this.detail_widget.enable();		
-		});
-		if(!this.language_tabs) {
-			this.init_content();
-		} else {
-			jQuery.each(this.language_tabs.all_tabs(), function(language_id, tab) {
-				if(jQuery.inArray(language_id, active_languages) != -1) {
-					tab.addClass('tab_content_active');
-					tab.removeClass('tab_content_inactive');
-				} else {
-					tab.addClass('tab_content_inactive');
-					tab.removeClass('tab_content_active');
-				}
-			});			
-			jQuery.each(this.language_tabs.all_panels(), function(language_id, panel) {
-				panel.find('textarea').val(string_detail.getTextFor(language_id));
-			});
-		}
-	},
-	
 	init_content: function() {
 		var string_detail = this;
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		var language_content = this.content.find('.edit_language_content');
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
+
+		var language_content = this._element.find('.edit_language_content');
 		Widget.createWithElement('language_tabs', function(widget) {
 			string_detail.language_tabs = widget;
 			widget.handle('element_set', function(event, element) {
@@ -56,7 +25,41 @@ Widget.types.string_detail = {
 			}, false, true);
 		});
 	},
-	
+
+	fill_data: function() {
+		this.detail_widget.disable();
+		
+		// get active strings and make sure the correct ones are highlighted
+		var string_detail = this;
+		var active_languages = string_detail.getActiveLanguages();
+		
+		this.stringData(function(string_data) {
+			this._element.find("input[name='string_key']").val(string_data.StringKey);
+			this._element.find(".updated_info").text(string_data.UpdatedInfo);
+			this._element.find(".created_info").text(string_data.CreatedInfo);
+			this.detail_widget.set_title(string_data.StringKey);
+			this._element.find('div.hide_if_not_saved').hide();
+			this.detail_widget.enable();
+		});
+		
+		if(!this.language_tabs) {
+			this.init_content();
+		} else {
+			jQuery.each(this.language_tabs.all_tabs(), function(language_id, tab) {
+				if(jQuery.inArray(language_id, active_languages) != -1) {
+					tab.addClass('tab_content_active');
+					tab.removeClass('tab_content_inactive');
+				} else {
+					tab.addClass('tab_content_inactive');
+					tab.removeClass('tab_content_active');
+				}
+			});
+			jQuery.each(this.language_tabs.all_panels(), function(language_id, panel) {
+				panel.find('textarea').val(string_detail.getTextFor(language_id));
+			});
+		}
+	},
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.new_entry}}",
