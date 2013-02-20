@@ -58,7 +58,7 @@ class AdminManager extends Manager {
 	* 2. fallback method, creates language if it does not exist, but not at first users' login time, i.e. when languages have been truncated
 	* @return void
 	*/	
-	public static function createLanguageIfNoneExist($sLanguage) {
+	public static function createLanguageIfNoneExist($sLanguage, $oUser = null) {
 		if(LanguageQuery::create()->count() > 0) {
 			return;
 		}
@@ -66,10 +66,38 @@ class AdminManager extends Manager {
 		$oLanguage->setId($sLanguage);
 		$oLanguage->setPathPrefix($sLanguage);
 		$oLanguage->setIsActive(true);
+		$oLanguage->setCreatedAt(date('c'));
+		$oLanguage->setUpdatedAt(date('c'));
+		if($oUser) {
+			$oLanguage->setCreatedBy($oUser->getId());
+			$oLanguage->setUpdatedBy($oUser->getId());
+		}
+		ErrorHandler::log('createLanguageIfNoneExist', $oUser);
 		LanguagePeer::ignoreRights(true);
 		$oLanguage->save();
 	}
 
+	public static function initializeFirstUserIfEmpty($sUsername = null, $sPassword = null) {
+		if (UserQuery::create()->count() > 0) {
+			return false;
+		}
+		$sUsername = $sUsername !== null ? $sUsername : ADMIN_USERNAME;
+		$sPassword = $sPassword !== null ? $sPassword : ADMIN_PASSWORD;
+		$oUser = new User();
+		$oUser->setPassword($sPassword);
+		$oUser->setFirstName($sUsername);
+		$oUser->setUsername($sUsername);
+		$oUser->setIsAdmin(true);
+		$oUser->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'en'));
+		UserPeer::ignoreRights(true);
+		$oUser->save();
+		UserPeer::ignoreRights(false);
+		// make sure that this first language exists and is the content language too
+		AdminManager::createLanguageIfNoneExist(Session::language(), $oUser);
+    AdminManager::setContentLanguage(Session::language());
+		return true;
+	}
+	
 	public static function getContentLanguage() {
 		$sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
 		if($sLanguageId === null) {

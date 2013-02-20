@@ -153,27 +153,6 @@ class UserPeer extends BaseUserPeer {
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::EMAIL, "%$sSearch%", Criteria::LIKE));
 		$oCriteria->add($oSearchCriterion);
 	}
-
-	public static function initializeFirstUserIfEmpty($sUsername = null, $sPassword = null) {
-		if (self::doCount(new Criteria()) !== 0) {
-			return false;
-		}
-		$sUsername = $sUsername !== null ? $sUsername : ADMIN_USERNAME;
-		$sPassword = $sPassword !== null ? $sPassword : ADMIN_PASSWORD;
-		$oFirstUser = new User();
-		$oFirstUser->setPassword($sPassword);
-		$oFirstUser->setFirstName($sUsername);
-		$oFirstUser->setUsername($sUsername);
-		$oFirstUser->setIsAdmin(true);
-		$oFirstUser->setLanguageId(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, 'en'));
-		UserPeer::ignoreRights(true);
-		$oFirstUser->save();
-		UserPeer::ignoreRights(false);
-		// make sure that this first language exists and is the content language too
-		AdminManager::createLanguageIfNoneExist(Session::language());
-    AdminManager::setContentLanguage(Session::language());
-		return true;
-	}
 	
 	public static function userExists($mUser=null) {
 		if($mUser === null) {
