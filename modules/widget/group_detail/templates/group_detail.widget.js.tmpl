@@ -1,5 +1,6 @@
 Widget.types.group_detail = {
 	initialize: function() {
+		var _this = this;
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
 		Widget.callStatic('detail', 'create_for_instance', this);
@@ -8,23 +9,44 @@ Widget.types.group_detail = {
 				delete data.role_keys;
 				data.roles = roles.checked_roles();
 			});
+			var add_role_button = jQuery('<span> </span>').addClass('add-new-item add_role').attr('title', "{{writeString=wns.group.create_role}}").click(function() {
+				_this.add_role();
+			});
+			roles._element.append(add_role_button);
 		}.bind(this));
+		Widget.handle('rapila-role_input_changed', function() {
+			_this.fill_data();
+		});
 	},
 
 	fill_data: function() {
-		this.detail_widget.disable()
+		this.detail_widget.disable();
 		this.groupData(function(group_data) {
 			this._element.find("input[name='name']").val(group_data.Name);
 			this._element.find(".updated_info").text(group_data.UpdatedInfo);
 			this._element.find(".created_info").text(group_data.CreatedInfo);
 			this._element.find(".detail_id").text(group_data.Id);
-			
+
 			this.roles_section.ensureWidget(function(roles) {
 				roles.set_checked(group_data.Roles);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = group_data.Name);
 			this._element.find('div.hide_if_not_saved').show();
 			this.detail_widget.enable();		
+		});
+	},
+
+	add_role: function() {
+		var _this = this;
+		Widget.create('role_detail', function(widget) {
+			widget.open();
+			widget.save_callback = function(result) {
+				_this.addRole(result.id, function(result) {
+					if(result) {
+						_this.fill_data();
+					}
+				});
+			};
 		});
 	},
 

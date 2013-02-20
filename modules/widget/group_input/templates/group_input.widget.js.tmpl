@@ -1,17 +1,25 @@
 Widget.types.group_input = {
 	prepare: function() {
 		this.checkbox_prototype = jQuery('<input/>').attr('type', 'checkbox');
+		this.groups_container = this._element.find('fieldset');
+		this.reload();
+	},
+	
+	reload: function() {
+		var _this = this;
+		this.groups_container.empty();
 		this.allGroups(function(groups) {
-			var fieldset = this._element.find('fieldset');
 			if(groups.length === 0) {
 				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.groups.none_available}}").appendTo(fieldset);
 			}
-			
 			jQuery.each(groups, function(i, group) {
 				var checkbox = this.checkbox_prototype.clone();
-				checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(fieldset);
-				jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(fieldset);
-				jQuery('<br/>').appendTo(fieldset);
+				checkbox.attr('name', 'group_ids[]').attr('value', group.id).appendTo(this.groups_container);
+				jQuery('<label/>').attr('for', "group_ids[]").text(group.name).appendTo(this.groups_container);
+				jQuery('<span> </span>').addClass('ui-icon-pencil ui-icon').click(function() {
+					_this.edit_group(group.id);
+				}).appendTo(this.groups_container);
+				jQuery('<br/>').appendTo(this.groups_container);
 			}.bind(this));
 		});
 	},
@@ -22,6 +30,22 @@ Widget.types.group_input = {
 			result.push(this.value);
 		});
 		return result;
+	},
+	
+	edit_group: function(group_id) {
+		var _this = this;
+		Widget.create('group_detail', function(widget) {
+			if(group_id) {
+				widget.setGroupId(group_id);
+				widget.fill_data();
+			}
+			widget.open();
+			widget.save_callback = function(result) {
+				if(result) {
+					_this.reload();
+				}
+			};
+		});
 	},
 	
 	set_checked: function(values) {
