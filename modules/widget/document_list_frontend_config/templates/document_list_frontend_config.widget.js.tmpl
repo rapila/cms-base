@@ -1,9 +1,10 @@
 Widget.types.document_list_frontend_config = {
 	prepare: function() {
+		var _this = this;
+		this._element = (config_modes.document_categories.length === 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
+		
 		var display_modes = this.getConfigData() || {};
 		var config_modes = this.getConfigurationModes();
-		this.content = (config_modes.document_categories.length === 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
-		var _this = this;
 		jQuery.each(config_modes, function(config_name, options) {
 			var select_name = config_name;
 			if(select_name === 'document_categories') {
@@ -12,12 +13,12 @@ Widget.types.document_list_frontend_config = {
 			if(select_name === 'tags') {
 				select_name += '[]';
 			}
-			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name], (select_name === 'list_template'));
+			var select = _this._element.find("select[name='"+select_name+"']").populate(options, display_modes[config_name], (select_name === 'list_template'));
 			if(config_name !== 'list_template') {
 				select.change(_this.reload_preview.bind(_this));
 			}
 		});
-		this._element.append(this.content);
+		this._element.append(this._element);
 
 		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');
 		this._element.append(this.result_list);
