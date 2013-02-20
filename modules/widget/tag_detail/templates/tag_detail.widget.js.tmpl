@@ -1,14 +1,14 @@
 Widget.types.tag_detail = {
 	initialize: function() {
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
-	
+
 	init_language_tabs: function() {
 		var _this = this;
 		Widget.createWithElement('language_tabs', function(widget) {
 			widget.handle('element_set', function(event, element) {
-				_this.content.find('.translations').append(element);
+				_this._element.find('.translations').append(element);
 			});
 		}, function(language_tabs) {
 			_this.language_tabs = language_tabs;
@@ -19,14 +19,14 @@ Widget.types.tag_detail = {
 			}, false, true);
 		});
 	},
-	
+
 	fill_data: function() {
 		_this = this;
 		this.tagData(function(tag_data) {
-			this.content.find("input[name='name']").val(tag_data.Name);
-			this.content.find(".updated_info").text(tag_data.UpdatedInfo);
-			this.content.find(".created_info").text(tag_data.CreatedInfo);
-			var tagged_items = this.content.find("ul.tagged_items").empty();
+			this._element.find("input[name='name']").val(tag_data.Name);
+			this._element.find(".updated_info").text(tag_data.UpdatedInfo);
+			this._element.find(".created_info").text(tag_data.CreatedInfo);
+			var tagged_items = this._element.find("ul.tagged_items").empty();
 			jQuery.each(tag_data.tagged_models_and_items, function(i, params) {
 				var item = jQuery('<li/>').text(params.name+" ("+params.model_name+")");
 				var delete_button = jQuery("<span/>").addClass('ui-icon ui-icon-trash').click(function() {
@@ -46,7 +46,7 @@ Widget.types.tag_detail = {
 			});
 		}
 	},
-	
+
 	settings: {
 		detail_widget: {
 				width: 600
