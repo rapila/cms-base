@@ -19,6 +19,16 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 	
+	public function addRole($sRoleKey) {
+		if($this->iGroupId === null) {
+			return false;
+		}
+		$oGroupRole = new GroupRole();
+		$oGroupRole->setRoleKey($sRoleKey);
+		$oGroupRole->setGroupId($this->iGroupId);
+		return $oGroupRole->save();
+	}
+	
 	public function saveData($aGroupData) {
 		if($this->iGroupId === null) {
 			$oGroup = new Group();

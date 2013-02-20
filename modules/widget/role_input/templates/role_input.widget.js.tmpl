@@ -1,18 +1,48 @@
 Widget.types.role_input = {
 	prepare: function() {
 		this.checkbox_prototype = jQuery('<input/>').attr('type', 'checkbox');
+		this.roles_container = this._element.find('fieldset');
+		this.reload();
+	},
+	
+	reload: function() {
+		var _this = this;
+		this.roles_container.empty();
 		this.allRoles(function(roles) {
-			var fieldset = this._element.find('fieldset');
 			if(roles.length === 0) {
-				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.roles.none_available}}").appendTo(fieldset);
+				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.roles.none_available}}").appendTo(_this.roles_container);
 			}
-		
 			jQuery.each(roles, function(i, role) {
-				var checkbox = this.checkbox_prototype.clone();
-				checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(fieldset);
-				jQuery('<label/>').attr('for', 'role_keys[]').text(role.description+" ("+role.role_key+")").appendTo(fieldset);
-				jQuery('<br/>').appendTo(fieldset);
+				_this.add_role(role);
 			}.bind(this));
+		});
+	},
+	
+	add_role: function(role) {
+		var _this = this;
+		var checkbox = this.checkbox_prototype.clone();
+		checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(this.roles_container);
+		jQuery('<label/>').attr('for', 'role_keys[]').text(role.description+" ("+role.role_key+")").appendTo(this.roles_container);
+		jQuery('<span> </span>').attr('title', "{{writeString=wns.role.edit}}").addClass('ui-icon-pencil ui-icon').click(function() {
+			_this.edit_role(role.role_key);
+		}).appendTo(this.roles_container);
+		jQuery('<br/>').appendTo(this.roles_container);
+	},
+	
+	edit_role: function(role_id) {
+		var _this = this;
+		Widget.create('role_detail', function(widget) {
+			if(role_id) {
+				widget.setRoleId(role_id);
+				widget.fill_data();
+			}
+			widget.open();
+			widget.save_callback = function(result) {
+				if(result) {
+					_this.reload();
+					Widget.fire('rapila-role_input_changed');
+				}
+			};
 		});
 	},
 	
@@ -23,7 +53,7 @@ Widget.types.role_input = {
 		});
 		return result;
 	},
-	
+
 	set_checked: function(values) {
 		if(!values) {
 			this._element.hide();
