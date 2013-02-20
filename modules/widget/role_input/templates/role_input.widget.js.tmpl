@@ -4,7 +4,7 @@ Widget.types.role_input = {
 		this.roles_container = this._element.find('fieldset');
 		this.reload();
 	},
-	
+
 	reload: function() {
 		var _this = this;
 		this.roles_container.empty();
@@ -17,7 +17,7 @@ Widget.types.role_input = {
 			}.bind(this));
 		});
 	},
-	
+
 	add_role: function(role) {
 		var _this = this;
 		var checkbox = this.checkbox_prototype.clone();
@@ -28,7 +28,7 @@ Widget.types.role_input = {
 		}).appendTo(this.roles_container);
 		jQuery('<br/>').appendTo(this.roles_container);
 	},
-	
+
 	edit_role: function(role_id) {
 		var _this = this;
 		Widget.create('role_detail', function(widget) {
@@ -45,7 +45,7 @@ Widget.types.role_input = {
 			};
 		});
 	},
-	
+
 	checked_roles: function() {
 		var result = [];
 		this._element.find("input[name='role_keys[]']:checked").each(function() {
