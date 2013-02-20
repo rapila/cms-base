@@ -128,7 +128,7 @@ Widget.types.document_detail = {
 		}
 	},
 	
-	upload_success: function(result, no_reload) {
+	upload_success: function(result) {
 		this.upload_error();
 		this.file_upload.val('');
 		var is_new = this.current_detail_id === null;
