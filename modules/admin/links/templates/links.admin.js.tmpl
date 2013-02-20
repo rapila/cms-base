@@ -22,7 +22,6 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('link_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('link_category_id');
-				widget.content.find("select[name='link_category_id']").val(content_list.getOption('link_category_id'));
 				widget.open();
 				widget.save_callback = function() {
 					content_list.reload();
