@@ -33,7 +33,6 @@ Widget.types.link_detail = {
 	fill_data: function() {
 		this.detail_widget.disable();
 		this.linkData(function(link_data) {
-			console.log('fill_data', link_data);
 			this._element.find("input[name='name']").val(link_data.Name);
 			this._element.find("input[name='url']").val(link_data.Url);
 			this._element.find("textarea[name='description']").val(link_data.Description);
