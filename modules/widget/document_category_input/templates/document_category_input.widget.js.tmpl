@@ -30,7 +30,7 @@ Widget.types.document_category_input = {
 	},
 	
 	val: function(value) {
-		if(value) {
+		if(arguments.length) {
 			this._element.val(value);
 			this.settings.initial_selection = value;
 			return;

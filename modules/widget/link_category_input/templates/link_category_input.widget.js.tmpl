@@ -8,24 +8,22 @@ Widget.types.link_category_input = {
 		var _this = this;
 		var current = this._element.val();
 		this._element.empty();
-		var option = jQuery('<option/>');
-		var categories = this.getCategories();
-		jQuery.each(categories, function(i, category) {
-			option.clone().text(category.name).attr('value', category.id).appendTo(this._element);
-		}.bind(this));
-		option.text('----').val('').prependTo(this._element);
-		if(current) {
-			this.val(current);
-		} else {
-			this.val(_this.settings.initial_selection);
-		}
+		this.listCategories(function(categories) {
+			this._element.populate({'': "{{writeString=wns.choose}}"});
+			this._element.populate(categories);
+			if(current) {
+				this._element.val(current);
+			} else {
+				this._element.val(_this.settings.initial_selection || '');
+			}
+		});
 		if(this.settings.disabled) {
 			this._element.attr('disabled', true);
 		}
 	},
 	
 	val: function(value) {
-		if(value) {
+		if(arguments.length) {
 			this._element.val(value);
 			this.settings.initial_selection = value;
 			return;
