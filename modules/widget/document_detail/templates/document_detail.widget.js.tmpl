@@ -1,38 +1,38 @@
 Widget.types.document_detail = {
 	initialize: function() {
 		var _this = this;
-		
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		this.content.find('div.hide_if_not_saved').hide();
-		this.file_upload = this.content.find("input[name='file_upload']");
+
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element.find('div.hide_if_not_saved').hide();
+		this.file_upload = this._element.find("input[name='file_upload']");
 		this.uploader = Widget.create('file_upload');
 		this.current_detail_id = null;
-					
+
 		this.settings.hidden_inputs = this.settings.hidden_inputs.concat(this.settings.is_called_externally ? this.settings.externally_hidden_inputs : []);
 		jQuery.each(_this.settings.hidden_inputs, function(i, input_name) {
-			var input = _this.content.find(":input[name='" + input_name + "']");
+			var input = _this._element.find(":input[name='" + input_name + "']");
 			if(input.is('select, textarea, button')) {
 				var new_input = jQuery('<input type="hidden"/>').attr('name', input_name);
 				input.replaceWith(new_input);
 				input = new_input;
 			}
 			input.hide();
-			_this.content.find("label[for='" + input_name + "']").remove();
+			_this._element.find("label[for='" + input_name + "']").remove();
 		});
-			
-		this.content.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
+
+		this._element.find("select[name='document_category_id']").prepareWidget(function(category_widget) {
 			category_widget.settings.initial_selection = _this.settings.initial_category_id;
 			category_widget.settings.show_all = false;
 			category_widget.settings.show_without	= true;
 		}, jQuery.noop);
-		this.content.find("select[name='language_id']").prepareWidget();
-		this.content.find('input[name=content_created_at]').datepicker({dateFormat: 'dd.mm.yy'});
-		this.content.find('input[name=license]').attr('data-widget-session', _this.settings.popover).prepareWidget(function(popover) {
+		this._element.find("select[name='language_id']").prepareWidget();
+		this._element.find('input[name=content_created_at]').datepicker({dateFormat: 'dd.mm.yy'});
+		this._element.find('input[name=license]').attr('data-widget-session', _this.settings.popover).prepareWidget(function(popover) {
 			popover.handle('popover-chosen', function(event, chosen) {
 				popover._element.val(chosen.children('img').data('license'));
 			});
 		});
-		
+
 		Widget.createWithElement('tag_area', function(widget) {
 			_this.tag_area = widget;
 			widget.settings.auto_load = false;
@@ -40,18 +40,18 @@ Widget.types.document_detail = {
 			widget.settings.deletable = true;
 			widget.setModelName('Document');
 			widget.handle('element_set', function(event, element) {
-				_this.content.find('div.tags_in_detail').append(element);
+				_this._element.find('div.tags_in_detail').append(element);
 			});
 		}, jQuery.noop);
-			
-		this.uploader.allow_drag_to(_this.content, null, function(target) {
+
+		this.uploader.allow_drag_to(_this._element, null, function(target) {
 			return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: true};
 		}, true);
 
 		this.file_upload.change(function(event) {
 			_this.detail_widget.clear_validation();
 		});
-		
+
 		Widget.callStatic('detail', 'create_for_instance', this);			
 		this.handle('opened', function() { 
 			var old_save_handler = this.detail_widget.settings.save_callback;
@@ -75,22 +75,23 @@ Widget.types.document_detail = {
 	fill_data: function(upload_mode) {
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
-			this.content.find(".preview").text('').addClass('file_exists');
+			this.current_detail_id = document_data.Id;
+			this._element.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
-				this.content.find(".preview").html(result);
+				this._element.find(".preview").html(result);
 			});
-			this.content.find('div.hide_if_not_saved').show();
-			this.content.find(".updated_info").text(document_data.UpdatedInfo);
-			this.content.find(".created_info").text(document_data.CreatedInfo);
-			this.content.find('div.hide_if_not_saved').show();
-			this.content.find(".detail_id").text(document_data.Id);
-			this.content.find(".file_size").text(document_data.FileInfo);
-			this.content.find(".original_name").text(document_data.OriginalName === null ? document_data.Name : document_data.OriginalName);
-			this.content.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
 			
+			this._element.find(".updated_info").text(document_data.UpdatedInfo);
+			this._element.find(".created_info").text(document_data.CreatedInfo);
+			this._element.find(".detail_id").text(document_data.Id);
+			this._element.find(".file_size").text(document_data.FileInfo);
+			this._element.find(".original_name").text(document_data.OriginalName === null ? document_data.Name : document_data.OriginalName);
+			this._element.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
+			this._element.find('div.hide_if_not_saved').show();
+
 			if(upload_mode) {
-				if(!jQuery.trim(this.content.find("input[name='name']").val())) {
-					this.content.find("input[name='name']").val(document_data.Name);
+				if(!jQuery.trim(this._element.find("input[name='name']").val())) {
+					this._element.find("input[name='name']").val(document_data.Name);
 				}
 			} else {
 				if(document_data.DocumentCategoryId === null) {
@@ -100,20 +101,20 @@ Widget.types.document_detail = {
 					document_data.LanguageId = '';
 				}
 				if(document_data.Id !== null) {
-					this.content.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
+					this._element.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
 				}
-				this.content.find(":input[name='name']").val(document_data.Name);
-				this.content.find(":input[name='description']").val(document_data.Description);
-				this.content.find(":input[name='document_category_id']").val(document_data.DocumentCategoryId);
-				this.content.find(":input[name='language_id']").val(document_data.LanguageId || '');
-				this.content.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
-				this.content.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
-				this.content.find(":input[name='author']").val(document_data.Author);
-				this.content.find(":input[name='license']").val(document_data.License);
-				this.content.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
-				this.current_detail_id = document_data.Id;
+				this._element.find(":input[name='name']").val(document_data.Name);
+				this._element.find(":input[name='description']").val(document_data.Description);
+				this._element.find(":input[name='document_category_id']").val(document_data.DocumentCategoryId);
+				this._element.find(":input[name='language_id']").val(document_data.LanguageId || '');
+				this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
+				this._element.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
+				this._element.find(":input[name='author']").val(document_data.Author);
+				this._element.find(":input[name='license']").val(document_data.License);
+				this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
 				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 			}
+
 			if(document_data.Id) {
 				this.tag_area.setTaggedItemId(document_data.Id);
 				this.tag_area.reload_tags();
@@ -141,8 +142,8 @@ Widget.types.document_detail = {
 		if(no_reload) {
 			this.fill_data(is_new ? 'new' : 'existing');
 		}
-	},	
-	
+	},
+
 	save: function(should_remain_open) {
 		if(should_remain_open) {
 			this.settings.remains_open = true;
@@ -152,12 +153,11 @@ Widget.types.document_detail = {
 			this.settings.remains_open = false;
 		}
 	},
-	
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.new_entry}}",
-			width: 600,
-			dialogClass: "detail-widget document_detail"
+			width: 600
 		},
 		initial_category_id: null,
 		is_called_externally: false,
