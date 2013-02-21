@@ -10,7 +10,7 @@ Widget.types.group_input = {
 		this.groups_container.empty();
 		this.allGroups(function(groups) {
 			if(groups.length === 0) {
-				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.groups.none_available}}").appendTo(fieldset);
+				jQuery('<div/>').addClass('no_entries_info').html("{{writeString=wns.groups.none_available}}").appendTo(this.groups_container);
 			}
 			jQuery.each(groups, function(i, group) {
 				var checkbox = this.checkbox_prototype.clone();
