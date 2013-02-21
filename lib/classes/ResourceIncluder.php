@@ -449,7 +449,7 @@ class ResourceIncluder {
 					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, LinkUtil::isSSL());
 				} else if($location !== null) {
 					if(StringUtil::startsWith($location, '//')) {
-						$location = (LinkUtil::isSSL() ? 'https' : 'http').$location;
+						$location = (LinkUtil::isSSL() ? 'https:' : 'http:').$location;
 					} else if(StringUtil::startsWith($location, '/')) {
 						$location = LinkUtil::absoluteLink($location, null, LinkUtil::isSSL());
 					}
@@ -485,7 +485,7 @@ class ResourceIncluder {
 							$sUrl = substr($sUrl, 1, -1);
 						}
 						if(StringUtil::startsWith($sUrl, '//')) {
-							return (LinkUtil::isSSL() ? 'https' : 'http').$sUrl;
+							return (LinkUtil::isSSL() ? 'https:' : 'http:').$sUrl;
 						}
 						if(StringUtil::startsWith($sUrl, '/')) {
 							return $sAbsoluteLocationRoot.$sUrl;
