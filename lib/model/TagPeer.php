@@ -16,6 +16,9 @@ class TagPeer extends BaseTagPeer {
 		$oCriteria->add($oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE));
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function allTaggedIdsForModel($sModelName, $sTagName = null) {
 		$oCriteria = TagInstanceQuery::create()->innerJoinTag()->filterByModelName($sModelName);
 		if($sTagName !== null) {
@@ -44,6 +47,9 @@ class TagPeer extends BaseTagPeer {
 		return $oResult;
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getTagsSorted($sSearch = null, $bJoinInstances = false) {
 		$oCriteria = new Criteria();
 		if($bJoinInstances) {
