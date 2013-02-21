@@ -34,13 +34,19 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		return self::newTagInstance($sTagName, get_class($oObject), $oObject->getId());
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getByModelNameAndIdCriteria($sModelName, $iId=null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
 		$oCriteria->add(self::TAGGED_ITEM_ID, $iId);
 		return $oCriteria;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getByModelNameAndTagIdCriteria($sModelName, $iTagId=null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
@@ -50,10 +56,16 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		return $oCriteria;
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function countByModelNameAndIdCriteria($sModelName, $iId) {
 		return self::doCount(self::getByModelNameAndIdCriteria($sModelName, $iId));
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getByModelNameAndTagId($sModelName, $sTagId = null) {
 		return self::doSelect(self::getByModelNameAndTagIdCriteria($sModelName, $iId));
 	}

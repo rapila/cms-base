@@ -25,6 +25,9 @@ class UserPeer extends BaseUserPeer {
 																				'5' => 'frontend_user',
 																				);
 
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getUserOptions() {
 		$aUserOptions = array();
 		foreach(self::$USER_OPTIONS as $iKey => $iValue) {
@@ -42,26 +45,45 @@ class UserPeer extends BaseUserPeer {
 		return $aUserOptions;
 	}
 		
+
+	/**
+	* @deprecated use query methods
+	*/
 	public static function hasBackendUsers() {
 		return self::getBackendUsers(null, null, true) > 0;
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function hasBackendAdministrators() {
 		return self::getBackendAdministrators(null, null, true) > 0;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function hasBackendUsersOther() {
 		return self::getBackendUsersOther(null, null, true) > 0;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function hasBackendUsersWithRights() {
 		return self::getBackendUsersWithRights(null, null, true) > 0;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function hasFrontendUsers() {
 		return self::getFrontendUsers(null, true) > 0;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getBackendAdministrators($sSearch=null, $iUserId=null, $bCountOnly=false) {
 		$oCriteria = new Criteria();
 		$oCriteria = self::getUsersCriteria($sSearch, true, $iUserId, $oCriteria);
@@ -71,7 +93,10 @@ class UserPeer extends BaseUserPeer {
 		}
 		return self::doSelect($oCriteria);
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getBackendUsers($sSearch=null, $iUserId=null, $bCountOnly=false, $oCriteria=null) {
 		$oCriteria = self::getUsersCriteria($sSearch, true, $iUserId, $oCriteria);
 		if($bCountOnly === true) {
@@ -79,7 +104,10 @@ class UserPeer extends BaseUserPeer {
 		}
 		return self::doSelect($oCriteria);	
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getBackendUsersWithRights($sSearch=null, $iUserId=null, $bCountOnly=false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(UserPeer::IS_ADMIN, false);
@@ -91,6 +119,9 @@ class UserPeer extends BaseUserPeer {
 		return self::doSelect($oCriteria);
 	}
 	
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getUsersWithRights($mRightIds) {
 		if(!is_array($mRightIds)) {
 			$mRightIds = array($mRightIds);
@@ -101,7 +132,10 @@ class UserPeer extends BaseUserPeer {
 		$oCriteria->add(UserGroupPeer::GROUP_ID, $mRightIds, Criteria::IN);
 		return self::doSelect($oCriteria);
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getBackendUsersOther($sSearch=null, $iUserId=null, $bCountOnly=false) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::IS_ADMIN, false);
@@ -115,7 +149,10 @@ class UserPeer extends BaseUserPeer {
 		}
 		return $aBackendUsers;
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function getFrontendUsers($sSearch, $bCountOnly=false) {
 		$oCriteria = self::getUsersCriteria($sSearch, false);
 		if($bCountOnly === true) {
@@ -124,6 +161,9 @@ class UserPeer extends BaseUserPeer {
 		return self::doSelect($oCriteria);
 	}
 
+	/**
+	* @deprecated use query methods
+	*/
 	public static function getUsersCriteria($sSearch=null, 
 																	$bIsBackendUserEnabled=null, 
 																	$iUserId=null, 
@@ -153,7 +193,10 @@ class UserPeer extends BaseUserPeer {
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(UserPeer::EMAIL, "%$sSearch%", Criteria::LIKE));
 		$oCriteria->add($oSearchCriterion);
 	}
-	
+
+	/**
+	* @deprecated use query methods
+	*/	
 	public static function userExists($mUser=null) {
 		if($mUser === null) {
 			return false;
