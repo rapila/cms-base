@@ -53,7 +53,7 @@ Widget.types.document_detail = {
 			_this.detail_widget.clear_validation();
 		});
 
-		Widget.callStatic('detail', 'create_for_instance', this);			
+		Widget.callStatic('detail', 'create_for_instance', this);
 		this.handle('opened', function() { 
 			var old_save_handler = this.detail_widget.settings.save_callback;
 			this.detail_widget.settings.save_callback = function() {
