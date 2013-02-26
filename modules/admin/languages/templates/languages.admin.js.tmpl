@@ -6,9 +6,9 @@ jQuery(document).ready(function() {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('language_detail', function(widget) {
 					widget.open();
-					widget.save_callback = function() {
+					widget.handle('saved', function() {
 						language_list.reload();
-					};
+					});
 				});
 			}, 'n', true).add_row_count_info_for_list(language_list);
 		});

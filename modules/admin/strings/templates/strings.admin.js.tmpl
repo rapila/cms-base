@@ -22,12 +22,12 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('string_detail', function(widget) {
 				widget.open();
-				widget.save_callback = function(result, error) {
+				widget.handle('saved', function(event, result) {
 					if(result.namespaces_changed) {
 						Widget.fire('strings-namespaces-changed');
 					}
 					content_list.reload();
-				};
+				});
 			});
 		}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 			if(content_list.setSearch(search)) {

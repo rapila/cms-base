@@ -6,9 +6,9 @@ jQuery(document).ready(function() {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('document_category_detail', function(widget) {
 					widget.open();
-					widget.save_callback = function() {
+					widget.handle('saved', function() {
 						document_category_list.reload();
-					};
+					});
 				});
 			}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				if(document_category_list.setSearch(search)) {

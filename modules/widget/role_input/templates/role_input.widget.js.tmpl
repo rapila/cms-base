@@ -37,12 +37,12 @@ Widget.types.role_input = {
 				widget.fill_data();
 			}
 			widget.open();
-			widget.save_callback = function(result) {
+			widget.handle('saved', function(event, result) {
 				if(result) {
 					_this.reload();
 					Widget.fire('rapila-role_input_changed');
 				}
-			};
+			});
 		});
 	},
 

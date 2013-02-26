@@ -37,9 +37,9 @@ jQuery(document).ready(function() {
 				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
 				widget._element.find("select[name='language_id']").val('');
 				widget.open();
-				widget.save_callback = function() {
+				widget.handle('saved', function() {
 					content_list.reload();
-				};
+				});
 			});
 		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
@@ -89,9 +89,9 @@ jQuery(document).ready(function() {
 				widget.setDocumentCategoryId(sidebar.active_row_datas()[0].document_category_id);
 				widget.open();
 				widget.fill_data();
-				widget.save_callback = function() {
+				widget.handle('saved', function() {
 					sidebar.reload();
-				};
+				});
 			});
 		}).disable();
 

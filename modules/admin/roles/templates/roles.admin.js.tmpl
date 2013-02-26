@@ -22,9 +22,9 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('role_detail', function(widget) {
 				widget.open();
-				widget.save_callback = function() {
+				widget.handle('saved', function() {
 					content_list.reload();
-				};
+				});
 			});
 		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
@@ -59,10 +59,10 @@ jQuery(document).ready(function() {
 				widget.setGroupId(sidebar.active_row_datas()[0].group_id);
 				widget.open();
 				widget.fill_data();
-				widget.save_callback = function() {
-					sidebar.reload();
+				widget.handle('saved', function() {
 					content_list.reload();
-				};
+					sidebar.reload();
+				});
 			});
 		}).disable();
 		

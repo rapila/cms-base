@@ -4,6 +4,8 @@ Widget.types.group_detail = {
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
 		Widget.callStatic('detail', 'create_for_instance', this);
+		
+		// Handle roles (input widget)
 		this.roles_section = this._element.find("div.roles_section").prepareWidget(function(roles) {
 			this.handle('saving', function(event, data) {
 				delete data.role_keys;
@@ -14,6 +16,7 @@ Widget.types.group_detail = {
 			});
 			roles._element.append(add_role_button);
 		}.bind(this));
+		
 		Widget.handle('rapila-role_input_changed', function() {
 			_this.fill_data();
 		});
@@ -40,13 +43,16 @@ Widget.types.group_detail = {
 		var _this = this;
 		Widget.create('role_detail', function(widget) {
 			widget.open();
-			widget.save_callback = function(result) {
+			widget.handle('saved', function(event, result) {
 				_this.addRole(result.id, function(result) {
 					if(result) {
-						_this.fill_data();
+						_this.roles_section.ensureWidget(function(roles_input) {
+							roles_input.reload();
+							_this.fill_data();
+						});
 					}
 				});
-			};
+			});
 		});
 	},
 
