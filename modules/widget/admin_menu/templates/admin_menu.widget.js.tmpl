@@ -149,7 +149,7 @@ Widget.types.admin_menu = {
 		spacer: function(width) {
 			return {element: Widget.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>')};
 		},
-		
+
 		module: function(module, module_info) {
 			var result = {};
 			if(AdminInterface.current_admin_module === module) {
@@ -161,7 +161,7 @@ Widget.types.admin_menu = {
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
 			return result;
 		},
-		
+
 		languages: function() {
 			var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
 			var _this = this;
@@ -228,17 +228,17 @@ Widget.types.admin_menu = {
 			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', result.text);
 			return result;
 		},
-		
+
 		user: function(user_info) {
 			var _this = this;
 			return {text: user_info.FullName, callback: function() {
-				var _this = this;
+				var _element = this;
 				Widget.create('user_detail', function(widget) {
 					widget.setUserId(user_info.Id);
 					widget.fill_data();
 					widget.open();
 					widget.save_callback = function() {
-						jQuery(_this).find('.ui-button-text').text(_this.getUserInfo()['FullName']);
+						jQuery(_element).find('.ui-button-text').text(_this.getUserInfo()['FullName']);
 					};
 				});
 			}};
