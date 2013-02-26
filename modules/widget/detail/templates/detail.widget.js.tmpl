@@ -19,6 +19,17 @@ Widget.types.detail = {
 				this.close_callback();
 			},
 
+			save: function(should_remain_open) {
+				var old_remains_open = this.settings.remains_open;
+				if(arguments.length) {
+					this.settings.remains_open = should_remain_open;
+				}
+				this.detail_widget.save();
+				this.handle('saved', function(event) {
+					this.settings.remains_open = old_remains_open;
+				}.bind(this), true);
+			},
+
 			delete: function() {
 				this.do_delete(function(ok) {
 					if(ok) {
