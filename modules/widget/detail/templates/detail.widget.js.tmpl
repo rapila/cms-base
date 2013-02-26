@@ -134,6 +134,7 @@ Widget.types.detail = {
 		if(this.has_dialog) {
 			this.clear_validation();
 			this.content.dialog('open');
+			this.content.dialog('moveToTop');
 			this.select();
 			return;
 		}
