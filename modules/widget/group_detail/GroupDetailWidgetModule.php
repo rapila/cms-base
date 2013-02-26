@@ -5,6 +5,7 @@
 class GroupDetailWidgetModule extends PersistentWidgetModule {
 
 	private $iGroupId = null;
+	private static $ROLES = array();
 	
 	public function setGroupId($iGroupId) {
 		$this->iGroupId = $iGroupId;
@@ -21,7 +22,8 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function addRole($sRoleKey) {
 		if($this->iGroupId === null) {
-			return false;
+			self::$ROLES[] = $sRoleKey;
+			return;
 		}
 		$oGroupRole = new GroupRole();
 		$oGroupRole->setRoleKey($sRoleKey);
@@ -36,14 +38,21 @@ class GroupDetailWidgetModule extends PersistentWidgetModule {
 			$oGroup = GroupQuery::create()->findPk($this->iGroupId);
 		}
 		$oGroup->setName($aGroupData['name']);
-
-		foreach($oGroup->getGroupRoles() as $oGroupRole) {
-			$oGroupRole->delete();
-		}
-		foreach($aGroupData['roles'] as $sRoleKey) {
-			$oGroupRole = new GroupRole();
-			$oGroupRole->setRoleKey($sRoleKey);
-			$oGroup->addGroupRole($oGroupRole);
+		if($oGroup->isNew() && count(self::$ROLES) > 0) {
+			foreach(self::$ROLES as $sRoleKey) {
+				$oGroupRole = new GroupRole();
+				$oGroupRole->setRoleKey($sRoleKey);
+				$oGroup->addGroupRole($oGroupRole);
+			}
+		} else {
+			foreach($oGroup->getGroupRoles() as $oGroupRole) {
+				$oGroupRole->delete();
+			}
+			foreach($aGroupData['roles'] as $sRoleKey) {
+				$oGroupRole = new GroupRole();
+				$oGroupRole->setRoleKey($sRoleKey);
+				$oGroup->addGroupRole($oGroupRole);
+			}
 		}
 
 		return $oGroup->save();
