@@ -5,21 +5,22 @@
 class SidebarInputWidgetModule extends WidgetModule {
 	
 	public function createEntry($sModelName, $sItemName) {
-		if(method_exists($sModelName, 'setName')) {
-			return array('saved' => $this->createDefaultBaseObject($sModelName, $sItemName));
+		if(!method_exists($sModelName, 'setName')) {
+			return false;
 		}
-	}
-	
-	private function createDefaultBaseObject($sModelName, $sItemName) {
-		$sPeerClassName = "{$sModelName}Peer";
-		$oCriteria = new Criteria();
-		$oCriteria->add(constant("$sPeerClassName::NAME"), $sItemName);
-		if($sPeerClassName::doCount($oCriteria) > 0) {
+		// maybe you have to create custom filterByName() and setName()
+		$sQueryClass = "{$sModelName}Query";
+		if($sQueryClass::create()->filterByName($sItemName)->count() > 0) {
 			throw new LocalizedException("wns.input.object_exists");
 		}
 		$oModel = new $sModelName();
 		$oModel->setName($sItemName);
-		return $oModel->save();
+
+		$oResult = new StdClass();
+		$oResult->id = $oModel->getPrimaryKey();
+		$oResult->saved = $oModel->save();
+
+		return $oResult;
 	}
 	
 	public static function isSingleton() {
