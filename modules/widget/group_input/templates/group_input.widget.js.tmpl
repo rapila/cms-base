@@ -40,11 +40,9 @@ Widget.types.group_input = {
 				widget.fill_data();
 			}
 			widget.open();
-			widget.save_callback = function(result) {
-				if(result) {
-					_this.reload();
-				}
-			};
+			widget.handle('saved', function() {
+				_this.reload();
+			});
 		});
 	},
 	

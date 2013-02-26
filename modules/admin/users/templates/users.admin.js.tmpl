@@ -17,9 +17,9 @@ jQuery(document).ready(function() {
 				widget.setUserId(optional_user_id);
 				widget.fill_data();
 				widget.open();
-				widget.save_callback = function() {
+				widget.handle('saved', function() {
 					user_list.reload();
-				};
+				});
 			});
 		}
 
@@ -28,9 +28,9 @@ jQuery(document).ready(function() {
 			info_bar.add_button('add-new-item', function() {
 				Widget.create('user_detail', function(widget) {
 					widget.open();
-					widget.save_callback = function() {
+					widget.handle('saved', function() {
 						user_list.reload();
-					};
+					});
 				});
 			}, 'n', true).add_button('add-new-item', function() {
 				Widget.create('group_detail', function(widget) {
@@ -43,9 +43,9 @@ jQuery(document).ready(function() {
 							sidebar.activate_row(sidebar.row_from_row_data(row_data));
 						}, true);
 					}
-					widget.save_callback = function() {
+					widget.handle('saved', function() {
 						sidebar.reload();
-					};
+					});
 				});
 			}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 				if(user_list.setSearch(search)) {
