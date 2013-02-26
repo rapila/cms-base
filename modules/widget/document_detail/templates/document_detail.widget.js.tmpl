@@ -68,7 +68,7 @@ Widget.types.document_detail = {
 					_this.settings.remains_open = false;
 					old_save_handler.call(this);
 				}
-			};		
+			};
 		});
 	},
 
@@ -137,20 +137,9 @@ Widget.types.document_detail = {
 		if(is_new) {
 			this.setDocumentId(result);
 			this.current_detail_id = result;
-			this.save(true);
 		}
 		if(no_reload) {
 			this.fill_data(is_new ? 'new' : 'existing');
-		}
-	},
-
-	save: function(should_remain_open) {
-		if(should_remain_open) {
-			this.settings.remains_open = true;
-		}
-		this.detail_widget.settings.save_callback();
-		if(should_remain_open) {
-			this.settings.remains_open = false;
 		}
 	},
 
