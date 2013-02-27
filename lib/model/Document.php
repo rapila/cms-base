@@ -236,15 +236,11 @@ class Document extends BaseDocument {
 		return self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()];
 	}
 	
-	public function setDocumentCategoryId($mCategoryId) {
-		parent::setDocumentCategoryId(is_numeric($mCategoryId) && $mCategoryId > 0 ? $mCategoryId : null);
-	}
-	
 	public function isInternallyManaged() {
-	  if($this->getDocumentCategory() === null) {
-	    return false;
-	  }
-	  return !$this->getDocumentCategory()->getIsExternallyManaged();
+		if($this->getDocumentCategory() === null) {
+			return false;
+		}
+		return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
 	
 	public function hasTags() {
