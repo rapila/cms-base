@@ -49,6 +49,9 @@ admin:
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
   
+  #available ckeditor skins: moono, kama
+  richtext_skin: moono 
+  
   registered_user_languages: ['de', 'en']
 
 error_handling:
