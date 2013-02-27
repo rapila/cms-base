@@ -1,7 +1,7 @@
 Widget.types.link_category_input = {
 	prepare: function() {
 		this.reload();
-		Widget.handle('rapila-link_categories_changed', this.reload.bind(this));
+		Widget.handle('rapila-link_category_changed', this.reload.bind(this));
 	},
 	
 	reload: function() {

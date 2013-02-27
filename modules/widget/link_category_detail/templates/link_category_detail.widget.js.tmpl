@@ -20,6 +20,10 @@ Widget.types.link_category_detail = {
 			this.detail_widget.enable();
 		});
 	},
+
+	save_callback: function(info) {
+		Widget.fire('rapila-link_category_changed', info);
+	},
 	
 	settings: {
 		detail_widget: {

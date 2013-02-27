@@ -40,10 +40,16 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$aResult = $oCategory->save();
-		if($mReload) {
-			return $mReload;
+		$oCategory->save();
+		
+		$oResult = new stdClass();
+		$oResult->id = $oCategory->getId();
+		if($this->iCategoryId === null) {
+			$oResult->inserted = true;
+		} else {
+			$oResult->updated = true;
 		}
-		return $aResult;
+		$this->iCategoryId = $oResult->id;
+		return $oResult;
 	}
 }
