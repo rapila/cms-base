@@ -7,6 +7,7 @@ Widget.types.document_detail = {
 		this.file_upload = this._element.find("input[name='file_upload']");
 		this.uploader = Widget.create('file_upload');
 		this.current_detail_id = null;
+		this.is_new_and_upload = true;
 
 		this.settings.hidden_inputs = this.settings.hidden_inputs.concat(this.settings.is_called_externally ? this.settings.externally_hidden_inputs : []);
 		jQuery.each(_this.settings.hidden_inputs, function(i, input_name) {
@@ -65,21 +66,31 @@ Widget.types.document_detail = {
 						old_save_handler.call(_this.detail_widget);
 					}, error: _this.upload_error.bind(_this)});
 				} else {
-					_this.settings.remains_open = false;
+					if(!_this.is_new_and_upload) {
+						_this.settings.remains_open = false;
+					}
 					old_save_handler.call(this);
 				}
 			};
 		});
 	},
 
-	fill_data: function(upload_mode) {
+	fill_data: function() {
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.current_detail_id = document_data.Id;
+			this.is_new_and_upload = false;
+			
 			this._element.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
 				this._element.find(".preview").html(result);
 			});
+			this._element.find(":input[name='name']").val(document_data.Name);
+			this._element.find(":input[name='description']").val(document_data.Description);
+			this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
+			this._element.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
+			this._element.find(":input[name='author']").val(document_data.Author);
+			this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
 			
 			this._element.find(".updated_info").text(document_data.UpdatedInfo);
 			this._element.find(".created_info").text(document_data.CreatedInfo);
@@ -89,37 +100,24 @@ Widget.types.document_detail = {
 			this._element.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
 			this._element.find('div.hide_if_not_saved').show();
 
-			if(upload_mode) {
-				if(!jQuery.trim(this._element.find("input[name='name']").val())) {
-					this._element.find("input[name='name']").val(document_data.Name);
-				}
-			} else {
-				if(document_data.DocumentCategoryId === null) {
-					document_data.DocumentCategoryId = '';
-				}
-				if(document_data.LanguageId === null) {
-					document_data.LanguageId = '';
-				}
-				if(document_data.Id !== null) {
-					this._element.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
-				}
-				this._element.find(":input[name='name']").val(document_data.Name);
-				this._element.find(":input[name='description']").val(document_data.Description);
-				this._element.find(":input[name='document_category_id']").val(document_data.DocumentCategoryId);
-				this._element.find(":input[name='language_id']").val(document_data.LanguageId || '');
-				this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
-				this._element.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
-				this._element.find(":input[name='author']").val(document_data.Author);
-				this._element.find(":input[name='license']").val(document_data.License);
-				this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
-				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
+			this.ensure_widget('document_category_id', document_data.DocumentCategoryId || '');
+			this.ensure_widget('language_id', document_data.LanguageId || '');
+			this.ensure_widget('license', document_data.License || '');
+			
+			if(document_data.Id !== null) {
+				this._element.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
 			}
+			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 
-			if(document_data.Id) {
-				this.tag_area.setTaggedItemId(document_data.Id);
-				this.tag_area.reload_tags();
-			}
+			this.tag_area.setTaggedItemId(document_data.Id);
+			this.tag_area.reload_tags();
 			this.detail_widget.enable();
+		});
+	},
+	
+	ensure_widget: function(name, value) {
+		this._element.find("select[name='"+name+"']").ensureWidget(function(input_widget) {
+			input_widget.val(value);
 		});
 	},
 
@@ -138,9 +136,8 @@ Widget.types.document_detail = {
 			this.setDocumentId(result);
 			this.current_detail_id = result;
 		}
-		if(no_reload) {
-			this.fill_data(is_new ? 'new' : 'existing');
-		}
+		this.save(true);
+		this.fill_data();
 	},
 
 	settings: {

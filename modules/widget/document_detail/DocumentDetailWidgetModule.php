@@ -80,30 +80,25 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
 		}
+		if($aDocumentData['name'] == null && $oDocument->getName()) {
+			$aDocumentData['name'] = $oDocument->getName();
+		}
+		$oDocument->fromArray($aDocumentData, BasePeer::TYPE_FIELDNAME);
 		$this->validate($aDocumentData, $oDocument);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
-		}
-		$aDocumentData['name'] = trim($aDocumentData['name']);
-		if($aDocumentData['name'] || !$oDocument->getName()) {
-			$oDocument->setName($aDocumentData['name']);
 		}
 		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
 		$oDocument->setAuthor($aDocumentData['author'] == '' ? null : $aDocumentData['author']);
 		$oDocument->setLicense($aDocumentData['license'] == '' ? null : $aDocumentData['license']);
 		$oDocument->setContentCreatedAt($aDocumentData['content_created_at'] == '' ? null : $aDocumentData['content_created_at']);
-		$iOriginalDocCatId = $oDocument->getDocumentCategoryId();
-		$sLanguageId = isset($aDocumentData['language_id']) && $aDocumentData['language_id'] != null ? $aDocumentData['language_id'] : null;
-		$oDocument->setLanguageId($sLanguageId);
-		
-		$oDocument->setDocumentCategoryId($aDocumentData['document_category_id']);
-		$oDocument->setIsProtected($aDocumentData['is_protected']);
+		// Set/reset sort order
 		if($oDocument->getDocumentCategoryId() != null) {
 			if($oDocument->isNew() || $oDocument->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
 				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
 			}
 		}
-		$oDocument->setIsInactive(isset($aDocumentData['is_inactive']) && $aDocumentData['is_inactive']);
-		return $oDocument->save();
+		$oDocument->save();
+		return $oDocument->getId();
 	}
 }
