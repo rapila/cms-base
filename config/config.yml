@@ -61,8 +61,10 @@ login:
   password_min_length: 4
 
 # default config for ckeditor
-# important note: always requires space after comma ", " in order to function properly
-text_module:  
+# important note: toolbar config always requires space after comma ", " in order to function properly
+# skins available: moono, kama
+text_module:
+  skin: moono 
   toolbar: 
     - 
       - ["Bold", "Italic"]
