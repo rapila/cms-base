@@ -21,8 +21,9 @@ class SidebarInputWidgetModule extends WidgetModule {
 		$oModel->setName($sItemName);
 
 		$oResult = new StdClass();
-		$oResult->id = $oModel->getPrimaryKey();
+		$oResult->inserted = true;
 		$oResult->saved = $oModel->save();
+		$oResult->id = $oModel->getPrimaryKey();
 
 		return $oResult;
 	}
