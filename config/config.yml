@@ -49,9 +49,6 @@ admin:
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
   
-  #available ckeditor skins: moono, kama
-  richtext_skin: moono 
-  
   registered_user_languages: ['de', 'en']
 
 error_handling:
@@ -64,8 +61,10 @@ login:
   password_min_length: 4
 
 # default config for ckeditor
-# important note: always requires space after comma ", " in order to function properly
-text_module:  
+# important note: toolbar config always requires space after comma ", " in order to function properly
+# skins available: moono, kama
+text_module:
+  skin: moono 
   toolbar: 
     - 
       - ["Bold", "Italic"]

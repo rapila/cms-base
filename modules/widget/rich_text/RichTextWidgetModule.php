@@ -27,7 +27,6 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$this->setSetting($sKey, $mSetting);
 		}
 		$this->setSetting('language', Session::language());
-		$this->setSetting('skin', Settings::getSetting('admin', 'richtext_skin', 'moono'));
 	}
 	
 	public static function includeResources($oResourceIncluder = null) {
