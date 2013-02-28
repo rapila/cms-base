@@ -315,6 +315,7 @@ class FrontendManager extends Manager {
 		$this->oTemplate->replaceIdentifier("description", self::$CURRENT_NAVIGATION_ITEM->getDescription());
 		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
 		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
+		$this->oTemplate->replaceIdentifier("level", self::$CURRENT_NAVIGATION_ITEM->getLevel());
 		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_NAVIGATION_ITEM->getName());
 		$this->oTemplate->replaceIdentifier("page_title", self::$CURRENT_PAGE->getPageTitle());
 		foreach(self::$CURRENT_PAGE->getPageProperties() as $oPageProperty) {
