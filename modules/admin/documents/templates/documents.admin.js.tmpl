@@ -35,15 +35,15 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('document_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
-				widget.content.find("select[name='language_id']").val('');
+				widget._element.find("select[name='language_id']").val('');
 				widget.open();
-				widget.save_callback = function() {
+				widget.handle('saved', function() {
 					content_list.reload();
-				};
+				});
 			});
 		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
-				widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', sidebar, 'rapila-document_categories_changed');
+				widget.add_new_sidebar_input("{{writeString=wns.document_category.default_name}}", 'DocumentCategory', null, 'rapila-document_category_changed');
 			});
 		}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 			content_list.set_search_string(search);
@@ -68,18 +68,23 @@ jQuery(document).ready(function() {
 		});
 
 		var remove_item = info_bar.add_button('remove-item', function() {
-			var rowData = sidebar.collect_row_data(sidebar.active_row());
+			var row = sidebar.active_row();
+			var rowData = sidebar.collect_row_data(row);
 			if(rowData.document_category_id) {
-				content_list.categoryHasDocuments(rowData.document_category_id, function(result) {
-					if(!result) {
-						return sidebar.delete_row(sidebar.active_row());
+				function remove_active_category() {
+					sidebar.delete_row(row);
+					Widget.fire('rapila-document_category_changed', {removed: true, id: rowData.document_category_id});
+				}
+				content_list.categoryHasDocuments(rowData.document_category_id, function(has_documents) {
+					if(has_documents) {
+						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.document_category.delete_information}}", function(confirmed) {
+							if(confirmed) {
+								remove_active_category();
+							}
+						});
+					} else {
+						remove_active_category();
 					}
-					var delete_message = "{{writeString=wns.document_category.delete_information}}";
-					Widget.confirm("{{writeString=wns.rapila_alert.information}}", delete_message, function(confirmed) {
-						if(confirmed) {
-							sidebar.delete_row(sidebar.active_row());
-						}
-					}.bind(this));
 				});
 			}
 		}).disable();
@@ -89,12 +94,22 @@ jQuery(document).ready(function() {
 				widget.setDocumentCategoryId(sidebar.active_row_datas()[0].document_category_id);
 				widget.open();
 				widget.fill_data();
-				widget.save_callback = function() {
-					sidebar.reload();
-				};
 			});
 		}).disable();
-
+		
+		Widget.handle('rapila-document_category_changed', function(event, info) {
+			if(info.updated) {
+				sidebar.update_row(sidebar.row_from_row_data({document_category_id: info.id}));
+			} else if (info.inserted) {
+				sidebar.reload();
+			} else if (info.removed) {
+				var row = sidebar.row_from_row_data({document_category_id: info.id})
+				if(row) {
+					row.remove();
+				}
+			}
+		});
+		
 		// Sidebar
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
