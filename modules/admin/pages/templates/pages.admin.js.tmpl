@@ -114,12 +114,7 @@ jQuery(document).ready(function() {
 		AdminInterface.sidebar.append(widget._element);
 		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);//TODO: update icons on update
 	}, '{{writeRequestValue=tree_session}}');
-	
-	// init language change
-	// Widget.handle('rapila-language_changed', function() {
-	// 	page_tree.update_elements();
-	// 	// reload the sidebar and page detail
-	// });
+
 });
 
 
