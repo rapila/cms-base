@@ -38,6 +38,7 @@ jQuery(document).ready(function() {
 				widget._element.find("select[name='language_id']").val('');
 				widget.open();
 				widget.handle('saved', function() {
+					console.log('document detail saved');
 					content_list.reload();
 				});
 			});
