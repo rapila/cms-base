@@ -54,13 +54,12 @@ jQuery(document).ready(function() {
 
 		// sidebar items edit and delete buttons
 		var remove_item = info_bar.add_button('remove-item', function() {
-			var rowData = sidebar.collect_row_data(sidebar.active_row());
+			var row = sidebar.active_row();
+			var rowData = sidebar.collect_row_data(row);
 			if(rowData.link_category_id) {
 				function remove_active_category() {
-					var row = sidebar.active_row();
-					sidebar.delete_row(row, function() {
-						Widget.fire('rapila-link_category_changed', {removed: true, id: rowData.link_category_id});
-					});
+					sidebar.delete_row(row);
+					Widget.fire('rapila-link_category_changed', {removed: true, id: rowData.link_category_id});
 				}
 				content_list.getOption('categoryHasLinks', rowData.link_category_id, function(has_links) {
 					if(has_links) {

@@ -31,16 +31,23 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oCategory = DocumentCategoryQuery::create()->findPk($this->iCategoryId);
 		}
-		$oCategory->setName($aDocumentCategoryData['name']);
-		$oCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);
-		$oCategory->setIsExternallyManaged($aDocumentCategoryData['is_externally_managed']);
-		$oCategory->setIsInactive(isset($aDocumentCategoryData['is_inactive']) && $aDocumentCategoryData['is_inactive']);
-		
+		$oCategory->fromArray($aDocumentCategoryData, BasePeer::TYPE_FIELDNAME);
+		if($aDocumentCategoryData['max_width'] == null) {
+			$oCategory->setMaxWidth(null);
+		}
     $this->validate($aDocumentCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-
-		return $oCategory->save();
+		$oCategory->save();
+		$oResult = new stdClass();
+		$oResult->id = $oCategory->getId();
+		if($this->iCategoryId === null) {
+			$oResult->inserted = true;
+		} else {
+			$oResult->updated = true;
+		}
+		$this->iCategoryId = $oResult->id;
+		return $oResult;
 	}
 }

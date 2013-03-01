@@ -15,7 +15,7 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oLinkCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLinkCategory);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oLinkCategory);
-    return $aResult;
+		return $aResult;
 	}
 
 	private function validate($aLinkCategoryData) {
@@ -31,9 +31,11 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		} else {
 			$oCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
 		}
-		$oCategory->setName($aLinkCategoryData['name']);
-		$oCategory->setIsExternallyManaged($aLinkCategoryData['is_externally_managed']);
-    $this->validate($aLinkCategoryData);
+		$oCategory->fromArray($aLinkCategoryData, BasePeer::TYPE_FIELDNAME);
+		if($aLinkCategoryData['max_width'] == null) {
+			$oCategory->setMaxWidth(null);
+		}
+		$this->validate($aLinkCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
