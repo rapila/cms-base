@@ -35,7 +35,6 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('document_detail', function(widget) {
 				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
-				widget._element.find("select[name='language_id']").val('');
 				widget.open();
 				widget.handle('saved', function() {
 					content_list.reload();
