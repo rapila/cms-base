@@ -68,9 +68,9 @@ class DocumentsAdminModule extends AdminModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = new Criteria();
+		$oQuery = DocumentCategoryQuery::create();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
-			return $oCriteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+			return $oQuery->filterByIsExternallyManaged('false');
 		}
 		return $oCriteria;
 	}
