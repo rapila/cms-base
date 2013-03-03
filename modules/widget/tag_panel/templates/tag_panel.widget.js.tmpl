@@ -5,6 +5,9 @@ Widget.types.tag_panel = {
 		Widget.createWithElement('tag_area', function(tag_area) {
 			tag_area.handle('element_set', function(event, element) {
 				_this.panel.prepend(element);
+				_this.panel.prepend(jQuery('<a/>').addClass('close_panel').text('x').bind('click', function() {
+					_this.hide('right');
+				}));
 			});
 		}, function(tag_area) {
 			_this.tag_area = tag_area;
