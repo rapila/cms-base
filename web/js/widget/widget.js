@@ -901,7 +901,7 @@ String.prototype.escapeSelector = function() {
 					return;
 				}
 
-				if(this.nodeName.toLowerCase() === 'select' && val ==== '') {
+				if(this.nodeName.toLowerCase() === 'select' && val === '') {
 					val = null;
 				}
 
