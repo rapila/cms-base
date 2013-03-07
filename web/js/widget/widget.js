@@ -883,7 +883,7 @@ String.prototype.escapeSelector = function() {
 				if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
 					return;
 				}
-			
+
 				var val = null;
 				if(this.nodeName.toLowerCase() === 'input') {
 					if(this.type.toLowerCase() === 'checkbox') {
@@ -896,7 +896,7 @@ String.prototype.escapeSelector = function() {
 				} else {
 					val = jQuery(this).val();
 				}
-			
+
 				if(val === null) {
 					return;
 				}
@@ -919,7 +919,7 @@ String.prototype.escapeSelector = function() {
 					result[this.name] = val;
 				}
 			});
-		
+
 			return result;
 		},
 
