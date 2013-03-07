@@ -1,28 +1,32 @@
 Widget.types.document_category_detail = {
 	initialize: function() {
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		this.content.find('div.hide_if_not_saved').hide();
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
+		this._element.find('div.hide_if_not_saved').hide();
 
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
 	fill_data: function() {
-		this.detail_widget.disable();		
+		this.detail_widget.disable();
 		this.categoryData(function(category_data) {
-			this.content.find("input[name='name']").val(category_data.Name);
-			this.content.find("input[name='max_width']").val(category_data.MaxWidth);
-			this.content.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
-			this.content.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
-			this.content.find(".updated_info").text(category_data.UpdatedInfo);
-			this.content.find(".created_info").text(category_data.CreatedInfo);
-			this.content.find("span[class='detail_id']").text(category_data.Id);
+			this._element.find("input[name='name']").val(category_data.Name);
+			this._element.find("input[name='max_width']").val(category_data.MaxWidth);
+			this._element.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
+			this._element.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
+			this._element.find(".updated_info").text(category_data.UpdatedInfo);
+			this._element.find(".created_info").text(category_data.CreatedInfo);
+			this._element.find("span[class='detail_id']").text(category_data.Id);
+
+			this._element.find('div.hide_if_not_saved').show();
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
-			this.detail_widget.content.find('input[name="name"]').select();
-			this.content.find('div.hide_if_not_saved').show();
-			this.detail_widget.enable();		
+			this.detail_widget.enable();
 		});
 	},
-	
+
+	save_callback: function(info) {
+		Widget.fire('rapila-document_category_changed', info);
+	},
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.document_category.create}}",

@@ -3,7 +3,7 @@ Widget.types.sidebar_input = {
 		this.sidebar = AdminInterface.sidebar;
 	},
 	
-	add_new_sidebar_input: function(default_value, save_callback, cleanup_callback, fire_handler) {
+	add_new_sidebar_input: function(default_value, save_callback, cleanup_callback, save_event_name) {
 		if(jQuery("input[name='sidebar_input']").select().length > 0) {
 			return this;
 		}
@@ -12,25 +12,14 @@ Widget.types.sidebar_input = {
 		}
 		if(save_callback.constructor === String) {
 			var model_name = save_callback;
-			save_callback = function(name, cleanup_callback) {
-				this.createEntry(model_name, name, cleanup_callback);
+			save_callback = function(name, save_cleanup_callback) {
+				this.createEntry(model_name, name, save_cleanup_callback);
 			}.bind(this);
 		}
-		if(cleanup_callback.constructor === Widget.types.list) {
+		if(cleanup_callback && cleanup_callback.constructor === Widget.types.list) {
 			var widget = cleanup_callback;
-			cleanup_callback = function() {
-				var row_data = widget.active_row();
-				if(row_data.length>0) {
-						// TODO: re-setting the last selected item after reload should be default functionality
-					row_data = widget.collect_row_data(row_data);
-					widget.handle('reloaded', function() {
-						widget.activate_row(widget.row_from_row_data(row_data));
-					}, true);
-				}
+			cleanup_callback = function(info) {
 				widget.reload();
-				if(fire_handler) {
-					Widget.fire(fire_handler);
-				}
 			};
 		}
 		var new_input_container = jQuery('<div/>').attr('id', 'new_sidebar_input').addClass('ui-list-row');
@@ -57,9 +46,12 @@ Widget.types.sidebar_input = {
 			if(sidebar_input.val() === default_value) {
 				return false;
 			}
-			save_callback(sidebar_input.val(), function() {
+			save_callback(sidebar_input.val(), function(info) {
 				new_input_container.remove();
-				cleanup_callback.apply(sidebar_input, arguments);
+				cleanup_callback && cleanup_callback.apply(sidebar_input, arguments);
+				if(save_event_name) {
+					Widget.fire(save_event_name, {inserted: true, id: info.id});
+				}
 			});
 		});
 		return this;

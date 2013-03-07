@@ -5,47 +5,36 @@ Widget.types.admin_menu = {
 		this.right_container = this.toolbar.find('.admin_menu_right');
 		this.left_container = this.toolbar.find('.admin_menu_left');
 		this.activity_indicator = jQuery();
-		var admin_menu = this;
+		var _this = this;
 		
-		jQuery.each(this.getModuleConfig(), function(i, config) {
-			var is_right = (i === 'right');
-			jQuery.each(config, function(i, config_item) {
-				var name = null;
-				var args = [];
-				if(jQuery.isArray(config_item)) {
-					name = 'menu';
-					args[0] = config_item;
-				} else if(!config_item) {
-					admin_menu.addSpacer(15, is_right);
-					return;
-				} else {
-					name = config_item.split('.');
-					args = name.slice(1);
-					name = name[0];
-				}
-				var to_add = admin_menu.predefined_elements[name].apply(admin_menu, args);
-				if(!to_add) {
-					return;
-				}
-				if(to_add.callback) {
-					if(to_add.text !== undefined) {
-						admin_menu.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
-					} else {
-						if(admin_menu.settings.attach_events) {
-							to_add.element.click(to_add.callback);
+		this.moduleConfig(function(module_config) {
+			jQuery.each(module_config, function(i, config) {
+				var is_right = (i === 'right');
+				jQuery.each(config, function(i, config_item) {
+					var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					if(!to_add) {
+						return;
+					}
+					if(to_add.callback) {
+						if(to_add.text !== undefined) {
+							_this.addButton(to_add.text, to_add.callback, is_right, to_add.element, to_add);
+						} else {
+							if(_this.settings.attach_events) {
+								to_add.element.click(to_add.callback);
+							}
+							_this.addElement(to_add.element, is_right);
 						}
-						admin_menu.addElement(to_add.element, is_right);
-					}
-				} else {
-					if(to_add.text) {
-						admin_menu.addButton(to_add.text, jQuery.noop, is_right, to_add.element, to_add);
 					} else {
-						admin_menu.addElement(to_add.element, is_right);
+						if(to_add.text) {
+							_this.addButton(to_add.text, jQuery.noop, is_right, to_add.element, to_add);
+						} else {
+							_this.addElement(to_add.element, is_right);
+						}
 					}
-				}
+				});
 			});
+			Widget.handle('rapila-logged_in', this.show.bind(this), true, true);
 		});
-		Widget.handle('rapila-logged_in', this.show.bind(this), true, true);
 	},
 	
 	activity: function() {
@@ -62,9 +51,6 @@ Widget.types.admin_menu = {
 	
 	show: function() {
 		this._element.show();
-		// if(window.PreviewInterface) {
-		// 	jQuery('html').css({marginTop: '30px'});
-		// }
 	},
 	
 	hide: function() {
@@ -113,7 +99,7 @@ Widget.types.admin_menu = {
 		},
 		
 		menu: function(items) {
-			var admin_menu = this;
+			var _this = this;
 			var result = {};
 			result.element = jQuery('<select/>');
 			var current_module = AdminInterface.current_admin_module;
@@ -123,19 +109,16 @@ Widget.types.admin_menu = {
 			var separator_class = '';
 			var active_val = false;
 			jQuery.each(items, function(i, item) {
-				if(!item) {
+				if(item.type === 'spacer') {
 					//handle Separator
 					separator_class = 'separator_top';
 					return;
 				}
-				var name = item.split('.');
-				var args = name.slice(1);
-				name = name[0];
-				var item_contents = admin_menu.predefined_elements[name].apply(admin_menu, args);
+				var item_contents = _this.predefined_elements[item.type].apply(_this, item.args);
 				if(!item_contents) {
 					return;
 				}
-				var value = args[0];
+				var value = item.args[0];
 				var option = jQuery('<option/>').text(item_contents.text).attr('value', value).addClass(separator_class);
 				option.data('action', item_contents.callback);
 				if(item_contents.is_active) {
@@ -162,13 +145,13 @@ Widget.types.admin_menu = {
 			result.callback = jQuery.noop;
 			return result;
 		},
-		
-		module: function(module) {
+
+		spacer: function(width) {
+			return {element: Widget.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>')};
+		},
+
+		module: function(module, module_info) {
 			var result = {};
-			var module_info = this.getModule(module);
-			if(!module_info.may) {
-				return null;
-			}
 			if(AdminInterface.current_admin_module === module) {
 				result.is_active = true;
 			} else {
@@ -178,14 +161,14 @@ Widget.types.admin_menu = {
 			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
 			return result;
 		},
-		
+
 		languages: function() {
 			var select = jQuery('<select/>').addClass('content_language').attr('data-widget-type', 'language_input');
-			var admin_menu = this;
+			var _this = this;
 			select.prepareWidget(function(widget) {
 				widget.settings.international_option = false;
 			}, function(widget) {
-				if(admin_menu.settings.attach_events) {
+				if(_this.settings.attach_events) {
 					select.change(function() {
 						widget.setContentLanguage(select.val());
 						AdminInterface.content_language = select.val();
@@ -225,19 +208,18 @@ Widget.types.admin_menu = {
 		
 		preview: function() {
 			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
-			var admin_menu = this;
+			var _this = this;
 			result.is_active = !!window.PreviewInterface;
 			result.callback = function(event) {
-				jQuery.openLink(admin_menu.getPreviewLink(), event);
+				jQuery.openLink(_this.getPreviewLink(), event);
 			};
 			return result;
 		},
 		
-		logout: function() {
-			var admin_menu = this;
+		logout: function(page_link) {
+			var _this = this;
 			var result = {};
 			result.callback = function() {
-				var page_link = admin_menu.getPageLink();
 				Widget.create('login_window', function(login_window) {
 					login_window.logout(function() {
 						window.location.href = page_link;
@@ -249,18 +231,17 @@ Widget.types.admin_menu = {
 			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', result.text);
 			return result;
 		},
-		
-		user: function() {
-			var admin_menu = this;
-			var user_info = this.getUserInfo();
+
+		user: function(user_info) {
+			var _this = this;
 			return {text: user_info.FullName, callback: function() {
-				var _this = this;
+				var _element = this;
 				Widget.create('user_detail', function(widget) {
 					widget.setUserId(user_info.Id);
 					widget.fill_data();
 					widget.open();
 					widget.save_callback = function() {
-						jQuery(_this).find('.ui-button-text').text(admin_menu.getUserInfo()['FullName']);
+						jQuery(_element).find('.ui-button-text').text(_this.getUserInfo()['FullName']);
 					};
 				});
 			}};

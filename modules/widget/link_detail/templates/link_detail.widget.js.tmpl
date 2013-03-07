@@ -2,10 +2,9 @@ Widget.types.link_detail = {
 	initialize: function() {
 		var _this = this;
 		this.init_content();
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
-		this.content.find('div.hide_if_not_saved').hide();
-		this.content.find("select[name='language_id']").prepareWidget();
-		this.content.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
+		this._element.find('div.hide_if_not_saved').hide();
+		this._element.find("select[name='language_id']").prepareWidget();
+		this._element.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
 			link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id;
 			link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
 		}, function(link_category_input_widget) {
@@ -15,10 +14,10 @@ Widget.types.link_detail = {
 		});
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
-	
+
 	init_content: function() {
+		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		var link_detail = this;
-		this.content = Widget.parseHTML("{{includeTemplate=edit}}");
 		Widget.createWithElement('tag_area', function(widget) {
 			link_detail.tag_area = widget;
 			widget.settings.auto_load = false;
@@ -26,7 +25,7 @@ Widget.types.link_detail = {
 			widget.settings.deletable = true;
 			widget.setModelName('Link');
 			widget.handle('element_set', function(event, element) {
-				link_detail.content.find('div.tags_in_detail').append(element);
+				link_detail._element.find('div.tags_in_detail').append(element);
 			});
 		}, jQuery.noop);
 	},
@@ -34,37 +33,29 @@ Widget.types.link_detail = {
 	fill_data: function() {
 		this.detail_widget.disable();
 		this.linkData(function(link_data) {
-			if(link_data.LinkCategoryId === null) {
-				link_data.LinkCategoryId = '';
-			}
-			this.content.find("input[name='name']").val(link_data.Name);
-			this.content.find("input[name='url']").val(link_data.Url);
-			var url_preview = this.content.find('a.url_preview');
+			this._element.find("input[name='name']").val(link_data.Name);
+			this._element.find("input[name='url']").val(link_data.Url);
+			this._element.find("textarea[name='description']").val(link_data.Description);
+			this._element.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
+			this._element.find("select[name='language_id']").val(link_data.LanguageId || '');
+			this._element.find(".updated_info").text(link_data.UpdatedInfo);
+			this._element.find(".created_info").text(link_data.CreatedInfo);
+			this._element.find(".detail_id").text(link_data.Id);
+			this._element.find('div.hide_if_not_saved').show();
+
 			if(link_data.Url !== '') {
-				url_preview.attr('href', link_data.Url);
+				this._element.find('a.url_preview').attr('href', link_data.Url);
 			}
-			
 			if(!this.settings.predefined_link_category_id) {
-				this.content.find("select[name='link_category_id']").val(link_data.LinkCategoryId);
+				this._element.find("select[name='link_category_id']").val(link_data.LinkCategoryId || '');
 			}
-			this.content.find("textarea[name='description']").val(link_data.Description);
-			this.content.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
-			this.content.find("select[name='language_id']").val(link_data.LanguageId || '');
-			this.content.find(".updated_info").text(link_data.UpdatedInfo);
-			this.content.find(".created_info").text(link_data.CreatedInfo);
-			this.content.find(".detail_id").text(link_data.Id);
-			if(link_data.Id) {
-				this.content.find('div.hide_if_not_saved').show();
-			}
-			if(link_data.Id) {
-				this.tag_area.setTaggedItemId(link_data.Id);
-				this.tag_area.reload_tags();
-			}
+			this.tag_area.setTaggedItemId(link_data.Id);
+			this.tag_area.reload_tags();
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 			this.detail_widget.enable();
 		});
 	},
-	
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.new_entry}}",

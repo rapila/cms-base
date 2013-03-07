@@ -38,7 +38,7 @@ class LinkListWidgetModule extends WidgetModule {
 	}
 	
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'sort', 'url', 'category_name');
+		$aResult = array('id', 'name_truncated', 'sort', 'url');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}		
@@ -47,7 +47,7 @@ class LinkListWidgetModule extends WidgetModule {
 		} else {
 			$this->oDelegateProxy->getListSettings()->setFilterColumnValue('has_tags', CriteriaListWidgetDelegate::SELECT_ALL);
 		}
-		return array_merge($aResult, array('updated_at_formatted', 'delete'));
+		return array_merge($aResult, array('category_name', 'updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {

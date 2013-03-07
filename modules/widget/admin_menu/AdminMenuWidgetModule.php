@@ -25,32 +25,48 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		}
 	}
 	
-	public function getModuleConfig() {
+	public function moduleConfig() {
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
+		$aResult = array();
 		foreach($aSettings as $sSection => &$aConfig) {
-			$this->cleanModules($aConfig);
+			$aRes = array();
+			$this->cleanModules($aConfig, $aRes);
+			$aResult[$sSection] = $aRes;
 		}
-		return $aSettings;
+		return $aResult;
 	}
 	
-	private function cleanModules(&$aSettings) {
+	private function cleanModules($aSettings, &$aResult = array()) {
 		foreach($aSettings as $iKey => &$mValue) {
 			if(is_array($mValue)) {
-				$this->cleanModules($mValue);
+				$aRes = array();
+				$this->cleanModules($mValue, $aRes);
+				$aResult[] = array('type' => 'menu', 'args' => array($aRes));
 			} else if(is_string($mValue)) {
 				if($mValue === 'edit') {
 					$mValue = "module.pages";
 				}
-				if(StringUtil::startsWith($mValue, 'module.')) {
-					$sModuleName = substr($mValue, strlen('module.'));
+				$aArgs = explode('.', $mValue);
+				$sType = array_shift($aArgs);
+				$aInfo = array();
+				if($sType === 'module') {
+					$sModuleName = $aArgs[0];
 					if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
-						unset($aSettings[$iKey]);
+						continue;
 					}
+					$aInfo = $this->getModule($sModuleName);
+				} else if($sType === 'user') {
+					$aInfo = $this->getUserInfo();
+				} else if($sType === 'logout') {
+					$aInfo = $this->getPageLink();
 				}
+				$aArgs[] = $aInfo;
+				$aResult[] = array('type' => $sType, 'args' => $aArgs);
+			} else {
+				$aResult[] = array('type' => 'spacer', 'args' => array(15));
 			}
 		}
-		$aSettings = array_values($aSettings);
 	}
 	
 	public function doWidget() {
@@ -62,8 +78,8 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		return $oTemplate;
 	}
 	
-	public function getModule($sName) {
-		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName), 'may' => Session::getSession()->getUser()->mayUseAdminModule($sName));
+	private function getModule($sName) {
+		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName));
 		return $aResult;
 	}
 	

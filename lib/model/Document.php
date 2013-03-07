@@ -45,7 +45,11 @@ class Document extends BaseDocument {
 	}
 	
 	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
-		return LinkUtil::link(array($sFileModule, $this->getId()), "FileManager", $aUrlParameters);
+		$iId = $this->getId();
+		if($sFileModule === 'display_document') {
+			$iId .= '.'.$this->getDocumentType()->getExtension();
+		}
+		return LinkUtil::link(array($sFileModule, $iId), "FileManager", $aUrlParameters);
 	}
 	
 	public function shouldBeIncludedInList($sLanguageId, $oPage) {
@@ -81,7 +85,7 @@ class Document extends BaseDocument {
 			$oImage->destroy();
 		}
 		$oDocument = $this;
-		$oTemplate->replaceIdentifierCallback("preview", null, function($oTemplateIdentifier, &$iFlags) use ($oDocument) {
+		$oTemplate->replaceIdentifierCallback("preview", function($oTemplateIdentifier, &$iFlags) use ($oDocument) {
 			$iSize = 190;
 			if($oTemplateIdentifier->getValue()) {
 				$iSize = $oTemplateIdentifier->getValue();
@@ -164,7 +168,7 @@ class Document extends BaseDocument {
 	* @todo remove
 	*/
 	public function getLink() {
-		return $this->getDisplayUrl(array(), 'display_document');
+		return $this->getDisplayUrl(array(), 'display_document').'.'.$this->getDocumentType()->getExtension();
 	}
 
 	public function getLicenseInfo() {
@@ -232,15 +236,11 @@ class Document extends BaseDocument {
 		return self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()];
 	}
 	
-	public function setDocumentCategoryId($mCategoryId) {
-		parent::setDocumentCategoryId(is_numeric($mCategoryId) && $mCategoryId > 0 ? $mCategoryId : null);
-	}
-	
 	public function isInternallyManaged() {
-	  if($this->getDocumentCategory() === null) {
-	    return false;
-	  }
-	  return !$this->getDocumentCategory()->getIsExternallyManaged();
+		if($this->getDocumentCategory() === null) {
+			return false;
+		}
+		return !$this->getDocumentCategory()->getIsExternallyManaged();
 	}
 	
 	public function hasTags() {
