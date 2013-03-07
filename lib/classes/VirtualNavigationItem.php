@@ -66,7 +66,7 @@ class VirtualNavigationItem extends NavigationItem {
 	}
 	
 	public function getData() {
-	    return $this->mData;
+		return $this->mData;
 	}
 	
 	public function hasData($mKey) {
