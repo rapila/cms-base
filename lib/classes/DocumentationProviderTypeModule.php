@@ -47,6 +47,7 @@ abstract class DocumentationProviderTypeModule extends Module {
 		// Consolidate all
 		foreach($aProviders as $oProvider) {
 			foreach($oProvider->metadataForAllParts() as $sPart => $aData) {
+				$sPart = strtolower($sPart);
 				if(!isset($aResult[$sPart])) {
 					$aResult[$sPart] = array();
 				}

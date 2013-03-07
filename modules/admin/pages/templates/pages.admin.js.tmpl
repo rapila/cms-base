@@ -55,7 +55,8 @@ jQuery(document).ready(function() {
 					page_tree.reload_element(page_tree.element_with_identifier(page_id), true);
 				});
 			});
-		}, 'n', false, true, "{{writeString=wns.page.create}}");
+		}, 'n', false, true, "{{writeString=wns.page.create}}", {documentation: 'pages.create'});
+		info_bar.add_tag_panel();
 	});
 	
 	// init main content
