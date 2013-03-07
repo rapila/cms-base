@@ -883,7 +883,7 @@ String.prototype.escapeSelector = function() {
 				if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
 					return;
 				}
-			
+
 				var val = null;
 				if(this.nodeName.toLowerCase() === 'input') {
 					if(this.type.toLowerCase() === 'checkbox') {
@@ -896,11 +896,15 @@ String.prototype.escapeSelector = function() {
 				} else {
 					val = jQuery(this).val();
 				}
-			
+
 				if(val === null) {
 					return;
 				}
-			
+
+				if(this.nodeName.toLowerCase() === 'select' && val ==== '') {
+					val = null;
+				}
+
 				if(this.name.match(/\[\]$/)) {
 					var name = this.name.substring(0, this.name.length-2);
 					if(!jQuery.isArray(result[name])) {
@@ -915,7 +919,7 @@ String.prototype.escapeSelector = function() {
 					result[this.name] = val;
 				}
 			});
-		
+
 			return result;
 		},
 
