@@ -14,10 +14,12 @@ fi
 if [ "$1" = "-b" ]; then
 	context=base
 	shift
-elif [ "$1" = "-p" ]; then
-	context=plugins/$2
-	shift 2
 elif [ "$1" = "-s" ]; then
+	context=site
+	shift
+elif [ "$1" = "-p" ]; then
+	shift
+	context="plugins/$1"
 	shift
 fi
 
@@ -43,7 +45,7 @@ SUDO="sudo -u $owner env RAPILA_ENVIRONMENT=${RAPILA_ENVIRONMENT}"
 
 cp base/build.properties generated/ && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();" && \
-$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ diff && \
+$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" diff && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 
 mkdir -p "$destination_path" && \

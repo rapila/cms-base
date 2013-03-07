@@ -8,7 +8,7 @@ owner=`whoami`
 path_to_buildfile="base/lib/vendor/propel/generator/build.xml"
 action=migrate
 
-part=base
+context=base
 
 if [ "$1" = "help" ]; then
 	echo "USAGE: migrate-model.sh [-b|-s|-p <plugin-name> (default -b)] [migrate|up|down|status (default migrate)] [<path-to-buildfile (default $path_to_buildfile)>] [<php-user (default `whoami`)>]"
@@ -28,14 +28,14 @@ if [ "$1" = "migrate-all" ]; then
 fi
 
 if [ "$1" = "-b" ]; then
-	part=base
+	context=base
 	shift
 elif [ "$1" = "-s" ]; then
-	part=site
+	context=site
 	shift
 elif [ "$1" = "-p" ]; then
 	shift
-	part="plugins/$1"
+	context="plugins/$1"
 	shift
 fi
 
@@ -71,8 +71,8 @@ SUDO="sudo -u $owner env RAPILA_ENVIRONMENT=${RAPILA_ENVIRONMENT}"
 mkdir -p "./generated/migrations"
 
 cp base/build.properties generated/ && \
-$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations('$part');" && \
-$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${part/\//_}" "$action" && \
+$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations('$context');" && \
+$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" "$action" && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 rm "./generated/migrations/"*.php 2> /dev/null
 
