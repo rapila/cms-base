@@ -900,7 +900,11 @@ String.prototype.escapeSelector = function() {
 				if(val === null) {
 					return;
 				}
-			
+
+				if(this.nodeName.toLowerCase() === 'select' && val === '') {
+					val = null;
+				}
+
 				if(this.name.match(/\[\]$/)) {
 					var name = this.name.substring(0, this.name.length-2);
 					if(!jQuery.isArray(result[name])) {

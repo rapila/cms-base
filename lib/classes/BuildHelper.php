@@ -44,6 +44,9 @@ class BuildHelper {
 			// Migration table removed already. Nothing to do.
 			return;
 		}
+		if(!$iCurrentMigration) {
+			return;
+		}
 		$aPaths = array_merge(array(DIRNAME_SITE, DIRNAME_BASE), array_keys(ResourceFinder::pluginFinder()->find()));
 		foreach($aPaths as $sPath) {
 			$sTableName = '_migration_'.str_replace('/', '_', $sPath);
