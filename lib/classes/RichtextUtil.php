@@ -211,10 +211,14 @@ class RichtextUtil {
 	}
 	
 	private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
+		self::link(LinkUtil::link($mLocation, $sManager, $aParameters));
+	}
+	
+	private static function link($sLocation) {
 		if(self::$USE_ABSOLUTE_LINKS !== null) {
-			return LinkUtil::absoluteLink(LinkUtil::link($mLocation, $sManager, $aParameters), null, self::$USE_ABSOLUTE_LINKS);
+			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS);
 		} else {
-			return LinkUtil::link($mLocation, $sManager, $aParameters);
+			return $sLocation;
 		}
 	}
 
