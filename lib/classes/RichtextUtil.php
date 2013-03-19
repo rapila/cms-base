@@ -211,7 +211,7 @@ class RichtextUtil {
 	}
 	
 	private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
-		self::link(LinkUtil::link($mLocation, $sManager, $aParameters));
+		return self::link(LinkUtil::link($mLocation, $sManager, $aParameters));
 	}
 	
 	private static function link($sLocation) {
