@@ -4,14 +4,14 @@
  */
 class Util {
 	private static $COMMON_DESCRIPTION_METHODS = array("getDescription", "getText", "getTitle");
-	private static $COMMON_NAME_METHODS = array("getName", "getFullName", "getTitle", "getExtension", "getStringKey", "getId");
+	private static $COMMON_NAME_METHODS = array("getName", "getFullName", "getTitle", "getExtension", "getId", 'getStringKey', "getPrimaryKey", "getPKString");
 
 	public static function equals($mFirst, $mSecond, $sKeyMethod = null) {
 		if($mFirst === $mSecond) {
 			return true;
 		}
 		if($mFirst instanceof BaseObject && $mSecond instanceof BaseObject) {
-			return ($mFirst->getPeer() === $mSecond->getPeer()) && ($mFirst->getPrimaryKey() === $mSecond->getPrimaryKey());
+			return ($mFirst->getPeer() === $mSecond->getPeer()) && ($mFirst->getPKString() === $mSecond->getPKString());
 		}
 		if(is_object($mFirst)) {
 			if($sKeyMethod === null) {
@@ -42,13 +42,13 @@ class Util {
 		return "";
 	}
 
+	/**
+	* @return an arbitrary object’s “id”.
+	* @deprecated For BaseObjects. Use $oObject->getPKString() or $oObject->getPrimaryKey().
+	*/
 	public static function idForObject($oObject) {
 		if(!is_object($oObject)) {
 			return $oObject;
-		}
-		if(method_exists($oObject, 'getIdMethodName')) {
-			$sMethodName = $oObject->getIdMethodName();
-			return $oObject->$sMethodName();
 		}
 		foreach(array_reverse(self::$COMMON_NAME_METHODS) as $sMethodName) {
 			if(method_exists($oObject, $sMethodName)) {

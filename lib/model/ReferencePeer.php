@@ -106,7 +106,7 @@ class ReferencePeer extends BaseReferencePeer {
 	
 	private static function prepareObjectArgument(&$mObject) {
 		if(is_object($mObject)) {
-			$mObject = array(Util::idForObject($mObject), get_class($mObject));
+			$mObject = array($mObject->getPKString(), get_class($mObject));
 		}
 	}
 	

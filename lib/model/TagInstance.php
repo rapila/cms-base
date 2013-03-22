@@ -9,11 +9,11 @@ require_once 'model/om/BaseTagInstance.php';
 class TagInstance extends BaseTagInstance {
 	public function getCorrespondingDataEntry() { 
 		if($this->getModelName() != '') {
-			$sModelPeerName = $this->getModelName()."Peer";
-			if(!@class_exists($sModelPeerName)) {
+			$sModelQueryName = $this->getModelName()."Query";
+			if(!@class_exists($sModelQueryName)) {
 				return null;
 			}
-			return call_user_func(array($sModelPeerName, 'retrieveByPK'), $this->getTaggedItemId());
+			return $sModelQueryName::create()->filterByPKString($this->getTaggedItemId())->findOne();
 		}
 		return null;
 	}
