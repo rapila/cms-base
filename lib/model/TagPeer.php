@@ -76,7 +76,7 @@ class TagPeer extends BaseTagPeer {
 	}
 	
 	public static function tagInstancesForObject($oObject) {
-		return self::tagInstancesForModel(get_class($oObject), $oObject->getId());
+		return self::tagInstancesForModel(get_class($oObject), $oObject->getPKString());
 	}
 	
 	public static function tagInstancesForModel($sModelName, $iTaggedItemId) {

@@ -31,7 +31,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
 	}
 	
 	public static function newTagInstanceForObject($sTagName, $oObject) {
-		return self::newTagInstance($sTagName, get_class($oObject), $oObject->getId());
+		return self::newTagInstance($sTagName, get_class($oObject), $oObject->getPKString());
 	}
 	
 	/**
