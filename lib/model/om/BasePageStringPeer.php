@@ -32,38 +32,38 @@ abstract class BasePageStringPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 11;
 
-    /** the column name for the PAGE_ID field */
-    const PAGE_ID = 'page_strings.PAGE_ID';
+    /** the column name for the page_id field */
+    const PAGE_ID = 'page_strings.page_id';
 
-    /** the column name for the LANGUAGE_ID field */
-    const LANGUAGE_ID = 'page_strings.LANGUAGE_ID';
+    /** the column name for the language_id field */
+    const LANGUAGE_ID = 'page_strings.language_id';
 
-    /** the column name for the IS_INACTIVE field */
-    const IS_INACTIVE = 'page_strings.IS_INACTIVE';
+    /** the column name for the is_inactive field */
+    const IS_INACTIVE = 'page_strings.is_inactive';
 
-    /** the column name for the LINK_TEXT field */
-    const LINK_TEXT = 'page_strings.LINK_TEXT';
+    /** the column name for the link_text field */
+    const LINK_TEXT = 'page_strings.link_text';
 
-    /** the column name for the PAGE_TITLE field */
-    const PAGE_TITLE = 'page_strings.PAGE_TITLE';
+    /** the column name for the page_title field */
+    const PAGE_TITLE = 'page_strings.page_title';
 
-    /** the column name for the META_KEYWORDS field */
-    const META_KEYWORDS = 'page_strings.META_KEYWORDS';
+    /** the column name for the meta_keywords field */
+    const META_KEYWORDS = 'page_strings.meta_keywords';
 
-    /** the column name for the META_DESCRIPTION field */
-    const META_DESCRIPTION = 'page_strings.META_DESCRIPTION';
+    /** the column name for the meta_description field */
+    const META_DESCRIPTION = 'page_strings.meta_description';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'page_strings.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'page_strings.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'page_strings.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'page_strings.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'page_strings.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'page_strings.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'page_strings.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'page_strings.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -192,17 +192,17 @@ abstract class BasePageStringPeer
             $criteria->addSelectColumn(PageStringPeer::CREATED_BY);
             $criteria->addSelectColumn(PageStringPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.PAGE_ID');
-            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
-            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
-            $criteria->addSelectColumn($alias . '.LINK_TEXT');
-            $criteria->addSelectColumn($alias . '.PAGE_TITLE');
-            $criteria->addSelectColumn($alias . '.META_KEYWORDS');
-            $criteria->addSelectColumn($alias . '.META_DESCRIPTION');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.page_id');
+            $criteria->addSelectColumn($alias . '.language_id');
+            $criteria->addSelectColumn($alias . '.is_inactive');
+            $criteria->addSelectColumn($alias . '.link_text');
+            $criteria->addSelectColumn($alias . '.page_title');
+            $criteria->addSelectColumn($alias . '.meta_keywords');
+            $criteria->addSelectColumn($alias . '.meta_description');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -286,7 +286,7 @@ abstract class BasePageStringPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -391,8 +391,15 @@ abstract class BasePageStringPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (PageStringPeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         PageStringPeer::$instances = array();
     }
 
@@ -1850,7 +1857,7 @@ abstract class BasePageStringPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return PageStringPeer::OM_CLASS;
     }

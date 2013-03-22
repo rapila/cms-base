@@ -38,19 +38,19 @@ class RightTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('ROLE_KEY', 'RoleKey', 'VARCHAR', 'roles', 'ROLE_KEY', true, 50, null);
-        $this->addForeignKey('PAGE_ID', 'PageId', 'INTEGER', 'pages', 'ID', true, null, null);
-        $this->addColumn('IS_INHERITED', 'IsInherited', 'BOOLEAN', false, 1, true);
-        $this->addColumn('MAY_EDIT_PAGE_DETAILS', 'MayEditPageDetails', 'BOOLEAN', false, 1, false);
-        $this->addColumn('MAY_EDIT_PAGE_CONTENTS', 'MayEditPageContents', 'BOOLEAN', false, 1, false);
-        $this->addColumn('MAY_DELETE', 'MayDelete', 'BOOLEAN', false, 1, false);
-        $this->addColumn('MAY_CREATE_CHILDREN', 'MayCreateChildren', 'BOOLEAN', false, 1, false);
-        $this->addColumn('MAY_VIEW_PAGE', 'MayViewPage', 'BOOLEAN', false, 1, false);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addForeignKey('role_key', 'RoleKey', 'VARCHAR', 'roles', 'role_key', true, 50, null);
+        $this->addForeignKey('page_id', 'PageId', 'INTEGER', 'pages', 'id', true, null, null);
+        $this->addColumn('is_inherited', 'IsInherited', 'BOOLEAN', false, 1, true);
+        $this->addColumn('may_edit_page_details', 'MayEditPageDetails', 'BOOLEAN', false, 1, false);
+        $this->addColumn('may_edit_page_contents', 'MayEditPageContents', 'BOOLEAN', false, 1, false);
+        $this->addColumn('may_delete', 'MayDelete', 'BOOLEAN', false, 1, false);
+        $this->addColumn('may_create_children', 'MayCreateChildren', 'BOOLEAN', false, 1, false);
+        $this->addColumn('may_view_page', 'MayViewPage', 'BOOLEAN', false, 1, false);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -74,10 +74,23 @@ class RightTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' => array('mode' => '', 'role_key' => 'users', 'owner_allowed' => '', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'denyable' =>  array (
+  'mode' => '',
+  'role_key' => 'users',
+  'owner_allowed' => '',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

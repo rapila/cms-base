@@ -81,7 +81,6 @@
  * @method Page findOne(PropelPDO $con = null) Return the first Page matching the query
  * @method Page findOneOrCreate(PropelPDO $con = null) Return the first Page matching the query, or a new Page object populated from the query conditions when no match is found
  *
- * @method Page findOneById(int $id) Return the first Page filtered by the id column
  * @method Page findOneByName(string $name) Return the first Page filtered by the name column
  * @method Page findOneByIdentifier(string $identifier) Return the first Page filtered by the identifier column
  * @method Page findOneByPageType(string $page_type) Return the first Page filtered by the page_type column
@@ -137,7 +136,7 @@ abstract class BasePageQuery extends ModelCriteria
      * Returns a new PageQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     PageQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   PageQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return PageQuery
      */
@@ -194,18 +193,32 @@ abstract class BasePageQuery extends ModelCriteria
     }
 
     /**
+     * Alias of findPk to use instance pooling
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     PropelPDO $con A connection object
+     *
+     * @return                 Page A model object, or null if the key is not found
+     * @throws PropelException
+     */
+     public function findOneById($key, $con = null)
+     {
+        return $this->findPk($key, $con);
+     }
+
+    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   Page A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 Page A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `NAME`, `IDENTIFIER`, `PAGE_TYPE`, `TEMPLATE_NAME`, `IS_INACTIVE`, `IS_FOLDER`, `IS_HIDDEN`, `IS_PROTECTED`, `CANONICAL_ID`, `TREE_LEFT`, `TREE_RIGHT`, `TREE_LEVEL`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `pages` WHERE `ID` = :p0';
+        $sql = 'SELECT `id`, `name`, `identifier`, `page_type`, `template_name`, `is_inactive`, `is_folder`, `is_hidden`, `is_protected`, `canonical_id`, `tree_left`, `tree_right`, `tree_level`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `pages` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -301,7 +314,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterById(1234); // WHERE id = 1234
      * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id > 12
+     * $query->filterById(array('min' => 12)); // WHERE id >= 12
+     * $query->filterById(array('max' => 12)); // WHERE id <= 12
      * </code>
      *
      * @param     mixed $id The value to use as filter.
@@ -314,8 +328,22 @@ abstract class BasePageQuery extends ModelCriteria
      */
     public function filterById($id = null, $comparison = null)
     {
-        if (is_array($id) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($id)) {
+            $useMinMax = false;
+            if (isset($id['min'])) {
+                $this->addUsingAlias(PagePeer::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($id['max'])) {
+                $this->addUsingAlias(PagePeer::ID, $id['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(PagePeer::ID, $id, $comparison);
@@ -458,7 +486,7 @@ abstract class BasePageQuery extends ModelCriteria
     public function filterByIsInactive($isInactive = null, $comparison = null)
     {
         if (is_string($isInactive)) {
-            $is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(PagePeer::IS_INACTIVE, $isInactive, $comparison);
@@ -485,7 +513,7 @@ abstract class BasePageQuery extends ModelCriteria
     public function filterByIsFolder($isFolder = null, $comparison = null)
     {
         if (is_string($isFolder)) {
-            $is_folder = in_array(strtolower($isFolder), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $isFolder = in_array(strtolower($isFolder), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(PagePeer::IS_FOLDER, $isFolder, $comparison);
@@ -512,7 +540,7 @@ abstract class BasePageQuery extends ModelCriteria
     public function filterByIsHidden($isHidden = null, $comparison = null)
     {
         if (is_string($isHidden)) {
-            $is_hidden = in_array(strtolower($isHidden), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $isHidden = in_array(strtolower($isHidden), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(PagePeer::IS_HIDDEN, $isHidden, $comparison);
@@ -539,7 +567,7 @@ abstract class BasePageQuery extends ModelCriteria
     public function filterByIsProtected($isProtected = null, $comparison = null)
     {
         if (is_string($isProtected)) {
-            $is_protected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $isProtected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(PagePeer::IS_PROTECTED, $isProtected, $comparison);
@@ -552,7 +580,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByCanonicalId(1234); // WHERE canonical_id = 1234
      * $query->filterByCanonicalId(array(12, 34)); // WHERE canonical_id IN (12, 34)
-     * $query->filterByCanonicalId(array('min' => 12)); // WHERE canonical_id > 12
+     * $query->filterByCanonicalId(array('min' => 12)); // WHERE canonical_id >= 12
+     * $query->filterByCanonicalId(array('max' => 12)); // WHERE canonical_id <= 12
      * </code>
      *
      * @see       filterByPageRelatedByCanonicalId()
@@ -595,7 +624,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByTreeLeft(1234); // WHERE tree_left = 1234
      * $query->filterByTreeLeft(array(12, 34)); // WHERE tree_left IN (12, 34)
-     * $query->filterByTreeLeft(array('min' => 12)); // WHERE tree_left > 12
+     * $query->filterByTreeLeft(array('min' => 12)); // WHERE tree_left >= 12
+     * $query->filterByTreeLeft(array('max' => 12)); // WHERE tree_left <= 12
      * </code>
      *
      * @param     mixed $treeLeft The value to use as filter.
@@ -636,7 +666,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByTreeRight(1234); // WHERE tree_right = 1234
      * $query->filterByTreeRight(array(12, 34)); // WHERE tree_right IN (12, 34)
-     * $query->filterByTreeRight(array('min' => 12)); // WHERE tree_right > 12
+     * $query->filterByTreeRight(array('min' => 12)); // WHERE tree_right >= 12
+     * $query->filterByTreeRight(array('max' => 12)); // WHERE tree_right <= 12
      * </code>
      *
      * @param     mixed $treeRight The value to use as filter.
@@ -677,7 +708,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByTreeLevel(1234); // WHERE tree_level = 1234
      * $query->filterByTreeLevel(array(12, 34)); // WHERE tree_level IN (12, 34)
-     * $query->filterByTreeLevel(array('min' => 12)); // WHERE tree_level > 12
+     * $query->filterByTreeLevel(array('min' => 12)); // WHERE tree_level >= 12
+     * $query->filterByTreeLevel(array('max' => 12)); // WHERE tree_level <= 12
      * </code>
      *
      * @param     mixed $treeLevel The value to use as filter.
@@ -804,7 +836,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -847,7 +880,8 @@ abstract class BasePageQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -889,8 +923,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   Page|PropelObjectCollection $page The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByPageRelatedByCanonicalId($page, $comparison = null)
     {
@@ -965,8 +999,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -1041,8 +1075,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {
@@ -1117,8 +1151,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   Page|PropelObjectCollection $page  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByPageRelatedById($page, $comparison = null)
     {
@@ -1191,8 +1225,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   PageProperty|PropelObjectCollection $pageProperty  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByPageProperty($pageProperty, $comparison = null)
     {
@@ -1265,8 +1299,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   PageString|PropelObjectCollection $pageString  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByPageString($pageString, $comparison = null)
     {
@@ -1339,8 +1373,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   ContentObject|PropelObjectCollection $contentObject  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByContentObject($contentObject, $comparison = null)
     {
@@ -1413,8 +1447,8 @@ abstract class BasePageQuery extends ModelCriteria
      * @param   Right|PropelObjectCollection $right  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   PageQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 PageQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByRight($right, $comparison = null)
     {

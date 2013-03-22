@@ -32,23 +32,23 @@ abstract class BaseGroupPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 6;
 
-    /** the column name for the ID field */
-    const ID = 'groups.ID';
+    /** the column name for the id field */
+    const ID = 'groups.id';
 
-    /** the column name for the NAME field */
-    const NAME = 'groups.NAME';
+    /** the column name for the name field */
+    const NAME = 'groups.name';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'groups.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'groups.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'groups.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'groups.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'groups.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'groups.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'groups.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'groups.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -172,12 +172,12 @@ abstract class BaseGroupPeer
             $criteria->addSelectColumn(GroupPeer::CREATED_BY);
             $criteria->addSelectColumn(GroupPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -261,7 +261,7 @@ abstract class BaseGroupPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -366,8 +366,15 @@ abstract class BaseGroupPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (GroupPeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         GroupPeer::$instances = array();
     }
 
@@ -1087,7 +1094,7 @@ abstract class BaseGroupPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return GroupPeer::OM_CLASS;
     }
