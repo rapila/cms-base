@@ -32,35 +32,35 @@ abstract class BaseContentObjectPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 10;
 
-    /** the column name for the ID field */
-    const ID = 'objects.ID';
+    /** the column name for the id field */
+    const ID = 'objects.id';
 
-    /** the column name for the PAGE_ID field */
-    const PAGE_ID = 'objects.PAGE_ID';
+    /** the column name for the page_id field */
+    const PAGE_ID = 'objects.page_id';
 
-    /** the column name for the CONTAINER_NAME field */
-    const CONTAINER_NAME = 'objects.CONTAINER_NAME';
+    /** the column name for the container_name field */
+    const CONTAINER_NAME = 'objects.container_name';
 
-    /** the column name for the OBJECT_TYPE field */
-    const OBJECT_TYPE = 'objects.OBJECT_TYPE';
+    /** the column name for the object_type field */
+    const OBJECT_TYPE = 'objects.object_type';
 
-    /** the column name for the CONDITION_SERIALIZED field */
-    const CONDITION_SERIALIZED = 'objects.CONDITION_SERIALIZED';
+    /** the column name for the condition_serialized field */
+    const CONDITION_SERIALIZED = 'objects.condition_serialized';
 
-    /** the column name for the SORT field */
-    const SORT = 'objects.SORT';
+    /** the column name for the sort field */
+    const SORT = 'objects.sort';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'objects.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'objects.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'objects.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'objects.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'objects.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'objects.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'objects.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'objects.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -188,16 +188,16 @@ abstract class BaseContentObjectPeer
             $criteria->addSelectColumn(ContentObjectPeer::CREATED_BY);
             $criteria->addSelectColumn(ContentObjectPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.PAGE_ID');
-            $criteria->addSelectColumn($alias . '.CONTAINER_NAME');
-            $criteria->addSelectColumn($alias . '.OBJECT_TYPE');
-            $criteria->addSelectColumn($alias . '.CONDITION_SERIALIZED');
-            $criteria->addSelectColumn($alias . '.SORT');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.page_id');
+            $criteria->addSelectColumn($alias . '.container_name');
+            $criteria->addSelectColumn($alias . '.object_type');
+            $criteria->addSelectColumn($alias . '.condition_serialized');
+            $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -281,7 +281,7 @@ abstract class BaseContentObjectPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -386,8 +386,15 @@ abstract class BaseContentObjectPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (ContentObjectPeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         ContentObjectPeer::$instances = array();
     }
 
@@ -1453,7 +1460,7 @@ abstract class BaseContentObjectPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return ContentObjectPeer::OM_CLASS;
     }

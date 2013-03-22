@@ -77,7 +77,7 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * Returns a new UserRoleQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     UserRoleQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   UserRoleQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return UserRoleQuery
      */
@@ -141,12 +141,12 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   UserRole A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 UserRole A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `USER_ID`, `ROLE_KEY`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `user_roles` WHERE `USER_ID` = :p0 AND `ROLE_KEY` = :p1';
+        $sql = 'SELECT `user_id`, `role_key`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `user_roles` WHERE `user_id` = :p0 AND `role_key` = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -254,7 +254,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByUserId(1234); // WHERE user_id = 1234
      * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
-     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id >= 12
+     * $query->filterByUserId(array('max' => 12)); // WHERE user_id <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUserId()
@@ -269,8 +270,22 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      */
     public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userId) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($userId)) {
+            $useMinMax = false;
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(UserRolePeer::USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(UserRolePeer::USER_ID, $userId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(UserRolePeer::USER_ID, $userId, $comparison);
@@ -398,7 +413,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -441,7 +457,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -483,8 +500,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   UserRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 UserRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUserId($user, $comparison = null)
     {
@@ -559,8 +576,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * @param   Role|PropelObjectCollection $role The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   UserRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 UserRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByRole($role, $comparison = null)
     {
@@ -635,8 +652,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   UserRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 UserRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -711,8 +728,8 @@ abstract class BaseUserRoleQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   UserRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 UserRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {

@@ -32,26 +32,26 @@ abstract class BaseLinkCategoryPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 7;
 
-    /** the column name for the ID field */
-    const ID = 'link_categories.ID';
+    /** the column name for the id field */
+    const ID = 'link_categories.id';
 
-    /** the column name for the NAME field */
-    const NAME = 'link_categories.NAME';
+    /** the column name for the name field */
+    const NAME = 'link_categories.name';
 
-    /** the column name for the IS_EXTERNALLY_MANAGED field */
-    const IS_EXTERNALLY_MANAGED = 'link_categories.IS_EXTERNALLY_MANAGED';
+    /** the column name for the is_externally_managed field */
+    const IS_EXTERNALLY_MANAGED = 'link_categories.is_externally_managed';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'link_categories.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'link_categories.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'link_categories.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'link_categories.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'link_categories.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'link_categories.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'link_categories.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'link_categories.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -176,13 +176,13 @@ abstract class BaseLinkCategoryPeer
             $criteria->addSelectColumn(LinkCategoryPeer::CREATED_BY);
             $criteria->addSelectColumn(LinkCategoryPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.IS_EXTERNALLY_MANAGED');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.is_externally_managed');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -266,7 +266,7 @@ abstract class BaseLinkCategoryPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -371,8 +371,15 @@ abstract class BaseLinkCategoryPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (LinkCategoryPeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         LinkCategoryPeer::$instances = array();
     }
 
@@ -1089,7 +1096,7 @@ abstract class BaseLinkCategoryPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LinkCategoryPeer::OM_CLASS;
     }

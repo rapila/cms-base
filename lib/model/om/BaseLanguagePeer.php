@@ -32,29 +32,29 @@ abstract class BaseLanguagePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the ID field */
-    const ID = 'languages.ID';
+    /** the column name for the id field */
+    const ID = 'languages.id';
 
-    /** the column name for the PATH_PREFIX field */
-    const PATH_PREFIX = 'languages.PATH_PREFIX';
+    /** the column name for the path_prefix field */
+    const PATH_PREFIX = 'languages.path_prefix';
 
-    /** the column name for the IS_ACTIVE field */
-    const IS_ACTIVE = 'languages.IS_ACTIVE';
+    /** the column name for the is_active field */
+    const IS_ACTIVE = 'languages.is_active';
 
-    /** the column name for the SORT field */
-    const SORT = 'languages.SORT';
+    /** the column name for the sort field */
+    const SORT = 'languages.sort';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'languages.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'languages.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'languages.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'languages.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'languages.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'languages.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'languages.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'languages.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -180,14 +180,14 @@ abstract class BaseLanguagePeer
             $criteria->addSelectColumn(LanguagePeer::CREATED_BY);
             $criteria->addSelectColumn(LanguagePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.PATH_PREFIX');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
-            $criteria->addSelectColumn($alias . '.SORT');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.path_prefix');
+            $criteria->addSelectColumn($alias . '.is_active');
+            $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -271,7 +271,7 @@ abstract class BaseLanguagePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -376,8 +376,15 @@ abstract class BaseLanguagePeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (LanguagePeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         LanguagePeer::$instances = array();
     }
 
@@ -1097,7 +1104,7 @@ abstract class BaseLanguagePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LanguagePeer::OM_CLASS;
     }

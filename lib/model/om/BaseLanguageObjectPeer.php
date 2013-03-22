@@ -32,29 +32,29 @@ abstract class BaseLanguageObjectPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the OBJECT_ID field */
-    const OBJECT_ID = 'language_objects.OBJECT_ID';
+    /** the column name for the object_id field */
+    const OBJECT_ID = 'language_objects.object_id';
 
-    /** the column name for the LANGUAGE_ID field */
-    const LANGUAGE_ID = 'language_objects.LANGUAGE_ID';
+    /** the column name for the language_id field */
+    const LANGUAGE_ID = 'language_objects.language_id';
 
-    /** the column name for the DATA field */
-    const DATA = 'language_objects.DATA';
+    /** the column name for the data field */
+    const DATA = 'language_objects.data';
 
-    /** the column name for the HAS_DRAFT field */
-    const HAS_DRAFT = 'language_objects.HAS_DRAFT';
+    /** the column name for the has_draft field */
+    const HAS_DRAFT = 'language_objects.has_draft';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'language_objects.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'language_objects.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'language_objects.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'language_objects.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'language_objects.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'language_objects.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'language_objects.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'language_objects.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -180,14 +180,14 @@ abstract class BaseLanguageObjectPeer
             $criteria->addSelectColumn(LanguageObjectPeer::CREATED_BY);
             $criteria->addSelectColumn(LanguageObjectPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.OBJECT_ID');
-            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
-            $criteria->addSelectColumn($alias . '.DATA');
-            $criteria->addSelectColumn($alias . '.HAS_DRAFT');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.object_id');
+            $criteria->addSelectColumn($alias . '.language_id');
+            $criteria->addSelectColumn($alias . '.data');
+            $criteria->addSelectColumn($alias . '.has_draft');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -271,7 +271,7 @@ abstract class BaseLanguageObjectPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -376,8 +376,15 @@ abstract class BaseLanguageObjectPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references)
+      {
+        foreach (LanguageObjectPeer::$instances as $instance)
+        {
+          $instance->clearAllReferences(true);
+        }
+      }
         LanguageObjectPeer::$instances = array();
     }
 
@@ -1835,7 +1842,7 @@ abstract class BaseLanguageObjectPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LanguageObjectPeer::OM_CLASS;
     }
