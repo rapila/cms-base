@@ -1498,6 +1498,24 @@ abstract class BaseString extends BaseObject implements Persistent
         return $this->mayOperate("delete", $oUser);
     }
 
+    // extended_keyable behavior
+
+    /**
+     * @return the primary key as an array (even for non-composite keys)
+     */
+    public function getPKArray()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    /**
+     * @return the primary key as a string
+     */
+    public function getPKString()
+    {
+        return implode("|", $this->getPKArray());
+    }
+
     // extended_timestampable behavior
 
     /**
@@ -1561,24 +1579,6 @@ abstract class BaseString extends BaseObject implements Persistent
     {
         $this->modifiedColumns[] = StringPeer::UPDATED_BY;
         return $this;
-    }
-
-    // extended_keyable behavior
-
-    /**
-     * @return the primary key as an array (even for non-composite keys)
-     */
-    public function getPKArray()
-    {
-        return $this->getPrimaryKey();
-    }
-
-    /**
-     * @return the primary key as a string
-     */
-    public function getPKString()
-    {
-        return implode("_", $this->getPKArray());
     }
 
 }

@@ -131,6 +131,9 @@
 	<behavior name="denyable">
 		<parameter name="role_key" value="languages" />
 	</behavior>
+	<behavior name="extended_keyable">
+		<parameter name="key_separator" value="|" />
+	</behavior>
 </table>
 
 <table name="users" phpName="User">
