@@ -72,6 +72,9 @@ class StringTableMap extends TableMap
   'role_key' => 'languages',
   'owner_allowed' => '',
 ),
+            'extended_keyable' =>  array (
+  'key_separator' => '|',
+),
             'extended_timestampable' =>  array (
   'create_column' => 'created_at',
   'update_column' => 'updated_at',
@@ -80,9 +83,6 @@ class StringTableMap extends TableMap
             'attributable' =>  array (
   'create_column' => 'created_by',
   'update_column' => 'updated_by',
-),
-            'extended_keyable' =>  array (
-  'key_separator' => '_',
 ),
         );
     } // getBehaviors()

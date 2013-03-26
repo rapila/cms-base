@@ -754,6 +754,16 @@ abstract class BaseStringQuery extends ModelCriteria
         return $this;
     }
 
+    // extended_keyable behavior
+
+    public function filterByPKArray($pkArray) {
+        return $this->filterByPrimaryKey($pkArray);
+    }
+
+    public function filterByPKString($pkString) {
+        return $this->filterByPrimaryKey(explode("|", $pkString));
+    }
+
     // extended_timestampable behavior
 
     /**
@@ -819,14 +829,4 @@ abstract class BaseStringQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(StringPeer::CREATED_AT);
     }
-    // extended_keyable behavior
-
-    public function filterByPKArray($pkArray) {
-        return $this->filterByPrimaryKey($pkArray);
-    }
-
-    public function filterByPKString($pkString) {
-        return $this->filterByPrimaryKey(explode("_", $pkString));
-    }
-
 }

@@ -223,7 +223,7 @@ class RichtextUtil {
 	}
 
 	public function getAreaName() {
-			return $this->sAreaName;
+		return $this->sAreaName;
 	}
 	
 	public function setTrackReferences($mTrackReferences) {
