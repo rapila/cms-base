@@ -5,9 +5,18 @@ Widget.types.document_detail = {
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
 		this.file_upload = this._element.find("input[name='file_upload']");
+		this.upload_file_button = this._element.find('.upload_file').button();
+		this.file_upload.change(function() {
+			_this.upload_file_button.button('option','disabled', !_this.file_upload.val());
+		});
+		_this.upload_file_button.click(function() {
+			var file = _this.file_upload[0].files[0];
+			_this.file_upload.prop('disabled', true);
+			_this.uploader.upload_file(file, {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: !!_this._element.find(":input[name='name']").val()});
+			return false;
+		});
 		this.uploader = Widget.create('file_upload');
 		this.current_detail_id = null;
-		this.is_new_and_upload = true;
 
 		this.settings.hidden_inputs = this.settings.hidden_inputs.concat(this.settings.is_called_externally ? this.settings.externally_hidden_inputs : []);
 		jQuery.each(_this.settings.hidden_inputs, function(i, input_name) {
@@ -46,7 +55,7 @@ Widget.types.document_detail = {
 		}, jQuery.noop);
 
 		this.uploader.allow_drag_to(_this._element, null, function(target) {
-			return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: true};
+			return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: !!_this._element.find(":input[name='name']").val()};
 		}, true);
 
 		this.file_upload.change(function(event) {
@@ -54,44 +63,34 @@ Widget.types.document_detail = {
 		});
 
 		Widget.callStatic('detail', 'create_for_instance', this);
-		this.handle('opened', function() { 
-			var old_save_handler = this.detail_widget.settings.save_callback;
-			this.detail_widget.settings.save_callback = function() {
-				if(_this.file_upload.val()) {
-					var file = _this.file_upload[0].files[0];
-					_this.file_upload.attr('disabled', true);
-					_this.uploader.upload_file(file, {document_id: _this.current_detail_id, callback: function(result) {
-						_this.upload_success(result, true);
-						_this.settings.remains_open = true;
-						old_save_handler.call(_this.detail_widget);
-					}, error: _this.upload_error.bind(_this)});
-				} else {
-					if(!_this.is_new_and_upload) {
-						_this.settings.remains_open = false;
-					}
-					old_save_handler.call(this);
-				}
-			};
-		});
 	},
 
-	fill_data: function() {
+	fill_data: function(for_update) {
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.current_detail_id = document_data.Id;
-			this.is_new_and_upload = false;
 			
 			this._element.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
 				this._element.find(".preview").html(result);
 			});
-			this._element.find(":input[name='name']").val(document_data.Name);
-			this._element.find(":input[name='description']").val(document_data.Description);
-			this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
-			this._element.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
-			this._element.find(":input[name='author']").val(document_data.Author);
-			this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
-			
+			if(!for_update) {
+				this._element.find(":input[name='name']").val(document_data.Name);
+				this._element.find(":input[name='description']").val(document_data.Description);
+				this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
+				this._element.find(":input[name='is_inactive']").prop('checked', document_data.IsInactive);
+				this._element.find(":input[name='author']").val(document_data.Author);
+				this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
+
+				this.ensure_widget('document_category_id', document_data.DocumentCategoryId || '');
+				this.ensure_widget('language_id', document_data.LanguageId || '');
+				this.ensure_widget('license', document_data.License || '');
+
+				this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
+			} else if(!this._element.find(":input[name='name']").val()) {
+				this._element.find(":input[name='name']").val(document_data.Name);
+			}
+
 			this._element.find(".updated_info").text(document_data.UpdatedInfo);
 			this._element.find(".created_info").text(document_data.CreatedInfo);
 			this._element.find(".detail_id").text(document_data.Id);
@@ -100,17 +99,15 @@ Widget.types.document_detail = {
 			this._element.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
 			this._element.find('div.hide_if_not_saved').show();
 
-			this.ensure_widget('document_category_id', document_data.DocumentCategoryId || '');
-			this.ensure_widget('language_id', document_data.LanguageId || '');
-			this.ensure_widget('license', document_data.License || '');
-			
 			if(document_data.Id !== null) {
 				this._element.find("label[for='file_upload']").text("{{writeString=wns.document.file_upload_replace}}");
 			}
-			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.document}}"+' '+document_data.Name);
 
-			this.tag_area.setTaggedItemId(document_data.Id);
-			this.tag_area.reload_tags();
+			if(!for_update) {
+				this.tag_area.setTaggedItemId(document_data.Id);
+				this.tag_area.reload_tags();
+			}
+
 			this.detail_widget.enable();
 		});
 	},
@@ -122,22 +119,21 @@ Widget.types.document_detail = {
 	},
 
 	upload_error: function(error) {
-		this.file_upload.attr('disabled', false);
+		this.file_upload.prop('disabled', false);
 		if(error && !error.reporting_done) {
 			this.detail_widget.validate_with({upload: {string: Widget.parseHTML('<span class="error_display"/>').text(error.message)}});
 		}
 	},
 	
-	upload_success: function(result, no_reload) {
+	upload_success: function(result) {
 		this.upload_error();
-		this.file_upload.val('');
+		this.file_upload.val('').change();
 		var is_new = this.current_detail_id === null;
 		if(is_new) {
 			this.setDocumentId(result);
 			this.current_detail_id = result;
 		}
-		this.save(true);
-		this.fill_data();
+		this.fill_data(true);
 	},
 
 	settings: {
