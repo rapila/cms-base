@@ -13,17 +13,21 @@ class PreviewManager extends FrontendManager {
 			LinkUtil::redirect(LinkUtil::link(array(), 'AdminManager', array('preview' => self::getRequestedPath())));
 		}
 
+		$oResourceIncluder = ResourceIncluder::defaultIncluder();
+
+		$oResourceIncluder->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE.Manager::getPrefixForManager('FileManager').'";');
+
 		//Fix JSON requests when using Prototype in the frontend
-		ResourceIncluder::defaultIncluder()->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
+		$oResourceIncluder->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
 		//Add jQuery and jQuery UI
-		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jquery', '1.8.1');
-		ResourceIncluder::defaultIncluder()->addJavaScriptLibrary('jqueryui', '1.8.23');
+		$oResourceIncluder->addJavaScriptLibrary('jquery', AdminManager::JQUERY_VERSION, null, true, null, ResourceIncluder::PRIORITY_FIRST);
+		$oResourceIncluder->addJavaScriptLibrary('jqueryui', AdminManager::JQUERY_UI_VERSION);
 		//Add client widget handling code
-		ResourceIncluder::defaultIncluder()->addResource('widget/widget.js');
-		ResourceIncluder::defaultIncluder()->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
+		$oResourceIncluder->addResource('widget/widget.js');
+		$oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		//Override some site styles in specific regions
-		ResourceIncluder::defaultIncluder()->addResource('preview/preview-reset.css');
-		ResourceIncluder::defaultIncluder()->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
+		$oResourceIncluder->addResource('preview/preview-reset.css');
+		$oResourceIncluder->addResource('preview/theme/jquery-ui-1.7.2.custom.css');
 		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 
@@ -74,14 +78,17 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	protected function fillContent() {
-		$this->oPageTypeWidget->setPageTypeModule($this->oPageType);
+		$oResourceIncluder = ResourceIncluder::defaultIncluder();
+
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
 		$oConstants->replaceIdentifier('page_type_widget_session', $this->oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
-		ResourceIncluder::defaultIncluder()->addCustomJs($oConstants);
-		ResourceIncluder::defaultIncluder()->addResource('preview/preview.js');
+
+		$oResourceIncluder->addCustomJs($oConstants);
+		$oResourceIncluder->addResource('preview/preview.js');
+
 		$this->oPageType->display($this->oTemplate, true);
 	}
 	
