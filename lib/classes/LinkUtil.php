@@ -128,7 +128,7 @@ class LinkUtil {
 		return $aOverrideParameters;
 	}
 
-	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $mLanguage=null) {
+	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $mLanguage=null, $bIncludeLanguage=null) {
 		if(!is_array($mPath)) {
 			$mPath = explode("/", $mPath);
 		}
@@ -136,11 +136,17 @@ class LinkUtil {
 		$mManager = Manager::getManagerClassNormalized($mManager);
 		$sPrefix = Manager::getPrefixForManager($mManager);
 		
-		if($mLanguage !== false && ($mLanguage === true || $mManager::shouldIncludeLanguageInLink())) {
-			if($mLanguage === null || $mLanguage === true) {
+		if($mLanguage === true || $mLanguage === false) {
+			$bIncludeLanguage = $mLanguage;
+			$mLanguage = null;
+		}
+		if($bIncludeLanguage === null) {
+			$bIncludeLanguage = $mManager::shouldIncludeLanguageInLink();
+		}
+		if($bIncludeLanguage) {
+			if($mLanguage === null) {
 				$mLanguage = Session::language(true);
 			}
-			
 			if($mLanguage instanceof Language) {
 				array_unshift($mPath, $mLanguage->getPathPrefix());
 			} else if(is_string($mLanguage)) {
