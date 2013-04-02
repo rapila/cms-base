@@ -78,6 +78,7 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	protected function fillContent() {
+		$this->oPageTypeWidget->setPageTypeModule($this->oPageType);
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
