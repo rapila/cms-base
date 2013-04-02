@@ -58,6 +58,7 @@ class ResourceIncluder {
 	*/
 	public function startDependencies() {
 		array_unshift($this->aCurrentDependencyStack, array());
+		return $this;
 	}
 
 	public function addResourceEndingDependency($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false) {
@@ -167,7 +168,7 @@ class ResourceIncluder {
 
 			if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
 				$aExtraInfo = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier], $aExtraInfo);
-				$aExtraInfo['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'] + $aExtraInfo['dependees']);
+				$aExtraInfo['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'], $aExtraInfo['dependees']);
 				unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
 			}
 			
@@ -175,12 +176,8 @@ class ResourceIncluder {
 			$this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfo;
 			
 			//move down all dependent resources that already exist
-			foreach($aExtraInfo['dependees'] as $sDependeeIdentifier => $bTrue) {
-				if(($iDependeePriority = $this->containsResource($sDependeeIdentifier)) !== false) {
-					$aDependee = $this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier];
-					unset($this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier]);
-					$this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier] = $aDependee;
-				}
+			if(isset($aExtraInfo['dependees'])) {
+				$this->moveDependees($aExtraInfo['dependees'], $sIdentifier);
 			}
 			
 			//Add dependency
@@ -188,6 +185,19 @@ class ResourceIncluder {
 			
 			$sFinalLocation = null;
 			$sIdentifier = null;
+		}
+	}
+	
+	private function moveDependees($aDependees, $sDependeeIdentifier) {
+		foreach($aDependees as $sDependeeIdentifier => $bTrue) {
+			if(($iDependeePriority = $this->containsResource($sDependeeIdentifier)) !== false) {
+				$aDependee = $this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier];
+				unset($this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier]);
+				$this->aIncludedResources[$iDependeePriority][$sDependeeIdentifier] = $aDependee;
+				if(isset($aDependee['dependees'])) {
+					$this->moveDependees($aDependee['dependees'], $sDependeeIdentifier);
+				}
+			}
 		}
 	}
 	
@@ -232,16 +242,16 @@ class ResourceIncluder {
 		//Handle duplicate includes
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
-			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '>')) {
-				$this->registerAsDependency($sResourceIdentifier);
-				return;
-			}
-			if(version_compare($aResourceInfo['version'], $sLibraryVersion, '==') && ((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression))) {
+			// Priority is higher as the “priority” value is lower.
+			if($iPrevResoucePriority < $iPriority
+			   || version_compare($aResourceInfo['version'], $sLibraryVersion, '>')
+			   || (version_compare($aResourceInfo['version'], $sLibraryVersion, '==')
+			       && ((!$aResourceInfo['use_compression'] && $bUseCompression) || ($aResourceInfo['use_compression'] === $bUseCompression)))) {
 				$this->registerAsDependency($sResourceIdentifier);
 				return;
 			}
 		}
-		
+
 		//Handle dependencies
 		$aLibraryDependencies = null;
 		if($bInlcudeDependencies) {
@@ -253,7 +263,7 @@ class ResourceIncluder {
 				$this->addJavaScriptLibrary($sDependencyName, $sDependencyVersion, $bUseCompression, true, $bUseSsl, $iPriority);
 			}
 		}
-		
+
 		if($bUseLocalProxy) {
 			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression)));
 			if($bUseSsl !== null) {
@@ -262,7 +272,7 @@ class ResourceIncluder {
 			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
-		
+
 		//Add resource
 		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, $sLibraryUrl);
 		if($bUseSsl !== null) {
