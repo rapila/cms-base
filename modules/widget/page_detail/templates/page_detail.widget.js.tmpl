@@ -2,15 +2,22 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
 		this.protector = new UnsavedChanges(this._element);
-		this.accordion = jQuery(this._element.find('div.accordion')).accordion({active: this.settings.active_accordion, autoHeight: false, clearStyle: true}).bind('accordionbeforeactivate', function(event, ui) {
-			_this.setActiveAccordion(ui.options.active);
-			if(ui.newPanel.is('.contents_container')) {
-				_this.load_content(ui.newPanel);
-			} else if(ui.newPanel.is('.configuration_container')) {
-				_this.load_configuration(ui.newPanel);
+		this.accordion = this._element.find('div.accordion');
+		this.accordion.accordion({
+			active: this.settings.active_accordion || 0,
+			heightStyle: 'content',
+			clearStyle: true,
+			beforeActivate: function(event, ui) {
+				var index = _this.accordion.children().index(ui.newPanel);
+				_this.activeAccordion(index);
+				if(ui.newPanel.is('.contents_container')) {
+					_this.load_content(ui.newPanel);
+				} else if(ui.newPanel.is('.configuration_container')) {
+					_this.load_configuration(ui.newPanel);
+				}
 			}
 		});
-		
+
 		//Init buttons
 		var buttons = this._element.find('.page_detail_controls');
 		buttons.find(':button').button();
@@ -82,7 +89,7 @@ Widget.types.page_detail = {
 
 	accordion_active: function() {
 		var accordion_headers = this._element.find('div.accordion h3');
-		var result = null;
+		var result = $();
 		accordion_headers.each(function(i, element) {
 			element = jQuery(element);
 			if(element.is('.ui-state-active')) {
@@ -209,15 +216,14 @@ Widget.types.page_detail = {
 		if(page_data.page_properties != undefined) {
 			page_properties_container.empty().show();
 			page_properties_header.show();
-			var default_name = "{{writeString=wns.default}}";
-			for(property_name in page_data.page_properties) {
+			for(var property_name in page_data.page_properties) {
 				var attrs = page_data.page_properties[property_name];
 				var property_container = Widget.parseHTML('{{includeTemplate=property_container}}');
 				property_container.data('propertyName', property_name);
-				var label = property_container.find('label').text(attrs.display_name);
+				property_container.find('label').text(attrs.display_name);
 				var input = property_container.find('input').val(attrs.value);
 				if(attrs.defaultValue) {
-					var span = property_container.find('span.page_property_default_name').text(attrs.defaultValue);
+					property_container.find('span.page_property_default_name').text(attrs.defaultValue);
 					if(attrs.type === 'color') {
 						input.bind('change', function(defaultValue) {
 							if(this.val()) {
