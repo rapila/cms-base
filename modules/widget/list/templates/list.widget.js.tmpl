@@ -273,7 +273,7 @@ Widget.types.list = {
 				},
 				axis: 'y'
 			});
-		} else {
+		} else if(reorderable.is(':ui-sortable')) {
 			reorderable.sortable('destroy');
 		}
 	},
