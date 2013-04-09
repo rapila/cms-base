@@ -108,7 +108,7 @@ Widget.types.info_bar = {
 				if(!default_value) {
 					default_value = "{{writeString=wns.search.enter_search}}";
 				}
-				var search_input = jQuery('<input/>', {name: 'search', value: default_value, type: 'text', autocomplete: 'off'});
+				var search_input = jQuery('<input/>', {name: 'search', value: default_value, type: 'text'}).prop({autocomplete: 'off'});
 
 				options = jQuery.extend(options || {}, {
 					element: search_input,
