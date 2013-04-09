@@ -28,7 +28,7 @@ Widget.types.language_tabs = {
 
 				if((window.AdminInterface.content_language && language_id === window.AdminInterface.content_language) || (!window.AdminInterface.content_language && index === 0)) {
 					//Configure initial tab (makes sure that the active handler is called)
-					_this._activate(tab, panel);
+					_this._activated(tab, panel);
 					initialIndex = index;
 				}
 				mapping[language_id] = index++;
@@ -38,7 +38,7 @@ Widget.types.language_tabs = {
 			}
 			this._element.tabs({
 				activate: function(event, ui) {
-					_this._activate(ui.newTab, ui.newPanel);
+					_this._activated(ui.newTab, ui.newPanel);
 				},
 				active: initialIndex
 			});
@@ -52,7 +52,7 @@ Widget.types.language_tabs = {
 		});
 	},
 	
-	_activate: function(tab, panel) {
+	_activated: function(tab, panel) {
 		var language_id = tab.data('language_id');
 		if(window.AdminInterface.content_language !== language_id) {
 			window.AdminInterface.content_language = language_id;
