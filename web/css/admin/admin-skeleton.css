@@ -3,7 +3,7 @@ body{font-size:.75em;margin:0 0;}
 body.login h1{text-align:center;font-size:5em;color:#c2c2c2}
 #admin_area,#admin_info_bar,#viewscreen_loader{position:absolute;overflow:hidden;left:0;right:0}
 #admin_area{top:31px;bottom:25px;background-color:#fff}
-#viewscreen_loader{top:31px;left:0;right:0;bottom:0;background-color:rgba(220,220,220,0.50);background-repeat:no-repeat;background-image:url("../../images/admin/loader_big.gif");background-position:center center;z-index:10001}
+#viewscreen_loader{top:31px;left:0;right:0;bottom:0;background-color:rgba(220,220,220,0.5);background-repeat:no-repeat;background-image:url("../../images/admin/loader_big.gif");background-position:center center;z-index:10001}
 #admin_sidebar,#admin_main{overflow-y:auto;position:absolute;top:0;bottom:0;background-color:#f6f6f6}
 #admin_main{padding:0 2px 0 0;border-left:1px solid #d4d8dc;overflow-y:scroll;left:0}
 #admin_sidebar + #admin_main{left:277px}

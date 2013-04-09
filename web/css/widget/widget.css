@@ -73,7 +73,7 @@ input.ui-widget-content.input_medium{width:15em}
 div.inner-tab-panel-content{margin-left:-26px;margin-top:15px;}
 div.inner-tab-panel-content > div{margin-left:26px}
 div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px solid #cccdcf}
-.ui-state-default a.tab_content_active{color:#000}
+.ui-state-default li.tab_content_active{color:#000}
 .add-new-item,.remove-item,.edit-item,.item-action,.print_area{background-image:url("../../images/admin/add_new_item.png");background-repeat:no-repeat;display:inline-block;height:16px;width:16px}
 .remove-item{background-image:url("../../images/admin/remove_item.png")}
 .edit-item{background-image:url("../../images/admin/edit_item.png")}
