@@ -3,7 +3,7 @@
  * @package modules.widget
  */
 class LanguageTabsWidgetModule extends WidgetModule {
-	public function getLanguages() {
+	public function listLanguages() {
 		$aResult = array();
 		foreach(LanguageQuery::create()->orderBySort()->find() as $oLanguage) {
 			$aResult[$oLanguage->getId()] = $oLanguage->getLanguageName();

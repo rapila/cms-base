@@ -5,7 +5,14 @@ Widget.types.documents_view = {
 	
 	prepare: function() {
 		var documents_view = this;
+		var id_prefix = 'documents-view-'+Widget.uuid();
 		this._element.append('<ul/>');
+		jQuery.each(this.settings.panels, function(i, item) {
+			var panel_id = id_prefix+'-'+item;
+			var panel = $('<div/>', {id: panel_id});
+			var tab = $('<a/>');
+			documents_view._element.tabs('add', '#'+item, item, 0);
+		});
 		var tabs_settings = {
 			add: function(event, ui) {
 				var panel = jQuery(ui.panel);
@@ -36,9 +43,6 @@ Widget.types.documents_view = {
 			}
 		};
 		this._element.tabs(tabs_settings);
-		jQuery.each(this.settings.panels, function(i, item) {
-			documents_view._element.tabs('add', '#'+item, item, 0);
-		});
 		tabs_settings.show(null, {tab: this.active_tab});
 	},
 	

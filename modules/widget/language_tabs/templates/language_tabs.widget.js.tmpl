@@ -2,89 +2,70 @@ Widget.types.language_tabs = {
 	prepare: function() {
 		var _this = this;
 		var mapping = {}; //This maps language ids to tab indices
-		var running = { //These are running variables, only used while the tabs are being created
-			index: 0,
-			language: null
-		};
-		var initial_tab = null;
-		var tab_config = {
-			add: function(event, ui) {
-				var tab = jQuery(ui.tab);
-				mapping[running.language] = running.index++;
-				if(running.language === window.AdminInterface.content_language || (!window.AdminInterface.content_language && !initial_tab)) {
-					initial_tab = {tab: jQuery(ui.tab), panel: jQuery(ui.panel)};
-				}
-				var class_tab = jQuery.inArray(running.language, _this.settings.active_languages) != -1 ? 'tab_content_active' : 'tab_content_inactive';
-				tab.data('language_id', running.language).addClass(class_tab);
-			},
-			
-			show: function(event, ui) {
-				var tab = jQuery(ui.tab);
-				var language_id = tab.data('language_id');
-				if(!language_id) {
-					return;
-				}
-				if(!tab.data('panel')) {
-					var panel = jQuery(ui.panel);
-					tab.data('panel', panel);
-					_this.fire('tab.created', language_id, panel);
-				}
-				if(window.AdminInterface.content_language !== language_id) {
-					window.AdminInterface.content_language = language_id;
-					_this.updateContentLanguage(language_id, Widget.fire.bind(Widget, 'rapila-language_changed'));
-				}
-				_this.fire('tab.selected', language_id, jQuery(ui.panel));
-			}
-		};
-		
+
 		var inserter_is_parent = false;
 		var inserter = this._element.prev();
 		if(inserter.length === 0) {
 			inserter_is_parent = true;
 			inserter = this._element.parent();
 		}
-		
-		this._element.appendTo(document.body).append('<ul/>').tabs(tab_config);
-		var languages = this.getLanguages();
+		this._element.appendTo(document.body);
 
-		if(Object.keys(languages).length < 2) {
-			this._element.find('ul').addClass('is_monolingual');
-		}
-		jQuery.each(languages, function(language_id, localized_name) {
-			running.language = language_id;
-			_this._element.tabs('add', "#language_tabs-"+Widget.uuid()+'-'+language_id, localized_name);
-		});
+		var id_prefix = 'language_tabs-'+Widget.uuid();
+		this.tab_list = jQuery('<ul/>').appendTo(this._element);
 
-		//Configure initial tab (show method was called with null panel)
-		tab_config.show(null, initial_tab);
-		this._element.tabs('select', window.AdminInterface.content_language ? mapping[window.AdminInterface.content_language] : 0);
-		
-		Widget.handle('rapila-language_changed', function(event, new_language) {
-			window.AdminInterface.content_language = new_language;
-			_this._element.tabs('select', mapping[new_language]);
+		this.listLanguages(function(languages) {
+			var index = 0;
+			jQuery.each(languages, function(language_id, localized_name) {
+				var tab_class = jQuery.inArray(language_id, _this.settings.active_languages) != -1 ? 'tab_content_active' : 'tab_content_inactive';
+				var panel_id = id_prefix+'-'+language_id;
+				var panel = $('<div/>', {id: panel_id});
+				var tab = $('<a/>', {text: localized_name, href: '#'+panel_id, 'class': tab_class});
+				tab.data({language_id: language_id, panel: panel});
+				_this.fire('tab.created', language_id, panel);
+				_this.tab_list.append($('<li/>').append(tab));
+				_this._element.append(panel);
+				mapping[language_id] = index++;
+			});
+			if(Object.keys(languages).length < 2) {
+				_this.tab_list.addClass('is_monolingual');
+			}
+			this._element.tabs({
+				activate: function(event, ui) {
+					debugger;
+					var tab = jQuery(ui.newTab);
+					var language_id = tab.data('language_id');
+					if(window.AdminInterface.content_language !== language_id) {
+						window.AdminInterface.content_language = language_id;
+						_this.updateContentLanguage(language_id, Widget.fire.bind(Widget, 'rapila-language_changed'));
+					}
+					_this.fire('tab.selected', language_id, jQuery(ui.newPanel));
+				},
+				//Configure initial tab (show method was called with null panel)
+				active: window.AdminInterface.content_language ? mapping[window.AdminInterface.content_language] : 0
+			});
+
+			Widget.handle('rapila-language_changed', function(event, new_language) {
+				window.AdminInterface.content_language = new_language;
+				_this._element.tabs('option', 'active', mapping[new_language]);
+			});
+
+			inserter[inserter_is_parent ? 'prepend' : 'after'](this._element);
 		});
-		
-		if(inserter_is_parent) {
-			inserter.prepend(this._element);
-		} else {
-			inserter.after(this._element);
-		}
 	},
 	
 	all_panels: function() {
 		var result = {};
-		this._element.find('.ui-tabs-nav li a').each(function() {
+		this.tab_list.find('li a').each(function() {
 			var tab = jQuery(this);
-			if(tab.data('panel')) {
-				result[tab.data('language_id')] = tab.data('panel');
-			}
+			result[tab.data('language_id')] = tab.data('panel');
 		});
 		return result;
 	},
 	
 	all_tabs: function() {
 		var result = {};
-		this._element.find('.ui-tabs-nav li a').each(function() {
+		this.tab_list.find('li a').each(function() {
 			var tab = jQuery(this);
 			result[tab.data('language_id')] = tab;
 		});
