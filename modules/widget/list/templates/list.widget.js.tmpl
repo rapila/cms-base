@@ -2,7 +2,7 @@ Widget.types.list = {
 	prepare: function() {
 		this.row_prototype = jQuery(this._element.is('table') ? '<tr/>' : '<li/>').addClass('ui-list-row');
 		var _this = this;
-		
+
 		if(this.settings.row_model_drag_and_drop_identifier) {
 			this.model_name();
 			if(!this.settings.row_model_name) {
@@ -17,12 +17,12 @@ Widget.types.list = {
 				_this.update_row(_this.row_from_row_data({id: result.tagged_item_id}));
 			});
 		}
-		
+
 		var row_metadata = function(row) {
 			var rows = _this.all_rows();
 			return [rows.index(row), row];
 		};
-		
+
 		var cell_metadata = function(cell) {
 			var rows = _this.all_rows();
 			var row = cell.closest('.ui-list-row');
@@ -30,19 +30,19 @@ Widget.types.list = {
 			var col_schema = _this.schema_for_col(cellIndex);
 			return [rows.index(row), col_schema, row, cell];
 		};
-		
+
 		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
 			var row = jQuery(this);
 			return _this.fire.apply(_this, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
-		
+
 		this._element.delegate('.ui-list-row', 'click', function(event) {
 			var row = jQuery(this);
 			_this.activate_row(row, event);
 			return _this.fire.apply(_this, ['list-row_click', event].concat(row_metadata(row)));
 		});
-		
-		this._element.delegate('.ui-list-row', 'hover', function(event) {
+
+		this._element.delegate('.ui-list-row', 'mouseenter mouseleave', function(event) {
 			var isOver = event.type === 'mouseenter' || event.type === 'mousein' || event.type === 'mouseover';
 			var row = jQuery(this);
 			if(_this.settings.row_hover) {
@@ -50,12 +50,12 @@ Widget.types.list = {
 			}
 			return _this.fire.apply(_this, ['list-row_hover', event].concat(row_metadata(row)).concat([isOver]));
 		});
-		
+
 		if(_this._element.is('table')) {
 			this._element.delegate('.ui-list-cell', 'click', function(event) {
 				return _this.fire.apply(_this, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
 			});
-			this._element.delegate('.ui-list-cell', 'hover', function(event) {
+			this._element.delegate('.ui-list-cell', 'mouseenter mouseleave', function(event) {
 				return _this.fire.apply(_this, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
 			});
 		}
