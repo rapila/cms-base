@@ -84,7 +84,7 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
 
 	public function testRecursivePathItemByExpression() {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_WEB, 'css', array(), '/^.+\.custom\.css$/'), ResourceFinder::SEARCH_BASE_ONLY);
-		$this->assertSame(array(MAIN_DIR.'/base/web/css/admin/theme/jquery-ui-1.7.2.custom.css', MAIN_DIR.'/base/web/css/preview/theme/jquery-ui-1.7.2.custom.css'), $aConfigPaths);
+		$this->assertSame(array(MAIN_DIR.'/base/web/css/admin/theme/jquery-ui-1.10.2.custom.min.css', MAIN_DIR.'/base/web/css/preview/theme/jquery-ui-1.10.2.custom.min.css'), $aConfigPaths);
 	}
 
 	public function testOptionalPathItemAtEnd() {
