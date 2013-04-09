@@ -4,6 +4,13 @@
 	font-weight normal
 	font-style normal
 
+// overwrite jquery-ui styles
+.ui-widget
+	font-family Arial,Helvetica,sans-serif
+	font-size 1.0em
+	input,select,textarea,button
+		font-family Arial,Helvetica,sans-serif
+
 .ui-state-droppable,
 .ui-widget-content.ui-state-droppable
 	background-image url('../../images/admin/drag_and_drop.png')
@@ -314,7 +321,7 @@ div.inner-tab-panel-content
 	.ui-tabs-nav.ui-widget-header
 		border-bottom 1px solid #CCCDCF
 	
-.ui-state-default a.tab_content_active
+.ui-state-default li.tab_content_active
 	color black
 
 .add-new-item, .remove-item, .edit-item, .item-action, .print_area

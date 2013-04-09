@@ -336,7 +336,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		end
 		if $aspects.include? 'frontend_config' then
 			prep += "
-		this._element.live(':input', 'change', this.update_preview.bind(this));
+		this._element.on('change', ':input', this.update_preview.bind(this));
 		this.configData(function(data) {
 			//TODO: configure the display to match data
 			this.update_preview(null, data);

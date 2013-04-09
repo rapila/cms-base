@@ -2,8 +2,8 @@
 
 class AdminManager extends Manager {
 	
-	const JQUERY_VERSION = '1.8.1';
-	const JQUERY_UI_VERSION = '1.8.23';
+	const JQUERY_VERSION = '1.9.1';
+	const JQUERY_UI_VERSION = '1.10.2';
 
 	const DEFAULT_MODULE = 'dashboard';
 	const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
@@ -153,7 +153,7 @@ class AdminManager extends Manager {
 		$this->oResourceIncluder->addCustomJs($oConstants);
 		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', AdminManager::JQUERY_UI_VERSION);
 		$this->oResourceIncluder->addResource('admin/admin-skeleton.css');
-		$this->oResourceIncluder->addResource('admin/theme/jquery-ui-1.7.2.custom.css');
+		$this->oResourceIncluder->addResource('admin/theme/jquery-ui-1.10.2.custom.min.css');
 		$this->oResourceIncluder->addResource('widget/widget.css');
 		$this->oResourceIncluder->addResource('admin/admin-ui.css');
 		$this->oResourceIncluder->addResource('admin/print.css', null, null, array('media' => 'print'), ResourceIncluder::PRIORITY_NORMAL, null, true);
