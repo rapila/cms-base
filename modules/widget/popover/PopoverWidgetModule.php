@@ -32,8 +32,8 @@ class PopoverWidgetModule extends PersistentWidgetModule {
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
-		$oResourceIncluder->addResource('popover/jquery.popover.js');
-		$oResourceIncluder->addResource(array(DIRNAME_WEB, 'js', 'popover', 'jquery.popover.css'));
+		$oResourceIncluder->addResource('widget/popover/jquery.popover.js');
+		$oResourceIncluder->addResource(array(DIRNAME_WEB, 'js', 'widget', 'popover', 'jquery.popover.css'));
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}
 }

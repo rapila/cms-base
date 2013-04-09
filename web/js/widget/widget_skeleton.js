@@ -1,9 +1,10 @@
 (function() {
-	jQuery('.rapila-button:not(.ui-state-disabled), .rapila-clickable').live("mouseover", function() {
+	var button_selector = '.rapila-button:not(.ui-state-disabled), .rapila-clickable';
+	jQuery(document).on("mouseover", button_selector, function() {
 		jQuery(this).addClass('ui-state-hover');
-	}).live("mouseout", function() {
+	}).on("mouseout", button_selector, function() {
 		jQuery(this).removeClass('ui-state-hover');
-	}).live("mousedown", function() {
+	}).on("mousedown", button_selector, function() {
 		jQuery(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
 		if(jQuery(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active')){
 			jQuery(this).removeClass("ui-state-active");
@@ -11,7 +12,7 @@
 		else {
 			jQuery(this).addClass("ui-state-active");
 		}
-	}).live('mouseup', function() {
+	}).on('mouseup', button_selector, function() {
 		if(!jQuery(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button')) {
 			jQuery(this).removeClass("ui-state-active");
 		}

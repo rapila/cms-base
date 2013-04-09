@@ -2,12 +2,12 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
 		this.protector = new UnsavedChanges(this._element);
-		this.accordion = jQuery(this._element.find('div.accordion')).accordion({active: this.settings.active_accordion, autoHeight: false, clearStyle: true}).bind('accordionchangestart', function(event, ui) {
+		this.accordion = jQuery(this._element.find('div.accordion')).accordion({active: this.settings.active_accordion, autoHeight: false, clearStyle: true}).bind('accordionbeforeactivate', function(event, ui) {
 			_this.setActiveAccordion(ui.options.active);
-			if(ui.newContent.is('.contents_container')) {
-				_this.load_content(ui.newContent);
-			} else if(ui.newContent.is('.configuration_container')) {
-				_this.load_configuration(ui.newContent);
+			if(ui.newPanel.is('.contents_container')) {
+				_this.load_content(ui.newPanel);
+			} else if(ui.newPanel.is('.configuration_container')) {
+				_this.load_configuration(ui.newPanel);
 			}
 		});
 		
