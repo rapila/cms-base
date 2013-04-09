@@ -14,8 +14,8 @@
 	path = web/js/widget/popover
     url = git://github.com/BrazilianJoe/jquery-popover.git
 [submodule "web/js/widget/ndd"]
-    path = web/js/widget/ndd
-    url = git://github.com/guillaumebort/jquery-ndd.git
+	path = web/js/widget/ndd
+	url = git://github.com/guillaumebort/jquery-ndd.git
 [submodule "lib/vendor/nib"]
 	path = lib/vendor/nib
 	url = git://github.com/visionmedia/nib.git
