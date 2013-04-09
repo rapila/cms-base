@@ -323,7 +323,7 @@ class FrontendManager extends Manager {
 		$this->oTemplate->replaceIdentifier("meta_keywords", $sKeywords);
 		$this->oTemplate->replaceIdentifier("meta_description", $sDescription);
 
-		$this->oTemplate->replaceIdentifier("description", $sDescription);
+		$this->oTemplate->replaceIdentifier("description", self::$CURRENT_NAVIGATION_ITEM->getDescription());
 		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
 		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
 		$this->oTemplate->replaceIdentifier("level", self::$CURRENT_NAVIGATION_ITEM->getLevel());
