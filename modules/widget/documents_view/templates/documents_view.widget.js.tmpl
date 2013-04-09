@@ -3,56 +3,64 @@ Widget.types.documents_view = {
 		this.changed = false;
 	},
 	
+	active_tab: null,
+	
 	prepare: function() {
-		var documents_view = this;
+		var _this = this;
 		var id_prefix = 'documents-view-'+Widget.uuid();
-		this._element.append('<ul/>');
+		this.tab_list = jQuery('<ul/>').appendTo(this._element);
+
 		jQuery.each(this.settings.panels, function(i, item) {
 			var panel_id = id_prefix+'-'+item;
 			var panel = $('<div/>', {id: panel_id});
-			var tab = $('<a/>');
-			documents_view._element.tabs('add', '#'+item, item, 0);
-		});
-		var tabs_settings = {
-			add: function(event, ui) {
-				var panel = jQuery(ui.panel);
-				var tab = jQuery(ui.tab);
-				var item = tab.attr('href').substring(1);
-				if(documents_view.tab_views[item]) {
-					documents_view.tab_views[item].is_updated = true;
-					tab.data('type', documents_view.tab_views[item]);
-					tab.data('panel', panel);
-				}
-			},
-			show: function(event, ui) {
-				var tab = jQuery(ui.tab);
-				documents_view.active_tab = tab;
-				if(!tab.data('type')) {
-					return;
-				}
-				if(!tab.data('widget')) {
-					documents_view.init_tab(tab);
-				} else {
-					//Returns true if anything’s changed since the last time
-					if(!tab.data('type').is_updated) {
-						tab.data('widget').reload();
-						documents_view.changed = false;
-						tab.data('type').is_updated = true;
-					}
-				}
+			var tab = $('<a/>', {href: '#'+panel_id, 'class': 'tab-'+item});
+			tab = $('<li/>').append(tab).data('panel', panel);
+
+			if(_this.tab_views[item]) {
+				_this.tab_views[item].is_updated = true;
+				tab.data('type', _this.tab_views[item]);
 			}
-		};
-		this._element.tabs(tabs_settings);
-		tabs_settings.show(null, {tab: this.active_tab});
+
+			_this._element.append(panel);
+			_this.tab_list.append(tab);
+
+			if(!_this.active_tab) {
+				_this.active_tab = tab;
+			}
+		});
+
+		this._element.tabs({
+			activate: function(event, ui) {
+				_this._activated(ui.newTab, ui.newPanel);
+			}
+		});
+		this._activated(this.active_tab, this.active_tab.data('panel'));
+	},
+	
+	_activated: function(tab, panel) {
+		this.active_tab = tab;
+		if(!tab.data('type')) {
+			return;
+		}
+		if(!tab.data('widget')) {
+			this.init_tab(tab);
+		} else {
+			//Returns true if anything’s changed since the last time
+			if(!tab.data('type').is_updated) {
+				tab.data('widget').reload();
+				this.changed = false;
+				tab.data('type').is_updated = true;
+			}
+		}
 	},
 	
 	init_tab: function(tab) {
 		var type = tab.data('type');
 		var panel = tab.data('panel');
 		var widget_name = type.widget_name;
-		var documents_view = this;
+		var _this = this;
 		Widget.createWithElement(widget_name, function(widget) {
-			widget.handle('document-removed', documents_view.mark_background_views_dirty.bind(documents_view));
+			widget.handle('document-removed', _this.mark_background_views_dirty.bind(_this));
 			tab.data('widget', widget);
 			type.init.call(this, tab.data('widget'));
 		}, function(widget) {
