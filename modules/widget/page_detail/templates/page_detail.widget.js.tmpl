@@ -8,7 +8,7 @@ Widget.types.page_detail = {
 			heightStyle: 'content',
 			clearStyle: true,
 			beforeActivate: function(event, ui) {
-				var index = _this.accordion.children().index(ui.newPanel);
+				var index = _this.accordion.children('h3').index(ui.newHeader);
 				_this.activeAccordion(index);
 				if(ui.newPanel.is('.contents_container')) {
 					_this.load_content(ui.newPanel);
@@ -88,7 +88,7 @@ Widget.types.page_detail = {
 	},
 
 	accordion_active: function() {
-		var accordion_headers = this._element.find('div.accordion h3');
+		var accordion_headers = this.accordion.children('h3');
 		var result = $();
 		accordion_headers.each(function(i, element) {
 			element = jQuery(element);
@@ -210,8 +210,8 @@ Widget.types.page_detail = {
 		}
 
 		// page_properties
-		var page_properties_container = this._element.find("div.page_properties");
-		var page_properties_header = this._element.find("h3.page_properties");
+		var page_properties_container = this._element.find('div.page_properties');
+		var page_properties_header = this.accordion.children('h3.page_properties');
 
 		if(page_data.page_properties != undefined) {
 			page_properties_container.empty().show();
