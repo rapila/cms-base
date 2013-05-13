@@ -62,6 +62,7 @@ input.ui-widget-content.input_long{width:35em}
 input.ui-widget-content.input_short{width:6em}
 input.ui-widget-content.input_medium{width:15em}
 .autowidth,input.ui-widget-content.autowidth,select.ui-widget-content.autowidth{width:auto}
+.ui-tabs .ui-tabs-nav{margin-bottom:-1px;}
 .ui-tabs .ui-tabs-nav li{margin:2px 2px 0 2px;background-color:#ebedef;}
 .ui-tabs .ui-tabs-nav li a{padding:.5em 1.5em .2em}
 .ui-tabs .ui-tabs-nav li.ui-state-active{background-color:#fff}
