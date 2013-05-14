@@ -43,10 +43,9 @@ class DisplayDocumentFileModule extends FileModule {
 			$sDisplay = "attachment";
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
-		
-		$iTimestamp = $this->oDocument->getUpdatedAt();
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($iTimestamp)) {
-			$oCache->sendCacheControlHeaders($iTimestamp);
+
+		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocument)) {
+			$oCache->sendCacheControlHeaders($this->oDocument->getUpdatedAtTimestamp());
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;
 		}

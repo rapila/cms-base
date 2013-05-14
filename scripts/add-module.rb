@@ -16,7 +16,7 @@ $options = {:type => :widget, :location => :site, :force => false, :enabled => t
 $aspects = Set.new
 $files = [:php, :yaml].to_set
 
-default_aspects = {:frontend => ['dynamic', 'widget_based'], :widget => ['persistent']}
+default_aspects = {:frontend => ['widget_based'], :widget => ['persistent']}
 
 OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|opts|
 	## GENERAL
@@ -62,8 +62,8 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		$aspects << "single_screen"
 	end
 	
-	opts.on('--[no-]dynamic', 'Add the dynamic aspect. Applicable to frontend modules (default)') do |dynamic|
-		$aspects.delete "dynamic" unless dynamic
+	opts.on('--dynamic', 'Add the dynamic aspect. Applicable to frontend modules (deprecated)') do |dynamic|
+		$aspects << "dynamic"
 	end
 	
 	opts.on('--[no-]persistent', 'Add the persistent aspect. Applicable to widget modules (default)') do |persistent|
@@ -249,6 +249,7 @@ write_file(:php, "#{class_name}.php") do
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
+		php_methods.push php_method('cacheKey', 'return parent::cacheKey();')
 		if $aspects.include? 'widget_based' then
 			php_methods.push php_method('getWidget', 'return parent::getWidget();');
 		else

@@ -35,7 +35,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	
 	public function fillAutofill($oTemplateIdentifier, $iFlags) {
 		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
-		$mResult = $oModule->renderFrontend();
+		$mResult = $oModule->cachedFrontend();
 		if(($sCss = $oModule->getCssForFrontend()) !== null) {
 			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
 		}
@@ -151,24 +151,23 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 	
 	protected function getModuleContents($oModule, $bAllowTemplate = true) {
-		$mResult = $oModule->renderFrontend();
+		$mResult = $oModule->cachedFrontend();
 		if(!$bAllowTemplate && $mResult instanceof Template) {
 			$mResult = $mResult->render();
 		}
 		return $mResult;
 	}
 	
-	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
+	public function acceptedRequestParams($aModulesToCheck = null) {
+		$aResult = array();
 		foreach($this->oPage->getContentObjects() as $oContentObject) {
 			if($aModulesToCheck && !in_array($oContentObject->getContainerName(), $aModulesToCheck)) {
 				continue;
 			}
 			$sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
-			if($sModuleName::isDynamic()) {
-				$bIsDynamic = true;
-				$aAllowedParams = array_merge($aAllowedParams, $sModuleName::acceptedRequestParams());
-			}
+			$aResult = array_merge($aResult, $sModuleName::acceptedRequestParams());
 		}
+		return $aResult;
 	}
 
 	//Admin stuff

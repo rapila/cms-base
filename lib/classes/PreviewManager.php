@@ -93,10 +93,6 @@ class PreviewManager extends FrontendManager {
 		$this->oPageType->display($this->oTemplate, true);
 	}
 	
-	protected function useFullPageCache() {
-		return false;
-	}
-	
 	private function addNamespacedCss($mLocation) {
 		array_unshift($mLocation, 'namespaced_preview_css');
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
