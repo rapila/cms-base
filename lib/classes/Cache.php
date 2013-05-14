@@ -12,6 +12,9 @@ class Cache {
 	private $bCacheControlHeaderSent;
 	
 	public function __construct($sKey, $mPath=null, $iFlags = 0) {
+		if($sKey instanceof CacheKey) {
+			$sKey = $sKey->render();
+		}
 		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
 		
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
@@ -107,6 +110,9 @@ class Cache {
 	* Compares the timestamp of the cached contents to the given timestamp and returns true if the cached contents are older, false otherwise
 	*/
 	public function isOlderThan($iTimestamp) {
+		if($iTimestamp instanceof BaseObject) {
+			$iTimestamp = $iTimestamp->getUpdatedAtTimestamp();
+		}
 		if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
