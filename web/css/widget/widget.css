@@ -68,7 +68,7 @@ input.ui-widget-content.input_medium{width:15em}
 .ui-tabs .ui-tabs-nav li{margin:2px 2px 0 2px;background-color:#ebedef;}
 .ui-tabs .ui-tabs-nav li a{padding:.5em 1.5em .2em}
 .ui-tabs .ui-tabs-nav li.ui-state-active{background-color:#fff}
-.ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf;padding:0}
+.ui-tabs .ui-tabs-panel{padding:0}
 .ui-tabs #list.ui-tabs-panel,.ui-tabs #thumbnail.ui-tabs-panel{border-top:0}
 .ui-tabs-nav .ui-state-active{position:relative;top:1px;}
 .ui-tabs-nav .ui-state-active a{margin-top:-1px;color:#000}
