@@ -12,7 +12,7 @@
 	url = git://github.com/propelorm/Propel.git
 [submodule "web/js/widget/popover"]
 	path = web/js/widget/popover
-    url = git://github.com/BrazilianJoe/jquery-popover.git
+    url = git://github.com/rapila/jquery-popover.git
 [submodule "lib/vendor/nib"]
 	path = lib/vendor/nib
 	url = git://github.com/visionmedia/nib.git
