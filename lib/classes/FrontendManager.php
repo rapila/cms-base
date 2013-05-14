@@ -165,7 +165,6 @@ class FrontendManager extends Manager {
 	public function render() {
 		FilterModule::getFilters()->handleRequestStarted();
 		$bIsDynamic = false;
-		$aAllowedParams = array();
 		
 		$bIsAjaxRequest = Manager::isPost() && Manager::isXMLHttpRequest();
 		$aAjaxSections = array('container' => array(), 'navigation' => array());
@@ -191,9 +190,8 @@ class FrontendManager extends Manager {
 
 		$sPageType = self::$CURRENT_PAGE->getPageType();
 		$this->oPageType = PageTypeModule::getModuleInstance($sPageType, self::$CURRENT_PAGE, self::$CURRENT_NAVIGATION_ITEM);
-		$this->oPageType->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, ($bIsAjaxRequest ? $aAjaxSections['container'] : null));
+		$aAllowedParams = $this->oPageType->acceptedRequestParams(($bIsAjaxRequest ? $aAjaxSections['container'] : null));
 
-		$bIsDynamic = $bIsDynamic || !$this->useFullPageCache();
 		$bParamsNotAllowed = count(array_intersect($this->aPathRequestParams, $aAllowedParams)) !== count($this->aPathRequestParams);
 
 		$this->bIsNotFound = $this->bIsNotFound || $bParamsNotAllowed;
@@ -226,29 +224,12 @@ class FrontendManager extends Manager {
 		} else if(!$bIsLegacyAjaxRequest) {
 			header("Content-Type: application/json;charset=utf-8");
 		}
-		
+
 		$sPageIdentifier = implode('/', self::$CURRENT_NAVIGATION_ITEM->getLink()).'_'.Session::language();
 		if($bIsAjaxRequest) {
 			$sPageIdentifier .= '_'.serialize($aAjaxSections);
 		}
-		
-		$oCache = null;
-		
-		$bIsCached = false;
-		if(!$bIsDynamic && !Session::getSession()->isAuthenticated() && !$this->bIsNotFound) {
-			$oCache = new Cache($sPageIdentifier, DIRNAME_FULL_PAGE);
-		
-			$bIsCached = $oCache->cacheFileExists();
-			$bIsOutdated = false;
-		
-			if($bIsCached) {
-				$bIsOutdated = $oCache->isOlderThan(self::$CURRENT_PAGE->getUpdatedAtTimestamp());
-			}
-			if($bIsCached && !$bIsOutdated) {
-				return print $oCache->getContentsAsString();
-			}
-		}
-		
+
 		// Init the template
 		if($bIsLegacyAjaxRequest) {
 			$this->oTemplate = new Template(TemplateIdentifier::constructIdentifier('container', $_REQUEST['container_only']), null, true, true);
@@ -267,14 +248,10 @@ class FrontendManager extends Manager {
 
 		$this->renderTemplate();
 
-		if($oCache !== null) {
-			$oCache->setContents($this->oTemplate->getSentOutput());
-		}
-
 		while(ob_get_level() > 0) {
 			ob_end_flush();
 		}
-		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest, $bIsCached));
+		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest));
 	}
 	
 	protected function getXHTMLOutput() {
@@ -283,10 +260,6 @@ class FrontendManager extends Manager {
 	
 	protected function renderTemplate() {
 		$this->oTemplate->render();
-	}
-	
-	protected function useFullPageCache() {
-		return Settings::getSetting('general', 'use_full_page_cache', true);
 	}
 	
 	protected function addCanonicalLink() {

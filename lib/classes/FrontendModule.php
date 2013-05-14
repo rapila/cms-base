@@ -18,6 +18,43 @@ abstract class FrontendModule extends Module {
 	}
 
 	public abstract function renderFrontend();
+	
+	public function cachedFrontend() {
+		$oCacheKey = $this->cacheKey();
+		$oCache = null;
+		if($oCacheKey !== null) {
+			$sPrefix = $this->oLanguageObject ? $this->oLanguageObject->getPKString() : 'data_'.$this->oData;
+			$oCache = new Cache($oCacheKey->render($sPrefix), DIRNAME_FULL_PAGE);
+
+			$bIsCached = $oCache->cacheFileExists();
+			$bIsOutdated = false;
+
+			if($bIsCached) {
+				if($this->oLanguageObject) {
+					$bIsOutdated = $oCache->isOlderThan($this->oLanguageObject);
+				}
+				if(!$bIsOutdated) {
+					return $oCache->getContentsAsString();
+				}
+			}
+		}
+		$sResult = $this->renderFrontend();
+		if($sResult instanceof Template) {
+			$sResult = $sResult->render();
+		}
+		if($oCache) {
+			$oCache->setContents($sResult);
+		}
+		return $sResult;
+	}
+	
+	public static function acceptedRequestParams() {
+		return array();
+	}
+
+	public function cacheKey() {
+		return CacheKey::create()->dependOnPath()->dependOnRequestParameter(self::acceptedRequestParams());
+	}
 
 	/**
 	* Override this method to transform the data sent from your config widget into a string/blob that can be stored in the database.

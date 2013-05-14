@@ -64,13 +64,6 @@ class LoginPageTypeModule extends DefaultPageTypeModule {
 		return $mResult;
 	}
 
-	// setIsDynamic because it might be filled in a is_inherited container and not set on the current page
-	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {
-		$bIsDynamic = true;
-		$aAllowedParams = array();
-		parent::setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aAllowedParams, $aModulesToCheck);
-	}
-	
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
 		try {
 			return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
