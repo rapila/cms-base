@@ -164,7 +164,7 @@ class EMail {
 			throw new Exception("Error in EMail->send(): E-Mail was not accepted for delivery");
 		}
 	}
-	
+
 	private function getAddressToken($sName, $sAddress) {
 		$this->oFlash->setArrayToCheck(array('email' => $sAddress));
 		$this->oFlash->checkForEmail('email', 'e_mail');

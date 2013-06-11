@@ -2,7 +2,7 @@
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
 	
-	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aContext = null, $aTrace = null, $bNeverPrint = false) {
+	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aContext = null, $aTrace = null, $bNeverPrint = false, $bIsUserError = false) {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
 		}
@@ -16,22 +16,22 @@ class ErrorHandler {
 										"filename" => $sErrorFile,
 										"line" => $iErrorLine,
 										"trace" => $aTrace);
-		self::handle($aError, $bNeverPrint);
+		self::handle($aError, $bNeverPrint, $bIsUserError);
 		if($bNeverPrint || self::shouldContinue($iErrorNumber)) {
 			return true;
 		}
-		self::displayErrorMessage($aError);
+		self::displayErrorMessage($aError, $bIsUserError);
 	}
 	
 	public static function handleException($oException, $bNeverPrint = false) {
-		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), null, $oException->getTrace(), $bNeverPrint);
+		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), null, $oException->getTrace(), $bNeverPrint, $oException instanceof UserError);
 	}
 	
 	/**
 	* if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
 	*/
-	private static function displayErrorMessage($aError) {
+	private static function displayErrorMessage($aError, $bMayPrintDetailedMessage = false) {
 		while(ob_get_level() > 0) {
 			ob_end_clean();
 		}
@@ -39,7 +39,11 @@ class ErrorHandler {
 		header('HTTP/1.0 500 Internal Server Error');
 		if(!file_exists($sErrorFileName)) {
 			header('Content-Type: text/plain;charset=utf-8');
-			die("An Error occured, exiting");
+			$sMessage = $aError['message'];
+			if(!$bMayPrintDetailedMessage) {
+				$sMessage = "An Error occured, exiting";
+			}
+			die($sMessage);
 		}
 		header('Content-Type: text/html;charset=utf-8');
 		include($sErrorFileName);
@@ -175,7 +179,7 @@ class ErrorHandler {
 		self::$ENVIRONMENT = $sEnvironment;
 	}
 
-	private static function handle($aError, $bNeverPrint = false) {
+	private static function handle($aError, $bNeverPrint = false, $bNeverNotifyDeveloper = false) {
 		//Add additional information for logging/sending
 		$aError['referrer'] = @$_SERVER['HTTP_REFERER'];
 		$aError['host'] = @$_SERVER['HTTP_HOST'];
@@ -183,8 +187,8 @@ class ErrorHandler {
 		$aError['request'] = @$_REQUEST;
 		$aError['cookies'] = @$_COOKIE;
 		
-		FilterModule::getFilters()->handleAnyError(array(&$aError));
-		if(self::shouldMailErrors()) {
+		FilterModule::getFilters()->handleAnyError(array(&$aError), $bNeverPrint, $bNeverNotifyDeveloper);
+		if(!$bNeverNotifyDeveloper && self::shouldMailErrors()) {
 			$sAddress = Settings::getSetting('developer', 'email', false);
 			if(!$sAddress) {
 				$sAddress = Settings::getSetting('domain_holder', 'email', false);
