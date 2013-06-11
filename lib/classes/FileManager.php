@@ -12,13 +12,15 @@ class FileManager extends Manager {
 	 */
 	public function __construct() {
 		parent::__construct();
-		if(!self::hasNextPathItem()) {
-			throw new Exception("Request to /".Manager::getPrefixForManager($this)." without moduleName");
+		$sPath = self::usePath();
+		try {
+			$this->oModule = FileModule::getModuleInstance($sPath, self::$REQUEST_PATH);
+		} catch (Exception $e) {
+			throw new UserError('wns.error.user.invalid_file_module', array('name' => $sPath));
 		}
-		$this->oModule = FileModule::getModuleInstance(self::usePath(), self::$REQUEST_PATH);
 		$this->oModule->renderFile();
 	} // __construct()
-			
+
 	/**
 	 * render()
 	 */

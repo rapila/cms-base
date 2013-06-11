@@ -32,7 +32,15 @@ abstract class PageTypeModule extends Module {
 		return StringUtil::getWords($sTemplate, true);
 	}
 	
-	public function setIsDynamicAndAllowedParameterPointers(&$bIsDynamic, &$aAllowedParams, $aModulesToCheck = null) {}
+	public function acceptedRequestParams($aModulesToCheck = null) {
+		if(method_exists($this, 'setIsDynamicAndAllowedParameterPointers')) {
+			$aResult = array();
+			$bIsDynamic = false;
+			$this->setIsDynamicAndAllowedParameterPointers($bIsDynamic, $aResult, $aModulesToCheck);
+			return $aResult;
+		}
+		return array();
+	}
 	
 	//Warning: different than normal
 	public static function getModuleInstance($sModuleName = null) {

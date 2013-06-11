@@ -29,7 +29,7 @@ abstract class Module {
 	
 	//Static methods
 	public static function getModuleInstanceByTypeAndName($sType, $sName) {
-		if($sName === '') {
+		if(!$sName) {
 			throw new Exception("Exception in Module::getModuleInstanceByTypeAndName(): module name is empty");
 		}
 		$sClassName = self::getClassNameByTypeAndName($sType, $sName);
