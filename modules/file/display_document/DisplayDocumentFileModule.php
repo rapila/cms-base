@@ -8,6 +8,7 @@ class DisplayDocumentFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		if(!isset($this->aPath[0])) {
+			// Exceptions thrown in a file module’s constructor yield a UserError but that’s OK.
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
 		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
