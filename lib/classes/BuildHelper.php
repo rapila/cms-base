@@ -138,7 +138,7 @@ EOT;
 	/**
 	* Moves the model files of modules to that modules directories. Called by the generate-model.sh script
 	*/
-	private static function moveModel($bIsDevVersion = false) {
+	private static function moveModel(&$bIsDevVersion = false) {
 		$aSchemaFiles = ResourceFinder::findAllResources(array(DIRNAME_CONFIG, "schema.xml"), ResourceFinder::SEARCH_PLUGINS_ONLY);
 		$bHasPluginSchemas = count($aSchemaFiles) > 0;
 		foreach($aSchemaFiles as $sSchemaPath) {
@@ -155,11 +155,13 @@ EOT;
 		if($sSchemaFile) {
 			if($bIsDevVersion && $bHasPluginSchemas) {
 				print "NOT moving base model because it’s polluted by plugins’ models\n";
+				$bIsDevVersion = false;
 			}
 			if($bIsDevVersion && $bHasSiteSchema) {
 				print "NOT moving base model because it’s polluted by site model\n";
+				$bIsDevVersion = false;
 			}
-			self::moveModelForSchemaPath($sSchemaFile, $bIsDevVersion && !$bHasPluginSchemas && !$bHasSiteSchema); //Be safe: only build for base if schema files were neither found in site nor in any plugins. Also, the user must specifically have requested a “dev” build
+			self::moveModelForSchemaPath($sSchemaFile, $bIsDevVersion); //Be safe: only build for base if schema files were neither found in site nor in any plugins. Also, the user must specifically have requested a “dev” build
 		}
 	}
 	
