@@ -229,9 +229,12 @@ class Document extends BaseDocument {
 		return StringPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
 	}
 	
-	public function getDocumentCategory(PropelPDO $con = null) {
+	public function getDocumentCategory(PropelPDO $con = null, $doQuery = true) {
+		if($this->aDocumentCategory === null && !$doQuery) {
+			return null;
+		}
 		if(!isset(self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()])) {
-			self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()] = parent::getDocumentCategory($con);
+			self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()] = parent::getDocumentCategory($con, true);
 		}
 		return self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()];
 	}
