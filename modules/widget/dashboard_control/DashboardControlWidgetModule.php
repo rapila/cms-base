@@ -121,7 +121,9 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$aDashboardConfig['widgets'] = array_values($aWidgets);
 		$oUser = Session::getSession()->getUser();
 		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
+		UserPeer::ignoreRights(true);
 		$oUser->save();
+		UserPeer::ignoreRights(false);
 	}
 	
 	public function listDashboardModules($bFilterByAllowed = false) {
@@ -175,6 +177,8 @@ class DashboardControlWidgetModule extends WidgetModule {
 			$aWidgets[] = $aSettings;
 		}
 		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
+		UserPeer::ignoreRights(true);
 		$oUser->save();
+		UserPeer::ignoreRights(false);
 	}
 }
