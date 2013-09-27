@@ -49,8 +49,10 @@ Widget.types.link_detail = {
 			if(!this.settings.predefined_link_category_id) {
 				this._element.find("select[name='link_category_id']").val(link_data.LinkCategoryId || '');
 			}
-			this.tag_area.setTaggedItemId(link_data.Id);
-			this.tag_area.reload_tags();
+			if(link_data.Id) {
+				this.tag_area.setTaggedItemId(link_data.Id);
+				this.tag_area.reload_tags();
+			}
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 			this.detail_widget.enable();
 		});
