@@ -113,3 +113,7 @@ div.ui-dialog.file_upload_error{z-index:20000 !important}
 #widget-notifications .ui-notify .ui-badge{background-color:#f00;border-radius:12px;border-radius:12px;font-weight:bold;color:#fff;padding:1px 5px}
 #widget-notifications .ui-notify .close-handle.ui-icon{margin-right:0;margin-top:-12px;cursor:pointer}
 .highlight-documentation *[data-documentation-part]{cursor:help !important}
+.ui-icon{height:20px;margin:-2px 2px 0 0;width:26px;}
+.ui-icon.ui-icon-trash{background:transparent url("../../images/admin/icon_trash.png") no-repeat center bottom}
+.ui-icon.ui-icon-wrench{background:transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom}
+.ui-icon.ui-icon-pencil{background:transparent url("../../images/admin/icon_edit.png") no-repeat center bottom}
