@@ -230,8 +230,11 @@ class Document extends BaseDocument {
 	}
 	
 	public function getDocumentCategory(PropelPDO $con = null, $doQuery = true) {
+		if($this->aDocumentCategory === null && !$doQuery) {
+			return null;
+		}
 		if(!isset(self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()])) {
-			self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()] = parent::getDocumentCategory($con);
+			self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()] = parent::getDocumentCategory($con, true);
 		}
 		return self::$DOCUMENT_CATEGORIES[$this->getDocumentCategoryId()];
 	}
