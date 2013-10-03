@@ -24,16 +24,16 @@ class PermissionWidgetModule extends WidgetModule {
 	}
 
 	public static function mayUpdateObjectOfModel($sModelName, $iObjectId) {
-		return $this->mayDoOperationOnObjectOfModel('update', $sModelName, $iObjectId);
+		return self::mayDoOperationOnObjectOfModel('update', $sModelName, $iObjectId);
 	}
 
 	public static function mayDeleteObjectOfModel($sModelName, $iObjectId) {
-		return $this->mayDoOperationOnObjectOfModel('delete', $sModelName, $iObjectId);
+		return self::mayDoOperationOnObjectOfModel('delete', $sModelName, $iObjectId);
 	}
 
 	public static function mayInsertObjectOfModel($sModelName) {
 		$oObject = new $sModelName();
-		return $this->mayDoOperationOnObjectOfModel('insert', $sModelName, $oObject);
+		return self::mayDoOperationOnObjectOfModel('insert', $sModelName, $oObject);
 	}
 	
 	public static function mayEditPageDetails($iPageId) {
