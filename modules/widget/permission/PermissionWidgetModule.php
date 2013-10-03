@@ -16,7 +16,7 @@ class PermissionWidgetModule extends WidgetModule {
 	}
 
 	public static function mayDoOperationOnObjectOfModel($sOperation, $sModelName, $mObject) {
-		$sPeer = "{$sModelName}Peer";
+		$sQuery = "{$sModelName}Query";
 		if(!is_object($mObject)) {
 			$mObject = $sQuery::create()->findPk($mObject);
 		}

@@ -48,8 +48,9 @@ Widget.types.file_upload = {
 				el.removeClass('ui-state-droppable-hover');
 			}
 		}).bind('drop', function(event) {
+			event.preventDefault();
 			if(!event.dataTransfer || (single_file_only && event.dataTransfer.files.length > 1)) {
-				return false;
+				return;
 			}
 			var target = jQuery(event.target), callback_result = null;
 			if(!current_drag_is_file || event.dataTransfer.files.length < 1) {
@@ -62,7 +63,7 @@ Widget.types.file_upload = {
 				} else {
 					Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.file_upload.dropped_element_is_not_file}}');
 				}
-				return false;
+				return;
 			}
 			
 			var i = 0;
@@ -75,7 +76,7 @@ Widget.types.file_upload = {
 			}
 			
 			current_drag_is_file = false;
-			return false;
+			return;
 		});
 	},
 	

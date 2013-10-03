@@ -6,7 +6,7 @@ abstract class DynamicFrontendModule extends FrontendModule {
 		return true;
 	}
 	
-	public static function acceptedRequestParams() {
-		return array();
+	public function cacheKey() {
+		return null;
 	}
 }

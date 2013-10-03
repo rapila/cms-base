@@ -28,6 +28,10 @@ class LocalizedException extends Exception {
 		return $this->aMessageParameters;
 	}
 	
+	public function getMessageKey() {
+		return $this->sMessageKey;
+	}
+	
 	public function getExceptionType() {
 		return $this->sExceptionType;
 	}

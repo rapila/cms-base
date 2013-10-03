@@ -8,6 +8,7 @@ class DisplayDocumentFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		if(!isset($this->aPath[0])) {
+			// Exceptions thrown in a file module’s constructor yield a UserError but that’s OK.
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
 		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
@@ -43,9 +44,8 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
 
-		$iTimestamp = $this->oDocument->getUpdatedAt();
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($iTimestamp)) {
-			$oCache->sendCacheControlHeaders($iTimestamp);
+		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocument)) {
+			$oCache->sendCacheControlHeaders($this->oDocument->getUpdatedAtTimestamp());
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;
 		}
