@@ -11,3 +11,5 @@
 #rapila_admin_menu .cke_skin_kama .cke_voice_label,.filled-container.editing .cke_skin_kama .cke_voice_label,.ui-dialog .cke_skin_kama .cke_voice_label,.cke_dialog .cke_skin_kama .cke_voice_label{display:none}
 #rapila_admin_menu .cke_skin_kama .cke_toolgroup,.filled-container.editing .cke_skin_kama .cke_toolgroup,.ui-dialog .cke_skin_kama .cke_toolgroup,.cke_dialog .cke_skin_kama .cke_toolgroup{margin-right:6px}
 #rapila_admin_menu .cke_dialog_body a,.filled-container.editing .cke_dialog_body a,.ui-dialog .cke_dialog_body a,.cke_dialog .cke_dialog_body a{display:inline}
+.ui-dialog{padding:0 !important;border:0 !important;}
+.ui-dialog .ui-dialog-content.ui-accordion > .ui-accordion-content{height:auto !important}
