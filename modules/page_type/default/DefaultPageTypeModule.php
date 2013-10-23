@@ -146,8 +146,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return true;
 	}
 	
-	protected function getPreviewMarkup($oContentObject, $sFrontentContents) {
-		return TagWriter::quickTag('div', array('data-object-id' => $oContentObject->getId(), 'data-container' => $oContentObject->getContainerName(), 'class' => 'filled-container'), $sFrontentContents);
+	protected function getPreviewMarkup($oContentObject, $mFrontentContents) {
+		if(!($mFrontentContents instanceof Template)) {
+			$mFrontentContents = new Template($mFrontentContents, null, true);
+		}
+		return TagWriter::quickTag('div', array('data-object-id' => $oContentObject->getId(), 'data-container' => $oContentObject->getContainerName(), 'class' => 'filled-container'), $mFrontentContents);
 	}
 	
 	protected function getModuleContents($oModule, $bAllowTemplate = true) {
