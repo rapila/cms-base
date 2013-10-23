@@ -25,7 +25,7 @@ class CacheKey {
 		} else {
 			$aVar = func_get_args();
 		}
-		foreach($sVar as $sVarName) {
+		foreach($aVar as $sVarName) {
 			$sValue = '';
 			if(isset($_REQUEST[$sVar])) {
 				$sValue = $_REQUEST[$sVar];
