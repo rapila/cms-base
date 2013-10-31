@@ -51,7 +51,10 @@ class CacheKey {
 		if($oNavigationItem === null) {
 			$oNavigationItem = FrontendManager::$CURRENT_NAVIGATION_ITEM;
 		}
-		$this->aVars['path'] = implode('/', $oNavigationItem->getLink());
+		$this->aVars['path'] = '';
+		if($oNavigationItem) {
+			$this->aVars['path'] = implode('/', $oNavigationItem->getLink());
+		}
 		return $this;
 	}
 	
