@@ -76,7 +76,6 @@ class AdminManager extends Manager {
 			$oLanguage->setCreatedBy($oUser->getId());
 			$oLanguage->setUpdatedBy($oUser->getId());
 		}
-		ErrorHandler::log('createLanguageIfNoneExist', $oUser);
 		LanguagePeer::ignoreRights(true);
 		$oLanguage->save();
 	}
