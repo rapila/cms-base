@@ -96,7 +96,6 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 		}
-		ErrorHandler::log($mData);
 		return parent::getSaveData($mData);
 	}
 	

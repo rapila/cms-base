@@ -29,7 +29,6 @@ class RoleDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$iCountRolesUsed = UserRoleQuery::create()->filterByRole($oRole)->joinUserRelatedByUserId()->count();
 		$iCountRolesInGroupsUsed = UserGroupQuery::create()->filterByRole($oRole)->joinUserRelatedByUserId()->count();
-		ErrorHandler::log('roleIsUsed', $oRole->getRoleKey(), $iCountRolesUsed, $iCountRolesInGroupsUsed);
 		return ($iCountRolesUsed + $iCountRolesInGroupsUsed) > 0;
 	}
 	
