@@ -69,19 +69,16 @@ class PreviewManager extends FrontendManager {
 	}
 	
 	protected function fillContent() {
-<<<<<<< HEAD
 		$oPageTypeWidget = WidgetModule::getWidget('page_type');
 		$oPageTypeWidget->setPageTypeModule($this->oPageType);
-=======
-		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 
->>>>>>> dec672b... use constant for jquery version
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
 		$oConstants->replaceIdentifier('page_type_widget_session', $oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
 
+		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addCustomJs($oConstants);
 		$oResourceIncluder->addResource('preview/preview.js');
 
