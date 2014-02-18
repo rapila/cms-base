@@ -39,24 +39,20 @@ div.container {
 }
 
 .page_detail_controls {
+	height: 36px;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 25px;
 	background: #ebedef;
 	border-top: 1px solid #C1C2C4;
-	bottom: 25px;
-	height: 36px;
-	left: 0;
-	padding: 0;
-	position: fixed;
-	right: 0;
-	text-align: right;
 }
+
 .page_detail_controls button {
-	float: right;
 }
+
 .page_detail_controls button[name=save] {
 	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_dark.png");
-}
-.page_detail_controls button[name=save]:hover {
-	color: #E3EF99;
 }
 
 .page_detail_controls button.ui-button.ui-state-default[name=cancel],
@@ -67,9 +63,10 @@ div.container {
 }
 
 .page_detail_controls div {
-	height:100%;
+	height: 100%;
 	border-top: 1px solid #FFF;
-	padding:0.5em 8em 0 0.5em;
+	padding: 0.5em 8em 0;
+	float: right;
 }
 
 body.pages #admin_main {
@@ -82,7 +79,7 @@ body.pages #admin_main {
 	height: 100%;
 	margin: 23px 2px 2px 20px;
 	padding: 0px;
-	min-height: 200px;
+	min-height: 150px;
 	width: 61px;
 }
 
@@ -111,12 +108,12 @@ div.delete_drop_zone.ui-state-droppable {
 .page_detail > .accordion > .ui-accordion-content,
 .page_detail > .accordion > .ui-accordion-content > .ui-tabs > .ui-tabs-panel,
 .page_detail > .accordion > .ui-accordion-content > form > .ui-tabs > .ui-tabs-panel {
-	border-top: 1px #cccdcf solid;
-	padding: 0 0 20px 26px;
+	padding: 0 0 0 26px;
 }
 
-.accordion > .ui-accordion-content.ui-accordion-content-active {
-	border-top: none;
+.page_detail > .accordion > .ui-accordion-content {
+	border: none;
+	padding-bottom: 20px;
 }
 
 .page_detail > .accordion > .ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header,
@@ -127,6 +124,7 @@ div.delete_drop_zone.ui-state-droppable {
 .page_detail > .accordion > .ui-accordion-content > .ui-tabs,
 .page_detail > .accordion > .ui-accordion-content > form > .ui-tabs {
 	margin-left: -26px;
+	border: none;
 }
 
 #admin_sidebar input {

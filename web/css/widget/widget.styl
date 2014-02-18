@@ -1,3 +1,5 @@
+@import 'nib'
+
 @font-face
 	font-family 'Rapila-Icons'
 	src url('../../fonts/Rapila-UI-Icons.woff') format('woff'), url('../../fonts/Rapila-UI-Icons.otf') format('truetype'), url('../../fonts/Rapila-UI-Icons.svg#Rapila-UI-Icons') format('svg')
@@ -140,11 +142,6 @@ textarea
 .ui-placeholder
 	background-color #d3d3d3
 
-.rapila-button
-	padding 0.2em 1em 0.1em 1em
-	margin-right 0.2em
-	cursor pointer
-
 *[data-widget-type=document_thumbnail_view] .ui-state-hover
 	background #e3ef99
 	background-image none
@@ -170,7 +167,7 @@ fieldset
 		> label
 			display inline-block
 
-.ui-widget-content 
+.ui-widget-content
 	.status_section
 		font-family Arial
 		padding-right 2em
@@ -188,13 +185,15 @@ fieldset
 	color #efefef
 	font-weight bold
 	border 0
-.ui-dialog 
+.ui-dialog
 	.ui-dialog-titlebar
 		&.ui-widget-header
 			border-radius 3px 3px 0 0
 			padding 0.6em 0.8em 2em
 			background #2d3238
 		.ui-dialog-titlebar-close
+			background none
+			border none
 			margin-top -20px
 	.ui-dialog-title
 		float left
@@ -211,12 +210,18 @@ fieldset
 	background #2d3238
 	border-top 0
 
+// Parts of the UI on a black background need to have green highlights
 .ui-dialog-buttonpane,
-.ui-dialog-content
-	button.ui-state-focus,
-	button.ui-state-highlight,
-	button.ui-state-hover
+.ui-dialog-content,
+#rapila_admin_menu,
+.ui-dialog-titlebar
+	.ui-state-focus,
+	.ui-state-highlight,
+	.ui-state-hover
 		color #e3ef99
+		.ui-icon
+			background-image url("../admin/theme/images/ui-icons_b8d600_256x240.png")
+	
 
 .ui-dialog-content
 	cursor auto
@@ -231,28 +236,28 @@ button.ui-button.ui-state-default
 	line-height 14px
 	border-color #000000 #555555 #666666 #555555
 	border-width 1px 1px 1px 1px
-	-moz-border-radius 3px
-	-webkit-border-radius 3px
-	&.ui-dialog-titlebar-close:not(.ui-state-hover)
-		background-image none
-		border-color transparent
-button.ui-button.ui-state-hover.ui-dialog-titlebar-close
-	background-image url("../admin/theme/images/ui-icons_000000_256x240.png")
+	border-radius 3px
 
 #admin_info_bar button.ui-button.info-bar-element.ui-state-default
 	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
 	line-height 14px
 	border-color #000000 #555555 #666666 #555555
 	border-width 1px 1px 1px 1px
-	-moz-border-radius 3px
-	-webkit-border-radius 3px
+	border-radius 3px
 
 button.rapila-button
+	padding 0 2em
+	height 22px
+	margin-right 0.2em
+	cursor pointer
 	&.dashboard
 		background transparent url("../../images/admin/dashboard_icon.gif") no-repeat center
 	&.logout_link
 		border-radius 12px
 		background transparent url("../../images/admin/logout_icon.gif") no-repeat center
+	&.ui-button-text-only
+		.ui-button-text
+			padding 0
 
 .ui-widget-content
 	background-image none
@@ -417,14 +422,14 @@ tbody.ui-editable-items-list
 			font-weight 700
 			color #666666
 			padding 0.3em 0.3em 0.3em 1.6em
-	.ui-state-active 
+	.ui-state-active
 		.ui-icon-triangle-1-s
 			background-image url("../../images/admin/icon_triangle_open_active.png")
 			background-position 3px 3px
 		.ui-icon-triangle-1-e
 			background-image url("../../images/admin/icon_triangle_closed_active.png")
 			background-position 3px 3px
-	.ui-state-hover 
+	.ui-state-hover
 		.ui-icon-triangle-1-s
 			background-image url("../../images/admin/icon_triangle_open_active.png")
 			background-position 3px 3px
