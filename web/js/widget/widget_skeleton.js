@@ -31,8 +31,8 @@
 		var style = jQuery('<style/>');
 		head.append(style);
 		var resize_handler = function() {
-			var height = win.height()*0.8;
-			style.text('.ui-dialog {max-height: '+(height)+'px;} .ui-dialog-content {max-height: '+(height-107)+'px;}');
+			var height = Math.floor(win.height()*0.85);
+			style.text('.ui-dialog {max-height: '+(height)+'px;} .ui-dialog-content {max-height: '+(height-97)+'px !important;}');
 		};
 	
 		win.resize(resize_handler);
