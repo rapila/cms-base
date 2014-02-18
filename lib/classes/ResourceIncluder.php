@@ -384,8 +384,12 @@ class ResourceIncluder {
 	* Also note that a value of "internal" for $bConsolidate will only have an effect on js libraries if they’re not being locally cached (use_local_library_cache is false)
 	*/
 	public function getIncludes($bPrintNewlines = true, $bConsolidate = null) {
+		$bConsolidateSetting = Settings::getSetting('general', 'consolidate_resources', false, 'resource_includer');
 		if($bConsolidate === null) {
-			$bConsolidate = Settings::getSetting('general', 'consolidate_resources', false, 'resource_includer');
+			$bConsolidate = $bConsolidateSetting;
+		}
+		if($bConsolidate === 'never' || $bConsolidateSetting === 'never') { //In the “never” case, $bConsolidateSetting overrides a local $bConsolidate
+			$bConsolidate = false;
 		}
 		if($bConsolidate && !ini_get('allow_url_fopen')) {
 			// Never consolidate external files if fopen_wrappers are disabled
