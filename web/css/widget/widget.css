@@ -51,7 +51,7 @@ fieldset.option_groups > label{display:inline-block}
 .ui-dialog-content.ui-accordion > .ui-accordion-content{padding:1em 2.2em}
 button.ui-button.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-webkit-border-radius:3px;border-radius:3px}
 #admin_info_bar button.ui-button.info-bar-element.ui-state-default{background:url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent;line-height:14px;border-color:#000 #555 #666 #555;border-width:1px 1px 1px 1px;-webkit-border-radius:3px;border-radius:3px}
-button.rapila-button{padding:0 2em;height:22px;margin-right:.2em;cursor:pointer;}
+button.rapila-button{height:22px;margin-right:.2em;cursor:pointer;}
 button.rapila-button.dashboard{background:transparent url("../../images/admin/dashboard_icon.gif") no-repeat center}
 button.rapila-button.logout_link{-webkit-border-radius:12px;border-radius:12px;background:transparent url("../../images/admin/logout_icon.gif") no-repeat center}
 button.rapila-button.ui-button-text-only .ui-button-text{padding:0}
