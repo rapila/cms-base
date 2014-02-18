@@ -27,7 +27,7 @@ class PreviewManager extends FrontendManager {
 		$oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		//Override some site styles in specific regions
 		$oResourceIncluder->addResource('preview/preview-reset.css');
-		$oResourceIncluder->addResource('preview/theme/jquery-ui-1.10.2.custom.min.css');
+		$oResourceIncluder->addResource('admin/theme/jquery-ui-1.10.2.custom.min.css');
 		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 
