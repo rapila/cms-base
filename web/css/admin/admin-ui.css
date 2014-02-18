@@ -75,7 +75,7 @@ h3.status{padding-left:.3em}
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon{background-image:url("../../images/admin/icon_triangle_closed.png");background-position:6px 5px}
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon:hover{background-image:url("../../images/admin/icon_triangle_closed_active.png");background-position:6px 5px}
 .users fieldset.option_groups{padding:0 0 .6em 0}
-.ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content{padding:0;border-color:#cccdcf}
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content{padding:0;border-color:#cccdcf}
 label span.error_display:before,legend span.error_display:before{content:' '}
 label span.error_display,legend span.error_display,.error_display{color:#f00}
 .delete_drop_zone{float:left;height:100px;margin:23px 2px 2px 2px;padding:2px;width:100px}
