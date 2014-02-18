@@ -292,7 +292,10 @@ select.ui-widget-content.autowidth
 .ui-tabs
 	border none
 	.ui-tabs-nav
+		border-radius 0
 		li
+			position relative
+			top 1px
 			margin 2px 2px 0 2px
 			background-color #ebedef
 			a
@@ -313,7 +316,8 @@ select.ui-widget-content.autowidth
 	.ui-tabs-panel
 		border-top 1px solid #cccdcf
 		padding 0
-		margin-top: -1px
+		margin-top -1px
+		clear both
 	#list.ui-tabs-panel,
 	#thumbnail.ui-tabs-panel
 		border-top 0

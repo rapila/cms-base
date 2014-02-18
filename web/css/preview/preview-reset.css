@@ -13,3 +13,4 @@
 #rapila_admin_menu .cke_dialog_body a,.filled-container.editing:not([data-editing-object-type="text"]) .cke_dialog_body a,.ui-dialog:not('.cke_reset_all') .cke_dialog_body a{display:inline}
 .ui-dialog{padding:0 !important;border:0 !important;}
 .ui-dialog .ui-dialog-content.ui-accordion > .ui-accordion-content{height:auto !important}
+#rapila_admin_menu .ui-widget,.ui-dialog.ui-widget{font-size:12px}

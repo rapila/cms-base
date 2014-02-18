@@ -65,13 +65,14 @@ input.ui-widget-content.input_short{width:6em}
 input.ui-widget-content.input_medium{width:15em}
 .autowidth,input.ui-widget-content.autowidth,select.ui-widget-content.autowidth{width:auto}
 .ui-tabs{border:none;}
-.ui-tabs .ui-tabs-nav li{margin:2px 2px 0 2px;background-color:#ebedef;}
+.ui-tabs .ui-tabs-nav{-webkit-border-radius:0;border-radius:0;}
+.ui-tabs .ui-tabs-nav li{position:relative;top:1px;margin:2px 2px 0 2px;background-color:#ebedef;}
 .ui-tabs .ui-tabs-nav li a{padding:.5em 1.5em .2em}
 .ui-tabs .ui-tabs-nav li.ui-state-default{background:transparent;border:1px solid #cccdcf}
 .ui-tabs .ui-tabs-nav li.ui-state-active{background-color:#fff;position:relative;border-bottom:none;}
 .ui-tabs .ui-tabs-nav li.ui-state-active a{color:#000}
 .ui-tabs .ui-tabs-nav.ui-widget-header{background:transparent url("")}
-.ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf;padding:0;margin-top:-1px}
+.ui-tabs .ui-tabs-panel{border-top:1px solid #cccdcf;padding:0;margin-top:-1px;clear:both}
 .ui-tabs #list.ui-tabs-panel,.ui-tabs #thumbnail.ui-tabs-panel{border-top:0}
 .ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header,.ui-accordion-content > form > .ui-tabs > .ui-tabs-nav.ui-widget-header{background-color:#ebedef}
 div.inner-tab-panel-content{margin-left:-26px;margin-top:15px;}
