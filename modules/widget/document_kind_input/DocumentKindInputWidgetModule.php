@@ -36,6 +36,9 @@ class DocumentKindInputWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function getSelectedDocumentKind() {
+		if($this->sSelectedDocumentKind === null) {
+			return CriteriaListWidgetDelegate::SELECT_ALL;
+		}
 		return $this->sSelectedDocumentKind;
 	}
 
