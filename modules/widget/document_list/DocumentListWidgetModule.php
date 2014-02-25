@@ -6,7 +6,6 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 
 	private $oListWidget;
 	public $oDocumentsViewWidgetDelegate;
-	private $oDocumentKindFilter;
 	private $oLanguageFilter;
 	
 	public function __construct($sSessionKey = null, $oDocumentsViewWidgetDelegate = null) {
