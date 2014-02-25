@@ -77,7 +77,7 @@ class DisplayDocumentFileModule extends FileModule {
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
 		$oCache->setContents(stream_get_contents($rDataStream));
-		$oCache->sendCacheControlHeaders($iTimestamp);
+		$oCache->sendCacheControlHeaders();
 		rewind($rDataStream);
 		fpassthru($rDataStream);
 	}
