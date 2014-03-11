@@ -374,20 +374,26 @@
 							var protector = new UnsavedChanges(element);
 							var buttons = [{
 								text: '{{writeString=wns.save}}',
-								'class': 'primary ui-state-highlight',
+								'class': 'primary ui-state-highlight save',
 								click: save.bind(this, false),
 								accesskey: 's'
 							},
 							{
 								text: '{{writeString=wns.save_as_draft}}',
-								click: save.bind(this, true)
+								click: save.bind(this, true),
+								'class': 'save-as-draft'
 							}];
 							if(widget.additional_buttons) {
 								jQuery.each(widget.additional_buttons, function(i, button) {
-									buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button', icons: {primary: 'ui-icon-'+button.icon}});
+									buttons.unshift({
+										text: button.text,
+										click: button.action.bind(widget), 'class': 'ui-additional-button',
+										icons: {primary: 'ui-icon-'+button.icon}
+									});
 								});
 							}
 							element.dialog({
+								dialogClass: 'default-page-type-editor',
 								close: function() {
 									protector.unprotect(element).release();
 									if(widget.destroy) {
