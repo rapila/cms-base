@@ -162,7 +162,7 @@ Widget.types.detail = {
 				click: this.save.bind(this)
 			}
 		];
-		this.settings.has_cancel_button && buttons.push({
+		this.settings.has_cancel_button && buttons.unshift({
 			text: "{{writeString=wns.cancel}}",
 			'class': 'secondary standard',
 			click: this.settings.cancel_callback
