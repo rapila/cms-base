@@ -72,7 +72,7 @@ Widget.types.detail = {
 		this.instance = instance;
 		this.content = instance.content || instance._element;
 		this.clickable_labels_for(this.content);
-
+		
 		var _this = this;
 		var protector = new UnsavedChanges(this.content);
 
@@ -174,12 +174,11 @@ Widget.types.detail = {
 		});
 		buttons = buttons.concat(this.settings.additionalButtons);
 		// option something like.....
-		
+
 		this.content.dialog({
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
 			modal: this.settings.modal,
-			disabled: this.settings.disabled,
 			resizable: this.settings.resizable,
 			closeOnEscape: this.settings.closeOnEscape,
 			beforeClose: this.settings.close_callback,
@@ -196,8 +195,11 @@ Widget.types.detail = {
 				}
 			}
 		});
-		this.select();
 		this.has_dialog = true;
+		if(this.settings.disabled) {
+			this.disable();
+		}
+		this.select();
 		this.fire('opened');
 		if(this.instance) {
 			this.instance.fire('opened');
@@ -388,7 +390,7 @@ Widget.types.detail = {
 	
 	enable: function() {
 		if(this.has_dialog) {
-			this.content.dialog('enable');
+			this.content.closest('.ui-dialog').removeClass('ui-state-disabled');
 		} else {
 			this.settings.disabled = false;
 		}
@@ -396,7 +398,7 @@ Widget.types.detail = {
 
 	disable: function() {
 		if(this.has_dialog) {
-			this.content.dialog('disable');
+			this.content.closest('.ui-dialog').addClass('ui-state-disabled');
 		} else {
 			this.settings.disabled = true;
 		}
