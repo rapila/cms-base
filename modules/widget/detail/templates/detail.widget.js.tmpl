@@ -158,21 +158,23 @@ Widget.types.detail = {
 		var buttons = [
 			{
 				text: "{{writeString=wns.save}}",
-				'class': 'primary ui-state-highlight',
+				'class': 'primary ui-state-highlight standard',
 				click: this.save.bind(this)
 			}
 		];
 		this.settings.has_cancel_button && buttons.push({
 			text: "{{writeString=wns.cancel}}",
-			'class': 'secondary',
+			'class': 'secondary standard',
 			click: this.settings.cancel_callback
 		});
-		this.settings.has_delete_button && buttons.push({
+		this.settings.has_delete_button && buttons.unshift({
 			text: "{{writeString=wns.delete}}",
-			'class': 'secondary',
+			'class': 'secondary special',
 			click: this.settings.delete_callback
 		});
-		buttons = buttons.concat(this.settings.additionalButtons);
+		buttons = buttons.concat(this.settings.additionalButtons.map(function(butt) {
+			return $.extend({}, butt, {'class': 'class' in butt ? butt['class']+' special' : 'special'});
+		}));
 		// option something like.....
 
 		this.content.dialog({

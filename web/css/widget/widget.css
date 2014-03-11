@@ -38,6 +38,9 @@ fieldset.option_groups > label{display:inline-block}
 .ui-widget-content .status_section fieldset{border:1px dotted #c0c0c0;padding:0}
 .ui-widget-content .status_section select{width:15em}
 .ui-widget-header{color:#efefef;font-weight:bold;border:0}
+.ui-dialog .ui-dialog-buttonpane{padding-left:1em;}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{width:100%;float:none;}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button:not(.special){float:right}
 .ui-dialog .ui-dialog-titlebar.ui-widget-header{-webkit-border-radius:3px 3px 0 0;border-radius:3px 3px 0 0;padding:.6em .8em 2em;background:#2d3238}
 .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close{background:none;border:none;margin-top:-20px}
 .ui-dialog .ui-dialog-title{float:left;margin:.1em 1em .2em 0}
