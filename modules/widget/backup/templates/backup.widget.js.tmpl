@@ -24,7 +24,7 @@ Widget.types.backup = {
 				if(arguments[1]) {
 					return;
 				}
-				Widget.confirm('{{writeString=module.admin.backup}}', AdminInterface.strings.get_string('wns.backup.loader.load_success', {query_count: count}), function() {
+				Widget.confirm('{{writeString=module.widget.backup}}', AdminInterface.strings.get_string('wns.backup.loader.load_success', {query_count: count}), function() {
 					window.location.href = window.location.href;
 				}, null, '{{writeString=wns.reload}}');
 			});
@@ -79,7 +79,7 @@ Widget.types.backup = {
 			_this.backupToFile(file_name.val(), dumptool.val(), function(message) {
 				_this.changed_dashboard_config();
 				if(message !== undefined) {
-					Widget.confirm('{{writeString=module.admin.backup}}', '{{writeString=wns.backup.exporter.export_success}} '+message, jQuery.noop, null);
+					Widget.confirm('{{writeString=module.widget.backup}}', '{{writeString=wns.backup.exporter.export_success}} '+message, jQuery.noop, null);
 				}
 			});
 		});
