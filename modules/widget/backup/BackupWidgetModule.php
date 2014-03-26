@@ -107,19 +107,25 @@ class BackupWidgetModule extends PersistentWidgetModule {
 	}
 
 	private static function detectMysqldumpLocation() {
-		// 1st: use mysqldump location from `which` command.
+
+		// 1st: try config
+		if (Settings::getSetting('admin', 'mysql_dump_tool', null) !== null) {
+			return Settings::getSetting('admin', 'mysql_dump_tool', null);
+		}
+
+		// 2nd: use mysqldump location from `which` command.
 		$sMySqlDumpTool = `which mysqldump`;
 		if (is_executable($sMySqlDumpTool)) {
 			return $sMySqlDumpTool;
 		}
 
-		// 2nd: try to detect the path using `which` for `mysql` command.
+		// 3rd: try to detect the path using `which` for `mysql` command.
 		$sMySqlDumpTool = dirname(`which mysql`) . "/mysqldump";
 		if (is_executable($sMySqlDumpTool)) {
 			return $sMySqlDumpTool;
 		}
 
-		// 3rd: detect the path from the available paths.
+		// 4th: detect the path from the available paths.
 		// you can add additional paths you come across, in future, here.
 		$aMySqyDumpToolPath = array(
 			'/usr/bin/mysqldump', // Linux
@@ -133,8 +139,8 @@ class BackupWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		
-		// 4th: auto detection has failed!
-		return Settings::getSetting('admin', 'mysql_dump_tool', null);
+		// 5th: detection has failed
+		return null;
 	}
 
 	public function deleteBackupFile($sBackupFile) {
