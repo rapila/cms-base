@@ -9,8 +9,9 @@ class TemplateIdentifierContextTests extends PHPUnit_Framework_TestCase {
 EOT;
 
 		$oTemplate = new Template($sTemplateText, null, true);
+
 		$oTemplate->replaceIdentifier('identifier', 'identifier');
-		
+
 		$this->assertSame(" sidentifier", $oTemplate->render());
 	}
 	
@@ -168,10 +169,10 @@ EOT
 EOT;
 
 		$oTemplate = new Template($sTemplateText, null, true);
-		
+
 		$oTemplate->replaceIdentifier('test2', 'text');
 		$oTemplate->replaceIdentifier('test1', 'text');
-		
+
 		$this->assertSame(<<<EOT
 
 	text
@@ -227,6 +228,27 @@ EOT;
 
 
 text
+
+EOT
+, $oTemplate->render());
+	}
+	
+	public function testContextsWithNamespaces() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=id}}{{id.help}}: {{id.kill}}{{identifierContext=end;name=id}}
+
+EOT;
+
+		$oTemplate = new Template($sTemplateText, null, true);
+		
+		$oTemplate->replaceIdentifierMultiple('id', array('help' => 'me', 'kill' => 'no-one'));
+		$oTemplate->replaceIdentifierMultiple('id', array('help' => 'yourself', 'kill' => 'everyone'));
+		
+		
+		$this->assertSame(<<<EOT
+me: no-one
+yourself: everyone
+
 
 EOT
 , $oTemplate->render());

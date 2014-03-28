@@ -54,7 +54,7 @@ class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testArrayAssocReplace() {
-		$oTestTemplate = new Template('{{test}}', null, true);
+		$oTestTemplate = new Template('{{test.test}}', null, true);
 		$oTestTemplate->replaceIdentifier('test', array('test' => 'test'));
 		$this->assertSame("test", $oTestTemplate->render());
 	}
