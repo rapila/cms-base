@@ -2,9 +2,7 @@
 /**
  * @package test
  */
-require_once 'PHPUnit/Extensions/OutputTestCase.php';
-
-class TemplateDirectOutputTests extends PHPUnit_Extensions_OutputTestCase {
+class TemplateDirectOutputTests extends PHPUnit_Framework_TestCase {
 	public function testDirectOutput() {
 		$sTemplateText = <<<EOT
 test
