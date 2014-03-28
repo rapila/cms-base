@@ -1,4 +1,4 @@
-<?php
+f<?php
 /**
 * @package test
 */
@@ -71,7 +71,7 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 		$oIncluder = ResourceIncluder::defaultIncluder();
 		$oIncluder->addResource(new FileResource(MAIN_DIR.'/base/web/images/admin/accept.png'));
 		$this->assertSame(array(MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png'), $oIncluder->getLocationsForIncludedResourcesOfPriority(ResourceIncluder::PRIORITY_NORMAL));
-		$this->assertSame('<img src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png"  />'."\n\n", $oIncluder->getIncludes()->render());
+		$this->assertSame('<img src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
 	}
 	
 	public function testSimpleIncludeCss() {
@@ -212,12 +212,12 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 	
 	public function testMultipleIncludes() {
 		$oIncluder = ResourceIncluder::defaultIncluder();
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'));
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+		$this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes(true, false)->render());
 	}
 	
 	public function testPrioritizedMultipleIncludes() {
@@ -226,8 +226,8 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'), null, null, array(), ResourceIncluder::PRIORITY_FIRST);
-		$this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes()->render());
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'), null, null, array(), ResourceIncluder::PRIORITY_FIRST);
+		$this->assertSame('<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n".'<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n", $oIncluder->getIncludes(true, false)->render());
 	}
 	
 	public function testInlineJs() {
@@ -243,7 +243,7 @@ EOT;
 
 		$oTemplate = new Template('settings.admin.js', array(DIRNAME_MODULES, 'admin', 'settings', 'templates'));
 		$oIncluder->addCustomJs($oTemplate);
-		$this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
+		$this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes(true, false)->render());
 	}
 	
 	public function testInlineCss() {
