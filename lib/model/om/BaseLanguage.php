@@ -144,12 +144,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Flag to prevent endless clearAllReferences($deep=true) loop, if this object is referenced
-     * @var        boolean
-     */
-    protected $alreadyInClearAllReferencesDeep = false;
-
-    /**
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
@@ -250,25 +244,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->created_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->created_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -290,25 +281,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->updated_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->updated_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -339,7 +327,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function setId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -360,7 +348,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function setPathPrefix($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -410,7 +398,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function setSort($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -477,7 +465,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function setCreatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -502,7 +490,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function setUpdatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -566,7 +554,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             if ($rehydrate) {
                 $this->ensureConsistency();
             }
-            $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 8; // 8 = LanguagePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -849,7 +837,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collPageStrings !== null) {
                 foreach ($this->collPageStrings as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -866,7 +854,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collLanguageObjects !== null) {
                 foreach ($this->collLanguageObjects as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -883,7 +871,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collLanguageObjectHistorys !== null) {
                 foreach ($this->collLanguageObjectHistorys as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -900,7 +888,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collStrings !== null) {
                 foreach ($this->collStrings as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -918,7 +906,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collUsersRelatedByLanguageId !== null) {
                 foreach ($this->collUsersRelatedByLanguageId as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -936,7 +924,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collDocuments !== null) {
                 foreach ($this->collDocuments as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -954,7 +942,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
             if ($this->collLinks !== null) {
                 foreach ($this->collLinks as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -983,28 +971,28 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(LanguagePeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`id`';
+            $modifiedColumns[':p' . $index++]  = '`ID`';
         }
         if ($this->isColumnModified(LanguagePeer::PATH_PREFIX)) {
-            $modifiedColumns[':p' . $index++]  = '`path_prefix`';
+            $modifiedColumns[':p' . $index++]  = '`PATH_PREFIX`';
         }
         if ($this->isColumnModified(LanguagePeer::IS_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_active`';
+            $modifiedColumns[':p' . $index++]  = '`IS_ACTIVE`';
         }
         if ($this->isColumnModified(LanguagePeer::SORT)) {
-            $modifiedColumns[':p' . $index++]  = '`sort`';
+            $modifiedColumns[':p' . $index++]  = '`SORT`';
         }
         if ($this->isColumnModified(LanguagePeer::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`created_at`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
         }
         if ($this->isColumnModified(LanguagePeer::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_at`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
         }
         if ($this->isColumnModified(LanguagePeer::CREATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`created_by`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
         }
         if ($this->isColumnModified(LanguagePeer::UPDATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_by`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
         }
 
         $sql = sprintf(
@@ -1017,28 +1005,28 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id`':
+                    case '`ID`':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
                         break;
-                    case '`path_prefix`':
+                    case '`PATH_PREFIX`':
                         $stmt->bindValue($identifier, $this->path_prefix, PDO::PARAM_STR);
                         break;
-                    case '`is_active`':
+                    case '`IS_ACTIVE`':
                         $stmt->bindValue($identifier, (int) $this->is_active, PDO::PARAM_INT);
                         break;
-                    case '`sort`':
+                    case '`SORT`':
                         $stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
                         break;
-                    case '`created_at`':
+                    case '`CREATED_AT`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
                         break;
-                    case '`updated_at`':
+                    case '`UPDATED_AT`':
                         $stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
                         break;
-                    case '`created_by`':
+                    case '`CREATED_BY`':
                         $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
                         break;
-                    case '`updated_by`':
+                    case '`UPDATED_BY`':
                         $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                 }
@@ -1102,11 +1090,11 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->validationFailures = array();
 
             return true;
+        } else {
+            $this->validationFailures = $res;
+
+            return false;
         }
-
-        $this->validationFailures = $res;
-
-        return false;
     }
 
     /**
@@ -1643,13 +1631,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByCreatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByCreatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
             $this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1695,13 +1682,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByUpdatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
             $this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1755,15 +1741,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addPageStrings()
      */
     public function clearPageStrings()
     {
         $this->collPageStrings = null; // important to set this to null since that means it is uninitialized
         $this->collPageStringsPartial = null;
-
-        return $this;
     }
 
     /**
@@ -1835,7 +1819,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collPageStringsPartial = true;
                     }
 
-                    $collPageStrings->getInternalIterator()->rewind();
                     return $collPageStrings;
                 }
 
@@ -1863,15 +1846,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $pageStrings A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setPageStrings(PropelCollection $pageStrings, PropelPDO $con = null)
     {
-        $pageStringsToDelete = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
+        $this->pageStringsScheduledForDeletion = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
 
-        $this->pageStringsScheduledForDeletion = unserialize(serialize($pageStringsToDelete));
-
-        foreach ($pageStringsToDelete as $pageStringRemoved) {
+        foreach ($this->pageStringsScheduledForDeletion as $pageStringRemoved) {
             $pageStringRemoved->setLanguage(null);
         }
 
@@ -1882,8 +1862,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collPageStrings = $pageStrings;
         $this->collPageStringsPartial = false;
-
-        return $this;
     }
 
     /**
@@ -1901,22 +1879,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collPageStrings || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPageStrings) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPageStrings());
+                }
+                $query = PageStringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPageStrings());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = PageStringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collPageStrings);
         }
-
-        return count($this->collPageStrings);
     }
 
     /**
@@ -1932,7 +1910,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initPageStrings();
             $this->collPageStringsPartial = true;
         }
-        if (!in_array($l, $this->collPageStrings->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPageStrings->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPageString($l);
         }
 
@@ -1950,7 +1928,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	PageString $pageString The pageString object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removePageString($pageString)
     {
@@ -1960,11 +1937,9 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                 $this->pageStringsScheduledForDeletion = clone $this->collPageStrings;
                 $this->pageStringsScheduledForDeletion->clear();
             }
-            $this->pageStringsScheduledForDeletion[]= clone $pageString;
+            $this->pageStringsScheduledForDeletion[]= $pageString;
             $pageString->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -2048,15 +2023,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjects()
      */
     public function clearLanguageObjects()
     {
         $this->collLanguageObjects = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectsPartial = null;
-
-        return $this;
     }
 
     /**
@@ -2128,7 +2101,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collLanguageObjectsPartial = true;
                     }
 
-                    $collLanguageObjects->getInternalIterator()->rewind();
                     return $collLanguageObjects;
                 }
 
@@ -2156,15 +2128,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjects A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setLanguageObjects(PropelCollection $languageObjects, PropelPDO $con = null)
     {
-        $languageObjectsToDelete = $this->getLanguageObjects(new Criteria(), $con)->diff($languageObjects);
+        $this->languageObjectsScheduledForDeletion = $this->getLanguageObjects(new Criteria(), $con)->diff($languageObjects);
 
-        $this->languageObjectsScheduledForDeletion = unserialize(serialize($languageObjectsToDelete));
-
-        foreach ($languageObjectsToDelete as $languageObjectRemoved) {
+        foreach ($this->languageObjectsScheduledForDeletion as $languageObjectRemoved) {
             $languageObjectRemoved->setLanguage(null);
         }
 
@@ -2175,8 +2144,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collLanguageObjects = $languageObjects;
         $this->collLanguageObjectsPartial = false;
-
-        return $this;
     }
 
     /**
@@ -2194,22 +2161,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collLanguageObjects || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjects) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjects());
+                }
+                $query = LanguageObjectQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjects());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = LanguageObjectQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjects);
         }
-
-        return count($this->collLanguageObjects);
     }
 
     /**
@@ -2225,7 +2192,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initLanguageObjects();
             $this->collLanguageObjectsPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjects->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjects->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObject($l);
         }
 
@@ -2243,7 +2210,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObject $languageObject The languageObject object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeLanguageObject($languageObject)
     {
@@ -2253,11 +2219,9 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                 $this->languageObjectsScheduledForDeletion = clone $this->collLanguageObjects;
                 $this->languageObjectsScheduledForDeletion->clear();
             }
-            $this->languageObjectsScheduledForDeletion[]= clone $languageObject;
+            $this->languageObjectsScheduledForDeletion[]= $languageObject;
             $languageObject->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -2341,15 +2305,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjectHistorys()
      */
     public function clearLanguageObjectHistorys()
     {
         $this->collLanguageObjectHistorys = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectHistorysPartial = null;
-
-        return $this;
     }
 
     /**
@@ -2421,7 +2383,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collLanguageObjectHistorysPartial = true;
                     }
 
-                    $collLanguageObjectHistorys->getInternalIterator()->rewind();
                     return $collLanguageObjectHistorys;
                 }
 
@@ -2449,15 +2410,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjectHistorys A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setLanguageObjectHistorys(PropelCollection $languageObjectHistorys, PropelPDO $con = null)
     {
-        $languageObjectHistorysToDelete = $this->getLanguageObjectHistorys(new Criteria(), $con)->diff($languageObjectHistorys);
+        $this->languageObjectHistorysScheduledForDeletion = $this->getLanguageObjectHistorys(new Criteria(), $con)->diff($languageObjectHistorys);
 
-        $this->languageObjectHistorysScheduledForDeletion = unserialize(serialize($languageObjectHistorysToDelete));
-
-        foreach ($languageObjectHistorysToDelete as $languageObjectHistoryRemoved) {
+        foreach ($this->languageObjectHistorysScheduledForDeletion as $languageObjectHistoryRemoved) {
             $languageObjectHistoryRemoved->setLanguage(null);
         }
 
@@ -2468,8 +2426,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collLanguageObjectHistorys = $languageObjectHistorys;
         $this->collLanguageObjectHistorysPartial = false;
-
-        return $this;
     }
 
     /**
@@ -2487,22 +2443,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collLanguageObjectHistorys || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjectHistorys) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjectHistorys());
+                }
+                $query = LanguageObjectHistoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjectHistorys());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = LanguageObjectHistoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjectHistorys);
         }
-
-        return count($this->collLanguageObjectHistorys);
     }
 
     /**
@@ -2518,7 +2474,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initLanguageObjectHistorys();
             $this->collLanguageObjectHistorysPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjectHistorys->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjectHistorys->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObjectHistory($l);
         }
 
@@ -2536,7 +2492,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeLanguageObjectHistory($languageObjectHistory)
     {
@@ -2546,11 +2501,9 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                 $this->languageObjectHistorysScheduledForDeletion = clone $this->collLanguageObjectHistorys;
                 $this->languageObjectHistorysScheduledForDeletion->clear();
             }
-            $this->languageObjectHistorysScheduledForDeletion[]= clone $languageObjectHistory;
+            $this->languageObjectHistorysScheduledForDeletion[]= $languageObjectHistory;
             $languageObjectHistory->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -2634,15 +2587,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addStrings()
      */
     public function clearStrings()
     {
         $this->collStrings = null; // important to set this to null since that means it is uninitialized
         $this->collStringsPartial = null;
-
-        return $this;
     }
 
     /**
@@ -2714,7 +2665,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collStringsPartial = true;
                     }
 
-                    $collStrings->getInternalIterator()->rewind();
                     return $collStrings;
                 }
 
@@ -2742,15 +2692,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $strings A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setStrings(PropelCollection $strings, PropelPDO $con = null)
     {
-        $stringsToDelete = $this->getStrings(new Criteria(), $con)->diff($strings);
+        $this->stringsScheduledForDeletion = $this->getStrings(new Criteria(), $con)->diff($strings);
 
-        $this->stringsScheduledForDeletion = unserialize(serialize($stringsToDelete));
-
-        foreach ($stringsToDelete as $stringRemoved) {
+        foreach ($this->stringsScheduledForDeletion as $stringRemoved) {
             $stringRemoved->setLanguage(null);
         }
 
@@ -2761,8 +2708,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collStrings = $strings;
         $this->collStringsPartial = false;
-
-        return $this;
     }
 
     /**
@@ -2780,22 +2725,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collStrings || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collStrings) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getStrings());
+                }
+                $query = StringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getStrings());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = StringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collStrings);
         }
-
-        return count($this->collStrings);
     }
 
     /**
@@ -2811,7 +2756,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initStrings();
             $this->collStringsPartial = true;
         }
-        if (!in_array($l, $this->collStrings->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collStrings->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddString($l);
         }
 
@@ -2829,7 +2774,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	String $string The string object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeString($string)
     {
@@ -2839,11 +2783,9 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                 $this->stringsScheduledForDeletion = clone $this->collStrings;
                 $this->stringsScheduledForDeletion->clear();
             }
-            $this->stringsScheduledForDeletion[]= clone $string;
+            $this->stringsScheduledForDeletion[]= $string;
             $string->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -2902,15 +2844,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addUsersRelatedByLanguageId()
      */
     public function clearUsersRelatedByLanguageId()
     {
         $this->collUsersRelatedByLanguageId = null; // important to set this to null since that means it is uninitialized
         $this->collUsersRelatedByLanguageIdPartial = null;
-
-        return $this;
     }
 
     /**
@@ -2982,7 +2922,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collUsersRelatedByLanguageIdPartial = true;
                     }
 
-                    $collUsersRelatedByLanguageId->getInternalIterator()->rewind();
                     return $collUsersRelatedByLanguageId;
                 }
 
@@ -3010,15 +2949,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $usersRelatedByLanguageId A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setUsersRelatedByLanguageId(PropelCollection $usersRelatedByLanguageId, PropelPDO $con = null)
     {
-        $usersRelatedByLanguageIdToDelete = $this->getUsersRelatedByLanguageId(new Criteria(), $con)->diff($usersRelatedByLanguageId);
+        $this->usersRelatedByLanguageIdScheduledForDeletion = $this->getUsersRelatedByLanguageId(new Criteria(), $con)->diff($usersRelatedByLanguageId);
 
-        $this->usersRelatedByLanguageIdScheduledForDeletion = unserialize(serialize($usersRelatedByLanguageIdToDelete));
-
-        foreach ($usersRelatedByLanguageIdToDelete as $userRelatedByLanguageIdRemoved) {
+        foreach ($this->usersRelatedByLanguageIdScheduledForDeletion as $userRelatedByLanguageIdRemoved) {
             $userRelatedByLanguageIdRemoved->setLanguageRelatedByLanguageId(null);
         }
 
@@ -3029,8 +2965,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collUsersRelatedByLanguageId = $usersRelatedByLanguageId;
         $this->collUsersRelatedByLanguageIdPartial = false;
-
-        return $this;
     }
 
     /**
@@ -3048,22 +2982,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collUsersRelatedByLanguageId || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUsersRelatedByLanguageId) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUsersRelatedByLanguageId());
+                }
+                $query = UserQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUsersRelatedByLanguageId());
+                return $query
+                    ->filterByLanguageRelatedByLanguageId($this)
+                    ->count($con);
             }
-            $query = UserQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguageRelatedByLanguageId($this)
-                ->count($con);
+        } else {
+            return count($this->collUsersRelatedByLanguageId);
         }
-
-        return count($this->collUsersRelatedByLanguageId);
     }
 
     /**
@@ -3079,7 +3013,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initUsersRelatedByLanguageId();
             $this->collUsersRelatedByLanguageIdPartial = true;
         }
-        if (!in_array($l, $this->collUsersRelatedByLanguageId->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUsersRelatedByLanguageId->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserRelatedByLanguageId($l);
         }
 
@@ -3097,7 +3031,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	UserRelatedByLanguageId $userRelatedByLanguageId The userRelatedByLanguageId object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeUserRelatedByLanguageId($userRelatedByLanguageId)
     {
@@ -3110,8 +3043,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->usersRelatedByLanguageIdScheduledForDeletion[]= $userRelatedByLanguageId;
             $userRelatedByLanguageId->setLanguageRelatedByLanguageId(null);
         }
-
-        return $this;
     }
 
     /**
@@ -3120,15 +3051,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addDocuments()
      */
     public function clearDocuments()
     {
         $this->collDocuments = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentsPartial = null;
-
-        return $this;
     }
 
     /**
@@ -3200,7 +3129,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collDocumentsPartial = true;
                     }
 
-                    $collDocuments->getInternalIterator()->rewind();
                     return $collDocuments;
                 }
 
@@ -3228,15 +3156,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $documents A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setDocuments(PropelCollection $documents, PropelPDO $con = null)
     {
-        $documentsToDelete = $this->getDocuments(new Criteria(), $con)->diff($documents);
+        $this->documentsScheduledForDeletion = $this->getDocuments(new Criteria(), $con)->diff($documents);
 
-        $this->documentsScheduledForDeletion = unserialize(serialize($documentsToDelete));
-
-        foreach ($documentsToDelete as $documentRemoved) {
+        foreach ($this->documentsScheduledForDeletion as $documentRemoved) {
             $documentRemoved->setLanguage(null);
         }
 
@@ -3247,8 +3172,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collDocuments = $documents;
         $this->collDocumentsPartial = false;
-
-        return $this;
     }
 
     /**
@@ -3266,22 +3189,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collDocuments || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocuments) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocuments());
+                }
+                $query = DocumentQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocuments());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = DocumentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collDocuments);
         }
-
-        return count($this->collDocuments);
     }
 
     /**
@@ -3297,7 +3220,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initDocuments();
             $this->collDocumentsPartial = true;
         }
-        if (!in_array($l, $this->collDocuments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocuments->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocument($l);
         }
 
@@ -3315,7 +3238,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	Document $document The document object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeDocument($document)
     {
@@ -3328,8 +3250,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->documentsScheduledForDeletion[]= $document;
             $document->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -3463,15 +3383,13 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Language The current object (for fluent API support)
+     * @return void
      * @see        addLinks()
      */
     public function clearLinks()
     {
         $this->collLinks = null; // important to set this to null since that means it is uninitialized
         $this->collLinksPartial = null;
-
-        return $this;
     }
 
     /**
@@ -3543,7 +3461,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                       $this->collLinksPartial = true;
                     }
 
-                    $collLinks->getInternalIterator()->rewind();
                     return $collLinks;
                 }
 
@@ -3571,15 +3488,12 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      *
      * @param PropelCollection $links A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Language The current object (for fluent API support)
      */
     public function setLinks(PropelCollection $links, PropelPDO $con = null)
     {
-        $linksToDelete = $this->getLinks(new Criteria(), $con)->diff($links);
+        $this->linksScheduledForDeletion = $this->getLinks(new Criteria(), $con)->diff($links);
 
-        $this->linksScheduledForDeletion = unserialize(serialize($linksToDelete));
-
-        foreach ($linksToDelete as $linkRemoved) {
+        foreach ($this->linksScheduledForDeletion as $linkRemoved) {
             $linkRemoved->setLanguage(null);
         }
 
@@ -3590,8 +3504,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
         $this->collLinks = $links;
         $this->collLinksPartial = false;
-
-        return $this;
     }
 
     /**
@@ -3609,22 +3521,22 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         if (null === $this->collLinks || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinks) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinks());
+                }
+                $query = LinkQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinks());
+                return $query
+                    ->filterByLanguage($this)
+                    ->count($con);
             }
-            $query = LinkQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLanguage($this)
-                ->count($con);
+        } else {
+            return count($this->collLinks);
         }
-
-        return count($this->collLinks);
     }
 
     /**
@@ -3640,7 +3552,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->initLinks();
             $this->collLinksPartial = true;
         }
-        if (!in_array($l, $this->collLinks->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinks->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLink($l);
         }
 
@@ -3658,7 +3570,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
 
     /**
      * @param	Link $link The link object to remove.
-     * @return Language The current object (for fluent API support)
      */
     public function removeLink($link)
     {
@@ -3671,8 +3582,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
             $this->linksScheduledForDeletion[]= $link;
             $link->setLanguage(null);
         }
-
-        return $this;
     }
 
 
@@ -3790,7 +3699,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
         $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
-        $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
         $this->resetModified();
         $this->setNew(true);
@@ -3808,8 +3716,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
      */
     public function clearAllReferences($deep = false)
     {
-        if ($deep && !$this->alreadyInClearAllReferencesDeep) {
-            $this->alreadyInClearAllReferencesDeep = true;
+        if ($deep) {
             if ($this->collPageStrings) {
                 foreach ($this->collPageStrings as $o) {
                     $o->clearAllReferences($deep);
@@ -3845,14 +3752,6 @@ abstract class BaseLanguage extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
-              $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
-            }
-            if ($this->aUserRelatedByUpdatedBy instanceof Persistent) {
-              $this->aUserRelatedByUpdatedBy->clearAllReferences($deep);
-            }
-
-            $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
         if ($this->collPageStrings instanceof PropelCollection) {

@@ -32,23 +32,23 @@ abstract class BaseTagPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 6;
 
-    /** the column name for the id field */
-    const ID = 'tags.id';
+    /** the column name for the ID field */
+    const ID = 'tags.ID';
 
-    /** the column name for the name field */
-    const NAME = 'tags.name';
+    /** the column name for the NAME field */
+    const NAME = 'tags.NAME';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'tags.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'tags.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'tags.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'tags.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'tags.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'tags.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'tags.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'tags.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -172,12 +172,12 @@ abstract class BaseTagPeer
             $criteria->addSelectColumn(TagPeer::CREATED_BY);
             $criteria->addSelectColumn(TagPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -261,7 +261,7 @@ abstract class BaseTagPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -366,15 +366,8 @@ abstract class BaseTagPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (TagPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         TagPeer::$instances = array();
     }
 
@@ -1091,7 +1084,7 @@ abstract class BaseTagPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return TagPeer::OM_CLASS;
     }

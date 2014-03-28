@@ -32,56 +32,56 @@ abstract class BasePagePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 17;
 
-    /** the column name for the id field */
-    const ID = 'pages.id';
+    /** the column name for the ID field */
+    const ID = 'pages.ID';
 
-    /** the column name for the name field */
-    const NAME = 'pages.name';
+    /** the column name for the NAME field */
+    const NAME = 'pages.NAME';
 
-    /** the column name for the identifier field */
-    const IDENTIFIER = 'pages.identifier';
+    /** the column name for the IDENTIFIER field */
+    const IDENTIFIER = 'pages.IDENTIFIER';
 
-    /** the column name for the page_type field */
-    const PAGE_TYPE = 'pages.page_type';
+    /** the column name for the PAGE_TYPE field */
+    const PAGE_TYPE = 'pages.PAGE_TYPE';
 
-    /** the column name for the template_name field */
-    const TEMPLATE_NAME = 'pages.template_name';
+    /** the column name for the TEMPLATE_NAME field */
+    const TEMPLATE_NAME = 'pages.TEMPLATE_NAME';
 
-    /** the column name for the is_inactive field */
-    const IS_INACTIVE = 'pages.is_inactive';
+    /** the column name for the IS_INACTIVE field */
+    const IS_INACTIVE = 'pages.IS_INACTIVE';
 
-    /** the column name for the is_folder field */
-    const IS_FOLDER = 'pages.is_folder';
+    /** the column name for the IS_FOLDER field */
+    const IS_FOLDER = 'pages.IS_FOLDER';
 
-    /** the column name for the is_hidden field */
-    const IS_HIDDEN = 'pages.is_hidden';
+    /** the column name for the IS_HIDDEN field */
+    const IS_HIDDEN = 'pages.IS_HIDDEN';
 
-    /** the column name for the is_protected field */
-    const IS_PROTECTED = 'pages.is_protected';
+    /** the column name for the IS_PROTECTED field */
+    const IS_PROTECTED = 'pages.IS_PROTECTED';
 
-    /** the column name for the canonical_id field */
-    const CANONICAL_ID = 'pages.canonical_id';
+    /** the column name for the CANONICAL_ID field */
+    const CANONICAL_ID = 'pages.CANONICAL_ID';
 
-    /** the column name for the tree_left field */
-    const TREE_LEFT = 'pages.tree_left';
+    /** the column name for the TREE_LEFT field */
+    const TREE_LEFT = 'pages.TREE_LEFT';
 
-    /** the column name for the tree_right field */
-    const TREE_RIGHT = 'pages.tree_right';
+    /** the column name for the TREE_RIGHT field */
+    const TREE_RIGHT = 'pages.TREE_RIGHT';
 
-    /** the column name for the tree_level field */
-    const TREE_LEVEL = 'pages.tree_level';
+    /** the column name for the TREE_LEVEL field */
+    const TREE_LEVEL = 'pages.TREE_LEVEL';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'pages.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'pages.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'pages.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'pages.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'pages.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'pages.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'pages.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'pages.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -102,17 +102,17 @@ abstract class BasePagePeer
     /**
      * Left column for the set
      */
-    const LEFT_COL = 'pages.tree_left';
+    const LEFT_COL = 'pages.TREE_LEFT';
 
     /**
      * Right column for the set
      */
-    const RIGHT_COL = 'pages.tree_right';
+    const RIGHT_COL = 'pages.TREE_RIGHT';
 
     /**
      * Level column for the set
      */
-    const LEVEL_COL = 'pages.tree_level';
+    const LEVEL_COL = 'pages.TREE_LEVEL';
 
     /**
      * holds an array of fieldnames
@@ -233,23 +233,23 @@ abstract class BasePagePeer
             $criteria->addSelectColumn(PagePeer::CREATED_BY);
             $criteria->addSelectColumn(PagePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.identifier');
-            $criteria->addSelectColumn($alias . '.page_type');
-            $criteria->addSelectColumn($alias . '.template_name');
-            $criteria->addSelectColumn($alias . '.is_inactive');
-            $criteria->addSelectColumn($alias . '.is_folder');
-            $criteria->addSelectColumn($alias . '.is_hidden');
-            $criteria->addSelectColumn($alias . '.is_protected');
-            $criteria->addSelectColumn($alias . '.canonical_id');
-            $criteria->addSelectColumn($alias . '.tree_left');
-            $criteria->addSelectColumn($alias . '.tree_right');
-            $criteria->addSelectColumn($alias . '.tree_level');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.IDENTIFIER');
+            $criteria->addSelectColumn($alias . '.PAGE_TYPE');
+            $criteria->addSelectColumn($alias . '.TEMPLATE_NAME');
+            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
+            $criteria->addSelectColumn($alias . '.IS_FOLDER');
+            $criteria->addSelectColumn($alias . '.IS_HIDDEN');
+            $criteria->addSelectColumn($alias . '.IS_PROTECTED');
+            $criteria->addSelectColumn($alias . '.CANONICAL_ID');
+            $criteria->addSelectColumn($alias . '.TREE_LEFT');
+            $criteria->addSelectColumn($alias . '.TREE_RIGHT');
+            $criteria->addSelectColumn($alias . '.TREE_LEVEL');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -333,7 +333,7 @@ abstract class BasePagePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -438,15 +438,8 @@ abstract class BasePagePeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (PagePeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         PagePeer::$instances = array();
     }
 
@@ -1326,7 +1319,7 @@ abstract class BasePagePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return PagePeer::OM_CLASS;
     }
@@ -1953,24 +1946,6 @@ abstract class BasePagePeer
             }
         }
         $stmt->closeCursor();
-    }
-
-    /**
-     * Updates all scope values for items that has negative left (<=0) values.
-     *
-     * @param      mixed     $scope
-     * @param      PropelPDO $con	Connection to use.
-     */
-    public static function setNegativeScope($scope, PropelPDO $con = null)
-    {
-        //adjust scope value to $scope
-        $whereCriteria = new Criteria(PagePeer::DATABASE_NAME);
-        $whereCriteria->add(PagePeer::LEFT_COL, 0, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(PagePeer::DATABASE_NAME);
-        $valuesCriteria->add(PagePeer::SCOPE_COL, $scope, Criteria::EQUAL);
-
-        BasePeer::doUpdate($whereCriteria, $valuesCriteria, $con);
     }
 
 } // BasePagePeer

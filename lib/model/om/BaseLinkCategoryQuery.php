@@ -41,6 +41,7 @@
  * @method LinkCategory findOne(PropelPDO $con = null) Return the first LinkCategory matching the query
  * @method LinkCategory findOneOrCreate(PropelPDO $con = null) Return the first LinkCategory matching the query, or a new LinkCategory object populated from the query conditions when no match is found
  *
+ * @method LinkCategory findOneById(int $id) Return the first LinkCategory filtered by the id column
  * @method LinkCategory findOneByName(string $name) Return the first LinkCategory filtered by the name column
  * @method LinkCategory findOneByIsExternallyManaged(boolean $is_externally_managed) Return the first LinkCategory filtered by the is_externally_managed column
  * @method LinkCategory findOneByCreatedAt(string $created_at) Return the first LinkCategory filtered by the created_at column
@@ -76,7 +77,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * Returns a new LinkCategoryQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param   LinkCategoryQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     LinkCategoryQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return LinkCategoryQuery
      */
@@ -133,32 +134,18 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
     }
 
     /**
-     * Alias of findPk to use instance pooling
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     PropelPDO $con A connection object
-     *
-     * @return                 LinkCategory A model object, or null if the key is not found
-     * @throws PropelException
-     */
-     public function findOneById($key, $con = null)
-     {
-        return $this->findPk($key, $con);
-     }
-
-    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return                 LinkCategory A model object, or null if the key is not found
-     * @throws PropelException
+     * @return   LinkCategory A model object, or null if the key is not found
+     * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `is_externally_managed`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `link_categories` WHERE `id` = :p0';
+        $sql = 'SELECT `ID`, `NAME`, `IS_EXTERNALLY_MANAGED`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `link_categories` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -254,8 +241,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * <code>
      * $query->filterById(1234); // WHERE id = 1234
      * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id >= 12
-     * $query->filterById(array('max' => 12)); // WHERE id <= 12
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
      * @param     mixed $id The value to use as filter.
@@ -268,22 +254,8 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      */
     public function filterById($id = null, $comparison = null)
     {
-        if (is_array($id)) {
-            $useMinMax = false;
-            if (isset($id['min'])) {
-                $this->addUsingAlias(LinkCategoryPeer::ID, $id['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($id['max'])) {
-                $this->addUsingAlias(LinkCategoryPeer::ID, $id['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_array($id) && null === $comparison) {
+            $comparison = Criteria::IN;
         }
 
         return $this->addUsingAlias(LinkCategoryPeer::ID, $id, $comparison);
@@ -339,7 +311,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
     public function filterByIsExternallyManaged($isExternallyManaged = null, $comparison = null)
     {
         if (is_string($isExternallyManaged)) {
-            $isExternallyManaged = in_array(strtolower($isExternallyManaged), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_externally_managed = in_array(strtolower($isExternallyManaged), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, $isExternallyManaged, $comparison);
@@ -438,8 +410,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
-     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -482,8 +453,7 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
-     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -525,8 +495,8 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LinkCategoryQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LinkCategoryQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -601,8 +571,8 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LinkCategoryQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LinkCategoryQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {
@@ -677,8 +647,8 @@ abstract class BaseLinkCategoryQuery extends ModelCriteria
      * @param   Link|PropelObjectCollection $link  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LinkCategoryQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LinkCategoryQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLink($link, $comparison = null)
     {

@@ -32,44 +32,44 @@ abstract class BaseRightPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 13;
 
-    /** the column name for the id field */
-    const ID = 'rights.id';
+    /** the column name for the ID field */
+    const ID = 'rights.ID';
 
-    /** the column name for the role_key field */
-    const ROLE_KEY = 'rights.role_key';
+    /** the column name for the ROLE_KEY field */
+    const ROLE_KEY = 'rights.ROLE_KEY';
 
-    /** the column name for the page_id field */
-    const PAGE_ID = 'rights.page_id';
+    /** the column name for the PAGE_ID field */
+    const PAGE_ID = 'rights.PAGE_ID';
 
-    /** the column name for the is_inherited field */
-    const IS_INHERITED = 'rights.is_inherited';
+    /** the column name for the IS_INHERITED field */
+    const IS_INHERITED = 'rights.IS_INHERITED';
 
-    /** the column name for the may_edit_page_details field */
-    const MAY_EDIT_PAGE_DETAILS = 'rights.may_edit_page_details';
+    /** the column name for the MAY_EDIT_PAGE_DETAILS field */
+    const MAY_EDIT_PAGE_DETAILS = 'rights.MAY_EDIT_PAGE_DETAILS';
 
-    /** the column name for the may_edit_page_contents field */
-    const MAY_EDIT_PAGE_CONTENTS = 'rights.may_edit_page_contents';
+    /** the column name for the MAY_EDIT_PAGE_CONTENTS field */
+    const MAY_EDIT_PAGE_CONTENTS = 'rights.MAY_EDIT_PAGE_CONTENTS';
 
-    /** the column name for the may_delete field */
-    const MAY_DELETE = 'rights.may_delete';
+    /** the column name for the MAY_DELETE field */
+    const MAY_DELETE = 'rights.MAY_DELETE';
 
-    /** the column name for the may_create_children field */
-    const MAY_CREATE_CHILDREN = 'rights.may_create_children';
+    /** the column name for the MAY_CREATE_CHILDREN field */
+    const MAY_CREATE_CHILDREN = 'rights.MAY_CREATE_CHILDREN';
 
-    /** the column name for the may_view_page field */
-    const MAY_VIEW_PAGE = 'rights.may_view_page';
+    /** the column name for the MAY_VIEW_PAGE field */
+    const MAY_VIEW_PAGE = 'rights.MAY_VIEW_PAGE';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'rights.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'rights.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'rights.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'rights.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'rights.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'rights.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'rights.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'rights.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -200,19 +200,19 @@ abstract class BaseRightPeer
             $criteria->addSelectColumn(RightPeer::CREATED_BY);
             $criteria->addSelectColumn(RightPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.role_key');
-            $criteria->addSelectColumn($alias . '.page_id');
-            $criteria->addSelectColumn($alias . '.is_inherited');
-            $criteria->addSelectColumn($alias . '.may_edit_page_details');
-            $criteria->addSelectColumn($alias . '.may_edit_page_contents');
-            $criteria->addSelectColumn($alias . '.may_delete');
-            $criteria->addSelectColumn($alias . '.may_create_children');
-            $criteria->addSelectColumn($alias . '.may_view_page');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.ROLE_KEY');
+            $criteria->addSelectColumn($alias . '.PAGE_ID');
+            $criteria->addSelectColumn($alias . '.IS_INHERITED');
+            $criteria->addSelectColumn($alias . '.MAY_EDIT_PAGE_DETAILS');
+            $criteria->addSelectColumn($alias . '.MAY_EDIT_PAGE_CONTENTS');
+            $criteria->addSelectColumn($alias . '.MAY_DELETE');
+            $criteria->addSelectColumn($alias . '.MAY_CREATE_CHILDREN');
+            $criteria->addSelectColumn($alias . '.MAY_VIEW_PAGE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -296,7 +296,7 @@ abstract class BaseRightPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -401,15 +401,8 @@ abstract class BaseRightPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (RightPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         RightPeer::$instances = array();
     }
 
@@ -1867,7 +1860,7 @@ abstract class BaseRightPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return RightPeer::OM_CLASS;
     }

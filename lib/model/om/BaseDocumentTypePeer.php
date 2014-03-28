@@ -32,29 +32,29 @@ abstract class BaseDocumentTypePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the id field */
-    const ID = 'document_types.id';
+    /** the column name for the ID field */
+    const ID = 'document_types.ID';
 
-    /** the column name for the extension field */
-    const EXTENSION = 'document_types.extension';
+    /** the column name for the EXTENSION field */
+    const EXTENSION = 'document_types.EXTENSION';
 
-    /** the column name for the mimetype field */
-    const MIMETYPE = 'document_types.mimetype';
+    /** the column name for the MIMETYPE field */
+    const MIMETYPE = 'document_types.MIMETYPE';
 
-    /** the column name for the is_office_doc field */
-    const IS_OFFICE_DOC = 'document_types.is_office_doc';
+    /** the column name for the IS_OFFICE_DOC field */
+    const IS_OFFICE_DOC = 'document_types.IS_OFFICE_DOC';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'document_types.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'document_types.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'document_types.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'document_types.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'document_types.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'document_types.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'document_types.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'document_types.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -180,14 +180,14 @@ abstract class BaseDocumentTypePeer
             $criteria->addSelectColumn(DocumentTypePeer::CREATED_BY);
             $criteria->addSelectColumn(DocumentTypePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.extension');
-            $criteria->addSelectColumn($alias . '.mimetype');
-            $criteria->addSelectColumn($alias . '.is_office_doc');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.EXTENSION');
+            $criteria->addSelectColumn($alias . '.MIMETYPE');
+            $criteria->addSelectColumn($alias . '.IS_OFFICE_DOC');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -271,7 +271,7 @@ abstract class BaseDocumentTypePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -376,15 +376,8 @@ abstract class BaseDocumentTypePeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (DocumentTypePeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         DocumentTypePeer::$instances = array();
     }
 
@@ -1101,7 +1094,7 @@ abstract class BaseDocumentTypePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return DocumentTypePeer::OM_CLASS;
     }

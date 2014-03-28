@@ -32,32 +32,32 @@ abstract class BaseReferencePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 9;
 
-    /** the column name for the id field */
-    const ID = 'indirect_references.id';
+    /** the column name for the ID field */
+    const ID = 'indirect_references.ID';
 
-    /** the column name for the from_id field */
-    const FROM_ID = 'indirect_references.from_id';
+    /** the column name for the FROM_ID field */
+    const FROM_ID = 'indirect_references.FROM_ID';
 
-    /** the column name for the from_model_name field */
-    const FROM_MODEL_NAME = 'indirect_references.from_model_name';
+    /** the column name for the FROM_MODEL_NAME field */
+    const FROM_MODEL_NAME = 'indirect_references.FROM_MODEL_NAME';
 
-    /** the column name for the to_id field */
-    const TO_ID = 'indirect_references.to_id';
+    /** the column name for the TO_ID field */
+    const TO_ID = 'indirect_references.TO_ID';
 
-    /** the column name for the to_model_name field */
-    const TO_MODEL_NAME = 'indirect_references.to_model_name';
+    /** the column name for the TO_MODEL_NAME field */
+    const TO_MODEL_NAME = 'indirect_references.TO_MODEL_NAME';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'indirect_references.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'indirect_references.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'indirect_references.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'indirect_references.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'indirect_references.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'indirect_references.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'indirect_references.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'indirect_references.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -184,15 +184,15 @@ abstract class BaseReferencePeer
             $criteria->addSelectColumn(ReferencePeer::CREATED_BY);
             $criteria->addSelectColumn(ReferencePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.from_id');
-            $criteria->addSelectColumn($alias . '.from_model_name');
-            $criteria->addSelectColumn($alias . '.to_id');
-            $criteria->addSelectColumn($alias . '.to_model_name');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.FROM_ID');
+            $criteria->addSelectColumn($alias . '.FROM_MODEL_NAME');
+            $criteria->addSelectColumn($alias . '.TO_ID');
+            $criteria->addSelectColumn($alias . '.TO_MODEL_NAME');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -276,7 +276,7 @@ abstract class BaseReferencePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -381,15 +381,8 @@ abstract class BaseReferencePeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (ReferencePeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         ReferencePeer::$instances = array();
     }
 
@@ -1103,7 +1096,7 @@ abstract class BaseReferencePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return ReferencePeer::OM_CLASS;
     }

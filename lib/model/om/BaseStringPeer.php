@@ -32,26 +32,26 @@ abstract class BaseStringPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 7;
 
-    /** the column name for the language_id field */
-    const LANGUAGE_ID = 'strings.language_id';
+    /** the column name for the LANGUAGE_ID field */
+    const LANGUAGE_ID = 'strings.LANGUAGE_ID';
 
-    /** the column name for the string_key field */
-    const STRING_KEY = 'strings.string_key';
+    /** the column name for the STRING_KEY field */
+    const STRING_KEY = 'strings.STRING_KEY';
 
-    /** the column name for the text field */
-    const TEXT = 'strings.text';
+    /** the column name for the TEXT field */
+    const TEXT = 'strings.TEXT';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'strings.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'strings.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'strings.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'strings.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'strings.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'strings.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'strings.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'strings.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -176,13 +176,13 @@ abstract class BaseStringPeer
             $criteria->addSelectColumn(StringPeer::CREATED_BY);
             $criteria->addSelectColumn(StringPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.language_id');
-            $criteria->addSelectColumn($alias . '.string_key');
-            $criteria->addSelectColumn($alias . '.text');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
+            $criteria->addSelectColumn($alias . '.STRING_KEY');
+            $criteria->addSelectColumn($alias . '.TEXT');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -266,7 +266,7 @@ abstract class BaseStringPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -371,15 +371,8 @@ abstract class BaseStringPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (StringPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         StringPeer::$instances = array();
     }
 
@@ -1439,7 +1432,7 @@ abstract class BaseStringPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return StringPeer::OM_CLASS;
     }

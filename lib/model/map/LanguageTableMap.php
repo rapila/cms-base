@@ -38,14 +38,14 @@ class LanguageTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'VARCHAR', true, 5, null);
-        $this->addColumn('path_prefix', 'PathPrefix', 'VARCHAR', true, 20, null);
-        $this->addColumn('is_active', 'IsActive', 'BOOLEAN', false, 1, null);
-        $this->addColumn('sort', 'Sort', 'TINYINT', false, 2, null);
-        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
-        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addPrimaryKey('ID', 'Id', 'VARCHAR', true, 5, null);
+        $this->addColumn('PATH_PREFIX', 'PathPrefix', 'VARCHAR', true, 20, null);
+        $this->addColumn('IS_ACTIVE', 'IsActive', 'BOOLEAN', false, 1, null);
+        $this->addColumn('SORT', 'Sort', 'TINYINT', false, 2, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
         // validators
     } // initialize()
 
@@ -74,23 +74,10 @@ class LanguageTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' =>  array (
-  'mode' => 'by_role',
-  'role_key' => '',
-  'owner_allowed' => '',
-),
-            'extended_timestampable' =>  array (
-  'create_column' => 'created_at',
-  'update_column' => 'updated_at',
-  'disable_updated_at' => 'false',
-),
-            'attributable' =>  array (
-  'create_column' => 'created_by',
-  'update_column' => 'updated_by',
-),
-            'extended_keyable' =>  array (
-  'key_separator' => '_',
-),
+            'denyable' => array('mode' => 'by_role', 'role_key' => '', 'owner_allowed' => '', ),
+            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
+            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
+            'extended_keyable' => array('key_separator' => '_', ),
         );
     } // getBehaviors()
 

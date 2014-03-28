@@ -204,12 +204,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Flag to prevent endless clearAllReferences($deep=true) loop, if this object is referenced
-     * @var        boolean
-     */
-    protected $alreadyInClearAllReferencesDeep = false;
-
-    /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
      * equivalent initialization method).
@@ -291,25 +285,22 @@ abstract class BaseDocument extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->content_created_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->content_created_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->content_created_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->content_created_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -477,25 +468,22 @@ abstract class BaseDocument extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->created_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->created_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -517,25 +505,22 @@ abstract class BaseDocument extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->updated_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->updated_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -566,7 +551,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -587,7 +572,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -608,7 +593,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setOriginalName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -629,7 +614,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setDescription($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -673,7 +658,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setLicense($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -694,7 +679,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setAuthor($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -715,7 +700,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setLanguageId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -740,7 +725,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setOwnerId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -765,7 +750,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setDocumentTypeId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -790,7 +775,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setDocumentCategoryId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -902,7 +887,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setSort($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -923,11 +908,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setData($v)
     {
-        // Allow unsetting the lazy loaded column even when its not loaded.
-        if (!$this->data_isLoaded && $v === null) {
-            $this->modifiedColumns[] = DocumentPeer::DATA;
-        }
-
         // explicitly set the is-loaded flag to true for this lazy load col;
         // it doesn't matter if the value is actually set or not (logic below) as
         // any attempt to set the value means that no db lookup should be performed
@@ -1004,7 +984,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setCreatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -1029,7 +1009,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function setUpdatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -1116,7 +1096,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
             if ($rehydrate) {
                 $this->ensureConsistency();
             }
-            $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 19; // 19 = DocumentPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -1458,64 +1438,64 @@ abstract class BaseDocument extends BaseObject implements Persistent
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(DocumentPeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`id`';
+            $modifiedColumns[':p' . $index++]  = '`ID`';
         }
         if ($this->isColumnModified(DocumentPeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`name`';
+            $modifiedColumns[':p' . $index++]  = '`NAME`';
         }
         if ($this->isColumnModified(DocumentPeer::ORIGINAL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`original_name`';
+            $modifiedColumns[':p' . $index++]  = '`ORIGINAL_NAME`';
         }
         if ($this->isColumnModified(DocumentPeer::DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = '`description`';
+            $modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
         }
         if ($this->isColumnModified(DocumentPeer::CONTENT_CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`content_created_at`';
+            $modifiedColumns[':p' . $index++]  = '`CONTENT_CREATED_AT`';
         }
         if ($this->isColumnModified(DocumentPeer::LICENSE)) {
-            $modifiedColumns[':p' . $index++]  = '`license`';
+            $modifiedColumns[':p' . $index++]  = '`LICENSE`';
         }
         if ($this->isColumnModified(DocumentPeer::AUTHOR)) {
-            $modifiedColumns[':p' . $index++]  = '`author`';
+            $modifiedColumns[':p' . $index++]  = '`AUTHOR`';
         }
         if ($this->isColumnModified(DocumentPeer::LANGUAGE_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`language_id`';
+            $modifiedColumns[':p' . $index++]  = '`LANGUAGE_ID`';
         }
         if ($this->isColumnModified(DocumentPeer::OWNER_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`owner_id`';
+            $modifiedColumns[':p' . $index++]  = '`OWNER_ID`';
         }
         if ($this->isColumnModified(DocumentPeer::DOCUMENT_TYPE_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`document_type_id`';
+            $modifiedColumns[':p' . $index++]  = '`DOCUMENT_TYPE_ID`';
         }
         if ($this->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`document_category_id`';
+            $modifiedColumns[':p' . $index++]  = '`DOCUMENT_CATEGORY_ID`';
         }
         if ($this->isColumnModified(DocumentPeer::IS_PRIVATE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_private`';
+            $modifiedColumns[':p' . $index++]  = '`IS_PRIVATE`';
         }
         if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
+            $modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
         }
         if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) {
-            $modifiedColumns[':p' . $index++]  = '`is_protected`';
+            $modifiedColumns[':p' . $index++]  = '`IS_PROTECTED`';
         }
         if ($this->isColumnModified(DocumentPeer::SORT)) {
-            $modifiedColumns[':p' . $index++]  = '`sort`';
+            $modifiedColumns[':p' . $index++]  = '`SORT`';
         }
         if ($this->isColumnModified(DocumentPeer::DATA)) {
-            $modifiedColumns[':p' . $index++]  = '`data`';
+            $modifiedColumns[':p' . $index++]  = '`DATA`';
         }
         if ($this->isColumnModified(DocumentPeer::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`created_at`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
         }
         if ($this->isColumnModified(DocumentPeer::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_at`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
         }
         if ($this->isColumnModified(DocumentPeer::CREATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`created_by`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
         }
         if ($this->isColumnModified(DocumentPeer::UPDATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_by`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
         }
 
         $sql = sprintf(
@@ -1528,67 +1508,67 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id`':
+                    case '`ID`':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case '`name`':
+                    case '`NAME`':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case '`original_name`':
+                    case '`ORIGINAL_NAME`':
                         $stmt->bindValue($identifier, $this->original_name, PDO::PARAM_STR);
                         break;
-                    case '`description`':
+                    case '`DESCRIPTION`':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
-                    case '`content_created_at`':
+                    case '`CONTENT_CREATED_AT`':
                         $stmt->bindValue($identifier, $this->content_created_at, PDO::PARAM_STR);
                         break;
-                    case '`license`':
+                    case '`LICENSE`':
                         $stmt->bindValue($identifier, $this->license, PDO::PARAM_STR);
                         break;
-                    case '`author`':
+                    case '`AUTHOR`':
                         $stmt->bindValue($identifier, $this->author, PDO::PARAM_STR);
                         break;
-                    case '`language_id`':
+                    case '`LANGUAGE_ID`':
                         $stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
                         break;
-                    case '`owner_id`':
+                    case '`OWNER_ID`':
                         $stmt->bindValue($identifier, $this->owner_id, PDO::PARAM_INT);
                         break;
-                    case '`document_type_id`':
+                    case '`DOCUMENT_TYPE_ID`':
                         $stmt->bindValue($identifier, $this->document_type_id, PDO::PARAM_INT);
                         break;
-                    case '`document_category_id`':
+                    case '`DOCUMENT_CATEGORY_ID`':
                         $stmt->bindValue($identifier, $this->document_category_id, PDO::PARAM_INT);
                         break;
-                    case '`is_private`':
+                    case '`IS_PRIVATE`':
                         $stmt->bindValue($identifier, (int) $this->is_private, PDO::PARAM_INT);
                         break;
-                    case '`is_inactive`':
+                    case '`IS_INACTIVE`':
                         $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
-                    case '`is_protected`':
+                    case '`IS_PROTECTED`':
                         $stmt->bindValue($identifier, (int) $this->is_protected, PDO::PARAM_INT);
                         break;
-                    case '`sort`':
+                    case '`SORT`':
                         $stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
                         break;
-                    case '`data`':
+                    case '`DATA`':
                         if (is_resource($this->data)) {
                             rewind($this->data);
                         }
                         $stmt->bindValue($identifier, $this->data, PDO::PARAM_LOB);
                         break;
-                    case '`created_at`':
+                    case '`CREATED_AT`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
                         break;
-                    case '`updated_at`':
+                    case '`UPDATED_AT`':
                         $stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
                         break;
-                    case '`created_by`':
+                    case '`CREATED_BY`':
                         $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
                         break;
-                    case '`updated_by`':
+                    case '`UPDATED_BY`':
                         $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                 }
@@ -1659,11 +1639,11 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $this->validationFailures = array();
 
             return true;
+        } else {
+            $this->validationFailures = $res;
+
+            return false;
         }
-
-        $this->validationFailures = $res;
-
-        return false;
     }
 
     /**
@@ -2237,13 +2217,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated Language object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return Language The associated Language object.
      * @throws PropelException
      */
-    public function getLanguage(PropelPDO $con = null, $doQuery = true)
+    public function getLanguage(PropelPDO $con = null)
     {
-        if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null)) && $doQuery) {
+        if ($this->aLanguage === null && (($this->language_id !== "" && $this->language_id !== null))) {
             $this->aLanguage = LanguageQuery::create()->findPk($this->language_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2289,13 +2268,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByOwnerId(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByOwnerId(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByOwnerId === null && ($this->owner_id !== null) && $doQuery) {
+        if ($this->aUserRelatedByOwnerId === null && ($this->owner_id !== null)) {
             $this->aUserRelatedByOwnerId = UserQuery::create()->findPk($this->owner_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2341,13 +2319,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated DocumentType object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return DocumentType The associated DocumentType object.
      * @throws PropelException
      */
-    public function getDocumentType(PropelPDO $con = null, $doQuery = true)
+    public function getDocumentType(PropelPDO $con = null)
     {
-        if ($this->aDocumentType === null && ($this->document_type_id !== null) && $doQuery) {
+        if ($this->aDocumentType === null && ($this->document_type_id !== null)) {
             $this->aDocumentType = DocumentTypeQuery::create()->findPk($this->document_type_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2393,13 +2370,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated DocumentCategory object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return DocumentCategory The associated DocumentCategory object.
      * @throws PropelException
      */
-    public function getDocumentCategory(PropelPDO $con = null, $doQuery = true)
+    public function getDocumentCategory(PropelPDO $con = null)
     {
-        if ($this->aDocumentCategory === null && ($this->document_category_id !== null) && $doQuery) {
+        if ($this->aDocumentCategory === null && ($this->document_category_id !== null)) {
             $this->aDocumentCategory = DocumentCategoryQuery::create()->findPk($this->document_category_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2445,13 +2421,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByCreatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByCreatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
             $this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2497,13 +2472,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByUpdatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
             $this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2545,7 +2519,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
-        $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
         $this->resetModified();
@@ -2564,28 +2537,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function clearAllReferences($deep = false)
     {
-        if ($deep && !$this->alreadyInClearAllReferencesDeep) {
-            $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->aLanguage instanceof Persistent) {
-              $this->aLanguage->clearAllReferences($deep);
-            }
-            if ($this->aUserRelatedByOwnerId instanceof Persistent) {
-              $this->aUserRelatedByOwnerId->clearAllReferences($deep);
-            }
-            if ($this->aDocumentType instanceof Persistent) {
-              $this->aDocumentType->clearAllReferences($deep);
-            }
-            if ($this->aDocumentCategory instanceof Persistent) {
-              $this->aDocumentCategory->clearAllReferences($deep);
-            }
-            if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
-              $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
-            }
-            if ($this->aUserRelatedByUpdatedBy instanceof Persistent) {
-              $this->aUserRelatedByUpdatedBy->clearAllReferences($deep);
-            }
-
-            $this->alreadyInClearAllReferencesDeep = false;
+        if ($deep) {
         } // if ($deep)
 
         $this->aLanguage = null;

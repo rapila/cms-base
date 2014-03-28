@@ -85,7 +85,7 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * Returns a new LanguageObjectQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param   LanguageObjectQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     LanguageObjectQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return LanguageObjectQuery
      */
@@ -149,12 +149,12 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return                 LanguageObject A model object, or null if the key is not found
-     * @throws PropelException
+     * @return   LanguageObject A model object, or null if the key is not found
+     * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `object_id`, `language_id`, `data`, `has_draft`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `language_objects` WHERE `object_id` = :p0 AND `language_id` = :p1';
+        $sql = 'SELECT `OBJECT_ID`, `LANGUAGE_ID`, `DATA`, `HAS_DRAFT`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `language_objects` WHERE `OBJECT_ID` = :p0 AND `LANGUAGE_ID` = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -262,8 +262,7 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * <code>
      * $query->filterByObjectId(1234); // WHERE object_id = 1234
      * $query->filterByObjectId(array(12, 34)); // WHERE object_id IN (12, 34)
-     * $query->filterByObjectId(array('min' => 12)); // WHERE object_id >= 12
-     * $query->filterByObjectId(array('max' => 12)); // WHERE object_id <= 12
+     * $query->filterByObjectId(array('min' => 12)); // WHERE object_id > 12
      * </code>
      *
      * @see       filterByContentObject()
@@ -278,22 +277,8 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      */
     public function filterByObjectId($objectId = null, $comparison = null)
     {
-        if (is_array($objectId)) {
-            $useMinMax = false;
-            if (isset($objectId['min'])) {
-                $this->addUsingAlias(LanguageObjectPeer::OBJECT_ID, $objectId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($objectId['max'])) {
-                $this->addUsingAlias(LanguageObjectPeer::OBJECT_ID, $objectId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_array($objectId) && null === $comparison) {
+            $comparison = Criteria::IN;
         }
 
         return $this->addUsingAlias(LanguageObjectPeer::OBJECT_ID, $objectId, $comparison);
@@ -363,7 +348,7 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
     public function filterByHasDraft($hasDraft = null, $comparison = null)
     {
         if (is_string($hasDraft)) {
-            $hasDraft = in_array(strtolower($hasDraft), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $has_draft = in_array(strtolower($hasDraft), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(LanguageObjectPeer::HAS_DRAFT, $hasDraft, $comparison);
@@ -462,8 +447,7 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
-     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -506,8 +490,7 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
-     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -549,8 +532,8 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * @param   ContentObject|PropelObjectCollection $contentObject The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LanguageObjectQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LanguageObjectQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByContentObject($contentObject, $comparison = null)
     {
@@ -625,8 +608,8 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LanguageObjectQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LanguageObjectQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguage($language, $comparison = null)
     {
@@ -701,8 +684,8 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LanguageObjectQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LanguageObjectQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -777,8 +760,8 @@ abstract class BaseLanguageObjectQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 LanguageObjectQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   LanguageObjectQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {

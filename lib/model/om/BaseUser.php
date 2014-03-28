@@ -449,12 +449,6 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Flag to prevent endless clearAllReferences($deep=true) loop, if this object is referenced
-     * @var        boolean
-     */
-    protected $alreadyInClearAllReferencesDeep = false;
-
-    /**
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
@@ -925,25 +919,22 @@ abstract class BaseUser extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->created_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->created_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -965,25 +956,22 @@ abstract class BaseUser extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->updated_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->updated_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -1014,7 +1002,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -1035,7 +1023,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setUsername($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1056,7 +1044,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setPassword($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1077,7 +1065,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setDigestHA1($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1098,7 +1086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setFirstName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1119,7 +1107,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setLastName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1140,7 +1128,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setEmail($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1161,7 +1149,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setLanguageId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1302,7 +1290,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setPasswordRecoverHint($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -1393,7 +1381,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setCreatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -1414,7 +1402,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function setUpdatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -1506,7 +1494,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             if ($rehydrate) {
                 $this->ensureConsistency();
             }
-            $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 18; // 18 = UserPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -1865,7 +1853,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserGroupsRelatedByUserId !== null) {
                 foreach ($this->collUserGroupsRelatedByUserId as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1882,7 +1870,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserRolesRelatedByUserId !== null) {
                 foreach ($this->collUserRolesRelatedByUserId as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1899,7 +1887,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentsRelatedByOwnerId !== null) {
                 foreach ($this->collDocumentsRelatedByOwnerId as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1916,7 +1904,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLinksRelatedByOwnerId !== null) {
                 foreach ($this->collLinksRelatedByOwnerId as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1934,7 +1922,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPagesRelatedByCreatedBy !== null) {
                 foreach ($this->collPagesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1952,7 +1940,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPagesRelatedByUpdatedBy !== null) {
                 foreach ($this->collPagesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1970,7 +1958,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPagePropertysRelatedByCreatedBy !== null) {
                 foreach ($this->collPagePropertysRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1988,7 +1976,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPagePropertysRelatedByUpdatedBy !== null) {
                 foreach ($this->collPagePropertysRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2006,7 +1994,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPageStringsRelatedByCreatedBy !== null) {
                 foreach ($this->collPageStringsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2024,7 +2012,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collPageStringsRelatedByUpdatedBy !== null) {
                 foreach ($this->collPageStringsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2042,7 +2030,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collContentObjectsRelatedByCreatedBy !== null) {
                 foreach ($this->collContentObjectsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2060,7 +2048,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collContentObjectsRelatedByUpdatedBy !== null) {
                 foreach ($this->collContentObjectsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2078,7 +2066,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguageObjectsRelatedByCreatedBy !== null) {
                 foreach ($this->collLanguageObjectsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2096,7 +2084,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguageObjectsRelatedByUpdatedBy !== null) {
                 foreach ($this->collLanguageObjectsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2114,7 +2102,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguageObjectHistorysRelatedByCreatedBy !== null) {
                 foreach ($this->collLanguageObjectHistorysRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2132,7 +2120,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguageObjectHistorysRelatedByUpdatedBy !== null) {
                 foreach ($this->collLanguageObjectHistorysRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2150,7 +2138,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguagesRelatedByCreatedBy !== null) {
                 foreach ($this->collLanguagesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2168,7 +2156,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLanguagesRelatedByUpdatedBy !== null) {
                 foreach ($this->collLanguagesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2186,7 +2174,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collStringsRelatedByCreatedBy !== null) {
                 foreach ($this->collStringsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2204,7 +2192,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collStringsRelatedByUpdatedBy !== null) {
                 foreach ($this->collStringsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2222,7 +2210,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserGroupsRelatedByCreatedBy !== null) {
                 foreach ($this->collUserGroupsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2240,7 +2228,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserGroupsRelatedByUpdatedBy !== null) {
                 foreach ($this->collUserGroupsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2258,7 +2246,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collGroupsRelatedByCreatedBy !== null) {
                 foreach ($this->collGroupsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2276,7 +2264,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collGroupsRelatedByUpdatedBy !== null) {
                 foreach ($this->collGroupsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2294,7 +2282,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collGroupRolesRelatedByCreatedBy !== null) {
                 foreach ($this->collGroupRolesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2312,7 +2300,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collGroupRolesRelatedByUpdatedBy !== null) {
                 foreach ($this->collGroupRolesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2330,7 +2318,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collRolesRelatedByCreatedBy !== null) {
                 foreach ($this->collRolesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2348,7 +2336,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collRolesRelatedByUpdatedBy !== null) {
                 foreach ($this->collRolesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2366,7 +2354,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserRolesRelatedByCreatedBy !== null) {
                 foreach ($this->collUserRolesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2384,7 +2372,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collUserRolesRelatedByUpdatedBy !== null) {
                 foreach ($this->collUserRolesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2402,7 +2390,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collRightsRelatedByCreatedBy !== null) {
                 foreach ($this->collRightsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2420,7 +2408,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collRightsRelatedByUpdatedBy !== null) {
                 foreach ($this->collRightsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2438,7 +2426,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentsRelatedByCreatedBy !== null) {
                 foreach ($this->collDocumentsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2456,7 +2444,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentsRelatedByUpdatedBy !== null) {
                 foreach ($this->collDocumentsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2474,7 +2462,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentTypesRelatedByCreatedBy !== null) {
                 foreach ($this->collDocumentTypesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2492,7 +2480,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentTypesRelatedByUpdatedBy !== null) {
                 foreach ($this->collDocumentTypesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2510,7 +2498,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentCategorysRelatedByCreatedBy !== null) {
                 foreach ($this->collDocumentCategorysRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2528,7 +2516,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentCategorysRelatedByUpdatedBy !== null) {
                 foreach ($this->collDocumentCategorysRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2546,7 +2534,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collTagsRelatedByCreatedBy !== null) {
                 foreach ($this->collTagsRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2564,7 +2552,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collTagsRelatedByUpdatedBy !== null) {
                 foreach ($this->collTagsRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2582,7 +2570,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collTagInstancesRelatedByCreatedBy !== null) {
                 foreach ($this->collTagInstancesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2600,7 +2588,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collTagInstancesRelatedByUpdatedBy !== null) {
                 foreach ($this->collTagInstancesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2618,7 +2606,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLinksRelatedByCreatedBy !== null) {
                 foreach ($this->collLinksRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2636,7 +2624,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLinksRelatedByUpdatedBy !== null) {
                 foreach ($this->collLinksRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2654,7 +2642,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLinkCategorysRelatedByCreatedBy !== null) {
                 foreach ($this->collLinkCategorysRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2672,7 +2660,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collLinkCategorysRelatedByUpdatedBy !== null) {
                 foreach ($this->collLinkCategorysRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2690,7 +2678,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collReferencesRelatedByCreatedBy !== null) {
                 foreach ($this->collReferencesRelatedByCreatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2708,7 +2696,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collReferencesRelatedByUpdatedBy !== null) {
                 foreach ($this->collReferencesRelatedByUpdatedBy as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -2741,58 +2729,58 @@ abstract class BaseUser extends BaseObject implements Persistent
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(UserPeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`id`';
+            $modifiedColumns[':p' . $index++]  = '`ID`';
         }
         if ($this->isColumnModified(UserPeer::USERNAME)) {
-            $modifiedColumns[':p' . $index++]  = '`username`';
+            $modifiedColumns[':p' . $index++]  = '`USERNAME`';
         }
         if ($this->isColumnModified(UserPeer::PASSWORD)) {
-            $modifiedColumns[':p' . $index++]  = '`password`';
+            $modifiedColumns[':p' . $index++]  = '`PASSWORD`';
         }
         if ($this->isColumnModified(UserPeer::DIGEST_HA1)) {
-            $modifiedColumns[':p' . $index++]  = '`digest_ha1`';
+            $modifiedColumns[':p' . $index++]  = '`DIGEST_HA1`';
         }
         if ($this->isColumnModified(UserPeer::FIRST_NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`first_name`';
+            $modifiedColumns[':p' . $index++]  = '`FIRST_NAME`';
         }
         if ($this->isColumnModified(UserPeer::LAST_NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`last_name`';
+            $modifiedColumns[':p' . $index++]  = '`LAST_NAME`';
         }
         if ($this->isColumnModified(UserPeer::EMAIL)) {
-            $modifiedColumns[':p' . $index++]  = '`email`';
+            $modifiedColumns[':p' . $index++]  = '`EMAIL`';
         }
         if ($this->isColumnModified(UserPeer::LANGUAGE_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`language_id`';
+            $modifiedColumns[':p' . $index++]  = '`LANGUAGE_ID`';
         }
         if ($this->isColumnModified(UserPeer::IS_ADMIN)) {
-            $modifiedColumns[':p' . $index++]  = '`is_admin`';
+            $modifiedColumns[':p' . $index++]  = '`IS_ADMIN`';
         }
         if ($this->isColumnModified(UserPeer::IS_BACKEND_LOGIN_ENABLED)) {
-            $modifiedColumns[':p' . $index++]  = '`is_backend_login_enabled`';
+            $modifiedColumns[':p' . $index++]  = '`IS_BACKEND_LOGIN_ENABLED`';
         }
         if ($this->isColumnModified(UserPeer::IS_ADMIN_LOGIN_ENABLED)) {
-            $modifiedColumns[':p' . $index++]  = '`is_admin_login_enabled`';
+            $modifiedColumns[':p' . $index++]  = '`IS_ADMIN_LOGIN_ENABLED`';
         }
         if ($this->isColumnModified(UserPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
+            $modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
         }
         if ($this->isColumnModified(UserPeer::PASSWORD_RECOVER_HINT)) {
-            $modifiedColumns[':p' . $index++]  = '`password_recover_hint`';
+            $modifiedColumns[':p' . $index++]  = '`PASSWORD_RECOVER_HINT`';
         }
         if ($this->isColumnModified(UserPeer::BACKEND_SETTINGS)) {
-            $modifiedColumns[':p' . $index++]  = '`backend_settings`';
+            $modifiedColumns[':p' . $index++]  = '`BACKEND_SETTINGS`';
         }
         if ($this->isColumnModified(UserPeer::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`created_at`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
         }
         if ($this->isColumnModified(UserPeer::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_at`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
         }
         if ($this->isColumnModified(UserPeer::CREATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`created_by`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
         }
         if ($this->isColumnModified(UserPeer::UPDATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_by`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
         }
 
         $sql = sprintf(
@@ -2805,61 +2793,61 @@ abstract class BaseUser extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id`':
+                    case '`ID`':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case '`username`':
+                    case '`USERNAME`':
                         $stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
                         break;
-                    case '`password`':
+                    case '`PASSWORD`':
                         $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
                         break;
-                    case '`digest_ha1`':
+                    case '`DIGEST_HA1`':
                         $stmt->bindValue($identifier, $this->digest_ha1, PDO::PARAM_STR);
                         break;
-                    case '`first_name`':
+                    case '`FIRST_NAME`':
                         $stmt->bindValue($identifier, $this->first_name, PDO::PARAM_STR);
                         break;
-                    case '`last_name`':
+                    case '`LAST_NAME`':
                         $stmt->bindValue($identifier, $this->last_name, PDO::PARAM_STR);
                         break;
-                    case '`email`':
+                    case '`EMAIL`':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
-                    case '`language_id`':
+                    case '`LANGUAGE_ID`':
                         $stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
                         break;
-                    case '`is_admin`':
+                    case '`IS_ADMIN`':
                         $stmt->bindValue($identifier, (int) $this->is_admin, PDO::PARAM_INT);
                         break;
-                    case '`is_backend_login_enabled`':
+                    case '`IS_BACKEND_LOGIN_ENABLED`':
                         $stmt->bindValue($identifier, (int) $this->is_backend_login_enabled, PDO::PARAM_INT);
                         break;
-                    case '`is_admin_login_enabled`':
+                    case '`IS_ADMIN_LOGIN_ENABLED`':
                         $stmt->bindValue($identifier, (int) $this->is_admin_login_enabled, PDO::PARAM_INT);
                         break;
-                    case '`is_inactive`':
+                    case '`IS_INACTIVE`':
                         $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
-                    case '`password_recover_hint`':
+                    case '`PASSWORD_RECOVER_HINT`':
                         $stmt->bindValue($identifier, $this->password_recover_hint, PDO::PARAM_STR);
                         break;
-                    case '`backend_settings`':
+                    case '`BACKEND_SETTINGS`':
                         if (is_resource($this->backend_settings)) {
                             rewind($this->backend_settings);
                         }
                         $stmt->bindValue($identifier, $this->backend_settings, PDO::PARAM_LOB);
                         break;
-                    case '`created_at`':
+                    case '`CREATED_AT`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
                         break;
-                    case '`updated_at`':
+                    case '`UPDATED_AT`':
                         $stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
                         break;
-                    case '`created_by`':
+                    case '`CREATED_BY`':
                         $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
                         break;
-                    case '`updated_by`':
+                    case '`UPDATED_BY`':
                         $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                 }
@@ -2930,11 +2918,11 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->validationFailures = array();
 
             return true;
+        } else {
+            $this->validationFailures = $res;
+
+            return false;
         }
-
-        $this->validationFailures = $res;
-
-        return false;
     }
 
     /**
@@ -4259,13 +4247,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      * Get the associated Language object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return Language The associated Language object.
      * @throws PropelException
      */
-    public function getLanguageRelatedByLanguageId(PropelPDO $con = null, $doQuery = true)
+    public function getLanguageRelatedByLanguageId(PropelPDO $con = null)
     {
-        if ($this->aLanguageRelatedByLanguageId === null && (($this->language_id !== "" && $this->language_id !== null)) && $doQuery) {
+        if ($this->aLanguageRelatedByLanguageId === null && (($this->language_id !== "" && $this->language_id !== null))) {
             $this->aLanguageRelatedByLanguageId = LanguageQuery::create()->findPk($this->language_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -4442,15 +4429,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserGroupsRelatedByUserId()
      */
     public function clearUserGroupsRelatedByUserId()
     {
         $this->collUserGroupsRelatedByUserId = null; // important to set this to null since that means it is uninitialized
         $this->collUserGroupsRelatedByUserIdPartial = null;
-
-        return $this;
     }
 
     /**
@@ -4522,7 +4507,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserGroupsRelatedByUserIdPartial = true;
                     }
 
-                    $collUserGroupsRelatedByUserId->getInternalIterator()->rewind();
                     return $collUserGroupsRelatedByUserId;
                 }
 
@@ -4550,15 +4534,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userGroupsRelatedByUserId A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserGroupsRelatedByUserId(PropelCollection $userGroupsRelatedByUserId, PropelPDO $con = null)
     {
-        $userGroupsRelatedByUserIdToDelete = $this->getUserGroupsRelatedByUserId(new Criteria(), $con)->diff($userGroupsRelatedByUserId);
+        $this->userGroupsRelatedByUserIdScheduledForDeletion = $this->getUserGroupsRelatedByUserId(new Criteria(), $con)->diff($userGroupsRelatedByUserId);
 
-        $this->userGroupsRelatedByUserIdScheduledForDeletion = unserialize(serialize($userGroupsRelatedByUserIdToDelete));
-
-        foreach ($userGroupsRelatedByUserIdToDelete as $userGroupRelatedByUserIdRemoved) {
+        foreach ($this->userGroupsRelatedByUserIdScheduledForDeletion as $userGroupRelatedByUserIdRemoved) {
             $userGroupRelatedByUserIdRemoved->setUserRelatedByUserId(null);
         }
 
@@ -4569,8 +4550,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserGroupsRelatedByUserId = $userGroupsRelatedByUserId;
         $this->collUserGroupsRelatedByUserIdPartial = false;
-
-        return $this;
     }
 
     /**
@@ -4588,22 +4567,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserGroupsRelatedByUserId || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserGroupsRelatedByUserId) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserGroupsRelatedByUserId());
+                }
+                $query = UserGroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserGroupsRelatedByUserId());
+                return $query
+                    ->filterByUserRelatedByUserId($this)
+                    ->count($con);
             }
-            $query = UserGroupQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUserId($this)
-                ->count($con);
+        } else {
+            return count($this->collUserGroupsRelatedByUserId);
         }
-
-        return count($this->collUserGroupsRelatedByUserId);
     }
 
     /**
@@ -4619,7 +4598,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserGroupsRelatedByUserId();
             $this->collUserGroupsRelatedByUserIdPartial = true;
         }
-        if (!in_array($l, $this->collUserGroupsRelatedByUserId->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserGroupsRelatedByUserId->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserGroupRelatedByUserId($l);
         }
 
@@ -4637,7 +4616,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserGroupRelatedByUserId $userGroupRelatedByUserId The userGroupRelatedByUserId object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByUserId($userGroupRelatedByUserId)
     {
@@ -4647,11 +4625,9 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->userGroupsRelatedByUserIdScheduledForDeletion = clone $this->collUserGroupsRelatedByUserId;
                 $this->userGroupsRelatedByUserIdScheduledForDeletion->clear();
             }
-            $this->userGroupsRelatedByUserIdScheduledForDeletion[]= clone $userGroupRelatedByUserId;
+            $this->userGroupsRelatedByUserIdScheduledForDeletion[]= $userGroupRelatedByUserId;
             $userGroupRelatedByUserId->setUserRelatedByUserId(null);
         }
-
-        return $this;
     }
 
 
@@ -4685,15 +4661,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserRolesRelatedByUserId()
      */
     public function clearUserRolesRelatedByUserId()
     {
         $this->collUserRolesRelatedByUserId = null; // important to set this to null since that means it is uninitialized
         $this->collUserRolesRelatedByUserIdPartial = null;
-
-        return $this;
     }
 
     /**
@@ -4765,7 +4739,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserRolesRelatedByUserIdPartial = true;
                     }
 
-                    $collUserRolesRelatedByUserId->getInternalIterator()->rewind();
                     return $collUserRolesRelatedByUserId;
                 }
 
@@ -4793,15 +4766,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userRolesRelatedByUserId A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserRolesRelatedByUserId(PropelCollection $userRolesRelatedByUserId, PropelPDO $con = null)
     {
-        $userRolesRelatedByUserIdToDelete = $this->getUserRolesRelatedByUserId(new Criteria(), $con)->diff($userRolesRelatedByUserId);
+        $this->userRolesRelatedByUserIdScheduledForDeletion = $this->getUserRolesRelatedByUserId(new Criteria(), $con)->diff($userRolesRelatedByUserId);
 
-        $this->userRolesRelatedByUserIdScheduledForDeletion = unserialize(serialize($userRolesRelatedByUserIdToDelete));
-
-        foreach ($userRolesRelatedByUserIdToDelete as $userRoleRelatedByUserIdRemoved) {
+        foreach ($this->userRolesRelatedByUserIdScheduledForDeletion as $userRoleRelatedByUserIdRemoved) {
             $userRoleRelatedByUserIdRemoved->setUserRelatedByUserId(null);
         }
 
@@ -4812,8 +4782,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserRolesRelatedByUserId = $userRolesRelatedByUserId;
         $this->collUserRolesRelatedByUserIdPartial = false;
-
-        return $this;
     }
 
     /**
@@ -4831,22 +4799,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserRolesRelatedByUserId || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserRolesRelatedByUserId) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserRolesRelatedByUserId());
+                }
+                $query = UserRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserRolesRelatedByUserId());
+                return $query
+                    ->filterByUserRelatedByUserId($this)
+                    ->count($con);
             }
-            $query = UserRoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUserId($this)
-                ->count($con);
+        } else {
+            return count($this->collUserRolesRelatedByUserId);
         }
-
-        return count($this->collUserRolesRelatedByUserId);
     }
 
     /**
@@ -4862,7 +4830,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserRolesRelatedByUserId();
             $this->collUserRolesRelatedByUserIdPartial = true;
         }
-        if (!in_array($l, $this->collUserRolesRelatedByUserId->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserRolesRelatedByUserId->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserRoleRelatedByUserId($l);
         }
 
@@ -4880,7 +4848,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserRoleRelatedByUserId $userRoleRelatedByUserId The userRoleRelatedByUserId object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByUserId($userRoleRelatedByUserId)
     {
@@ -4890,11 +4857,9 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->userRolesRelatedByUserIdScheduledForDeletion = clone $this->collUserRolesRelatedByUserId;
                 $this->userRolesRelatedByUserIdScheduledForDeletion->clear();
             }
-            $this->userRolesRelatedByUserIdScheduledForDeletion[]= clone $userRoleRelatedByUserId;
+            $this->userRolesRelatedByUserIdScheduledForDeletion[]= $userRoleRelatedByUserId;
             $userRoleRelatedByUserId->setUserRelatedByUserId(null);
         }
-
-        return $this;
     }
 
 
@@ -4928,15 +4893,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentsRelatedByOwnerId()
      */
     public function clearDocumentsRelatedByOwnerId()
     {
         $this->collDocumentsRelatedByOwnerId = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentsRelatedByOwnerIdPartial = null;
-
-        return $this;
     }
 
     /**
@@ -5008,7 +4971,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentsRelatedByOwnerIdPartial = true;
                     }
 
-                    $collDocumentsRelatedByOwnerId->getInternalIterator()->rewind();
                     return $collDocumentsRelatedByOwnerId;
                 }
 
@@ -5036,15 +4998,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentsRelatedByOwnerId A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentsRelatedByOwnerId(PropelCollection $documentsRelatedByOwnerId, PropelPDO $con = null)
     {
-        $documentsRelatedByOwnerIdToDelete = $this->getDocumentsRelatedByOwnerId(new Criteria(), $con)->diff($documentsRelatedByOwnerId);
+        $this->documentsRelatedByOwnerIdScheduledForDeletion = $this->getDocumentsRelatedByOwnerId(new Criteria(), $con)->diff($documentsRelatedByOwnerId);
 
-        $this->documentsRelatedByOwnerIdScheduledForDeletion = unserialize(serialize($documentsRelatedByOwnerIdToDelete));
-
-        foreach ($documentsRelatedByOwnerIdToDelete as $documentRelatedByOwnerIdRemoved) {
+        foreach ($this->documentsRelatedByOwnerIdScheduledForDeletion as $documentRelatedByOwnerIdRemoved) {
             $documentRelatedByOwnerIdRemoved->setUserRelatedByOwnerId(null);
         }
 
@@ -5055,8 +5014,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentsRelatedByOwnerId = $documentsRelatedByOwnerId;
         $this->collDocumentsRelatedByOwnerIdPartial = false;
-
-        return $this;
     }
 
     /**
@@ -5074,22 +5031,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentsRelatedByOwnerId || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentsRelatedByOwnerId) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentsRelatedByOwnerId());
+                }
+                $query = DocumentQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentsRelatedByOwnerId());
+                return $query
+                    ->filterByUserRelatedByOwnerId($this)
+                    ->count($con);
             }
-            $query = DocumentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByOwnerId($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentsRelatedByOwnerId);
         }
-
-        return count($this->collDocumentsRelatedByOwnerId);
     }
 
     /**
@@ -5105,7 +5062,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentsRelatedByOwnerId();
             $this->collDocumentsRelatedByOwnerIdPartial = true;
         }
-        if (!in_array($l, $this->collDocumentsRelatedByOwnerId->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentsRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentRelatedByOwnerId($l);
         }
 
@@ -5123,7 +5080,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentRelatedByOwnerId $documentRelatedByOwnerId The documentRelatedByOwnerId object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByOwnerId($documentRelatedByOwnerId)
     {
@@ -5133,11 +5089,9 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->documentsRelatedByOwnerIdScheduledForDeletion = clone $this->collDocumentsRelatedByOwnerId;
                 $this->documentsRelatedByOwnerIdScheduledForDeletion->clear();
             }
-            $this->documentsRelatedByOwnerIdScheduledForDeletion[]= clone $documentRelatedByOwnerId;
+            $this->documentsRelatedByOwnerIdScheduledForDeletion[]= $documentRelatedByOwnerId;
             $documentRelatedByOwnerId->setUserRelatedByOwnerId(null);
         }
-
-        return $this;
     }
 
 
@@ -5221,15 +5175,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLinksRelatedByOwnerId()
      */
     public function clearLinksRelatedByOwnerId()
     {
         $this->collLinksRelatedByOwnerId = null; // important to set this to null since that means it is uninitialized
         $this->collLinksRelatedByOwnerIdPartial = null;
-
-        return $this;
     }
 
     /**
@@ -5301,7 +5253,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLinksRelatedByOwnerIdPartial = true;
                     }
 
-                    $collLinksRelatedByOwnerId->getInternalIterator()->rewind();
                     return $collLinksRelatedByOwnerId;
                 }
 
@@ -5329,15 +5280,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $linksRelatedByOwnerId A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLinksRelatedByOwnerId(PropelCollection $linksRelatedByOwnerId, PropelPDO $con = null)
     {
-        $linksRelatedByOwnerIdToDelete = $this->getLinksRelatedByOwnerId(new Criteria(), $con)->diff($linksRelatedByOwnerId);
+        $this->linksRelatedByOwnerIdScheduledForDeletion = $this->getLinksRelatedByOwnerId(new Criteria(), $con)->diff($linksRelatedByOwnerId);
 
-        $this->linksRelatedByOwnerIdScheduledForDeletion = unserialize(serialize($linksRelatedByOwnerIdToDelete));
-
-        foreach ($linksRelatedByOwnerIdToDelete as $linkRelatedByOwnerIdRemoved) {
+        foreach ($this->linksRelatedByOwnerIdScheduledForDeletion as $linkRelatedByOwnerIdRemoved) {
             $linkRelatedByOwnerIdRemoved->setUserRelatedByOwnerId(null);
         }
 
@@ -5348,8 +5296,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLinksRelatedByOwnerId = $linksRelatedByOwnerId;
         $this->collLinksRelatedByOwnerIdPartial = false;
-
-        return $this;
     }
 
     /**
@@ -5367,22 +5313,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLinksRelatedByOwnerId || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinksRelatedByOwnerId) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinksRelatedByOwnerId());
+                }
+                $query = LinkQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinksRelatedByOwnerId());
+                return $query
+                    ->filterByUserRelatedByOwnerId($this)
+                    ->count($con);
             }
-            $query = LinkQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByOwnerId($this)
-                ->count($con);
+        } else {
+            return count($this->collLinksRelatedByOwnerId);
         }
-
-        return count($this->collLinksRelatedByOwnerId);
     }
 
     /**
@@ -5398,7 +5344,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLinksRelatedByOwnerId();
             $this->collLinksRelatedByOwnerIdPartial = true;
         }
-        if (!in_array($l, $this->collLinksRelatedByOwnerId->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinksRelatedByOwnerId->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLinkRelatedByOwnerId($l);
         }
 
@@ -5416,7 +5362,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LinkRelatedByOwnerId $linkRelatedByOwnerId The linkRelatedByOwnerId object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByOwnerId($linkRelatedByOwnerId)
     {
@@ -5426,11 +5371,9 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->linksRelatedByOwnerIdScheduledForDeletion = clone $this->collLinksRelatedByOwnerId;
                 $this->linksRelatedByOwnerIdScheduledForDeletion->clear();
             }
-            $this->linksRelatedByOwnerIdScheduledForDeletion[]= clone $linkRelatedByOwnerId;
+            $this->linksRelatedByOwnerIdScheduledForDeletion[]= $linkRelatedByOwnerId;
             $linkRelatedByOwnerId->setUserRelatedByOwnerId(null);
         }
-
-        return $this;
     }
 
 
@@ -5489,15 +5432,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPagesRelatedByCreatedBy()
      */
     public function clearPagesRelatedByCreatedBy()
     {
         $this->collPagesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPagesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -5569,7 +5510,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPagesRelatedByCreatedByPartial = true;
                     }
 
-                    $collPagesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collPagesRelatedByCreatedBy;
                 }
 
@@ -5597,15 +5537,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPagesRelatedByCreatedBy(PropelCollection $pagesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $pagesRelatedByCreatedByToDelete = $this->getPagesRelatedByCreatedBy(new Criteria(), $con)->diff($pagesRelatedByCreatedBy);
+        $this->pagesRelatedByCreatedByScheduledForDeletion = $this->getPagesRelatedByCreatedBy(new Criteria(), $con)->diff($pagesRelatedByCreatedBy);
 
-        $this->pagesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($pagesRelatedByCreatedByToDelete));
-
-        foreach ($pagesRelatedByCreatedByToDelete as $pageRelatedByCreatedByRemoved) {
+        foreach ($this->pagesRelatedByCreatedByScheduledForDeletion as $pageRelatedByCreatedByRemoved) {
             $pageRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -5616,8 +5553,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPagesRelatedByCreatedBy = $pagesRelatedByCreatedBy;
         $this->collPagesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -5635,22 +5570,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPagesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPagesRelatedByCreatedBy());
+                }
+                $query = PageQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPagesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = PageQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPagesRelatedByCreatedBy);
         }
-
-        return count($this->collPagesRelatedByCreatedBy);
     }
 
     /**
@@ -5666,7 +5601,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPagesRelatedByCreatedBy();
             $this->collPagesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collPagesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPageRelatedByCreatedBy($l);
         }
 
@@ -5684,7 +5619,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PageRelatedByCreatedBy $pageRelatedByCreatedBy The pageRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePageRelatedByCreatedBy($pageRelatedByCreatedBy)
     {
@@ -5697,8 +5631,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pagesRelatedByCreatedByScheduledForDeletion[]= $pageRelatedByCreatedBy;
             $pageRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -5732,15 +5664,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPagesRelatedByUpdatedBy()
      */
     public function clearPagesRelatedByUpdatedBy()
     {
         $this->collPagesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPagesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -5812,7 +5742,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPagesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collPagesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collPagesRelatedByUpdatedBy;
                 }
 
@@ -5840,15 +5769,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPagesRelatedByUpdatedBy(PropelCollection $pagesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $pagesRelatedByUpdatedByToDelete = $this->getPagesRelatedByUpdatedBy(new Criteria(), $con)->diff($pagesRelatedByUpdatedBy);
+        $this->pagesRelatedByUpdatedByScheduledForDeletion = $this->getPagesRelatedByUpdatedBy(new Criteria(), $con)->diff($pagesRelatedByUpdatedBy);
 
-        $this->pagesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($pagesRelatedByUpdatedByToDelete));
-
-        foreach ($pagesRelatedByUpdatedByToDelete as $pageRelatedByUpdatedByRemoved) {
+        foreach ($this->pagesRelatedByUpdatedByScheduledForDeletion as $pageRelatedByUpdatedByRemoved) {
             $pageRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -5859,8 +5785,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPagesRelatedByUpdatedBy = $pagesRelatedByUpdatedBy;
         $this->collPagesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -5878,22 +5802,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPagesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPagesRelatedByUpdatedBy());
+                }
+                $query = PageQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPagesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = PageQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPagesRelatedByUpdatedBy);
         }
-
-        return count($this->collPagesRelatedByUpdatedBy);
     }
 
     /**
@@ -5909,7 +5833,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPagesRelatedByUpdatedBy();
             $this->collPagesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collPagesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPageRelatedByUpdatedBy($l);
         }
 
@@ -5927,7 +5851,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PageRelatedByUpdatedBy $pageRelatedByUpdatedBy The pageRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePageRelatedByUpdatedBy($pageRelatedByUpdatedBy)
     {
@@ -5940,8 +5863,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pagesRelatedByUpdatedByScheduledForDeletion[]= $pageRelatedByUpdatedBy;
             $pageRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -5975,15 +5896,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPagePropertysRelatedByCreatedBy()
      */
     public function clearPagePropertysRelatedByCreatedBy()
     {
         $this->collPagePropertysRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPagePropertysRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -6055,7 +5974,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPagePropertysRelatedByCreatedByPartial = true;
                     }
 
-                    $collPagePropertysRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collPagePropertysRelatedByCreatedBy;
                 }
 
@@ -6083,15 +6001,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagePropertysRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPagePropertysRelatedByCreatedBy(PropelCollection $pagePropertysRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $pagePropertysRelatedByCreatedByToDelete = $this->getPagePropertysRelatedByCreatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByCreatedBy);
+        $this->pagePropertysRelatedByCreatedByScheduledForDeletion = $this->getPagePropertysRelatedByCreatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByCreatedBy);
 
-        $this->pagePropertysRelatedByCreatedByScheduledForDeletion = unserialize(serialize($pagePropertysRelatedByCreatedByToDelete));
-
-        foreach ($pagePropertysRelatedByCreatedByToDelete as $pagePropertyRelatedByCreatedByRemoved) {
+        foreach ($this->pagePropertysRelatedByCreatedByScheduledForDeletion as $pagePropertyRelatedByCreatedByRemoved) {
             $pagePropertyRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -6102,8 +6017,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPagePropertysRelatedByCreatedBy = $pagePropertysRelatedByCreatedBy;
         $this->collPagePropertysRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -6121,22 +6034,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPagePropertysRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagePropertysRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPagePropertysRelatedByCreatedBy());
+                }
+                $query = PagePropertyQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPagePropertysRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = PagePropertyQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPagePropertysRelatedByCreatedBy);
         }
-
-        return count($this->collPagePropertysRelatedByCreatedBy);
     }
 
     /**
@@ -6152,7 +6065,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPagePropertysRelatedByCreatedBy();
             $this->collPagePropertysRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collPagePropertysRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPagePropertysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPagePropertyRelatedByCreatedBy($l);
         }
 
@@ -6170,7 +6083,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PagePropertyRelatedByCreatedBy $pagePropertyRelatedByCreatedBy The pagePropertyRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePagePropertyRelatedByCreatedBy($pagePropertyRelatedByCreatedBy)
     {
@@ -6183,8 +6095,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pagePropertysRelatedByCreatedByScheduledForDeletion[]= $pagePropertyRelatedByCreatedBy;
             $pagePropertyRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -6218,15 +6128,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPagePropertysRelatedByUpdatedBy()
      */
     public function clearPagePropertysRelatedByUpdatedBy()
     {
         $this->collPagePropertysRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPagePropertysRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -6298,7 +6206,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPagePropertysRelatedByUpdatedByPartial = true;
                     }
 
-                    $collPagePropertysRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collPagePropertysRelatedByUpdatedBy;
                 }
 
@@ -6326,15 +6233,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagePropertysRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPagePropertysRelatedByUpdatedBy(PropelCollection $pagePropertysRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $pagePropertysRelatedByUpdatedByToDelete = $this->getPagePropertysRelatedByUpdatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByUpdatedBy);
+        $this->pagePropertysRelatedByUpdatedByScheduledForDeletion = $this->getPagePropertysRelatedByUpdatedBy(new Criteria(), $con)->diff($pagePropertysRelatedByUpdatedBy);
 
-        $this->pagePropertysRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($pagePropertysRelatedByUpdatedByToDelete));
-
-        foreach ($pagePropertysRelatedByUpdatedByToDelete as $pagePropertyRelatedByUpdatedByRemoved) {
+        foreach ($this->pagePropertysRelatedByUpdatedByScheduledForDeletion as $pagePropertyRelatedByUpdatedByRemoved) {
             $pagePropertyRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -6345,8 +6249,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPagePropertysRelatedByUpdatedBy = $pagePropertysRelatedByUpdatedBy;
         $this->collPagePropertysRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -6364,22 +6266,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPagePropertysRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagePropertysRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPagePropertysRelatedByUpdatedBy());
+                }
+                $query = PagePropertyQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPagePropertysRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = PagePropertyQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPagePropertysRelatedByUpdatedBy);
         }
-
-        return count($this->collPagePropertysRelatedByUpdatedBy);
     }
 
     /**
@@ -6395,7 +6297,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPagePropertysRelatedByUpdatedBy();
             $this->collPagePropertysRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collPagePropertysRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPagePropertysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPagePropertyRelatedByUpdatedBy($l);
         }
 
@@ -6413,7 +6315,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PagePropertyRelatedByUpdatedBy $pagePropertyRelatedByUpdatedBy The pagePropertyRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePagePropertyRelatedByUpdatedBy($pagePropertyRelatedByUpdatedBy)
     {
@@ -6426,8 +6327,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pagePropertysRelatedByUpdatedByScheduledForDeletion[]= $pagePropertyRelatedByUpdatedBy;
             $pagePropertyRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -6461,15 +6360,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPageStringsRelatedByCreatedBy()
      */
     public function clearPageStringsRelatedByCreatedBy()
     {
         $this->collPageStringsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPageStringsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -6541,7 +6438,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPageStringsRelatedByCreatedByPartial = true;
                     }
 
-                    $collPageStringsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collPageStringsRelatedByCreatedBy;
                 }
 
@@ -6569,15 +6465,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pageStringsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPageStringsRelatedByCreatedBy(PropelCollection $pageStringsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $pageStringsRelatedByCreatedByToDelete = $this->getPageStringsRelatedByCreatedBy(new Criteria(), $con)->diff($pageStringsRelatedByCreatedBy);
+        $this->pageStringsRelatedByCreatedByScheduledForDeletion = $this->getPageStringsRelatedByCreatedBy(new Criteria(), $con)->diff($pageStringsRelatedByCreatedBy);
 
-        $this->pageStringsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($pageStringsRelatedByCreatedByToDelete));
-
-        foreach ($pageStringsRelatedByCreatedByToDelete as $pageStringRelatedByCreatedByRemoved) {
+        foreach ($this->pageStringsRelatedByCreatedByScheduledForDeletion as $pageStringRelatedByCreatedByRemoved) {
             $pageStringRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -6588,8 +6481,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPageStringsRelatedByCreatedBy = $pageStringsRelatedByCreatedBy;
         $this->collPageStringsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -6607,22 +6498,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPageStringsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPageStringsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPageStringsRelatedByCreatedBy());
+                }
+                $query = PageStringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPageStringsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = PageStringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPageStringsRelatedByCreatedBy);
         }
-
-        return count($this->collPageStringsRelatedByCreatedBy);
     }
 
     /**
@@ -6638,7 +6529,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPageStringsRelatedByCreatedBy();
             $this->collPageStringsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collPageStringsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPageStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPageStringRelatedByCreatedBy($l);
         }
 
@@ -6656,7 +6547,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PageStringRelatedByCreatedBy $pageStringRelatedByCreatedBy The pageStringRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePageStringRelatedByCreatedBy($pageStringRelatedByCreatedBy)
     {
@@ -6669,8 +6559,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pageStringsRelatedByCreatedByScheduledForDeletion[]= $pageStringRelatedByCreatedBy;
             $pageStringRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -6729,15 +6617,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addPageStringsRelatedByUpdatedBy()
      */
     public function clearPageStringsRelatedByUpdatedBy()
     {
         $this->collPageStringsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collPageStringsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -6809,7 +6695,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collPageStringsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collPageStringsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collPageStringsRelatedByUpdatedBy;
                 }
 
@@ -6837,15 +6722,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $pageStringsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setPageStringsRelatedByUpdatedBy(PropelCollection $pageStringsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $pageStringsRelatedByUpdatedByToDelete = $this->getPageStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($pageStringsRelatedByUpdatedBy);
+        $this->pageStringsRelatedByUpdatedByScheduledForDeletion = $this->getPageStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($pageStringsRelatedByUpdatedBy);
 
-        $this->pageStringsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($pageStringsRelatedByUpdatedByToDelete));
-
-        foreach ($pageStringsRelatedByUpdatedByToDelete as $pageStringRelatedByUpdatedByRemoved) {
+        foreach ($this->pageStringsRelatedByUpdatedByScheduledForDeletion as $pageStringRelatedByUpdatedByRemoved) {
             $pageStringRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -6856,8 +6738,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collPageStringsRelatedByUpdatedBy = $pageStringsRelatedByUpdatedBy;
         $this->collPageStringsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -6875,22 +6755,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collPageStringsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPageStringsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getPageStringsRelatedByUpdatedBy());
+                }
+                $query = PageStringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getPageStringsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = PageStringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collPageStringsRelatedByUpdatedBy);
         }
-
-        return count($this->collPageStringsRelatedByUpdatedBy);
     }
 
     /**
@@ -6906,7 +6786,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initPageStringsRelatedByUpdatedBy();
             $this->collPageStringsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collPageStringsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collPageStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddPageStringRelatedByUpdatedBy($l);
         }
 
@@ -6924,7 +6804,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	PageStringRelatedByUpdatedBy $pageStringRelatedByUpdatedBy The pageStringRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removePageStringRelatedByUpdatedBy($pageStringRelatedByUpdatedBy)
     {
@@ -6937,8 +6816,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->pageStringsRelatedByUpdatedByScheduledForDeletion[]= $pageStringRelatedByUpdatedBy;
             $pageStringRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -6997,15 +6874,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addContentObjectsRelatedByCreatedBy()
      */
     public function clearContentObjectsRelatedByCreatedBy()
     {
         $this->collContentObjectsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collContentObjectsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -7077,7 +6952,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collContentObjectsRelatedByCreatedByPartial = true;
                     }
 
-                    $collContentObjectsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collContentObjectsRelatedByCreatedBy;
                 }
 
@@ -7105,15 +6979,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $contentObjectsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setContentObjectsRelatedByCreatedBy(PropelCollection $contentObjectsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $contentObjectsRelatedByCreatedByToDelete = $this->getContentObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByCreatedBy);
+        $this->contentObjectsRelatedByCreatedByScheduledForDeletion = $this->getContentObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByCreatedBy);
 
-        $this->contentObjectsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($contentObjectsRelatedByCreatedByToDelete));
-
-        foreach ($contentObjectsRelatedByCreatedByToDelete as $contentObjectRelatedByCreatedByRemoved) {
+        foreach ($this->contentObjectsRelatedByCreatedByScheduledForDeletion as $contentObjectRelatedByCreatedByRemoved) {
             $contentObjectRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -7124,8 +6995,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collContentObjectsRelatedByCreatedBy = $contentObjectsRelatedByCreatedBy;
         $this->collContentObjectsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -7143,22 +7012,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collContentObjectsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collContentObjectsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getContentObjectsRelatedByCreatedBy());
+                }
+                $query = ContentObjectQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getContentObjectsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = ContentObjectQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collContentObjectsRelatedByCreatedBy);
         }
-
-        return count($this->collContentObjectsRelatedByCreatedBy);
     }
 
     /**
@@ -7174,7 +7043,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initContentObjectsRelatedByCreatedBy();
             $this->collContentObjectsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collContentObjectsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collContentObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddContentObjectRelatedByCreatedBy($l);
         }
 
@@ -7192,7 +7061,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	ContentObjectRelatedByCreatedBy $contentObjectRelatedByCreatedBy The contentObjectRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeContentObjectRelatedByCreatedBy($contentObjectRelatedByCreatedBy)
     {
@@ -7205,8 +7073,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->contentObjectsRelatedByCreatedByScheduledForDeletion[]= $contentObjectRelatedByCreatedBy;
             $contentObjectRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -7240,15 +7106,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addContentObjectsRelatedByUpdatedBy()
      */
     public function clearContentObjectsRelatedByUpdatedBy()
     {
         $this->collContentObjectsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collContentObjectsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -7320,7 +7184,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collContentObjectsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collContentObjectsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collContentObjectsRelatedByUpdatedBy;
                 }
 
@@ -7348,15 +7211,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $contentObjectsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setContentObjectsRelatedByUpdatedBy(PropelCollection $contentObjectsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $contentObjectsRelatedByUpdatedByToDelete = $this->getContentObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByUpdatedBy);
+        $this->contentObjectsRelatedByUpdatedByScheduledForDeletion = $this->getContentObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($contentObjectsRelatedByUpdatedBy);
 
-        $this->contentObjectsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($contentObjectsRelatedByUpdatedByToDelete));
-
-        foreach ($contentObjectsRelatedByUpdatedByToDelete as $contentObjectRelatedByUpdatedByRemoved) {
+        foreach ($this->contentObjectsRelatedByUpdatedByScheduledForDeletion as $contentObjectRelatedByUpdatedByRemoved) {
             $contentObjectRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -7367,8 +7227,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collContentObjectsRelatedByUpdatedBy = $contentObjectsRelatedByUpdatedBy;
         $this->collContentObjectsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -7386,22 +7244,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collContentObjectsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collContentObjectsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getContentObjectsRelatedByUpdatedBy());
+                }
+                $query = ContentObjectQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getContentObjectsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = ContentObjectQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collContentObjectsRelatedByUpdatedBy);
         }
-
-        return count($this->collContentObjectsRelatedByUpdatedBy);
     }
 
     /**
@@ -7417,7 +7275,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initContentObjectsRelatedByUpdatedBy();
             $this->collContentObjectsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collContentObjectsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collContentObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddContentObjectRelatedByUpdatedBy($l);
         }
 
@@ -7435,7 +7293,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	ContentObjectRelatedByUpdatedBy $contentObjectRelatedByUpdatedBy The contentObjectRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeContentObjectRelatedByUpdatedBy($contentObjectRelatedByUpdatedBy)
     {
@@ -7448,8 +7305,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->contentObjectsRelatedByUpdatedByScheduledForDeletion[]= $contentObjectRelatedByUpdatedBy;
             $contentObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -7483,15 +7338,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjectsRelatedByCreatedBy()
      */
     public function clearLanguageObjectsRelatedByCreatedBy()
     {
         $this->collLanguageObjectsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -7563,7 +7416,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguageObjectsRelatedByCreatedByPartial = true;
                     }
 
-                    $collLanguageObjectsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collLanguageObjectsRelatedByCreatedBy;
                 }
 
@@ -7591,15 +7443,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjectsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguageObjectsRelatedByCreatedBy(PropelCollection $languageObjectsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $languageObjectsRelatedByCreatedByToDelete = $this->getLanguageObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByCreatedBy);
+        $this->languageObjectsRelatedByCreatedByScheduledForDeletion = $this->getLanguageObjectsRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByCreatedBy);
 
-        $this->languageObjectsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($languageObjectsRelatedByCreatedByToDelete));
-
-        foreach ($languageObjectsRelatedByCreatedByToDelete as $languageObjectRelatedByCreatedByRemoved) {
+        foreach ($this->languageObjectsRelatedByCreatedByScheduledForDeletion as $languageObjectRelatedByCreatedByRemoved) {
             $languageObjectRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -7610,8 +7459,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguageObjectsRelatedByCreatedBy = $languageObjectsRelatedByCreatedBy;
         $this->collLanguageObjectsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -7629,22 +7476,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguageObjectsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjectsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjectsRelatedByCreatedBy());
+                }
+                $query = LanguageObjectQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjectsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageObjectQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjectsRelatedByCreatedBy);
         }
-
-        return count($this->collLanguageObjectsRelatedByCreatedBy);
     }
 
     /**
@@ -7660,7 +7507,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguageObjectsRelatedByCreatedBy();
             $this->collLanguageObjectsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjectsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjectsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObjectRelatedByCreatedBy($l);
         }
 
@@ -7678,7 +7525,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObjectRelatedByCreatedBy $languageObjectRelatedByCreatedBy The languageObjectRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectRelatedByCreatedBy($languageObjectRelatedByCreatedBy)
     {
@@ -7691,8 +7537,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languageObjectsRelatedByCreatedByScheduledForDeletion[]= $languageObjectRelatedByCreatedBy;
             $languageObjectRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -7751,15 +7595,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjectsRelatedByUpdatedBy()
      */
     public function clearLanguageObjectsRelatedByUpdatedBy()
     {
         $this->collLanguageObjectsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -7831,7 +7673,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguageObjectsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collLanguageObjectsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collLanguageObjectsRelatedByUpdatedBy;
                 }
 
@@ -7859,15 +7700,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjectsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguageObjectsRelatedByUpdatedBy(PropelCollection $languageObjectsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $languageObjectsRelatedByUpdatedByToDelete = $this->getLanguageObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByUpdatedBy);
+        $this->languageObjectsRelatedByUpdatedByScheduledForDeletion = $this->getLanguageObjectsRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectsRelatedByUpdatedBy);
 
-        $this->languageObjectsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($languageObjectsRelatedByUpdatedByToDelete));
-
-        foreach ($languageObjectsRelatedByUpdatedByToDelete as $languageObjectRelatedByUpdatedByRemoved) {
+        foreach ($this->languageObjectsRelatedByUpdatedByScheduledForDeletion as $languageObjectRelatedByUpdatedByRemoved) {
             $languageObjectRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -7878,8 +7716,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguageObjectsRelatedByUpdatedBy = $languageObjectsRelatedByUpdatedBy;
         $this->collLanguageObjectsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -7897,22 +7733,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguageObjectsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjectsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjectsRelatedByUpdatedBy());
+                }
+                $query = LanguageObjectQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjectsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageObjectQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjectsRelatedByUpdatedBy);
         }
-
-        return count($this->collLanguageObjectsRelatedByUpdatedBy);
     }
 
     /**
@@ -7928,7 +7764,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguageObjectsRelatedByUpdatedBy();
             $this->collLanguageObjectsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjectsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjectsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObjectRelatedByUpdatedBy($l);
         }
 
@@ -7946,7 +7782,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObjectRelatedByUpdatedBy $languageObjectRelatedByUpdatedBy The languageObjectRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectRelatedByUpdatedBy($languageObjectRelatedByUpdatedBy)
     {
@@ -7959,8 +7794,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languageObjectsRelatedByUpdatedByScheduledForDeletion[]= $languageObjectRelatedByUpdatedBy;
             $languageObjectRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -8019,15 +7852,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjectHistorysRelatedByCreatedBy()
      */
     public function clearLanguageObjectHistorysRelatedByCreatedBy()
     {
         $this->collLanguageObjectHistorysRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectHistorysRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -8099,7 +7930,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguageObjectHistorysRelatedByCreatedByPartial = true;
                     }
 
-                    $collLanguageObjectHistorysRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collLanguageObjectHistorysRelatedByCreatedBy;
                 }
 
@@ -8127,15 +7957,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjectHistorysRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguageObjectHistorysRelatedByCreatedBy(PropelCollection $languageObjectHistorysRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $languageObjectHistorysRelatedByCreatedByToDelete = $this->getLanguageObjectHistorysRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByCreatedBy);
+        $this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion = $this->getLanguageObjectHistorysRelatedByCreatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByCreatedBy);
 
-        $this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion = unserialize(serialize($languageObjectHistorysRelatedByCreatedByToDelete));
-
-        foreach ($languageObjectHistorysRelatedByCreatedByToDelete as $languageObjectHistoryRelatedByCreatedByRemoved) {
+        foreach ($this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion as $languageObjectHistoryRelatedByCreatedByRemoved) {
             $languageObjectHistoryRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -8146,8 +7973,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguageObjectHistorysRelatedByCreatedBy = $languageObjectHistorysRelatedByCreatedBy;
         $this->collLanguageObjectHistorysRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -8165,22 +7990,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguageObjectHistorysRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjectHistorysRelatedByCreatedBy());
+                }
+                $query = LanguageObjectHistoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjectHistorysRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageObjectHistoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjectHistorysRelatedByCreatedBy);
         }
-
-        return count($this->collLanguageObjectHistorysRelatedByCreatedBy);
     }
 
     /**
@@ -8196,7 +8021,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguageObjectHistorysRelatedByCreatedBy();
             $this->collLanguageObjectHistorysRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjectHistorysRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjectHistorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObjectHistoryRelatedByCreatedBy($l);
         }
 
@@ -8214,7 +8039,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObjectHistoryRelatedByCreatedBy $languageObjectHistoryRelatedByCreatedBy The languageObjectHistoryRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistoryRelatedByCreatedBy)
     {
@@ -8227,8 +8051,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languageObjectHistorysRelatedByCreatedByScheduledForDeletion[]= $languageObjectHistoryRelatedByCreatedBy;
             $languageObjectHistoryRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -8287,15 +8109,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguageObjectHistorysRelatedByUpdatedBy()
      */
     public function clearLanguageObjectHistorysRelatedByUpdatedBy()
     {
         $this->collLanguageObjectHistorysRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguageObjectHistorysRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -8367,7 +8187,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguageObjectHistorysRelatedByUpdatedByPartial = true;
                     }
 
-                    $collLanguageObjectHistorysRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collLanguageObjectHistorysRelatedByUpdatedBy;
                 }
 
@@ -8395,15 +8214,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languageObjectHistorysRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguageObjectHistorysRelatedByUpdatedBy(PropelCollection $languageObjectHistorysRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $languageObjectHistorysRelatedByUpdatedByToDelete = $this->getLanguageObjectHistorysRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByUpdatedBy);
+        $this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion = $this->getLanguageObjectHistorysRelatedByUpdatedBy(new Criteria(), $con)->diff($languageObjectHistorysRelatedByUpdatedBy);
 
-        $this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($languageObjectHistorysRelatedByUpdatedByToDelete));
-
-        foreach ($languageObjectHistorysRelatedByUpdatedByToDelete as $languageObjectHistoryRelatedByUpdatedByRemoved) {
+        foreach ($this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion as $languageObjectHistoryRelatedByUpdatedByRemoved) {
             $languageObjectHistoryRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -8414,8 +8230,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguageObjectHistorysRelatedByUpdatedBy = $languageObjectHistorysRelatedByUpdatedBy;
         $this->collLanguageObjectHistorysRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -8433,22 +8247,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguageObjectHistorysRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguageObjectHistorysRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguageObjectHistorysRelatedByUpdatedBy());
+                }
+                $query = LanguageObjectHistoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguageObjectHistorysRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageObjectHistoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguageObjectHistorysRelatedByUpdatedBy);
         }
-
-        return count($this->collLanguageObjectHistorysRelatedByUpdatedBy);
     }
 
     /**
@@ -8464,7 +8278,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguageObjectHistorysRelatedByUpdatedBy();
             $this->collLanguageObjectHistorysRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguageObjectHistorysRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguageObjectHistorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageObjectHistoryRelatedByUpdatedBy($l);
         }
 
@@ -8482,7 +8296,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageObjectHistoryRelatedByUpdatedBy $languageObjectHistoryRelatedByUpdatedBy The languageObjectHistoryRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistoryRelatedByUpdatedBy)
     {
@@ -8495,8 +8308,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languageObjectHistorysRelatedByUpdatedByScheduledForDeletion[]= $languageObjectHistoryRelatedByUpdatedBy;
             $languageObjectHistoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -8555,15 +8366,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguagesRelatedByCreatedBy()
      */
     public function clearLanguagesRelatedByCreatedBy()
     {
         $this->collLanguagesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguagesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -8635,7 +8444,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguagesRelatedByCreatedByPartial = true;
                     }
 
-                    $collLanguagesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collLanguagesRelatedByCreatedBy;
                 }
 
@@ -8663,15 +8471,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languagesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguagesRelatedByCreatedBy(PropelCollection $languagesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $languagesRelatedByCreatedByToDelete = $this->getLanguagesRelatedByCreatedBy(new Criteria(), $con)->diff($languagesRelatedByCreatedBy);
+        $this->languagesRelatedByCreatedByScheduledForDeletion = $this->getLanguagesRelatedByCreatedBy(new Criteria(), $con)->diff($languagesRelatedByCreatedBy);
 
-        $this->languagesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($languagesRelatedByCreatedByToDelete));
-
-        foreach ($languagesRelatedByCreatedByToDelete as $languageRelatedByCreatedByRemoved) {
+        foreach ($this->languagesRelatedByCreatedByScheduledForDeletion as $languageRelatedByCreatedByRemoved) {
             $languageRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -8682,8 +8487,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguagesRelatedByCreatedBy = $languagesRelatedByCreatedBy;
         $this->collLanguagesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -8701,22 +8504,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguagesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguagesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguagesRelatedByCreatedBy());
+                }
+                $query = LanguageQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguagesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguagesRelatedByCreatedBy);
         }
-
-        return count($this->collLanguagesRelatedByCreatedBy);
     }
 
     /**
@@ -8732,7 +8535,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguagesRelatedByCreatedBy();
             $this->collLanguagesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguagesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguagesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageRelatedByCreatedBy($l);
         }
 
@@ -8750,7 +8553,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageRelatedByCreatedBy $languageRelatedByCreatedBy The languageRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageRelatedByCreatedBy($languageRelatedByCreatedBy)
     {
@@ -8763,8 +8565,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languagesRelatedByCreatedByScheduledForDeletion[]= $languageRelatedByCreatedBy;
             $languageRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -8773,15 +8573,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLanguagesRelatedByUpdatedBy()
      */
     public function clearLanguagesRelatedByUpdatedBy()
     {
         $this->collLanguagesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLanguagesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -8853,7 +8651,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLanguagesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collLanguagesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collLanguagesRelatedByUpdatedBy;
                 }
 
@@ -8881,15 +8678,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $languagesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLanguagesRelatedByUpdatedBy(PropelCollection $languagesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $languagesRelatedByUpdatedByToDelete = $this->getLanguagesRelatedByUpdatedBy(new Criteria(), $con)->diff($languagesRelatedByUpdatedBy);
+        $this->languagesRelatedByUpdatedByScheduledForDeletion = $this->getLanguagesRelatedByUpdatedBy(new Criteria(), $con)->diff($languagesRelatedByUpdatedBy);
 
-        $this->languagesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($languagesRelatedByUpdatedByToDelete));
-
-        foreach ($languagesRelatedByUpdatedByToDelete as $languageRelatedByUpdatedByRemoved) {
+        foreach ($this->languagesRelatedByUpdatedByScheduledForDeletion as $languageRelatedByUpdatedByRemoved) {
             $languageRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -8900,8 +8694,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLanguagesRelatedByUpdatedBy = $languagesRelatedByUpdatedBy;
         $this->collLanguagesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -8919,22 +8711,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLanguagesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLanguagesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLanguagesRelatedByUpdatedBy());
+                }
+                $query = LanguageQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLanguagesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = LanguageQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLanguagesRelatedByUpdatedBy);
         }
-
-        return count($this->collLanguagesRelatedByUpdatedBy);
     }
 
     /**
@@ -8950,7 +8742,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLanguagesRelatedByUpdatedBy();
             $this->collLanguagesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collLanguagesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLanguagesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLanguageRelatedByUpdatedBy($l);
         }
 
@@ -8968,7 +8760,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LanguageRelatedByUpdatedBy $languageRelatedByUpdatedBy The languageRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLanguageRelatedByUpdatedBy($languageRelatedByUpdatedBy)
     {
@@ -8981,8 +8772,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->languagesRelatedByUpdatedByScheduledForDeletion[]= $languageRelatedByUpdatedBy;
             $languageRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -8991,15 +8780,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addStringsRelatedByCreatedBy()
      */
     public function clearStringsRelatedByCreatedBy()
     {
         $this->collStringsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collStringsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -9071,7 +8858,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collStringsRelatedByCreatedByPartial = true;
                     }
 
-                    $collStringsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collStringsRelatedByCreatedBy;
                 }
 
@@ -9099,15 +8885,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $stringsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setStringsRelatedByCreatedBy(PropelCollection $stringsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $stringsRelatedByCreatedByToDelete = $this->getStringsRelatedByCreatedBy(new Criteria(), $con)->diff($stringsRelatedByCreatedBy);
+        $this->stringsRelatedByCreatedByScheduledForDeletion = $this->getStringsRelatedByCreatedBy(new Criteria(), $con)->diff($stringsRelatedByCreatedBy);
 
-        $this->stringsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($stringsRelatedByCreatedByToDelete));
-
-        foreach ($stringsRelatedByCreatedByToDelete as $stringRelatedByCreatedByRemoved) {
+        foreach ($this->stringsRelatedByCreatedByScheduledForDeletion as $stringRelatedByCreatedByRemoved) {
             $stringRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -9118,8 +8901,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collStringsRelatedByCreatedBy = $stringsRelatedByCreatedBy;
         $this->collStringsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -9137,22 +8918,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collStringsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getStringsRelatedByCreatedBy());
+                }
+                $query = StringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getStringsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = StringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collStringsRelatedByCreatedBy);
         }
-
-        return count($this->collStringsRelatedByCreatedBy);
     }
 
     /**
@@ -9168,7 +8949,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initStringsRelatedByCreatedBy();
             $this->collStringsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collStringsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collStringsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddStringRelatedByCreatedBy($l);
         }
 
@@ -9186,7 +8967,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	StringRelatedByCreatedBy $stringRelatedByCreatedBy The stringRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeStringRelatedByCreatedBy($stringRelatedByCreatedBy)
     {
@@ -9199,8 +8979,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->stringsRelatedByCreatedByScheduledForDeletion[]= $stringRelatedByCreatedBy;
             $stringRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -9234,15 +9012,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addStringsRelatedByUpdatedBy()
      */
     public function clearStringsRelatedByUpdatedBy()
     {
         $this->collStringsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collStringsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -9314,7 +9090,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collStringsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collStringsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collStringsRelatedByUpdatedBy;
                 }
 
@@ -9342,15 +9117,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $stringsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setStringsRelatedByUpdatedBy(PropelCollection $stringsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $stringsRelatedByUpdatedByToDelete = $this->getStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($stringsRelatedByUpdatedBy);
+        $this->stringsRelatedByUpdatedByScheduledForDeletion = $this->getStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($stringsRelatedByUpdatedBy);
 
-        $this->stringsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($stringsRelatedByUpdatedByToDelete));
-
-        foreach ($stringsRelatedByUpdatedByToDelete as $stringRelatedByUpdatedByRemoved) {
+        foreach ($this->stringsRelatedByUpdatedByScheduledForDeletion as $stringRelatedByUpdatedByRemoved) {
             $stringRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -9361,8 +9133,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collStringsRelatedByUpdatedBy = $stringsRelatedByUpdatedBy;
         $this->collStringsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -9380,22 +9150,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collStringsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getStringsRelatedByUpdatedBy());
+                }
+                $query = StringQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getStringsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = StringQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collStringsRelatedByUpdatedBy);
         }
-
-        return count($this->collStringsRelatedByUpdatedBy);
     }
 
     /**
@@ -9411,7 +9181,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initStringsRelatedByUpdatedBy();
             $this->collStringsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collStringsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collStringsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddStringRelatedByUpdatedBy($l);
         }
 
@@ -9429,7 +9199,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	StringRelatedByUpdatedBy $stringRelatedByUpdatedBy The stringRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeStringRelatedByUpdatedBy($stringRelatedByUpdatedBy)
     {
@@ -9442,8 +9211,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->stringsRelatedByUpdatedByScheduledForDeletion[]= $stringRelatedByUpdatedBy;
             $stringRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -9477,15 +9244,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserGroupsRelatedByCreatedBy()
      */
     public function clearUserGroupsRelatedByCreatedBy()
     {
         $this->collUserGroupsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collUserGroupsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -9557,7 +9322,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserGroupsRelatedByCreatedByPartial = true;
                     }
 
-                    $collUserGroupsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collUserGroupsRelatedByCreatedBy;
                 }
 
@@ -9585,15 +9349,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userGroupsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserGroupsRelatedByCreatedBy(PropelCollection $userGroupsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $userGroupsRelatedByCreatedByToDelete = $this->getUserGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($userGroupsRelatedByCreatedBy);
+        $this->userGroupsRelatedByCreatedByScheduledForDeletion = $this->getUserGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($userGroupsRelatedByCreatedBy);
 
-        $this->userGroupsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($userGroupsRelatedByCreatedByToDelete));
-
-        foreach ($userGroupsRelatedByCreatedByToDelete as $userGroupRelatedByCreatedByRemoved) {
+        foreach ($this->userGroupsRelatedByCreatedByScheduledForDeletion as $userGroupRelatedByCreatedByRemoved) {
             $userGroupRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -9604,8 +9365,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserGroupsRelatedByCreatedBy = $userGroupsRelatedByCreatedBy;
         $this->collUserGroupsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -9623,22 +9382,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserGroupsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserGroupsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserGroupsRelatedByCreatedBy());
+                }
+                $query = UserGroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserGroupsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = UserGroupQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collUserGroupsRelatedByCreatedBy);
         }
-
-        return count($this->collUserGroupsRelatedByCreatedBy);
     }
 
     /**
@@ -9654,7 +9413,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserGroupsRelatedByCreatedBy();
             $this->collUserGroupsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collUserGroupsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserGroupRelatedByCreatedBy($l);
         }
 
@@ -9672,7 +9431,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserGroupRelatedByCreatedBy $userGroupRelatedByCreatedBy The userGroupRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByCreatedBy($userGroupRelatedByCreatedBy)
     {
@@ -9685,8 +9443,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->userGroupsRelatedByCreatedByScheduledForDeletion[]= $userGroupRelatedByCreatedBy;
             $userGroupRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -9720,15 +9476,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserGroupsRelatedByUpdatedBy()
      */
     public function clearUserGroupsRelatedByUpdatedBy()
     {
         $this->collUserGroupsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collUserGroupsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -9800,7 +9554,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserGroupsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collUserGroupsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collUserGroupsRelatedByUpdatedBy;
                 }
 
@@ -9828,15 +9581,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userGroupsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserGroupsRelatedByUpdatedBy(PropelCollection $userGroupsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $userGroupsRelatedByUpdatedByToDelete = $this->getUserGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($userGroupsRelatedByUpdatedBy);
+        $this->userGroupsRelatedByUpdatedByScheduledForDeletion = $this->getUserGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($userGroupsRelatedByUpdatedBy);
 
-        $this->userGroupsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($userGroupsRelatedByUpdatedByToDelete));
-
-        foreach ($userGroupsRelatedByUpdatedByToDelete as $userGroupRelatedByUpdatedByRemoved) {
+        foreach ($this->userGroupsRelatedByUpdatedByScheduledForDeletion as $userGroupRelatedByUpdatedByRemoved) {
             $userGroupRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -9847,8 +9597,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserGroupsRelatedByUpdatedBy = $userGroupsRelatedByUpdatedBy;
         $this->collUserGroupsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -9866,22 +9614,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserGroupsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserGroupsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserGroupsRelatedByUpdatedBy());
+                }
+                $query = UserGroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserGroupsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = UserGroupQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collUserGroupsRelatedByUpdatedBy);
         }
-
-        return count($this->collUserGroupsRelatedByUpdatedBy);
     }
 
     /**
@@ -9897,7 +9645,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserGroupsRelatedByUpdatedBy();
             $this->collUserGroupsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collUserGroupsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserGroupRelatedByUpdatedBy($l);
         }
 
@@ -9915,7 +9663,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserGroupRelatedByUpdatedBy $userGroupRelatedByUpdatedBy The userGroupRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByUpdatedBy($userGroupRelatedByUpdatedBy)
     {
@@ -9928,8 +9675,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->userGroupsRelatedByUpdatedByScheduledForDeletion[]= $userGroupRelatedByUpdatedBy;
             $userGroupRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -9963,15 +9708,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addGroupsRelatedByCreatedBy()
      */
     public function clearGroupsRelatedByCreatedBy()
     {
         $this->collGroupsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collGroupsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -10043,7 +9786,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collGroupsRelatedByCreatedByPartial = true;
                     }
 
-                    $collGroupsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collGroupsRelatedByCreatedBy;
                 }
 
@@ -10071,15 +9813,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $groupsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setGroupsRelatedByCreatedBy(PropelCollection $groupsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $groupsRelatedByCreatedByToDelete = $this->getGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($groupsRelatedByCreatedBy);
+        $this->groupsRelatedByCreatedByScheduledForDeletion = $this->getGroupsRelatedByCreatedBy(new Criteria(), $con)->diff($groupsRelatedByCreatedBy);
 
-        $this->groupsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($groupsRelatedByCreatedByToDelete));
-
-        foreach ($groupsRelatedByCreatedByToDelete as $groupRelatedByCreatedByRemoved) {
+        foreach ($this->groupsRelatedByCreatedByScheduledForDeletion as $groupRelatedByCreatedByRemoved) {
             $groupRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -10090,8 +9829,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collGroupsRelatedByCreatedBy = $groupsRelatedByCreatedBy;
         $this->collGroupsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -10109,22 +9846,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collGroupsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collGroupsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getGroupsRelatedByCreatedBy());
+                }
+                $query = GroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getGroupsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = GroupQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collGroupsRelatedByCreatedBy);
         }
-
-        return count($this->collGroupsRelatedByCreatedBy);
     }
 
     /**
@@ -10140,7 +9877,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initGroupsRelatedByCreatedBy();
             $this->collGroupsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collGroupsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collGroupsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddGroupRelatedByCreatedBy($l);
         }
 
@@ -10158,7 +9895,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	GroupRelatedByCreatedBy $groupRelatedByCreatedBy The groupRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeGroupRelatedByCreatedBy($groupRelatedByCreatedBy)
     {
@@ -10171,8 +9907,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->groupsRelatedByCreatedByScheduledForDeletion[]= $groupRelatedByCreatedBy;
             $groupRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -10181,15 +9915,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addGroupsRelatedByUpdatedBy()
      */
     public function clearGroupsRelatedByUpdatedBy()
     {
         $this->collGroupsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collGroupsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -10261,7 +9993,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collGroupsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collGroupsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collGroupsRelatedByUpdatedBy;
                 }
 
@@ -10289,15 +10020,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $groupsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setGroupsRelatedByUpdatedBy(PropelCollection $groupsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $groupsRelatedByUpdatedByToDelete = $this->getGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($groupsRelatedByUpdatedBy);
+        $this->groupsRelatedByUpdatedByScheduledForDeletion = $this->getGroupsRelatedByUpdatedBy(new Criteria(), $con)->diff($groupsRelatedByUpdatedBy);
 
-        $this->groupsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($groupsRelatedByUpdatedByToDelete));
-
-        foreach ($groupsRelatedByUpdatedByToDelete as $groupRelatedByUpdatedByRemoved) {
+        foreach ($this->groupsRelatedByUpdatedByScheduledForDeletion as $groupRelatedByUpdatedByRemoved) {
             $groupRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -10308,8 +10036,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collGroupsRelatedByUpdatedBy = $groupsRelatedByUpdatedBy;
         $this->collGroupsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -10327,22 +10053,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collGroupsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collGroupsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getGroupsRelatedByUpdatedBy());
+                }
+                $query = GroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getGroupsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = GroupQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collGroupsRelatedByUpdatedBy);
         }
-
-        return count($this->collGroupsRelatedByUpdatedBy);
     }
 
     /**
@@ -10358,7 +10084,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initGroupsRelatedByUpdatedBy();
             $this->collGroupsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collGroupsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collGroupsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddGroupRelatedByUpdatedBy($l);
         }
 
@@ -10376,7 +10102,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	GroupRelatedByUpdatedBy $groupRelatedByUpdatedBy The groupRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeGroupRelatedByUpdatedBy($groupRelatedByUpdatedBy)
     {
@@ -10389,8 +10114,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->groupsRelatedByUpdatedByScheduledForDeletion[]= $groupRelatedByUpdatedBy;
             $groupRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -10399,15 +10122,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addGroupRolesRelatedByCreatedBy()
      */
     public function clearGroupRolesRelatedByCreatedBy()
     {
         $this->collGroupRolesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collGroupRolesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -10479,7 +10200,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collGroupRolesRelatedByCreatedByPartial = true;
                     }
 
-                    $collGroupRolesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collGroupRolesRelatedByCreatedBy;
                 }
 
@@ -10507,15 +10227,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $groupRolesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setGroupRolesRelatedByCreatedBy(PropelCollection $groupRolesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $groupRolesRelatedByCreatedByToDelete = $this->getGroupRolesRelatedByCreatedBy(new Criteria(), $con)->diff($groupRolesRelatedByCreatedBy);
+        $this->groupRolesRelatedByCreatedByScheduledForDeletion = $this->getGroupRolesRelatedByCreatedBy(new Criteria(), $con)->diff($groupRolesRelatedByCreatedBy);
 
-        $this->groupRolesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($groupRolesRelatedByCreatedByToDelete));
-
-        foreach ($groupRolesRelatedByCreatedByToDelete as $groupRoleRelatedByCreatedByRemoved) {
+        foreach ($this->groupRolesRelatedByCreatedByScheduledForDeletion as $groupRoleRelatedByCreatedByRemoved) {
             $groupRoleRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -10526,8 +10243,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collGroupRolesRelatedByCreatedBy = $groupRolesRelatedByCreatedBy;
         $this->collGroupRolesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -10545,22 +10260,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collGroupRolesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collGroupRolesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getGroupRolesRelatedByCreatedBy());
+                }
+                $query = GroupRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getGroupRolesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = GroupRoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collGroupRolesRelatedByCreatedBy);
         }
-
-        return count($this->collGroupRolesRelatedByCreatedBy);
     }
 
     /**
@@ -10576,7 +10291,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initGroupRolesRelatedByCreatedBy();
             $this->collGroupRolesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collGroupRolesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collGroupRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddGroupRoleRelatedByCreatedBy($l);
         }
 
@@ -10594,7 +10309,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	GroupRoleRelatedByCreatedBy $groupRoleRelatedByCreatedBy The groupRoleRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeGroupRoleRelatedByCreatedBy($groupRoleRelatedByCreatedBy)
     {
@@ -10607,8 +10321,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->groupRolesRelatedByCreatedByScheduledForDeletion[]= $groupRoleRelatedByCreatedBy;
             $groupRoleRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -10667,15 +10379,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addGroupRolesRelatedByUpdatedBy()
      */
     public function clearGroupRolesRelatedByUpdatedBy()
     {
         $this->collGroupRolesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collGroupRolesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -10747,7 +10457,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collGroupRolesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collGroupRolesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collGroupRolesRelatedByUpdatedBy;
                 }
 
@@ -10775,15 +10484,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $groupRolesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setGroupRolesRelatedByUpdatedBy(PropelCollection $groupRolesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $groupRolesRelatedByUpdatedByToDelete = $this->getGroupRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($groupRolesRelatedByUpdatedBy);
+        $this->groupRolesRelatedByUpdatedByScheduledForDeletion = $this->getGroupRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($groupRolesRelatedByUpdatedBy);
 
-        $this->groupRolesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($groupRolesRelatedByUpdatedByToDelete));
-
-        foreach ($groupRolesRelatedByUpdatedByToDelete as $groupRoleRelatedByUpdatedByRemoved) {
+        foreach ($this->groupRolesRelatedByUpdatedByScheduledForDeletion as $groupRoleRelatedByUpdatedByRemoved) {
             $groupRoleRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -10794,8 +10500,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collGroupRolesRelatedByUpdatedBy = $groupRolesRelatedByUpdatedBy;
         $this->collGroupRolesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -10813,22 +10517,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collGroupRolesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collGroupRolesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getGroupRolesRelatedByUpdatedBy());
+                }
+                $query = GroupRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getGroupRolesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = GroupRoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collGroupRolesRelatedByUpdatedBy);
         }
-
-        return count($this->collGroupRolesRelatedByUpdatedBy);
     }
 
     /**
@@ -10844,7 +10548,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initGroupRolesRelatedByUpdatedBy();
             $this->collGroupRolesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collGroupRolesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collGroupRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddGroupRoleRelatedByUpdatedBy($l);
         }
 
@@ -10862,7 +10566,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	GroupRoleRelatedByUpdatedBy $groupRoleRelatedByUpdatedBy The groupRoleRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeGroupRoleRelatedByUpdatedBy($groupRoleRelatedByUpdatedBy)
     {
@@ -10875,8 +10578,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->groupRolesRelatedByUpdatedByScheduledForDeletion[]= $groupRoleRelatedByUpdatedBy;
             $groupRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -10935,15 +10636,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addRolesRelatedByCreatedBy()
      */
     public function clearRolesRelatedByCreatedBy()
     {
         $this->collRolesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collRolesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -11015,7 +10714,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collRolesRelatedByCreatedByPartial = true;
                     }
 
-                    $collRolesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collRolesRelatedByCreatedBy;
                 }
 
@@ -11043,15 +10741,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $rolesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setRolesRelatedByCreatedBy(PropelCollection $rolesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $rolesRelatedByCreatedByToDelete = $this->getRolesRelatedByCreatedBy(new Criteria(), $con)->diff($rolesRelatedByCreatedBy);
+        $this->rolesRelatedByCreatedByScheduledForDeletion = $this->getRolesRelatedByCreatedBy(new Criteria(), $con)->diff($rolesRelatedByCreatedBy);
 
-        $this->rolesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($rolesRelatedByCreatedByToDelete));
-
-        foreach ($rolesRelatedByCreatedByToDelete as $roleRelatedByCreatedByRemoved) {
+        foreach ($this->rolesRelatedByCreatedByScheduledForDeletion as $roleRelatedByCreatedByRemoved) {
             $roleRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -11062,8 +10757,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collRolesRelatedByCreatedBy = $rolesRelatedByCreatedBy;
         $this->collRolesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -11081,22 +10774,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collRolesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRolesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getRolesRelatedByCreatedBy());
+                }
+                $query = RoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getRolesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = RoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collRolesRelatedByCreatedBy);
         }
-
-        return count($this->collRolesRelatedByCreatedBy);
     }
 
     /**
@@ -11112,7 +10805,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initRolesRelatedByCreatedBy();
             $this->collRolesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collRolesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddRoleRelatedByCreatedBy($l);
         }
 
@@ -11130,7 +10823,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	RoleRelatedByCreatedBy $roleRelatedByCreatedBy The roleRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeRoleRelatedByCreatedBy($roleRelatedByCreatedBy)
     {
@@ -11143,8 +10835,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->rolesRelatedByCreatedByScheduledForDeletion[]= $roleRelatedByCreatedBy;
             $roleRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -11153,15 +10843,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addRolesRelatedByUpdatedBy()
      */
     public function clearRolesRelatedByUpdatedBy()
     {
         $this->collRolesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collRolesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -11233,7 +10921,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collRolesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collRolesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collRolesRelatedByUpdatedBy;
                 }
 
@@ -11261,15 +10948,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $rolesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setRolesRelatedByUpdatedBy(PropelCollection $rolesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $rolesRelatedByUpdatedByToDelete = $this->getRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($rolesRelatedByUpdatedBy);
+        $this->rolesRelatedByUpdatedByScheduledForDeletion = $this->getRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($rolesRelatedByUpdatedBy);
 
-        $this->rolesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($rolesRelatedByUpdatedByToDelete));
-
-        foreach ($rolesRelatedByUpdatedByToDelete as $roleRelatedByUpdatedByRemoved) {
+        foreach ($this->rolesRelatedByUpdatedByScheduledForDeletion as $roleRelatedByUpdatedByRemoved) {
             $roleRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -11280,8 +10964,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collRolesRelatedByUpdatedBy = $rolesRelatedByUpdatedBy;
         $this->collRolesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -11299,22 +10981,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collRolesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRolesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getRolesRelatedByUpdatedBy());
+                }
+                $query = RoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getRolesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = RoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collRolesRelatedByUpdatedBy);
         }
-
-        return count($this->collRolesRelatedByUpdatedBy);
     }
 
     /**
@@ -11330,7 +11012,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initRolesRelatedByUpdatedBy();
             $this->collRolesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collRolesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddRoleRelatedByUpdatedBy($l);
         }
 
@@ -11348,7 +11030,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	RoleRelatedByUpdatedBy $roleRelatedByUpdatedBy The roleRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeRoleRelatedByUpdatedBy($roleRelatedByUpdatedBy)
     {
@@ -11361,8 +11042,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->rolesRelatedByUpdatedByScheduledForDeletion[]= $roleRelatedByUpdatedBy;
             $roleRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -11371,15 +11050,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserRolesRelatedByCreatedBy()
      */
     public function clearUserRolesRelatedByCreatedBy()
     {
         $this->collUserRolesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collUserRolesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -11451,7 +11128,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserRolesRelatedByCreatedByPartial = true;
                     }
 
-                    $collUserRolesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collUserRolesRelatedByCreatedBy;
                 }
 
@@ -11479,15 +11155,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userRolesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserRolesRelatedByCreatedBy(PropelCollection $userRolesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $userRolesRelatedByCreatedByToDelete = $this->getUserRolesRelatedByCreatedBy(new Criteria(), $con)->diff($userRolesRelatedByCreatedBy);
+        $this->userRolesRelatedByCreatedByScheduledForDeletion = $this->getUserRolesRelatedByCreatedBy(new Criteria(), $con)->diff($userRolesRelatedByCreatedBy);
 
-        $this->userRolesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($userRolesRelatedByCreatedByToDelete));
-
-        foreach ($userRolesRelatedByCreatedByToDelete as $userRoleRelatedByCreatedByRemoved) {
+        foreach ($this->userRolesRelatedByCreatedByScheduledForDeletion as $userRoleRelatedByCreatedByRemoved) {
             $userRoleRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -11498,8 +11171,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserRolesRelatedByCreatedBy = $userRolesRelatedByCreatedBy;
         $this->collUserRolesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -11517,22 +11188,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserRolesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserRolesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserRolesRelatedByCreatedBy());
+                }
+                $query = UserRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserRolesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = UserRoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collUserRolesRelatedByCreatedBy);
         }
-
-        return count($this->collUserRolesRelatedByCreatedBy);
     }
 
     /**
@@ -11548,7 +11219,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserRolesRelatedByCreatedBy();
             $this->collUserRolesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collUserRolesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserRolesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserRoleRelatedByCreatedBy($l);
         }
 
@@ -11566,7 +11237,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserRoleRelatedByCreatedBy $userRoleRelatedByCreatedBy The userRoleRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByCreatedBy($userRoleRelatedByCreatedBy)
     {
@@ -11579,8 +11249,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->userRolesRelatedByCreatedByScheduledForDeletion[]= $userRoleRelatedByCreatedBy;
             $userRoleRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -11614,15 +11282,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addUserRolesRelatedByUpdatedBy()
      */
     public function clearUserRolesRelatedByUpdatedBy()
     {
         $this->collUserRolesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collUserRolesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -11694,7 +11360,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collUserRolesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collUserRolesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collUserRolesRelatedByUpdatedBy;
                 }
 
@@ -11722,15 +11387,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $userRolesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setUserRolesRelatedByUpdatedBy(PropelCollection $userRolesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $userRolesRelatedByUpdatedByToDelete = $this->getUserRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($userRolesRelatedByUpdatedBy);
+        $this->userRolesRelatedByUpdatedByScheduledForDeletion = $this->getUserRolesRelatedByUpdatedBy(new Criteria(), $con)->diff($userRolesRelatedByUpdatedBy);
 
-        $this->userRolesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($userRolesRelatedByUpdatedByToDelete));
-
-        foreach ($userRolesRelatedByUpdatedByToDelete as $userRoleRelatedByUpdatedByRemoved) {
+        foreach ($this->userRolesRelatedByUpdatedByScheduledForDeletion as $userRoleRelatedByUpdatedByRemoved) {
             $userRoleRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -11741,8 +11403,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collUserRolesRelatedByUpdatedBy = $userRolesRelatedByUpdatedBy;
         $this->collUserRolesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -11760,22 +11420,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collUserRolesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUserRolesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getUserRolesRelatedByUpdatedBy());
+                }
+                $query = UserRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getUserRolesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = UserRoleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collUserRolesRelatedByUpdatedBy);
         }
-
-        return count($this->collUserRolesRelatedByUpdatedBy);
     }
 
     /**
@@ -11791,7 +11451,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initUserRolesRelatedByUpdatedBy();
             $this->collUserRolesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collUserRolesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collUserRolesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddUserRoleRelatedByUpdatedBy($l);
         }
 
@@ -11809,7 +11469,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	UserRoleRelatedByUpdatedBy $userRoleRelatedByUpdatedBy The userRoleRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByUpdatedBy($userRoleRelatedByUpdatedBy)
     {
@@ -11822,8 +11481,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->userRolesRelatedByUpdatedByScheduledForDeletion[]= $userRoleRelatedByUpdatedBy;
             $userRoleRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -11857,15 +11514,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addRightsRelatedByCreatedBy()
      */
     public function clearRightsRelatedByCreatedBy()
     {
         $this->collRightsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collRightsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -11937,7 +11592,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collRightsRelatedByCreatedByPartial = true;
                     }
 
-                    $collRightsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collRightsRelatedByCreatedBy;
                 }
 
@@ -11965,15 +11619,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $rightsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setRightsRelatedByCreatedBy(PropelCollection $rightsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $rightsRelatedByCreatedByToDelete = $this->getRightsRelatedByCreatedBy(new Criteria(), $con)->diff($rightsRelatedByCreatedBy);
+        $this->rightsRelatedByCreatedByScheduledForDeletion = $this->getRightsRelatedByCreatedBy(new Criteria(), $con)->diff($rightsRelatedByCreatedBy);
 
-        $this->rightsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($rightsRelatedByCreatedByToDelete));
-
-        foreach ($rightsRelatedByCreatedByToDelete as $rightRelatedByCreatedByRemoved) {
+        foreach ($this->rightsRelatedByCreatedByScheduledForDeletion as $rightRelatedByCreatedByRemoved) {
             $rightRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -11984,8 +11635,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collRightsRelatedByCreatedBy = $rightsRelatedByCreatedBy;
         $this->collRightsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -12003,22 +11652,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collRightsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRightsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getRightsRelatedByCreatedBy());
+                }
+                $query = RightQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getRightsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = RightQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collRightsRelatedByCreatedBy);
         }
-
-        return count($this->collRightsRelatedByCreatedBy);
     }
 
     /**
@@ -12034,7 +11683,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initRightsRelatedByCreatedBy();
             $this->collRightsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collRightsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collRightsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddRightRelatedByCreatedBy($l);
         }
 
@@ -12052,7 +11701,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	RightRelatedByCreatedBy $rightRelatedByCreatedBy The rightRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeRightRelatedByCreatedBy($rightRelatedByCreatedBy)
     {
@@ -12065,8 +11713,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->rightsRelatedByCreatedByScheduledForDeletion[]= $rightRelatedByCreatedBy;
             $rightRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -12125,15 +11771,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addRightsRelatedByUpdatedBy()
      */
     public function clearRightsRelatedByUpdatedBy()
     {
         $this->collRightsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collRightsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -12205,7 +11849,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collRightsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collRightsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collRightsRelatedByUpdatedBy;
                 }
 
@@ -12233,15 +11876,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $rightsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setRightsRelatedByUpdatedBy(PropelCollection $rightsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $rightsRelatedByUpdatedByToDelete = $this->getRightsRelatedByUpdatedBy(new Criteria(), $con)->diff($rightsRelatedByUpdatedBy);
+        $this->rightsRelatedByUpdatedByScheduledForDeletion = $this->getRightsRelatedByUpdatedBy(new Criteria(), $con)->diff($rightsRelatedByUpdatedBy);
 
-        $this->rightsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($rightsRelatedByUpdatedByToDelete));
-
-        foreach ($rightsRelatedByUpdatedByToDelete as $rightRelatedByUpdatedByRemoved) {
+        foreach ($this->rightsRelatedByUpdatedByScheduledForDeletion as $rightRelatedByUpdatedByRemoved) {
             $rightRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -12252,8 +11892,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collRightsRelatedByUpdatedBy = $rightsRelatedByUpdatedBy;
         $this->collRightsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -12271,22 +11909,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collRightsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRightsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getRightsRelatedByUpdatedBy());
+                }
+                $query = RightQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getRightsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = RightQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collRightsRelatedByUpdatedBy);
         }
-
-        return count($this->collRightsRelatedByUpdatedBy);
     }
 
     /**
@@ -12302,7 +11940,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initRightsRelatedByUpdatedBy();
             $this->collRightsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collRightsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collRightsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddRightRelatedByUpdatedBy($l);
         }
 
@@ -12320,7 +11958,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	RightRelatedByUpdatedBy $rightRelatedByUpdatedBy The rightRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeRightRelatedByUpdatedBy($rightRelatedByUpdatedBy)
     {
@@ -12333,8 +11970,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->rightsRelatedByUpdatedByScheduledForDeletion[]= $rightRelatedByUpdatedBy;
             $rightRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -12393,15 +12028,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentsRelatedByCreatedBy()
      */
     public function clearDocumentsRelatedByCreatedBy()
     {
         $this->collDocumentsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -12473,7 +12106,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentsRelatedByCreatedByPartial = true;
                     }
 
-                    $collDocumentsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collDocumentsRelatedByCreatedBy;
                 }
 
@@ -12501,15 +12133,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentsRelatedByCreatedBy(PropelCollection $documentsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $documentsRelatedByCreatedByToDelete = $this->getDocumentsRelatedByCreatedBy(new Criteria(), $con)->diff($documentsRelatedByCreatedBy);
+        $this->documentsRelatedByCreatedByScheduledForDeletion = $this->getDocumentsRelatedByCreatedBy(new Criteria(), $con)->diff($documentsRelatedByCreatedBy);
 
-        $this->documentsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($documentsRelatedByCreatedByToDelete));
-
-        foreach ($documentsRelatedByCreatedByToDelete as $documentRelatedByCreatedByRemoved) {
+        foreach ($this->documentsRelatedByCreatedByScheduledForDeletion as $documentRelatedByCreatedByRemoved) {
             $documentRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -12520,8 +12149,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentsRelatedByCreatedBy = $documentsRelatedByCreatedBy;
         $this->collDocumentsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -12539,22 +12166,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentsRelatedByCreatedBy());
+                }
+                $query = DocumentQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentsRelatedByCreatedBy);
         }
-
-        return count($this->collDocumentsRelatedByCreatedBy);
     }
 
     /**
@@ -12570,7 +12197,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentsRelatedByCreatedBy();
             $this->collDocumentsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentRelatedByCreatedBy($l);
         }
 
@@ -12588,7 +12215,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentRelatedByCreatedBy $documentRelatedByCreatedBy The documentRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByCreatedBy($documentRelatedByCreatedBy)
     {
@@ -12601,8 +12227,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentsRelatedByCreatedByScheduledForDeletion[]= $documentRelatedByCreatedBy;
             $documentRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -12686,15 +12310,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentsRelatedByUpdatedBy()
      */
     public function clearDocumentsRelatedByUpdatedBy()
     {
         $this->collDocumentsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -12766,7 +12388,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collDocumentsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collDocumentsRelatedByUpdatedBy;
                 }
 
@@ -12794,15 +12415,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentsRelatedByUpdatedBy(PropelCollection $documentsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $documentsRelatedByUpdatedByToDelete = $this->getDocumentsRelatedByUpdatedBy(new Criteria(), $con)->diff($documentsRelatedByUpdatedBy);
+        $this->documentsRelatedByUpdatedByScheduledForDeletion = $this->getDocumentsRelatedByUpdatedBy(new Criteria(), $con)->diff($documentsRelatedByUpdatedBy);
 
-        $this->documentsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($documentsRelatedByUpdatedByToDelete));
-
-        foreach ($documentsRelatedByUpdatedByToDelete as $documentRelatedByUpdatedByRemoved) {
+        foreach ($this->documentsRelatedByUpdatedByScheduledForDeletion as $documentRelatedByUpdatedByRemoved) {
             $documentRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -12813,8 +12431,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentsRelatedByUpdatedBy = $documentsRelatedByUpdatedBy;
         $this->collDocumentsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -12832,22 +12448,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentsRelatedByUpdatedBy());
+                }
+                $query = DocumentQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentsRelatedByUpdatedBy);
         }
-
-        return count($this->collDocumentsRelatedByUpdatedBy);
     }
 
     /**
@@ -12863,7 +12479,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentsRelatedByUpdatedBy();
             $this->collDocumentsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentRelatedByUpdatedBy($l);
         }
 
@@ -12881,7 +12497,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentRelatedByUpdatedBy $documentRelatedByUpdatedBy The documentRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByUpdatedBy($documentRelatedByUpdatedBy)
     {
@@ -12894,8 +12509,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentsRelatedByUpdatedByScheduledForDeletion[]= $documentRelatedByUpdatedBy;
             $documentRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -12979,15 +12592,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentTypesRelatedByCreatedBy()
      */
     public function clearDocumentTypesRelatedByCreatedBy()
     {
         $this->collDocumentTypesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentTypesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -13059,7 +12670,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentTypesRelatedByCreatedByPartial = true;
                     }
 
-                    $collDocumentTypesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collDocumentTypesRelatedByCreatedBy;
                 }
 
@@ -13087,15 +12697,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentTypesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentTypesRelatedByCreatedBy(PropelCollection $documentTypesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $documentTypesRelatedByCreatedByToDelete = $this->getDocumentTypesRelatedByCreatedBy(new Criteria(), $con)->diff($documentTypesRelatedByCreatedBy);
+        $this->documentTypesRelatedByCreatedByScheduledForDeletion = $this->getDocumentTypesRelatedByCreatedBy(new Criteria(), $con)->diff($documentTypesRelatedByCreatedBy);
 
-        $this->documentTypesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($documentTypesRelatedByCreatedByToDelete));
-
-        foreach ($documentTypesRelatedByCreatedByToDelete as $documentTypeRelatedByCreatedByRemoved) {
+        foreach ($this->documentTypesRelatedByCreatedByScheduledForDeletion as $documentTypeRelatedByCreatedByRemoved) {
             $documentTypeRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -13106,8 +12713,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentTypesRelatedByCreatedBy = $documentTypesRelatedByCreatedBy;
         $this->collDocumentTypesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -13125,22 +12730,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentTypesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentTypesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentTypesRelatedByCreatedBy());
+                }
+                $query = DocumentTypeQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentTypesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentTypeQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentTypesRelatedByCreatedBy);
         }
-
-        return count($this->collDocumentTypesRelatedByCreatedBy);
     }
 
     /**
@@ -13156,7 +12761,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentTypesRelatedByCreatedBy();
             $this->collDocumentTypesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentTypesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentTypesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentTypeRelatedByCreatedBy($l);
         }
 
@@ -13174,7 +12779,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentTypeRelatedByCreatedBy $documentTypeRelatedByCreatedBy The documentTypeRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentTypeRelatedByCreatedBy($documentTypeRelatedByCreatedBy)
     {
@@ -13187,8 +12791,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentTypesRelatedByCreatedByScheduledForDeletion[]= $documentTypeRelatedByCreatedBy;
             $documentTypeRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -13197,15 +12799,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentTypesRelatedByUpdatedBy()
      */
     public function clearDocumentTypesRelatedByUpdatedBy()
     {
         $this->collDocumentTypesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentTypesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -13277,7 +12877,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentTypesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collDocumentTypesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collDocumentTypesRelatedByUpdatedBy;
                 }
 
@@ -13305,15 +12904,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentTypesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentTypesRelatedByUpdatedBy(PropelCollection $documentTypesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $documentTypesRelatedByUpdatedByToDelete = $this->getDocumentTypesRelatedByUpdatedBy(new Criteria(), $con)->diff($documentTypesRelatedByUpdatedBy);
+        $this->documentTypesRelatedByUpdatedByScheduledForDeletion = $this->getDocumentTypesRelatedByUpdatedBy(new Criteria(), $con)->diff($documentTypesRelatedByUpdatedBy);
 
-        $this->documentTypesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($documentTypesRelatedByUpdatedByToDelete));
-
-        foreach ($documentTypesRelatedByUpdatedByToDelete as $documentTypeRelatedByUpdatedByRemoved) {
+        foreach ($this->documentTypesRelatedByUpdatedByScheduledForDeletion as $documentTypeRelatedByUpdatedByRemoved) {
             $documentTypeRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -13324,8 +12920,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentTypesRelatedByUpdatedBy = $documentTypesRelatedByUpdatedBy;
         $this->collDocumentTypesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -13343,22 +12937,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentTypesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentTypesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentTypesRelatedByUpdatedBy());
+                }
+                $query = DocumentTypeQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentTypesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentTypeQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentTypesRelatedByUpdatedBy);
         }
-
-        return count($this->collDocumentTypesRelatedByUpdatedBy);
     }
 
     /**
@@ -13374,7 +12968,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentTypesRelatedByUpdatedBy();
             $this->collDocumentTypesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentTypesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentTypesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentTypeRelatedByUpdatedBy($l);
         }
 
@@ -13392,7 +12986,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentTypeRelatedByUpdatedBy $documentTypeRelatedByUpdatedBy The documentTypeRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentTypeRelatedByUpdatedBy($documentTypeRelatedByUpdatedBy)
     {
@@ -13405,8 +12998,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentTypesRelatedByUpdatedByScheduledForDeletion[]= $documentTypeRelatedByUpdatedBy;
             $documentTypeRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -13415,15 +13006,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentCategorysRelatedByCreatedBy()
      */
     public function clearDocumentCategorysRelatedByCreatedBy()
     {
         $this->collDocumentCategorysRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentCategorysRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -13495,7 +13084,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentCategorysRelatedByCreatedByPartial = true;
                     }
 
-                    $collDocumentCategorysRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collDocumentCategorysRelatedByCreatedBy;
                 }
 
@@ -13523,15 +13111,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentCategorysRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentCategorysRelatedByCreatedBy(PropelCollection $documentCategorysRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $documentCategorysRelatedByCreatedByToDelete = $this->getDocumentCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByCreatedBy);
+        $this->documentCategorysRelatedByCreatedByScheduledForDeletion = $this->getDocumentCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByCreatedBy);
 
-        $this->documentCategorysRelatedByCreatedByScheduledForDeletion = unserialize(serialize($documentCategorysRelatedByCreatedByToDelete));
-
-        foreach ($documentCategorysRelatedByCreatedByToDelete as $documentCategoryRelatedByCreatedByRemoved) {
+        foreach ($this->documentCategorysRelatedByCreatedByScheduledForDeletion as $documentCategoryRelatedByCreatedByRemoved) {
             $documentCategoryRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -13542,8 +13127,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentCategorysRelatedByCreatedBy = $documentCategorysRelatedByCreatedBy;
         $this->collDocumentCategorysRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -13561,22 +13144,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentCategorysRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentCategorysRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentCategorysRelatedByCreatedBy());
+                }
+                $query = DocumentCategoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentCategorysRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentCategoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentCategorysRelatedByCreatedBy);
         }
-
-        return count($this->collDocumentCategorysRelatedByCreatedBy);
     }
 
     /**
@@ -13592,7 +13175,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentCategorysRelatedByCreatedBy();
             $this->collDocumentCategorysRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentCategorysRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentCategorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentCategoryRelatedByCreatedBy($l);
         }
 
@@ -13610,7 +13193,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentCategoryRelatedByCreatedBy $documentCategoryRelatedByCreatedBy The documentCategoryRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentCategoryRelatedByCreatedBy($documentCategoryRelatedByCreatedBy)
     {
@@ -13623,8 +13205,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentCategorysRelatedByCreatedByScheduledForDeletion[]= $documentCategoryRelatedByCreatedBy;
             $documentCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -13633,15 +13213,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addDocumentCategorysRelatedByUpdatedBy()
      */
     public function clearDocumentCategorysRelatedByUpdatedBy()
     {
         $this->collDocumentCategorysRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collDocumentCategorysRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -13713,7 +13291,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collDocumentCategorysRelatedByUpdatedByPartial = true;
                     }
 
-                    $collDocumentCategorysRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collDocumentCategorysRelatedByUpdatedBy;
                 }
 
@@ -13741,15 +13318,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $documentCategorysRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setDocumentCategorysRelatedByUpdatedBy(PropelCollection $documentCategorysRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $documentCategorysRelatedByUpdatedByToDelete = $this->getDocumentCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByUpdatedBy);
+        $this->documentCategorysRelatedByUpdatedByScheduledForDeletion = $this->getDocumentCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($documentCategorysRelatedByUpdatedBy);
 
-        $this->documentCategorysRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($documentCategorysRelatedByUpdatedByToDelete));
-
-        foreach ($documentCategorysRelatedByUpdatedByToDelete as $documentCategoryRelatedByUpdatedByRemoved) {
+        foreach ($this->documentCategorysRelatedByUpdatedByScheduledForDeletion as $documentCategoryRelatedByUpdatedByRemoved) {
             $documentCategoryRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -13760,8 +13334,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collDocumentCategorysRelatedByUpdatedBy = $documentCategorysRelatedByUpdatedBy;
         $this->collDocumentCategorysRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -13779,22 +13351,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collDocumentCategorysRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collDocumentCategorysRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getDocumentCategorysRelatedByUpdatedBy());
+                }
+                $query = DocumentCategoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getDocumentCategorysRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = DocumentCategoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collDocumentCategorysRelatedByUpdatedBy);
         }
-
-        return count($this->collDocumentCategorysRelatedByUpdatedBy);
     }
 
     /**
@@ -13810,7 +13382,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initDocumentCategorysRelatedByUpdatedBy();
             $this->collDocumentCategorysRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collDocumentCategorysRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collDocumentCategorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddDocumentCategoryRelatedByUpdatedBy($l);
         }
 
@@ -13828,7 +13400,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	DocumentCategoryRelatedByUpdatedBy $documentCategoryRelatedByUpdatedBy The documentCategoryRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeDocumentCategoryRelatedByUpdatedBy($documentCategoryRelatedByUpdatedBy)
     {
@@ -13841,8 +13412,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->documentCategorysRelatedByUpdatedByScheduledForDeletion[]= $documentCategoryRelatedByUpdatedBy;
             $documentCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -13851,15 +13420,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addTagsRelatedByCreatedBy()
      */
     public function clearTagsRelatedByCreatedBy()
     {
         $this->collTagsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collTagsRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -13931,7 +13498,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collTagsRelatedByCreatedByPartial = true;
                     }
 
-                    $collTagsRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collTagsRelatedByCreatedBy;
                 }
 
@@ -13959,15 +13525,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $tagsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setTagsRelatedByCreatedBy(PropelCollection $tagsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $tagsRelatedByCreatedByToDelete = $this->getTagsRelatedByCreatedBy(new Criteria(), $con)->diff($tagsRelatedByCreatedBy);
+        $this->tagsRelatedByCreatedByScheduledForDeletion = $this->getTagsRelatedByCreatedBy(new Criteria(), $con)->diff($tagsRelatedByCreatedBy);
 
-        $this->tagsRelatedByCreatedByScheduledForDeletion = unserialize(serialize($tagsRelatedByCreatedByToDelete));
-
-        foreach ($tagsRelatedByCreatedByToDelete as $tagRelatedByCreatedByRemoved) {
+        foreach ($this->tagsRelatedByCreatedByScheduledForDeletion as $tagRelatedByCreatedByRemoved) {
             $tagRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -13978,8 +13541,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collTagsRelatedByCreatedBy = $tagsRelatedByCreatedBy;
         $this->collTagsRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -13997,22 +13558,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collTagsRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTagsRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getTagsRelatedByCreatedBy());
+                }
+                $query = TagQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getTagsRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = TagQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collTagsRelatedByCreatedBy);
         }
-
-        return count($this->collTagsRelatedByCreatedBy);
     }
 
     /**
@@ -14028,7 +13589,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initTagsRelatedByCreatedBy();
             $this->collTagsRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collTagsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collTagsRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddTagRelatedByCreatedBy($l);
         }
 
@@ -14046,7 +13607,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	TagRelatedByCreatedBy $tagRelatedByCreatedBy The tagRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeTagRelatedByCreatedBy($tagRelatedByCreatedBy)
     {
@@ -14059,8 +13619,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->tagsRelatedByCreatedByScheduledForDeletion[]= $tagRelatedByCreatedBy;
             $tagRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -14069,15 +13627,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addTagsRelatedByUpdatedBy()
      */
     public function clearTagsRelatedByUpdatedBy()
     {
         $this->collTagsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collTagsRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -14149,7 +13705,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collTagsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collTagsRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collTagsRelatedByUpdatedBy;
                 }
 
@@ -14177,15 +13732,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $tagsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setTagsRelatedByUpdatedBy(PropelCollection $tagsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $tagsRelatedByUpdatedByToDelete = $this->getTagsRelatedByUpdatedBy(new Criteria(), $con)->diff($tagsRelatedByUpdatedBy);
+        $this->tagsRelatedByUpdatedByScheduledForDeletion = $this->getTagsRelatedByUpdatedBy(new Criteria(), $con)->diff($tagsRelatedByUpdatedBy);
 
-        $this->tagsRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($tagsRelatedByUpdatedByToDelete));
-
-        foreach ($tagsRelatedByUpdatedByToDelete as $tagRelatedByUpdatedByRemoved) {
+        foreach ($this->tagsRelatedByUpdatedByScheduledForDeletion as $tagRelatedByUpdatedByRemoved) {
             $tagRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -14196,8 +13748,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collTagsRelatedByUpdatedBy = $tagsRelatedByUpdatedBy;
         $this->collTagsRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -14215,22 +13765,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collTagsRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTagsRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getTagsRelatedByUpdatedBy());
+                }
+                $query = TagQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getTagsRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = TagQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collTagsRelatedByUpdatedBy);
         }
-
-        return count($this->collTagsRelatedByUpdatedBy);
     }
 
     /**
@@ -14246,7 +13796,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initTagsRelatedByUpdatedBy();
             $this->collTagsRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collTagsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collTagsRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddTagRelatedByUpdatedBy($l);
         }
 
@@ -14264,7 +13814,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	TagRelatedByUpdatedBy $tagRelatedByUpdatedBy The tagRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeTagRelatedByUpdatedBy($tagRelatedByUpdatedBy)
     {
@@ -14277,8 +13826,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->tagsRelatedByUpdatedByScheduledForDeletion[]= $tagRelatedByUpdatedBy;
             $tagRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -14287,15 +13834,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addTagInstancesRelatedByCreatedBy()
      */
     public function clearTagInstancesRelatedByCreatedBy()
     {
         $this->collTagInstancesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collTagInstancesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -14367,7 +13912,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collTagInstancesRelatedByCreatedByPartial = true;
                     }
 
-                    $collTagInstancesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collTagInstancesRelatedByCreatedBy;
                 }
 
@@ -14395,15 +13939,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $tagInstancesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setTagInstancesRelatedByCreatedBy(PropelCollection $tagInstancesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $tagInstancesRelatedByCreatedByToDelete = $this->getTagInstancesRelatedByCreatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByCreatedBy);
+        $this->tagInstancesRelatedByCreatedByScheduledForDeletion = $this->getTagInstancesRelatedByCreatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByCreatedBy);
 
-        $this->tagInstancesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($tagInstancesRelatedByCreatedByToDelete));
-
-        foreach ($tagInstancesRelatedByCreatedByToDelete as $tagInstanceRelatedByCreatedByRemoved) {
+        foreach ($this->tagInstancesRelatedByCreatedByScheduledForDeletion as $tagInstanceRelatedByCreatedByRemoved) {
             $tagInstanceRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -14414,8 +13955,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collTagInstancesRelatedByCreatedBy = $tagInstancesRelatedByCreatedBy;
         $this->collTagInstancesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -14433,22 +13972,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collTagInstancesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTagInstancesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getTagInstancesRelatedByCreatedBy());
+                }
+                $query = TagInstanceQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getTagInstancesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = TagInstanceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collTagInstancesRelatedByCreatedBy);
         }
-
-        return count($this->collTagInstancesRelatedByCreatedBy);
     }
 
     /**
@@ -14464,7 +14003,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initTagInstancesRelatedByCreatedBy();
             $this->collTagInstancesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collTagInstancesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collTagInstancesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddTagInstanceRelatedByCreatedBy($l);
         }
 
@@ -14482,7 +14021,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	TagInstanceRelatedByCreatedBy $tagInstanceRelatedByCreatedBy The tagInstanceRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeTagInstanceRelatedByCreatedBy($tagInstanceRelatedByCreatedBy)
     {
@@ -14495,8 +14033,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->tagInstancesRelatedByCreatedByScheduledForDeletion[]= $tagInstanceRelatedByCreatedBy;
             $tagInstanceRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -14530,15 +14066,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addTagInstancesRelatedByUpdatedBy()
      */
     public function clearTagInstancesRelatedByUpdatedBy()
     {
         $this->collTagInstancesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collTagInstancesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -14610,7 +14144,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collTagInstancesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collTagInstancesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collTagInstancesRelatedByUpdatedBy;
                 }
 
@@ -14638,15 +14171,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $tagInstancesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setTagInstancesRelatedByUpdatedBy(PropelCollection $tagInstancesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $tagInstancesRelatedByUpdatedByToDelete = $this->getTagInstancesRelatedByUpdatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByUpdatedBy);
+        $this->tagInstancesRelatedByUpdatedByScheduledForDeletion = $this->getTagInstancesRelatedByUpdatedBy(new Criteria(), $con)->diff($tagInstancesRelatedByUpdatedBy);
 
-        $this->tagInstancesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($tagInstancesRelatedByUpdatedByToDelete));
-
-        foreach ($tagInstancesRelatedByUpdatedByToDelete as $tagInstanceRelatedByUpdatedByRemoved) {
+        foreach ($this->tagInstancesRelatedByUpdatedByScheduledForDeletion as $tagInstanceRelatedByUpdatedByRemoved) {
             $tagInstanceRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -14657,8 +14187,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collTagInstancesRelatedByUpdatedBy = $tagInstancesRelatedByUpdatedBy;
         $this->collTagInstancesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -14676,22 +14204,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collTagInstancesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTagInstancesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getTagInstancesRelatedByUpdatedBy());
+                }
+                $query = TagInstanceQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getTagInstancesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = TagInstanceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collTagInstancesRelatedByUpdatedBy);
         }
-
-        return count($this->collTagInstancesRelatedByUpdatedBy);
     }
 
     /**
@@ -14707,7 +14235,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initTagInstancesRelatedByUpdatedBy();
             $this->collTagInstancesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collTagInstancesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collTagInstancesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddTagInstanceRelatedByUpdatedBy($l);
         }
 
@@ -14725,7 +14253,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	TagInstanceRelatedByUpdatedBy $tagInstanceRelatedByUpdatedBy The tagInstanceRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeTagInstanceRelatedByUpdatedBy($tagInstanceRelatedByUpdatedBy)
     {
@@ -14738,8 +14265,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->tagInstancesRelatedByUpdatedByScheduledForDeletion[]= $tagInstanceRelatedByUpdatedBy;
             $tagInstanceRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -14773,15 +14298,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLinksRelatedByCreatedBy()
      */
     public function clearLinksRelatedByCreatedBy()
     {
         $this->collLinksRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLinksRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -14853,7 +14376,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLinksRelatedByCreatedByPartial = true;
                     }
 
-                    $collLinksRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collLinksRelatedByCreatedBy;
                 }
 
@@ -14881,15 +14403,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $linksRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLinksRelatedByCreatedBy(PropelCollection $linksRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $linksRelatedByCreatedByToDelete = $this->getLinksRelatedByCreatedBy(new Criteria(), $con)->diff($linksRelatedByCreatedBy);
+        $this->linksRelatedByCreatedByScheduledForDeletion = $this->getLinksRelatedByCreatedBy(new Criteria(), $con)->diff($linksRelatedByCreatedBy);
 
-        $this->linksRelatedByCreatedByScheduledForDeletion = unserialize(serialize($linksRelatedByCreatedByToDelete));
-
-        foreach ($linksRelatedByCreatedByToDelete as $linkRelatedByCreatedByRemoved) {
+        foreach ($this->linksRelatedByCreatedByScheduledForDeletion as $linkRelatedByCreatedByRemoved) {
             $linkRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -14900,8 +14419,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLinksRelatedByCreatedBy = $linksRelatedByCreatedBy;
         $this->collLinksRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -14919,22 +14436,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLinksRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinksRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinksRelatedByCreatedBy());
+                }
+                $query = LinkQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinksRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = LinkQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLinksRelatedByCreatedBy);
         }
-
-        return count($this->collLinksRelatedByCreatedBy);
     }
 
     /**
@@ -14950,7 +14467,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLinksRelatedByCreatedBy();
             $this->collLinksRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collLinksRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinksRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLinkRelatedByCreatedBy($l);
         }
 
@@ -14968,7 +14485,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LinkRelatedByCreatedBy $linkRelatedByCreatedBy The linkRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByCreatedBy($linkRelatedByCreatedBy)
     {
@@ -14981,8 +14497,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->linksRelatedByCreatedByScheduledForDeletion[]= $linkRelatedByCreatedBy;
             $linkRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -15041,15 +14555,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLinksRelatedByUpdatedBy()
      */
     public function clearLinksRelatedByUpdatedBy()
     {
         $this->collLinksRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLinksRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -15121,7 +14633,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLinksRelatedByUpdatedByPartial = true;
                     }
 
-                    $collLinksRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collLinksRelatedByUpdatedBy;
                 }
 
@@ -15149,15 +14660,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $linksRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLinksRelatedByUpdatedBy(PropelCollection $linksRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $linksRelatedByUpdatedByToDelete = $this->getLinksRelatedByUpdatedBy(new Criteria(), $con)->diff($linksRelatedByUpdatedBy);
+        $this->linksRelatedByUpdatedByScheduledForDeletion = $this->getLinksRelatedByUpdatedBy(new Criteria(), $con)->diff($linksRelatedByUpdatedBy);
 
-        $this->linksRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($linksRelatedByUpdatedByToDelete));
-
-        foreach ($linksRelatedByUpdatedByToDelete as $linkRelatedByUpdatedByRemoved) {
+        foreach ($this->linksRelatedByUpdatedByScheduledForDeletion as $linkRelatedByUpdatedByRemoved) {
             $linkRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -15168,8 +14676,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLinksRelatedByUpdatedBy = $linksRelatedByUpdatedBy;
         $this->collLinksRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -15187,22 +14693,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLinksRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinksRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinksRelatedByUpdatedBy());
+                }
+                $query = LinkQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinksRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = LinkQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLinksRelatedByUpdatedBy);
         }
-
-        return count($this->collLinksRelatedByUpdatedBy);
     }
 
     /**
@@ -15218,7 +14724,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLinksRelatedByUpdatedBy();
             $this->collLinksRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collLinksRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinksRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLinkRelatedByUpdatedBy($l);
         }
 
@@ -15236,7 +14742,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LinkRelatedByUpdatedBy $linkRelatedByUpdatedBy The linkRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByUpdatedBy($linkRelatedByUpdatedBy)
     {
@@ -15249,8 +14754,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->linksRelatedByUpdatedByScheduledForDeletion[]= $linkRelatedByUpdatedBy;
             $linkRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
 
@@ -15309,15 +14812,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLinkCategorysRelatedByCreatedBy()
      */
     public function clearLinkCategorysRelatedByCreatedBy()
     {
         $this->collLinkCategorysRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLinkCategorysRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -15389,7 +14890,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLinkCategorysRelatedByCreatedByPartial = true;
                     }
 
-                    $collLinkCategorysRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collLinkCategorysRelatedByCreatedBy;
                 }
 
@@ -15417,15 +14917,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $linkCategorysRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLinkCategorysRelatedByCreatedBy(PropelCollection $linkCategorysRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $linkCategorysRelatedByCreatedByToDelete = $this->getLinkCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByCreatedBy);
+        $this->linkCategorysRelatedByCreatedByScheduledForDeletion = $this->getLinkCategorysRelatedByCreatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByCreatedBy);
 
-        $this->linkCategorysRelatedByCreatedByScheduledForDeletion = unserialize(serialize($linkCategorysRelatedByCreatedByToDelete));
-
-        foreach ($linkCategorysRelatedByCreatedByToDelete as $linkCategoryRelatedByCreatedByRemoved) {
+        foreach ($this->linkCategorysRelatedByCreatedByScheduledForDeletion as $linkCategoryRelatedByCreatedByRemoved) {
             $linkCategoryRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -15436,8 +14933,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLinkCategorysRelatedByCreatedBy = $linkCategorysRelatedByCreatedBy;
         $this->collLinkCategorysRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -15455,22 +14950,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLinkCategorysRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinkCategorysRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinkCategorysRelatedByCreatedBy());
+                }
+                $query = LinkCategoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinkCategorysRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = LinkCategoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLinkCategorysRelatedByCreatedBy);
         }
-
-        return count($this->collLinkCategorysRelatedByCreatedBy);
     }
 
     /**
@@ -15486,7 +14981,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLinkCategorysRelatedByCreatedBy();
             $this->collLinkCategorysRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collLinkCategorysRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinkCategorysRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLinkCategoryRelatedByCreatedBy($l);
         }
 
@@ -15504,7 +14999,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LinkCategoryRelatedByCreatedBy $linkCategoryRelatedByCreatedBy The linkCategoryRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLinkCategoryRelatedByCreatedBy($linkCategoryRelatedByCreatedBy)
     {
@@ -15517,8 +15011,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->linkCategorysRelatedByCreatedByScheduledForDeletion[]= $linkCategoryRelatedByCreatedBy;
             $linkCategoryRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -15527,15 +15019,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addLinkCategorysRelatedByUpdatedBy()
      */
     public function clearLinkCategorysRelatedByUpdatedBy()
     {
         $this->collLinkCategorysRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collLinkCategorysRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -15607,7 +15097,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collLinkCategorysRelatedByUpdatedByPartial = true;
                     }
 
-                    $collLinkCategorysRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collLinkCategorysRelatedByUpdatedBy;
                 }
 
@@ -15635,15 +15124,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $linkCategorysRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setLinkCategorysRelatedByUpdatedBy(PropelCollection $linkCategorysRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $linkCategorysRelatedByUpdatedByToDelete = $this->getLinkCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByUpdatedBy);
+        $this->linkCategorysRelatedByUpdatedByScheduledForDeletion = $this->getLinkCategorysRelatedByUpdatedBy(new Criteria(), $con)->diff($linkCategorysRelatedByUpdatedBy);
 
-        $this->linkCategorysRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($linkCategorysRelatedByUpdatedByToDelete));
-
-        foreach ($linkCategorysRelatedByUpdatedByToDelete as $linkCategoryRelatedByUpdatedByRemoved) {
+        foreach ($this->linkCategorysRelatedByUpdatedByScheduledForDeletion as $linkCategoryRelatedByUpdatedByRemoved) {
             $linkCategoryRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -15654,8 +15140,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collLinkCategorysRelatedByUpdatedBy = $linkCategorysRelatedByUpdatedBy;
         $this->collLinkCategorysRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -15673,22 +15157,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collLinkCategorysRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collLinkCategorysRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getLinkCategorysRelatedByUpdatedBy());
+                }
+                $query = LinkCategoryQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getLinkCategorysRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = LinkCategoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collLinkCategorysRelatedByUpdatedBy);
         }
-
-        return count($this->collLinkCategorysRelatedByUpdatedBy);
     }
 
     /**
@@ -15704,7 +15188,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initLinkCategorysRelatedByUpdatedBy();
             $this->collLinkCategorysRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collLinkCategorysRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collLinkCategorysRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddLinkCategoryRelatedByUpdatedBy($l);
         }
 
@@ -15722,7 +15206,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	LinkCategoryRelatedByUpdatedBy $linkCategoryRelatedByUpdatedBy The linkCategoryRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeLinkCategoryRelatedByUpdatedBy($linkCategoryRelatedByUpdatedBy)
     {
@@ -15735,8 +15218,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->linkCategorysRelatedByUpdatedByScheduledForDeletion[]= $linkCategoryRelatedByUpdatedBy;
             $linkCategoryRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -15745,15 +15226,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addReferencesRelatedByCreatedBy()
      */
     public function clearReferencesRelatedByCreatedBy()
     {
         $this->collReferencesRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collReferencesRelatedByCreatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -15825,7 +15304,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collReferencesRelatedByCreatedByPartial = true;
                     }
 
-                    $collReferencesRelatedByCreatedBy->getInternalIterator()->rewind();
                     return $collReferencesRelatedByCreatedBy;
                 }
 
@@ -15853,15 +15331,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $referencesRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setReferencesRelatedByCreatedBy(PropelCollection $referencesRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $referencesRelatedByCreatedByToDelete = $this->getReferencesRelatedByCreatedBy(new Criteria(), $con)->diff($referencesRelatedByCreatedBy);
+        $this->referencesRelatedByCreatedByScheduledForDeletion = $this->getReferencesRelatedByCreatedBy(new Criteria(), $con)->diff($referencesRelatedByCreatedBy);
 
-        $this->referencesRelatedByCreatedByScheduledForDeletion = unserialize(serialize($referencesRelatedByCreatedByToDelete));
-
-        foreach ($referencesRelatedByCreatedByToDelete as $referenceRelatedByCreatedByRemoved) {
+        foreach ($this->referencesRelatedByCreatedByScheduledForDeletion as $referenceRelatedByCreatedByRemoved) {
             $referenceRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
@@ -15872,8 +15347,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collReferencesRelatedByCreatedBy = $referencesRelatedByCreatedBy;
         $this->collReferencesRelatedByCreatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -15891,22 +15364,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collReferencesRelatedByCreatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collReferencesRelatedByCreatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getReferencesRelatedByCreatedBy());
+                }
+                $query = ReferenceQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getReferencesRelatedByCreatedBy());
+                return $query
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->count($con);
             }
-            $query = ReferenceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByCreatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collReferencesRelatedByCreatedBy);
         }
-
-        return count($this->collReferencesRelatedByCreatedBy);
     }
 
     /**
@@ -15922,7 +15395,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initReferencesRelatedByCreatedBy();
             $this->collReferencesRelatedByCreatedByPartial = true;
         }
-        if (!in_array($l, $this->collReferencesRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collReferencesRelatedByCreatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddReferenceRelatedByCreatedBy($l);
         }
 
@@ -15940,7 +15413,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	ReferenceRelatedByCreatedBy $referenceRelatedByCreatedBy The referenceRelatedByCreatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeReferenceRelatedByCreatedBy($referenceRelatedByCreatedBy)
     {
@@ -15953,8 +15425,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->referencesRelatedByCreatedByScheduledForDeletion[]= $referenceRelatedByCreatedBy;
             $referenceRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -15963,15 +15433,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return User The current object (for fluent API support)
+     * @return void
      * @see        addReferencesRelatedByUpdatedBy()
      */
     public function clearReferencesRelatedByUpdatedBy()
     {
         $this->collReferencesRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
         $this->collReferencesRelatedByUpdatedByPartial = null;
-
-        return $this;
     }
 
     /**
@@ -16043,7 +15511,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                       $this->collReferencesRelatedByUpdatedByPartial = true;
                     }
 
-                    $collReferencesRelatedByUpdatedBy->getInternalIterator()->rewind();
                     return $collReferencesRelatedByUpdatedBy;
                 }
 
@@ -16071,15 +15538,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param PropelCollection $referencesRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return User The current object (for fluent API support)
      */
     public function setReferencesRelatedByUpdatedBy(PropelCollection $referencesRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $referencesRelatedByUpdatedByToDelete = $this->getReferencesRelatedByUpdatedBy(new Criteria(), $con)->diff($referencesRelatedByUpdatedBy);
+        $this->referencesRelatedByUpdatedByScheduledForDeletion = $this->getReferencesRelatedByUpdatedBy(new Criteria(), $con)->diff($referencesRelatedByUpdatedBy);
 
-        $this->referencesRelatedByUpdatedByScheduledForDeletion = unserialize(serialize($referencesRelatedByUpdatedByToDelete));
-
-        foreach ($referencesRelatedByUpdatedByToDelete as $referenceRelatedByUpdatedByRemoved) {
+        foreach ($this->referencesRelatedByUpdatedByScheduledForDeletion as $referenceRelatedByUpdatedByRemoved) {
             $referenceRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
@@ -16090,8 +15554,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
         $this->collReferencesRelatedByUpdatedBy = $referencesRelatedByUpdatedBy;
         $this->collReferencesRelatedByUpdatedByPartial = false;
-
-        return $this;
     }
 
     /**
@@ -16109,22 +15571,22 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (null === $this->collReferencesRelatedByUpdatedBy || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collReferencesRelatedByUpdatedBy) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getReferencesRelatedByUpdatedBy());
+                }
+                $query = ReferenceQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getReferencesRelatedByUpdatedBy());
+                return $query
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->count($con);
             }
-            $query = ReferenceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUserRelatedByUpdatedBy($this)
-                ->count($con);
+        } else {
+            return count($this->collReferencesRelatedByUpdatedBy);
         }
-
-        return count($this->collReferencesRelatedByUpdatedBy);
     }
 
     /**
@@ -16140,7 +15602,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initReferencesRelatedByUpdatedBy();
             $this->collReferencesRelatedByUpdatedByPartial = true;
         }
-        if (!in_array($l, $this->collReferencesRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collReferencesRelatedByUpdatedBy->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddReferenceRelatedByUpdatedBy($l);
         }
 
@@ -16158,7 +15620,6 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * @param	ReferenceRelatedByUpdatedBy $referenceRelatedByUpdatedBy The referenceRelatedByUpdatedBy object to remove.
-     * @return User The current object (for fluent API support)
      */
     public function removeReferenceRelatedByUpdatedBy($referenceRelatedByUpdatedBy)
     {
@@ -16171,8 +15632,6 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->referencesRelatedByUpdatedByScheduledForDeletion[]= $referenceRelatedByUpdatedBy;
             $referenceRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
-
-        return $this;
     }
 
     /**
@@ -16200,7 +15659,6 @@ abstract class BaseUser extends BaseObject implements Persistent
         $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
-        $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
         $this->resetModified();
@@ -16219,8 +15677,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function clearAllReferences($deep = false)
     {
-        if ($deep && !$this->alreadyInClearAllReferencesDeep) {
-            $this->alreadyInClearAllReferencesDeep = true;
+        if ($deep) {
             if ($this->collUserGroupsRelatedByUserId) {
                 foreach ($this->collUserGroupsRelatedByUserId as $o) {
                     $o->clearAllReferences($deep);
@@ -16461,11 +15918,6 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->aLanguageRelatedByLanguageId instanceof Persistent) {
-              $this->aLanguageRelatedByLanguageId->clearAllReferences($deep);
-            }
-
-            $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
         if ($this->collUserGroupsRelatedByUserId instanceof PropelCollection) {

@@ -79,6 +79,7 @@
  * @method Document findOne(PropelPDO $con = null) Return the first Document matching the query
  * @method Document findOneOrCreate(PropelPDO $con = null) Return the first Document matching the query, or a new Document object populated from the query conditions when no match is found
  *
+ * @method Document findOneById(int $id) Return the first Document filtered by the id column
  * @method Document findOneByName(string $name) Return the first Document filtered by the name column
  * @method Document findOneByOriginalName(string $original_name) Return the first Document filtered by the original_name column
  * @method Document findOneByDescription(string $description) Return the first Document filtered by the description column
@@ -140,7 +141,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * Returns a new DocumentQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param   DocumentQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     DocumentQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return DocumentQuery
      */
@@ -197,32 +198,18 @@ abstract class BaseDocumentQuery extends ModelCriteria
     }
 
     /**
-     * Alias of findPk to use instance pooling
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     PropelPDO $con A connection object
-     *
-     * @return                 Document A model object, or null if the key is not found
-     * @throws PropelException
-     */
-     public function findOneById($key, $con = null)
-     {
-        return $this->findPk($key, $con);
-     }
-
-    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return                 Document A model object, or null if the key is not found
-     * @throws PropelException
+     * @return   Document A model object, or null if the key is not found
+     * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `original_name`, `description`, `content_created_at`, `license`, `author`, `language_id`, `owner_id`, `document_type_id`, `document_category_id`, `is_private`, `is_inactive`, `is_protected`, `sort`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `documents` WHERE `id` = :p0';
+        $sql = 'SELECT `ID`, `NAME`, `ORIGINAL_NAME`, `DESCRIPTION`, `CONTENT_CREATED_AT`, `LICENSE`, `AUTHOR`, `LANGUAGE_ID`, `OWNER_ID`, `DOCUMENT_TYPE_ID`, `DOCUMENT_CATEGORY_ID`, `IS_PRIVATE`, `IS_INACTIVE`, `IS_PROTECTED`, `SORT`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `documents` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -318,8 +305,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterById(1234); // WHERE id = 1234
      * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id >= 12
-     * $query->filterById(array('max' => 12)); // WHERE id <= 12
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
      * @param     mixed $id The value to use as filter.
@@ -332,22 +318,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      */
     public function filterById($id = null, $comparison = null)
     {
-        if (is_array($id)) {
-            $useMinMax = false;
-            if (isset($id['min'])) {
-                $this->addUsingAlias(DocumentPeer::ID, $id['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($id['max'])) {
-                $this->addUsingAlias(DocumentPeer::ID, $id['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_array($id) && null === $comparison) {
+            $comparison = Criteria::IN;
         }
 
         return $this->addUsingAlias(DocumentPeer::ID, $id, $comparison);
@@ -577,8 +549,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByOwnerId(1234); // WHERE owner_id = 1234
      * $query->filterByOwnerId(array(12, 34)); // WHERE owner_id IN (12, 34)
-     * $query->filterByOwnerId(array('min' => 12)); // WHERE owner_id >= 12
-     * $query->filterByOwnerId(array('max' => 12)); // WHERE owner_id <= 12
+     * $query->filterByOwnerId(array('min' => 12)); // WHERE owner_id > 12
      * </code>
      *
      * @see       filterByUserRelatedByOwnerId()
@@ -621,8 +592,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByDocumentTypeId(1234); // WHERE document_type_id = 1234
      * $query->filterByDocumentTypeId(array(12, 34)); // WHERE document_type_id IN (12, 34)
-     * $query->filterByDocumentTypeId(array('min' => 12)); // WHERE document_type_id >= 12
-     * $query->filterByDocumentTypeId(array('max' => 12)); // WHERE document_type_id <= 12
+     * $query->filterByDocumentTypeId(array('min' => 12)); // WHERE document_type_id > 12
      * </code>
      *
      * @see       filterByDocumentType()
@@ -665,8 +635,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByDocumentCategoryId(1234); // WHERE document_category_id = 1234
      * $query->filterByDocumentCategoryId(array(12, 34)); // WHERE document_category_id IN (12, 34)
-     * $query->filterByDocumentCategoryId(array('min' => 12)); // WHERE document_category_id >= 12
-     * $query->filterByDocumentCategoryId(array('max' => 12)); // WHERE document_category_id <= 12
+     * $query->filterByDocumentCategoryId(array('min' => 12)); // WHERE document_category_id > 12
      * </code>
      *
      * @see       filterByDocumentCategory()
@@ -723,7 +692,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
     public function filterByIsPrivate($isPrivate = null, $comparison = null)
     {
         if (is_string($isPrivate)) {
-            $isPrivate = in_array(strtolower($isPrivate), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_private = in_array(strtolower($isPrivate), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(DocumentPeer::IS_PRIVATE, $isPrivate, $comparison);
@@ -750,7 +719,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
     public function filterByIsInactive($isInactive = null, $comparison = null)
     {
         if (is_string($isInactive)) {
-            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(DocumentPeer::IS_INACTIVE, $isInactive, $comparison);
@@ -777,7 +746,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
     public function filterByIsProtected($isProtected = null, $comparison = null)
     {
         if (is_string($isProtected)) {
-            $isProtected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_protected = in_array(strtolower($isProtected), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(DocumentPeer::IS_PROTECTED, $isProtected, $comparison);
@@ -790,8 +759,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterBySort(1234); // WHERE sort = 1234
      * $query->filterBySort(array(12, 34)); // WHERE sort IN (12, 34)
-     * $query->filterBySort(array('min' => 12)); // WHERE sort >= 12
-     * $query->filterBySort(array('max' => 12)); // WHERE sort <= 12
+     * $query->filterBySort(array('min' => 12)); // WHERE sort > 12
      * </code>
      *
      * @param     mixed $sort The value to use as filter.
@@ -932,8 +900,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
-     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -976,8 +943,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
-     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -1019,8 +985,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguage($language, $comparison = null)
     {
@@ -1095,8 +1061,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByOwnerId($user, $comparison = null)
     {
@@ -1171,8 +1137,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   DocumentType|PropelObjectCollection $documentType The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentType($documentType, $comparison = null)
     {
@@ -1247,8 +1213,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   DocumentCategory|PropelObjectCollection $documentCategory The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentCategory($documentCategory, $comparison = null)
     {
@@ -1323,8 +1289,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -1399,8 +1365,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 DocumentQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   DocumentQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {
