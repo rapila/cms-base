@@ -32,23 +32,23 @@ abstract class BaseUserGroupPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 6;
 
-    /** the column name for the user_id field */
-    const USER_ID = 'users_groups.user_id';
+    /** the column name for the USER_ID field */
+    const USER_ID = 'users_groups.USER_ID';
 
-    /** the column name for the group_id field */
-    const GROUP_ID = 'users_groups.group_id';
+    /** the column name for the GROUP_ID field */
+    const GROUP_ID = 'users_groups.GROUP_ID';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'users_groups.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'users_groups.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'users_groups.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'users_groups.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'users_groups.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'users_groups.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'users_groups.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'users_groups.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -172,12 +172,12 @@ abstract class BaseUserGroupPeer
             $criteria->addSelectColumn(UserGroupPeer::CREATED_BY);
             $criteria->addSelectColumn(UserGroupPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.user_id');
-            $criteria->addSelectColumn($alias . '.group_id');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.USER_ID');
+            $criteria->addSelectColumn($alias . '.GROUP_ID');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -261,7 +261,7 @@ abstract class BaseUserGroupPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -366,15 +366,8 @@ abstract class BaseUserGroupPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (UserGroupPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         UserGroupPeer::$instances = array();
     }
 
@@ -1728,7 +1721,7 @@ abstract class BaseUserGroupPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return UserGroupPeer::OM_CLASS;
     }

@@ -247,6 +247,7 @@
  * @method User findOne(PropelPDO $con = null) Return the first User matching the query
  * @method User findOneOrCreate(PropelPDO $con = null) Return the first User matching the query, or a new User object populated from the query conditions when no match is found
  *
+ * @method User findOneById(int $id) Return the first User filtered by the id column
  * @method User findOneByUsername(string $username) Return the first User filtered by the username column
  * @method User findOneByPassword(string $password) Return the first User filtered by the password column
  * @method User findOneByDigestHA1(string $digest_ha1) Return the first User filtered by the digest_ha1 column
@@ -304,7 +305,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * Returns a new UserQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param   UserQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     UserQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return UserQuery
      */
@@ -361,32 +362,18 @@ abstract class BaseUserQuery extends ModelCriteria
     }
 
     /**
-     * Alias of findPk to use instance pooling
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     PropelPDO $con A connection object
-     *
-     * @return                 User A model object, or null if the key is not found
-     * @throws PropelException
-     */
-     public function findOneById($key, $con = null)
-     {
-        return $this->findPk($key, $con);
-     }
-
-    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return                 User A model object, or null if the key is not found
-     * @throws PropelException
+     * @return   User A model object, or null if the key is not found
+     * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `username`, `password`, `digest_ha1`, `first_name`, `last_name`, `email`, `language_id`, `is_admin`, `is_backend_login_enabled`, `is_admin_login_enabled`, `is_inactive`, `password_recover_hint`, `backend_settings`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `users` WHERE `id` = :p0';
+        $sql = 'SELECT `ID`, `USERNAME`, `PASSWORD`, `DIGEST_HA1`, `FIRST_NAME`, `LAST_NAME`, `EMAIL`, `LANGUAGE_ID`, `IS_ADMIN`, `IS_BACKEND_LOGIN_ENABLED`, `IS_ADMIN_LOGIN_ENABLED`, `IS_INACTIVE`, `PASSWORD_RECOVER_HINT`, `BACKEND_SETTINGS`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `users` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -482,8 +469,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterById(1234); // WHERE id = 1234
      * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id >= 12
-     * $query->filterById(array('max' => 12)); // WHERE id <= 12
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
      * @param     mixed $id The value to use as filter.
@@ -496,22 +482,8 @@ abstract class BaseUserQuery extends ModelCriteria
      */
     public function filterById($id = null, $comparison = null)
     {
-        if (is_array($id)) {
-            $useMinMax = false;
-            if (isset($id['min'])) {
-                $this->addUsingAlias(UserPeer::ID, $id['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($id['max'])) {
-                $this->addUsingAlias(UserPeer::ID, $id['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_array($id) && null === $comparison) {
+            $comparison = Criteria::IN;
         }
 
         return $this->addUsingAlias(UserPeer::ID, $id, $comparison);
@@ -741,7 +713,7 @@ abstract class BaseUserQuery extends ModelCriteria
     public function filterByIsAdmin($isAdmin = null, $comparison = null)
     {
         if (is_string($isAdmin)) {
-            $isAdmin = in_array(strtolower($isAdmin), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_admin = in_array(strtolower($isAdmin), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(UserPeer::IS_ADMIN, $isAdmin, $comparison);
@@ -768,7 +740,7 @@ abstract class BaseUserQuery extends ModelCriteria
     public function filterByIsBackendLoginEnabled($isBackendLoginEnabled = null, $comparison = null)
     {
         if (is_string($isBackendLoginEnabled)) {
-            $isBackendLoginEnabled = in_array(strtolower($isBackendLoginEnabled), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_backend_login_enabled = in_array(strtolower($isBackendLoginEnabled), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(UserPeer::IS_BACKEND_LOGIN_ENABLED, $isBackendLoginEnabled, $comparison);
@@ -795,7 +767,7 @@ abstract class BaseUserQuery extends ModelCriteria
     public function filterByIsAdminLoginEnabled($isAdminLoginEnabled = null, $comparison = null)
     {
         if (is_string($isAdminLoginEnabled)) {
-            $isAdminLoginEnabled = in_array(strtolower($isAdminLoginEnabled), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_admin_login_enabled = in_array(strtolower($isAdminLoginEnabled), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(UserPeer::IS_ADMIN_LOGIN_ENABLED, $isAdminLoginEnabled, $comparison);
@@ -822,7 +794,7 @@ abstract class BaseUserQuery extends ModelCriteria
     public function filterByIsInactive($isInactive = null, $comparison = null)
     {
         if (is_string($isInactive)) {
-            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $is_inactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(UserPeer::IS_INACTIVE, $isInactive, $comparison);
@@ -964,8 +936,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
-     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
      * </code>
      *
      * @param     mixed $createdBy The value to use as filter.
@@ -1006,8 +977,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
-     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
      * </code>
      *
      * @param     mixed $updatedBy The value to use as filter.
@@ -1047,8 +1017,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageRelatedByLanguageId($language, $comparison = null)
     {
@@ -1123,8 +1093,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserGroup|PropelObjectCollection $userGroup  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserGroupRelatedByUserId($userGroup, $comparison = null)
     {
@@ -1197,8 +1167,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserRole|PropelObjectCollection $userRole  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRoleRelatedByUserId($userRole, $comparison = null)
     {
@@ -1271,8 +1241,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Document|PropelObjectCollection $document  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentRelatedByOwnerId($document, $comparison = null)
     {
@@ -1345,8 +1315,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Link|PropelObjectCollection $link  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLinkRelatedByOwnerId($link, $comparison = null)
     {
@@ -1419,8 +1389,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Page|PropelObjectCollection $page  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPageRelatedByCreatedBy($page, $comparison = null)
     {
@@ -1493,8 +1463,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Page|PropelObjectCollection $page  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPageRelatedByUpdatedBy($page, $comparison = null)
     {
@@ -1567,8 +1537,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   PageProperty|PropelObjectCollection $pageProperty  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPagePropertyRelatedByCreatedBy($pageProperty, $comparison = null)
     {
@@ -1641,8 +1611,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   PageProperty|PropelObjectCollection $pageProperty  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPagePropertyRelatedByUpdatedBy($pageProperty, $comparison = null)
     {
@@ -1715,8 +1685,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   PageString|PropelObjectCollection $pageString  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPageStringRelatedByCreatedBy($pageString, $comparison = null)
     {
@@ -1789,8 +1759,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   PageString|PropelObjectCollection $pageString  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByPageStringRelatedByUpdatedBy($pageString, $comparison = null)
     {
@@ -1863,8 +1833,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   ContentObject|PropelObjectCollection $contentObject  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByContentObjectRelatedByCreatedBy($contentObject, $comparison = null)
     {
@@ -1937,8 +1907,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   ContentObject|PropelObjectCollection $contentObject  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByContentObjectRelatedByUpdatedBy($contentObject, $comparison = null)
     {
@@ -2011,8 +1981,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LanguageObject|PropelObjectCollection $languageObject  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageObjectRelatedByCreatedBy($languageObject, $comparison = null)
     {
@@ -2085,8 +2055,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LanguageObject|PropelObjectCollection $languageObject  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageObjectRelatedByUpdatedBy($languageObject, $comparison = null)
     {
@@ -2159,8 +2129,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LanguageObjectHistory|PropelObjectCollection $languageObjectHistory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistory, $comparison = null)
     {
@@ -2233,8 +2203,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LanguageObjectHistory|PropelObjectCollection $languageObjectHistory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistory, $comparison = null)
     {
@@ -2307,8 +2277,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageRelatedByCreatedBy($language, $comparison = null)
     {
@@ -2381,8 +2351,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLanguageRelatedByUpdatedBy($language, $comparison = null)
     {
@@ -2455,8 +2425,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   String|PropelObjectCollection $string  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByStringRelatedByCreatedBy($string, $comparison = null)
     {
@@ -2529,8 +2499,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   String|PropelObjectCollection $string  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByStringRelatedByUpdatedBy($string, $comparison = null)
     {
@@ -2603,8 +2573,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserGroup|PropelObjectCollection $userGroup  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserGroupRelatedByCreatedBy($userGroup, $comparison = null)
     {
@@ -2677,8 +2647,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserGroup|PropelObjectCollection $userGroup  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserGroupRelatedByUpdatedBy($userGroup, $comparison = null)
     {
@@ -2751,8 +2721,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Group|PropelObjectCollection $group  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByGroupRelatedByCreatedBy($group, $comparison = null)
     {
@@ -2825,8 +2795,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Group|PropelObjectCollection $group  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByGroupRelatedByUpdatedBy($group, $comparison = null)
     {
@@ -2899,8 +2869,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   GroupRole|PropelObjectCollection $groupRole  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByGroupRoleRelatedByCreatedBy($groupRole, $comparison = null)
     {
@@ -2973,8 +2943,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   GroupRole|PropelObjectCollection $groupRole  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByGroupRoleRelatedByUpdatedBy($groupRole, $comparison = null)
     {
@@ -3047,8 +3017,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Role|PropelObjectCollection $role  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByRoleRelatedByCreatedBy($role, $comparison = null)
     {
@@ -3121,8 +3091,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Role|PropelObjectCollection $role  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByRoleRelatedByUpdatedBy($role, $comparison = null)
     {
@@ -3195,8 +3165,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserRole|PropelObjectCollection $userRole  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRoleRelatedByCreatedBy($userRole, $comparison = null)
     {
@@ -3269,8 +3239,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   UserRole|PropelObjectCollection $userRole  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByUserRoleRelatedByUpdatedBy($userRole, $comparison = null)
     {
@@ -3343,8 +3313,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Right|PropelObjectCollection $right  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByRightRelatedByCreatedBy($right, $comparison = null)
     {
@@ -3417,8 +3387,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Right|PropelObjectCollection $right  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByRightRelatedByUpdatedBy($right, $comparison = null)
     {
@@ -3491,8 +3461,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Document|PropelObjectCollection $document  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentRelatedByCreatedBy($document, $comparison = null)
     {
@@ -3565,8 +3535,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Document|PropelObjectCollection $document  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentRelatedByUpdatedBy($document, $comparison = null)
     {
@@ -3639,8 +3609,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   DocumentType|PropelObjectCollection $documentType  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentTypeRelatedByCreatedBy($documentType, $comparison = null)
     {
@@ -3713,8 +3683,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   DocumentType|PropelObjectCollection $documentType  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentTypeRelatedByUpdatedBy($documentType, $comparison = null)
     {
@@ -3787,8 +3757,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   DocumentCategory|PropelObjectCollection $documentCategory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentCategoryRelatedByCreatedBy($documentCategory, $comparison = null)
     {
@@ -3861,8 +3831,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   DocumentCategory|PropelObjectCollection $documentCategory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByDocumentCategoryRelatedByUpdatedBy($documentCategory, $comparison = null)
     {
@@ -3935,8 +3905,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Tag|PropelObjectCollection $tag  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByTagRelatedByCreatedBy($tag, $comparison = null)
     {
@@ -4009,8 +3979,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Tag|PropelObjectCollection $tag  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByTagRelatedByUpdatedBy($tag, $comparison = null)
     {
@@ -4083,8 +4053,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   TagInstance|PropelObjectCollection $tagInstance  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByTagInstanceRelatedByCreatedBy($tagInstance, $comparison = null)
     {
@@ -4157,8 +4127,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   TagInstance|PropelObjectCollection $tagInstance  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByTagInstanceRelatedByUpdatedBy($tagInstance, $comparison = null)
     {
@@ -4231,8 +4201,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Link|PropelObjectCollection $link  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLinkRelatedByCreatedBy($link, $comparison = null)
     {
@@ -4305,8 +4275,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Link|PropelObjectCollection $link  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLinkRelatedByUpdatedBy($link, $comparison = null)
     {
@@ -4379,8 +4349,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LinkCategory|PropelObjectCollection $linkCategory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLinkCategoryRelatedByCreatedBy($linkCategory, $comparison = null)
     {
@@ -4453,8 +4423,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   LinkCategory|PropelObjectCollection $linkCategory  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByLinkCategoryRelatedByUpdatedBy($linkCategory, $comparison = null)
     {
@@ -4527,8 +4497,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Reference|PropelObjectCollection $reference  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByReferenceRelatedByCreatedBy($reference, $comparison = null)
     {
@@ -4601,8 +4571,8 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param   Reference|PropelObjectCollection $reference  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return                 UserQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
+     * @return   UserQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
      */
     public function filterByReferenceRelatedByUpdatedBy($reference, $comparison = null)
     {

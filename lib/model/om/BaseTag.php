@@ -96,12 +96,6 @@ abstract class BaseTag extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Flag to prevent endless clearAllReferences($deep=true) loop, if this object is referenced
-     * @var        boolean
-     */
-    protected $alreadyInClearAllReferencesDeep = false;
-
-    /**
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
@@ -146,25 +140,22 @@ abstract class BaseTag extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->created_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->created_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -186,25 +177,22 @@ abstract class BaseTag extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        }
-
-        try {
-            $dt = new DateTime($this->updated_at);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+        } else {
+            try {
+                $dt = new DateTime($this->updated_at);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+            }
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
+        } elseif (strpos($format, '%') !== false) {
             return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
         }
-
-        return $dt->format($format);
-
     }
 
     /**
@@ -235,7 +223,7 @@ abstract class BaseTag extends BaseObject implements Persistent
      */
     public function setId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -256,7 +244,7 @@ abstract class BaseTag extends BaseObject implements Persistent
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -323,7 +311,7 @@ abstract class BaseTag extends BaseObject implements Persistent
      */
     public function setCreatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -348,7 +336,7 @@ abstract class BaseTag extends BaseObject implements Persistent
      */
     public function setUpdatedBy($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (int) $v;
         }
 
@@ -410,7 +398,7 @@ abstract class BaseTag extends BaseObject implements Persistent
             if ($rehydrate) {
                 $this->ensureConsistency();
             }
-            $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 6; // 6 = TagPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -681,7 +669,7 @@ abstract class BaseTag extends BaseObject implements Persistent
 
             if ($this->collTagInstances !== null) {
                 foreach ($this->collTagInstances as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -714,22 +702,22 @@ abstract class BaseTag extends BaseObject implements Persistent
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(TagPeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`id`';
+            $modifiedColumns[':p' . $index++]  = '`ID`';
         }
         if ($this->isColumnModified(TagPeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`name`';
+            $modifiedColumns[':p' . $index++]  = '`NAME`';
         }
         if ($this->isColumnModified(TagPeer::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`created_at`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
         }
         if ($this->isColumnModified(TagPeer::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_at`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
         }
         if ($this->isColumnModified(TagPeer::CREATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`created_by`';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
         }
         if ($this->isColumnModified(TagPeer::UPDATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`updated_by`';
+            $modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
         }
 
         $sql = sprintf(
@@ -742,22 +730,22 @@ abstract class BaseTag extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id`':
+                    case '`ID`':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case '`name`':
+                    case '`NAME`':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case '`created_at`':
+                    case '`CREATED_AT`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
                         break;
-                    case '`updated_at`':
+                    case '`UPDATED_AT`':
                         $stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
                         break;
-                    case '`created_by`':
+                    case '`CREATED_BY`':
                         $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
                         break;
-                    case '`updated_by`':
+                    case '`UPDATED_BY`':
                         $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                 }
@@ -828,11 +816,11 @@ abstract class BaseTag extends BaseObject implements Persistent
             $this->validationFailures = array();
 
             return true;
+        } else {
+            $this->validationFailures = $res;
+
+            return false;
         }
-
-        $this->validationFailures = $res;
-
-        return false;
     }
 
     /**
@@ -1247,13 +1235,12 @@ abstract class BaseTag extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByCreatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByCreatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
             $this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1299,13 +1286,12 @@ abstract class BaseTag extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByUpdatedBy(PropelPDO $con = null, $doQuery = true)
+    public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
     {
-        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null) && $doQuery) {
+        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
             $this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1341,15 +1327,13 @@ abstract class BaseTag extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Tag The current object (for fluent API support)
+     * @return void
      * @see        addTagInstances()
      */
     public function clearTagInstances()
     {
         $this->collTagInstances = null; // important to set this to null since that means it is uninitialized
         $this->collTagInstancesPartial = null;
-
-        return $this;
     }
 
     /**
@@ -1421,7 +1405,6 @@ abstract class BaseTag extends BaseObject implements Persistent
                       $this->collTagInstancesPartial = true;
                     }
 
-                    $collTagInstances->getInternalIterator()->rewind();
                     return $collTagInstances;
                 }
 
@@ -1449,15 +1432,12 @@ abstract class BaseTag extends BaseObject implements Persistent
      *
      * @param PropelCollection $tagInstances A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Tag The current object (for fluent API support)
      */
     public function setTagInstances(PropelCollection $tagInstances, PropelPDO $con = null)
     {
-        $tagInstancesToDelete = $this->getTagInstances(new Criteria(), $con)->diff($tagInstances);
+        $this->tagInstancesScheduledForDeletion = $this->getTagInstances(new Criteria(), $con)->diff($tagInstances);
 
-        $this->tagInstancesScheduledForDeletion = unserialize(serialize($tagInstancesToDelete));
-
-        foreach ($tagInstancesToDelete as $tagInstanceRemoved) {
+        foreach ($this->tagInstancesScheduledForDeletion as $tagInstanceRemoved) {
             $tagInstanceRemoved->setTag(null);
         }
 
@@ -1468,8 +1448,6 @@ abstract class BaseTag extends BaseObject implements Persistent
 
         $this->collTagInstances = $tagInstances;
         $this->collTagInstancesPartial = false;
-
-        return $this;
     }
 
     /**
@@ -1487,22 +1465,22 @@ abstract class BaseTag extends BaseObject implements Persistent
         if (null === $this->collTagInstances || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTagInstances) {
                 return 0;
-            }
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getTagInstances());
+                }
+                $query = TagInstanceQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            if($partial && !$criteria) {
-                return count($this->getTagInstances());
+                return $query
+                    ->filterByTag($this)
+                    ->count($con);
             }
-            $query = TagInstanceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByTag($this)
-                ->count($con);
+        } else {
+            return count($this->collTagInstances);
         }
-
-        return count($this->collTagInstances);
     }
 
     /**
@@ -1518,7 +1496,7 @@ abstract class BaseTag extends BaseObject implements Persistent
             $this->initTagInstances();
             $this->collTagInstancesPartial = true;
         }
-        if (!in_array($l, $this->collTagInstances->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collTagInstances->contains($l)) { // only add it if the **same** object is not already associated
             $this->doAddTagInstance($l);
         }
 
@@ -1536,7 +1514,6 @@ abstract class BaseTag extends BaseObject implements Persistent
 
     /**
      * @param	TagInstance $tagInstance The tagInstance object to remove.
-     * @return Tag The current object (for fluent API support)
      */
     public function removeTagInstance($tagInstance)
     {
@@ -1546,11 +1523,9 @@ abstract class BaseTag extends BaseObject implements Persistent
                 $this->tagInstancesScheduledForDeletion = clone $this->collTagInstances;
                 $this->tagInstancesScheduledForDeletion->clear();
             }
-            $this->tagInstancesScheduledForDeletion[]= clone $tagInstance;
+            $this->tagInstancesScheduledForDeletion[]= $tagInstance;
             $tagInstance->setTag(null);
         }
-
-        return $this;
     }
 
 
@@ -1616,7 +1591,6 @@ abstract class BaseTag extends BaseObject implements Persistent
         $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
-        $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
         $this->resetModified();
         $this->setNew(true);
@@ -1634,21 +1608,12 @@ abstract class BaseTag extends BaseObject implements Persistent
      */
     public function clearAllReferences($deep = false)
     {
-        if ($deep && !$this->alreadyInClearAllReferencesDeep) {
-            $this->alreadyInClearAllReferencesDeep = true;
+        if ($deep) {
             if ($this->collTagInstances) {
                 foreach ($this->collTagInstances as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
-              $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
-            }
-            if ($this->aUserRelatedByUpdatedBy instanceof Persistent) {
-              $this->aUserRelatedByUpdatedBy->clearAllReferences($deep);
-            }
-
-            $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
         if ($this->collTagInstances instanceof PropelCollection) {

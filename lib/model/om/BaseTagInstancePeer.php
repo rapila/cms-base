@@ -32,26 +32,26 @@ abstract class BaseTagInstancePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 7;
 
-    /** the column name for the tag_id field */
-    const TAG_ID = 'tag_instances.tag_id';
+    /** the column name for the TAG_ID field */
+    const TAG_ID = 'tag_instances.TAG_ID';
 
-    /** the column name for the tagged_item_id field */
-    const TAGGED_ITEM_ID = 'tag_instances.tagged_item_id';
+    /** the column name for the TAGGED_ITEM_ID field */
+    const TAGGED_ITEM_ID = 'tag_instances.TAGGED_ITEM_ID';
 
-    /** the column name for the model_name field */
-    const MODEL_NAME = 'tag_instances.model_name';
+    /** the column name for the MODEL_NAME field */
+    const MODEL_NAME = 'tag_instances.MODEL_NAME';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'tag_instances.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'tag_instances.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'tag_instances.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'tag_instances.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'tag_instances.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'tag_instances.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'tag_instances.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'tag_instances.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -176,13 +176,13 @@ abstract class BaseTagInstancePeer
             $criteria->addSelectColumn(TagInstancePeer::CREATED_BY);
             $criteria->addSelectColumn(TagInstancePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.tag_id');
-            $criteria->addSelectColumn($alias . '.tagged_item_id');
-            $criteria->addSelectColumn($alias . '.model_name');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.TAG_ID');
+            $criteria->addSelectColumn($alias . '.TAGGED_ITEM_ID');
+            $criteria->addSelectColumn($alias . '.MODEL_NAME');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -266,7 +266,7 @@ abstract class BaseTagInstancePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -371,15 +371,8 @@ abstract class BaseTagInstancePeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (TagInstancePeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         TagInstancePeer::$instances = array();
     }
 
@@ -1439,7 +1432,7 @@ abstract class BaseTagInstancePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return TagInstancePeer::OM_CLASS;
     }

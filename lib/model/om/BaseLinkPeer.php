@@ -32,47 +32,47 @@ abstract class BaseLinkPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 14;
 
-    /** the column name for the id field */
-    const ID = 'links.id';
+    /** the column name for the ID field */
+    const ID = 'links.ID';
 
-    /** the column name for the name field */
-    const NAME = 'links.name';
+    /** the column name for the NAME field */
+    const NAME = 'links.NAME';
 
-    /** the column name for the url field */
-    const URL = 'links.url';
+    /** the column name for the URL field */
+    const URL = 'links.URL';
 
-    /** the column name for the description field */
-    const DESCRIPTION = 'links.description';
+    /** the column name for the DESCRIPTION field */
+    const DESCRIPTION = 'links.DESCRIPTION';
 
-    /** the column name for the language_id field */
-    const LANGUAGE_ID = 'links.language_id';
+    /** the column name for the LANGUAGE_ID field */
+    const LANGUAGE_ID = 'links.LANGUAGE_ID';
 
-    /** the column name for the owner_id field */
-    const OWNER_ID = 'links.owner_id';
+    /** the column name for the OWNER_ID field */
+    const OWNER_ID = 'links.OWNER_ID';
 
-    /** the column name for the link_category_id field */
-    const LINK_CATEGORY_ID = 'links.link_category_id';
+    /** the column name for the LINK_CATEGORY_ID field */
+    const LINK_CATEGORY_ID = 'links.LINK_CATEGORY_ID';
 
-    /** the column name for the sort field */
-    const SORT = 'links.sort';
+    /** the column name for the SORT field */
+    const SORT = 'links.SORT';
 
-    /** the column name for the is_private field */
-    const IS_PRIVATE = 'links.is_private';
+    /** the column name for the IS_PRIVATE field */
+    const IS_PRIVATE = 'links.IS_PRIVATE';
 
-    /** the column name for the is_inactive field */
-    const IS_INACTIVE = 'links.is_inactive';
+    /** the column name for the IS_INACTIVE field */
+    const IS_INACTIVE = 'links.IS_INACTIVE';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'links.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'links.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'links.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'links.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'links.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'links.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'links.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'links.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -204,20 +204,20 @@ abstract class BaseLinkPeer
             $criteria->addSelectColumn(LinkPeer::CREATED_BY);
             $criteria->addSelectColumn(LinkPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.url');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.language_id');
-            $criteria->addSelectColumn($alias . '.owner_id');
-            $criteria->addSelectColumn($alias . '.link_category_id');
-            $criteria->addSelectColumn($alias . '.sort');
-            $criteria->addSelectColumn($alias . '.is_private');
-            $criteria->addSelectColumn($alias . '.is_inactive');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.URL');
+            $criteria->addSelectColumn($alias . '.DESCRIPTION');
+            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
+            $criteria->addSelectColumn($alias . '.OWNER_ID');
+            $criteria->addSelectColumn($alias . '.LINK_CATEGORY_ID');
+            $criteria->addSelectColumn($alias . '.SORT');
+            $criteria->addSelectColumn($alias . '.IS_PRIVATE');
+            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -301,7 +301,7 @@ abstract class BaseLinkPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -406,15 +406,8 @@ abstract class BaseLinkPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (LinkPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         LinkPeer::$instances = array();
     }
 
@@ -2218,7 +2211,7 @@ abstract class BaseLinkPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return LinkPeer::OM_CLASS;
     }

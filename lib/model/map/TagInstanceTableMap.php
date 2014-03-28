@@ -38,13 +38,13 @@ class TagInstanceTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('tag_id', 'TagId', 'INTEGER' , 'tags', 'id', true, null, null);
-        $this->addPrimaryKey('tagged_item_id', 'TaggedItemId', 'INTEGER', true, null, null);
-        $this->addPrimaryKey('model_name', 'ModelName', 'VARCHAR', true, 80, null);
-        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
-        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignPrimaryKey('TAG_ID', 'TagId', 'INTEGER' , 'tags', 'ID', true, null, null);
+        $this->addPrimaryKey('TAGGED_ITEM_ID', 'TaggedItemId', 'INTEGER', true, null, null);
+        $this->addPrimaryKey('MODEL_NAME', 'ModelName', 'VARCHAR', true, 80, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
         // validators
     } // initialize()
 
@@ -67,23 +67,10 @@ class TagInstanceTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' =>  array (
-  'mode' => 'allow',
-  'role_key' => '',
-  'owner_allowed' => '',
-),
-            'extended_timestampable' =>  array (
-  'create_column' => 'created_at',
-  'update_column' => 'updated_at',
-  'disable_updated_at' => 'false',
-),
-            'attributable' =>  array (
-  'create_column' => 'created_by',
-  'update_column' => 'updated_by',
-),
-            'extended_keyable' =>  array (
-  'key_separator' => '_',
-),
+            'denyable' => array('mode' => 'allow', 'role_key' => '', 'owner_allowed' => '', ),
+            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
+            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
+            'extended_keyable' => array('key_separator' => '_', ),
         );
     } // getBehaviors()
 

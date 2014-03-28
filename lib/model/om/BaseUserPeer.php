@@ -32,59 +32,59 @@ abstract class BaseUserPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 18;
 
-    /** the column name for the id field */
-    const ID = 'users.id';
+    /** the column name for the ID field */
+    const ID = 'users.ID';
 
-    /** the column name for the username field */
-    const USERNAME = 'users.username';
+    /** the column name for the USERNAME field */
+    const USERNAME = 'users.USERNAME';
 
-    /** the column name for the password field */
-    const PASSWORD = 'users.password';
+    /** the column name for the PASSWORD field */
+    const PASSWORD = 'users.PASSWORD';
 
-    /** the column name for the digest_ha1 field */
-    const DIGEST_HA1 = 'users.digest_ha1';
+    /** the column name for the DIGEST_HA1 field */
+    const DIGEST_HA1 = 'users.DIGEST_HA1';
 
-    /** the column name for the first_name field */
-    const FIRST_NAME = 'users.first_name';
+    /** the column name for the FIRST_NAME field */
+    const FIRST_NAME = 'users.FIRST_NAME';
 
-    /** the column name for the last_name field */
-    const LAST_NAME = 'users.last_name';
+    /** the column name for the LAST_NAME field */
+    const LAST_NAME = 'users.LAST_NAME';
 
-    /** the column name for the email field */
-    const EMAIL = 'users.email';
+    /** the column name for the EMAIL field */
+    const EMAIL = 'users.EMAIL';
 
-    /** the column name for the language_id field */
-    const LANGUAGE_ID = 'users.language_id';
+    /** the column name for the LANGUAGE_ID field */
+    const LANGUAGE_ID = 'users.LANGUAGE_ID';
 
-    /** the column name for the is_admin field */
-    const IS_ADMIN = 'users.is_admin';
+    /** the column name for the IS_ADMIN field */
+    const IS_ADMIN = 'users.IS_ADMIN';
 
-    /** the column name for the is_backend_login_enabled field */
-    const IS_BACKEND_LOGIN_ENABLED = 'users.is_backend_login_enabled';
+    /** the column name for the IS_BACKEND_LOGIN_ENABLED field */
+    const IS_BACKEND_LOGIN_ENABLED = 'users.IS_BACKEND_LOGIN_ENABLED';
 
-    /** the column name for the is_admin_login_enabled field */
-    const IS_ADMIN_LOGIN_ENABLED = 'users.is_admin_login_enabled';
+    /** the column name for the IS_ADMIN_LOGIN_ENABLED field */
+    const IS_ADMIN_LOGIN_ENABLED = 'users.IS_ADMIN_LOGIN_ENABLED';
 
-    /** the column name for the is_inactive field */
-    const IS_INACTIVE = 'users.is_inactive';
+    /** the column name for the IS_INACTIVE field */
+    const IS_INACTIVE = 'users.IS_INACTIVE';
 
-    /** the column name for the password_recover_hint field */
-    const PASSWORD_RECOVER_HINT = 'users.password_recover_hint';
+    /** the column name for the PASSWORD_RECOVER_HINT field */
+    const PASSWORD_RECOVER_HINT = 'users.PASSWORD_RECOVER_HINT';
 
-    /** the column name for the backend_settings field */
-    const BACKEND_SETTINGS = 'users.backend_settings';
+    /** the column name for the BACKEND_SETTINGS field */
+    const BACKEND_SETTINGS = 'users.BACKEND_SETTINGS';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'users.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'users.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'users.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'users.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'users.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'users.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'users.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'users.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -220,24 +220,24 @@ abstract class BaseUserPeer
             $criteria->addSelectColumn(UserPeer::CREATED_BY);
             $criteria->addSelectColumn(UserPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.username');
-            $criteria->addSelectColumn($alias . '.password');
-            $criteria->addSelectColumn($alias . '.digest_ha1');
-            $criteria->addSelectColumn($alias . '.first_name');
-            $criteria->addSelectColumn($alias . '.last_name');
-            $criteria->addSelectColumn($alias . '.email');
-            $criteria->addSelectColumn($alias . '.language_id');
-            $criteria->addSelectColumn($alias . '.is_admin');
-            $criteria->addSelectColumn($alias . '.is_backend_login_enabled');
-            $criteria->addSelectColumn($alias . '.is_admin_login_enabled');
-            $criteria->addSelectColumn($alias . '.is_inactive');
-            $criteria->addSelectColumn($alias . '.password_recover_hint');
-            $criteria->addSelectColumn($alias . '.backend_settings');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.USERNAME');
+            $criteria->addSelectColumn($alias . '.PASSWORD');
+            $criteria->addSelectColumn($alias . '.DIGEST_HA1');
+            $criteria->addSelectColumn($alias . '.FIRST_NAME');
+            $criteria->addSelectColumn($alias . '.LAST_NAME');
+            $criteria->addSelectColumn($alias . '.EMAIL');
+            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
+            $criteria->addSelectColumn($alias . '.IS_ADMIN');
+            $criteria->addSelectColumn($alias . '.IS_BACKEND_LOGIN_ENABLED');
+            $criteria->addSelectColumn($alias . '.IS_ADMIN_LOGIN_ENABLED');
+            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
+            $criteria->addSelectColumn($alias . '.PASSWORD_RECOVER_HINT');
+            $criteria->addSelectColumn($alias . '.BACKEND_SETTINGS');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -321,7 +321,7 @@ abstract class BaseUserPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -426,15 +426,8 @@ abstract class BaseUserPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (UserPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         UserPeer::$instances = array();
     }
 
@@ -945,7 +938,7 @@ abstract class BaseUserPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return UserPeer::OM_CLASS;
     }

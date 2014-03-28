@@ -32,35 +32,35 @@ abstract class BaseDocumentCategoryPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 10;
 
-    /** the column name for the id field */
-    const ID = 'document_categories.id';
+    /** the column name for the ID field */
+    const ID = 'document_categories.ID';
 
-    /** the column name for the name field */
-    const NAME = 'document_categories.name';
+    /** the column name for the NAME field */
+    const NAME = 'document_categories.NAME';
 
-    /** the column name for the sort field */
-    const SORT = 'document_categories.sort';
+    /** the column name for the SORT field */
+    const SORT = 'document_categories.SORT';
 
-    /** the column name for the max_width field */
-    const MAX_WIDTH = 'document_categories.max_width';
+    /** the column name for the MAX_WIDTH field */
+    const MAX_WIDTH = 'document_categories.MAX_WIDTH';
 
-    /** the column name for the is_externally_managed field */
-    const IS_EXTERNALLY_MANAGED = 'document_categories.is_externally_managed';
+    /** the column name for the IS_EXTERNALLY_MANAGED field */
+    const IS_EXTERNALLY_MANAGED = 'document_categories.IS_EXTERNALLY_MANAGED';
 
-    /** the column name for the is_inactive field */
-    const IS_INACTIVE = 'document_categories.is_inactive';
+    /** the column name for the IS_INACTIVE field */
+    const IS_INACTIVE = 'document_categories.IS_INACTIVE';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'document_categories.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'document_categories.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'document_categories.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'document_categories.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'document_categories.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'document_categories.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'document_categories.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'document_categories.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -188,16 +188,16 @@ abstract class BaseDocumentCategoryPeer
             $criteria->addSelectColumn(DocumentCategoryPeer::CREATED_BY);
             $criteria->addSelectColumn(DocumentCategoryPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.sort');
-            $criteria->addSelectColumn($alias . '.max_width');
-            $criteria->addSelectColumn($alias . '.is_externally_managed');
-            $criteria->addSelectColumn($alias . '.is_inactive');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.SORT');
+            $criteria->addSelectColumn($alias . '.MAX_WIDTH');
+            $criteria->addSelectColumn($alias . '.IS_EXTERNALLY_MANAGED');
+            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -281,7 +281,7 @@ abstract class BaseDocumentCategoryPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -386,15 +386,8 @@ abstract class BaseDocumentCategoryPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (DocumentCategoryPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         DocumentCategoryPeer::$instances = array();
     }
 
@@ -1111,7 +1104,7 @@ abstract class BaseDocumentCategoryPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return DocumentCategoryPeer::OM_CLASS;
     }

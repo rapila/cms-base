@@ -32,65 +32,65 @@ abstract class BaseDocumentPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 19;
 
-    /** the column name for the id field */
-    const ID = 'documents.id';
+    /** the column name for the ID field */
+    const ID = 'documents.ID';
 
-    /** the column name for the name field */
-    const NAME = 'documents.name';
+    /** the column name for the NAME field */
+    const NAME = 'documents.NAME';
 
-    /** the column name for the original_name field */
-    const ORIGINAL_NAME = 'documents.original_name';
+    /** the column name for the ORIGINAL_NAME field */
+    const ORIGINAL_NAME = 'documents.ORIGINAL_NAME';
 
-    /** the column name for the description field */
-    const DESCRIPTION = 'documents.description';
+    /** the column name for the DESCRIPTION field */
+    const DESCRIPTION = 'documents.DESCRIPTION';
 
-    /** the column name for the content_created_at field */
-    const CONTENT_CREATED_AT = 'documents.content_created_at';
+    /** the column name for the CONTENT_CREATED_AT field */
+    const CONTENT_CREATED_AT = 'documents.CONTENT_CREATED_AT';
 
-    /** the column name for the license field */
-    const LICENSE = 'documents.license';
+    /** the column name for the LICENSE field */
+    const LICENSE = 'documents.LICENSE';
 
-    /** the column name for the author field */
-    const AUTHOR = 'documents.author';
+    /** the column name for the AUTHOR field */
+    const AUTHOR = 'documents.AUTHOR';
 
-    /** the column name for the language_id field */
-    const LANGUAGE_ID = 'documents.language_id';
+    /** the column name for the LANGUAGE_ID field */
+    const LANGUAGE_ID = 'documents.LANGUAGE_ID';
 
-    /** the column name for the owner_id field */
-    const OWNER_ID = 'documents.owner_id';
+    /** the column name for the OWNER_ID field */
+    const OWNER_ID = 'documents.OWNER_ID';
 
-    /** the column name for the document_type_id field */
-    const DOCUMENT_TYPE_ID = 'documents.document_type_id';
+    /** the column name for the DOCUMENT_TYPE_ID field */
+    const DOCUMENT_TYPE_ID = 'documents.DOCUMENT_TYPE_ID';
 
-    /** the column name for the document_category_id field */
-    const DOCUMENT_CATEGORY_ID = 'documents.document_category_id';
+    /** the column name for the DOCUMENT_CATEGORY_ID field */
+    const DOCUMENT_CATEGORY_ID = 'documents.DOCUMENT_CATEGORY_ID';
 
-    /** the column name for the is_private field */
-    const IS_PRIVATE = 'documents.is_private';
+    /** the column name for the IS_PRIVATE field */
+    const IS_PRIVATE = 'documents.IS_PRIVATE';
 
-    /** the column name for the is_inactive field */
-    const IS_INACTIVE = 'documents.is_inactive';
+    /** the column name for the IS_INACTIVE field */
+    const IS_INACTIVE = 'documents.IS_INACTIVE';
 
-    /** the column name for the is_protected field */
-    const IS_PROTECTED = 'documents.is_protected';
+    /** the column name for the IS_PROTECTED field */
+    const IS_PROTECTED = 'documents.IS_PROTECTED';
 
-    /** the column name for the sort field */
-    const SORT = 'documents.sort';
+    /** the column name for the SORT field */
+    const SORT = 'documents.SORT';
 
-    /** the column name for the data field */
-    const DATA = 'documents.data';
+    /** the column name for the DATA field */
+    const DATA = 'documents.DATA';
 
-    /** the column name for the created_at field */
-    const CREATED_AT = 'documents.created_at';
+    /** the column name for the CREATED_AT field */
+    const CREATED_AT = 'documents.CREATED_AT';
 
-    /** the column name for the updated_at field */
-    const UPDATED_AT = 'documents.updated_at';
+    /** the column name for the UPDATED_AT field */
+    const UPDATED_AT = 'documents.UPDATED_AT';
 
-    /** the column name for the created_by field */
-    const CREATED_BY = 'documents.created_by';
+    /** the column name for the CREATED_BY field */
+    const CREATED_BY = 'documents.CREATED_BY';
 
-    /** the column name for the updated_by field */
-    const UPDATED_BY = 'documents.updated_by';
+    /** the column name for the UPDATED_BY field */
+    const UPDATED_BY = 'documents.UPDATED_BY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -227,25 +227,25 @@ abstract class BaseDocumentPeer
             $criteria->addSelectColumn(DocumentPeer::CREATED_BY);
             $criteria->addSelectColumn(DocumentPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.original_name');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.content_created_at');
-            $criteria->addSelectColumn($alias . '.license');
-            $criteria->addSelectColumn($alias . '.author');
-            $criteria->addSelectColumn($alias . '.language_id');
-            $criteria->addSelectColumn($alias . '.owner_id');
-            $criteria->addSelectColumn($alias . '.document_type_id');
-            $criteria->addSelectColumn($alias . '.document_category_id');
-            $criteria->addSelectColumn($alias . '.is_private');
-            $criteria->addSelectColumn($alias . '.is_inactive');
-            $criteria->addSelectColumn($alias . '.is_protected');
-            $criteria->addSelectColumn($alias . '.sort');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-            $criteria->addSelectColumn($alias . '.created_by');
-            $criteria->addSelectColumn($alias . '.updated_by');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.ORIGINAL_NAME');
+            $criteria->addSelectColumn($alias . '.DESCRIPTION');
+            $criteria->addSelectColumn($alias . '.CONTENT_CREATED_AT');
+            $criteria->addSelectColumn($alias . '.LICENSE');
+            $criteria->addSelectColumn($alias . '.AUTHOR');
+            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
+            $criteria->addSelectColumn($alias . '.OWNER_ID');
+            $criteria->addSelectColumn($alias . '.DOCUMENT_TYPE_ID');
+            $criteria->addSelectColumn($alias . '.DOCUMENT_CATEGORY_ID');
+            $criteria->addSelectColumn($alias . '.IS_PRIVATE');
+            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
+            $criteria->addSelectColumn($alias . '.IS_PROTECTED');
+            $criteria->addSelectColumn($alias . '.SORT');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.CREATED_BY');
+            $criteria->addSelectColumn($alias . '.UPDATED_BY');
         }
     }
 
@@ -329,7 +329,7 @@ abstract class BaseDocumentPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement directly (for example
+     * Use this method directly if you want to work with an executed statement durirectly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -434,15 +434,8 @@ abstract class BaseDocumentPeer
      *
      * @return void
      */
-    public static function clearInstancePool($and_clear_all_references = false)
+    public static function clearInstancePool()
     {
-      if ($and_clear_all_references)
-      {
-        foreach (DocumentPeer::$instances as $instance)
-        {
-          $instance->clearAllReferences(true);
-        }
-      }
         DocumentPeer::$instances = array();
     }
 
@@ -2748,7 +2741,7 @@ abstract class BaseDocumentPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass($row = 0, $colnum = 0)
+    public static function getOMClass()
     {
         return DocumentPeer::OM_CLASS;
     }
