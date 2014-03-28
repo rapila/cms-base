@@ -244,6 +244,22 @@ EOT
 , $oIncluder->getIncludes(true, true)->render());
 	}
 	
+	public function testOnlyInternalIncludesConsolidated() {
+		$oIncluder = ResourceIncluder::defaultIncluder();
+		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
+		$oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
+		$oIncluder->addResource('widget/widget.js');
+		$oIncluder->addResource('e-mail-defuscate.js');
+		$this->assertSame(<<<EOT
+<script type="text/javascript" src="//example.com/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//example.com/get_file/consolidated_resource/js/d8c0284358c7a699c5602b313fe0426e/1da20a95bb9208420c4b8679d262aa06"></script>
+
+EOT
+, $oIncluder->getIncludes(true, 'internal')->render());
+	}
+	
 	public function testInlineJs() {
 		$oIncluder = ResourceIncluder::defaultIncluder();
 		$sOuterTemplate = <<<EOT
