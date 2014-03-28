@@ -387,7 +387,7 @@ class Template {
 					continue;
 				}
 				$iNewOffset = $iTemplateIdentifierPosition - $iIdentifierPosition;
-				if($aResult["start"] === null || $iLowerOffset > $iNewOffset) {
+				if($aResult["start"] === null || $iLowerOffset < $iNewOffset) {
 					$iLowerOffset = $iNewOffset;
 					$aResult["start"] = $oIdentifier;
 				}
