@@ -133,4 +133,102 @@ EOT;
 		
 		$this->assertSame("BEFORE s\n T E S T", $oTemplate->render());
 	}
+	
+	public function testUnusedContextsIgnoredEmpty() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test1}}
+	{{test2}}
+{{identifierContext=end;name=test1}}
+
+{{test2}}
+
+EOT;
+
+		$oTemplate = new Template($sTemplateText, null, true);
+		
+		$oTemplate->replaceIdentifier('test2', 'text');
+		
+		$this->assertSame(<<<EOT
+
+
+text
+
+EOT
+, $oTemplate->render());
+	}
+	
+	public function testUnusedContextsReplacedEmpty() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test1}}
+	{{test2}}
+{{identifierContext=end;name=test1}}
+
+{{test2}}
+
+EOT;
+
+		$oTemplate = new Template($sTemplateText, null, true);
+		
+		$oTemplate->replaceIdentifier('test2', 'text');
+		$oTemplate->replaceIdentifier('test1', 'text');
+		
+		$this->assertSame(<<<EOT
+
+	text
+
+
+text
+
+EOT
+, $oTemplate->render());
+	}
+	
+	public function testUnusedContextsIgnoredFilled() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test1}}
+	{{test2}}{{test1}}
+{{identifierContext=end;name=test1}}
+
+{{test2}}
+
+EOT;
+
+		$oTemplate = new Template($sTemplateText, null, true);
+		
+		$oTemplate->replaceIdentifier('test2', 'text');
+		
+		$this->assertSame(<<<EOT
+
+
+text
+
+EOT
+, $oTemplate->render());
+	}
+	
+	public function testUnusedContextsReplacedFilled() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test1}}
+	{{test2}}{{test1}}
+{{identifierContext=end;name=test1}}
+
+{{test2}}
+
+EOT;
+
+		$oTemplate = new Template($sTemplateText, null, true);
+		
+		$oTemplate->replaceIdentifier('test2', 'text');
+		$oTemplate->replaceIdentifier('test1', 'text');
+		
+		$this->assertSame(<<<EOT
+
+	texttext
+
+
+text
+
+EOT
+, $oTemplate->render());
+	}
 }
