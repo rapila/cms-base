@@ -253,4 +253,31 @@ yourself: everyone
 EOT
 , $oTemplate->render());
 	}
+
+	public function testReplaceIdentifierNullWithContext() {
+		$sTemplateText = <<<EOT
+		{{identifierContext=start;name=test}}<div> 
+			{{test}} GAGA
+		</div>{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->setDefaultFlags(Template::NO_NEWLINE|Template::NO_NEW_CONTEXT);
+		
+		$oTemplate->replaceIdentifier('test', null);
+		$this->assertSame("", $oTemplate->render());
+	}
+
+	public function testReplaceIdentifierMultipleNullWithContext() {
+		$sTemplateText = <<<EOT
+		{{identifierContext=start;name=test}}<div> 
+			{{test}} GAGA
+		</div>{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->setDefaultFlags(Template::NO_NEWLINE|Template::NO_NEW_CONTEXT);
+		
+		$oTemplate->replaceIdentifier('test', null);
+		$this->assertSame("", $oTemplate->render());
+	}
+	
 }
