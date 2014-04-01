@@ -468,11 +468,13 @@ class Template {
 
 		return $aText;
 	}
-
 	/**
-	* @return void
+	* Replaces one or more identifiers in the template with the specified value (or the value from the specified callback) if the name and the value of the identifier matches the arguments.
 	*/
 	public function replaceIdentifier($mIdentifier, $mText, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0, $mFunction=null) {
+		if($mFunction === null && $mText === null) {
+			return;
+		}
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aMarkers = $this->convertIdentifierAndContextToMarkers($mIdentifier, $sValue, $iFlags|self::NO_NEW_CONTEXT);
 
@@ -484,11 +486,8 @@ class Template {
 		$this->renderDirectOutput();
 	}
 	
-	private function replaceIdentifierImpl($mIdentifier, $mText, $sValue, $iFlags, $mFunction) {
+	private function replaceIdentifierImpl($mIdentifier, $mText, $sValue, $iFlags, $mFunction, $bMultiple=false) {
 		$aText = null;
-		if($mFunction === null && $mText === null) {
-			return;
-		}
 		if($this->replaceIdentifierRecursive($mIdentifier, $mText, $sValue, $iFlags, $mFunction)) {
 			return;
 		}
@@ -504,7 +503,7 @@ class Template {
 			$this->replaceOneIdentifier($oIdentifier, $mText, $iFlags, $mFunction);
 		}
 
-		$bHasDoneIdentifierValueReplacement = $this->doIdentifierValueReplacement($mIdentifier, $sValue, $mText, $iFlags, $mFunction);
+		$bHasDoneIdentifierValueReplacement = $this->doIdentifierValueReplacement($mIdentifier, $sValue, $mText, $iFlags, $mFunction, $bMultiple);
 		if($bHasDoneIdentifierValueReplacement) {
 			$this->replaceConditionals(true);
 		}
@@ -540,7 +539,7 @@ class Template {
 		$this->replaceAt($oIdentifier, $aText);
 	}
 	
-	private function doIdentifierValueReplacement($mIdentifier, $sIdentifierValue, $mText, $iFlags, $mFunction) {
+	private function doIdentifierValueReplacement($mIdentifier, $sIdentifierValue, $mText, $iFlags, $mFunction, $bMultiple=false) {
 		if(($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === self::NO_IDENTIFIER_VALUE_REPLACEMENT) {
 			return false;
 		}
@@ -553,7 +552,11 @@ class Template {
 			if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
 				//Identifier replacement in value
 				$oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
-				$oValueTemplate->replaceIdentifier($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+				if($bMultiple) {
+					$oValueTemplate->replaceIdentifierMultiple($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+				} else {
+					$oValueTemplate->replaceIdentifier($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+				}
 				$oValueTemplate->bKillIdentifiersBeforeRender = false;
 				$oIdentifier->setValue($oValueTemplate->render());
 				$bHasDoneIdentifierValueReplacement = true;
@@ -562,7 +565,11 @@ class Template {
 				if(strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
 					//Identifier replacement in parameter values
 					$oValueTemplate = $this->derivativeTemplate($sValue, false, true);
-					$oValueTemplate->replaceIdentifier($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+					if($bMultiple) {
+						$oValueTemplate->replaceIdentifierMultiple($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+					} else {
+						$oValueTemplate->replaceIdentifier($mIdentifier, $mText, $sIdentifierValue, $iFlags, $mFunction);
+					}
 					$oValueTemplate->bKillIdentifiersBeforeRender = false;
 					$oIdentifier->setParameter($sKey, $oValueTemplate->render());
 					$bHasDoneIdentifierValueReplacement = true;
@@ -572,12 +579,19 @@ class Template {
 		return $bHasDoneIdentifierValueReplacement;
 	}
 	
+	/**
+	* Replaces one or more identifiers in the template with the specified value (or the value from the specified callback) if the name and the value of the identifier matches the arguments.
+	* In contrast to a simple replaceIdentifier call, calling this will preserve the identifiers at their locations for future replacement (after the current replacement).
+	*/
 	public function replaceIdentifierMultiple($mIdentifier, $mText=null, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0, $mFunction=null) {
+		if($mFunction === null && $mText === null) {
+			return;
+		}
 		$iFlags = $iFlags | $this->iDefaultFlags;
 		$aMarkers = $this->convertIdentifierAndContextToMarkers($mIdentifier, $sValue, $iFlags);
 
 		// Replace identifier as I usually would
-		$this->replaceIdentifierImpl($mIdentifier, $mText, $sValue, $iFlags, $mFunction);
+		$this->replaceIdentifierImpl($mIdentifier, $mText, $sValue, $iFlags, $mFunction, true);
 
 		foreach($aMarkers as $oTemplateMarker) {
 			$oTemplateMarker->replace();
