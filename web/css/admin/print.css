@@ -1,8 +1,1 @@
-html{overflow:auto !important}
-body{font-family:Eurostile,Helvetica,Verdana,Arial;font-size:10pt}
-*{position:static !important}
-body > *,body > * > *{display:none !important}
-body > #admin_area,body > #admin_area > #admin_main{display:block !important; font-size: 9pt;}
-table th.sort, table td.sort { display: none;}
-@page {size: landscape;}
-
+html{overflow:auto !important}body{font-family:Eurostile,Helvetica,Verdana,Arial;font-size:10pt}*{position:static !important}body > *,body > * > *{display:none !important}body > #admin_area,body > #admin_area > #admin_main{display:block !important}
