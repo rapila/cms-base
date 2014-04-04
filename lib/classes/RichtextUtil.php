@@ -6,7 +6,7 @@ class RichtextUtil {
 	
 	private static $RICHTEXT_INDEX = 0;
 	
-	public static $USE_ABSOLUTE_LINKS = null;
+	public static $USE_ABSOLUTE_LINKS = 'default';
 	
 	private $sAreaName;
 	private $aSettings;
