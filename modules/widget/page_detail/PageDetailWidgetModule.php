@@ -38,8 +38,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
 
 		// addition related page fields
-		$aResult['PageLink'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage()), null, LinkUtil::isSSL());
-		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage()));
+		$aResult['PageLink'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage()), null, 'auto');
+		$aResult['PageHref'] = LinkUtil::absoluteLink(LinkUtil::link($oPage->getFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage()), null, 'default', true);
 
 		// page properties are displayed if added to template
 		try {
