@@ -38,15 +38,15 @@ class ReferenceTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('FROM_ID', 'FromId', 'VARCHAR', true, 20, null);
-        $this->addColumn('FROM_MODEL_NAME', 'FromModelName', 'VARCHAR', true, 80, null);
-        $this->addColumn('TO_ID', 'ToId', 'VARCHAR', true, 20, null);
-        $this->addColumn('TO_MODEL_NAME', 'ToModelName', 'VARCHAR', true, 80, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('from_id', 'FromId', 'VARCHAR', true, 20, null);
+        $this->addColumn('from_model_name', 'FromModelName', 'VARCHAR', true, 80, null);
+        $this->addColumn('to_id', 'ToId', 'VARCHAR', true, 20, null);
+        $this->addColumn('to_model_name', 'ToModelName', 'VARCHAR', true, 80, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -68,10 +68,23 @@ class ReferenceTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' => array('mode' => 'allow', 'role_key' => '', 'owner_allowed' => '', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'denyable' =>  array (
+  'mode' => 'allow',
+  'role_key' => '',
+  'owner_allowed' => '',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

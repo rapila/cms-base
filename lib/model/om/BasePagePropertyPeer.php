@@ -32,35 +32,35 @@ abstract class BasePagePropertyPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the ID field */
-    const ID = 'page_properties.ID';
+    /** the column name for the id field */
+    const ID = 'page_properties.id';
 
-    /** the column name for the PAGE_ID field */
-    const PAGE_ID = 'page_properties.PAGE_ID';
+    /** the column name for the page_id field */
+    const PAGE_ID = 'page_properties.page_id';
 
-    /** the column name for the NAME field */
-    const NAME = 'page_properties.NAME';
+    /** the column name for the name field */
+    const NAME = 'page_properties.name';
 
-    /** the column name for the VALUE field */
-    const VALUE = 'page_properties.VALUE';
+    /** the column name for the value field */
+    const VALUE = 'page_properties.value';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'page_properties.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'page_properties.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'page_properties.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'page_properties.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'page_properties.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'page_properties.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'page_properties.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'page_properties.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of PageProperty objects.
+     * An identity map to hold any loaded instances of PageProperty objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array PageProperty[]
@@ -180,14 +180,14 @@ abstract class BasePagePropertyPeer
             $criteria->addSelectColumn(PagePropertyPeer::CREATED_BY);
             $criteria->addSelectColumn(PagePropertyPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.PAGE_ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.VALUE');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.page_id');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.value');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -240,7 +240,7 @@ abstract class BasePagePropertyPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 PageProperty
+     * @return PageProperty
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -271,7 +271,7 @@ abstract class BasePagePropertyPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -307,7 +307,7 @@ abstract class BasePagePropertyPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      PageProperty $obj A PageProperty object.
+     * @param PageProperty $obj A PageProperty object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -357,7 +357,7 @@ abstract class BasePagePropertyPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   PageProperty Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return PageProperty Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -376,8 +376,13 @@ abstract class BasePagePropertyPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (PagePropertyPeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         PagePropertyPeer::$instances = array();
     }
 
@@ -1427,7 +1432,7 @@ abstract class BasePagePropertyPeer
     {
       $dbMap = Propel::getDatabaseMap(BasePagePropertyPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BasePagePropertyPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new PagePropertyTableMap());
+        $dbMap->addTableObject(new \PagePropertyTableMap());
       }
     }
 
@@ -1437,7 +1442,7 @@ abstract class BasePagePropertyPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return PagePropertyPeer::OM_CLASS;
     }
@@ -1477,7 +1482,7 @@ abstract class BasePagePropertyPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1550,7 +1555,7 @@ abstract class BasePagePropertyPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1609,7 +1614,7 @@ abstract class BasePagePropertyPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1622,7 +1627,7 @@ abstract class BasePagePropertyPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      PageProperty $obj The object to validate.
+     * @param PageProperty $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1655,7 +1660,7 @@ abstract class BasePagePropertyPeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      int $pk the primary key.
+     * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return PageProperty
      */

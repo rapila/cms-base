@@ -38,20 +38,20 @@ class LinkTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', false, 100, null);
-        $this->addColumn('URL', 'Url', 'VARCHAR', false, 255, null);
-        $this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 255, null);
-        $this->addForeignKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR', 'languages', 'ID', false, 3, null);
-        $this->addForeignKey('OWNER_ID', 'OwnerId', 'INTEGER', 'users', 'ID', true, null, null);
-        $this->addForeignKey('LINK_CATEGORY_ID', 'LinkCategoryId', 'INTEGER', 'link_categories', 'ID', false, null, null);
-        $this->addColumn('SORT', 'Sort', 'INTEGER', false, null, null);
-        $this->addColumn('IS_PRIVATE', 'IsPrivate', 'BOOLEAN', false, 1, false);
-        $this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('name', 'Name', 'VARCHAR', false, 100, null);
+        $this->addColumn('url', 'Url', 'VARCHAR', false, 255, null);
+        $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('language_id', 'LanguageId', 'VARCHAR', 'languages', 'id', false, 3, null);
+        $this->addForeignKey('owner_id', 'OwnerId', 'INTEGER', 'users', 'id', true, null, null);
+        $this->addForeignKey('link_category_id', 'LinkCategoryId', 'INTEGER', 'link_categories', 'id', false, null, null);
+        $this->addColumn('sort', 'Sort', 'INTEGER', false, null, null);
+        $this->addColumn('is_private', 'IsPrivate', 'BOOLEAN', false, 1, false);
+        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, false);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -76,12 +76,27 @@ class LinkTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'referenceable' => array(),
-            'taggable' => array(),
-            'denyable' => array('mode' => 'by_role', 'role_key' => '', 'owner_allowed' => 'true', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'referenceable' =>  array (
+),
+            'taggable' =>  array (
+),
+            'denyable' =>  array (
+  'mode' => 'by_role',
+  'role_key' => '',
+  'owner_allowed' => 'true',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

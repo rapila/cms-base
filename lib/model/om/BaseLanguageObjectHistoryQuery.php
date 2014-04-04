@@ -76,8 +76,14 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'LanguageObjectHistory', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'LanguageObjectHistory';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -85,7 +91,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * Returns a new LanguageObjectHistoryQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     LanguageObjectHistoryQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   LanguageObjectHistoryQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return LanguageObjectHistoryQuery
      */
@@ -94,10 +100,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
         if ($criteria instanceof LanguageObjectHistoryQuery) {
             return $criteria;
         }
-        $query = new LanguageObjectHistoryQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new LanguageObjectHistoryQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -126,7 +130,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = LanguageObjectHistoryPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -149,12 +153,12 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   LanguageObjectHistory A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 LanguageObjectHistory A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `OBJECT_ID`, `LANGUAGE_ID`, `DATA`, `REVISION`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `language_object_history` WHERE `OBJECT_ID` = :p0 AND `LANGUAGE_ID` = :p1 AND `REVISION` = :p2';
+        $sql = 'SELECT `object_id`, `language_id`, `data`, `revision`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `language_object_history` WHERE `object_id` = :p0 AND `language_id` = :p1 AND `revision` = :p2';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -266,7 +270,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByObjectId(1234); // WHERE object_id = 1234
      * $query->filterByObjectId(array(12, 34)); // WHERE object_id IN (12, 34)
-     * $query->filterByObjectId(array('min' => 12)); // WHERE object_id > 12
+     * $query->filterByObjectId(array('min' => 12)); // WHERE object_id >= 12
+     * $query->filterByObjectId(array('max' => 12)); // WHERE object_id <= 12
      * </code>
      *
      * @see       filterByContentObject()
@@ -281,8 +286,22 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      */
     public function filterByObjectId($objectId = null, $comparison = null)
     {
-        if (is_array($objectId) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($objectId)) {
+            $useMinMax = false;
+            if (isset($objectId['min'])) {
+                $this->addUsingAlias(LanguageObjectHistoryPeer::OBJECT_ID, $objectId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($objectId['max'])) {
+                $this->addUsingAlias(LanguageObjectHistoryPeer::OBJECT_ID, $objectId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(LanguageObjectHistoryPeer::OBJECT_ID, $objectId, $comparison);
@@ -338,7 +357,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByRevision(1234); // WHERE revision = 1234
      * $query->filterByRevision(array(12, 34)); // WHERE revision IN (12, 34)
-     * $query->filterByRevision(array('min' => 12)); // WHERE revision > 12
+     * $query->filterByRevision(array('min' => 12)); // WHERE revision >= 12
+     * $query->filterByRevision(array('max' => 12)); // WHERE revision <= 12
      * </code>
      *
      * @param     mixed $revision The value to use as filter.
@@ -351,8 +371,22 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      */
     public function filterByRevision($revision = null, $comparison = null)
     {
-        if (is_array($revision) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($revision)) {
+            $useMinMax = false;
+            if (isset($revision['min'])) {
+                $this->addUsingAlias(LanguageObjectHistoryPeer::REVISION, $revision['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($revision['max'])) {
+                $this->addUsingAlias(LanguageObjectHistoryPeer::REVISION, $revision['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(LanguageObjectHistoryPeer::REVISION, $revision, $comparison);
@@ -365,7 +399,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -408,7 +442,7 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -451,7 +485,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -494,7 +529,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -536,8 +572,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param   ContentObject|PropelObjectCollection $contentObject The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   LanguageObjectHistoryQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 LanguageObjectHistoryQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByContentObject($contentObject, $comparison = null)
     {
@@ -612,8 +648,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param   Language|PropelObjectCollection $language The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   LanguageObjectHistoryQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 LanguageObjectHistoryQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByLanguage($language, $comparison = null)
     {
@@ -688,8 +724,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   LanguageObjectHistoryQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 LanguageObjectHistoryQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -764,8 +800,8 @@ abstract class BaseLanguageObjectHistoryQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   LanguageObjectHistoryQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 LanguageObjectHistoryQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {

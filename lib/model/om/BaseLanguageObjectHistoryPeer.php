@@ -32,35 +32,35 @@ abstract class BaseLanguageObjectHistoryPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the OBJECT_ID field */
-    const OBJECT_ID = 'language_object_history.OBJECT_ID';
+    /** the column name for the object_id field */
+    const OBJECT_ID = 'language_object_history.object_id';
 
-    /** the column name for the LANGUAGE_ID field */
-    const LANGUAGE_ID = 'language_object_history.LANGUAGE_ID';
+    /** the column name for the language_id field */
+    const LANGUAGE_ID = 'language_object_history.language_id';
 
-    /** the column name for the DATA field */
-    const DATA = 'language_object_history.DATA';
+    /** the column name for the data field */
+    const DATA = 'language_object_history.data';
 
-    /** the column name for the REVISION field */
-    const REVISION = 'language_object_history.REVISION';
+    /** the column name for the revision field */
+    const REVISION = 'language_object_history.revision';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'language_object_history.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'language_object_history.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'language_object_history.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'language_object_history.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'language_object_history.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'language_object_history.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'language_object_history.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'language_object_history.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of LanguageObjectHistory objects.
+     * An identity map to hold any loaded instances of LanguageObjectHistory objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array LanguageObjectHistory[]
@@ -180,14 +180,14 @@ abstract class BaseLanguageObjectHistoryPeer
             $criteria->addSelectColumn(LanguageObjectHistoryPeer::CREATED_BY);
             $criteria->addSelectColumn(LanguageObjectHistoryPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.OBJECT_ID');
-            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
-            $criteria->addSelectColumn($alias . '.DATA');
-            $criteria->addSelectColumn($alias . '.REVISION');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.object_id');
+            $criteria->addSelectColumn($alias . '.language_id');
+            $criteria->addSelectColumn($alias . '.data');
+            $criteria->addSelectColumn($alias . '.revision');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -240,7 +240,7 @@ abstract class BaseLanguageObjectHistoryPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 LanguageObjectHistory
+     * @return LanguageObjectHistory
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -271,7 +271,7 @@ abstract class BaseLanguageObjectHistoryPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -307,7 +307,7 @@ abstract class BaseLanguageObjectHistoryPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      LanguageObjectHistory $obj A LanguageObjectHistory object.
+     * @param LanguageObjectHistory $obj A LanguageObjectHistory object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -357,7 +357,7 @@ abstract class BaseLanguageObjectHistoryPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   LanguageObjectHistory Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return LanguageObjectHistory Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -376,8 +376,13 @@ abstract class BaseLanguageObjectHistoryPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (LanguageObjectHistoryPeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         LanguageObjectHistoryPeer::$instances = array();
     }
 
@@ -1825,7 +1830,7 @@ abstract class BaseLanguageObjectHistoryPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseLanguageObjectHistoryPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseLanguageObjectHistoryPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new LanguageObjectHistoryTableMap());
+        $dbMap->addTableObject(new \LanguageObjectHistoryTableMap());
       }
     }
 
@@ -1835,7 +1840,7 @@ abstract class BaseLanguageObjectHistoryPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LanguageObjectHistoryPeer::OM_CLASS;
     }
@@ -1871,7 +1876,7 @@ abstract class BaseLanguageObjectHistoryPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1960,7 +1965,7 @@ abstract class BaseLanguageObjectHistoryPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2028,7 +2033,7 @@ abstract class BaseLanguageObjectHistoryPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2041,7 +2046,7 @@ abstract class BaseLanguageObjectHistoryPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      LanguageObjectHistory $obj The object to validate.
+     * @param LanguageObjectHistory $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -2077,7 +2082,7 @@ abstract class BaseLanguageObjectHistoryPeer
      * @param   string $language_id
      * @param   int $revision
      * @param      PropelPDO $con
-     * @return   LanguageObjectHistory
+     * @return LanguageObjectHistory
      */
     public static function retrieveByPK($object_id, $language_id, $revision, PropelPDO $con = null) {
         $_instancePoolKey = serialize(array((string) $object_id, (string) $language_id, (string) $revision));

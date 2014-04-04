@@ -32,35 +32,35 @@ abstract class BaseLanguagePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 8;
 
-    /** the column name for the ID field */
-    const ID = 'languages.ID';
+    /** the column name for the id field */
+    const ID = 'languages.id';
 
-    /** the column name for the PATH_PREFIX field */
-    const PATH_PREFIX = 'languages.PATH_PREFIX';
+    /** the column name for the path_prefix field */
+    const PATH_PREFIX = 'languages.path_prefix';
 
-    /** the column name for the IS_ACTIVE field */
-    const IS_ACTIVE = 'languages.IS_ACTIVE';
+    /** the column name for the is_active field */
+    const IS_ACTIVE = 'languages.is_active';
 
-    /** the column name for the SORT field */
-    const SORT = 'languages.SORT';
+    /** the column name for the sort field */
+    const SORT = 'languages.sort';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'languages.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'languages.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'languages.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'languages.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'languages.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'languages.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'languages.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'languages.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of Language objects.
+     * An identity map to hold any loaded instances of Language objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array Language[]
@@ -180,14 +180,14 @@ abstract class BaseLanguagePeer
             $criteria->addSelectColumn(LanguagePeer::CREATED_BY);
             $criteria->addSelectColumn(LanguagePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.PATH_PREFIX');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
-            $criteria->addSelectColumn($alias . '.SORT');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.path_prefix');
+            $criteria->addSelectColumn($alias . '.is_active');
+            $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -240,7 +240,7 @@ abstract class BaseLanguagePeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 Language
+     * @return Language
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -271,7 +271,7 @@ abstract class BaseLanguagePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -307,7 +307,7 @@ abstract class BaseLanguagePeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      Language $obj A Language object.
+     * @param Language $obj A Language object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -357,7 +357,7 @@ abstract class BaseLanguagePeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   Language Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return Language Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -376,8 +376,13 @@ abstract class BaseLanguagePeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (LanguagePeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         LanguagePeer::$instances = array();
     }
 
@@ -1087,7 +1092,7 @@ abstract class BaseLanguagePeer
     {
       $dbMap = Propel::getDatabaseMap(BaseLanguagePeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseLanguagePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new LanguageTableMap());
+        $dbMap->addTableObject(new \LanguageTableMap());
       }
     }
 
@@ -1097,7 +1102,7 @@ abstract class BaseLanguagePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LanguagePeer::OM_CLASS;
     }
@@ -1133,7 +1138,7 @@ abstract class BaseLanguagePeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1207,7 +1212,7 @@ abstract class BaseLanguagePeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1273,7 +1278,7 @@ abstract class BaseLanguagePeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1325,7 +1330,7 @@ abstract class BaseLanguagePeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      Language $obj The object to validate.
+     * @param Language $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1358,7 +1363,7 @@ abstract class BaseLanguagePeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      string $pk the primary key.
+     * @param string $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return Language
      */

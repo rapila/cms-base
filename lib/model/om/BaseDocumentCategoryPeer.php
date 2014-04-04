@@ -32,41 +32,41 @@ abstract class BaseDocumentCategoryPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 10;
 
-    /** the column name for the ID field */
-    const ID = 'document_categories.ID';
+    /** the column name for the id field */
+    const ID = 'document_categories.id';
 
-    /** the column name for the NAME field */
-    const NAME = 'document_categories.NAME';
+    /** the column name for the name field */
+    const NAME = 'document_categories.name';
 
-    /** the column name for the SORT field */
-    const SORT = 'document_categories.SORT';
+    /** the column name for the sort field */
+    const SORT = 'document_categories.sort';
 
-    /** the column name for the MAX_WIDTH field */
-    const MAX_WIDTH = 'document_categories.MAX_WIDTH';
+    /** the column name for the max_width field */
+    const MAX_WIDTH = 'document_categories.max_width';
 
-    /** the column name for the IS_EXTERNALLY_MANAGED field */
-    const IS_EXTERNALLY_MANAGED = 'document_categories.IS_EXTERNALLY_MANAGED';
+    /** the column name for the is_externally_managed field */
+    const IS_EXTERNALLY_MANAGED = 'document_categories.is_externally_managed';
 
-    /** the column name for the IS_INACTIVE field */
-    const IS_INACTIVE = 'document_categories.IS_INACTIVE';
+    /** the column name for the is_inactive field */
+    const IS_INACTIVE = 'document_categories.is_inactive';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'document_categories.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'document_categories.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'document_categories.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'document_categories.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'document_categories.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'document_categories.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'document_categories.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'document_categories.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of DocumentCategory objects.
+     * An identity map to hold any loaded instances of DocumentCategory objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array DocumentCategory[]
@@ -188,16 +188,16 @@ abstract class BaseDocumentCategoryPeer
             $criteria->addSelectColumn(DocumentCategoryPeer::CREATED_BY);
             $criteria->addSelectColumn(DocumentCategoryPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.SORT');
-            $criteria->addSelectColumn($alias . '.MAX_WIDTH');
-            $criteria->addSelectColumn($alias . '.IS_EXTERNALLY_MANAGED');
-            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.max_width');
+            $criteria->addSelectColumn($alias . '.is_externally_managed');
+            $criteria->addSelectColumn($alias . '.is_inactive');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -250,7 +250,7 @@ abstract class BaseDocumentCategoryPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 DocumentCategory
+     * @return DocumentCategory
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -281,7 +281,7 @@ abstract class BaseDocumentCategoryPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -317,7 +317,7 @@ abstract class BaseDocumentCategoryPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      DocumentCategory $obj A DocumentCategory object.
+     * @param DocumentCategory $obj A DocumentCategory object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -367,7 +367,7 @@ abstract class BaseDocumentCategoryPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   DocumentCategory Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return DocumentCategory Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -386,8 +386,13 @@ abstract class BaseDocumentCategoryPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (DocumentCategoryPeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         DocumentCategoryPeer::$instances = array();
     }
 
@@ -1094,7 +1099,7 @@ abstract class BaseDocumentCategoryPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseDocumentCategoryPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseDocumentCategoryPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new DocumentCategoryTableMap());
+        $dbMap->addTableObject(new \DocumentCategoryTableMap());
       }
     }
 
@@ -1104,7 +1109,7 @@ abstract class BaseDocumentCategoryPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return DocumentCategoryPeer::OM_CLASS;
     }
@@ -1144,7 +1149,7 @@ abstract class BaseDocumentCategoryPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1218,7 +1223,7 @@ abstract class BaseDocumentCategoryPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1284,7 +1289,7 @@ abstract class BaseDocumentCategoryPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1328,7 +1333,7 @@ abstract class BaseDocumentCategoryPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      DocumentCategory $obj The object to validate.
+     * @param DocumentCategory $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1361,7 +1366,7 @@ abstract class BaseDocumentCategoryPeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      int $pk the primary key.
+     * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return DocumentCategory
      */
