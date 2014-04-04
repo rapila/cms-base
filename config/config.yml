@@ -9,6 +9,17 @@ general:
   timezone: "Europe/Zurich"
   # those don’t work well in some environments
   send_not_modified_headers: true
+  # whether to trust proxy headers for the following: Forwarded-For, SSL, Host, and Port
+  # TODO: Implement
+  trust_http_proxy_headers: false
+
+linking:
+  # Set true to prefer sending the configured host name (domain_holder/domain) instead of the inferred (coming from the HTTP Host: header)
+  prefer_configured_domain: false
+  # Whether to print SSL links by default when linking absolutely. True means absolute links start with https://, false means they start with http://, null means they are protocol-relative (start with //), 'auto' means they look at the server’s SSL info variables.
+  ssl_in_absolute_links: null
+  # Whether to always print absolute links (true) or only when really necessary (false)
+  always_link_absolutely: false
 
 routing:
   routes:
