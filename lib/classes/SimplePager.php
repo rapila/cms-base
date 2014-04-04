@@ -82,7 +82,11 @@ class SimplePager implements Iterator {
 	public function __construct($oQuery, $iPage = 1, $iMaxRowsPerPage = 25) {
 		$this->oQuery = clone $oQuery;
 		$this->iTotalRecordCount = $oQuery->count();
-		$this->iTotalPageCount = (int) ceil($this->iTotalRecordCount / $iMaxRowsPerPage);
+		if($iMaxRowsPerPage) {
+			$this->iTotalPageCount = (int) ceil($this->iTotalRecordCount / $iMaxRowsPerPage);
+		} else {
+			$this->iTotalPageCount = 1;
+		}
 		$this->setPage($iPage);
 		$this->setRowsPerPage($iMaxRowsPerPage);
 	}
