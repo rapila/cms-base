@@ -14,7 +14,7 @@ class Settings {
 		$aConfigPaths = $oFinder->find();
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
-			foreach($oSpyc->loadFile($sConfigPath) as $sSection => $aSection) {
+			foreach($oSpyc->load(self::replaceEnvVars(file_get_contents($sConfigPath))) as $sSection => $aSection) {
 				foreach($aSection as $sKey => $mValue) {
 					if(!isset($this->aSettings[$sSection])) {
 						$this->aSettings[$sSection] = array();
@@ -84,6 +84,15 @@ class Settings {
 			}
 		}
 		return self::$INSTANCES[$sCacheKey];
+	}
+	
+	private static function replaceEnvVars($sInput) {
+		$aSearch = array_keys($_ENV);
+		$aReplace = array_values($_ENV);
+		foreach($aSearch as &$sEnvVarName) {
+			$sEnvVarName = "\${$sEnvVarName}";
+		}
+		return str_replace($aSearch, $aReplace, $sInput);
 	}
 	
 }
