@@ -1,13 +1,11 @@
 <?php
 require_once('Template.php');
-class TemplateIdentifier {
+class TemplateIdentifier extends TemplatePart {
 	private $sName;
 	private $sValue;
 	private $aParameters;
 	
 	public $iFlags = 0;
-
-	private $oTemplate;
 
 	public static $PARAMETER_EMPTY_VALUE = null;
 

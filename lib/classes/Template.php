@@ -280,9 +280,16 @@ class Template {
 	public function replaceAt($iIndex, $mReplacement = null, $iLength = 1) {
 		if(!is_int($iIndex)) {
 			$iIndex = $this->identifierPosition($iIndex);
+			if($iIndex === false) {
+				return;
+			}
 		}
 		if(!is_int($iLength)) {
-			$iLength = $this->identifierPosition($iLength) - $iIndex;
+			$iLength = $this->identifierPosition($iLength);
+			if($iLength === false) {
+				return;
+			}
+			$iLength = $iLength - $iIndex + 1;
 		}
 		if($mReplacement === null) {
 			array_splice($this->aTemplateContents, $iIndex, $iLength);
@@ -749,14 +756,21 @@ class Template {
 
 	private function replaceConditionals($bFinalOnly = false) {
 		$iStartPosition = 0;
-		$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
-		while($oIf !== null) {
+		$oIf = null;
+		while(true) {
+			$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
+			if(!$oIf) {
+				break;
+			}
 			if($bFinalOnly && !$oIf->isFinal()) {
 				$iStartPosition = $this->identifierPosition($oIf)+1;
-				$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
 				continue;
 			}
 			$oEndIf = $this->findEndIfForIf($oIf);
+			if(!$oEndIf) {
+				$oIf->destroy();
+				continue;
+			}
 			$sComparison = $oIf->getValue() !== null ? $oIf->getValue() : "=";
 			$sFirst = $oIf->getParameter('1');
 			$sSecond = $oIf->hasParameter('2') && $oIf->getParameter('2') !== null ? $oIf->getParameter('2') : "";
@@ -854,13 +868,11 @@ class Template {
 			}
 
 			if(!$bResult) {
-				$this->replaceAt($oIf, null, ($this->identifierPosition($oEndIf) - $this->identifierPosition($oIf) + 1));
+				$this->replaceAt($oIf, null, $oEndIf);
 			} else {
-				$this->replaceAt($oIf);
-				$this->replaceAt($oEndIf);
+				$oIf->destroy();
+				$oEndIf->destroy();
 			}
-
-			$oIf = $this->identifiersMatching("if", self::$ANY_VALUE, null, true, $iStartPosition);
 		}
 	}
 
