@@ -129,4 +129,15 @@ EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('1ful World', $oTemplate->render());
 	}
+	
+	public function testInlineResourceOrdering() {
+		$sTemplateText = <<<EOT
+{{writeResourceIncludes=GAGA}}{{addResourceInclude=jquery;library=1.7.0}}{{writeResourceIncludes}}{{addResourceInclude=mootools;library=1.4.5}}{{addResourceInclude=admin/accept.png;name=GAGA}}{{addResourceInclude=admin/accept.png;name=GAGA2}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame('<img src="/base/web/images/admin/accept.png" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+', $oTemplate->render());
+	}
 }

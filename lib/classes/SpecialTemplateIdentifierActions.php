@@ -246,7 +246,7 @@ class SpecialTemplateIdentifierActions {
 		$oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);
 		return null;
 	}
-		
+
 	public function writeDirectInclude($oIdentifier) {
 		$oResourceIncluder = new ResourceIncluder();
 		$oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);

@@ -726,7 +726,9 @@ class Template {
 				$this->replaceAt($iPosition, null, $oContextEndPosition - $iPosition + 1);
 			}
 		}
-		foreach($this->aTemplateContents as $iKey => $mValue) {
+		$aIdentifiers = $this->allIdentifiers();
+		krsort($aIdentifiers);
+		foreach($aIdentifiers as $iKey => $mValue) {
 			if(!$mValue instanceof TemplateIdentifier) {
 				continue;
 			}
@@ -734,7 +736,7 @@ class Template {
 			if($mValue->getParameter("defaultValue") !== TemplateIdentifier::PARAMETER_EMPTY_VALUE) {
 				$sReplacement = $mValue->getParameter("defaultValue");
 			}
-			$this->replaceAt($mValue, $sReplacement);
+			$this->replaceAt($iKey, $sReplacement);
 		}
 	}
 
@@ -906,17 +908,31 @@ class Template {
 	* Special identifiers that are replaced on start usually have their values cached with the template caching mechanisms where as the other template identifiers are left alone. The default is for special template identifiers to be rendered on start. Exceptions are writeParameterizedString and writeFlashValue and are stored in the array returned by {@link SpecialTemplateIdentifierActions::getAlwaysLastNames()}. You can force an identifier to be rendered on end by appending the parameter <code>;position=last</code>. Note, however, that you cannot use <code>;position=first</code> to override the behaviour of the special template identifiers that are always rendered on end.
 	*/
 	private function replaceSpecialIdentifiers($bIsLast) {
-		$sPosition = $bIsLast ? "!first" : "!last";
-		$aIdentifierNames = SpecialTemplateIdentifierActions::getSpecialIdentifierNames();
-		foreach($aIdentifierNames as $sIdentifierName) {
-			if(!$bIsLast && in_array($sIdentifierName, SpecialTemplateIdentifierActions::getAlwaysLastNames())) {
+		$sNotPosition = $bIsLast ? "first" : "last";
+		$aIdentifierNames = array_fill_keys(SpecialTemplateIdentifierActions::getSpecialIdentifierNames(), 1);
+		$aAlwaysLastNames = array_fill_keys(SpecialTemplateIdentifierActions::getAlwaysLastNames(), 1);
+		foreach(array_reverse($this->allIdentifiers(), true) as $iKey => $oIdentifier) {
+			$sIdentifierName = $oIdentifier->getName();
+			if((!$bIsLast && isset($aAlwaysLastNames[$sIdentifierName])) || $oIdentifier->getParameter('position') === $sNotPosition) {
 				continue;
 			}
-			$aIdentifiers = $this->identifiersMatching($sIdentifierName, self::$ANY_VALUE, array('position' => $sPosition));
+			if(!isset($aIdentifierNames[$sIdentifierName])) {
+				continue;
+			}
+			if($oIdentifier->hasParameter('position')) {
+				$oIdentifier->unsetParameter('position');
+			}
+			if($aIdentifierNames[$sIdentifierName] === 1) {
+				$aIdentifierNames[$sIdentifierName] = array();
+			}
+			$aIdentifierNames[$sIdentifierName][] = $oIdentifier;
+		}
+		// We need to iterate identifiers in the order they appear in $aIdentifierNames due to dependencies
+		foreach($aIdentifierNames as $sIdentifierName => $aIdentifiers) {
+			if(!is_array($aIdentifiers)) {
+				continue;
+			}
 			foreach($aIdentifiers as $oIdentifier) {
-				if($oIdentifier->hasParameter('position')) {
-					$oIdentifier->unsetParameter('position');
-				}
 				$iFlags = $oIdentifier->iFlags;
 				$mReplacement = $this->oSpecialTemplateIdentifierActions->$sIdentifierName($oIdentifier, $iFlags);
 				if($mReplacement !== null) {
