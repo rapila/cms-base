@@ -52,24 +52,60 @@ class ErrorHandler {
 	
 	public static function getEnvironment() {
 		if(self::$ENVIRONMENT === null) {
-			self::$ENVIRONMENT = isset($_SERVER['RAPILA_ENVIRONMENT']) ? $_SERVER['RAPILA_ENVIRONMENT'] : (isset($_ENV['RAPILA_ENVIRONMENT']) ? $_ENV['RAPILA_ENVIRONMENT'] : 'auto');
+			self::$ENVIRONMENT = getenv('RAPILA_ENVIRONMENT');
 			if(self::$ENVIRONMENT === 'developer') {
-				self::$ENVIRONMENT = 'development';
+				self::$ENVIRONMENT = '';
 			}
 			if(self::$ENVIRONMENT === 'auto' || !self::$ENVIRONMENT) {
-				if(php_sapi_name() === 'cli') {
-					self::$ENVIRONMENT = 'development';
-				} else if(strpos(@$_SERVER['HTTP_HOST'], '.') === false || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.local') || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.home') || StringUtil::endsWith(@$_SERVER['HTTP_HOST'], '.xip.io') || (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] === $_SERVER['SERVER_ADDR']))) {
-					self::$ENVIRONMENT = (@$_SERVER['SERVER_ADDR'] === '127.0.0.1' || @$_SERVER['SERVER_ADDR'] === '::1' || @$_SERVER['SERVER_ADDR'] === @$_SERVER['REMOTE_ADDR']) ? 'development' : 'production';
-				} else if(strpos(@$_SERVER['HTTP_HOST'], 'test.') === 0 || strpos(@$_SERVER['HTTP_HOST'], 'stage.') === 0) {
-					self::$ENVIRONMENT = 'staging';
-				} else {
-					self::$ENVIRONMENT = 'production';
-				}
+				self::$ENVIRONMENT = self::autoEnvironment();
 			}
 			define('RAPILA_ENVIRONMENT', self::$ENVIRONMENT);
 		}
 		return self::$ENVIRONMENT;
+	}
+	
+	// To avoid leaking error messages, production enivronments MUST always specify RAPILA_ENVIRONMENT explicitly and SHOULD never rely on autodetection.
+	private static function autoEnvironment() {
+		if(php_sapi_name() === 'cli') {
+			return 'development';
+		}
+		// A simple “Host:” header is one that does not have a TLD or whose TLD is one of local, home, or xip.io or coincides with the listening address (meaning it’s addressed by IP only).
+		$bSimpleHost = false;
+		if(isset($_SERVER['HTTP_HOST'])) {
+			// As it’s simple HTTP header, this could be easily faked by the client but then this installation would be reachable by plain HTTP 1.0, which modern setups (vhosts) aren’t.
+			$bSimpleHost = strpos($_SERVER['HTTP_HOST'], '.') === false;
+			if(!$bSimpleHost) {
+				$sTLD = explode('.', $_SERVER['HTTP_HOST']);
+				$sTLD = array_pop($sTLD);
+				$bSimpleHost = in_array($sTLD, array('local', 'home')) || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.xip.io');
+			}
+			if(!$bSimpleHost && isset($_SERVER['SERVER_ADDR'])) {
+				$bSimpleHost = $_SERVER['HTTP_HOST'] === $_SERVER['SERVER_ADDR'];
+			}
+		}
+		// A simple server is defined as one that listens only on loopback or whose listening address coincides with the client address (CAUTION: may also be true on reverse-proxy environments)
+		$bSimpleServer = false;
+		if(isset($_SERVER['SERVER_ADDR'])) {
+			$bSimpleServer = $_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1';
+			if(!$bSimpleServer && isset($_SERVER['REMOTE_ADDR'])) {
+				$bSimpleServer = $_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'];
+			}
+		}
+		if($bSimpleHost && $bSimpleServer) {
+			return 'development';
+		}
+		// A test host is one whose host name starts is on one of the following subdomains: test, stage, staging, integration
+		$bTestHost = false;
+		if(isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], '.') !== false) {
+			$sSubDomain = explode('.', $_SERVER['HTTP_HOST']);
+			$sSubDomain = $sSubDomain[0];
+			$bTestHost = in_array($sSubDomain, array('test', 'stage', 'staging', 'integration'));
+		}
+		if($bTestHost) {
+			return 'staging';
+		}
+		ErrorHandler::log("WARNING: RAPILA_ENVIRONMENT autodetection found “production”. Please configure manually if really a production environment.");
+		return 'production';
 	}
 	
 	public static function shouldPrintErrors() {

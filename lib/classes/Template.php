@@ -911,7 +911,7 @@ class Template {
 		$sNotPosition = $bIsLast ? "first" : "last";
 		$aIdentifierNames = array_fill_keys(SpecialTemplateIdentifierActions::getSpecialIdentifierNames(), 1);
 		$aAlwaysLastNames = array_fill_keys(SpecialTemplateIdentifierActions::getAlwaysLastNames(), 1);
-		foreach(array_reverse($this->allIdentifiers(), true) as $iKey => $oIdentifier) {
+		foreach($this->allIdentifiers() as $oIdentifier) {
 			$sIdentifierName = $oIdentifier->getName();
 			if((!$bIsLast && isset($aAlwaysLastNames[$sIdentifierName])) || $oIdentifier->getParameter('position') === $sNotPosition) {
 				continue;

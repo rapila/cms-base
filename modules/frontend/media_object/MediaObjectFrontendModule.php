@@ -43,7 +43,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 					$sSrcToCheck = substr($sSrcToCheck, 0, $iQSPos);
 				}
 				if(file_exists(MAIN_DIR.'/'.$sSrcToCheck)) {
-					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
+					$aDocumentInfo['url'] = MAIN_DIR_FE_PHP.$aDocumentInfo['url'];
 				}
 				$sSrc = @$aDocumentInfo['url'];
 			} else {
