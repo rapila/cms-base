@@ -955,8 +955,9 @@ class Template {
 
 	public function __clone() {
 		foreach($this->aTemplateContents as $iKey => $mTemplateContent) {
-			if($mTemplateContent instanceof TemplateIdentifier) {
+			if($mTemplateContent instanceof TemplatePart) {
 				$this->aTemplateContents[$iKey] = clone $mTemplateContent;
+				$this->aTemplateContents[$iKey]->setTemplate($this);
 			}
 		}
 	}
