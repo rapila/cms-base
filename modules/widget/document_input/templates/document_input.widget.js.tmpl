@@ -53,7 +53,7 @@ Widget.types.document_input = {
 	absolute_url: function() {
 		var value = this.value();
 		if(isNaN(parseInt(value, 10))) {
-			return "{{writeConstantValue=MAIN_DIR_FE}}"+value;
+			return "{{writeConstantValue=MAIN_DIR_FE_PHP}}"+value;
 		}
 		return "{{writeLink=display_document;manager=FileManager}}/"+value;
 	},

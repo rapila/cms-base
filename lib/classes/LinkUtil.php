@@ -169,7 +169,7 @@ class LinkUtil {
 			$sPrefix = '';
 		}
 		
-		return MAIN_DIR_FE.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
+		return MAIN_DIR_FE_PHP.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
 	}
 	
 	/**

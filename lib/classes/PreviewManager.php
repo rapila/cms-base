@@ -15,7 +15,7 @@ class PreviewManager extends FrontendManager {
 
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 
-		$oResourceIncluder->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE.Manager::getPrefixForManager('FileManager').'";');
+		$oResourceIncluder->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE_PHP.Manager::getPrefixForManager('FileManager').'";');
 
 		//Fix JSON requests when using Prototype in the frontend
 		$oResourceIncluder->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
