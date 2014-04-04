@@ -68,8 +68,14 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'GroupRole', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'GroupRole';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -77,7 +83,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * Returns a new GroupRoleQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     GroupRoleQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   GroupRoleQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return GroupRoleQuery
      */
@@ -86,10 +92,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
         if ($criteria instanceof GroupRoleQuery) {
             return $criteria;
         }
-        $query = new GroupRoleQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new GroupRoleQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -118,7 +122,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = GroupRolePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -141,12 +145,12 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   GroupRole A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 GroupRole A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `GROUP_ID`, `ROLE_KEY`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `group_roles` WHERE `GROUP_ID` = :p0 AND `ROLE_KEY` = :p1';
+        $sql = 'SELECT `group_id`, `role_key`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `group_roles` WHERE `group_id` = :p0 AND `role_key` = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -254,7 +258,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByGroupId(1234); // WHERE group_id = 1234
      * $query->filterByGroupId(array(12, 34)); // WHERE group_id IN (12, 34)
-     * $query->filterByGroupId(array('min' => 12)); // WHERE group_id > 12
+     * $query->filterByGroupId(array('min' => 12)); // WHERE group_id >= 12
+     * $query->filterByGroupId(array('max' => 12)); // WHERE group_id <= 12
      * </code>
      *
      * @see       filterByGroup()
@@ -269,8 +274,22 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      */
     public function filterByGroupId($groupId = null, $comparison = null)
     {
-        if (is_array($groupId) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($groupId)) {
+            $useMinMax = false;
+            if (isset($groupId['min'])) {
+                $this->addUsingAlias(GroupRolePeer::GROUP_ID, $groupId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($groupId['max'])) {
+                $this->addUsingAlias(GroupRolePeer::GROUP_ID, $groupId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(GroupRolePeer::GROUP_ID, $groupId, $comparison);
@@ -312,7 +331,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -355,7 +374,7 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -398,7 +417,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -441,7 +461,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -483,8 +504,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param   Group|PropelObjectCollection $group The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   GroupRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 GroupRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByGroup($group, $comparison = null)
     {
@@ -559,8 +580,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param   Role|PropelObjectCollection $role The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   GroupRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 GroupRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByRole($role, $comparison = null)
     {
@@ -635,8 +656,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   GroupRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 GroupRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -711,8 +732,8 @@ abstract class BaseGroupRoleQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   GroupRoleQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 GroupRoleQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {

@@ -32,29 +32,29 @@ abstract class BaseUserGroupPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 6;
 
-    /** the column name for the USER_ID field */
-    const USER_ID = 'users_groups.USER_ID';
+    /** the column name for the user_id field */
+    const USER_ID = 'users_groups.user_id';
 
-    /** the column name for the GROUP_ID field */
-    const GROUP_ID = 'users_groups.GROUP_ID';
+    /** the column name for the group_id field */
+    const GROUP_ID = 'users_groups.group_id';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'users_groups.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'users_groups.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'users_groups.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'users_groups.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'users_groups.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'users_groups.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'users_groups.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'users_groups.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of UserGroup objects.
+     * An identity map to hold any loaded instances of UserGroup objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array UserGroup[]
@@ -172,12 +172,12 @@ abstract class BaseUserGroupPeer
             $criteria->addSelectColumn(UserGroupPeer::CREATED_BY);
             $criteria->addSelectColumn(UserGroupPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.USER_ID');
-            $criteria->addSelectColumn($alias . '.GROUP_ID');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.group_id');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -230,7 +230,7 @@ abstract class BaseUserGroupPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 UserGroup
+     * @return UserGroup
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -261,7 +261,7 @@ abstract class BaseUserGroupPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -297,7 +297,7 @@ abstract class BaseUserGroupPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      UserGroup $obj A UserGroup object.
+     * @param UserGroup $obj A UserGroup object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -347,7 +347,7 @@ abstract class BaseUserGroupPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   UserGroup Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return UserGroup Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -366,8 +366,13 @@ abstract class BaseUserGroupPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (UserGroupPeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         UserGroupPeer::$instances = array();
     }
 
@@ -1711,7 +1716,7 @@ abstract class BaseUserGroupPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseUserGroupPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseUserGroupPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new UserGroupTableMap());
+        $dbMap->addTableObject(new \UserGroupTableMap());
       }
     }
 
@@ -1721,7 +1726,7 @@ abstract class BaseUserGroupPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return UserGroupPeer::OM_CLASS;
     }
@@ -1757,7 +1762,7 @@ abstract class BaseUserGroupPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1838,7 +1843,7 @@ abstract class BaseUserGroupPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1905,7 +1910,7 @@ abstract class BaseUserGroupPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1918,7 +1923,7 @@ abstract class BaseUserGroupPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      UserGroup $obj The object to validate.
+     * @param UserGroup $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1953,7 +1958,7 @@ abstract class BaseUserGroupPeer
      * @param   int $user_id
      * @param   int $group_id
      * @param      PropelPDO $con
-     * @return   UserGroup
+     * @return UserGroup
      */
     public static function retrieveByPK($user_id, $group_id, PropelPDO $con = null) {
         $_instancePoolKey = serialize(array((string) $user_id, (string) $group_id));

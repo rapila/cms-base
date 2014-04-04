@@ -24,7 +24,7 @@ abstract class BasePage extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -194,6 +194,12 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     protected $alreadyInValidation = false;
 
+    /**
+     * Flag to prevent endless clearAllReferences($deep=true) loop, if this object is referenced
+     * @var        boolean
+     */
+    protected $alreadyInClearAllReferencesDeep = false;
+
     // nested_set behavior
 
     /**
@@ -276,6 +282,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getId()
     {
+
         return $this->id;
     }
 
@@ -286,6 +293,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getName()
     {
+
         return $this->name;
     }
 
@@ -296,6 +304,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getIdentifier()
     {
+
         return $this->identifier;
     }
 
@@ -306,6 +315,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getPageType()
     {
+
         return $this->page_type;
     }
 
@@ -316,6 +326,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getTemplateName()
     {
+
         return $this->template_name;
     }
 
@@ -326,6 +337,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getIsInactive()
     {
+
         return $this->is_inactive;
     }
 
@@ -336,6 +348,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getIsFolder()
     {
+
         return $this->is_folder;
     }
 
@@ -346,6 +359,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getIsHidden()
     {
+
         return $this->is_hidden;
     }
 
@@ -356,6 +370,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getIsProtected()
     {
+
         return $this->is_protected;
     }
 
@@ -366,6 +381,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getCanonicalId()
     {
+
         return $this->canonical_id;
     }
 
@@ -376,6 +392,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getTreeLeft()
     {
+
         return $this->tree_left;
     }
 
@@ -386,6 +403,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getTreeRight()
     {
+
         return $this->tree_right;
     }
 
@@ -396,6 +414,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getTreeLevel()
     {
+
         return $this->tree_level;
     }
 
@@ -418,22 +437,25 @@ abstract class BasePage extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        } else {
-            try {
-                $dt = new DateTime($this->created_at);
-            } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
-            }
+        }
+
+        try {
+            $dt = new DateTime($this->created_at);
+        } catch (Exception $x) {
+            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        } elseif (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        } else {
-            return $dt->format($format);
         }
+
+        if (strpos($format, '%') !== false) {
+            return strftime($format, $dt->format('U'));
+        }
+
+        return $dt->format($format);
+
     }
 
     /**
@@ -455,22 +477,25 @@ abstract class BasePage extends BaseObject implements Persistent
             // while technically this is not a default value of null,
             // this seems to be closest in meaning.
             return null;
-        } else {
-            try {
-                $dt = new DateTime($this->updated_at);
-            } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
-            }
+        }
+
+        try {
+            $dt = new DateTime($this->updated_at);
+        } catch (Exception $x) {
+            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
         }
 
         if ($format === null) {
             // Because propel.useDateTimeClass is true, we return a DateTime object.
             return $dt;
-        } elseif (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        } else {
-            return $dt->format($format);
         }
+
+        if (strpos($format, '%') !== false) {
+            return strftime($format, $dt->format('U'));
+        }
+
+        return $dt->format($format);
+
     }
 
     /**
@@ -480,6 +505,7 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getCreatedBy()
     {
+
         return $this->created_by;
     }
 
@@ -490,18 +516,19 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     public function getUpdatedBy()
     {
+
         return $this->updated_by;
     }
 
     /**
      * Set the value of [id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setId($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -517,7 +544,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setName($v)
@@ -538,7 +565,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [identifier] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setIdentifier($v)
@@ -559,7 +586,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [page_type] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setPageType($v)
@@ -580,7 +607,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [template_name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setTemplateName($v)
@@ -717,12 +744,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [canonical_id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setCanonicalId($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -742,12 +769,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [tree_left] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setTreeLeft($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -763,12 +790,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [tree_right] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setTreeRight($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -784,12 +811,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [tree_level] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setTreeLevel($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -851,12 +878,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [created_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setCreatedBy($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -876,12 +903,12 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Set the value of [updated_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Page The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
     {
-        if ($v !== null) {
+        if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
@@ -937,7 +964,7 @@ abstract class BasePage extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -970,6 +997,7 @@ abstract class BasePage extends BaseObject implements Persistent
             if ($rehydrate) {
                 $this->ensureConsistency();
             }
+            $this->postHydrate($row, $startcol, $rehydrate);
 
             return $startcol + 17; // 17 = PagePeer::NUM_HYDRATE_COLUMNS.
 
@@ -1243,7 +1271,7 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1291,7 +1319,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
             if ($this->collPagesRelatedById !== null) {
                 foreach ($this->collPagesRelatedById as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1308,7 +1336,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
             if ($this->collPagePropertys !== null) {
                 foreach ($this->collPagePropertys as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1325,7 +1353,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
             if ($this->collPageStrings !== null) {
                 foreach ($this->collPageStrings as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1342,7 +1370,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
             if ($this->collContentObjects !== null) {
                 foreach ($this->collContentObjects as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1359,7 +1387,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
             if ($this->collRights !== null) {
                 foreach ($this->collRights as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -1392,55 +1420,55 @@ abstract class BasePage extends BaseObject implements Persistent
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(PagePeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`ID`';
+            $modifiedColumns[':p' . $index++]  = '`id`';
         }
         if ($this->isColumnModified(PagePeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`NAME`';
+            $modifiedColumns[':p' . $index++]  = '`name`';
         }
         if ($this->isColumnModified(PagePeer::IDENTIFIER)) {
-            $modifiedColumns[':p' . $index++]  = '`IDENTIFIER`';
+            $modifiedColumns[':p' . $index++]  = '`identifier`';
         }
         if ($this->isColumnModified(PagePeer::PAGE_TYPE)) {
-            $modifiedColumns[':p' . $index++]  = '`PAGE_TYPE`';
+            $modifiedColumns[':p' . $index++]  = '`page_type`';
         }
         if ($this->isColumnModified(PagePeer::TEMPLATE_NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`TEMPLATE_NAME`';
+            $modifiedColumns[':p' . $index++]  = '`template_name`';
         }
         if ($this->isColumnModified(PagePeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`IS_INACTIVE`';
+            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
         }
         if ($this->isColumnModified(PagePeer::IS_FOLDER)) {
-            $modifiedColumns[':p' . $index++]  = '`IS_FOLDER`';
+            $modifiedColumns[':p' . $index++]  = '`is_folder`';
         }
         if ($this->isColumnModified(PagePeer::IS_HIDDEN)) {
-            $modifiedColumns[':p' . $index++]  = '`IS_HIDDEN`';
+            $modifiedColumns[':p' . $index++]  = '`is_hidden`';
         }
         if ($this->isColumnModified(PagePeer::IS_PROTECTED)) {
-            $modifiedColumns[':p' . $index++]  = '`IS_PROTECTED`';
+            $modifiedColumns[':p' . $index++]  = '`is_protected`';
         }
         if ($this->isColumnModified(PagePeer::CANONICAL_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`CANONICAL_ID`';
+            $modifiedColumns[':p' . $index++]  = '`canonical_id`';
         }
         if ($this->isColumnModified(PagePeer::TREE_LEFT)) {
-            $modifiedColumns[':p' . $index++]  = '`TREE_LEFT`';
+            $modifiedColumns[':p' . $index++]  = '`tree_left`';
         }
         if ($this->isColumnModified(PagePeer::TREE_RIGHT)) {
-            $modifiedColumns[':p' . $index++]  = '`TREE_RIGHT`';
+            $modifiedColumns[':p' . $index++]  = '`tree_right`';
         }
         if ($this->isColumnModified(PagePeer::TREE_LEVEL)) {
-            $modifiedColumns[':p' . $index++]  = '`TREE_LEVEL`';
+            $modifiedColumns[':p' . $index++]  = '`tree_level`';
         }
         if ($this->isColumnModified(PagePeer::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`CREATED_AT`';
+            $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
         if ($this->isColumnModified(PagePeer::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = '`UPDATED_AT`';
+            $modifiedColumns[':p' . $index++]  = '`updated_at`';
         }
         if ($this->isColumnModified(PagePeer::CREATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`CREATED_BY`';
+            $modifiedColumns[':p' . $index++]  = '`created_by`';
         }
         if ($this->isColumnModified(PagePeer::UPDATED_BY)) {
-            $modifiedColumns[':p' . $index++]  = '`UPDATED_BY`';
+            $modifiedColumns[':p' . $index++]  = '`updated_by`';
         }
 
         $sql = sprintf(
@@ -1453,55 +1481,55 @@ abstract class BasePage extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`ID`':
+                    case '`id`':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case '`NAME`':
+                    case '`name`':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case '`IDENTIFIER`':
+                    case '`identifier`':
                         $stmt->bindValue($identifier, $this->identifier, PDO::PARAM_STR);
                         break;
-                    case '`PAGE_TYPE`':
+                    case '`page_type`':
                         $stmt->bindValue($identifier, $this->page_type, PDO::PARAM_STR);
                         break;
-                    case '`TEMPLATE_NAME`':
+                    case '`template_name`':
                         $stmt->bindValue($identifier, $this->template_name, PDO::PARAM_STR);
                         break;
-                    case '`IS_INACTIVE`':
+                    case '`is_inactive`':
                         $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
-                    case '`IS_FOLDER`':
+                    case '`is_folder`':
                         $stmt->bindValue($identifier, (int) $this->is_folder, PDO::PARAM_INT);
                         break;
-                    case '`IS_HIDDEN`':
+                    case '`is_hidden`':
                         $stmt->bindValue($identifier, (int) $this->is_hidden, PDO::PARAM_INT);
                         break;
-                    case '`IS_PROTECTED`':
+                    case '`is_protected`':
                         $stmt->bindValue($identifier, (int) $this->is_protected, PDO::PARAM_INT);
                         break;
-                    case '`CANONICAL_ID`':
+                    case '`canonical_id`':
                         $stmt->bindValue($identifier, $this->canonical_id, PDO::PARAM_INT);
                         break;
-                    case '`TREE_LEFT`':
+                    case '`tree_left`':
                         $stmt->bindValue($identifier, $this->tree_left, PDO::PARAM_INT);
                         break;
-                    case '`TREE_RIGHT`':
+                    case '`tree_right`':
                         $stmt->bindValue($identifier, $this->tree_right, PDO::PARAM_INT);
                         break;
-                    case '`TREE_LEVEL`':
+                    case '`tree_level`':
                         $stmt->bindValue($identifier, $this->tree_level, PDO::PARAM_INT);
                         break;
-                    case '`CREATED_AT`':
+                    case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
                         break;
-                    case '`UPDATED_AT`':
+                    case '`updated_at`':
                         $stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
                         break;
-                    case '`CREATED_BY`':
+                    case '`created_by`':
                         $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
                         break;
-                    case '`UPDATED_BY`':
+                    case '`updated_by`':
                         $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                 }
@@ -1572,11 +1600,11 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->validationFailures = array();
 
             return true;
-        } else {
-            $this->validationFailures = $res;
-
-            return false;
         }
+
+        $this->validationFailures = $res;
+
+        return false;
     }
 
     /**
@@ -1584,10 +1612,10 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -1599,7 +1627,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1800,6 +1828,11 @@ abstract class BasePage extends BaseObject implements Persistent
             $keys[15] => $this->getCreatedBy(),
             $keys[16] => $this->getUpdatedBy(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aPageRelatedByCanonicalId) {
                 $result['PageRelatedByCanonicalId'] = $this->aPageRelatedByCanonicalId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -2149,7 +2182,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Page object.
      *
-     * @param             Page $v
+     * @param                  Page $v
      * @return Page The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2178,12 +2211,13 @@ abstract class BasePage extends BaseObject implements Persistent
      * Get the associated Page object
      *
      * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
      * @return Page The associated Page object.
      * @throws PropelException
      */
-    public function getPageRelatedByCanonicalId(PropelPDO $con = null)
+    public function getPageRelatedByCanonicalId(PropelPDO $con = null, $doQuery = true)
     {
-        if ($this->aPageRelatedByCanonicalId === null && ($this->canonical_id !== null)) {
+        if ($this->aPageRelatedByCanonicalId === null && ($this->canonical_id !== null) && $doQuery) {
             $this->aPageRelatedByCanonicalId = PageQuery::create()->findPk($this->canonical_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2200,7 +2234,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Page The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2229,12 +2263,13 @@ abstract class BasePage extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByCreatedBy(PropelPDO $con = null)
+    public function getUserRelatedByCreatedBy(PropelPDO $con = null, $doQuery = true)
     {
-        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null)) {
+        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null) && $doQuery) {
             $this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2251,7 +2286,7 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Page The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2280,12 +2315,13 @@ abstract class BasePage extends BaseObject implements Persistent
      * Get the associated User object
      *
      * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
      * @return User The associated User object.
      * @throws PropelException
      */
-    public function getUserRelatedByUpdatedBy(PropelPDO $con = null)
+    public function getUserRelatedByUpdatedBy(PropelPDO $con = null, $doQuery = true)
     {
-        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null)) {
+        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null) && $doQuery) {
             $this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2333,13 +2369,15 @@ abstract class BasePage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return void
+     * @return Page The current object (for fluent API support)
      * @see        addPagesRelatedById()
      */
     public function clearPagesRelatedById()
     {
         $this->collPagesRelatedById = null; // important to set this to null since that means it is uninitialized
         $this->collPagesRelatedByIdPartial = null;
+
+        return $this;
     }
 
     /**
@@ -2402,7 +2440,7 @@ abstract class BasePage extends BaseObject implements Persistent
                     if (false !== $this->collPagesRelatedByIdPartial && count($collPagesRelatedById)) {
                       $this->initPagesRelatedById(false);
 
-                      foreach($collPagesRelatedById as $obj) {
+                      foreach ($collPagesRelatedById as $obj) {
                         if (false == $this->collPagesRelatedById->contains($obj)) {
                           $this->collPagesRelatedById->append($obj);
                         }
@@ -2411,12 +2449,14 @@ abstract class BasePage extends BaseObject implements Persistent
                       $this->collPagesRelatedByIdPartial = true;
                     }
 
+                    $collPagesRelatedById->getInternalIterator()->rewind();
+
                     return $collPagesRelatedById;
                 }
 
-                if($partial && $this->collPagesRelatedById) {
-                    foreach($this->collPagesRelatedById as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collPagesRelatedById) {
+                    foreach ($this->collPagesRelatedById as $obj) {
+                        if ($obj->isNew()) {
                             $collPagesRelatedById[] = $obj;
                         }
                     }
@@ -2438,12 +2478,16 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagesRelatedById A Propel collection.
      * @param PropelPDO $con Optional connection object
+     * @return Page The current object (for fluent API support)
      */
     public function setPagesRelatedById(PropelCollection $pagesRelatedById, PropelPDO $con = null)
     {
-        $this->pagesRelatedByIdScheduledForDeletion = $this->getPagesRelatedById(new Criteria(), $con)->diff($pagesRelatedById);
+        $pagesRelatedByIdToDelete = $this->getPagesRelatedById(new Criteria(), $con)->diff($pagesRelatedById);
 
-        foreach ($this->pagesRelatedByIdScheduledForDeletion as $pageRelatedByIdRemoved) {
+
+        $this->pagesRelatedByIdScheduledForDeletion = $pagesRelatedByIdToDelete;
+
+        foreach ($pagesRelatedByIdToDelete as $pageRelatedByIdRemoved) {
             $pageRelatedByIdRemoved->setPageRelatedByCanonicalId(null);
         }
 
@@ -2454,6 +2498,8 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $this->collPagesRelatedById = $pagesRelatedById;
         $this->collPagesRelatedByIdPartial = false;
+
+        return $this;
     }
 
     /**
@@ -2471,22 +2517,22 @@ abstract class BasePage extends BaseObject implements Persistent
         if (null === $this->collPagesRelatedById || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagesRelatedById) {
                 return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getPagesRelatedById());
-                }
-                $query = PageQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByPageRelatedByCanonicalId($this)
-                    ->count($con);
             }
-        } else {
-            return count($this->collPagesRelatedById);
+
+            if ($partial && !$criteria) {
+                return count($this->getPagesRelatedById());
+            }
+            $query = PageQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPageRelatedByCanonicalId($this)
+                ->count($con);
         }
+
+        return count($this->collPagesRelatedById);
     }
 
     /**
@@ -2502,8 +2548,13 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->initPagesRelatedById();
             $this->collPagesRelatedByIdPartial = true;
         }
-        if (!$this->collPagesRelatedById->contains($l)) { // only add it if the **same** object is not already associated
+
+        if (!in_array($l, $this->collPagesRelatedById->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddPageRelatedById($l);
+
+            if ($this->pagesRelatedByIdScheduledForDeletion and $this->pagesRelatedByIdScheduledForDeletion->contains($l)) {
+                $this->pagesRelatedByIdScheduledForDeletion->remove($this->pagesRelatedByIdScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2520,6 +2571,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
     /**
      * @param	PageRelatedById $pageRelatedById The pageRelatedById object to remove.
+     * @return Page The current object (for fluent API support)
      */
     public function removePageRelatedById($pageRelatedById)
     {
@@ -2532,6 +2584,8 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->pagesRelatedByIdScheduledForDeletion[]= $pageRelatedById;
             $pageRelatedById->setPageRelatedByCanonicalId(null);
         }
+
+        return $this;
     }
 
 
@@ -2590,13 +2644,15 @@ abstract class BasePage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return void
+     * @return Page The current object (for fluent API support)
      * @see        addPagePropertys()
      */
     public function clearPagePropertys()
     {
         $this->collPagePropertys = null; // important to set this to null since that means it is uninitialized
         $this->collPagePropertysPartial = null;
+
+        return $this;
     }
 
     /**
@@ -2659,7 +2715,7 @@ abstract class BasePage extends BaseObject implements Persistent
                     if (false !== $this->collPagePropertysPartial && count($collPagePropertys)) {
                       $this->initPagePropertys(false);
 
-                      foreach($collPagePropertys as $obj) {
+                      foreach ($collPagePropertys as $obj) {
                         if (false == $this->collPagePropertys->contains($obj)) {
                           $this->collPagePropertys->append($obj);
                         }
@@ -2668,12 +2724,14 @@ abstract class BasePage extends BaseObject implements Persistent
                       $this->collPagePropertysPartial = true;
                     }
 
+                    $collPagePropertys->getInternalIterator()->rewind();
+
                     return $collPagePropertys;
                 }
 
-                if($partial && $this->collPagePropertys) {
-                    foreach($this->collPagePropertys as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collPagePropertys) {
+                    foreach ($this->collPagePropertys as $obj) {
+                        if ($obj->isNew()) {
                             $collPagePropertys[] = $obj;
                         }
                     }
@@ -2695,12 +2753,16 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * @param PropelCollection $pagePropertys A Propel collection.
      * @param PropelPDO $con Optional connection object
+     * @return Page The current object (for fluent API support)
      */
     public function setPagePropertys(PropelCollection $pagePropertys, PropelPDO $con = null)
     {
-        $this->pagePropertysScheduledForDeletion = $this->getPagePropertys(new Criteria(), $con)->diff($pagePropertys);
+        $pagePropertysToDelete = $this->getPagePropertys(new Criteria(), $con)->diff($pagePropertys);
 
-        foreach ($this->pagePropertysScheduledForDeletion as $pagePropertyRemoved) {
+
+        $this->pagePropertysScheduledForDeletion = $pagePropertysToDelete;
+
+        foreach ($pagePropertysToDelete as $pagePropertyRemoved) {
             $pagePropertyRemoved->setPage(null);
         }
 
@@ -2711,6 +2773,8 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $this->collPagePropertys = $pagePropertys;
         $this->collPagePropertysPartial = false;
+
+        return $this;
     }
 
     /**
@@ -2728,22 +2792,22 @@ abstract class BasePage extends BaseObject implements Persistent
         if (null === $this->collPagePropertys || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPagePropertys) {
                 return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getPagePropertys());
-                }
-                $query = PagePropertyQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByPage($this)
-                    ->count($con);
             }
-        } else {
-            return count($this->collPagePropertys);
+
+            if ($partial && !$criteria) {
+                return count($this->getPagePropertys());
+            }
+            $query = PagePropertyQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPage($this)
+                ->count($con);
         }
+
+        return count($this->collPagePropertys);
     }
 
     /**
@@ -2759,8 +2823,13 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->initPagePropertys();
             $this->collPagePropertysPartial = true;
         }
-        if (!$this->collPagePropertys->contains($l)) { // only add it if the **same** object is not already associated
+
+        if (!in_array($l, $this->collPagePropertys->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddPageProperty($l);
+
+            if ($this->pagePropertysScheduledForDeletion and $this->pagePropertysScheduledForDeletion->contains($l)) {
+                $this->pagePropertysScheduledForDeletion->remove($this->pagePropertysScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2777,6 +2846,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
     /**
      * @param	PageProperty $pageProperty The pageProperty object to remove.
+     * @return Page The current object (for fluent API support)
      */
     public function removePageProperty($pageProperty)
     {
@@ -2786,9 +2856,11 @@ abstract class BasePage extends BaseObject implements Persistent
                 $this->pagePropertysScheduledForDeletion = clone $this->collPagePropertys;
                 $this->pagePropertysScheduledForDeletion->clear();
             }
-            $this->pagePropertysScheduledForDeletion[]= $pageProperty;
+            $this->pagePropertysScheduledForDeletion[]= clone $pageProperty;
             $pageProperty->setPage(null);
         }
+
+        return $this;
     }
 
 
@@ -2847,13 +2919,15 @@ abstract class BasePage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return void
+     * @return Page The current object (for fluent API support)
      * @see        addPageStrings()
      */
     public function clearPageStrings()
     {
         $this->collPageStrings = null; // important to set this to null since that means it is uninitialized
         $this->collPageStringsPartial = null;
+
+        return $this;
     }
 
     /**
@@ -2916,7 +2990,7 @@ abstract class BasePage extends BaseObject implements Persistent
                     if (false !== $this->collPageStringsPartial && count($collPageStrings)) {
                       $this->initPageStrings(false);
 
-                      foreach($collPageStrings as $obj) {
+                      foreach ($collPageStrings as $obj) {
                         if (false == $this->collPageStrings->contains($obj)) {
                           $this->collPageStrings->append($obj);
                         }
@@ -2925,12 +2999,14 @@ abstract class BasePage extends BaseObject implements Persistent
                       $this->collPageStringsPartial = true;
                     }
 
+                    $collPageStrings->getInternalIterator()->rewind();
+
                     return $collPageStrings;
                 }
 
-                if($partial && $this->collPageStrings) {
-                    foreach($this->collPageStrings as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collPageStrings) {
+                    foreach ($this->collPageStrings as $obj) {
+                        if ($obj->isNew()) {
                             $collPageStrings[] = $obj;
                         }
                     }
@@ -2952,12 +3028,19 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * @param PropelCollection $pageStrings A Propel collection.
      * @param PropelPDO $con Optional connection object
+     * @return Page The current object (for fluent API support)
      */
     public function setPageStrings(PropelCollection $pageStrings, PropelPDO $con = null)
     {
-        $this->pageStringsScheduledForDeletion = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
+        $pageStringsToDelete = $this->getPageStrings(new Criteria(), $con)->diff($pageStrings);
 
-        foreach ($this->pageStringsScheduledForDeletion as $pageStringRemoved) {
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->pageStringsScheduledForDeletion = clone $pageStringsToDelete;
+
+        foreach ($pageStringsToDelete as $pageStringRemoved) {
             $pageStringRemoved->setPage(null);
         }
 
@@ -2968,6 +3051,8 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $this->collPageStrings = $pageStrings;
         $this->collPageStringsPartial = false;
+
+        return $this;
     }
 
     /**
@@ -2985,22 +3070,22 @@ abstract class BasePage extends BaseObject implements Persistent
         if (null === $this->collPageStrings || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collPageStrings) {
                 return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getPageStrings());
-                }
-                $query = PageStringQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByPage($this)
-                    ->count($con);
             }
-        } else {
-            return count($this->collPageStrings);
+
+            if ($partial && !$criteria) {
+                return count($this->getPageStrings());
+            }
+            $query = PageStringQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPage($this)
+                ->count($con);
         }
+
+        return count($this->collPageStrings);
     }
 
     /**
@@ -3016,8 +3101,13 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->initPageStrings();
             $this->collPageStringsPartial = true;
         }
-        if (!$this->collPageStrings->contains($l)) { // only add it if the **same** object is not already associated
+
+        if (!in_array($l, $this->collPageStrings->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddPageString($l);
+
+            if ($this->pageStringsScheduledForDeletion and $this->pageStringsScheduledForDeletion->contains($l)) {
+                $this->pageStringsScheduledForDeletion->remove($this->pageStringsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3034,6 +3124,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
     /**
      * @param	PageString $pageString The pageString object to remove.
+     * @return Page The current object (for fluent API support)
      */
     public function removePageString($pageString)
     {
@@ -3043,9 +3134,11 @@ abstract class BasePage extends BaseObject implements Persistent
                 $this->pageStringsScheduledForDeletion = clone $this->collPageStrings;
                 $this->pageStringsScheduledForDeletion->clear();
             }
-            $this->pageStringsScheduledForDeletion[]= $pageString;
+            $this->pageStringsScheduledForDeletion[]= clone $pageString;
             $pageString->setPage(null);
         }
+
+        return $this;
     }
 
 
@@ -3129,13 +3222,15 @@ abstract class BasePage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return void
+     * @return Page The current object (for fluent API support)
      * @see        addContentObjects()
      */
     public function clearContentObjects()
     {
         $this->collContentObjects = null; // important to set this to null since that means it is uninitialized
         $this->collContentObjectsPartial = null;
+
+        return $this;
     }
 
     /**
@@ -3198,7 +3293,7 @@ abstract class BasePage extends BaseObject implements Persistent
                     if (false !== $this->collContentObjectsPartial && count($collContentObjects)) {
                       $this->initContentObjects(false);
 
-                      foreach($collContentObjects as $obj) {
+                      foreach ($collContentObjects as $obj) {
                         if (false == $this->collContentObjects->contains($obj)) {
                           $this->collContentObjects->append($obj);
                         }
@@ -3207,12 +3302,14 @@ abstract class BasePage extends BaseObject implements Persistent
                       $this->collContentObjectsPartial = true;
                     }
 
+                    $collContentObjects->getInternalIterator()->rewind();
+
                     return $collContentObjects;
                 }
 
-                if($partial && $this->collContentObjects) {
-                    foreach($this->collContentObjects as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collContentObjects) {
+                    foreach ($this->collContentObjects as $obj) {
+                        if ($obj->isNew()) {
                             $collContentObjects[] = $obj;
                         }
                     }
@@ -3234,12 +3331,16 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * @param PropelCollection $contentObjects A Propel collection.
      * @param PropelPDO $con Optional connection object
+     * @return Page The current object (for fluent API support)
      */
     public function setContentObjects(PropelCollection $contentObjects, PropelPDO $con = null)
     {
-        $this->contentObjectsScheduledForDeletion = $this->getContentObjects(new Criteria(), $con)->diff($contentObjects);
+        $contentObjectsToDelete = $this->getContentObjects(new Criteria(), $con)->diff($contentObjects);
 
-        foreach ($this->contentObjectsScheduledForDeletion as $contentObjectRemoved) {
+
+        $this->contentObjectsScheduledForDeletion = $contentObjectsToDelete;
+
+        foreach ($contentObjectsToDelete as $contentObjectRemoved) {
             $contentObjectRemoved->setPage(null);
         }
 
@@ -3250,6 +3351,8 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $this->collContentObjects = $contentObjects;
         $this->collContentObjectsPartial = false;
+
+        return $this;
     }
 
     /**
@@ -3267,22 +3370,22 @@ abstract class BasePage extends BaseObject implements Persistent
         if (null === $this->collContentObjects || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collContentObjects) {
                 return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getContentObjects());
-                }
-                $query = ContentObjectQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByPage($this)
-                    ->count($con);
             }
-        } else {
-            return count($this->collContentObjects);
+
+            if ($partial && !$criteria) {
+                return count($this->getContentObjects());
+            }
+            $query = ContentObjectQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPage($this)
+                ->count($con);
         }
+
+        return count($this->collContentObjects);
     }
 
     /**
@@ -3298,8 +3401,13 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->initContentObjects();
             $this->collContentObjectsPartial = true;
         }
-        if (!$this->collContentObjects->contains($l)) { // only add it if the **same** object is not already associated
+
+        if (!in_array($l, $this->collContentObjects->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddContentObject($l);
+
+            if ($this->contentObjectsScheduledForDeletion and $this->contentObjectsScheduledForDeletion->contains($l)) {
+                $this->contentObjectsScheduledForDeletion->remove($this->contentObjectsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3316,6 +3424,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
     /**
      * @param	ContentObject $contentObject The contentObject object to remove.
+     * @return Page The current object (for fluent API support)
      */
     public function removeContentObject($contentObject)
     {
@@ -3325,9 +3434,11 @@ abstract class BasePage extends BaseObject implements Persistent
                 $this->contentObjectsScheduledForDeletion = clone $this->collContentObjects;
                 $this->contentObjectsScheduledForDeletion->clear();
             }
-            $this->contentObjectsScheduledForDeletion[]= $contentObject;
+            $this->contentObjectsScheduledForDeletion[]= clone $contentObject;
             $contentObject->setPage(null);
         }
+
+        return $this;
     }
 
 
@@ -3386,13 +3497,15 @@ abstract class BasePage extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return void
+     * @return Page The current object (for fluent API support)
      * @see        addRights()
      */
     public function clearRights()
     {
         $this->collRights = null; // important to set this to null since that means it is uninitialized
         $this->collRightsPartial = null;
+
+        return $this;
     }
 
     /**
@@ -3455,7 +3568,7 @@ abstract class BasePage extends BaseObject implements Persistent
                     if (false !== $this->collRightsPartial && count($collRights)) {
                       $this->initRights(false);
 
-                      foreach($collRights as $obj) {
+                      foreach ($collRights as $obj) {
                         if (false == $this->collRights->contains($obj)) {
                           $this->collRights->append($obj);
                         }
@@ -3464,12 +3577,14 @@ abstract class BasePage extends BaseObject implements Persistent
                       $this->collRightsPartial = true;
                     }
 
+                    $collRights->getInternalIterator()->rewind();
+
                     return $collRights;
                 }
 
-                if($partial && $this->collRights) {
-                    foreach($this->collRights as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collRights) {
+                    foreach ($this->collRights as $obj) {
+                        if ($obj->isNew()) {
                             $collRights[] = $obj;
                         }
                     }
@@ -3491,12 +3606,16 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * @param PropelCollection $rights A Propel collection.
      * @param PropelPDO $con Optional connection object
+     * @return Page The current object (for fluent API support)
      */
     public function setRights(PropelCollection $rights, PropelPDO $con = null)
     {
-        $this->rightsScheduledForDeletion = $this->getRights(new Criteria(), $con)->diff($rights);
+        $rightsToDelete = $this->getRights(new Criteria(), $con)->diff($rights);
 
-        foreach ($this->rightsScheduledForDeletion as $rightRemoved) {
+
+        $this->rightsScheduledForDeletion = $rightsToDelete;
+
+        foreach ($rightsToDelete as $rightRemoved) {
             $rightRemoved->setPage(null);
         }
 
@@ -3507,6 +3626,8 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $this->collRights = $rights;
         $this->collRightsPartial = false;
+
+        return $this;
     }
 
     /**
@@ -3524,22 +3645,22 @@ abstract class BasePage extends BaseObject implements Persistent
         if (null === $this->collRights || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRights) {
                 return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getRights());
-                }
-                $query = RightQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByPage($this)
-                    ->count($con);
             }
-        } else {
-            return count($this->collRights);
+
+            if ($partial && !$criteria) {
+                return count($this->getRights());
+            }
+            $query = RightQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPage($this)
+                ->count($con);
         }
+
+        return count($this->collRights);
     }
 
     /**
@@ -3555,8 +3676,13 @@ abstract class BasePage extends BaseObject implements Persistent
             $this->initRights();
             $this->collRightsPartial = true;
         }
-        if (!$this->collRights->contains($l)) { // only add it if the **same** object is not already associated
+
+        if (!in_array($l, $this->collRights->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddRight($l);
+
+            if ($this->rightsScheduledForDeletion and $this->rightsScheduledForDeletion->contains($l)) {
+                $this->rightsScheduledForDeletion->remove($this->rightsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3573,6 +3699,7 @@ abstract class BasePage extends BaseObject implements Persistent
 
     /**
      * @param	Right $right The right object to remove.
+     * @return Page The current object (for fluent API support)
      */
     public function removeRight($right)
     {
@@ -3582,9 +3709,11 @@ abstract class BasePage extends BaseObject implements Persistent
                 $this->rightsScheduledForDeletion = clone $this->collRights;
                 $this->rightsScheduledForDeletion->clear();
             }
-            $this->rightsScheduledForDeletion[]= $right;
+            $this->rightsScheduledForDeletion[]= clone $right;
             $right->setPage(null);
         }
+
+        return $this;
     }
 
 
@@ -3686,6 +3815,7 @@ abstract class BasePage extends BaseObject implements Persistent
         $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
+        $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
         $this->resetModified();
@@ -3698,13 +3828,14 @@ abstract class BasePage extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */
     public function clearAllReferences($deep = false)
     {
-        if ($deep) {
+        if ($deep && !$this->alreadyInClearAllReferencesDeep) {
+            $this->alreadyInClearAllReferencesDeep = true;
             if ($this->collPagesRelatedById) {
                 foreach ($this->collPagesRelatedById as $o) {
                     $o->clearAllReferences($deep);
@@ -3730,6 +3861,17 @@ abstract class BasePage extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->aPageRelatedByCanonicalId instanceof Persistent) {
+              $this->aPageRelatedByCanonicalId->clearAllReferences($deep);
+            }
+            if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
+              $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
+            }
+            if ($this->aUserRelatedByUpdatedBy instanceof Persistent) {
+              $this->aUserRelatedByUpdatedBy->clearAllReferences($deep);
+            }
+
+            $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
         // nested_set behavior
@@ -4120,7 +4262,7 @@ abstract class BasePage extends BaseObject implements Persistent
         if ($this->collNestedSetChildren === null) {
             $this->initNestedSetChildren();
         }
-        if (!$this->collNestedSetChildren->contains($page)) { // only add it if the **same** object is not already associated
+        if (!in_array($page, $this->collNestedSetChildren->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->collNestedSetChildren[]= $page;
             $page->setParent($this);
         }
@@ -4567,8 +4709,10 @@ abstract class BasePage extends BaseObject implements Persistent
      */
     protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null)
     {
+        $preventDefault = false;
         $left  = $this->getLeftValue();
         $right = $this->getRightValue();
+
 
         $treeSize = $right - $left +1;
 
@@ -4578,21 +4722,28 @@ abstract class BasePage extends BaseObject implements Persistent
 
         $con->beginTransaction();
         try {
+
             // make room next to the target for the subtree
             PagePeer::shiftRLValues($treeSize, $destLeft, null, $con);
 
-            if ($left >= $destLeft) { // src was shifted too?
-                $left += $treeSize;
-                $right += $treeSize;
-            }
 
-            if ($levelDelta) {
-                // update the levels of the subtree
-                PagePeer::shiftLevel($levelDelta, $left, $right, $con);
-            }
 
-            // move the subtree to the target
-            PagePeer::shiftRLValues($destLeft - $left, $left, $right, $con);
+            if (!$preventDefault) {
+
+
+                if ($left >= $destLeft) { // src was shifted too?
+                    $left += $treeSize;
+                    $right += $treeSize;
+                }
+
+                if ($levelDelta) {
+                    // update the levels of the subtree
+                    PagePeer::shiftLevel($levelDelta, $left, $right, $con);
+                }
+
+                // move the subtree to the target
+                PagePeer::shiftRLValues($destLeft - $left, $left, $right, $con);
+            }
 
             // remove the empty room at the previous location of the subtree
             PagePeer::shiftRLValues(-$treeSize, $right + 1, null, $con);
@@ -4601,7 +4752,7 @@ abstract class BasePage extends BaseObject implements Persistent
             PagePeer::updateLoadedNodes(null, $con);
 
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollback();
             throw $e;
         }
