@@ -139,7 +139,7 @@ class SpecialTemplateIdentifierActions {
 		} else if($sDestination === "host_only") {
 			return LinkUtil::absoluteLink('');
 		} else if($sDestination === "base_href") {
-			$sDestination = MAIN_DIR_FE;
+			$sDestination = MAIN_DIR_FE_PHP;
 			$bIsAbsolute = true;
 			if(!$oTemplateIdentifier->hasParameter('is_absolute')) {
 				$bAbsoluteType = LinkUtil::isSSL();
