@@ -38,24 +38,24 @@ class UserTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('USERNAME', 'Username', 'VARCHAR', true, 40, null);
-        $this->addColumn('PASSWORD', 'Password', 'VARCHAR', false, 144, null);
-        $this->addColumn('DIGEST_HA1', 'DigestHA1', 'VARCHAR', false, 32, null);
-        $this->addColumn('FIRST_NAME', 'FirstName', 'VARCHAR', false, 40, null);
-        $this->addColumn('LAST_NAME', 'LastName', 'VARCHAR', false, 60, null);
-        $this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 80, null);
-        $this->addForeignKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR', 'languages', 'ID', false, 3, null);
-        $this->addColumn('IS_ADMIN', 'IsAdmin', 'BOOLEAN', false, 1, false);
-        $this->addColumn('IS_BACKEND_LOGIN_ENABLED', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
-        $this->addColumn('IS_ADMIN_LOGIN_ENABLED', 'IsAdminLoginEnabled', 'BOOLEAN', false, 1, true);
-        $this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, false);
-        $this->addColumn('PASSWORD_RECOVER_HINT', 'PasswordRecoverHint', 'VARCHAR', false, 10, null);
-        $this->addColumn('BACKEND_SETTINGS', 'BackendSettings', 'BLOB', false, null, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('CREATED_BY', 'CreatedBy', 'INTEGER', false, null, null);
-        $this->addColumn('UPDATED_BY', 'UpdatedBy', 'INTEGER', false, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('username', 'Username', 'VARCHAR', true, 40, null);
+        $this->addColumn('password', 'Password', 'VARCHAR', false, 144, null);
+        $this->addColumn('digest_ha1', 'DigestHA1', 'VARCHAR', false, 32, null);
+        $this->addColumn('first_name', 'FirstName', 'VARCHAR', false, 40, null);
+        $this->addColumn('last_name', 'LastName', 'VARCHAR', false, 60, null);
+        $this->addColumn('email', 'Email', 'VARCHAR', false, 80, null);
+        $this->addForeignKey('language_id', 'LanguageId', 'VARCHAR', 'languages', 'id', false, 3, null);
+        $this->addColumn('is_admin', 'IsAdmin', 'BOOLEAN', false, 1, false);
+        $this->addColumn('is_backend_login_enabled', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
+        $this->addColumn('is_admin_login_enabled', 'IsAdminLoginEnabled', 'BOOLEAN', false, 1, true);
+        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, false);
+        $this->addColumn('password_recover_hint', 'PasswordRecoverHint', 'VARCHAR', false, 10, null);
+        $this->addColumn('backend_settings', 'BackendSettings', 'BLOB', false, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('created_by', 'CreatedBy', 'INTEGER', false, null, null);
+        $this->addColumn('updated_by', 'UpdatedBy', 'INTEGER', false, null, null);
         // validators
     } // initialize()
 
@@ -124,11 +124,25 @@ class UserTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'taggable' => array(),
-            'denyable' => array('mode' => '', 'role_key' => 'users', 'owner_allowed' => 'false', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'taggable' =>  array (
+),
+            'denyable' =>  array (
+  'mode' => '',
+  'role_key' => 'users',
+  'owner_allowed' => 'false',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

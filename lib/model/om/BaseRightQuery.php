@@ -57,7 +57,6 @@
  * @method Right findOne(PropelPDO $con = null) Return the first Right matching the query
  * @method Right findOneOrCreate(PropelPDO $con = null) Return the first Right matching the query, or a new Right object populated from the query conditions when no match is found
  *
- * @method Right findOneById(int $id) Return the first Right filtered by the id column
  * @method Right findOneByRoleKey(string $role_key) Return the first Right filtered by the role_key column
  * @method Right findOneByPageId(int $page_id) Return the first Right filtered by the page_id column
  * @method Right findOneByIsInherited(boolean $is_inherited) Return the first Right filtered by the is_inherited column
@@ -96,8 +95,14 @@ abstract class BaseRightQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'Right', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'Right';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -105,7 +110,7 @@ abstract class BaseRightQuery extends ModelCriteria
      * Returns a new RightQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     RightQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   RightQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return RightQuery
      */
@@ -114,10 +119,8 @@ abstract class BaseRightQuery extends ModelCriteria
         if ($criteria instanceof RightQuery) {
             return $criteria;
         }
-        $query = new RightQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new RightQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -145,7 +148,7 @@ abstract class BaseRightQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = RightPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -162,18 +165,32 @@ abstract class BaseRightQuery extends ModelCriteria
     }
 
     /**
+     * Alias of findPk to use instance pooling
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     PropelPDO $con A connection object
+     *
+     * @return                 Right A model object, or null if the key is not found
+     * @throws PropelException
+     */
+     public function findOneById($key, $con = null)
+     {
+        return $this->findPk($key, $con);
+     }
+
+    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   Right A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 Right A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `ROLE_KEY`, `PAGE_ID`, `IS_INHERITED`, `MAY_EDIT_PAGE_DETAILS`, `MAY_EDIT_PAGE_CONTENTS`, `MAY_DELETE`, `MAY_CREATE_CHILDREN`, `MAY_VIEW_PAGE`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `rights` WHERE `ID` = :p0';
+        $sql = 'SELECT `id`, `role_key`, `page_id`, `is_inherited`, `may_edit_page_details`, `may_edit_page_contents`, `may_delete`, `may_create_children`, `may_view_page`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `rights` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -269,7 +286,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterById(1234); // WHERE id = 1234
      * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id > 12
+     * $query->filterById(array('min' => 12)); // WHERE id >= 12
+     * $query->filterById(array('max' => 12)); // WHERE id <= 12
      * </code>
      *
      * @param     mixed $id The value to use as filter.
@@ -282,8 +300,22 @@ abstract class BaseRightQuery extends ModelCriteria
      */
     public function filterById($id = null, $comparison = null)
     {
-        if (is_array($id) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($id)) {
+            $useMinMax = false;
+            if (isset($id['min'])) {
+                $this->addUsingAlias(RightPeer::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($id['max'])) {
+                $this->addUsingAlias(RightPeer::ID, $id['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(RightPeer::ID, $id, $comparison);
@@ -325,7 +357,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterByPageId(1234); // WHERE page_id = 1234
      * $query->filterByPageId(array(12, 34)); // WHERE page_id IN (12, 34)
-     * $query->filterByPageId(array('min' => 12)); // WHERE page_id > 12
+     * $query->filterByPageId(array('min' => 12)); // WHERE page_id >= 12
+     * $query->filterByPageId(array('max' => 12)); // WHERE page_id <= 12
      * </code>
      *
      * @see       filterByPage()
@@ -382,7 +415,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByIsInherited($isInherited = null, $comparison = null)
     {
         if (is_string($isInherited)) {
-            $is_inherited = in_array(strtolower($isInherited), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $isInherited = in_array(strtolower($isInherited), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::IS_INHERITED, $isInherited, $comparison);
@@ -409,7 +442,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByMayEditPageDetails($mayEditPageDetails = null, $comparison = null)
     {
         if (is_string($mayEditPageDetails)) {
-            $may_edit_page_details = in_array(strtolower($mayEditPageDetails), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $mayEditPageDetails = in_array(strtolower($mayEditPageDetails), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::MAY_EDIT_PAGE_DETAILS, $mayEditPageDetails, $comparison);
@@ -436,7 +469,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByMayEditPageContents($mayEditPageContents = null, $comparison = null)
     {
         if (is_string($mayEditPageContents)) {
-            $may_edit_page_contents = in_array(strtolower($mayEditPageContents), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $mayEditPageContents = in_array(strtolower($mayEditPageContents), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::MAY_EDIT_PAGE_CONTENTS, $mayEditPageContents, $comparison);
@@ -463,7 +496,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByMayDelete($mayDelete = null, $comparison = null)
     {
         if (is_string($mayDelete)) {
-            $may_delete = in_array(strtolower($mayDelete), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $mayDelete = in_array(strtolower($mayDelete), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::MAY_DELETE, $mayDelete, $comparison);
@@ -490,7 +523,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByMayCreateChildren($mayCreateChildren = null, $comparison = null)
     {
         if (is_string($mayCreateChildren)) {
-            $may_create_children = in_array(strtolower($mayCreateChildren), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $mayCreateChildren = in_array(strtolower($mayCreateChildren), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::MAY_CREATE_CHILDREN, $mayCreateChildren, $comparison);
@@ -517,7 +550,7 @@ abstract class BaseRightQuery extends ModelCriteria
     public function filterByMayViewPage($mayViewPage = null, $comparison = null)
     {
         if (is_string($mayViewPage)) {
-            $may_view_page = in_array(strtolower($mayViewPage), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $mayViewPage = in_array(strtolower($mayViewPage), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(RightPeer::MAY_VIEW_PAGE, $mayViewPage, $comparison);
@@ -530,7 +563,7 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -573,7 +606,7 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -616,7 +649,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -659,7 +693,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -701,8 +736,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * @param   Role|PropelObjectCollection $role The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   RightQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 RightQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByRole($role, $comparison = null)
     {
@@ -777,8 +812,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * @param   Page|PropelObjectCollection $page The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   RightQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 RightQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByPage($page, $comparison = null)
     {
@@ -853,8 +888,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   RightQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 RightQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -929,8 +964,8 @@ abstract class BaseRightQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   RightQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 RightQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {

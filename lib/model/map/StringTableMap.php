@@ -38,13 +38,13 @@ class StringTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR' , 'languages', 'ID', true, 3, null);
-        $this->addPrimaryKey('STRING_KEY', 'StringKey', 'VARCHAR', true, 80, null);
-        $this->addColumn('TEXT', 'Text', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addForeignPrimaryKey('language_id', 'LanguageId', 'VARCHAR' , 'languages', 'id', true, 3, null);
+        $this->addPrimaryKey('string_key', 'StringKey', 'VARCHAR', true, 80, null);
+        $this->addColumn('text', 'Text', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -67,10 +67,23 @@ class StringTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' => array('mode' => '', 'role_key' => 'languages', 'owner_allowed' => '', ),
-            'extended_keyable' => array('key_separator' => '|', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
+            'denyable' =>  array (
+  'mode' => '',
+  'role_key' => 'languages',
+  'owner_allowed' => '',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '|',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
         );
     } // getBehaviors()
 

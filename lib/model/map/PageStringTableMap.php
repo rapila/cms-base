@@ -38,17 +38,17 @@ class PageStringTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('PAGE_ID', 'PageId', 'INTEGER' , 'pages', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR' , 'languages', 'ID', true, 3, null);
-        $this->addColumn('IS_INACTIVE', 'IsInactive', 'BOOLEAN', false, 1, true);
-        $this->addColumn('LINK_TEXT', 'LinkText', 'VARCHAR', false, 50, '');
-        $this->addColumn('PAGE_TITLE', 'PageTitle', 'VARCHAR', true, 255, null);
-        $this->addColumn('META_KEYWORDS', 'MetaKeywords', 'VARCHAR', false, 255, null);
-        $this->addColumn('META_DESCRIPTION', 'MetaDescription', 'VARCHAR', false, 255, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addForeignPrimaryKey('page_id', 'PageId', 'INTEGER' , 'pages', 'id', true, null, null);
+        $this->addForeignPrimaryKey('language_id', 'LanguageId', 'VARCHAR' , 'languages', 'id', true, 3, null);
+        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, true);
+        $this->addColumn('link_text', 'LinkText', 'VARCHAR', false, 50, '');
+        $this->addColumn('page_title', 'PageTitle', 'VARCHAR', true, 255, null);
+        $this->addColumn('meta_keywords', 'MetaKeywords', 'VARCHAR', false, 255, null);
+        $this->addColumn('meta_description', 'MetaDescription', 'VARCHAR', false, 255, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -72,10 +72,23 @@ class PageStringTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' => array('mode' => 'admin_user', 'role_key' => '', 'owner_allowed' => '', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'denyable' =>  array (
+  'mode' => 'admin_user',
+  'role_key' => '',
+  'owner_allowed' => '',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

@@ -32,53 +32,53 @@ abstract class BaseLinkPeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 14;
 
-    /** the column name for the ID field */
-    const ID = 'links.ID';
+    /** the column name for the id field */
+    const ID = 'links.id';
 
-    /** the column name for the NAME field */
-    const NAME = 'links.NAME';
+    /** the column name for the name field */
+    const NAME = 'links.name';
 
-    /** the column name for the URL field */
-    const URL = 'links.URL';
+    /** the column name for the url field */
+    const URL = 'links.url';
 
-    /** the column name for the DESCRIPTION field */
-    const DESCRIPTION = 'links.DESCRIPTION';
+    /** the column name for the description field */
+    const DESCRIPTION = 'links.description';
 
-    /** the column name for the LANGUAGE_ID field */
-    const LANGUAGE_ID = 'links.LANGUAGE_ID';
+    /** the column name for the language_id field */
+    const LANGUAGE_ID = 'links.language_id';
 
-    /** the column name for the OWNER_ID field */
-    const OWNER_ID = 'links.OWNER_ID';
+    /** the column name for the owner_id field */
+    const OWNER_ID = 'links.owner_id';
 
-    /** the column name for the LINK_CATEGORY_ID field */
-    const LINK_CATEGORY_ID = 'links.LINK_CATEGORY_ID';
+    /** the column name for the link_category_id field */
+    const LINK_CATEGORY_ID = 'links.link_category_id';
 
-    /** the column name for the SORT field */
-    const SORT = 'links.SORT';
+    /** the column name for the sort field */
+    const SORT = 'links.sort';
 
-    /** the column name for the IS_PRIVATE field */
-    const IS_PRIVATE = 'links.IS_PRIVATE';
+    /** the column name for the is_private field */
+    const IS_PRIVATE = 'links.is_private';
 
-    /** the column name for the IS_INACTIVE field */
-    const IS_INACTIVE = 'links.IS_INACTIVE';
+    /** the column name for the is_inactive field */
+    const IS_INACTIVE = 'links.is_inactive';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'links.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'links.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'links.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'links.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'links.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'links.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'links.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'links.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of Link objects.
+     * An identity map to hold any loaded instances of Link objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array Link[]
@@ -204,20 +204,20 @@ abstract class BaseLinkPeer
             $criteria->addSelectColumn(LinkPeer::CREATED_BY);
             $criteria->addSelectColumn(LinkPeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.URL');
-            $criteria->addSelectColumn($alias . '.DESCRIPTION');
-            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
-            $criteria->addSelectColumn($alias . '.OWNER_ID');
-            $criteria->addSelectColumn($alias . '.LINK_CATEGORY_ID');
-            $criteria->addSelectColumn($alias . '.SORT');
-            $criteria->addSelectColumn($alias . '.IS_PRIVATE');
-            $criteria->addSelectColumn($alias . '.IS_INACTIVE');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.url');
+            $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.language_id');
+            $criteria->addSelectColumn($alias . '.owner_id');
+            $criteria->addSelectColumn($alias . '.link_category_id');
+            $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.is_private');
+            $criteria->addSelectColumn($alias . '.is_inactive');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -270,7 +270,7 @@ abstract class BaseLinkPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 Link
+     * @return Link
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -301,7 +301,7 @@ abstract class BaseLinkPeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -337,7 +337,7 @@ abstract class BaseLinkPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      Link $obj A Link object.
+     * @param Link $obj A Link object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -387,7 +387,7 @@ abstract class BaseLinkPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   Link Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return Link Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -406,8 +406,13 @@ abstract class BaseLinkPeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (LinkPeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         LinkPeer::$instances = array();
     }
 
@@ -2201,7 +2206,7 @@ abstract class BaseLinkPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseLinkPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseLinkPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new LinkTableMap());
+        $dbMap->addTableObject(new \LinkTableMap());
       }
     }
 
@@ -2211,7 +2216,7 @@ abstract class BaseLinkPeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return LinkPeer::OM_CLASS;
     }
@@ -2251,7 +2256,7 @@ abstract class BaseLinkPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2324,7 +2329,7 @@ abstract class BaseLinkPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2383,7 +2388,7 @@ abstract class BaseLinkPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2396,7 +2401,7 @@ abstract class BaseLinkPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      Link $obj The object to validate.
+     * @param Link $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -2429,7 +2434,7 @@ abstract class BaseLinkPeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      int $pk the primary key.
+     * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return Link
      */
