@@ -32,29 +32,29 @@ abstract class BaseUserRolePeer
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
     const NUM_HYDRATE_COLUMNS = 6;
 
-    /** the column name for the USER_ID field */
-    const USER_ID = 'user_roles.USER_ID';
+    /** the column name for the user_id field */
+    const USER_ID = 'user_roles.user_id';
 
-    /** the column name for the ROLE_KEY field */
-    const ROLE_KEY = 'user_roles.ROLE_KEY';
+    /** the column name for the role_key field */
+    const ROLE_KEY = 'user_roles.role_key';
 
-    /** the column name for the CREATED_AT field */
-    const CREATED_AT = 'user_roles.CREATED_AT';
+    /** the column name for the created_at field */
+    const CREATED_AT = 'user_roles.created_at';
 
-    /** the column name for the UPDATED_AT field */
-    const UPDATED_AT = 'user_roles.UPDATED_AT';
+    /** the column name for the updated_at field */
+    const UPDATED_AT = 'user_roles.updated_at';
 
-    /** the column name for the CREATED_BY field */
-    const CREATED_BY = 'user_roles.CREATED_BY';
+    /** the column name for the created_by field */
+    const CREATED_BY = 'user_roles.created_by';
 
-    /** the column name for the UPDATED_BY field */
-    const UPDATED_BY = 'user_roles.UPDATED_BY';
+    /** the column name for the updated_by field */
+    const UPDATED_BY = 'user_roles.updated_by';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of UserRole objects.
+     * An identity map to hold any loaded instances of UserRole objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array UserRole[]
@@ -172,12 +172,12 @@ abstract class BaseUserRolePeer
             $criteria->addSelectColumn(UserRolePeer::CREATED_BY);
             $criteria->addSelectColumn(UserRolePeer::UPDATED_BY);
         } else {
-            $criteria->addSelectColumn($alias . '.USER_ID');
-            $criteria->addSelectColumn($alias . '.ROLE_KEY');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
-            $criteria->addSelectColumn($alias . '.CREATED_BY');
-            $criteria->addSelectColumn($alias . '.UPDATED_BY');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.role_key');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -230,7 +230,7 @@ abstract class BaseUserRolePeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 UserRole
+     * @return UserRole
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -261,7 +261,7 @@ abstract class BaseUserRolePeer
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
      *
-     * Use this method directly if you want to work with an executed statement durirectly (for example
+     * Use this method directly if you want to work with an executed statement directly (for example
      * to perform your own object hydration).
      *
      * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
@@ -297,7 +297,7 @@ abstract class BaseUserRolePeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      UserRole $obj A UserRole object.
+     * @param UserRole $obj A UserRole object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -347,7 +347,7 @@ abstract class BaseUserRolePeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   UserRole Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return UserRole Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -366,8 +366,13 @@ abstract class BaseUserRolePeer
      *
      * @return void
      */
-    public static function clearInstancePool()
+    public static function clearInstancePool($and_clear_all_references = false)
     {
+      if ($and_clear_all_references) {
+        foreach (UserRolePeer::$instances as $instance) {
+          $instance->clearAllReferences(true);
+        }
+      }
         UserRolePeer::$instances = array();
     }
 
@@ -1711,7 +1716,7 @@ abstract class BaseUserRolePeer
     {
       $dbMap = Propel::getDatabaseMap(BaseUserRolePeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseUserRolePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new UserRoleTableMap());
+        $dbMap->addTableObject(new \UserRoleTableMap());
       }
     }
 
@@ -1721,7 +1726,7 @@ abstract class BaseUserRolePeer
      *
      * @return string ClassName
      */
-    public static function getOMClass()
+    public static function getOMClass($row = 0, $colnum = 0)
     {
         return UserRolePeer::OM_CLASS;
     }
@@ -1757,7 +1762,7 @@ abstract class BaseUserRolePeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1838,7 +1843,7 @@ abstract class BaseUserRolePeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1905,7 +1910,7 @@ abstract class BaseUserRolePeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1918,7 +1923,7 @@ abstract class BaseUserRolePeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      UserRole $obj The object to validate.
+     * @param UserRole $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1953,7 +1958,7 @@ abstract class BaseUserRolePeer
      * @param   int $user_id
      * @param   string $role_key
      * @param      PropelPDO $con
-     * @return   UserRole
+     * @return UserRole
      */
     public static function retrieveByPK($user_id, $role_key, PropelPDO $con = null) {
         $_instancePoolKey = serialize(array((string) $user_id, (string) $role_key));

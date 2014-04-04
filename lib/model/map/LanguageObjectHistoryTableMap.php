@@ -38,14 +38,14 @@ class LanguageObjectHistoryTableMap extends TableMap
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('OBJECT_ID', 'ObjectId', 'INTEGER' , 'objects', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR' , 'languages', 'ID', true, 3, null);
-        $this->addColumn('DATA', 'Data', 'BLOB', false, null, null);
-        $this->addPrimaryKey('REVISION', 'Revision', 'INTEGER', true, null, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('CREATED_BY', 'CreatedBy', 'INTEGER', 'users', 'ID', false, null, null);
-        $this->addForeignKey('UPDATED_BY', 'UpdatedBy', 'INTEGER', 'users', 'ID', false, null, null);
+        $this->addForeignPrimaryKey('object_id', 'ObjectId', 'INTEGER' , 'objects', 'id', true, null, null);
+        $this->addForeignPrimaryKey('language_id', 'LanguageId', 'VARCHAR' , 'languages', 'id', true, 3, null);
+        $this->addColumn('data', 'Data', 'BLOB', false, null, null);
+        $this->addPrimaryKey('revision', 'Revision', 'INTEGER', true, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'users', 'id', false, null, null);
         // validators
     } // initialize()
 
@@ -69,10 +69,23 @@ class LanguageObjectHistoryTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'denyable' => array('mode' => 'backend_user', 'role_key' => '', 'owner_allowed' => '', ),
-            'extended_timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_updated_at' => 'false', ),
-            'attributable' => array('create_column' => 'created_by', 'update_column' => 'updated_by', ),
-            'extended_keyable' => array('key_separator' => '_', ),
+            'denyable' =>  array (
+  'mode' => 'backend_user',
+  'role_key' => '',
+  'owner_allowed' => '',
+),
+            'extended_timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
+            'attributable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
+            'extended_keyable' =>  array (
+  'key_separator' => '_',
+),
         );
     } // getBehaviors()
 

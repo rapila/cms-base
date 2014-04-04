@@ -68,8 +68,14 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'TagInstance', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'TagInstance';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -77,7 +83,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * Returns a new TagInstanceQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     TagInstanceQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param   TagInstanceQuery|Criteria $criteria Optional Criteria to build the query from
      *
      * @return TagInstanceQuery
      */
@@ -86,10 +92,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
         if ($criteria instanceof TagInstanceQuery) {
             return $criteria;
         }
-        $query = new TagInstanceQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new TagInstanceQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -118,7 +122,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = TagInstancePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -141,12 +145,12 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   TagInstance A model object, or null if the key is not found
-     * @throws   PropelException
+     * @return                 TagInstance A model object, or null if the key is not found
+     * @throws PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `TAG_ID`, `TAGGED_ITEM_ID`, `MODEL_NAME`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY`, `UPDATED_BY` FROM `tag_instances` WHERE `TAG_ID` = :p0 AND `TAGGED_ITEM_ID` = :p1 AND `MODEL_NAME` = :p2';
+        $sql = 'SELECT `tag_id`, `tagged_item_id`, `model_name`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `tag_instances` WHERE `tag_id` = :p0 AND `tagged_item_id` = :p1 AND `model_name` = :p2';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -258,7 +262,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByTagId(1234); // WHERE tag_id = 1234
      * $query->filterByTagId(array(12, 34)); // WHERE tag_id IN (12, 34)
-     * $query->filterByTagId(array('min' => 12)); // WHERE tag_id > 12
+     * $query->filterByTagId(array('min' => 12)); // WHERE tag_id >= 12
+     * $query->filterByTagId(array('max' => 12)); // WHERE tag_id <= 12
      * </code>
      *
      * @see       filterByTag()
@@ -273,8 +278,22 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      */
     public function filterByTagId($tagId = null, $comparison = null)
     {
-        if (is_array($tagId) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($tagId)) {
+            $useMinMax = false;
+            if (isset($tagId['min'])) {
+                $this->addUsingAlias(TagInstancePeer::TAG_ID, $tagId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($tagId['max'])) {
+                $this->addUsingAlias(TagInstancePeer::TAG_ID, $tagId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(TagInstancePeer::TAG_ID, $tagId, $comparison);
@@ -287,7 +306,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByTaggedItemId(1234); // WHERE tagged_item_id = 1234
      * $query->filterByTaggedItemId(array(12, 34)); // WHERE tagged_item_id IN (12, 34)
-     * $query->filterByTaggedItemId(array('min' => 12)); // WHERE tagged_item_id > 12
+     * $query->filterByTaggedItemId(array('min' => 12)); // WHERE tagged_item_id >= 12
+     * $query->filterByTaggedItemId(array('max' => 12)); // WHERE tagged_item_id <= 12
      * </code>
      *
      * @param     mixed $taggedItemId The value to use as filter.
@@ -300,8 +320,22 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      */
     public function filterByTaggedItemId($taggedItemId = null, $comparison = null)
     {
-        if (is_array($taggedItemId) && null === $comparison) {
-            $comparison = Criteria::IN;
+        if (is_array($taggedItemId)) {
+            $useMinMax = false;
+            if (isset($taggedItemId['min'])) {
+                $this->addUsingAlias(TagInstancePeer::TAGGED_ITEM_ID, $taggedItemId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($taggedItemId['max'])) {
+                $this->addUsingAlias(TagInstancePeer::TAGGED_ITEM_ID, $taggedItemId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
         return $this->addUsingAlias(TagInstancePeer::TAGGED_ITEM_ID, $taggedItemId, $comparison);
@@ -343,7 +377,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -386,7 +420,7 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -429,7 +463,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
      * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by >= 12
+     * $query->filterByCreatedBy(array('max' => 12)); // WHERE created_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByCreatedBy()
@@ -472,7 +507,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
      * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
+     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by >= 12
+     * $query->filterByUpdatedBy(array('max' => 12)); // WHERE updated_by <= 12
      * </code>
      *
      * @see       filterByUserRelatedByUpdatedBy()
@@ -514,8 +550,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * @param   Tag|PropelObjectCollection $tag The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   TagInstanceQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 TagInstanceQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByTag($tag, $comparison = null)
     {
@@ -590,8 +626,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   TagInstanceQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 TagInstanceQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByCreatedBy($user, $comparison = null)
     {
@@ -666,8 +702,8 @@ abstract class BaseTagInstanceQuery extends ModelCriteria
      * @param   User|PropelObjectCollection $user The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return   TagInstanceQuery The current query, for fluid interface
-     * @throws   PropelException - if the provided filter is invalid.
+     * @return                 TagInstanceQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
      */
     public function filterByUserRelatedByUpdatedBy($user, $comparison = null)
     {
