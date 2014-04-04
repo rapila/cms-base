@@ -1,6 +1,5 @@
 <?php
-class TemplateMarker {
-	public $oTemplate;
+class TemplateMarker extends TemplatePart {
 	public $aContents;
 	public $bIsContext;
 	public function __construct($oTemplate, $aContents, $bIsContext = false) {
@@ -16,10 +15,6 @@ class TemplateMarker {
 	}
 	public function replace() {
 		$this->oTemplate->replaceAt($this, $this->aContents);
-		$this->oTemplate = null;
-	}
-	public function destroy() {
-		$this->oTemplate->replaceAt($this, null);
 		$this->oTemplate = null;
 	}
 	public function __toString() { return '--marker--'; }
