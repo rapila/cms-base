@@ -121,10 +121,6 @@ class TemplateIdentifier extends TemplatePart {
 		return array_keys($aVars);
 	}
 
-	public function setTemplate(Template $oTemplate) {
-		$this->oTemplate = $oTemplate;
-	}
-	
 	public function __toString() {
 		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
 	}
