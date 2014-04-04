@@ -296,29 +296,38 @@ class Template {
 		} else {
 			array_splice($this->aTemplateContents, $iIndex, $iLength, $mReplacement);
 		}
+		$this->invalidateIdentifierList();
 	}
 
 	private function insertAt($iIndex, $mReplacement) {
 		$this->replaceAt($iIndex, $mReplacement, 0);
 	}
 
+	private $aAllIdentifiers = null;
+
 	private function allIdentifiers() {
-		$aResult = array();
-		foreach($this->aTemplateContents as $mContent) {
-			if($mContent instanceof TemplateIdentifier) {
-				$aResult[] = $mContent;
+		if(!$this->aAllIdentifiers) {
+			$this->aAllIdentifiers = array();
+			foreach($this->aTemplateContents as $iKey => $mContent) {
+				if($mContent instanceof TemplateIdentifier) {
+					$this->aAllIdentifiers[$iKey] = $mContent;
+				}
 			}
 		}
-		return $aResult;
+		return $this->aAllIdentifiers;
+	}
+	
+	private function invalidateIdentifierList() {
+		$this->aAllIdentifiers = null;
 	}
 
 	public function identifiersMatching($sName = null, $sValue = null, $aParameters = null, $bFindFirst = false, $iStartPosition = 0) {
 		$aResult = array();
-		for($iKey = $iStartPosition; $iKey < count($this->aTemplateContents) ; $iKey++) {
-			$mValue = $this->aTemplateContents[$iKey];
-			if(!($mValue instanceof TemplateIdentifier)) {
-				continue;
-			}
+		$aIdentifiers = $this->allIdentifiers();
+		if($iStartPosition) {
+			$aIdentifiers = array_slice($aIdentifiers, $iStartPosition, null, true);
+		}
+		foreach($aIdentifiers as $iKey => $mValue) {
 			if($sName === null || ($mValue->getName() === $sName && ($sValue === self::$ANY_VALUE || $mValue->getValue() === $sValue))) {
 				if($aParameters === null || count($aParameters) === 0) {
 					if($bFindFirst) {
@@ -960,6 +969,7 @@ class Template {
 				$this->aTemplateContents[$iKey]->setTemplate($this);
 			}
 		}
+		$this->invalidateIdentifierList();
 	}
 
 	public function closeIdentifier($sName, $sValue = null) {
