@@ -237,8 +237,8 @@ class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
 		$this->assertSame(<<<EOT
-<link rel="stylesheet" media="all" href="//example.com/get_file/consolidated_resource/css/7536fdcd091d2ac23c503e8f8f07a8b5/87edae27a42137359531de113513c3f9" />
-<script type="text/javascript" src="//example.com/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818/b60745877cf6f631c3f8f3d63b2546c1/6b71198caa246549b55c85ac758dbac8"></script>
+<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/7536fdcd091d2ac23c503e8f8f07a8b5/87edae27a42137359531de113513c3f9" />
+<script type="text/javascript" src="/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818/b60745877cf6f631c3f8f3d63b2546c1/6b71198caa246549b55c85ac758dbac8"></script>
 
 EOT
 , $oIncluder->getIncludes(true, true)->render());
@@ -251,10 +251,10 @@ EOT
 		$oIncluder->addResource('widget/widget.js');
 		$oIncluder->addResource('e-mail-defuscate.js');
 		$this->assertSame(<<<EOT
-<script type="text/javascript" src="//example.com/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818"></script>
+<script type="text/javascript" src="/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="//example.com/get_file/consolidated_resource/js/d8c0284358c7a699c5602b313fe0426e/1da20a95bb9208420c4b8679d262aa06"></script>
+<script type="text/javascript" src="/get_file/consolidated_resource/js/d8c0284358c7a699c5602b313fe0426e/1da20a95bb9208420c4b8679d262aa06"></script>
 
 EOT
 , $oIncluder->getIncludes(true, 'internal')->render());
