@@ -136,8 +136,8 @@ EOT;
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('<img src="/base/web/images/admin/accept.png" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
 ', $oTemplate->render());
 	}
 }
