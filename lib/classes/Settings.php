@@ -87,16 +87,14 @@ class Settings {
 	}
 	
 	private static function replaceEnvVars($sInput) {
-		$aEnvs = null;
-		if(count($_ENV)) {
-			$aEnvs = &$_ENV;
-		} else {
-			$aEnvs = &$_SERVER;
-		}
-		$aSearch = array_keys($aEnvs);
-		$aReplace = array_values($aEnvs);
-		foreach($aSearch as &$sEnvVarName) {
-			$sEnvVarName = "\${$sEnvVarName}";
+		$aSearch = array();
+		$aReplace = array();
+		foreach((count($_ENV) ? $_ENV : $_SERVER) as $sEnvVarName => $sEnvVarValue) {
+			if(!is_string($sEnvVarValue)) {
+				continue;
+			}
+			$aSearch[] = "\${{$sEnvVarName}}";
+			$aReplace[] = $sEnvVarValue;
 		}
 		return str_replace($aSearch, $aReplace, $sInput);
 	}
