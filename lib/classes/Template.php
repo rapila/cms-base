@@ -616,18 +616,27 @@ class Template {
 		$this->renderDirectOutput();
 	}
 
-	private function convertIdentifierAndContextToMarkers($sIdentifier, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0) {
+	private function convertIdentifierAndContextToMarkers($mIdentifier, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0) {
 		$aMarkers = array();
-
 		$bSaveContexts = ($iFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT;
+
+		$sIdentifier = $mIdentifier;
+		if($mIdentifier instanceof TemplateIdentifier) {
+			$sIdentifier = $mIdentifier->getName();
+			$sValue = $mIdentifier->getValue();
+			$aIdentifiers = array();
+			$aIdentifiers[$this->identifierPosition($mIdentifier)] = $mIdentifier;
+		} else {
+			// Plain identifer markers + Context markers
+			$aIdentifiers = $this->identifiersMatching($sIdentifier, $sValue);
+			ksort($aIdentifiers);
+		}
 
 		$aParams = array("name" => $sIdentifier);
 		if($sValue !== TemplateIdentifier::PARAMETER_EMPTY_VALUE) {
 			$aParams['value'] = $sValue;
 		}
-
-		// Plain identifer markers + Context markers
-		$aIdentifiers = $this->identifiersMatching($sIdentifier, $sValue) + $this->identifiersMatching("identifierContext", self::$ANY_VALUE, $aParams);
+		$aIdentifiers = $aIdentifiers + $this->identifiersMatching("identifierContext", self::$ANY_VALUE, $aParams);
 		ksort($aIdentifiers);
 
 		$oContextStart = null;
