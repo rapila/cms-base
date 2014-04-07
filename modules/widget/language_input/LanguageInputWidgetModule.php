@@ -9,6 +9,7 @@ class LanguageInputWidgetModule extends PersistentWidgetModule {
 	public function __construct($sWidgetId = null) {
 		parent::__construct($sWidgetId);
 		$this->setSetting('is_monolingual', self::isMonolingual());
+		$this->setSetting('session_language', Session::language());
 	}
 	
 	public function getLanguages($bUseAdminLanguages = false, $bDisplayInOriginalLanguage = false) {
