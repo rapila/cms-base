@@ -17,6 +17,7 @@ class LinksAdminModule extends AdminModule {
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
+    $this->oSidebarWidget->setSetting('initial_selection', array('link_category_id' => $this->oListWidget->getLinkCategoryId()));
 		
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}
@@ -63,7 +64,7 @@ class LinksAdminModule extends AdminModule {
 		}
 		return array();
 	}
-
+	
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
