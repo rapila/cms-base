@@ -10,13 +10,14 @@ class DocumentsAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget = new DocumentsViewWidgetModule();
+		if(isset($_REQUEST['document_category_id'])) {
+			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
+		}
+		
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
-		if(isset($_REQUEST['document_category_id'])) {
-			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
-		}
     $this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
 	}
 	
