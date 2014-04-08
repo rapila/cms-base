@@ -125,6 +125,9 @@ class MediaObjectFrontendModule extends FrontendModule {
 				$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$sSrc);
 				return $aMimeTypes[0];
 			} else if($bGetHeadersEnabled) {
+				if(StringUtil::startsWith($sSrc, '//')) {
+					$sSrc = "http:$sSrc";
+				}
 				$aHeaders = @get_headers($sSrc, true);
 				if($aHeaders && isset($aHeaders['Content-Type'])) {
 					$sContentType = $aHeaders['Content-Type'];
