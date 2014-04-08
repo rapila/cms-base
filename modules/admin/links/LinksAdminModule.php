@@ -64,7 +64,14 @@ class LinksAdminModule extends AdminModule {
 		}
 		return array();
 	}
-	
+
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'link_category_id') {
+			return LinkCategoryPeer::ID;
+		}
+		return null;
+	}
+
 	public function getCriteria() {
 		$oCriteria = new Criteria();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
