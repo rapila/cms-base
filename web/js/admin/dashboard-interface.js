@@ -59,7 +59,7 @@ var Dashboard = (function($) {
 			
 			if (thisWidgetSettings.editable) {
 				var widget_edit = $('<a href="#" class="edit">EDIT</a>').mousedown(function (e) {
-					e.stopPropagation();	
+					e.stopPropagation();
 				}).toggle(function () {
 					$(this).css({backgroundPosition: '-66px 0', width: '55px'})
 						.parents(settings.widgetSelector)
@@ -104,6 +104,7 @@ var Dashboard = (function($) {
 		});
 		
 		$('.dashboard-edit-box').each(function () {
+			console.log('edit', this);
 			$('input',this).keyup(function () {
 				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
 			});
