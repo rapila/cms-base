@@ -121,6 +121,10 @@ class LinkListWidgetModule extends WidgetModule {
 		}
 		return null;
 	}
+
+	public function getLinkCategoryId() {
+		return $this->oDelegateProxy->getLinkCategoryId();
+	}	
 	
 	public function getLinkCategoryName() {
 		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->oDelegateProxy->getLinkCategoryId());

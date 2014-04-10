@@ -43,7 +43,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 					$sSrcToCheck = substr($sSrcToCheck, 0, $iQSPos);
 				}
 				if(file_exists(MAIN_DIR.'/'.$sSrcToCheck)) {
-					$aDocumentInfo['url'] = MAIN_DIR_FE_PHP.$aDocumentInfo['url'];
+					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
 				}
 				$sSrc = @$aDocumentInfo['url'];
 			} else {
@@ -125,6 +125,9 @@ class MediaObjectFrontendModule extends FrontendModule {
 				$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes(MAIN_DIR.'/'.$sSrc);
 				return $aMimeTypes[0];
 			} else if($bGetHeadersEnabled) {
+				if(StringUtil::startsWith($sSrc, '//')) {
+					$sSrc = "http:$sSrc";
+				}
 				$aHeaders = @get_headers($sSrc, true);
 				if($aHeaders && isset($aHeaders['Content-Type'])) {
 					$sContentType = $aHeaders['Content-Type'];

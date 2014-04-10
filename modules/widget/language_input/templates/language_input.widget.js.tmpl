@@ -29,8 +29,8 @@ Widget.types.language_input = {
 			this.fire('value-changed', this._element.val());
 		}.bind(this));
 		var current_value = this.getSelectedLanguageId();
-		if(current_value === null) {
-			current_value = '';
+		if(current_value === null && !this.settings.international_option) {
+			current_value = this.settings.session_language;
 		}
 		this._element.val(current_value);
 	},
