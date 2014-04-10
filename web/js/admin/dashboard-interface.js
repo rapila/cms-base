@@ -59,7 +59,7 @@ var Dashboard = (function($) {
 			
 			if (thisWidgetSettings.editable) {
 				var widget_edit = $('<a href="#" class="edit">EDIT</a>').mousedown(function (e) {
-					e.stopPropagation();
+					e.stopPropagation();	
 				}).toggle(function () {
 					$(this).css({backgroundPosition: '-66px 0', width: '55px'})
 						.parents(settings.widgetSelector)
