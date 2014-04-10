@@ -104,7 +104,6 @@ var Dashboard = (function($) {
 		});
 		
 		$('.dashboard-edit-box').each(function () {
-			console.log('edit', this);
 			$('input',this).keyup(function () {
 				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
 			});
