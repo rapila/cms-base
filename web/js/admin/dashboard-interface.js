@@ -42,6 +42,8 @@ var Dashboard = (function($) {
 
 		$(settings.widgetSelector, $(settings.columns)).each(function () {
 			var widget = $(this);
+			var head = widget.find(settings.handleSelector);
+
 			if(widget.data('isDashboardWidget')) {
 				return;
 			}
@@ -55,7 +57,7 @@ var Dashboard = (function($) {
 					var widget = $(this).parents(settings.widgetSelector);
 					widget.triggerHandler('db-removing');
 					return false;
-				}).appendTo($(settings.handleSelector, this));
+				}).appendTo(head);
 			}
 
 			if (thisWidgetSettings.editable) {
@@ -64,15 +66,15 @@ var Dashboard = (function($) {
 				}).on('click', function toggle() {
 					if(toggle.toggled = !toggle.toggled) {
 						widget_edit.addClass('active');
-						widget.find('.dashboard-edit-box').show().find('input').focus();
+						widget.addClass('editing').find('.dashboard-edit-box input').focus();
 					} else {
 						widget_edit.removeClass('active');
-						widget.find('.dashboard-edit-box').hide();
+						widget.removeClass('editing');
 						widget.triggerHandler('db-configured');
 					}
 					return false;
-				}).appendTo($(settings.handleSelector, this));
-				$('<div class="dashboard-edit-box" style="display:none;"/>')
+				}).appendTo(head);
+				$('<div class="dashboard-edit-box" />')
 					.append('<ul><li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
 					.append((function(){
 						var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
@@ -82,24 +84,20 @@ var Dashboard = (function($) {
 						return colorList + '</ul>';
 					})())
 					.append('</ul>')
-					.insertAfter($(settings.handleSelector, this));
+					.insertAfter(head);
 			}
 
 			if (thisWidgetSettings.collapsible) {
-				var widget_collapse = $('<a class="collapse">⇪</a>').mousedown(function (e) {
-					e.stopPropagation();
-				}).on('click', function toggle() {
-					if(toggle.toggled = !toggle.toggled) {
-						widget_collapse.addClass('active');
-						widget.find(settings.contentSelector).hide();
+				head.on('dblclick', function toggle() {
+					if(!widget.hasClass('collapsed')) {
+						widget.addClass('collapsed');
 						widget.triggerHandler('db-collapsed', true);
 					} else {
-						widget_collapse.removeClass('active');
-						widget.find(settings.contentSelector).show();
+						widget.removeClass('collapsed');
 						widget.triggerHandler('db-collapsed', false);
 					}
 					return false;
-				}).prependTo($(settings.handleSelector,this));
+				});
 			}
 		});
 
