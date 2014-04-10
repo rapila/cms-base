@@ -1,0 +1,198 @@
+@import 'nib'
+
+#dashboard-columns img,
+#dashboard-columns p,
+#dashboard-columns h1,
+#dashboard-columns h2,
+#dashboard-columns h3,
+#dashboard-columns h4,
+#dashboard-columns h5,
+#dashboard-columns h6,
+#dashboard-columns ul,
+#dashboard-columns ol
+	border medium none
+	list-style none outside none
+	margin 0
+	padding 0
+
+a
+	color white
+
+/* Columns section */
+#dashboard-columns .dashboard-column-group
+	clear left
+
+#dashboard-columns .dashboard-column
+	float left
+	width 100%
+	/* Default to full-width */
+	min-height 40px
+	-moz-box-sizing border-box
+	box-sizing border-box
+
+#dashboard-columns .dashboard-column.clear
+	clear left
+
+#dashboard-columns .dashboard-widget
+	padding 2px
+	box-shadow 0px 0px 7px 3px rgba(black, 0.3);
+	border-radius 4px
+	-moz-border-radius 4px
+	-webkit-border-radius 4px
+
+#dashboard-columns .dashboard-widget.dragging
+	height auto !important
+
+#dashboard-columns .dashboard-widget.dragging .dashboard-widget-content,
+#dashboard-columns .dashboard-widget.dragging .dashboard-edit-box
+	display none
+
+#dashboard-columns .dashboard-widget-placeholder
+	border 2px dashed #999
+
+#dashboard-columns .dashboard-widget,
+#dashboard-columns .dashboard-widget-placeholder
+	margin 10px 10px 0 5px
+
+#dashboard-columns .dashboard-column:first-child .dashboard-widget,
+#dashboard-columns .dashboard-column:first-child .dashboard-widget-placeholder
+	margin-left 10px
+
+#dashboard-columns .dashboard-column:last-child .dashboard-widget,
+#dashboard-columns .dashboard-column:last-child .dashboard-widget-placeholder
+	margin-right 10px
+
+#dashboard-columns .dashboard-widget .dashboard-widget-head
+	color #000
+	overflow hidden
+	width 100%
+	height 30px
+	line-height 30px
+
+#dashboard-columns .dashboard-widget .dashboard-widget-head h3
+	padding 0 5px
+	float left
+	color black
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content h3,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h4
+	color #FFFFFF
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content
+	background-color #333
+	padding 1em
+	color #DDD
+	-moz-border-radius-bottomleft 2px
+	-moz-border-radius-bottomright 2px
+	-webkit-border-bottom-left-radius 2px
+	-webkit-border-bottom-right-radius 2px
+	line-height 1.2em
+	overflow-x hidden
+	overflow-y auto
+	max-height 400px
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content p,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h4,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h5,
+#dashboard-columns .dashboard-widget .dashboard-widget-content h6
+	padding 0.4em 0
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content p,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li
+	line-height 1.5em
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content img
+	float right
+	margin 10px
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content pre
+	padding 0.5em 5px
+	color #EEE
+	font-size 12px
+
+#dashboard-columns *[data-widget-type=static_text] ul
+	padding 5px 0 5px 20px
+	list-style disc
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li,
+#dashboard-columns .dashboard-widget .dashboard-widget-content *[data-widget-type=static_text] li:nth-child(2n)
+	background-color transparent
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content ul.images
+	padding 7px 0 0 0
+	list-style none
+	height 1%
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content ul.images li
+	display inline
+	float left
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content ul.images img
+	display inline
+	float left
+	margin 0 0 7px 7px
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr,
+#dashboard-columns .dashboard-widget .dashboard-widget-content table th,
+#dashboard-columns .dashboard-widget .dashboard-widget-content li
+	background-color #444444
+	color inherit
+
+#dashboard-columns .dashboard-widget .dashboard-widget-content table tr:nth-child(2n),
+#dashboard-columns .dashboard-widget .dashboard-widget-content li:nth-child(2n)
+	background-color #555555
+
+#dashboard-columns ul.ui-list li.ui-list-headrow,
+#dashboard-columns table.ui-list tr.ui-list-headrow th
+	border-bottom none
+	background-color inherit
+	font-size .85em
+
+/* End Columns section */
+/* JS-Enabled CSS */
+
+.dashboard-widget-head > a
+	display block
+	background black
+	color white
+	border-radius 2px
+	line-height 1.8em
+	padding 0 6px
+	margin 4px 3px
+	cursor pointer
+	&.edit,
+	&.remove
+		float right
+	&.collapse
+		float left
+	&.active
+		color (white - 40%)
+
+.dashboard-edit-box
+	overflow hidden
+	background-color #333
+	margin-bottom 2px
+	padding 10px 0
+
+.dashboard-edit-box li.item
+	padding 10px 0
+	overflow hidden
+	float left
+	width 100%
+	clear both
+
+.dashboard-edit-box label
+	float left
+	width 30%
+	color #FFF
+	padding 0 0 0 10px
+
+.dashboard-edit-box ul.colors li
+	width 20px
+	height 20px
+	border 1px solid #EEE
+	float left
+	display inline
+	margin 0 5px 0 0
+	cursor pointer
+
