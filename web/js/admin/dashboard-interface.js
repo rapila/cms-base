@@ -39,39 +39,42 @@ var Dashboard = (function($) {
 		var _this = this,
 			$ = this.jQuery,
 			settings = this.settings;
-			
+
 		$(settings.widgetSelector, $(settings.columns)).each(function () {
-			if($(this).data('isDashboardWidget')) {
+			var widget = $(this);
+			var head = widget.find(settings.handleSelector);
+
+			if(widget.data('isDashboardWidget')) {
 				return;
 			}
-			$(this).data('isDashboardWidget', true)
-			
+			widget.data('isDashboardWidget', true)
+
 			var thisWidgetSettings = _this.getWidgetSettings(this.id);
 			if (thisWidgetSettings.removable) {
-				$('<a href="#" class="remove">CLOSE</a>').mousedown(function (e) {
-					e.stopPropagation();	
+				$('<a class="remove">✘</a>').mousedown(function (e) {
+					e.stopPropagation();
 				}).click(function () {
 					var widget = $(this).parents(settings.widgetSelector);
 					widget.triggerHandler('db-removing');
 					return false;
-				}).appendTo($(settings.handleSelector, this));
+				}).appendTo(head);
 			}
-			
+
 			if (thisWidgetSettings.editable) {
-				var widget_edit = $('<a href="#" class="edit">EDIT</a>').mousedown(function (e) {
-					e.stopPropagation();	
-				}).toggle(function () {
-					$(this).css({backgroundPosition: '-66px 0', width: '55px'})
-						.parents(settings.widgetSelector)
-							.find('.dashboard-edit-box').show().find('input').focus();
+				var widget_edit = $('<a class="edit">Edit</a>').mousedown(function (e) {
+					e.stopPropagation();
+				}).on('click', function toggle() {
+					if(toggle.toggled = !toggle.toggled) {
+						widget_edit.addClass('active');
+						widget.addClass('editing').find('.dashboard-edit-box input').focus();
+					} else {
+						widget_edit.removeClass('active');
+						widget.removeClass('editing');
+						widget.triggerHandler('db-configured');
+					}
 					return false;
-				}, function () {
-					var widget = $(this).css({backgroundPosition: '', width: ''}).parents(settings.widgetSelector);
-					widget.find('.dashboard-edit-box').hide();
-					widget.triggerHandler('db-configured');
-					return false;
-				}).appendTo($(settings.handleSelector,this));
-				$('<div class="dashboard-edit-box" style="display:none;"/>')
+				}).appendTo(head);
+				$('<div class="dashboard-edit-box" />')
 					.append('<ul><li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
 					.append((function(){
 						var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
@@ -81,31 +84,26 @@ var Dashboard = (function($) {
 						return colorList + '</ul>';
 					})())
 					.append('</ul>')
-					.insertAfter($(settings.handleSelector,this));
+					.insertAfter(head);
 			}
-			
+
 			if (thisWidgetSettings.collapsible) {
-				$('<a href="#" class="collapse">COLLAPSE</a>').mousedown(function (e) {
-					e.stopPropagation();	
-				}).toggle(function () {
-					var widget = $(this).css({backgroundPosition: '-38px 0'}).parents(settings.widgetSelector);
-					widget.find(settings.contentSelector).hide();
-					widget_edit.hide();
-					widget.triggerHandler('db-collapsed', true);
+				head.on('dblclick', function toggle() {
+					if(!widget.hasClass('collapsed')) {
+						widget.addClass('collapsed');
+						widget.triggerHandler('db-collapsed', true);
+					} else {
+						widget.removeClass('collapsed');
+						widget.triggerHandler('db-collapsed', false);
+					}
 					return false;
-				},function () {
-					var widget = $(this).css({backgroundPosition: ''}).parents(settings.widgetSelector);
-					widget.find(settings.contentSelector).show();
-					widget_edit.show();
-					widget.triggerHandler('db-collapsed', false);
-					return false;
-				}).prependTo($(settings.handleSelector,this));
+				});
 			}
 		});
-		
+
 		$('.dashboard-edit-box').each(function () {
 			$('input',this).keyup(function () {
-				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
+				$(this).parents(settings.widgetSelector).find('h3').text( $(this).val().length>23 ? $(this).val().substr(0,20)+'…' : $(this).val() );
 			});
 			$('ul.colors li', this).click(function () {
 				var currentColor = $(this).css('backgroundColor');
