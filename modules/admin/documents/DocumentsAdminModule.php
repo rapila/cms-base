@@ -13,26 +13,26 @@ class DocumentsAdminModule extends AdminModule {
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
-		
+
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
-    $this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
+		$this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
 	}
-	
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-		
+
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('document_category_id', 'name_with_externally_managed_state', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -60,7 +60,7 @@ class DocumentsAdminModule extends AdminModule {
 
 	public function getCustomListElements() {
 		if($this->getCriteria()->count() > 0) {
-		 	return array(
+			return array(
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'name_with_externally_managed_state' => StringPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all'),
@@ -70,11 +70,11 @@ class DocumentsAdminModule extends AdminModule {
 		}
 		return array();
 	}
-	
+
 	public function usedWidgets() {
 		return array($this->oListWidget, $this->oSidebarWidget, $this->oInputWidget);
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = DocumentCategoryQuery::create();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
