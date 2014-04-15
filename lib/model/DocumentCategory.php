@@ -12,6 +12,13 @@ class DocumentCategory extends BaseDocumentCategory {
 		return $this->countDocuments();
 	}
 	
+	public function getNameWithExternallyManagedState() {
+		if($this->getIsExternallyManaged() === false) {
+			return $this->getName();
+		}
+		return $this->getName().' [!]';
+	}
+	
 	public function getSettings() {
 		if($this->getMaxWidth() != null) {
 			return $this->getMaxWidth().'px';
