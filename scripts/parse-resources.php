@@ -12,17 +12,17 @@ if(!isset($aOptions['u'])) {
 	$aOptions['u'] = true;
 }
 
-foreach(explode('/', 'w/h/s/d') as $sOpt) {
+foreach(explode('/', 'w/h/b/d') as $sOpt) {
 	$aOptions[$sOpt] = isset($aOptions[$sOpt]);
 }
 
 if($aOptions['h']) {
-	die('Usage: '.basename(__FILE__).' [-w] [-s] [-u] [-d] [-n /path/to/nib]'."\n");
+	die('Usage: '.basename(__FILE__).' [-w] [-b] [-u] [-d] [-n /path/to/nib]'."\n");
 }
 
-$iResourceFinderFlags = ResourceFinder::SEARCH_BASE_FIRST;
-if($aOptions['s']) {
-	$iResourceFinderFlags = ResourceFinder::SEARCH_SITE_ONLY;
+$iResourceFinderFlags = ResourceFinder::SEARCH_SITE_ONLY;
+if($aOptions['b']) {
+	$iResourceFinderFlags = ResourceFinder::SEARCH_BASE_FIRST;
 }
 
 function trap($iSignal) {
