@@ -46,10 +46,12 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	private function validate($aStringData) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aStringData);
-		$oFlash->checkForValue('string_key');
-		if($this->sStringId !== null && $this->sStringId !== $aStringData['string_key']) {
+		$oFlash->checkForValue('string_key', 'string.key_required');
+
+		// if string is new, or string_key has changed, then the existence of the string_key has to be checked
+		if($this->sStringId === null || $this->sStringId !== $aStringData['string_key']) {
 			if(StringQuery::create()->filterByStringKey($aStringData['string_key'])->count() > 0) {
-				$oFlash->addMessage('string.exists');
+				$oFlash->addMessage('string.key_exists');
 			}
 		}
 		$oFlash->finishReporting();
