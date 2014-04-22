@@ -216,6 +216,36 @@ EOT;
 		$this->assertSame("test", $oTemplate->render());
 	}
 	
+	public function testNestedTemplatesTrue() {
+		$sInnerText = <<<EOT
+{{if;1=\{\{gaga\}\}}}test{{endIf}}
+EOT;
+		$oInner = new Template($sInnerText, null, true);
+
+		$oOuterText = <<<EOT
+{{test}}
+EOT;
+		$oOuter = new Template($oOuterText, null, true);
+		$oOuter->replaceIdentifier('test', $oInner, null, Template::LEAVE_IDENTIFIERS);
+		$oOuter->replaceIdentifier('gaga', '');
+		$this->assertSame("test", $oOuter->render());
+	}
+
+	public function testNestedTemplatesFalse() {
+		$sInnerText = <<<EOT
+{{if;1=\{\{gaga\}}\}}test{{endIf}}
+EOT;
+		$oInner = new Template($sInnerText, null, true);
+
+		$oOuterText = <<<EOT
+{{test}}
+EOT;
+		$oOuter = new Template($oOuterText, null, true);
+		$oOuter->replaceIdentifier('test', $oInner, null, Template::LEAVE_IDENTIFIERS);
+		$oOuter->replaceIdentifier('gaga', '1');
+		$this->assertSame("", $oOuter->render());
+	}
+	
 	public function testCaseFromJM1() {
 		$sText = <<<EOT
 [{{if;1=\{\{comment_count\}\};2=0}}Keine Kommentare{{endIf}}{{if=!=;1=\{\{comment_count\}\};2=0}}{{comment_count}}{{endIf}}]
