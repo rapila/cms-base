@@ -73,11 +73,11 @@ class LinksAdminModule extends AdminModule {
 	}
 
 	public function getCriteria() {
-		$oCriteria = new Criteria();
+		$oQuery = LinkCategoryQuery::create();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
-			return $oCriteria->add(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+			return $oQuery->filterByIsExternallyManaged(false);
 		}
-		return $oCriteria;
+		return $oQuery;
 	}
 
 	public function usedWidgets() {
