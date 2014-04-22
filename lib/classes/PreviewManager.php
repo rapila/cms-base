@@ -35,8 +35,10 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
 
 		//Include the resources of widgets we know we’re gonna use.
-		$oLoginWindowWidget = WidgetModule::getWidget('login_window');
-		LoginWindowWidgetModule::includeResources();
+		if($bShouldLogin) {
+			$oLoginWindowWidget = WidgetModule::getWidget('login_window');
+			LoginWindowWidgetModule::includeResources();
+		}
 		$this->oAdminMenuWidget = WidgetModule::getWidget('admin_menu');
 		AdminMenuWidgetModule::includeResources();
 		$this->oPageTypeWidget = WidgetModule::getWidget('page_type');
