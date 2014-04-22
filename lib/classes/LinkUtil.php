@@ -91,11 +91,8 @@ class LinkUtil {
 		} else if($sProtocol === false) {
 			$sProtocol = 'http://';
 		}
-		if($sHost === null && isset($_SERVER['HTTP_HOST']) && !Settings::getSetting('linking', 'prefer_configured_domain', false)) {
-			$sHost = $_SERVER['HTTP_HOST'];
-		}
 		if($sHost === null) {
-			$sHost = Settings::getSetting('domain_holder', 'domain', null);
+			$sHost = self::getHostName();
 		}
 		return "$sProtocol$sHost$sLocation";
 	}
@@ -211,12 +208,19 @@ class LinkUtil {
 		return $sParameters;
 	}
 
-	public static function getHostName() {
-		return Settings::getSetting('domain_holder', 'name', $_SERVER['HTTP_HOST']);
+	public static function getHostName($sDefaultHost = null) {
+		$sHost = null;
+		if(isset($_SERVER['HTTP_HOST']) && !Settings::getSetting('linking', 'prefer_configured_domain', false)) {
+			$sHost = $_SERVER['HTTP_HOST'];
+		}
+		if(!$sHost) {
+			$sHost = Settings::getSetting('domain_holder', 'domain', $sDefaultHost);
+		}
+		return $sHost;
 	}
 
 	public static function getDomainHolderEmail($sDefaultSender = 'info') {
-		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.$_SERVER['HTTP_HOST']);
+		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.self::getHostName());
 	}
 	
 	public static function getUrlWithProtocolIfNotSet($sUrl) {
