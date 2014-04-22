@@ -909,7 +909,9 @@ String.prototype.escapeSelector = function() {
 					if(jQuery.isArray(val)) {
 						result[name] = result[name].concat(val);
 					} else {
-						result[name][result[name].length] = val;
+						if(val !== null) {
+							result[name].push(val);
+						}
 					}
 				} else {
 					result[this.name] = val;
