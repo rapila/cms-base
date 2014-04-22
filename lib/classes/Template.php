@@ -201,7 +201,7 @@ class Template {
 		if($bCacheIsCurrent) {
 			$this->aTemplateContents = $oCache->getContentsAsVariable();
 			foreach($this->aTemplateContents as &$mContent) {
-				if($mContent instanceof TemplateIdentifier) {
+				if($mContent instanceof TemplatePart) {
 					$mContent->setTemplate($this);
 				}
 			}
@@ -425,6 +425,11 @@ class Template {
 				$mText->prepareForRender();
 			}
 			$aText = $mText->aTemplateContents;
+			foreach($aText as $mTextItem) {
+				if($mTextItem instanceof TemplatePart) {
+					$mTextItem->setTemplate($this);
+				}
+			}
 		} else if(is_string($mText)) {
 			$aText[] = $mText;
 		} else if (is_array($mText)) {
