@@ -84,13 +84,20 @@ class RoleListWidgetModule extends WidgetModule {
 	}
 
 	public function getCriteria() {
-		$oCriteria = new Criteria();
-		$oCriteria->addJoin(RolePeer::ROLE_KEY, GroupRolePeer::ROLE_KEY, Criteria::LEFT_JOIN);
-		$oCriteria->addJoin(GroupRolePeer::GROUP_ID, GroupPeer::ID, Criteria::LEFT_JOIN);
-		if($this->oDelegateProxy->getGroupId() !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oCriteria->add(GroupRolePeer::GROUP_ID, $this->oDelegateProxy->getGroupId());
+		// select all
+		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_ALL) {
+			return RoleQuery::create()->joinGroupRole(null, Criteria::LEFT_JOIN);
 		}
-		return $oCriteria;
+		// select specific group
+		if(is_numeric($this->oDelegateProxy->getGroupId())) {
+			return RoleQuery::create()->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
+				->useGroupQuery(null, Criteria::LEFT_JOIN)->filterById($this->oDelegateProxy->getGroupId())->endUse()
+			->endUse();
+		}
+		// select roles not included in a group
+		return RoleQuery::create()->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
+			->useGroupQuery(null, Criteria::LEFT_JOIN)->filterById(null, Criteria::ISNULL)->endUse()
+		->endUse();
 	}
 
 }
