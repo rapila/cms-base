@@ -74,10 +74,10 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = DocumentCategoryQuery::create();
+		$oQuery = DocumentCategoryQuery::create();
 		if($this->bExcludeExternallyManaged) {
-			$oCriteria->filterByIsExternallyManaged(false);
+			$oQuery->filterByIsExternallyManaged(false);
 		}
-		return $oCriteria;
+		return $oQuery;
 	}
 }

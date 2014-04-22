@@ -79,7 +79,6 @@ class StringListWidgetModule extends WidgetModule {
 	}
 
 	public function getCriteria() {
-		// @todo order by content_edit or session_default language first in order to display text that makes sense
 		return StringQuery::create()->groupByStringKey();
 	}
 }
