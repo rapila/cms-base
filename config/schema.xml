@@ -146,7 +146,7 @@
 	<column name="digest_ha1" type="varchar" size="32" phpName="DigestHA1" />
 	<column name="first_name" type="varchar" size="40" />
 	<column name="last_name" type="varchar" size="60" />
-	<column name="email" type="varchar" size="80" />		
+	<column name="email" type="varchar" size="80" />
 	<column name="language_id" type="varchar" size="3" />
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
@@ -251,7 +251,7 @@
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
 	</behavior>
-</table>	
+</table>
 
 <table name="documents" phpName="Document">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
@@ -265,7 +265,7 @@
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
-	<column name="owner_id" type="integer" required="true" />
+	<column name="owner_id" type="integer" required="false" default="null"/>
 	<foreign-key foreignTable="users">
 		<reference local="owner_id" foreign="id" />
 	</foreign-key>
