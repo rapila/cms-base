@@ -115,14 +115,14 @@ class TemplateIdentifier extends TemplatePart {
 		return $this->aParameters[$sName];
 	}
 
+	public function __toString() {
+		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
+	}
+
 	public function __sleep() {
 		$aVars = get_object_vars($this);
 		unset($aVars['oTemplate']);
 		return array_keys($aVars);
-	}
-
-	public function __toString() {
-		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
 	}
 
 	public static function unescapeIdentifier($sText) {

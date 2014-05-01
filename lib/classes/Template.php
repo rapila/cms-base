@@ -1002,6 +1002,14 @@ class Template {
 		$this->invalidateIdentifierList();
 	}
 
+	public function __wakeup() {
+		foreach($this->aTemplateContents as $iKey => $mTemplateContent) {
+			if($mTemplateContent instanceof TemplatePart) {
+				$mTemplateContent->setTemplate($this);
+			}
+		}
+	}
+
 	public function closeIdentifier($sName, $sValue = null) {
 		$this->replaceIdentifier($sName, "", $sValue);
 	}
