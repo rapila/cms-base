@@ -40,10 +40,13 @@ class SpecialTemplateIdentifierActions {
 		return '<br />';
 	}
 	
+	/**
+	* @deprecated
+	*/
 	public function doCalculation($oTemplateIdentifier, &$iFlags) {
 		//FIXME: We’re allowing this because templates are controlled by privileged users… But we should find a better solution to do calculations without eval.
-    $cFunc = create_function("", "return ({$oTemplateIdentifier->getValue()});" );
-    return $cFunc();
+		$cFunc = create_function("", "return ({$oTemplateIdentifier->getValue()});" );
+		return $cFunc();
 	}
 	
 	public function truncate($oTemplateIdentifier, &$iFlags) {
