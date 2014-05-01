@@ -233,7 +233,7 @@ EOT;
 
 	public function testNestedTemplatesFalse() {
 		$sInnerText = <<<EOT
-{{if;1=\{\{gaga\}}\}}test{{endIf}}
+{{if;1=\{\{gaga\}\}}}test{{endIf}}
 EOT;
 		$oInner = new Template($sInnerText, null, true);
 
@@ -244,6 +244,27 @@ EOT;
 		$oOuter->replaceIdentifier('test', $oInner, null, Template::LEAVE_IDENTIFIERS);
 		$oOuter->replaceIdentifier('gaga', '1');
 		$this->assertSame("", $oOuter->render());
+	}
+
+	public function testConditionalsSerializedTrue() {
+		$sText = <<<EOT
+{{if;1=\{\{gaga\}\}}}test{{endIf}}
+EOT;
+		$oTemplate = new Template($sText, null, true);
+		$sTemplate = serialize($oTemplate);
+		$oTemplate = unserialize($sTemplate);
+		$this->assertSame("test", $oTemplate->render());
+	}
+
+	public function testConditionalsSerializedFalse() {
+		$sText = <<<EOT
+{{if;1=\{\{gaga\}\}}}test{{endIf}}
+EOT;
+		$oTemplate = new Template($sText, null, true);
+		$sTemplate = serialize($oTemplate);
+		$oTemplate = unserialize($sTemplate);
+		$oTemplate->replaceIdentifier('gaga', 'test');
+		$this->assertSame("", $oTemplate->render());
 	}
 	
 	public function testCaseFromJM1() {
