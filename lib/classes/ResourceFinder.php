@@ -3,6 +3,7 @@
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/StringUtil.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/FileResource.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ErrorHandler.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/SystemPart.php");
 
 ///Allows to easily find files residing inside rapila’s site structure, following the precedence rules (site > plugins > base).
 class ResourceFinder {
@@ -16,8 +17,6 @@ class ResourceFinder {
 	
 	const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
 	
-	private static $PLUGINS = null;
-
 	private $aPath;
 	private $bByExpressions;
 	private $bFindAll;
@@ -483,9 +482,12 @@ class ResourceFinder {
 		return self::create()->addPath(DIRNAME_PLUGINS)->addExpression(self::ANY_NAME_OR_TYPE_PATTERN)->mainOnly();
 	}
 	
+	private static $PLUGINS = null;
 	private static function getPluginPaths($bReverseOrder = false) {
 		if(self::$PLUGINS === null) {
-			self::$PLUGINS = array_values(self::pluginFinder()->find());
+			self::$PLUGINS = array_map(function($oPart) {
+				return $oPart->getPrefix();
+			}, PluginPart::allPlugins());
 		}
 		if($bReverseOrder === true) {
 			return array_reverse(self::$PLUGINS);

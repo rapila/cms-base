@@ -22,6 +22,9 @@ define('DIRNAME_BASE',          'base');
 define('DIRNAME_PLUGINS',       'plugins');
 define('DIRNAME_GENERATED',     'generated');
 
+// file names
+define('FILENAME_INFO',         'info.yml');
+
 // main dir constants
 define('MAIN_DIR' ,             dirname(dirname(dirname(__FILE__))));
 define('SITE_DIR',              MAIN_DIR.'/'.DIRNAME_SITE);
