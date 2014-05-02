@@ -1,6 +1,0 @@
-name: rapila-base
-repository:
-    - {type: git, url: 'git://github.com/rapila/cms-base.git'}
-author: 'Rapila Team'
-license: 'MIT'
-version: '1.1'
