@@ -4,7 +4,7 @@
 }
 
 .ui-dialog.detail-widget-document_detail form.ui-dialog-content.ui-state-droppable .droppable_info {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/drag_drop_white_hover.png");
+	background-image: url("{{writeDirectInclude=admin/drag_drop_white_hover.png;template=location_only}}");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
@@ -46,12 +46,12 @@
 	display: inline-block;
 	color: #888888;
 	text-decoration: underline;
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download.png");
+	background-image: url("{{writeDirectInclude=admin/icon_download.png;template=location_only}}");
 	background-repeat: no-repeat;
 	background-position: right center;
 }
 
 .ui-download-document:hover {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/icon_download_active.png");
+	background-image: url("{{writeDirectInclude=admin/icon_download_active.png;template=location_only}}");
 }
 
