@@ -54,13 +54,13 @@ div.container {
 }
 
 .page_detail_controls button[name=save] {
-	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_dark.png");
+	background-image: url("{{writeDirectInclude=admin/button_gradient_dark.png;template=location_only}}");
 }
 
 .page_detail_controls button.ui-button.ui-state-default[name=cancel],
 .page_detail_controls button.ui-button.ui-state-default[name=delete] {
 	color: #666666;
-	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/button_gradient_bright.png") repeat-x 0 bottom;
+	background: url("{{writeDirectInclude=admin/button_gradient_bright.png;template=location_only}}") repeat-x 0 bottom;
 	border-color: #999999;
 }
 
@@ -98,12 +98,12 @@ body.pages #admin_main {
 }
 
 div.delete_drop_zone.ui-droppable {
-	background: transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat 0 center !important;
+	background: transparent url("{{writeDirectInclude=admin/content_object_trash.png;template=location_only}}") no-repeat 0 center !important;
 	border-color: transparent !important;
 }
 
 div.delete_drop_zone.ui-state-droppable {
-	background: transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/content_object_trash.png") no-repeat -61px center   !important;
+	background: transparent url("{{writeDirectInclude=admin/content_object_trash.png;template=location_only}}") no-repeat -61px center   !important;
 	border-color: transparent !important;
 }
 

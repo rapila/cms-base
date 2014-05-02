@@ -6,7 +6,7 @@ Widget.types.admin_menu = {
 		this.left_container = this.toolbar.find('.admin_menu_left');
 		this.activity_indicator = jQuery();
 		var _this = this;
-		
+
 		this.moduleConfig(function(module_config) {
 			jQuery.each(module_config, function(i, config) {
 				var is_right = (i === 'right');
@@ -36,27 +36,27 @@ Widget.types.admin_menu = {
 			Widget.handle('rapila-logged_in', this.show.bind(this), true, true);
 		});
 	},
-	
+
 	activity: function() {
 		this.activity_indicator.data('usage', this.activity_indicator.data('usage')+1);
 		this.activity_indicator.css({display: ''});
 	},
-	
+
 	end_activity: function() {
 		this.activity_indicator.data('usage', this.activity_indicator.data('usage')-1);
 		if(this.activity_indicator.data('usage') <= 0) {
 			this.activity_indicator.hide();
 		}
 	},
-	
+
 	show: function() {
 		this._element.show();
 	},
-	
+
 	hide: function() {
 		this._element.hide();
 	},
-	
+
 	addElement: function(element, is_right_container) {
 		var appendee = this.left_container;
 		if(is_right_container) {
@@ -65,7 +65,7 @@ Widget.types.admin_menu = {
 		jQuery(element).appendTo(appendee);
 		return this;
 	},
-	
+
 	addButton: function(text, callback, is_right_container, element, attributes) {
 		if(!element) {
 			element = this.button_prototype.clone();
@@ -83,21 +83,21 @@ Widget.types.admin_menu = {
 		}
 		return this.addElement(element, is_right_container);
 	},
-		
+
 	addSpacer: function(width, is_right_container) {
 		return this.addElement(Widget.parseHTML('<span style="display:inline-block;width:'+width+'px;"/>'), is_right_container);
 	},
-	
+
 	settings: {
 		attach_events: true
 	},
-	
+
 	predefined_elements: {
 		activity: function() {
-			this.activity_indicator = jQuery('<img/>').attr({src: "{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/activity_indicator.gif"}).addClass('activity_indicator').data('usage', 0).hide();
+			this.activity_indicator = jQuery('<img/>').attr({src: "{{writeDirectInclude=admin/activity_indicator.gif;template=location_only}}"}).addClass('activity_indicator').data('usage', 0).hide();
 			return {element: this.activity_indicator};
 		},
-		
+
 		menu: function(items) {
 			var _this = this;
 			var result = {};
@@ -184,11 +184,11 @@ Widget.types.admin_menu = {
 			});
 			return {element: select, callback: jQuery.noop};
 		},
-		
+
 		domain_name: function() {
 			return {element: jQuery("<span/>").text('{{writeSettingValue=name;section=domain_holder}}').attr('class', "domain_name")};
 		},
-		
+
 		tag: function() {
 			if(window.PreviewInterface) {
 				return;
@@ -201,11 +201,11 @@ Widget.types.admin_menu = {
 				});
 			}};
 		},
-		
+
 		logo: function() {
 			return {element: jQuery("<span/>").text('@ rapila').attr('class', "rapila_logo")};
 		},
-		
+
 		preview: function() {
 			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
 			var _this = this;
@@ -215,7 +215,7 @@ Widget.types.admin_menu = {
 			};
 			return result;
 		},
-		
+
 		logout: function(page_link) {
 			var _this = this;
 			var result = {};

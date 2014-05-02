@@ -107,22 +107,22 @@ th.ui-list-heading select {
 th.ui-list-heading.sortable:hover span,
 th.ui-list-heading.sortable.asc span,
 th.ui-list-heading.sortable.desc span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_asc.png");
+	background-image: url("{{writeDirectInclude=admin/sort_asc.png;template=location_only}}");
 	background-position: right;
 	background-repeat: no-repeat;
 }
 
 th.ui-list-heading.sortable.asc:hover span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_asc_hover.png");
+	background-image: url("{{writeDirectInclude=admin/sort_asc_hover.png;template=location_only}}");
 }
 
 th.ui-list-heading.sortable.desc span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_desc.png");
+	background-image: url("{{writeDirectInclude=admin/sort_desc.png;template=location_only}}");
 }
 
 th.ui-list-heading.sortable:hover span,
 th.ui-list-heading.sortable.desc:hover span {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/sort_desc_hover.png");
+	background-image: url("{{writeDirectInclude=admin/sort_desc_hover.png;template=location_only}}");
 }
 
 div[data-widget-type='documents_list'] {

@@ -160,7 +160,7 @@
 
 #rapila_admin_menu button.dashboard:hover,
 body.dashboard #rapila_admin_menu button.rapila-button.dashboard {
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/dashboard_icon_hover.gif");
+	background-image: url("{{writeDirectInclude=admin/dashboard_icon_hover.gif;template=location_only}}");
 }
 
 #rapila_admin_menu > div {
@@ -171,7 +171,7 @@ body.dashboard #rapila_admin_menu button.rapila-button.dashboard {
 
 #rapila_admin_menu select {
 	-webkit-appearance: none;
-	background:transparent url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/select_gradient_dark.png") no-repeat center right;
+	background:transparent url("{{writeDirectInclude=admin/select_gradient_dark.png;template=location_only}}") no-repeat center right;
 }
 
 .admin_menu_maximizer {
