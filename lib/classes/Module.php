@@ -19,7 +19,7 @@
  * @see FilterModule
  */
 abstract class Module {
-	const INFO_FILE = "info.yml";
+	const INFO_FILE = FILENAME_INFO;
 	
 	protected static $MODULE_TYPE;
 	private static $MODULE_TYPE_LIST = null;
