@@ -1,39 +1,52 @@
 <?php
 
 abstract class SystemPart {
-	private static $PARTS = null;
-	
 	private $sPrefix;
 	private $aInfo;
 	private $aDependees;
 	
-	protected function __construct($sPrefix, $aInfo = array(), $aImpliedDependees = array()) {
+	protected function __construct($sPrefix, $aInfo = null) {
 		$this->sPrefix = $sPrefix;
 		$this->aInfo = $aInfo;
 		$this->aDependees = new SplObjectStorage();
 
 		$aPrefix = explode('/', $sPrefix);
-
-		if(!isset($this->aInfo['name'])) {
-			$this->aInfo['name'] = implode(' ', $aPrefix);
-		}
-		if(!isset($this->aInfo['dependencies'])) {
-			$this->aInfo['dependencies'] = array();
-		}
-
-		foreach($aImpliedDependees as $sDependeePrefix) {
-			$this->addDependee(self::getPart($sDependeePrefix));
-		}
 	}
 	
-	private function resolveDependencies() {
-		foreach($this->aInfo['dependencies'] as $sDependencyPrefix => $sDependencyVersion) {
-			self::getPart($sDependencyPrefix)->addDependee($this);
+	/**
+	* Returns info schema. Either given at construction time, loaded from YAML or generated on-the-fly
+	*/
+	public function getInfo() {
+		if($this->aInfo === null) {
+			$sInfoFilePath = ResourceFinder::create($this->sPrefix)->mainOnly()->addPath(FILENAME_INFO)->find();
+			if($sInfoFilePath) {
+				require_once(BASE_DIR.'/'.DIRNAME_LIB.'/'.DIRNAME_VENDOR.'/'."spyc/Spyc.php");
+				$this->aInfo = Spyc::YAMLLoad($sInfoFilePath);
+			} else {
+				$this->aInfo = array();
+			}
+			if(!isset($this->aInfo['name'])) {
+				$this->aInfo['name'] = implode(' ', explode('/', $this->sPrefix));
+			}
+			if(!isset($this->aInfo['dependencies'])) {
+				$this->aInfo['dependencies'] = array();
+			}
 		}
+		return $this->aInfo;
+	}
+	
+	public function setInfo($aInfo) {
+		$this->aInfo = $aInfo;
+	}
+	
+	public function dependOn($oPart) {
+		$oPart->addDependee($this);
+		return $this;
 	}
 	
 	public function addDependee(SystemPart $oDependee) {
 		$this->aDependees->attach($oDependee);
+		return $this;
 	}
 	
 	public function getPrefix() {
@@ -43,29 +56,9 @@ abstract class SystemPart {
 	public function getDependees() {
 		return $this->aDependees;
 	}
-	
-	private static function init() {
-		if(!self::$PARTS) {
-			// FIXME: Cache the parts array?
-			self::$PARTS = array();
-		}
-	}
-	
-	public static function reset() {
-		self::$PARTS = null;
-	}
-	
-	private static function createPart($sPrefix, $aInfo = null) {
+
+	public static function getPart($sPrefix, $aInfo = null) {
 		$aPrefix = explode('/', $sPrefix);
-		if($aInfo === null) {
-			$sInfoFilePath = ResourceFinder::create($aPrefix)->mainOnly()->addPath(Module::INFO_FILE)->find();
-			if($sInfoFilePath) {
-				require_once("spyc/Spyc.php");
-				$aInfo = Spyc::YAMLLoad($sInfoFilePath);
-			} else {
-				$aInfo = array();
-			}
-		}
 		if($aPrefix[0] === DIRNAME_BASE) {
 			return new BasePart($aInfo);
 		}
@@ -76,17 +69,9 @@ abstract class SystemPart {
 			return new SitePart($aInfo);
 		}
 		if($aPrefix[0] === 'test') {
-			return new TestPart($aPrefix[1], $aInfo);
+			return new TestPart($aPrefix[1]);
 		}
 		throw new Exception("$aPrefix[0] is not a valid system part prefix");
-	}
-	
-	public static function getPart($sPrefix, $aInfo = null) {
-		self::init();
-		if(!isset(self::$PARTS[$sPrefix])) {
-			self::$PARTS[$sPrefix] = self::createPart($sPrefix, $aInfo);
-		}
-		return self::$PARTS[$sPrefix];
 	}
 	
 	public static function orderedParts($aParts) {
@@ -115,48 +100,75 @@ abstract class SystemPart {
 			array_unshift($aOrderedParts, $oPart);
 		};
 		foreach($aParts as $oPart) {
-			$oPart->resolveDependencies();
-		}
-		foreach($aParts as $oPart) {
 			$cVisit($oPart);
 		}
 		return $aOrderedParts;
 	}
 	
+	public static function allParts() {
+		$oCache = new Cache("system_parts", DIRNAME_CONFIG);
+		if($oCache->cacheFileExists()) {
+			return $oCache->getContentsAsVariable();
+		}
+		$oBasePart = new BasePart();
+		$oSitePart = new SitePart();
+		$aParts = array(DIRNAME_BASE => $oBasePart);
+		// Get all plugins
+		foreach(ResourceFinder::pluginFinder()->returnObjects()->find() as $oPath) {
+			$oPluginPart = SystemPart::getPart($oPath->getRelativePath());
+			// Plugins depend on base implicitly
+			$oPluginPart->dependOn($oBasePart);
+			// Site depends on plugins implicitly
+			$oSitePart->dependOn($oPluginPart);
+			$aParts[$oPath->getRelativePath()] = $oPluginPart;
+		}
+		$oSitePart->dependOn($oBasePart);
+		$aParts[DIRNAME_SITE] = $oSitePart;
+		// Add dependencies from info
+		foreach($aParts as $oPart) {
+			$aInfo = $oPart->getInfo();
+			foreach($aInfo['dependencies'] as $sDependencyPrefix => $sVersion) {
+				if(isset($aParts[$sDependencyPrefix])) {
+					$oPart->dependOn($aParts[$sDependencyPrefix]);
+				} else {
+					throw new Exception("Dependency of {$oPart->getPrefix()} on $sDependencyPrefix can not be satisfied");
+				}
+			}
+		}
+		// Order list by dependencies
+		$aParts = self::orderedParts($aParts);
+		// Cache ordered list
+		$oCache->setContents($aParts);
+		return $aParts;
+	}
 }
 
 class BasePart extends SystemPart {
-	public function __construct($aInfo) {
+	public function __construct($aInfo = null) {
 		parent::__construct(DIRNAME_BASE, $aInfo, array(DIRNAME_SITE));
 	}
 }
 
 class SitePart extends SystemPart {
-	public function __construct($aInfo) {
+	public function __construct($aInfo = null) {
 		parent::__construct(DIRNAME_SITE, $aInfo);
 	}
 }
 
 class PluginPart extends SystemPart {
-	public function __construct($sPluginName, $aInfo) {
+	public function __construct($sPluginName, $aInfo = null) {
 		parent::__construct(DIRNAME_PLUGINS."/$sPluginName", $aInfo, array(DIRNAME_SITE));
 	}
-
-	public static function allPluginParts() {
-		return array_map(function(FileResource $oPath) {
-			return SystemPart::getPart($oPath->getRelativePath());
-		}, ResourceFinder::create()->addPath(DIRNAME_PLUGINS)->addExpression(ResourceFinder::ANY_NAME_OR_TYPE_PATTERN)->mainOnly()->returnObjects()->find());
-	}
-
-	public static function orderedPluginParts() {
-		return array_filter(SystemPart::orderedParts(self::allPluginParts()+array(SystemPart::getPart(DIRNAME_BASE))), function(SystemPart $oPart) {
+	
+	public static function allPlugins() {
+		return array_filter(SystemPart::allParts(), function($oPart) {
 			return $oPart instanceof PluginPart;
 		});
 	}
 }
 
 class TestPart extends SystemPart {
-	public function __construct($sTestName, $aInfo) {
-		parent::__construct("test/$sTestName", $aInfo);
+	public function __construct($sTestName) {
+		parent::__construct("test/$sTestName", array());
 	}
 }
