@@ -66,7 +66,7 @@ jQuery(document).ready(function() {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.link_category.delete_information}}", function(confirmed) {
 							if(confirmed) {
 								remove_active_category();
-								content_list.getOption('resetCategory');
+								content_list.setOption('link_category_id', null);
 								content_list.reload();
 							}
 						});
