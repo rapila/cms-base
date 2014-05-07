@@ -127,6 +127,10 @@ class LinkListWidgetModule extends WidgetModule {
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}	
 	
+	public function getResetCategory() {
+		$this->oDelegateProxy->setLinkCategoryId(null);
+	}
+	
 	public function getLanguageName() {
 		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
