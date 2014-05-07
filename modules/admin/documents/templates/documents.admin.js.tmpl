@@ -80,6 +80,8 @@ jQuery(document).ready(function() {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.document_category.delete_information}}", function(confirmed) {
 							if(confirmed) {
 								remove_active_category();
+								content_list.setDocumentCategoryId(null);
+								content_list.reload();
 							}
 						});
 					} else {
