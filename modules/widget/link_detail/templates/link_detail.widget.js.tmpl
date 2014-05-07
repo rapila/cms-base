@@ -4,8 +4,8 @@ Widget.types.link_detail = {
 		this.init_content();
 		this._element.find('div.hide_if_not_saved').hide();
 		this._element.find("select[name='language_id']").prepareWidget();
-		this._element.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
-			link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id;
+		this.link_category_input = this._element.find("select[name='link_category_id']").prepareWidget(function(link_category_input_widget) {
+			link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id || '';
 			link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
 		}, function(link_category_input_widget) {
 			if(_this.settings.predefined_link_category_id) { 
@@ -47,7 +47,7 @@ Widget.types.link_detail = {
 				this._element.find('a.url_preview').attr('href', link_data.Url);
 			}
 			if(!this.settings.predefined_link_category_id) {
-				this._element.find("select[name='link_category_id']").val(link_data.LinkCategoryId || '');
+				this.link_category_input.val(link_data.LinkCategoryId || '');
 			}
 			this.tag_area.setTaggedItemId(link_data.Id);
 			this.tag_area.reload_tags();
