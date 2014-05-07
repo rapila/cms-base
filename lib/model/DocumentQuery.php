@@ -7,7 +7,7 @@
 class DocumentQuery extends BaseDocumentQuery {
 	
 	public function excludeExternallyManaged() {
-		return $this->useDocumentCategoryQuery(null, Criteria::INNER_JOIN)->filterByIsExternallyManaged(false)->_or()->filterByIsExternallyManaged(null, Criteria::ISNULL)->endUse();
+		return $this->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->_or()->filterByIsExternallyManaged(null, Criteria::ISNULL)->endUse();
 	}
 
 	public function filterByDocumentKind($sDocumentKind = 'image') {
