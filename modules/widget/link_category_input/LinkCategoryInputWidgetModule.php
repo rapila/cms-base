@@ -5,6 +5,10 @@
 class LinkCategoryInputWidgetModule extends WidgetModule {
 	
 	public function listCategories() {
-		return LinkCategoryQuery::create()->orderByName()->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		$oQuery = LinkCategoryQuery::create()->orderByName();
+		if(Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oQuery->filterByIsExternallyManaged(false);
+		}
+		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
 }
