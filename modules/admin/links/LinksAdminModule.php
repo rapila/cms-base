@@ -53,7 +53,7 @@ class LinksAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		if(LinkCategoryPeer::doCount(new Criteria()) > 0) {
+		if($this->getCriteria()->count() > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'name' => StringPeer::getString('wns.sidebar.select_all'),
