@@ -486,7 +486,7 @@ class ResourceFinder {
 	private static function getPluginPaths($bReverseOrder = false) {
 		if(self::$PLUGINS === null) {
 			self::$PLUGINS = array_map(function($oPart) {
-				return $oPart->getPrefix();
+				return MAIN_DIR.'/'.$oPart->getPrefix();
 			}, PluginPart::allPlugins());
 		}
 		if($bReverseOrder === true) {
