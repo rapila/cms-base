@@ -28,7 +28,7 @@ class ConsolidatedResourceFileModule extends FileModule {
 			foreach($aKeys as $sItemKey) {
 				$oItemCache = new Cache($sItemKey, DIRNAME_PRELOAD, Cache::FLAG_FILE_DIRECT);
 				if(!$oItemCache->cacheFileExists(false)) {
-					throw new Exception("Consolidated resource does not exist.");
+					throw new Exception("Consolidated resource $sItemKey does not exist.");
 				}
 				$oCache->setContents($oItemCache->getContentsAsString(), false, true);
 			}

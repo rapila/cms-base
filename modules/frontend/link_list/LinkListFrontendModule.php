@@ -61,7 +61,8 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oQuery->orderBySort();
 		}
-		return $oQuery->orderByName();	
+		
+		return $oQuery->orderByName();
 	}
 	
 	public static function getTemplateOptions() {
