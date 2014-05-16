@@ -50,6 +50,7 @@ class BuildHelper {
 		$aPaths = array_merge(array(DIRNAME_SITE, DIRNAME_BASE), array_keys(ResourceFinder::pluginFinder()->find()));
 		foreach($aPaths as $sPath) {
 			$sTableName = '_migration_'.str_replace('/', '_', $sPath);
+			$oConnection->exec("DROP TABLE IF EXISTS $sTableName");
 			$oConnection->exec("CREATE TABLE $sTableName (version int(11) DEFAULT '0')");
 			$oConnection->exec("INSERT INTO $sTableName (version) VALUES ($iCurrentMigration)");
 		}
