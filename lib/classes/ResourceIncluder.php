@@ -462,7 +462,8 @@ class ResourceIncluder {
 			return;
 		}
 		//External location (no file_resource given) or location not determinable
-		if($file_resource === null && ($bExcludeExternal || ($location === null && $content === null))) {
+		$bIsExternal = $file_resource === null && $content === null;
+		if($bIsExternal && ($bExcludeExternal || $location === null)) {
 			$this->cleanupConsolidator($aConsolidatorInfo);
 		} else {
 			$this->initConsolidator($sType, $iPriority, $sKey, $aConsolidatorInfo);
@@ -487,10 +488,12 @@ class ResourceIncluder {
 					}
 					$sContents = $content;
 				}
+
 				if($sType === self::RESOURCE_TYPE_CSS && $media) {
 					$sContents = "@media $media { $sContents }";
 				}
-				// Fix relative locations
+
+				// Fix relative locations in CSS
 				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
 					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
 					if($iSlashPosition !== false) {
