@@ -15,8 +15,12 @@ Widget.types.detail = {
 			},
 
 			close: function() {
-				this.detail_widget.close();
-				this.close_callback();
+				var close = {close: true};
+				this.fire('closing', close);
+				if(close.close) {
+					this.detail_widget.close();
+					this.close_callback();
+				}
 			},
 
 			save: function(should_remain_open) {
