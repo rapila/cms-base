@@ -31,6 +31,15 @@ Widget.types['popover'] = {
 			});
 		}
 	},
+
+	val: function(value) {
+		if(arguments.length) {
+			this._element.val(value);
+			return;
+		}
+		return this._element.val();
+	},
+	
 	
 	settings: {
 		title: 'Popover'
