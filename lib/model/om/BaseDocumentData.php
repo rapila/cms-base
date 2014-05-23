@@ -578,7 +578,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
             $ret = $this->preDelete($con);
             // denyable behavior
             if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-                throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "document_data")));
+                throw new PropelException(new NotPermittedException("delete.custom", array("role_key" => "document_data")));
             }
 
             if ($ret) {
@@ -627,7 +627,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
                 $ret = $ret && $this->preInsert($con);
                 // denyable behavior
                 if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-                    throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "document_data")));
+                    throw new PropelException(new NotPermittedException("insert.custom", array("role_key" => "document_data")));
                 }
 
                 // extended_timestampable behavior
@@ -652,7 +652,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
                 $ret = $ret && $this->preUpdate($con);
                 // denyable behavior
                 if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-                    throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "document_data")));
+                    throw new PropelException(new NotPermittedException("update.custom", array("role_key" => "document_data")));
                 }
 
                 // extended_timestampable behavior
