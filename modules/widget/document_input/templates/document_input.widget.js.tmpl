@@ -42,6 +42,10 @@ Widget.types.document_input = {
 		return this._element.val();
 	},
 	
+	val: function() {
+		return this.value.apply(this, arguments);
+	},
+	
 	url: function() {
 		var value = this.value();
 		if(isNaN(parseInt(value, 10))) {
