@@ -1011,6 +1011,10 @@ String.prototype.escapeSelector = function() {
 			var _this = this;
 			use_text_as_value = (use_text_as_value === undefined) ? jQuery.isArray(options) : !!use_text_as_value;
 			jQuery.each(options, function(value, text) {
+				if(text.key !== undefined && text.value !== undefined) {
+					value = text.key;
+					text = text.value;
+				}
 				if(use_text_as_value) {
 					value = text;
 				}
@@ -1020,6 +1024,9 @@ String.prototype.escapeSelector = function() {
 				var option = jQuery('<option/>').text(text).attr('value', value);
 				_this.append(option);
 			});
+			if(!_this.prop('multiple') && jQuery.isArray(default_value)) {
+				default_value = default_value[0];
+			}
 			this.val(default_value);
 			return this;
 		}
