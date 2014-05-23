@@ -90,10 +90,10 @@ Widget.types.detail = {
 			var remains_open = instance.settings.remains_open;
 			instance.saveData(data, function() {
 				instance.save_callback && instance.save_callback.apply(instance, jQuery.makeArray(arguments));
+				instance.fire.apply(instance, ['saved'].concat(jQuery.makeArray(arguments)));
 				if(!remains_open) {
 					instance.close();
 				}
-				instance.fire.apply(instance, ['saved'].concat(jQuery.makeArray(arguments)));
 				var detail_name = instance.widgetType.replace('_detail', '');
 				Widget.fire(detail_name+'-saved');
 			});
