@@ -41,7 +41,7 @@ class PropelMigration_1398433123
 			# It "suspends judgement" for fkey relationships until are tables are set.
 			SET FOREIGN_KEY_CHECKS = 0;
 
-			ALTER TABLE `documents` CHANGE `owner_id` INTEGER NULL DEFAULT NULL;
+			ALTER TABLE `documents` CHANGE `owner_id` `owner_id` INTEGER NULL DEFAULT NULL;
 
 			# This restores the fkey checks, after having unset them earlier
 			SET FOREIGN_KEY_CHECKS = 1;

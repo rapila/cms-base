@@ -538,6 +538,12 @@ abstract class BaseUserPeer
         // Invalidate objects in DocumentPeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         DocumentPeer::clearInstancePool();
+        // Invalidate objects in DocumentDataPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        DocumentDataPeer::clearInstancePool();
+        // Invalidate objects in DocumentDataPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        DocumentDataPeer::clearInstancePool();
         // Invalidate objects in DocumentTypePeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         DocumentTypePeer::clearInstancePool();
@@ -1430,6 +1436,22 @@ abstract class BaseUserPeer
             $updateValues = new Criteria(UserPeer::DATABASE_NAME);
             $selectCriteria->add(DocumentPeer::UPDATED_BY, $obj->getId());
             $updateValues->add(DocumentPeer::UPDATED_BY, null);
+
+            BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+            // set fkey col in related DocumentData rows to null
+            $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+            $updateValues = new Criteria(UserPeer::DATABASE_NAME);
+            $selectCriteria->add(DocumentDataPeer::CREATED_BY, $obj->getId());
+            $updateValues->add(DocumentDataPeer::CREATED_BY, null);
+
+            BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+            // set fkey col in related DocumentData rows to null
+            $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+            $updateValues = new Criteria(UserPeer::DATABASE_NAME);
+            $selectCriteria->add(DocumentDataPeer::UPDATED_BY, $obj->getId());
+            $updateValues->add(DocumentDataPeer::UPDATED_BY, null);
 
             BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
