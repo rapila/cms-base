@@ -190,14 +190,12 @@ Widget.types.admin_menu = {
 		},
 
 		tag: function() {
-			if(window.PreviewInterface) {
-				return;
-			}
-			var element = jQuery('<button/>').addClass('open-tag-panel').text('{{writeString=wns.tag}}');
-			element.button();
+			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xf100;');
 			return {element: element, callback: function(event) {
 				Widget.create('tag_panel', function(tag_panel) {
-					tag_panel.toggle_at({left: event.clientX, top: event.clientY+10});
+					tag_panel.settings.panel_style = {width: '300px'}
+				}, function(tag_panel) {
+					tag_panel.toggle_at({right: '0px', top: '86px', bottom: '60px'}, 'right');
 				});
 			}};
 		},

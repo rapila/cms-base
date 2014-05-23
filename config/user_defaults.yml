@@ -11,6 +11,7 @@ admin_menu:
   right:
     - activity
     - domain_name
+    - tag
     - logo
     - user
     - logout
