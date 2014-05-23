@@ -67,7 +67,7 @@ class DocumentDataTableMap extends TableMap
     {
         return array(
             'denyable' =>  array (
-  'mode' => 'by_role',
+  'mode' => 'allow',
   'role_key' => '',
   'owner_allowed' => '',
 ),
