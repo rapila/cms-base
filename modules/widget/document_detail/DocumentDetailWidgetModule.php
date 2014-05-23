@@ -101,4 +101,13 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->save();
 		return $oDocument->getId();
 	}
+	
+	public function deleteDocument() {
+		if($this->iDocumentId === null) {
+			return false;
+		}
+		$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
+		$oDocument->delete();
+		return true;
+	}
 }

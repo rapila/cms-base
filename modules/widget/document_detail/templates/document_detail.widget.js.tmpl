@@ -2,6 +2,8 @@ Widget.types.document_detail = {
 	initialize: function() {
 		var _this = this;
 
+
+		// Handle initial values
 		this.handle('saving', function(event, saveData) {
 			for(var key in _this.settings.initial) {
 				if(key in saveData) {
@@ -47,6 +49,7 @@ Widget.types.document_detail = {
 			});
 		});
 
+		// Tagging
 		Widget.createWithElement('tag_area', function(widget) {
 			_this.tag_area = widget;
 			widget.settings.auto_load = false;
@@ -58,6 +61,8 @@ Widget.types.document_detail = {
 			});
 		}, jQuery.noop);
 
+
+		// Upload stuff
 		this.uploader.allow_drag_to(_this._element, null, function(target) {
 			return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: !!_this._element.find(":input[name='name']").val()};
 		}, true);
@@ -66,10 +71,25 @@ Widget.types.document_detail = {
 			_this.detail_widget.clear_validation();
 		});
 
+		// Delete “unsaved” documents on close
+		this.handle('saved', function() {
+			this.has_been_saved = true;
+		});
+		this.handle('closing', function(event, should) {
+			should.close = this.has_been_saved === null || this.has_been_saved === true;
+			if(this.has_been_saved === false) {
+				this.delete();
+			}
+		});
+
+		// Create widget
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
 	fill_data: function(for_update) {
+		if(!for_update) {
+			this.has_been_saved = true;
+		}
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.current_detail_id = document_data.Id;
@@ -134,11 +154,30 @@ Widget.types.document_detail = {
 		this.file_upload.val('').change();
 		var is_new = this.current_detail_id === null;
 		if(is_new) {
+			this.has_been_saved = false;
 			this.setDocumentId(result);
 			this.current_detail_id = result;
 		}
 		this.fill_data(true);
 	},
+	
+	do_delete: function(callback) {
+		var _this = this;
+		Widget.confirm('{{writeString=wns.document.delete}}', '{{writeString==wns.document.delete_unsaved}}', function(may_delete) {
+			if(may_delete) {
+				_this.deleteDocument(function(success) {
+					if(success) {
+						_this.detail_widget.close();
+						_this.close_callback();
+					}
+					callback(success);
+				});
+			}
+		});
+	},
+	
+	current_detail_id: null,
+	has_been_saved: null,
 
 	settings: {
 		detail_widget: {
