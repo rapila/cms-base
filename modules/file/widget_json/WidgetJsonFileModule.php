@@ -125,6 +125,14 @@ class WidgetJsonFileModule extends FileModule {
 		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
 	}
 	
+	public static function jsonOrderedObject($aObject) {
+		$aResult = array();
+		foreach($aObject as $sKey => $mValue) {
+			$aResult[] = array('key' => $sKey, 'value' => $mValue);
+		}
+		return $aResult;
+	}
+	
 	public static function jsonBaseObjects($aBaseObjects, $aOriginalColumnNames) {
 		if($aBaseObjects instanceof PropelCollection) {
 			$aBaseObjects = $aBaseObjects->getArrayCopy();
