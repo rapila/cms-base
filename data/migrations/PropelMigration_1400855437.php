@@ -17,6 +17,7 @@ class PropelMigration_1400855437
     {
         // add the post-migration code here
         require_once $_SERVER['PWD'].'/base/lib/inc.php';
+        Propel::disableInstancePooling();
         foreach(DocumentQuery::create()->find() as $oDocument) {
             $stmt = DocumentPeer::doSelectStmt($oDocument->buildPkeyCriteria()->addSelectColumn('documents.data'));
             $row = $stmt->fetch(PDO::FETCH_NUM);
