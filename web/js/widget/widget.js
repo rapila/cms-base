@@ -883,7 +883,7 @@ String.prototype.escapeSelector = function() {
 				if(!(this.name && (/select|textarea|input/i).test(this.nodeName))) {
 					return;
 				}
-				
+
 				var val = null;
 				if(this.nodeName.toLowerCase() === 'input') {
 					if(this.type.toLowerCase() === 'checkbox') {
@@ -899,6 +899,8 @@ String.prototype.escapeSelector = function() {
 
 				if(val === undefined) {
 					return;
+				} else if(this.nodeName.toLowerCase() === 'select' && val === '') {
+					val = null;
 				}
 
 				if(this.name.match(/\[\]$/)) {
